@@ -18,18 +18,18 @@ package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
 import org.mevenide.ui.eclipse.repository.factory.RepositoryObjectDownloaderFactory;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-
 
 /**  
  * 
@@ -58,8 +58,8 @@ public class DownloadJob extends Job {
         IStatus status = null;
         List failedDownloads = new ArrayList();
         for (int i = 0; i < downloadList.size(); i++) {
-            Artifact artifact = (Artifact) downloadList.get(i);
-            String artifactName = artifact.getName() + "-" + artifact.getVersion(); 
+            RepoPathElement artifact = (RepoPathElement) downloadList.get(i);
+            String artifactName = artifact.getArtifactId() + "-" + artifact.getVersion(); 
             try {
                 downloader.download(artifact);
             }

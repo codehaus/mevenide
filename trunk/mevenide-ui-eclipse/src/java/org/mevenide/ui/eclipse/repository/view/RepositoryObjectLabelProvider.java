@@ -16,16 +16,14 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.net.URI;
+
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.swt.graphics.Image;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
-import org.mevenide.ui.eclipse.repository.model.Group;
-import org.mevenide.ui.eclipse.repository.model.Repository;
-import org.mevenide.ui.eclipse.repository.model.Type;
 import org.mevenide.util.StringUtils;
 
 
@@ -41,47 +39,75 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
     }
 
     public Image getImage(Object element) {
-        if ( element instanceof Repository ) {
-            return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO).createImage();
-        }
-        if ( element instanceof Group ) {
-            return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_GROUP).createImage();
-        }
-        if ( element instanceof Type ) {
-            return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_TYPE).createImage();
-        }
-        if ( element instanceof Artifact ) {
-            Artifact artifact = (Artifact) element;
-            String type = org.apache.commons.lang.StringUtils.stripEnd(artifact.getParent().getName(), "s");
-            if ( "pom".equals(type) ) {
-                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_OBJ).createImage();
+        if (element instanceof RepoPathElement) {
+            RepoPathElement rpe = (RepoPathElement)element;
+
+            switch (rpe.getLevel()) {
+                case RepoPathElement.LEVEL_VERSION:
+                case RepoPathElement.LEVEL_ARTIFACT: {
+                    String ext = rpe.getExtension();
+                    if ( "pom".equals(ext) ) {
+                        return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_POM_OBJ).createImage();
+                    }
+                    if ( "jar".equals(ext) ) {
+                        return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.DEPENDENCY_OBJ).createImage();
+                    }
+                    if ( "plugin".equals(ext)) {
+                        return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.PLUGIN_OBJ).createImage();
+                    }
+                    else {
+                        return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILE_OBJ).createImage();
+                    }
+                }
+                case RepoPathElement.LEVEL_GROUP: {
+                    return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_GROUP).createImage();
+                }
+                case RepoPathElement.LEVEL_ROOT: {
+                    return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO).createImage();
+                }
+                case RepoPathElement.LEVEL_TYPE: {
+                    return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_TYPE).createImage();
+                }
             }
-            if ( "jar".equals(type) ) {
-                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.DEPENDENCY_OBJ).createImage();
-            }
-            if ( "plugin".equals(type)) {
-                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.PLUGIN_OBJ).createImage();
-            }
-            else {
-                return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILE_OBJ).createImage();
-            }
+
         }
+
         return null;
     }
     
     public String getText(Object element) {
-        if ( element instanceof Artifact ) {
-            Artifact artifact = (Artifact) element;
-            String artifactVersion = artifact.getVersion();
-            return artifact.getName() + (!StringUtils.isNull(artifactVersion) && !artifactVersion.equals(".") ?  " : " + artifactVersion : "");
+        if (element == null) return null;
+
+        if (element instanceof RepoPathElement) {
+            RepoPathElement rpe = (RepoPathElement)element;
+
+            switch (rpe.getLevel()) {
+                case RepoPathElement.LEVEL_ARTIFACT: {
+                    String artifactId = rpe.getArtifactId();
+                    String version = rpe.getVersion();
+                    return artifactId + ((!StringUtils.isNull(version) && !version.equals("."))? " : " + version: "");
+                }
+                case RepoPathElement.LEVEL_GROUP: {
+                    String groupId = rpe.getGroupId();
+                    return (groupId == null)? "": groupId;
+                }
+                case RepoPathElement.LEVEL_ROOT: {
+                    URI uri = rpe.getURI();
+                    return (uri == null)? "": uri.toString();
+                }
+                case RepoPathElement.LEVEL_TYPE: {
+                    String type = rpe.getType();
+                    return (type == null)? "": type;
+                }
+                case RepoPathElement.LEVEL_VERSION: {
+                    String version = rpe.getVersion();
+                    return (version == null)? "": version;
+                }
+            }
+
         }
-        if ( element instanceof BaseRepositoryObject ) {
-            return ((BaseRepositoryObject) element).getName();
-        }
-        if ( element instanceof String ) {
-            return (String) element;
-        }
-        return null;
+
+        return element.toString();
     }
     
     public void dispose() {

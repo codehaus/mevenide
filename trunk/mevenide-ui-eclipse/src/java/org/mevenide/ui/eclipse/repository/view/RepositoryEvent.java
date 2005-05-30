@@ -16,8 +16,7 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
-import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
-
+import org.mevenide.repository.RepoPathElement;
 
 /**  
  * 
@@ -27,19 +26,17 @@ import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
  */
 public class RepositoryEvent {
 
-    private String repositoryUrl;
-    private BaseRepositoryObject element;
+    private RepoPathElement element;
     
-    public RepositoryEvent(String repositoryUrl, BaseRepositoryObject element) {
-        this.repositoryUrl = repositoryUrl;
+    public RepositoryEvent(RepoPathElement element) {
         this.element = element;
     }
     
     public String getRepositoryUrl() {
-        return repositoryUrl;
+        return this.element.getReader().getRootURI().toString();
     }
     
-    public BaseRepositoryObject getElement() {
+    public RepoPathElement getElement() {
         return element;
     }
 }
