@@ -62,10 +62,14 @@ public class XmlPsiSwingDocument extends PlainDocument {
         try {
             synchronized (LOCK) {
                 final XmlTag psiTag = command.findPsiElement();
-                replace(0,
-                        getLength(),
-                        psiTag == null ? null : psiTag.getValue().getTrimmedText(),
-                        null);
+                final String text = psiTag == null ? null : psiTag.getValue().getTrimmedText();
+                inPsiEventCounter++;
+                try {
+                    replace(0, getLength(), text, null);
+                }
+                finally {
+                    inPsiEventCounter--;
+                }
             }
         }
         catch (BadLocationException e) {
