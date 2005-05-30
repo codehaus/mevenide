@@ -23,6 +23,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -42,7 +43,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.util.CoreUtility;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
-import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.operation.IRunnableWithProgress;
@@ -121,8 +121,8 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 			try {
 				getContainer().run(true, false, new WorkspaceModifyDelegatingOperation(op));
 			} catch (InvocationTargetException e) {
-				final String title= NewWizardMessages.getString("JavaProjectWizardSecondPage.error.title"); //$NON-NLS-1$
-				final String message= NewWizardMessages.getString("JavaProjectWizardSecondPage.error.message"); //$NON-NLS-1$
+                final String title= JDTWizardMessages.JavaProjectWizardSecondPage_error_title;
+                final String message= JDTWizardMessages.JavaProjectWizardSecondPage_error_message;
 				ExceptionHandler.handle(e, getShell(), title, message);
 			} catch  (InterruptedException e) {
 				// cancel pressed
