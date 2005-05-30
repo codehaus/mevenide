@@ -27,6 +27,7 @@ import java.text.MessageFormat;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
@@ -47,7 +48,6 @@ import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWindowListener;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.WorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
@@ -172,16 +172,6 @@ public class Mevenide extends AbstractUIPlugin {
             reg.put(IImageRegistry.IMAGE_KEYS[i], getImageDescriptor(IImageRegistry.IMAGE_KEYS[i]));  
         }
     }
-    
-    
-    
-    /**
-     * @warn we cast here because we need a WorkbenchWindow to access the MenuManager
-     *       however WorkbenchWindow is part of internal api
-     */
-    public WorkbenchWindow  getWorkbenchWindow() {
-        return (WorkbenchWindow) lastActiveWindow;
-    } 
     
     /**
 	 * osgi shutdown : dispose resources
