@@ -79,4 +79,10 @@
          download-size="0"
          install-size="0"
          version="@org.mevenide.help.version@"/>
+
+   <plugin
+         id="org.mevenide.repository"
+         download-size="253"
+         install-size="284"
+         version="0.2.0"/>
 </feature>
