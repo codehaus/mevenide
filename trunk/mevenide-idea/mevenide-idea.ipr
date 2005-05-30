@@ -331,8 +331,13 @@
       <CLASSES>
         <root url="jar://$maven.repo$/commons-lang/jars/commons-lang-2.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
-      <SOURCES />
+      <JAVADOC>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/docs/api" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/java" />
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/conf" />
+      </SOURCES>
     </library>
     <library name="idea-eap">
       <CLASSES>
