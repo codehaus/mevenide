@@ -52,6 +52,11 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     private String mavenOptions;
 
     /**
+     * Whether to activate Maven in offline mode.
+     */
+    private boolean offline = false;
+
+    /**
      * Returns the selected Maven home, or <code>null</code> if not set.
      *
      * @return file pointing to the Maven directory, or <code>null</code>
@@ -109,6 +114,26 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     }
 
     /**
+     * Returns whether Maven will be executed in offline mode.
+     *
+     * @return boolean
+     */
+    public boolean isOffline() {
+        return offline;
+    }
+
+    /**
+     * Sets the offline/online mode for Maven executions.
+     *
+     * @param pOffline {@code true} for online, {@code false} for offline
+     */
+    public void setOffline(final boolean pOffline) {
+        final boolean oldOffline = offline;
+        offline = pOffline;
+        changeSupport.firePropertyChange("offline", oldOffline, offline);
+    }
+
+    /**
      * This method is called after the {@link #readExternal(org.jdom.Element)} method
      * is called. If the {@link #mavenHome} field is still <code>null</code>, then
      * this method tries to guess it by invoking the {@link SysEnvLocationFinder}'s
@@ -122,6 +147,9 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      */
     public void initComponent() {
         if(mavenHome == null) {
+            //
+            //maven home is null - try to guess
+            //
             final ILocationFinder finder = SysEnvLocationFinder.getInstance();
             final String mavenHomePath = finder.getMavenHome();
             if(mavenHomePath != null && mavenHomePath.trim().length() > 0)
@@ -159,6 +187,11 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         //
         final String mavenOptionsValue = JDOMExternalizer.readString(pElement, "mavenOptions");
         setMavenOptions(mavenOptionsValue);
+
+        //
+        //read maven offline mode
+        //
+        setOffline(JDOMExternalizer.readBoolean(pElement, "offline"));
     }
 
     public void writeExternal(final Element pElement) throws WriteExternalException {
@@ -173,6 +206,11 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         //write maven options
         //
         JDOMExternalizer.write(pElement, "mavenOptions", mavenOptions);
+
+        //
+        //write offline mode
+        //
+        JDOMExternalizer.write(pElement, "offline", offline);
     }
 
     /**
