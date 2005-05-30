@@ -16,12 +16,20 @@
 		<category name="Mevenide"/>
 	</feature>
 	
-	<feature url="features/org.mevenide.feature_0.2.2.jar" id="org.mevenide.feature" version="0.2.2">
+	<feature url="features/org.mevenide.feature_0.3.0.jar" id="org.mevenide.feature" version="0.3.0">
+		<category name="Mevenide"/>
+	</feature>
+	
+	<feature url="features/org.mevenide.feature_0.3.1.jar" id="org.mevenide.feature" version="0.3.1">
 		<category name="Mevenide"/>
 	</feature>
 	
 	<feature url="features/@org.mevenide.eclipse.feature.id@_@org.mevenide.eclipse.feature.version@.jar" id="@org.mevenide.eclipse.feature.id@" version="@org.mevenide.eclipse.feature.version@">
 		<category name="Mevenide"/>
+	</feature>
+
+	<feature url="features/org.apache.maven_1.0.0.jar" id="org.apache.maven" version="1.0.0">
+		<category name="Maven"/>
 	</feature>
 
 	<feature url="features/org.apache.maven_1.0.2.jar" id="org.apache.maven" version="1.0.2">
