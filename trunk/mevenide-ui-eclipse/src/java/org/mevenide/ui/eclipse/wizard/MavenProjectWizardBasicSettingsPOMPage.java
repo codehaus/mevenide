@@ -16,14 +16,15 @@
  */
 package org.mevenide.ui.eclipse.wizard;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
 import org.apache.maven.project.Organization;
 import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jdt.core.JavaConventions;
-import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardPage;
@@ -276,11 +277,11 @@ public class MavenProjectWizardBasicSettingsPOMPage extends WizardPage {
 			if (fProjectGroup.getPackage().length() != 0) {
 				IStatus val= JavaConventions.validatePackageName(fProjectGroup.getPackage());
 				if (val.getSeverity() == IStatus.ERROR) {
-					setErrorMessage(NewWizardMessages.getFormattedString("NewPackageWizardPage.error.InvalidPackageName", val.getMessage())); //$NON-NLS-1$
+                    setErrorMessage(MessageFormat.format(JDTWizardMessages.NewPackageWizardPage_error_InvalidPackageName, new String[] { val.getMessage() })); 
 					setPageComplete(false);
 					return;
 				} else if (val.getSeverity() == IStatus.WARNING) {
-					setErrorMessage(NewWizardMessages.getFormattedString("NewPackageWizardPage.warning.DiscouragedPackageName", val.getMessage())); //$NON-NLS-1$
+                    setErrorMessage(MessageFormat.format(JDTWizardMessages.NewPackageWizardPage_warning_DiscouragedPackageName, new String[] { val.getMessage() }));
 					setPageComplete(false);
 					return;
 				} else {

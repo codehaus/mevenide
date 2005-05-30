@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExecutableExtension;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.internal.ui.util.ExceptionHandler;
 import org.eclipse.jdt.internal.ui.wizards.NewElementWizard;
 import org.eclipse.swt.widgets.Shell;
@@ -44,6 +45,7 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
     protected boolean fUseTemplate = false;
     
     protected Project fProject;
+
  	/**
 	 * 
 	 */
@@ -131,4 +133,12 @@ public class MavenProjectWizard extends NewElementWizard implements IExecutableE
     public boolean canFinish() {
         return super.canFinish();
     }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jdt.internal.ui.wizards.NewElementWizard#getCreatedElement()
+    */
+   public IJavaElement getCreatedElement()
+   {
+      return fSecondPage.getJavaProject();
+   }
 }

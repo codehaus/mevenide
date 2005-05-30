@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.wizard;
 import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
+
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -29,7 +30,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.internal.ui.JavaPlugin;
-import org.eclipse.jdt.internal.ui.wizards.NewWizardMessages;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.ComboDialogField;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.DialogField;
 import org.eclipse.jdt.internal.ui.wizards.dialogfields.IDialogFieldListener;
@@ -202,7 +202,8 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 		 */
 		public void changeControlPressed(DialogField field) {
 			final DirectoryDialog dialog= new DirectoryDialog(getShell());
-			dialog.setMessage(NewWizardMessages.getString("JavaProjectWizardFirstPage.directory.message")); //$NON-NLS-1$
+            dialog.setMessage(JDTWizardMessages.JavaProjectWizardFirstPage_directory_message);
+
 			String directoryName = fLocation.getText().trim();
 			if (directoryName.length() == 0) {
 				String prevLocation= JavaPlugin.getDefault().getDialogSettings().get(DIALOGSTORE_LAST_EXTERNAL_LOC);
