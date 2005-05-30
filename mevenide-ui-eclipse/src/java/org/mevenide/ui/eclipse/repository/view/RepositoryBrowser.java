@@ -19,6 +19,8 @@ package org.mevenide.ui.eclipse.repository.view;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.maven.repository.Artifact;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -38,14 +40,12 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
 import org.mevenide.util.StringUtils;
-
 
 /**  
  * 
@@ -99,8 +99,8 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         	    if ( selection != null ) {
 	        	    List downloadList = new ArrayList();
 	        	    for ( Iterator it = selection.iterator(); it.hasNext(); ) {
-	        	        BaseRepositoryObject selectedItem = (BaseRepositoryObject) it.next();
-	                    if ( selectedItem instanceof Artifact ) {
+                        RepoPathElement selectedItem = (RepoPathElement) it.next();
+	                    if ( selectedItem.getLevel() == RepoPathElement.LEVEL_ARTIFACT ) {
 	                        downloadList.add(selectedItem);
 	                    }
 	                }
@@ -143,7 +143,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
                 StructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
                 List selectedRepositories = new ArrayList();
                 for ( Iterator it = selection.iterator(); it.hasNext(); ) {
-                    String selectedRepo = ((BaseRepositoryObject) it.next()).getRepositoryUrl();
+                    String selectedRepo = ((RepoPathElement) it.next()).getURI().toString();
                     selectedRepositories.add(selectedRepo);
                 }
                 repositories.removeAll(selectedRepositories);
@@ -159,9 +159,8 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
                 StructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
                 final Object[] obj = ((StructuredSelection) repositoryViewer.getSelection()).toArray();
                 for ( int i = 0; i < obj.length; i++ ) {
-                    BaseRepositoryObject selectedObject = (BaseRepositoryObject) obj[i];
-                    selectedObject.setChildren(null);
-                    selectedObject.setChildrenLoaded(false);
+                    RepoPathElement selectedObject = (RepoPathElement) obj[i];
+                    selectedObject.reset();
                 }
                 repositoryViewer.getControl().getDisplay().asyncExec(
         				new Runnable() {

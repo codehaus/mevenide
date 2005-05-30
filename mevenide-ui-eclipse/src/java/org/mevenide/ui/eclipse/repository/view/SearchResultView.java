@@ -28,9 +28,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
-import org.mevenide.ui.eclipse.repository.model.Type;
-
 
 /**  
  * 
@@ -62,8 +61,8 @@ public class SearchResultView extends ViewPart {
         createSearchResultTable(parent);
     }
     
-    public void setInput(Type type) {
-        searchResults.setInput(type);
+    public void setInput(RepoPathElement element) {
+        searchResults.setInput(element);
         searchResults.refresh();
     }
 
@@ -87,8 +86,13 @@ public class SearchResultView extends ViewPart {
             public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
             }
             public Object[] getElements(Object inputElement) {
-                if ( inputElement instanceof Type ) {
-                    return ((Type) inputElement).getChildren(); 
+                if ( inputElement instanceof RepoPathElement ) {
+                    try {
+                        return ((RepoPathElement) inputElement).getChildren();
+                    } catch (Exception e) {
+                        // FIXME: Auto-generated catch block
+                        e.printStackTrace();
+                    } 
                 }
                 return null;
             }

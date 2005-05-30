@@ -16,19 +16,20 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.repository.Artifact;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
-import org.mevenide.ui.eclipse.repository.model.Repository;
-
+import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
+import org.mevenide.repository.RepositoryReaderFactory;
 
 /**  
  * 
@@ -51,18 +52,24 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     }
     
     public Object[] getChildren(Object element) {
-        if ( element instanceof Artifact )  {
-            return null;
-        }
         
-        if ( element instanceof BaseRepositoryObject ) {
-            BaseRepositoryObject currentNodeObject = (BaseRepositoryObject) element;
-            if ( currentNodeObject.isChildrenLoaded() ) {
-                return currentNodeObject.getChildren();
+        if ( element instanceof RepoPathElement ) {
+            RepoPathElement currentNodeObject = (RepoPathElement) element;
+            if (currentNodeObject.isLeaf()) {
+                return null;
+            }
+
+            if ( currentNodeObject.isLoaded() ) {
+                try {
+                    return currentNodeObject.getChildren();
+                } catch (Exception e) {
+                    // FIXME: Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
             else {
-                String baseUrl = currentNodeObject.getRepositoryUrl();
-                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject, baseUrl);
+                String baseUrl = currentNodeObject.getURI().toString();
+                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject);
 	            job.setListeners(this.repositoryEventListeners);
 	            job.schedule(Job.LONG);
                 return new String[]{"Pending..."};
@@ -72,24 +79,25 @@ public class RepositoryContentProvider implements ITreeContentProvider {
     }
     
     public Object getParent(Object element) {
-        if ( element instanceof BaseRepositoryObject ) {
-            return ((BaseRepositoryObject) element).getParent();
+        if ( element instanceof RepoPathElement ) {
+            return ((RepoPathElement) element).getParent();
         }
         return null;
     }
     
     public boolean hasChildren(Object element) {
-        return element instanceof BaseRepositoryObject && !(element instanceof Artifact);
+        return element instanceof RepoPathElement && !((RepoPathElement)element).isLeaf();
     }
     
     public Object[] getElements(Object inputElement) {
         if ( inputElement instanceof Collection ) {
             Collection repoUrls = (Collection) inputElement;
             
-            Repository[] repos = new Repository[repoUrls.size()];
+            RepoPathElement[] repos = new RepoPathElement[repoUrls.size()];
             int i = 0;
             for (Iterator it = repoUrls.iterator(); it.hasNext();) {
-                repos[i] = new Repository((String) it.next());
+                IRepositoryReader reader = RepositoryReaderFactory.createRemoteRepositoryReader(URI.create((String) it.next()));
+                repos[i] = new RepoPathElement(reader, null);
                 i++;
             }
             return repos;

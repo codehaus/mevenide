@@ -17,8 +17,7 @@
 package org.mevenide.ui.eclipse.repository;
 
 import org.apache.maven.project.Dependency;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-
+import org.mevenide.repository.RepoPathElement;
 
 /**  
  * 
@@ -30,5 +29,5 @@ public interface RepositoryObjectDownloader {
     
     String HTTP = "http";
     
-    Dependency download(Artifact object) throws DownloadException ;
+    Dependency download(RepoPathElement object) throws DownloadException ;
 }

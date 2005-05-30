@@ -30,12 +30,9 @@ import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.repository.Repository;
 import org.mevenide.environment.ConfigUtils;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-import org.mevenide.ui.eclipse.repository.model.Group;
-import org.mevenide.ui.eclipse.repository.model.Type;
-
 
 /**  
  * 
@@ -63,9 +60,9 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
         wagon = new LightweightHttpWagon();
     }
     
-    public Dependency download(Artifact repositoryObject) throws DownloadException {
+    public Dependency download(RepoPathElement repositoryObject) throws DownloadException {
         try {
-	        return get(repositoryObject);
+	        return getArtifact(repositoryObject);
         }
         catch (TransferFailedException e) {
             String message = "A problem occured during file transfer."; 
@@ -76,15 +73,15 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
             throw new DownloadException(message, e);
         }
         catch (ConnectionException e) {
-            String message = "Unable to connect to repository " + repositoryObject.getRepositoryUrl(); 
+            String message = "Unable to connect to repository " + repositoryObject.getURI(); 
             throw new DownloadException(message, e);
         }
         catch (AuthorizationException e) {
-            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getRepositoryUrl() + " is secured"; 
+            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
             throw new DownloadException(message, e);
         }
         catch (AuthenticationException e) {
-            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getRepositoryUrl() + " is secured"; 
+            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
             throw new DownloadException(message, e);
         }
         
@@ -101,30 +98,29 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
         }
     }
 
-    private Dependency get(Artifact repositoryObject) throws ConnectionException, 
+    private Dependency getArtifact(RepoPathElement artifact) throws ConnectionException, 
     												   AuthenticationException, 
     												   TransferFailedException, 
     												   ResourceDoesNotExistException, 
     												   AuthorizationException {
         Repository repository = new Repository();
-        repository.setUrl(repositoryObject.getRepositoryUrl());
+        repository.setUrl(artifact.getURI().toString());
         
-        Type repositoryObjectType = (Type) repositoryObject.getParent();
-        Group repositoryObjectGroup = (Group) repositoryObjectType.getParent();
-        
-        String resource = repositoryObjectGroup + "/" + 
-        				  repositoryObjectType + "/" + 
-        				  repositoryObject.getName() + "-" + 
-        				  repositoryObject.getVersion() + "." +
-        				  StringUtils.stripEnd(repositoryObjectType.getName(), "s");
+        String resource
+        = artifact.getGroupId() + "/"
+        + artifact.getType() + "/"
+        + artifact.getArtifactId() + "-"
+        + artifact.getVersion() + "."
+        + artifact.getExtension()
+        ;
 
         File destination = new File(localRepositoryPath + "/" + resource);
 
         Dependency dependency = new Dependency();
-        dependency.setArtifactId(repositoryObject.getName());
-        dependency.setGroupId(repositoryObjectGroup.getName());
-        dependency.setVersion(repositoryObject.getVersion());
-        dependency.setType(StringUtils.stripEnd(repositoryObjectType.getName(), "s"));
+        dependency.setArtifactId(artifact.getArtifactId());
+        dependency.setGroupId(artifact.getGroupId());
+        dependency.setVersion(artifact.getVersion());
+        dependency.setType(artifact.getExtension());
 
         if ( !destination.exists() ) {
 	        wagon.connect( repository );

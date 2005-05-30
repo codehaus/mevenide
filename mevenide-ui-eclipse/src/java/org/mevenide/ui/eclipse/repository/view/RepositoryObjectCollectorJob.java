@@ -18,16 +18,14 @@ package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.mevenide.ui.eclipse.repository.RepositoryObjectCollector;
-import org.mevenide.ui.eclipse.repository.factory.RepositoryObjectCollectorFactory;
-import org.mevenide.ui.eclipse.repository.model.BaseRepositoryObject;
-
+import org.mevenide.repository.RepoPathElement;
 
 /**  
  * 
@@ -39,24 +37,19 @@ public class RepositoryObjectCollectorJob extends Job {
 
     private static final Log log = LogFactory.getLog(RepositoryObjectCollectorJob.class);
     
-    private BaseRepositoryObject repositoryElement;
+    private RepoPathElement repositoryElement;
     
     private List repositoryEventListeners = new ArrayList();
     
-    private String baseUrl;
-    
-    public RepositoryObjectCollectorJob(BaseRepositoryObject repositoryElement, String baseUrl) {
-        super("Repository object collector [" + baseUrl + "]");
+    public RepositoryObjectCollectorJob(RepoPathElement repositoryElement) {
+        super("Repository object collector [" + repositoryElement.getURI() + "]");
         this.repositoryElement = repositoryElement;
-        this.baseUrl = baseUrl;
     }
 
     protected IStatus run(IProgressMonitor monitor) {
         IStatus status = null;
-        RepositoryObjectCollector collector = RepositoryObjectCollectorFactory.getRepositoryObjectCollector(repositoryElement);
         try {
-            BaseRepositoryObject[] objects = collector.collect();
-            repositoryElement.setChildren(objects);
+            this.repositoryElement.getChildren();
             fireRepositoryDataLoaded();
             status = new Status(IStatus.OK, "org.mevenide.ui", 0, "Repository Data Loaded", null);
         }
@@ -69,7 +62,7 @@ public class RepositoryObjectCollectorJob extends Job {
     }
     
     private void fireRepositoryDataLoaded() {
-        RepositoryEvent event = new RepositoryEvent(baseUrl, repositoryElement);
+        RepositoryEvent event = new RepositoryEvent(repositoryElement);
         for (int i = 0; i < repositoryEventListeners.size(); i++) {
             ((RepositoryEventListener) repositoryEventListeners.get(i)).dataLoaded(event);
         }

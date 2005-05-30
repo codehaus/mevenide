@@ -16,6 +16,7 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -51,15 +52,14 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.internal.dialogs.WorkbenchPreferenceDialog;
 import org.eclipse.ui.part.ViewPart;
+import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
+import org.mevenide.repository.RepositoryReaderFactory;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
-import org.mevenide.ui.eclipse.repository.model.Group;
-import org.mevenide.ui.eclipse.repository.model.Repository;
-import org.mevenide.ui.eclipse.repository.model.Type;
 import org.mevenide.util.StringUtils;
-
 
 /**  
  * 
@@ -271,7 +271,12 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         groupText.addTraverseListener(new TraverseListener(){
             public void keyTraversed(TraverseEvent e) {
                 if ( e.detail == SWT.TRAVERSE_RETURN && searchButton.isEnabled() ) {
-                    launchSearch();
+                    try {
+                        launchSearch();
+                    } catch (Exception e1) {
+                        // FIXME: Auto-generated catch block
+                        e1.printStackTrace();
+                    }
                 }
             }
         });
@@ -286,7 +291,12 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
             public void widgetDefaultSelected(SelectionEvent arg0) {
             }
             public void widgetSelected(SelectionEvent arg0) {
-                launchSearch();
+                try {
+                    launchSearch();
+                } catch (Exception e) {
+                    // FIXME: Auto-generated catch block
+                    e.printStackTrace();
+                }
                 
             }
         });
@@ -296,12 +306,19 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         repoCombo.getDisplay().asyncExec(
             new Runnable() {
                 public void run() {
-			        Type type = (Type) event.getElement();
-			        if ( type.getChildren() != null ) {
+                    RepoPathElement element = event.getElement();
+                    RepoPathElement[] child = null;
+                    try {
+                        child = element.getChildren();
+                    } catch (Exception e1) {
+                        // FIXME: Auto-generated catch block
+                        e1.printStackTrace();
+                    }
+			        if ( child != null && child.length > 0) {
 				        SearchResultView view;
 				        try {
 		                    view = (SearchResultView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView("org.mevenide.repository.search.result");
-		                    view.setInput(type);
+		                    view.setInput(element);
 					    }
 				        catch (PartInitException e) {
 				            String message = "Unable to open search result page";
@@ -321,14 +338,36 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
     }
 
 
-    private void launchSearch() {
+    private void launchSearch() throws Exception {
         String baseUrl = repoCombo.getText();
-        Repository repository = new Repository(baseUrl);
-        Group group = new Group(groupText.getText(), repository);
-        Type type = new Type(typeCombo.getText(), group);
-        
-        RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(type, baseUrl);
-        job.addListener(this);
-        job.schedule(Job.LONG);
+        IRepositoryReader reader = RepositoryReaderFactory.createRemoteRepositoryReader(URI.create(baseUrl));
+        RepoPathElement root = new RepoPathElement(reader, null);
+        findGroup(root);
+    }
+
+    private void findGroup(RepoPathElement root) throws Exception {
+        String gid = groupText.getText();
+        RepoPathElement[] child = root.getChildren();
+        for (int i = 0; i < child.length; ++i) {
+            String groupId = child[i].getGroupId();
+            if (groupId != null && groupId.equals(gid)) {
+                findType(child[i]);
+                break;
+            }
+        }
+    }
+
+    private void findType(RepoPathElement group) throws Exception {
+        String tid = typeCombo.getText();
+        RepoPathElement[] child = group.getChildren();
+        for (int i = 0; i < child.length; ++i) {
+            String type = child[i].getType();
+            if (type != null && type.equals(tid)) {
+                RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(child[i]);
+                job.addListener(this);
+                job.schedule(Job.LONG);
+                break;
+            }
+        }
     }
 }

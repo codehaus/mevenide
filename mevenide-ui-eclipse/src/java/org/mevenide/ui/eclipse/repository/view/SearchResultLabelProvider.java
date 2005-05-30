@@ -16,14 +16,10 @@
  */
 package org.mevenide.ui.eclipse.repository.view;
 
-
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.mevenide.ui.eclipse.repository.model.Artifact;
-import org.mevenide.ui.eclipse.repository.model.Type;
-
+import org.mevenide.repository.RepoPathElement;
 
 /**  
  * 
@@ -37,17 +33,17 @@ public class SearchResultLabelProvider implements ITableLabelProvider {
         return null;
     }
     public String getColumnText(Object element, int columnIndex) {
-        if ( element instanceof Artifact ) {
-            Artifact artifact = (Artifact) element;
-            Type type = (Type) artifact.getParent();
-            String typeName = ((Type) artifact.getParent()).getName();
-	        switch ( columnIndex ) {
-	            case 0: return type.getParent().getName();
-	            case 1: return artifact.getName();
-	            case 2: return artifact.getVersion();
-	            case 3: return typeName.endsWith("s") ? StringUtils.stripEnd(typeName, "s") : typeName;
-	            default: return null;           
-	        }
+        if ( element instanceof RepoPathElement ) {
+            RepoPathElement rpe = (RepoPathElement)element;
+            if (rpe.isLeaf()) {
+                switch ( columnIndex ) {
+                case 0: return rpe.getGroupId();
+                case 1: return rpe.getArtifactId();
+                case 2: return rpe.getVersion();
+                case 3: return rpe.getExtension();
+                default: return null;
+                }
+            }
         }
         return null;
     }
