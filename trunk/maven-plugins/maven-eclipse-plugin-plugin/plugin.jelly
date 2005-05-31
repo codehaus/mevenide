@@ -60,7 +60,6 @@
   	<eclipse-plugin:check-type type="${type}"/>
 
   	<attainGoal name="eclipse-plugin:create-${type}-dist"/>
-
   </goal>
   
   
@@ -128,6 +127,7 @@
   
   <goal name="eclipse-plugin:create-help-dist" prereqs="eclipse-plugin:init,eclipse-plugin:install-artifact"
   		description="create an help only plugin dist file and put it in ${maven.eclipse.plugin.dist.dir}">
+
   	  <j:set var="distVersion" value="${maven.eclipse.plugin.artifact.version}"/>
 	  <j:set var="pluginId" value="${maven.eclipse.plugin.artifact.id}"/>
   	  <j:set var="pluginFolder">${pluginId.replaceAll('-', '.')}</j:set> 
@@ -223,9 +223,17 @@
 		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>
 
 		<!-- copy plugin archives -->
+        <j:set var="pluginPomArtifactId" value="${pluginPom.artifactId}"/>
+        <j:if test="${pluginPom.artifactId == 'org.mevenide.repository'}">
+          <ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
+            <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}/../.." includes="*.jar"/>
+          </ant:copy>
+        </j:if>
+        <j:if test="${pluginPom.artifactId != 'org.mevenide.repository'}">
 		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
 		  <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
 		</ant:copy>
+        </j:if>
 		
 	  </j:forEach>
    		
@@ -235,7 +243,6 @@
   	  </j:if -->	
    	
    	  <ant:delete dir="${maven.eclipse.plugin.temp.dir}"/>
-   	  
    </goal>
 
 
@@ -334,11 +341,11 @@
   	  <j:set var="maven.eclipse.plugin.filterset.id" value="filterSetId"/>
   	  <ant:filterset id="${maven.eclipse.plugin.filterset.id}"/>
   	</j:if>
-  	
   </goal>
    
   
   <goal name="eclipse-plugin:init" description="initialize eclipse plugin distribution aware folders">
+
   	<j:set var="type" value="${maven.eclipse.plugin.type}"/>
 
   	<j:if test="${type == 'plugin' or type == 'lib'}">
@@ -354,7 +361,6 @@
 
     <ant:delete dir="${maven.eclipse.plugin.ext.dir}" quiet="true" />
     <ant:mkdir dir="${maven.eclipse.plugin.ext.dir}" />
-
   </goal>
 
 
@@ -454,13 +460,13 @@
 	<!-- install swt library into maven.repo.local -->
 	<ant:copy file="${swtJar}" 
   		      tofile="${maven.repo.local}/${maven.eclipse.plugin.swt.groupId}/jars/${maven.eclipse.plugin.swt.artifactId}-${maven.eclipse.plugin.swt.version}.jar"/>
-  		      
   </goal>
   
 
   <goal name="eclipse-plugin:create-library-artifacts" 
   		prereqs="eclipse-plugin:init" 
   		description="foreach pom dependency, create eclipse plugin that exports the given dependenvy. generated plugins are outpoutted to ${maven.eclipse.plugin.ext.dir}">
+
     <j:forEach var="artifact" items="${pom.artifacts}">
       <j:set var="dependency" value="${artifact.dependency}"/>
       <j:if test="${!(dependency.groupId.equals('eclipse')) and dependency.getProperty('eclipse.plugin.bundle') == 'true'}">
