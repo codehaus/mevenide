@@ -16,6 +16,9 @@
  */
 package org.mevenide.idea.global;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.InvalidDataException;
@@ -27,9 +30,6 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
  * This application component manages global Maven settings for IDEA.
@@ -190,6 +190,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
 
         //
         //read maven offline mode
+        //TODO: read maven property "maven.online.mode"
         //
         setOffline(JDOMExternalizer.readBoolean(pElement, "offline"));
     }
