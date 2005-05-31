@@ -16,9 +16,11 @@
  */
 package org.mevenide.idea.execute;
 
+import java.io.File;
+
 import com.intellij.execution.CantRunException;
-import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import org.mevenide.idea.MavenHomeNotDefinedException;
@@ -26,8 +28,6 @@ import org.mevenide.idea.PomNotDefinedException;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.goals.GoalsHelper;
-
-import java.io.File;
 
 /**
  * @author Arik
@@ -95,6 +95,8 @@ public class MavenJavaParameters extends JavaParameters
 
         if(mavenMgr.isOffline())
             getProgramParametersList().add("-o");
+
+        getProgramParametersList().add("-b");
 
         for(final String goal : pGoals)
             if(goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
