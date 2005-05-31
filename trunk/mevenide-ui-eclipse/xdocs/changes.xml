@@ -6,6 +6,171 @@
   </properties>
 
   <body>
+  <release version="0.4.0" date"2005-05-30">
+    <action dev="fdutton" type="fix" issue="MEVENIDE-218">
+        Dependency conflict between Maven and Mavenzilla.
+    </action>
+    
+    <action dev="fdutton" type="fix" issue="MEVENIDE-176">
+        eclipse 3.1m6 breaks the pom editor
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-158">
+        Cannot add unit test resources.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-220">
+        Could not obtain project reader error in eclipse
+    </action>
+    
+    <action dev="fdutton" type="fix" issue="MEVENIDE-89">
+        mevenide creates &lt;jar&gt; entry with &lt;dependency&gt;
+    </action>
+    
+    <action dev="fdutton" type="fix" issue="MEVENIDE-159">
+        Cannot change order of dependencies
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-116">
+        NoSuchMethodError
+    </action>
+    
+    <action dev="fdutton" type="fix" issue="MEVENIDE-182">
+        Changing name of project introduces &lt;id&gt; tag
+    </action>
+    
+    <action dev="mkleint" type="fix" issue="MEVENIDE-131">
+        add recursive behaviour to defaultqueryContext
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-25">
+        Eclipse POM sync doesn&apos;t resolve variable expressions
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-112">
+        Treat JUnit as special dependency
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-137">
+        bad link in documentation
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-179">
+        goals-grabber/.classpath is out-of-sync with project.xml
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-178">
+        Incomplete buildCommand causes warning about skipping builder.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-163">
+        Mac OS X: eclipse locations preference for classes.jar doesn&apos;t work
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-122">
+        Not finding tools.jar for cactus plugin,
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-143">
+        Properties settings do not work
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-145">
+        eclipse-plugin:install-swt does not work on eclipse 3.1.0 M2+
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-149">
+        Provide Maven 1.0.2 from the eclipse update site instead of Maven 1.0.0
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-171">
+        NPE on cancel of &quot;New Dependency&quot; dialog.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-175">
+        Eclipse 3.1 introduces new methods that must be implemented on the mock objects.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-164">
+        maven laucher fails running javac using JDK 1.3
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-6">
+        cannot pass options to VM
+    </action>
+    
+    <action dev="mkleint" type="fix" issue="MEVENIDE-172">
+        Unit test failed -- GenAppTemplateFinderTest.testGetTemplates().
+    </action>
+    
+    <action dev="mkleint" type="fix" issue="MEVENIDE-174">
+        Update fileUrlPrefix comment to specify all versions of Windows not just WinXP.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-170">
+    mevenide-ui-eclipse does not compile under JDK1.5
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-55">
+    Unable to open project.xml after using update from site
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-110">
+    Project.xml that uses &lt;!DOCTYPE includes don't work in the POM editor
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-63">
+    need to resolve core variables and consider interreferences
+    </action>
+    
+    <action dev="mkleint" type="fix" issue="MEVENIDE-14">
+    inherited project.properties file not taken into account
+    </action>
+    
+    <action dev="mkleint" type="fix" issue="MEVENIDE-72">
+    increasing current version should suggest to increase dependencies.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-90">
+    mevenide not 1.5 compatible
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-75">
+    Maintain comments between updats
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-71">
+    Exception while running Synchronize
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-100">
+    An internal error occurred during: &quot;Launching&quot;.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-85">
+    Modifying fields seems not to work.
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-81">
+    Environment variables not picked up
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-102">
+    Incorrect group for artifact maven-findbugs-plugin
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-124">
+    Cannot add resource to empty unit tests
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-119">
+    NPE trying to open Maven-launcher menu
+    </action>
+    
+    <action dev="rhill" type="fix" issue="MEVENIDE-111">
+    Cannot clear jdom dependency.
+    </action>
+  </release>
   	<release version="0.3.0" date="in CVS">
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-80">
 		Added a preference to control the location of tools.jar.
