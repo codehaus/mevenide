@@ -1,0 +1,72 @@
+
+<project name="mevenide-core">
+
+    <properties>
+        <author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Mevenide for Eclipse Navigation</title>
+    </properties>
+
+    <body>
+        <links>
+        	<item name="Eclipse" href="http://eclipse.org/"/>
+            <item name="Maven" href="http://www.maven.org/"/>
+            <item href="http://mevenide.codehaus.org/" name="Mevenide"/>
+        </links>
+        
+        <menu name="General">
+        	<item name="Overview" href="/index.html"/>
+        	<item name="License" href="/license.html"/>
+        	<item name="Features" href="/features.html"/>
+        	<item name="Changes" href="/changes-report.html"/>
+        	<item name="Download" href="/update/index.html"/>
+        	<item name="Bug Report" href="/bug-report.html"/>
+        	<item name="FAQ" href="/faq.html"/>
+        </menu>
+        
+        <menu name="Documentation">
+        	<item name="Configuration" href="/user-guide/conf.html"/>
+			<item name="Running" href="/user-guide/run.html"/>
+			<item name="Synchronization" href="/user-guide/sync.html"/>
+			<item name="Pom Editor" href="/user-guide/edit.html"/>
+			<item name="Jelly Editor" href="/user-guide/contentassist.html"/>
+			<item name="Maven Wizards" href="/user-guide/wizard.html"/>
+			<item name="POM Validation" href="/user-guide/validate.html"/>
+        	<item name="Providers" href="/user-guide/provider-infrastructure.html" collapse="true">
+        		<item name="Extension point" href="/user-guide/extension-point.html" target="_blank"/>
+        	</item> 
+        	<topic name="Manage Templates" href="/user-guide/pom-templates.html"/>
+        	<item name="Mevenide Nature" href="/user-guide/builder.html"/>
+        	<item name="Repository Browser" href="/user-guide/repo_browsing.html"/>
+        </menu>
+        
+        <menu name="Modules">
+    		<item name="Master Project" href="/../index.html"/>
+			<item name="Common Modules" collapse="true" href="/common-modules.html">
+				<item name="Mevenide Config" href="/../mevenide-config/index.html"/>
+				<item name="Mevenide Core" href="/../mevenide-core/index.html"/>
+				<item name="Goals Grabber" href="/../goals-grabber/index.html"/>
+				<item name="Mevenide Grammar" href="/../mevenide-grammar/index.html"/>
+			</item>
+			<item name="IDE Specific Modules" collapse="true" href="/ide.html">
+				<item name="Eclipse Plugin" href="/../mevenide-ui-eclipse/index.html"/>
+				<item name="Netbeans Module" href="/../mevenide-netbeans-project/index.html"/>
+				<item name="Netbeans Grammar Module" href="/../mevenide-netbeans-grammar/index.html"/>
+				<item name="JBuilder Module" href="/../mevenide-ui-jbuilder/index.html"/>
+				<item name="IntelliJ IDEA Module" href="/../mevenide-idea/index.html"/>
+			</item>
+			<item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
+				<item name="PDE Plugin" href="/../maven-eclipse-plugin-plugin/index.html"/>
+				<item name="NBM Plugin" href="/../maven-nbm-plugin/index.html"/>
+    			<item name="Mevenide Plugin" href="../maven-mevenide-plugin/index.html"/>
+				<item name="Spinner Wiki Plugin" href="/../maven-spinner-wiki-plugin/index.html"/>
+			</item>
+		</menu>
+        
+        <menu name="Developer">
+            <item name="Task List" href="/todos.html"/>
+        </menu>
+        
+        <search/>
+    </body>
+
+</project>

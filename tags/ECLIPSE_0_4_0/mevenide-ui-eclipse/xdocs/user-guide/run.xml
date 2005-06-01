@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+		<author email="rhill2@free.fr">Gilles Dodinet</author>
+		<title>Running Maven From Eclipse</title>
+	</properties>
+	<body>
+		<section name="Running Maven">
+			<subsection name="Contextual Menu">
+				<div id="documentContent">
+					<p>
+						Maven can be run directly from the contextual menu of any IContainer (Screenshot 1) or 
+						any project.xml file. When triggered a <a href="#Launch Wizard">dialog</a> pops up to let the user choose goals and options.
+						<br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/run/project_context_menu.png"/><br/>
+							<font size="-1"><b>Screenshot 1</b> Project contextual menu</font> 
+							<br/> 
+						</center> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Launch Wizard">
+				<div id="documentContent">
+					<p> 
+						The wizard dialog (Screenshot 2) allows you to 
+						pick options that are relevant in the context of the IDE (that 
+						means for instance that <code>-b</code>, <code>-h</code>, 
+						<code>-p</code> options, among others, are not 
+						accessible). System properties can be specified 
+						using the 'Add' button. 
+						<br/> 
+						The Text widget at the bottom of the wizard page is writable and goals to 
+						run are to be passed in there. Alternatively The 'Choose' 
+						button can be used to <a href="#Goals Picker">graphically pick goals</a>. 
+						<br/> 
+						<center> 
+							<img border="1px" src="../images/screenshots/run/run_maven.png"/><br/>
+							<font size="-1"><b>Screenshot 2</b> Launch wizard dialog</font> 
+							<br/> 
+						</center> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Goals Picker">
+				<div id="documentContent">
+					<p> 
+						Mevenide provides an interface to graphically choose 
+						the goals to be run (Screenshot 3). Once chosen, they can be ordered 
+						by clicking the <i>Goals Order</i> button. <br/>
+						If <code>basedir</code> can be resolved (which obviously is the case when 
+						the wizard is triggered from contextual menus), then the dialog displays both 
+						custom and global defined goals. <br />
+						<center> 
+							<img border="1px" src="../images/screenshots/run/mevenide_goals_picker.png"/> 
+							<br/> 
+							<font size="-1"><b>Screenshot 3</b> Goals Picker Dialog</font> 
+						</center> 
+						<br/> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Launch Shortcut">
+				<div id="documentContent">
+					<p> 
+						Mevenide launcher is integrated with the Eclipse External Tools and  
+						the "Run As> Maven Project" command silently invokes 
+						the default Maven goals that have been specified in the 
+						<a href="conf.html"><i>Run preferences page</i></a> in the context of the selected Project. <br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/run/mevenide_quicklaunch.png"/> <br/>
+							<font size="-1"><b>Screenshot 4</b> QuickLaunch Command</font> 
+						</center> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Maven Console">
+				<div id="documentContent">
+					<p> 
+						Mevenide doesnot provide yet an integrated Maven 
+						Console, however Maven Console can still be used thanks the 
+						Eclipse Debug Console as shown on Screenshot 5 below. 
+						<br/> 
+						<center> 
+							<img border="1px" src="../images/screenshots/run/maven_console.png"/> 
+							<br/> <font size="-1"><b>Screenshot 5</b> Running Maven Console</font> 
+						</center> 
+						<br/> 
+					</p>
+				</div>
+			</subsection>
+		</section>
+		<section>
+			<p>
+				<navbar prev="conf.html" toc="help.html" next="sync.html"/>
+			</p>
+		</section>
+	</body>
+</document>

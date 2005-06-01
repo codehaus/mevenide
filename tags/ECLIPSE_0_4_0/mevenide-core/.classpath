@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="etc"/>
+	<classpathentry kind="src" path="src/conf/eclipse"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry sourcepath="/MAVEN_REPO/jdom/distributions/jdom-1.0.zip" kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/thaiopensource/jars/jing-20030619.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
+	<classpathentry sourcepath="/MAVEN_REPO/commons-jxpath/distributions/commons-jxpath-1.2-src.zip" kind="var" path="MAVEN_REPO/commons-jxpath/jars/commons-jxpath-1.2.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

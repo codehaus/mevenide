@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:jsl">
+    <tag name="applyTemplates">
+        <attr name="mode"/>
+        <attr name="select"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="style">
+        <attr name="select"/>
+        <attr name="stylesheet"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="stylesheet">
+        <attr name="mode"/>
+        <attr name="select"/>
+        <attr name="stylesheetOutput"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="template">
+        <attr name="match"/>
+        <attr name="mode"/>
+        <attr name="name"/>
+        <attr name="priority"/>
+        <attr name="trim"/>
+    </tag>
+</taglib>

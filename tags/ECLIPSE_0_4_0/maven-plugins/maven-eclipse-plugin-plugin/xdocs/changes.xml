@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+      <release version="0.3.2" date="in CVS">
+         <action dev="gdodinet" type="fix">
+           remove hardcoded swt version
+         </action>
+      </release>
+      <release version="0.3.1">
+         <action dev="gdodinet" type="fix">
+           Bug Fix release
+         </action>
+      </release>
+      <release version="0.3" date="in CVS">
+        <action dev="gdodinet" type="add">
+          Add support for Lib-only eclipse plugin
+        </action>
+      </release>
+	  <release version="0.2" date="20040531">
+        <action dev="gdodinet" type="add">
+          Add support for Help-only eclipse plugin
+        </action>
+        <action dev="gdodinet" type="add">
+          Add maven.eclipse.plugin.site.includeRootFiles property to control 
+          wether or not site.* files should be included into bundled site archive
+        </action>
+        <action dev="gdodinet" type="add">
+        	Install generated update site and bundled site archive into local repo
+        </action>
+      </release>
+   </body>
+</document>

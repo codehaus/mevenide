@@ -1,0 +1,11 @@
+target
+dist
+maven.log
+build.properties
+lib
+plugin.xml
+velocity.log
+*.jar
+.mvnignore
+META-INF
+*.jpage

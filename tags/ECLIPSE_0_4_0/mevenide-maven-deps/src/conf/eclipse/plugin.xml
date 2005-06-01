@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="org.apache.maven"
+   name="Maven"
+   version="1.0.2"
+   provider-name="Apache Software Foundation">
+
+</plugin>

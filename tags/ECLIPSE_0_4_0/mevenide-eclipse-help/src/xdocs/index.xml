@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="rhill2@free.fr">Gilles Dodinet</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Overview">
+        	<div id="documentContent">
+			<p>
+			     <a href="http://maven.apache.org">Maven</a> is a Java project management and project comprehension tool. Maven is based on the concept of a project object model (POM) 
+			     in that all the artifacts produced by Maven are a result of consulting a well defined model for your project. Builds, 
+			     documentation, source metrics, and source cross-references are all controlled by your POM.
+			 </p>
+			 <p>
+			 	 Maven has many goals, but in a nutshell Maven aims to make the developer's life easier by providing a well defined project structure, 
+			 	 well defined development processes to follow, and a coherent body of documentation that keeps your developers and clients apprised of 
+			 	 what's happening with your project. Maven alleviates a lot of what most developers consider drudgery and lets them get on with the task at hand.
+			 </p>
+			 <p>
+			 	 On the other hand every single IDE has its own way of representing the settings needed to build a project. Thus there is a discrepancy that makes 
+			 	 both sides harder to maintain and kept in synch. Mevenide aims at integrating <a href="http://maven.apache.org">Maven</a> into standard IDEs, and 
+			 	 especially in Eclipse. Please refer to the <a href="features.html" class="documentLink">features list</a> and the 
+			 	 <a href="help.html" class="documentLink">Help page</a> to learn more about Mevenide for Eclipse. 
+			</p>
+			</div>
+		</section>
+
+    </body>
+
+</document>
