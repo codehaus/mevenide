@@ -1,9 +1,11 @@
 package org.mevenide.idea.util.ui;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-
 import javax.swing.JComponent;
+
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Arik
@@ -47,5 +49,9 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
         super(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton, pWrapInScrollPane);
         project = pProject;
         document = pEditorDocument;
+    }
+
+    protected final VirtualFile getFile() {
+        return FileDocumentManager.getInstance().getFile(document);
     }
 }

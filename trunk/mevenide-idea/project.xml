@@ -142,6 +142,31 @@
         <idea.plugin.bundle>true</idea.plugin.bundle>
       </properties>
     </dependency>
+      <dependency>
+          <groupId>mevenide</groupId>
+          <artifactId>mevenide-repository</artifactId>
+          <version>0.2</version>
+          <type>jar</type>
+          <properties>
+            <idea.plugin.bundle>true</idea.plugin.bundle>
+          </properties>
+      </dependency>
+      <dependency>
+          <groupId>commons-httpclient</groupId>
+          <artifactId>commons-httpclient</artifactId>
+          <version>3.0-rc2</version>
+          <properties>
+            <idea.plugin.bundle>true</idea.plugin.bundle>
+          </properties>
+      </dependency>
+      <dependency>
+          <groupId>commons-codec</groupId>
+          <artifactId>commons-codec</artifactId>
+          <version>1.3</version>
+          <properties>
+            <idea.plugin.bundle>true</idea.plugin.bundle>
+          </properties>
+      </dependency>
   </dependencies>
   <build>
     <sourceDirectory>src/main/java</sourceDirectory>

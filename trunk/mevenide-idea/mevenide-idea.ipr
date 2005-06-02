@@ -417,6 +417,16 @@
         <root url="file://C:/Devl/lib/org/apache/commons/commons-beanutils-1.7.0/src/conf" />
       </SOURCES>
     </library>
+    <library name="mevenide-repository-0.2">
+      <CLASSES>
+        <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/java" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/conf" />
+      </SOURCES>
+    </library>
   </component>
   <component name="uidesigner-configuration">
     <option name="INSTRUMENT_CLASSES" value="true" />
