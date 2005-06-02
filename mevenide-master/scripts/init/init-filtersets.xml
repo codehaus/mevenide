@@ -13,15 +13,15 @@
   </ant:filterset>
   
   <ant:filterset id="project.versions.filterset.id">
-    <ant:filter token="org.mevenide.core.version" value="0.7.0"/>	
-    <ant:filter token="org.mevenide.config.version" value="0.7.0"/>	
-    <ant:filter token="org.mevenide.grabber.version" value="0.8.0"/>	
+    <ant:filter token="org.mevenide.core.version" value="0.8.0"/>
+    <ant:filter token="org.mevenide.config.version" value="0.8.0"/>
+    <ant:filter token="org.mevenide.grabber.version" value="0.9.0"/>
     <ant:filter token="org.mevenide.grammar.version" value="0.6.0"/>	
     <ant:filter token="org.mevenide.repository.version" value="0.2.0"/>	
-    <ant:filter token="org.mevenide.ui.eclipse.version" value="0.3.1"/>	
+    <ant:filter token="org.mevenide.ui.eclipse.version" value="0.4.0"/>
     <ant:filter token="org.mevenide.help.version" value="0.3.0"/>
-    <ant:filter token="org.mevenide.eclipse.feature.version" value="0.3.1"/>		
-  </ant:filterset>	
+    <ant:filter token="org.mevenide.eclipse.feature.version" value="0.4.0"/>		
+  </ant:filterset>
   
   <ant:filterset id="${maven.eclipse.plugin.filterset.id}">
     <ant:filterset refid="project.versions.filterset.id"/>
