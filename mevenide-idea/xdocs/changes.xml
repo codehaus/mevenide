@@ -6,6 +6,16 @@
         <author email="arikkfir@gmail.com">Arik Kfir</author>
     </properties>
     <body>
+
+        <release version="0.2" date="unreleased" description="New features">
+            <action dev="arikkfir" type="add">
+                Add a remote, and local, repository browsers (via a new tool window),
+                as well as the ability to browse for a dependency in the POM
+                dependencies editor (rather than manually enter the dependency
+                details).
+            </action>
+        </release>
+
         <release version="0.1" date="2005-05-29" description="The initial version.">
             <action dev="arikkfir" type="add">
                 A graphical Project Object Model (POM) editor. The editor includes a
