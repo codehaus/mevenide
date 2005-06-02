@@ -16,16 +16,16 @@
  */
 package org.mevenide.idea.editor.pom;
 
-import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.project.Project;
+import javax.swing.JComponent;
+
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import org.mevenide.idea.editor.pom.ui.layer.PomPanel;
 import org.mevenide.idea.util.components.AbstractFileEditor;
-
-import javax.swing.JComponent;
 
 /**
  * An editor for POM files.
@@ -121,6 +121,8 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     public boolean isValid() {
         final PsiDocumentManager mgr = PsiDocumentManager.getInstance(project);
         final PsiFile file = mgr.getCachedPsiFile(document);
+        if(file == null)
+            return false;
         return file.isValid();
     }
 
