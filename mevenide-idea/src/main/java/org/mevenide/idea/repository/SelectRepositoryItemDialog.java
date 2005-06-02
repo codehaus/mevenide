@@ -3,6 +3,9 @@ package org.mevenide.idea.repository;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JScrollPane;
+import javax.swing.JTree;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.TreePath;
 
 import com.intellij.openapi.project.Project;
@@ -26,6 +29,7 @@ public class SelectRepositoryItemDialog {
     private boolean allowingGroups = false;
     private boolean allowingTypes = false;
     private boolean allowingArtifacts = false;
+    private boolean allowingVersions = false;
 
     public boolean isAllowingArtifacts() {
         return allowingArtifacts;
@@ -59,6 +63,14 @@ public class SelectRepositoryItemDialog {
         allowingTypes = pAllowingTypes;
     }
 
+    public boolean isAllowingVersions() {
+        return allowingVersions;
+    }
+
+    public void setAllowingVersions(final boolean pAllowingVersions) {
+        allowingVersions = pAllowingVersions;
+    }
+
     public IRepositoryReader getRepositoryReader() {
         return repositoryReader;
     }
@@ -79,41 +91,72 @@ public class SelectRepositoryItemDialog {
         builder.addCancelAction();
         builder.setCenterPanel(scrollPane);
         builder.setTitle(pTitle);
+        builder.setOkActionEnabled(false);
+
+        tree.addTreeSelectionListener(new MyTreeSelectionListener(builder));
+
 
         final int exitCode = builder.show();
         if (exitCode == DialogWrapper.OK_EXIT_CODE) {
+
             final TreePath[] selectedPaths = tree.getSelectionPaths();
             final List<RepoPathElement> items = new ArrayList<RepoPathElement>(selectedPaths.length);
             for(TreePath path : selectedPaths) {
                 final Object node = path.getLastPathComponent();
-                if(!(node instanceof RepoPathElement))
-                    continue;
-
-                final RepoPathElement elt = (RepoPathElement) node;
-                final int level = elt.getLevel();
-                switch(level) {
-                    case RepoPathElement.LEVEL_GROUP:
-                        if (allowingGroups)
-                            items.add(elt);
-                        break;
-                    case RepoPathElement.LEVEL_ROOT:
-                        if (allowingRoot)
-                            items.add(elt);
-                        break;
-                    case RepoPathElement.LEVEL_TYPE:
-                        if (allowingTypes)
-                            items.add(elt);
-                        break;
-                    case RepoPathElement.LEVEL_VERSION:
-                        if (allowingArtifacts)
-                            items.add(elt);
-                        break;
-                }
+                if(node instanceof RepoPathElement)
+                    items.add((RepoPathElement) node);
             }
 
             return items.toArray(new RepoPathElement[items.size()]);
         }
         else
             return null;
+    }
+
+    private class MyTreeSelectionListener implements TreeSelectionListener {
+        private final DialogBuilder builder;
+
+        public MyTreeSelectionListener(final DialogBuilder pBuilder) {
+            builder = pBuilder;
+        }
+
+        public void valueChanged(TreeSelectionEvent e) {
+            final JTree tree = (JTree) e.getSource();
+            builder.setOkActionEnabled(shouldEnableOk(tree.getSelectionPaths()));
+        }
+
+        private boolean shouldEnableOk(final TreePath[] pTreePaths) {
+            for (TreePath path : pTreePaths) {
+                final Object value = path.getLastPathComponent();
+                if (!(value instanceof RepoPathElement))
+                    return false;
+
+                final RepoPathElement node = (RepoPathElement) value;
+                switch (node.getLevel()) {
+                    case RepoPathElement.LEVEL_GROUP:
+                        if (!allowingGroups)
+                            return false;
+                        break;
+                    case RepoPathElement.LEVEL_ROOT:
+                        if (!allowingRoot)
+                            return false;
+                        break;
+                    case RepoPathElement.LEVEL_TYPE:
+                        if (!allowingTypes)
+                            return false;
+                        break;
+                    case RepoPathElement.LEVEL_ARTIFACT:
+                        if (!allowingArtifacts)
+                            return false;
+                        break;
+                    case RepoPathElement.LEVEL_VERSION:
+                        if (!allowingVersions)
+                            return false;
+                        break;
+                }
+            }
+
+            return true;
+        }
     }
 }
