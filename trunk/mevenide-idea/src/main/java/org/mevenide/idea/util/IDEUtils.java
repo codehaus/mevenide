@@ -12,7 +12,7 @@ public abstract class IDEUtils {
     public static void runCommand(final Project pProject,
                                   final Runnable pRunnable) {
 
-        final Runnable command = new Runnable() {
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
             public void run() {
                 CommandProcessor.getInstance().executeCommand(
                         pProject,
@@ -20,8 +20,6 @@ public abstract class IDEUtils {
                         "Add Dependency",
                         "POM");
             }
-        };
-
-        ApplicationManager.getApplication().runWriteAction(command);
+        });
     }
 }
