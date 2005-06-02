@@ -16,23 +16,22 @@
  */
 package org.mevenide.idea.editor.pom.ui.layer;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
-import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.DEPENDENCIES;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.MAILING_LISTS;
 import org.mevenide.idea.editor.pom.ui.layer.reports.ReportsPanel;
 import org.mevenide.idea.editor.pom.ui.layer.team.TeamPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
-
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
-import java.awt.BorderLayout;
-import java.awt.Component;
 
 /**
  * This panel displays a single POM layer.
@@ -49,7 +48,7 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
 
     private final JPanel generalInfoPanel = new GeneralInfoPanel(project, document);
     private final JPanel mailingListsPanel = new CRUDTablePanel(project, document, MAILING_LISTS);
-    private final JPanel depsPanel = new CRUDTablePanel(project, document, DEPENDENCIES);
+    private final JPanel depsPanel = new DependenciesPanel(project, document);
     private final JPanel deploymentPanel = new DeploymentPanel(project, document);
     private final JPanel teamPanel = new TeamPanel(project, document);
     private final JPanel scmPanel = new ScmPanel(project, document);
