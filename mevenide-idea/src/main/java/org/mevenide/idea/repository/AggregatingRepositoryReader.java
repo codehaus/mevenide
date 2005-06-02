@@ -15,6 +15,8 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
  * consists of several underlying repositories, without displaying several parallel
  * trees.</p>
  *
+ * @todo move this to mevenide-repository
+ * 
  * @author Arik
  */
 public class AggregatingRepositoryReader implements IRepositoryReader {
