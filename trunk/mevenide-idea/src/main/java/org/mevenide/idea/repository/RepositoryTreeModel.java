@@ -1,13 +1,12 @@
 package org.mevenide.idea.repository;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
+import javax.swing.SwingUtilities;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.logging.Log;
@@ -23,8 +22,9 @@ import org.mevenide.repository.RepoPathElement;
  * than the {@link javax.swing.tree.TreeNode} interface, as there is no need to create additional
  * object per node.</p>
  *
- * <p>Code for 'fireXXX' methods copied from javax.swing.tree.DefaultTreeModel since there is no
- * javax.swing.tree.AbstractTreeModel we can extend, and we shouldn't extend DefaultTreeModel.</p>
+ * <p>Code for 'fireXXX' and 'getPathToRoot(*)' methods copied from {@link
+ * javax.swing.tree.DefaultTreeModel} since there is no javax.swing.tree.AbstractTreeModel we can
+ * extend, and we shouldn't extend {@code DefaultTreeModel}.</p>
  *
  * @author Arik
  */
@@ -40,16 +40,20 @@ public class RepositoryTreeModel implements TreeModel {
     private static final Res RES = Res.getInstance(RepositoryTreeModel.class);
 
     /**
-     * Used to synchronize node-retrieval requests (as the repository readers are
-     * not thread-safe, we cannot retrieve multiple nodes at the same time).
+     * An empty array of repository path elements. Recycled to save redundant instances.
      */
-    private final Object LOCK = new Object();
+    private static final String PLEASE_WAIT_MSG = RES.get("wait.msg");
 
     /**
-     * An empty array of repository path elements. Recycled to save redundant
-     * instances.
+     * Used to synchronize node-retrieval requests (as the repository readers are not thread-safe,
+     * we cannot retrieve multiple nodes at the same time).
      */
-    private static final RepoPathElement[] EMPTY_REPO_ELEMENTS_ARRAY = new RepoPathElement[0];
+    private final Object QUERY_LOCK = new Object();
+
+    /**
+     * Used to synchronize access to the node status collections.
+     */
+    private final Object MODEL_LOCK = new Object();
 
     /**
      * Manages model listeners.
@@ -62,13 +66,11 @@ public class RepositoryTreeModel implements TreeModel {
     private final RepoPathElement root;
 
     /**
-     * Every node who's children have been successfuly retrieved is added to this
-     * set, to mark that no further threads need to be created to retrieve its
-     * content.
+     * Every node who's children have been successfuly retrieved is added to this set, to mark that
+     * no further threads need to be created to retrieve its content.
      *
-     * <p>If a node does not appear here, than it has not been queried and
-     * a seperate thread will be created that will process its query and later
-     * update the model.</p>
+     * <p>If a node does not appear here, than it has not been queried and a seperate thread will be
+     * created that will process its query and later update the model.</p>
      */
     private final Set<RepoPathElement> queriedNodes = Collections.synchronizedSet(new HashSet<RepoPathElement>(10));
 
@@ -76,7 +78,7 @@ public class RepositoryTreeModel implements TreeModel {
      * Every node that is being queried in a seperate thread, is added to this set. This is used to
      * prevent two seperate threads querying the same node.
      */
-    private final Set<RepoPathElement> retrievingNodes = Collections.synchronizedSet(new HashSet<RepoPathElement>(10));
+    private final Map<RepoPathElement, String[]> retrievingNodes = Collections.synchronizedMap(new HashMap<RepoPathElement, String[]>(10));
 
     /**
      * Creates an instance for the given repository reader.
@@ -104,7 +106,10 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     public boolean isLeaf(Object node) {
-        return getRepoNode(node).isLeaf();
+        if (node instanceof RepoPathElement)
+            return ((RepoPathElement) node).isLeaf();
+        else
+            return true;
     }
 
     public void valueForPathChanged(TreePath path, Object newValue) {
@@ -121,65 +126,85 @@ public class RepositoryTreeModel implements TreeModel {
         listenerList.remove(TreeModelListener.class, l);
     }
 
-    protected final RepoPathElement getRepoNode(final Object pNodeObject) {
-        if (pNodeObject instanceof RepoPathElement)
-            return (RepoPathElement) pNodeObject;
-        else
-            throw new IllegalArgumentException(RES.get("wrong.arg.type",
-                                                       "pNodeObject",
-                                                       RepoPathElement.class.getName()));
+    protected final Object[] getRepoNodeChildren(final Object pNodeObject) {
+        if (!(pNodeObject instanceof RepoPathElement))
+            return new Object[0];
+
+        final RepoPathElement parent = (RepoPathElement) pNodeObject;
+
+        synchronized (MODEL_LOCK) {
+            if (queriedNodes.contains(parent))
+                return retrieveNodeChildren(parent);
+            else if (retrievingNodes.containsKey(parent))
+                return retrievingNodes.get(parent);
+            else
+                return initiateRetrieval(parent);
+        }
     }
 
-    protected final RepoPathElement[] getRepoNodeChildren(final Object pNodeObject) {
-        final RepoPathElement parent = getRepoNode(pNodeObject);
+    protected String[] initiateRetrieval(final RepoPathElement pParent) {
 
-        if (queriedNodes.contains(parent))
-            return retrieveNodeChildren(parent);
+        //
+        //mark the node as being retrieved
+        //
+        final String[] tempChildren = new String[]{new String(PLEASE_WAIT_MSG)};
+        synchronized (MODEL_LOCK) {
+            retrievingNodes.put(pParent, tempChildren);
+        }
 
-        if(!retrievingNodes.contains(parent)) {
-            final Runnable retriever = new Runnable() {
-                public void run() {
+        final Runnable retriever = new Runnable() {
+            public void run() {
 
-                    //
-                    //start retrieving the node's children
-                    //
-                    retrievingNodes.add(parent);
+                //
+                //start retrieving the node's children
+                //
+                synchronized (QUERY_LOCK) {
                     try {
-                        synchronized (LOCK) {
-                            LOG.trace("Retrieving children for node " + parent.getURI());
-                            retrieveNodeChildren(pNodeObject);
-                        }
+                        LOG.trace("Retrieving children for node " + pParent.getURI());
+                        retrieveNodeChildren(pParent);
                     }
                     catch (RepositoryReadException e) {
                         LOG.error(e.getMessage(), e);
-                        retrievingNodes.remove(parent);
+                        synchronized (MODEL_LOCK) {
+                            retrievingNodes.remove(pParent);
+                        }
                         return;
                     }
+                }
 
+                synchronized (MODEL_LOCK) {
                     //
                     //mark the node as retrieved (and not being retrieved anymore)
                     //
-                    queriedNodes.add(parent);
-                    retrievingNodes.remove(parent);
-
-                    //
-                    //notify the listeners (and the tree) that the node has changed
-                    //
-                    fireTreeStructureChanged(parent, new TreePath(getPathToRoot(parent)));
+                    queriedNodes.add(pParent);
+                    retrievingNodes.remove(pParent);
                 }
-            };
 
-            final Thread retrieverThread = new Thread(retriever, "RepositoryTreeRetriever");
-            retrieverThread.start();
-        }
+                //
+                //notify the listeners (and the tree) that the node has changed
+                //
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        fireTreeStructureChanged(pParent, new TreePath(getPathToRoot(pParent)));
+                    }
+                });
+            }
+        };
 
-        return EMPTY_REPO_ELEMENTS_ARRAY;
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                final Thread retrieverThread = new Thread(retriever);
+                retrieverThread.start();
+            }
+        });
+
+        return tempChildren;
     }
 
-    private RepoPathElement[] retrieveNodeChildren(final Object pNodeObject)
+    private RepoPathElement[] retrieveNodeChildren(final RepoPathElement pNodeObject)
             throws RepositoryReadException {
         try {
-            return getRepoNode(pNodeObject).getChildren();
+            return pNodeObject.getChildren();
         }
         catch (Exception e) {
             throw new RepositoryReadException(e);
@@ -302,16 +327,14 @@ public class RepositoryTreeModel implements TreeModel {
         }
     }
 
-    /*
-    * Notifies all listeners that have registered interest for
-    * notification on this event type.  The event instance
-    * is lazily created using the parameters passed into
-    * the fire method.
-    *
-    * @param source the node where the tree model has changed
-    * @param path the path to the root node
-    * @see EventListenerList
-    */
+    /**
+     * Notifies all listeners that have registered interest for notification on this event type. The
+     * event instance is lazily created using the parameters passed into the fire method.
+     *
+     * @param source the node where the tree model has changed
+     * @param path   the path to the root node
+     * @see EventListenerList
+     */
     protected void fireTreeStructureChanged(Object source, TreePath path) {
         // Guaranteed to return a non-null array
         Object[] listeners = listenerList.getListenerList();
