@@ -89,7 +89,7 @@ public class SelectRepositoryItemDialog {
     }
 
     public RepoPathElement[] show(final Project pProject) {
-        if(repositoryReader == null)
+        if (repositoryReader == null)
             throw new IllegalStateException(RES.get("repo.reader.missing"));
 
         final RepositoryTree tree = new RepositoryTree(pProject, repositoryReader);
@@ -110,9 +110,9 @@ public class SelectRepositoryItemDialog {
 
             final TreePath[] selectedPaths = tree.getSelectionPaths();
             final List<RepoPathElement> items = new ArrayList<RepoPathElement>(selectedPaths.length);
-            for(TreePath path : selectedPaths) {
+            for (TreePath path : selectedPaths) {
                 final Object node = path.getLastPathComponent();
-                if(node instanceof RepoPathElement)
+                if (node instanceof RepoPathElement)
                     items.add((RepoPathElement) node);
             }
 
@@ -135,6 +135,9 @@ public class SelectRepositoryItemDialog {
         }
 
         private boolean shouldEnableOk(final TreePath[] pTreePaths) {
+            if (pTreePaths == null)
+                return false;
+
             for (TreePath path : pTreePaths) {
                 final Object value = path.getLastPathComponent();
                 if (!(value instanceof RepoPathElement))
