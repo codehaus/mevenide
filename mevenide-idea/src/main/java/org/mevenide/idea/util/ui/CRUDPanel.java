@@ -1,18 +1,18 @@
 package org.mevenide.idea.util.ui;
 
-import com.jgoodies.forms.builder.ButtonStackBuilder;
-import org.mevenide.idea.Res;
-
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import com.jgoodies.forms.builder.ButtonStackBuilder;
+import org.mevenide.idea.Res;
 
 /**
  * @author Arik
@@ -32,7 +32,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
     private ActionListener editAction;
     private ActionListener removeAction;
 
-    private final ButtonStackBuilder buttonsBar = new ButtonStackBuilder();
+    protected final ButtonStackBuilder buttonsBar = new ButtonStackBuilder();
 
     private final boolean wrapInScrollPane;
     protected final T component;

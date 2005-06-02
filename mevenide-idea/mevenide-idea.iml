@@ -12,15 +12,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="commons-collections" level="project" />
-    <orderEntry type="library" exported="" name="commons-io" level="project" />
-    <orderEntry type="library" exported="" name="commons-lang" level="project" />
-    <orderEntry type="library" exported="" name="commons-jelly" level="project" />
-    <orderEntry type="library" exported="" name="goals-grabber" level="project" />
-    <orderEntry type="library" exported="" name="maven" level="project" />
-    <orderEntry type="library" exported="" name="mevenide-config" level="project" />
-    <orderEntry type="library" exported="" name="mevenide-core" level="project" />
-    <orderEntry type="library" exported="" name="xpp3" level="project" />
+    <orderEntry type="library" name="commons-collections" level="project" />
+    <orderEntry type="library" name="commons-io" level="project" />
+    <orderEntry type="library" name="commons-lang" level="project" />
+    <orderEntry type="library" name="commons-jelly" level="project" />
+    <orderEntry type="library" name="goals-grabber" level="project" />
+    <orderEntry type="library" name="maven" level="project" />
+    <orderEntry type="library" name="mevenide-config" level="project" />
+    <orderEntry type="library" name="mevenide-core" level="project" />
+    <orderEntry type="library" name="xpp3" level="project" />
     <orderEntry type="library" name="commons-logging" level="project" />
     <orderEntry type="library" name="idea-openapi-eap" level="project" />
     <orderEntry type="library" name="jgoodies-forms" level="project" />
@@ -28,6 +28,7 @@
     <orderEntry type="library" name="log4j-1.2.8" level="project" />
     <orderEntry type="library" name="annotations" level="project" />
     <orderEntry type="library" name="commons-beanutils-core-1.7.0" level="project" />
+    <orderEntry type="library" name="mevenide-repository-0.2" level="project" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleGoalsProvider">
