@@ -16,6 +16,18 @@
  */
 package org.mevenide.idea.toolwindows.goals;
 
+import java.awt.Component;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+
 import com.intellij.ide.CommonActionsManager;
 import com.intellij.ide.DataManager;
 import com.intellij.ide.TreeExpander;
@@ -44,17 +56,6 @@ import org.mevenide.idea.util.ui.tree.GoalsTreeCellRenderer;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 
-import javax.swing.*;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Arik
  */
@@ -68,7 +69,7 @@ public class GoalsToolWindowUI extends JPanel {
     /**
      * The tool window title.
      */
-    public static final String NAME = RES.get("title");
+    private static final String NAME = RES.get("title");
 
     /**
      * The goals tree. Used by {@link #getSelectedModule()} to find out to which module the selected goal(s)
