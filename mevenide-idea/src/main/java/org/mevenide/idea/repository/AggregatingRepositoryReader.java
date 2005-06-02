@@ -1,12 +1,16 @@
 package org.mevenide.idea.repository;
 
-import java.util.List;
-import java.util.ArrayList;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+import org.mevenide.context.IQueryContext;
+import org.mevenide.idea.Res;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
-import org.mevenide.idea.Res;
+import static org.mevenide.repository.RepositoryReaderFactory.createRemoteRepositoryReader;
 
 /**
  * @author Arik
@@ -18,6 +22,21 @@ public class AggregatingRepositoryReader implements IRepositoryReader {
     private static final Res RES = Res.getInstance(AggregatingRepositoryReader.class);
 
     private final IRepositoryReader[] repoReaders;
+
+    public AggregatingRepositoryReader(final IQueryContext pContext) {
+        final String value = pContext.getPropertyValue("maven.repo.remote");
+        final String[] repoUris = value.split(",");
+        final Set<IRepositoryReader> repoSet = new HashSet<IRepositoryReader>(repoUris.length);
+        for (String uri : repoUris) {
+            if (uri == null || uri.trim().length() <= 0)
+                continue;
+
+            final IRepositoryReader repoReader = createRemoteRepositoryReader(URI.create(uri));
+            repoSet.add(repoReader);
+        }
+
+        repoReaders = repoSet.toArray(new IRepositoryReader[repoSet.size()]);
+    }
 
     public AggregatingRepositoryReader(final List<IRepositoryReader> pRepoReaders) {
         this(pRepoReaders.toArray(new IRepositoryReader[pRepoReaders.size()]));
