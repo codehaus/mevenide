@@ -14,7 +14,7 @@
       Currently the plugin ensures that your artifacts become Netbeans modules, creates nbm files for easy updating, and generates the autupdate site information.
       </p>
       <p>
-      It also contains a goal for population of Maven repository with netbeans module jars. BY examinign the module's manifest it sets the correct version of the jar in the repository.
+      It also contains a goal for population of Maven repository with Netbeans module jars. By examining the module's manifest it sets the correct version of the jar in the repository.
    	  </p>
    	  </div>
     </section>
