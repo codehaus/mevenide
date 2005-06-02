@@ -47,10 +47,7 @@ public class AggregatingRepositoryReader implements IRepositoryReader {
     }
 
     public URI getRootURI() {
-        throw new UnsupportedOperationException(
-                RES.get("unsupp.op",
-                        "getRootURI",
-                        "aggregating repository readers have no URI"));
+        return URI.create("aggregator");
     }
 
     public RepoPathElement[] readElements(RepoPathElement element) throws Exception {
