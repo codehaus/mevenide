@@ -30,6 +30,15 @@ public class SelectRepositoryItemDialog {
     private boolean allowingTypes = false;
     private boolean allowingArtifacts = false;
     private boolean allowingVersions = false;
+    private String title;
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(final String pTitle) {
+        title = pTitle;
+    }
 
     public boolean isAllowingArtifacts() {
         return allowingArtifacts;
@@ -79,7 +88,7 @@ public class SelectRepositoryItemDialog {
         repositoryReader = pRepositoryReader;
     }
 
-    public RepoPathElement[] show(final Project pProject, final String pTitle) {
+    public RepoPathElement[] show(final Project pProject) {
         if(repositoryReader == null)
             throw new IllegalStateException(RES.get("repo.reader.missing"));
 
@@ -90,7 +99,7 @@ public class SelectRepositoryItemDialog {
         builder.addOkAction();
         builder.addCancelAction();
         builder.setCenterPanel(scrollPane);
-        builder.setTitle(pTitle);
+        builder.setTitle(title == null || title.trim().length() == 0 ? "Browse Repository" : title);
         builder.setOkActionEnabled(false);
 
         tree.addTreeSelectionListener(new MyTreeSelectionListener(builder));
