@@ -442,11 +442,15 @@ ${systemScope.setProperty('javax.xml.transform.TransformerFactory','org.apache.x
   
   <goal name       ="nbm:deploy"
         prereqs    ="nbm:nbm"
-        description="Deploy the NBM into the repository">
+        description="Deploy the NBM and the netbeans enhanced jar into the repository">
     
     <artifact:deploy
         artifact="${maven.nbm.build.dir}/${maven.final.name}.nbm"
         type="nbm"
+        project="${pom}"/>   
+    <artifact:deploy
+        artifact="${maven.nbm.build.dir}/${maven.final.name}.jar"
+        type="jar"
         project="${pom}"/>   
     
   </goal>
