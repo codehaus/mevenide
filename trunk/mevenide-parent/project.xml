@@ -112,6 +112,14 @@
             <url>http://www.codehaus.org/~arik/</url>
             <timezone>2</timezone>
         </developer>
+        <developer>
+            <name>Faron Dutton</name>
+            <id>fdutton</id>
+            <email>fdutton@codehaus.org</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+        </developer>
     </developers>
     <contributors>
         <contributor>
