@@ -92,7 +92,7 @@ public class SelectRepositoryItemDialog {
         if (repositoryReader == null)
             throw new IllegalStateException(RES.get("repo.reader.missing"));
 
-        final RepositoryTree tree = new RepositoryTree(pProject, repositoryReader);
+        final RepositoryTree tree = new RepositoryTree(new RepositoryTreeModel(repositoryReader));
         final JScrollPane scrollPane = new JScrollPane(tree);
 
         final DialogBuilder builder = new DialogBuilder(pProject);
