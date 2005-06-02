@@ -16,15 +16,15 @@
  */
 package org.mevenide.idea.module;
 
+import java.io.File;
+import java.util.Set;
+
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizableStringList;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileAdapter;
-import com.intellij.openapi.vfs.VirtualFileEvent;
-import com.intellij.openapi.vfs.VirtualFileMoveEvent;
+import com.intellij.openapi.vfs.*;
 import com.intellij.util.containers.HashSet;
 import org.jdom.Element;
 import org.mevenide.context.DefaultQueryContext;
@@ -36,9 +36,6 @@ import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
-
-import java.io.File;
-import java.util.Set;
 
 /**
  * @author Arik
@@ -362,22 +359,35 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
                     pFileName.equalsIgnoreCase("build.properties");
         }
 
+        @Override public void propertyChanged(VirtualFilePropertyEvent event) {
+            LOG.trace("ModuleSettings$FSListener.propertyChanged " + event.getFileName() + ":" + event.getPropertyName());
+            if(!event.getPropertyName().equals(VirtualFile.PROP_NAME))
+                return;
+
+            if(shouldRefresh(event.getOldValue().toString()) || shouldRefresh(event.getNewValue().toString()))
+                refreshQueryContext();
+        }
+
         @Override public void fileCreated(VirtualFileEvent event) {
+            LOG.trace("ModuleSettings$FSListener.fileCreated " + event.getFileName());
             if(shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
 
         @Override public void fileDeleted(VirtualFileEvent event) {
+            LOG.trace("ModuleSettings$FSListener.fileDeleted " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
 
         @Override public void fileMoved(VirtualFileMoveEvent event) {
+            LOG.trace("ModuleSettings$FSListener.fileMoved " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
 
         @Override public void contentsChanged(VirtualFileEvent event) {
+            LOG.trace("ModuleSettings$FSListener.contentsChanged " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
