@@ -137,7 +137,7 @@ public class GoalsToolWindowUI extends JPanel {
         //
         // create the action toolbar
         //
-        final GoalsTreeExpanded expander = new GoalsTreeExpanded();
+        final GoalsTreeExpander expander = new GoalsTreeExpander();
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new AttainSelectedGoalsAction());
         actionGroup.add(new ShowModuleSettingsAction());
@@ -215,7 +215,7 @@ public class GoalsToolWindowUI extends JPanel {
         return (GoalsToolWindowUI) tw.getComponent();
     }
 
-    private class GoalsTreeExpanded implements TreeExpander {
+    private class GoalsTreeExpander implements TreeExpander {
         public boolean canCollapse() {
             final TreeNode root = (TreeNode) model.getRoot();
             if (goalsTree.isCollapsed(new TreePath(root)))
