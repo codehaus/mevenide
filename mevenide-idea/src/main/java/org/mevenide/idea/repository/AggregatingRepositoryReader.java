@@ -7,6 +7,7 @@ import org.mevenide.context.IQueryContext;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import static org.mevenide.repository.RepositoryReaderFactory.createRemoteRepositoryReader;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * A repository reader which aggregates other readers into one virtual repository.
@@ -89,6 +90,27 @@ public class AggregatingRepositoryReader implements IRepositoryReader {
                                               child.getExtension()));
         }
 
+        final Iterator<RepoPathElement> i = nodes.listIterator();
+        while(i.hasNext()) {
+            final RepoPathElement e = i.next();
+            RepoPathElement duplicate = null;
+            for(RepoPathElement dup : nodes) {
+                if(StringUtils.equals(dup.getArtifactId(), e.getArtifactId()) &&
+                    StringUtils.equals(dup.getExtension(), e.getExtension()) &&
+                    StringUtils.equals(dup.getGroupId(), e.getGroupId()) &&
+                    dup.getLevel() == e.getLevel() &&
+                    StringUtils.equals(dup.getType(), e.getType()) &&
+                    StringUtils.equals(dup.getVersion(), e.getVersion()) &&
+                    dup != e) {
+                    duplicate = dup;
+                    break;
+                }
+            }
+
+            if(duplicate != null)
+                i.remove();
+        }
+        
         return nodes.toArray(new RepoPathElement[nodes.size()]);
     }
 }

@@ -427,6 +427,13 @@
         <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/conf" />
       </SOURCES>
     </library>
+    <library name="commons-httpclient-3.0-rc2">
+      <CLASSES>
+        <root url="jar://$maven.repo$/commons-httpclient/jars/commons-httpclient-3.0-rc2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
   </component>
   <component name="uidesigner-configuration">
     <option name="INSTRUMENT_CLASSES" value="true" />
