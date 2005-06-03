@@ -22,10 +22,7 @@ import com.intellij.ide.CommonActionsManager;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.repository.AggregatingRepositoryReader;
-import org.mevenide.idea.repository.RepositoryTree;
-import org.mevenide.idea.repository.RepositoryTreeModel;
-import org.mevenide.idea.repository.RepositoryTreeExpander;
+import org.mevenide.idea.repository.*;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -40,7 +37,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
     /**
      * The tool window title.
      */
-    private static final String NAME = RES.get("title");
+    public static final String NAME = RES.get("title");
 
     /**
      * The project context.
@@ -59,6 +56,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         project = pProject;
         refreshModel();
 
+        setName(NAME);
+
         setLayout(new BorderLayout());
         add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
 
@@ -67,13 +66,15 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         //
         final RepositoryTreeExpander expander = new RepositoryTreeExpander(tree);
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
+        actionGroup.add(new RefreshRepoTreeAction());
+        actionGroup.addSeparator();
         actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
         final ActionToolbar toolbar =
             ActionManager.getInstance().createActionToolbar(NAME, actionGroup, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
     }
 
-    private void refreshModel() {
+    public void refreshModel() {
         final ModuleManager moduleMgr = ModuleManager.getInstance(project);
         final Module[] modules = moduleMgr.getModules();
         final IQueryContext[] repoUris = new IQueryContext[modules.length];
@@ -85,6 +86,10 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
 
         final AggregatingRepositoryReader repoReader = new AggregatingRepositoryReader(repoUris);
         tree.setModel(new RepositoryTreeModel(repoReader));
+    }
+
+    public JTree getTree() {
+        return tree;
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
