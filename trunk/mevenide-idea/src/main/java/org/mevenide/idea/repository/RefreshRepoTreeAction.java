@@ -7,7 +7,7 @@ import javax.swing.SwingUtilities;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.toolwindows.repository.RepositoryToolWindow;
-import org.mevenide.idea.actions.AbstractAnAction;
+import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
