@@ -12,9 +12,8 @@
         <section name="Overview">
             <p>
                 Welcome to the MevenIDE IDEA Integration project! This project
-                aims to integrate
-                <a href="http://maven.apache.org">Maven</a>in every possible way into
-                <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA.
+                aims to integrate <a href="http://maven.apache.org">Maven</a> in every possible way
+                into <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA.
             </p>
             <p>
                 Current integration features include:
@@ -33,15 +32,15 @@
                         IDE.
                     </li>
                     <li>
-                        Automatic discovery of POM files (<i>project.xml</i> and <i>maven.xml</i>)
-                        for each IntelliJ module. The plugin will detect if you create one
-                        of these files either from inside the IDE or from outside, and will
-                        respond appropriately.
+                        Automatic discovery of POM files (<i>project.xml</i> and
+                        <i>maven.xml</i>) for each IntelliJ module. The plugin will detect if you
+                        create one of these files either from inside the IDE or from outside, and
+                        will respond appropriately.
                     </li>
                     <li>
-                        A special Maven side pane (also called a Tool Window) displaying the
-                        available Maven goals for the project. The pane shows goals defined in the
-                        module's <i>maven.xml</i> file, and common goals, marked as "favorites" in
+                        A special Maven tool window displaying the available Maven goals for the
+                        project. The pane shows goals defined in the module's
+                        <i>maven.xml</i> file, and common goals, marked as "favorites" in
                         the module settings dialog.
                     </li>
                     <li>
@@ -71,14 +70,22 @@
             </p>
         </section>
 
+        <section name="Downloading and Installing">
+            <p>
+                Mevenide for IDEA releases can be found <a href="downloads.html">here</a>. If,
+                however, you wish to use the latest snapshot version, you may find it
+                <a href="http://dist.codehaus.org/mevenide/distributions">here</a> - search
+                for files named <i>mevenide-idea-X.Y-SNAPSHOT.zip</i> (or ".tar.gz").
+                Snapshot versions must be installed manually - see the
+                <a href="installation.html">installation manual</a>for details.
+            </p>
+        </section>
+
         <section name="Help Wanted!">
             <p>
                 The Mevenide IDEA integration project is quite new and we are looking for
                 volunteers - you can help! If you like the IntelliJ IDEA, and you like Maven -
-                come and help us write the best IDEA plugin yet -
-                <i>
-                    <b>the Maven plugin!</b>
-                </i>
+                come and help us write the best IDEA plugin yet!
             </p>
             <p>
                 To participate - please contact us via our
@@ -88,15 +95,13 @@
 
         <section name="Compatibility">
             <p>
-                Currently the plugin is only supported on the IntelliJ IDEA Early
-                Access Program (EAP) dubbed "Irida". It cannot be run on the
-                4.5 version.
+                Currently the plugin is only supported on the IntelliJ IDEA Early Access Program
+                (EAP) dubbed "Irida". It cannot be run on the 4.5 version.
             </p>
             <p>
-                There is, however, a port of the plugin for the 4.5 version
-                with provides the basic features such as per-module POM
-                attachment, favorite goals, running goals and jumping to
-                source code from Maven error messages. It is available
+                There is, however, a port of the plugin for the 4.5 version with provides the basic
+                features such as per-module POM attachment, favorite goals, running goals and
+                jumping to source code from Maven error messages. It is available
                 <a href="http://www.codehaus.org/~arik/dist/mevenide-idea-4.5.4.zip">here</a>.
                 <br/>
                 NOTE: This is a source code distribution, and you will have to build it from
