@@ -5,7 +5,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTree;
 
 import com.intellij.openapi.module.Module;
@@ -15,13 +14,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.ScrollPaneFactory;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.repository.AggregatingRepositoryReader;
 import org.mevenide.idea.repository.RepositoryTree;
-import org.mevenide.idea.repository.RepositoryTreeModel;
 import org.mevenide.idea.repository.RepositoryTreeCellRenderer;
+import org.mevenide.idea.repository.RepositoryTreeModel;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -56,7 +56,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         refreshModel();
 
         setLayout(new BorderLayout());
-        add(new JScrollPane(tree), BorderLayout.CENTER);
+        add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
     }
 
     private void refreshModel() {

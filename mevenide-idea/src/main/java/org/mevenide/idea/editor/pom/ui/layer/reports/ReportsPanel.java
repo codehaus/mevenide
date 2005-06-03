@@ -1,25 +1,25 @@
 package org.mevenide.idea.editor.pom.ui.layer.reports;
 
+import java.awt.BorderLayout;
+import javax.swing.JTable;
+import javax.swing.table.TableModel;
+
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Table;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.editor.pom.ui.layer.AbstractPomLayerPanel;
+import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.reports.IReportsFinder;
 import org.mevenide.reports.JDomReportsFinder;
-
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.TableModel;
-import java.awt.BorderLayout;
 
 /**
  * @author Arik
@@ -49,7 +49,7 @@ public class ReportsPanel extends AbstractPomLayerPanel {
     private void layoutComponents() {
         final LabeledPanel labeledPanel = new LabeledPanel(
                 RES.get("reports.desc"),
-                new JScrollPane(reportsTable));
+                ScrollPaneFactory.createScrollPane(reportsTable));
 
         setLayout(new BorderLayout());
         add(labeledPanel, BorderLayout.CENTER);

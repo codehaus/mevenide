@@ -16,23 +16,25 @@
  */
 package org.mevenide.idea.module.ui;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
 import com.intellij.openapi.module.Module;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
 import org.mevenide.idea.util.ui.tree.checkbox.TreeCheckBoxEditor;
 import org.mevenide.idea.util.ui.tree.checkbox.TreeCheckBoxRenderer;
-import org.mevenide.idea.util.goals.grabber.CustomGoalsGrabber;
-
-import javax.swing.*;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.Collection;
-import java.util.ArrayList;
 
 /**
  * @author Arik
@@ -91,7 +93,7 @@ public class ModuleSettingsPanel extends JPanel {
         c.gridy = 1;
         c.insets = new Insets(10, 10, 10, 10);
         c.weighty = 1;
-        add(new JScrollPane(goalsTree), c);
+        add(ScrollPaneFactory.createScrollPane(goalsTree), c);
     }
 
     public void refreshGoals() throws Exception {

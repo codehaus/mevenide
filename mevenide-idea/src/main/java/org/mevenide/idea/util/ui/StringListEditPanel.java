@@ -1,22 +1,23 @@
 package org.mevenide.idea.util.ui;
 
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
-import org.mevenide.idea.Res;
-
+import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.List;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.List;
+
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogBuilder;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.ScrollPaneFactory;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import org.mevenide.idea.Res;
 
 /**
  * Displays a modifable list of strings. The user can add or remove strings from the list.
@@ -154,7 +155,7 @@ public class StringListEditPanel extends JPanel {
         builder.add(itemLabel, cc.xy(1, 1));
         builder.add(itemField, cc.xy(3, 1));
         builder.add(addButton, cc.xy(5, 1));
-        builder.add(new JScrollPane(list), cc.xyw(1, 3, 3));
+        builder.add(ScrollPaneFactory.createScrollPane(list), cc.xyw(1, 3, 3));
         builder.add(removeButton, cc.xy(5, 3, CellConstraints.FILL, CellConstraints.TOP));
     }
 

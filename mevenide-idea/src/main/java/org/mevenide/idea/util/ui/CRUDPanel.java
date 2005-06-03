@@ -9,8 +9,8 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 
+import com.intellij.ui.ScrollPaneFactory;
 import com.jgoodies.forms.builder.ButtonStackBuilder;
 import org.mevenide.idea.Res;
 
@@ -79,7 +79,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
         c.weightx = 1;
         c.weighty = 1;
         if(wrapInScrollPane)
-            add(new JScrollPane(component), c);
+            add(ScrollPaneFactory.createScrollPane(component), c);
         else
             add(component, c);
 
