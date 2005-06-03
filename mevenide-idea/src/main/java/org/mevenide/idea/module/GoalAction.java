@@ -14,12 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.actions;
+package org.mevenide.idea.module;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import org.mevenide.idea.execute.MavenRunner;
 import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.actions.AbstractAnAction;
 
 /**
  * @author Arik

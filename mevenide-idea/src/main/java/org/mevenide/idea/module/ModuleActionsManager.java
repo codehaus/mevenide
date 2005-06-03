@@ -14,20 +14,19 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea.actions;
-
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.module.Module;
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.util.components.AbstractModuleComponent;
-import org.mevenide.idea.util.goals.GoalsHelper;
+package org.mevenide.idea.module;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.module.Module;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.idea.util.components.AbstractModuleComponent;
+import org.mevenide.idea.util.goals.GoalsHelper;
 
 /**
  * @author Arik
