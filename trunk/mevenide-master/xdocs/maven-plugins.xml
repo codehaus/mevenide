@@ -16,7 +16,7 @@
 				<li><a href="/maven-jbuilder-opentool-plugin/index.html">Maven JBuilder OpenTool plugin</a> creates JBuilder OpenTool extension packages.</li>
 			</ul>
 			<p>
-				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/repository">Mevenide repository</a>. 
+				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/plugins">Mevenide repository</a>. 
 			</p>
 		</section>
 

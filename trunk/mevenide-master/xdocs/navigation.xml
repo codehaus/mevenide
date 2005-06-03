@@ -30,7 +30,6 @@
 		<item name="IDE Specific Modules" collapse="true" href="/ide.html">
 			<item name="Eclipse Plugin" href="mevenide-ui-eclipse/index.html"/>
 			<item name="Netbeans Module" href="mevenide-netbeans-project/index.html"/>
-			<item name="Netbeans Grammar Module" href="mevenide-netbeans-grammar/index.html"/>
 			<item name="JBuilder Module" href="mevenide-ui-jbuilder/index.html"/>
 			<item name="IntelliJ IDEA Module" href="mevenide-idea/index.html"/>
 		</item>
