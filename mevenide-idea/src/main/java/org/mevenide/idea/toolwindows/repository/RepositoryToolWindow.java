@@ -119,7 +119,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         final RepositoryToolWindow toolWindowComp = new RepositoryToolWindow(pProject);
         toolMgr.registerToolWindow(NAME, toolWindowComp, ToolWindowAnchor.RIGHT);
         final ToolWindow toolWindow = toolMgr.getToolWindow(NAME);
-        toolWindow.setIcon(Icons.MAVEN);
+        toolWindow.setIcon(Icons.REPOSITORY);
     }
 
     public static void unregister(final Project project) {
