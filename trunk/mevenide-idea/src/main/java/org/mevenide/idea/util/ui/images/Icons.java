@@ -36,6 +36,7 @@ public abstract class Icons {
     public static final Icon PLUGIN = IconLoader.getIcon("plugin.png", Icons.class);
     public static final Icon PROPERTIES = IconLoader.getIcon("properties.png", Icons.class);
     public static final Icon RERUN = IconLoader.getIcon("rerun.png", Icons.class);
+    public static final Icon REPOSITORY = IconLoader.getIcon("repository.png", Icons.class);
     public static final Icon SUSPEND = IconLoader.getIcon("suspend.png", Icons.class);
     public static final Icon SYNC = IconLoader.getIcon("sync.png", Icons.class);
 
