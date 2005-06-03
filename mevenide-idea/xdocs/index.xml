@@ -20,6 +20,9 @@
                 Current integration features include:
                 <ul>
                     <li>
+                        A repository browser (both for local and remote).
+                    </li>
+                    <li>
                         A graphical Project Object Model (POM) editor. The editor includes a
                         standard text editor, as well as an intuitive user interface for
                         editing the various aspects of a project.
