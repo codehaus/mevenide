@@ -16,7 +16,7 @@
 				<li><a href="../maven-mevenide-plugin/index.html">Maven Mavenide plugin</a> is a helper plugin for running and debugging Maven projects from the IDEs.</li>
 			</ul>
 			<p>
-				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/plugins">Mevenide repository</a>. 
+				Those Maven plugins can be found under the <a href="http://dist.codehaus.org/mevenide/plugins">Mevenide repository</a>. 
 			</p>
 		</section>
 
