@@ -13,9 +13,10 @@
 				<li><a href="../maven-spinner-wiki-plugin/index.html">Maven Spinner-Wiki Plugin</a> generates Spinner Wiki templates that have the same look-n-feel than the maven generated site.</li>
 				<li><a href="../maven-nbm-plugin/index.html">Maven NBM (NetBeans Module) plugin</a> will create a Netbeans module file (.nbm) </li>
 				<li><a href="../maven-mevenide-plugin/index.html">Maven Mavenide plugin</a> is a helper plugin for running and debugging Maven projects from the IDEs.</li>
+				<li><a href="../maven-jbuilder-opentool-plugin/index.html">Maven JBuilder OpenTool plugin</a> creates JBuilder OpenTool extension packages.</li>
 			</ul>
 			<p>
-				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/repository">Mevenide repository</a>. 
+				Those Maven plugins can be found under the in the <a href="http://dist.codehaus.org/mevenide/plugins">Mevenide repository</a>. 
 			</p>
 		</section>
 
