@@ -41,7 +41,7 @@ public class MavenJavaParameters extends JavaParameters
     public static final String COMPILE_REGEXP =
     RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
-    public MavenJavaParameters(final Module pModule, final String[] pGoals)
+    public MavenJavaParameters(final Module pModule, final String... pGoals)
             throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
 
         final MavenManager mavenMgr = MavenManager.getInstance();
