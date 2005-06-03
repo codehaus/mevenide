@@ -20,7 +20,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import org.mevenide.idea.execute.MavenRunner;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.actions.AbstractAnAction;
+import org.mevenide.idea.util.actions.AbstractAnAction;
 
 /**
  * @author Arik

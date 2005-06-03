@@ -45,7 +45,7 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.actions.AbstractAnAction;
+import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.execute.MavenRunner;
 import org.mevenide.idea.module.ModuleSettingsConfigurable;
 import org.mevenide.idea.util.ConfigurableWrapper;
