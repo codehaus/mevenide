@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.fileTypes.FileTypeManager;
+import com.intellij.openapi.fileTypes.StdFileTypes;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
@@ -162,6 +164,9 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
             else
                 Messages.showInfoMessage(RES.get("maven.home.undefined"), "Maven");
         }
+
+        FileTypeManager.getInstance().registerFileType(StdFileTypes.XML,
+                                                       new String[]{"jelly"});
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {
