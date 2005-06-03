@@ -87,20 +87,27 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
         super(pModule);
     }
 
-    public File getPomFile() {
+    public VirtualFile getPomVirtualFile() {
         final VirtualFile moduleDir = getModuleDir();
-        if(moduleDir == null)
+        if (moduleDir == null)
             return null;
 
-        final File moduleDirFile = new File(moduleDir.getPath());
-        if(!moduleDirFile.isDirectory())
+        if (!moduleDir.isDirectory())
             return null;
 
-        final File pomFile = new File(moduleDirFile, "project.xml");
-        if(!pomFile.isFile())
+        final VirtualFile pomFile = moduleDir.findChild("project.xml");
+        if (!pomFile.isValid())
             return null;
 
         return pomFile;
+    }
+
+    public File getPomFile() {
+        final VirtualFile pomFile = getPomVirtualFile();
+        if(pomFile == null)
+            return null;
+        
+        return VfsUtil.virtualToIoFile(pomFile);
     }
 
     /**
@@ -157,7 +164,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
                 //create the query context using the module's directory
                 //
                 queryContext = new DefaultQueryContext(
-                        new File(moduleDir.getPath()),queryErrorCallback);
+                        VfsUtil.virtualToIoFile(moduleDir),queryErrorCallback);
 
                 //
                 //create the project-specific goals grabber
