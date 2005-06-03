@@ -16,25 +16,25 @@
  */
 package org.mevenide.idea.editor.pom.ui.layer;
 
+import java.awt.Component;
+import java.awt.Dimension;
+import java.lang.reflect.Field;
+import javax.swing.JComboBox;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.ScrollPaneFactory;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.RelativeTextFieldWithBrowseButton;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
-
-import javax.swing.JComboBox;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.lang.reflect.Field;
 
 /**
  * @author Arik
@@ -155,7 +155,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
         //
         builder.appendSeparator(RES.get("project.desc.title"));
         builder.append(RES.get("project.short.desc"), shortDescField, 5);
-        builder.append(RES.get("project.desc"), new JScrollPane(descField), 5);
+        builder.append(RES.get("project.desc"), ScrollPaneFactory.createScrollPane(descField), 5);
 
         //
         //project management

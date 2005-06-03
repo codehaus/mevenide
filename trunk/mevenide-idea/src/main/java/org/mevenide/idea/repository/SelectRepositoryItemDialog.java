@@ -11,6 +11,7 @@ import javax.swing.tree.TreePath;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.ScrollPaneFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
@@ -93,7 +94,7 @@ public class SelectRepositoryItemDialog {
             throw new IllegalStateException(RES.get("repo.reader.missing"));
 
         final RepositoryTree tree = new RepositoryTree(new RepositoryTreeModel(repositoryReader));
-        final JScrollPane scrollPane = new JScrollPane(tree);
+        final JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(tree);
 
         final DialogBuilder builder = new DialogBuilder(pProject);
         builder.addOkAction();

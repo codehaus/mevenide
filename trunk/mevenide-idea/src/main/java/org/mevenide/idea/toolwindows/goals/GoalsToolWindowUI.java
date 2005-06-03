@@ -24,7 +24,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -42,6 +41,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.Res;
@@ -161,7 +161,7 @@ public class GoalsToolWindowUI extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
-        add(new JScrollPane(goalsTree), c);
+        add(ScrollPaneFactory.createScrollPane(goalsTree), c);
     }
 
     public Module getSelectedModule() {
