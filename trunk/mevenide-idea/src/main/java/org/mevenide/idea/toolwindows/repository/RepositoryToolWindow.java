@@ -14,14 +14,18 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ide.CommonActionsManager;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.repository.AggregatingRepositoryReader;
 import org.mevenide.idea.repository.RepositoryTree;
-import org.mevenide.idea.repository.RepositoryTreeCellRenderer;
 import org.mevenide.idea.repository.RepositoryTreeModel;
+import org.mevenide.idea.repository.RepositoryTreeExpander;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -57,6 +61,16 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
 
         setLayout(new BorderLayout());
         add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
+
+        //
+        // create the action toolbar
+        //
+        final RepositoryTreeExpander expander = new RepositoryTreeExpander(tree);
+        final DefaultActionGroup actionGroup = new DefaultActionGroup();
+        actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
+        final ActionToolbar toolbar =
+            ActionManager.getInstance().createActionToolbar(NAME, actionGroup, true);
+        add(toolbar.getComponent(), BorderLayout.PAGE_START);
     }
 
     private void refreshModel() {
@@ -71,7 +85,6 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
 
         final AggregatingRepositoryReader repoReader = new AggregatingRepositoryReader(repoUris);
         tree.setModel(new RepositoryTreeModel(repoReader));
-        tree.setCellRenderer(new RepositoryTreeCellRenderer());
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
