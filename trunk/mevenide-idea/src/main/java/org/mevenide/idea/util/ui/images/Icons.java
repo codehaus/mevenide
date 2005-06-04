@@ -26,6 +26,7 @@ import com.intellij.openapi.util.IconLoader;
 public abstract class Icons {
     public static final Icon BACK = IconLoader.getIcon("back.png", Icons.class);
     public static final Icon CANCEL = IconLoader.getIcon("cancel.png", Icons.class);
+    public static final Icon DOWNLOAD = IconLoader.getIcon("download.png", Icons.class);
     public static final Icon EXECUTE = IconLoader.getIcon("execute.png", Icons.class);
     public static final Icon FORWARD = IconLoader.getIcon("forward.png", Icons.class);
     public static final Icon GOAL = IconLoader.getIcon("goal.png", Icons.class);
