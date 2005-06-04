@@ -9,6 +9,12 @@
 
         <release version="0.2" date="unreleased" description="New features">
             <action dev="arikkfir" type="add">
+                The goals tool window now supports Scroll To Source. If enabled,
+                clicking a goal will scroll to that goal in the <i>maven.xml</i>
+                file, or the actual plugin source code file (<i>plugin.jelly</i>,
+                located in the Maven cache directory).
+            </action>
+            <action dev="arikkfir" type="add">
                 Add a remote, and local, repository browsers (via a new tool window),
                 as well as the ability to browse for a dependency in the POM
                 dependencies editor (rather than manually enter the dependency
