@@ -39,7 +39,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
-            <version>0.8</version>
+            <version>0.9</version>
             <type>jar</type>
             <url>http://mevenide.codehaus.org/mevenide-core/</url>
             <properties>
