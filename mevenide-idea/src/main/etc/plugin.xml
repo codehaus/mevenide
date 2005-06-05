@@ -22,6 +22,9 @@
         <component>
             <implementation-class>org.mevenide.idea.editor.pom.PomFileEditorProvider</implementation-class>
         </component>
+        <component>
+            <implementation-class>org.mevenide.idea.repository.ArtifactDownloadManager</implementation-class>
+        </component>
     </application-components>
 
     <project-components>
