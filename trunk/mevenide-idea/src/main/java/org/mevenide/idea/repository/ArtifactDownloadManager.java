@@ -1,15 +1,14 @@
 package org.mevenide.idea.repository;
 
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
-
-import com.intellij.openapi.progress.ProgressIndicator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.RepoPathElement;
 
@@ -17,20 +16,7 @@ import org.mevenide.repository.RepoPathElement;
  * @todo this should be an idea component, and not a custom singleton
  * @author Arik
  */
-public class ArtifactDownloadManager {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(ArtifactDownloadManager.class);
-
-    /**
-     * the singleton instance.
-     */
-    private static final ArtifactDownloadManager INSTANCE = new ArtifactDownloadManager();
-
-    public static ArtifactDownloadManager getInstance() {
-        return INSTANCE;
-    }
+public class ArtifactDownloadManager extends AbstractApplicationComponent {
 
     public void downloadArtifact(final ILocationFinder pFinder,
                                  final IPropertyResolver pResolver,
@@ -120,4 +106,12 @@ public class ArtifactDownloadManager {
 
     }
 
+    /**
+     * Returns the artifact download manager.
+     *
+     * @return instance
+     */
+    public static ArtifactDownloadManager getInstance() {
+        return ApplicationManager.getApplication().getComponent(ArtifactDownloadManager.class);
+    }
 }
