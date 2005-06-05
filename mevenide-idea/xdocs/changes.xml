@@ -15,10 +15,14 @@
                 located in the Maven cache directory).
             </action>
             <action dev="arikkfir" type="add">
-                Add a remote, and local, repository browsers (via a new tool window),
-                as well as the ability to browse for a dependency in the POM
-                dependencies editor (rather than manually enter the dependency
-                details).
+                The POM dependencies editor now allows browsing for a
+                dependency, rather than having to manually type it in.
+            </action>
+            <action dev="arikkfir" type="add">
+                Add a repository browser capable of rendering both the local and
+                remote repositories. The browser is integrated into the IDE via
+                a tool window, and supports downloading multiple artifacts, types
+                and even complete artifact groups (a-ka "groupId").
             </action>
         </release>
 
