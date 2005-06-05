@@ -10,7 +10,6 @@
    <runtime>
       <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
          <export name="*"/>
-         <packages prefixes="org.mevenide.ui.eclipse"/>
       </library>
    </runtime>
    <requires>
@@ -46,10 +45,10 @@
    <!-- extension used by Maven plugin providers to declaratively add pages to Maven preference menu -->
    <extension-point id="preference" name="Mevenide Preference Extension Point" schema="extensions-schemas/org.mevenide.ui.preference.exsd"/>
 
-	<!-- sample extension -->
-	<extension point="org.mevenide.ui.preference">
-       <plugin-provider id="PDE Plugin" name="PDE Plugin">
-          <description>%PDEPlugin.Description</description>
+   <!-- sample extension -->
+   <extension id="sample" name="Sample Extension" point="org.mevenide.ui.preference">
+      <plugin-provider id="PDE Plugin" name="PDE Plugin">
+         <description>%PDEPlugin.Description</description>
           <category name="Common">
 	          <property name="maven.eclipse.plugin.artifact.type" 
 	          			label="Artifact type"
@@ -192,7 +191,7 @@
             	 id="org.mevenide.ui.eclipse.nature.ActionSet">
         <action label="Maven" 
                 tooltip="%Maven.ProjectMenu.Addition.Tooltip" 
-                pulldown="true" 
+                style="pulldown" 
                 class="org.mevenide.ui.eclipse.nature.CustomMavenLaunchManager" 
                 menubarPath="project/additions" 
                 id="org.mevenide.maven.build">
@@ -411,6 +410,7 @@
       <!-- Custom Action LaunchGroup -->
 	  <launchGroup
          label="Maven"
+         image="icons/obj16/mprj_obj.gif"
          bannerImage="icons/wizban/ext_tools_wiz.gif"
          category="maven"
          mode="run"
