@@ -115,10 +115,9 @@ public class ExactDependencyReplacerTest extends TestCase {
             props = properties;
         }
 
-		public Object getBean() {
-			// TODO Auto-generated method stub
-			return null;
-		}
+        public Object getBean() {
+            return null;
+        }
         
     }
     
