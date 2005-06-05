@@ -22,6 +22,8 @@ import java.lang.reflect.Field;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.jdom.Document;
+import org.jdom.input.SAXBuilder;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
@@ -65,14 +67,29 @@ public class ProjectUtils {
     public static String getGroupId(Project pom) {
 	    String groupId = null;
 		try {
-			Field f = pom.getClass().getDeclaredField("groupId");
-			f.setAccessible(true);
-			groupId = (String) f.get(pom);
-			f.setAccessible(false);
+           Field f = pom.getClass().getDeclaredField("groupId");
+           f.setAccessible(true);
+           groupId = (String) f.get(pom);
+           f.setAccessible(false);
 		} 
 		catch (Exception e) {
 			log.error("unable to retrieve grouId", e);
-		}
-		return groupId;
+		} 
+        return groupId;
     }
+    
+    public static String parseGroupId(File pomFile) {
+        String groupId = null;
+        try {
+           SAXBuilder builder = new SAXBuilder();
+           Document doc = builder.build(pomFile);
+           groupId = doc.getRootElement().getChildText("groupId");
+        } 
+        catch (Exception e) {
+            log.error("unable to retrieve grouId", e);
+        } 
+        return groupId;
+    }
+    
+   
 }

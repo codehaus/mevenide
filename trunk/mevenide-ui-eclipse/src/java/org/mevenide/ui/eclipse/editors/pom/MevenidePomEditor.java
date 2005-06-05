@@ -42,6 +42,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.forms.editor.FormEditor;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
@@ -626,7 +627,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         }
         pom.setGumpRepositoryId(p.getGumpRepositoryId());
         //pom.setGroupId(p.getGroupId());
-        pom.setGroupId(ProjectUtils.getGroupId(p));
+        pom.setGroupId(ProjectUtils.parseGroupId(new File(((FileEditorInput) getEditorInput()).getFile().getLocation().toOSString())));
         pom.setExtend(p.getExtend());
         pom.setDistributionSite(p.getDistributionSite());
         pom.setDistributionDirectory(p.getDistributionDirectory());

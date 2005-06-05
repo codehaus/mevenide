@@ -16,12 +16,9 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import java.lang.reflect.Field;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.apache.plexus.util.StringUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -143,6 +140,7 @@ public class IdentificationSection extends PageSection {
 			}
 			public Object acceptParent() {
 				//return getParentPom().getGroupId();
+                pom.setGroupId(null);
 				return ProjectUtils.getGroupId(getParentPom());
 			}
 		};
@@ -303,7 +301,9 @@ public class IdentificationSection extends PageSection {
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
 		
 		
-		setIfDefined(groupIdText, ProjectUtils.getGroupId(pom), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : "");
+		//setIfDefined(groupIdText, ProjectUtils.getGroupId(pom), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : "");
+        setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : null);
+        //setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? getParentPom().getGroupId() : null);
 		
 		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
     }
