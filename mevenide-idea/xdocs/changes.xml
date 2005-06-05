@@ -22,7 +22,8 @@
                 Add a repository browser capable of rendering both the local and
                 remote repositories. The browser is integrated into the IDE via
                 a tool window, and supports downloading multiple artifacts, types
-                and even complete artifact groups (a-ka "groupId").
+                and even complete artifact groups (a-ka "groupId"). Support for
+                filtering local or remote repositories is also provided.
             </action>
         </release>
 
