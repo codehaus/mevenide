@@ -322,4 +322,9 @@ public abstract class PageSection extends SectionPart {
         String basedir = ((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString();
         return MevenideUtils.makeRelativePath(new File(basedir).getParentFile(), directory).replaceAll("\\\\", "/"); //$NON-NLS-1$ //$NON-NLS-2$
     }
+    
+    protected File getPomFile() {
+         return new File(((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString());
+    }
+    
 }
