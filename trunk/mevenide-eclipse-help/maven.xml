@@ -3,8 +3,6 @@
 
 	<preGoal name="eclipse-plugin:create-artifact-dist">
 	    <attainGoal name="mevenide-eclipse-help:clean"/>
-	    <ant:copy file="${mevenide.master.project.location}/xdocs/style/project.css" 
-                  todir="${maven.docs.src}/style" overwrite="true"/>
 	    <attainGoal name="mevenide-eclipse-help:create-doc"/>
 	</preGoal>
 
