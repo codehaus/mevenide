@@ -4,7 +4,6 @@
   <pomVersion>3</pomVersion>
   <artifactId>mevenide-ui-eclipse</artifactId>
   <name>Mevenide Eclipse</name>
-  <groupId>mevenide-ui-eclipse</groupId>
   <currentVersion>0.4.0</currentVersion>
   <package>org.mevenide.ui.eclipse</package>
   <shortDescription>provides ide integration for Maven</shortDescription>
