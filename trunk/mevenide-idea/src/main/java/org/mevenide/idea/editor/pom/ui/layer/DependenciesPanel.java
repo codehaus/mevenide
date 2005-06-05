@@ -12,17 +12,17 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
 import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.DEPENDENCIES;
-import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.repository.AggregatingRepositoryReader;
+import org.mevenide.idea.repository.RepositoryUtils;
 import org.mevenide.idea.repository.SelectRepositoryItemDialog;
+import org.mevenide.idea.repository.model.RepoTreeNode;
+import org.mevenide.idea.repository.model.NodeDescriptor;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.psi.PsiUtils;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
+import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
-import static org.mevenide.repository.RepositoryReaderFactory.createRemoteRepositoryReader;
 
 /**
  * @author Arik
@@ -55,29 +55,30 @@ public class DependenciesPanel extends CRUDTablePanel {
                 dlg.setTitle(BROWSE_REPO_DLG_TITLE);
 
                 final Module module = VfsUtil.getModuleForFile(project, getFile());
-                final IQueryContext queryContext = ModuleSettings.getInstance(module).getQueryContext();
-                dlg.setRepositoryReader(new AggregatingRepositoryReader(queryContext));
+                final IRepositoryReader[] readers = RepositoryUtils.createRepoReaders(module);
+                dlg.setRepositoryReaders(readers);
 
-                final RepoPathElement[] selectedElements = dlg.show(project);
+                final RepoTreeNode[] selectedElements = dlg.show(project);
                 if(selectedElements != null) {
                     IDEUtils.runCommand(project, new Runnable() {
                         public void run() {
                             try {
-                                for (RepoPathElement elt : selectedElements) {
+                                for (RepoTreeNode elt : selectedElements) {
+                                    final NodeDescriptor desc = elt.getNodeDescriptor();
                                     final XmlTag depRow = getModel().addRow();
                                     PsiUtils.setTagValue(project,
                                                          depRow,
                                                          "groupId",
-                                                         elt.getGroupId());
+                                                         desc.getGroupId());
                                     PsiUtils.setTagValue(project,
                                                          depRow,
                                                          "artifactId",
-                                                         elt.getArtifactId());
-                                    PsiUtils.setTagValue(project, depRow, "type", elt.getType());
+                                                         desc.getArtifactId());
+                                    PsiUtils.setTagValue(project, depRow, "type", desc.getType());
                                     PsiUtils.setTagValue(project,
                                                          depRow,
                                                          "version",
-                                                         elt.getVersion());
+                                                         desc.getVersion());
                                 }
                             }
                             catch (IncorrectOperationException e1) {
