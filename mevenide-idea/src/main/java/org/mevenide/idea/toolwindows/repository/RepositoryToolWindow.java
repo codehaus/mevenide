@@ -3,10 +3,18 @@ package org.mevenide.idea.toolwindows.repository;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.swing.JPanel;
 import javax.swing.JTree;
+import javax.swing.tree.TreePath;
 
+import com.intellij.ide.CommonActionsManager;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
@@ -14,15 +22,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ide.CommonActionsManager;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.repository.*;
+import org.mevenide.idea.repository.RepositoryTree;
+import org.mevenide.idea.repository.RepositoryTreeExpander;
+import org.mevenide.idea.repository.RepositoryUtils;
+import org.mevenide.idea.repository.actions.RefreshRepoTreeAction;
+import org.mevenide.idea.repository.model.RepoTreeNode;
+import org.mevenide.idea.repository.model.RepositoryTreeModel;
+import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -67,6 +76,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         final RepositoryTreeExpander expander = new RepositoryTreeExpander(tree);
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new RefreshRepoTreeAction());
+        actionGroup.add(new DownloadArtifactAction());
         actionGroup.addSeparator();
         actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
         final ActionToolbar toolbar =
@@ -77,19 +87,31 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
     public void refreshModel() {
         final ModuleManager moduleMgr = ModuleManager.getInstance(project);
         final Module[] modules = moduleMgr.getModules();
-        final IQueryContext[] repoUris = new IQueryContext[modules.length];
-        for (int i = 0; i < modules.length; i++) {
-            final ModuleSettings moduleSettings = ModuleSettings.getInstance(modules[i]);
+        for (Module module : modules) {
+            final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
             moduleSettings.addPropertyChangeListener("queryContext", this);
-            repoUris[i] = moduleSettings.getQueryContext();
         }
 
-        final AggregatingRepositoryReader repoReader = new AggregatingRepositoryReader(repoUris);
-        tree.setModel(new RepositoryTreeModel(repoReader));
+        tree.setModel(new RepositoryTreeModel(RepositoryUtils.createRepoReaders(project)));
     }
 
     public JTree getTree() {
         return tree;
+    }
+
+    public RepoTreeNode[] getSelectedElements() {
+        final TreePath[] selections = tree.getSelectionPaths();
+        if(selections == null || selections.length == 0)
+            return new RepoTreeNode[0];
+
+        final Set<RepoTreeNode> elements = new HashSet<RepoTreeNode>(selections.length);
+        for (TreePath path : selections) {
+            final Object elt = path.getLastPathComponent();
+            if(elt instanceof RepoTreeNode)
+                elements.add((RepoTreeNode) elt);
+        }
+
+        return elements.toArray(new RepoTreeNode[elements.size()]);
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
@@ -131,5 +153,24 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         final ToolWindowManager mgr = ToolWindowManager.getInstance(pProject);
         final ToolWindow tw = mgr.getToolWindow(NAME);
         return (RepositoryToolWindow) tw.getComponent();
+    }
+
+    private class DownloadArtifactAction extends AbstractAnAction {
+        public DownloadArtifactAction() {
+            super(RES.get("download.action.text"),
+                  RES.get("download.action.desc"),
+                  Icons.DOWNLOAD);
+        }
+
+        @Override public boolean displayTextInToolbar() {
+            return true;
+        }
+
+        public void actionPerformed(final AnActionEvent pEvent) {
+        }
+
+        @Override public void update(final AnActionEvent pEvent) {
+            pEvent.getPresentation().setEnabled(getSelectedElements().length > 0);
+        }
     }
 }

@@ -13,6 +13,9 @@ import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.ScrollPaneFactory;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.repository.model.RepositoryTreeModel;
+import org.mevenide.idea.repository.model.RepoTreeNode;
+import org.mevenide.idea.repository.model.NodeDescriptor;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 
@@ -25,7 +28,7 @@ public class SelectRepositoryItemDialog {
      */
     private static final Res RES = Res.getInstance(SelectRepositoryItemDialog.class);
 
-    private IRepositoryReader repositoryReader;
+    private IRepositoryReader[] repoReaders = new IRepositoryReader[0];
     private boolean allowingRoot = false;
     private boolean allowingGroups = false;
     private boolean allowingTypes = false;
@@ -81,19 +84,19 @@ public class SelectRepositoryItemDialog {
         allowingVersions = pAllowingVersions;
     }
 
-    public IRepositoryReader getRepositoryReader() {
-        return repositoryReader;
+    public IRepositoryReader[] getRepositoryReaders() {
+        return repoReaders;
     }
 
-    public void setRepositoryReader(final IRepositoryReader pRepositoryReader) {
-        repositoryReader = pRepositoryReader;
+    public void setRepositoryReaders(final IRepositoryReader[] pReaders) {
+        if (pReaders == null)
+            throw new IllegalArgumentException(RES.get("null.arg", "pReaders"));
+        repoReaders = pReaders;
     }
 
-    public RepoPathElement[] show(final Project pProject) {
-        if (repositoryReader == null)
-            throw new IllegalStateException(RES.get("repo.reader.missing"));
-
-        final RepositoryTree tree = new RepositoryTree(new RepositoryTreeModel(repositoryReader));
+    public RepoTreeNode[] show(final Project pProject) {
+        final RepositoryTreeModel model = new RepositoryTreeModel(repoReaders);
+        final RepositoryTree tree = new RepositoryTree(model);
         final JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(tree);
 
         final DialogBuilder builder = new DialogBuilder(pProject);
@@ -105,19 +108,18 @@ public class SelectRepositoryItemDialog {
 
         tree.addTreeSelectionListener(new MyTreeSelectionListener(builder));
 
-
         final int exitCode = builder.show();
         if (exitCode == DialogWrapper.OK_EXIT_CODE) {
 
             final TreePath[] selectedPaths = tree.getSelectionPaths();
-            final List<RepoPathElement> items = new ArrayList<RepoPathElement>(selectedPaths.length);
+            final List<RepoTreeNode> nodes = new ArrayList<RepoTreeNode>(selectedPaths.length);
             for (TreePath path : selectedPaths) {
                 final Object node = path.getLastPathComponent();
-                if (node instanceof RepoPathElement)
-                    items.add((RepoPathElement) node);
+                if (node instanceof RepoTreeNode)
+                    nodes.add((RepoTreeNode) node);
             }
 
-            return items.toArray(new RepoPathElement[items.size()]);
+            return nodes.toArray(new RepoTreeNode[nodes.size()]);
         }
         else
             return null;
@@ -141,11 +143,12 @@ public class SelectRepositoryItemDialog {
 
             for (TreePath path : pTreePaths) {
                 final Object value = path.getLastPathComponent();
-                if (!(value instanceof RepoPathElement))
+                if (!(value instanceof RepoTreeNode))
                     return false;
 
-                final RepoPathElement node = (RepoPathElement) value;
-                switch (node.getLevel()) {
+                final RepoTreeNode node = (RepoTreeNode) value;
+                final NodeDescriptor desc = node.getNodeDescriptor();
+                switch (desc.getLevel()) {
                     case RepoPathElement.LEVEL_GROUP:
                         if (!allowingGroups)
                             return false;
