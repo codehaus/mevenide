@@ -60,7 +60,7 @@ public class ProjectUtils {
 			f.setAccessible(false);
 		} 
 		catch (Exception e) {
-			log.error("unable to retrieve grouId", e);
+			log.error("unable to retrieve groupId", e);
 		}
     }
     
@@ -73,7 +73,7 @@ public class ProjectUtils {
            f.setAccessible(false);
 		} 
 		catch (Exception e) {
-			log.error("unable to retrieve grouId", e);
+			log.error("unable to retrieve groupId", e);
 		} 
         return groupId;
     }
@@ -86,7 +86,7 @@ public class ProjectUtils {
            groupId = doc.getRootElement().getChildText("groupId");
         } 
         catch (Exception e) {
-            log.error("unable to retrieve grouId", e);
+            log.error("unable to retrieve groupId", e);
         } 
         return groupId;
     }
