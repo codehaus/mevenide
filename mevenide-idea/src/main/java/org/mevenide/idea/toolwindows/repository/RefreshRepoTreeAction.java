@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository.actions;
+package org.mevenide.idea.toolwindows.repository;
 
 import java.awt.Component;
 import java.awt.Container;

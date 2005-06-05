@@ -38,10 +38,10 @@ import org.mevenide.idea.repository.ArtifactDownloadManager;
 import org.mevenide.idea.repository.RepositoryTree;
 import org.mevenide.idea.repository.RepositoryTreeExpander;
 import org.mevenide.idea.repository.RepositoryUtils;
-import org.mevenide.idea.repository.actions.RefreshRepoTreeAction;
 import org.mevenide.idea.repository.model.RepoTreeNode;
 import org.mevenide.idea.repository.model.RepositoryTreeModel;
 import org.mevenide.idea.util.actions.AbstractAnAction;
+import org.mevenide.idea.util.actions.AbstractToggleAnAction;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.properties.IPropertyResolver;
@@ -72,6 +72,11 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
     private final JTree tree = new RepositoryTree();
 
     /**
+     * The repository model.
+     */
+    private RepositoryTreeModel model;
+
+    /**
      * Creates an instance for the given project.
      */
     public RepositoryToolWindow(final Project pProject) {
@@ -91,6 +96,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         actionGroup.add(new RefreshRepoTreeAction());
         actionGroup.add(new DownloadArtifactAction());
         actionGroup.addSeparator();
+        actionGroup.add(new ShowLocalRepoAction());
+        actionGroup.add(new ShowRemoteRepoAction());
         actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
         final ActionToolbar toolbar =
             ActionManager.getInstance().createActionToolbar(NAME, actionGroup, true);
@@ -105,7 +112,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
             moduleSettings.addPropertyChangeListener("queryContext", this);
         }
 
-        tree.setModel(new RepositoryTreeModel(RepositoryUtils.createRepoReaders(project)));
+        model = new RepositoryTreeModel(RepositoryUtils.createRepoReaders(project));
+        tree.setModel(model);
     }
 
     public JTree getTree() {
@@ -220,7 +228,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
             final Application app = ApplicationManager.getApplication();
             app.runProcessWithProgressSynchronously(downloader,
                                                     "Downloading...",
-                                                    true, 
+                                                    true,
                                                     project);
         }
 
@@ -274,6 +282,40 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
             }
 
             return selectedModule;
+        }
+    }
+
+    private class ShowLocalRepoAction extends AbstractToggleAnAction {
+
+        public ShowLocalRepoAction() {
+            super(RES.get("toggle.local.repo.text"),
+                  RES.get("toggle.local.repo.desc"),
+                  Icons.REPO_FILTER_LOCAL);
+        }
+
+        public boolean isSelected(AnActionEvent e) {
+            return model.isShowLocal();
+        }
+
+        public void setSelected(AnActionEvent e, boolean state) {
+            model.setShowLocal(state);
+        }
+    }
+
+    private class ShowRemoteRepoAction extends AbstractToggleAnAction {
+
+        public ShowRemoteRepoAction() {
+            super(RES.get("toggle.remote.repo.text"),
+                  RES.get("toggle.remote.repo.desc"),
+                  Icons.REPO_FILTER_REMOTE);
+        }
+
+        public boolean isSelected(AnActionEvent e) {
+            return model.isShowRemote();
+        }
+
+        public void setSelected(AnActionEvent e, boolean state) {
+            model.setShowRemote(state);
         }
     }
 }

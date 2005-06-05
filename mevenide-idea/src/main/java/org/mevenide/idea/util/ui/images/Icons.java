@@ -76,4 +76,7 @@ public abstract class Icons {
     public static final Icon REPO_TYPE_EAR_OPEN = IconLoader.getIcon("repoTypeEarOpen.png", Icons.class);
     public static final Icon REPO_TYPE_EAR_CLOSED = IconLoader.getIcon("repoTypeEarClosed.png", Icons.class);
 
+    public static final Icon REPO_FILTER_LOCAL = IconLoader.getIcon("repoFilterLocal.png", Icons.class);
+    public static final Icon REPO_FILTER_REMOTE = IconLoader.getIcon("repoFilterRemote.png", Icons.class);
+
 }
