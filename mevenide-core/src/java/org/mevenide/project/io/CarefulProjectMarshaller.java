@@ -38,6 +38,7 @@ import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+import org.mevenide.util.ProjectUtils;
 
 /**
  * a pom marshaller that attempts to preserve formatting and add items to the correct positions.
@@ -118,7 +119,8 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "artifactId", project.getValue("artifactId"));
         findAndReplaceSimpleElement(counter, root, "name", project.getValue("name"));
-        findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
+        //findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
+        findAndReplaceSimpleElement(counter, root, "groupId", ProjectUtils.getGroupId((Project)project.getBean()));
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "currentVersion", project.getValue("currentVersion"));
         doUpdateOrganization(counter, root, project.getSubContentProvider("organization"));

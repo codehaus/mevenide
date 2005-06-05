@@ -107,5 +107,9 @@ public final class BeanContentProvider implements IContentProvider {
         }
         return null;
     }
+    
+    public Object getBean() {
+    	return bean;
+    }
 
 }

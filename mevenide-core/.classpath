@@ -8,6 +8,9 @@
 	<classpathentry sourcepath="/MAVEN_REPO/jdom/distributions/jdom-1.0.zip" kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/thaiopensource/jars/jing-20030619.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
-	<classpathentry sourcepath="/MAVEN_REPO/commons-jxpath/distributions/commons-jxpath-1.2-src.zip" kind="var" path="MAVEN_REPO/commons-jxpath/jars/commons-jxpath-1.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.2.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/xpp3/jars/xpp3-1.1.2a.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

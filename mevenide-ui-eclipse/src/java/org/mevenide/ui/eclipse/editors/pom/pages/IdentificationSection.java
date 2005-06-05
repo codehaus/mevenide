@@ -16,9 +16,12 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.lang.reflect.Field;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
+import org.apache.plexus.util.StringUtils;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
@@ -42,6 +45,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TextEntry;
+import org.mevenide.util.ProjectUtils;
 
 /**
  * Section for identification info of the POM (i.e. name, ids, extended POM, etc.)
@@ -135,9 +139,11 @@ public class IdentificationSection extends PageSection {
 		adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				pom.setGroupId((String) value);
+				//ProjectUtils.setGroupId(pom, (String) value);
 			}
 			public Object acceptParent() {
-				return getParentPom().getGroupId();
+				//return getParentPom().getGroupId();
+				return ProjectUtils.getGroupId(getParentPom());
 			}
 		};
 		groupIdText.addEntryChangeListener(adaptor);
@@ -295,7 +301,10 @@ public class IdentificationSection extends PageSection {
 		}
 		setIfDefined(extendsText, pom.getExtend());
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
-		setIfDefined(groupIdText, pom.getGroupId(), isInherited() ? getParentPom().getGroupId() : null);
+		
+		
+		setIfDefined(groupIdText, ProjectUtils.getGroupId(pom), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : "");
+		
 		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
     }
 
