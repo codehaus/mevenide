@@ -3,11 +3,21 @@ package org.mevenide.idea.repository.model;
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mevenide.repository.RepoPathElement;
+import org.mevenide.idea.Res;
 
 /**
  * @author Arik
  */
 public class NodeDescriptor implements Comparable {
+    /**
+     * Resources
+     */
+    private static final Res RES = Res.getInstance(NodeDescriptor.class);
+
+    /**
+     * The text to display for the root node, if displayed.
+     */
+    protected static final String ROOT_TEXT = RES.get("repo.tree.root.label");
 
     private final int level;
     private final String groupId;
@@ -88,7 +98,7 @@ public class NodeDescriptor implements Comparable {
         if (this == o) return 0;
 
         final NodeDescriptor that = (NodeDescriptor) o;
-        
+
         return new CompareToBuilder()
             .append(level, that.level)
             .append(groupId, that.groupId)
@@ -121,6 +131,32 @@ public class NodeDescriptor implements Comparable {
         result = 29 * result + (version != null ? version.hashCode() : 0);
         result = 29 * result + (extension != null ? extension.hashCode() : 0);
         return result;
+    }
+
+    public String toDisplayString() {
+        switch (getLevel()) {
+            case RepoPathElement.LEVEL_ARTIFACT:
+                return getArtifactId();
+
+            case RepoPathElement.LEVEL_GROUP:
+                return getGroupId();
+
+            case RepoPathElement.LEVEL_ROOT:
+                return ROOT_TEXT;
+
+            case RepoPathElement.LEVEL_TYPE:
+                return getType();
+
+            case RepoPathElement.LEVEL_VERSION:
+                final String ext = getExtension();
+                if (ext != null && ext.trim().length() > 0)
+                    return getArtifactId() + "-" + getVersion() + "." + ext;
+                else
+                    return getArtifactId() + "-" + getVersion();
+
+            default:
+                return toString();
+        }
     }
 
     @Override public String toString() {

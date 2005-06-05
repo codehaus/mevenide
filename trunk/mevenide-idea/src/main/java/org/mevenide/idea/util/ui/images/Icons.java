@@ -41,4 +41,39 @@ public abstract class Icons {
     public static final Icon SUSPEND = IconLoader.getIcon("suspend.png", Icons.class);
     public static final Icon SYNC = IconLoader.getIcon("sync.png", Icons.class);
 
+    public static final Icon REPO_GROUP_OPEN = IconLoader.getIcon("repoGroupOpen.png", Icons.class);
+    public static final Icon REPO_GROUP_CLOSED = IconLoader.getIcon("repoGroupClosed.png", Icons.class);
+
+    public static final Icon REPO_ARTIFACT = IconLoader.getIcon("repoArtifact.png", Icons.class);
+    public static final Icon REPO_VERSION = IconLoader.getIcon("repoVersion.png", Icons.class);
+    public static final Icon REPO_MSG = IconLoader.getIcon("repoMsg.png", Icons.class);
+
+    public static final Icon REPO_FOLDER_OPEN = IconLoader.getIcon("repoFolderOpen.png", Icons.class);
+    public static final Icon REPO_FOLDER_CLOSED = IconLoader.getIcon("repoFolderClosed.png", Icons.class);
+
+    public static final Icon REPO_TYPE_ARCHIVE = IconLoader.getIcon("repoArtifactArchive.png", Icons.class);
+    public static final Icon REPO_TYPE_POM = IconLoader.getIcon("repoArtifactPom.png", Icons.class);
+    public static final Icon REPO_TYPE_LICENSE = IconLoader.getIcon("repoArtifactLicense.png", Icons.class);
+
+    public static final Icon REPO_TYPE_JAR_OPEN = IconLoader.getIcon("repoTypeJarOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_JAR_CLOSED = IconLoader.getIcon("repoTypeJarClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_SRC_JAR_OPEN = IconLoader.getIcon("repoTypeSrcJarOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_SRC_JAR_CLOSED = IconLoader.getIcon("repoTypeSrcJarClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_JAVADOC_JAR_OPEN = IconLoader.getIcon("repoTypeJavadocJarOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_JAVADOC_JAR_CLOSED = IconLoader.getIcon("repoTypeJavadocJarClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_EJB_OPEN = IconLoader.getIcon("repoTypeEjbOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_EJB_CLOSED = IconLoader.getIcon("repoTypeEjbClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_WAR_OPEN = IconLoader.getIcon("repoTypeWarOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_WAR_CLOSED = IconLoader.getIcon("repoTypeWarClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_LICENSE_OPEN = IconLoader.getIcon("repoTypeLicenseOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_LICENSE_CLOSED = IconLoader.getIcon("repoTypeLicenseClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_PLUGIN_OPEN = IconLoader.getIcon("repoTypePluginOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_PLUGIN_CLOSED = IconLoader.getIcon("repoTypePluginClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_DIST_OPEN = IconLoader.getIcon("repoTypeDistOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_DIST_CLOSED = IconLoader.getIcon("repoTypeDistClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_POM_OPEN = IconLoader.getIcon("repoTypePomOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_POM_CLOSED = IconLoader.getIcon("repoTypePomClosed.png", Icons.class);
+    public static final Icon REPO_TYPE_EAR_OPEN = IconLoader.getIcon("repoTypeEarOpen.png", Icons.class);
+    public static final Icon REPO_TYPE_EAR_CLOSED = IconLoader.getIcon("repoTypeEarClosed.png", Icons.class);
+
 }
