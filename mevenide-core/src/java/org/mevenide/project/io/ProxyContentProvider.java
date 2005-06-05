@@ -72,8 +72,5 @@ public class ProxyContentProvider implements IContentProvider {
     public List getProperties() {
         return provider.getProperties();
     }
-    
-    public Object getBean() {
-    	return provider.getBean();
-    }
+ 
 }

@@ -56,8 +56,5 @@ public interface IContentProvider {
      */
     List getProperties();
     
-    /**
-     * returns ths underlying bean
-     */
-    Object getBean();
+   
 }

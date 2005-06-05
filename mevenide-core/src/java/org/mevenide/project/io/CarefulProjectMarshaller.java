@@ -119,8 +119,14 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "artifactId", project.getValue("artifactId"));
         findAndReplaceSimpleElement(counter, root, "name", project.getValue("name"));
-        //findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
-        findAndReplaceSimpleElement(counter, root, "groupId", ProjectUtils.getGroupId((Project)project.getBean()));
+        
+        if ( project instanceof BeanContentProvider && ((BeanContentProvider) project).getBean() instanceof Project ) {
+            Project mavenProject = (Project) ((BeanContentProvider) project).getBean(); 
+            findAndReplaceSimpleElement(counter, root, "groupId", ProjectUtils.getGroupId(mavenProject));
+        }
+        else {
+            findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
+        }
         //REQUIRED
         findAndReplaceSimpleElement(counter, root, "currentVersion", project.getValue("currentVersion"));
         doUpdateOrganization(counter, root, project.getSubContentProvider("organization"));
