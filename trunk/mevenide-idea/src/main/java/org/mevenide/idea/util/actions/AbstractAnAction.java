@@ -16,39 +16,29 @@
  */
 package org.mevenide.idea.util.actions;
 
+import javax.swing.Icon;
+
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.project.Project;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import javax.swing.*;
 
 /**
  * @author Arik
  */
 public abstract class AbstractAnAction extends AnAction {
-    protected final Log LOG;
 
     protected AbstractAnAction() {
-        LOG = createLog();
     }
 
     protected AbstractAnAction(final String pText) {
         super(pText);
-        LOG = createLog();
     }
 
     protected AbstractAnAction(final String pText,
                                final String pDescription,
                                final Icon pIcon) {
         super(pText, pDescription, pIcon);
-        LOG = createLog();
-    }
-
-    private Log createLog() {
-        return LogFactory.getLog(this.getClass());
     }
 
     protected Project getProject(final AnActionEvent pEvent) {

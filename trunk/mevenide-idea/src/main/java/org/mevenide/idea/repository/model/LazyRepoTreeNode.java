@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.mevenide.repository.RepoPathElement;
+import org.mevenide.repository.IRepositoryReader;
 
 /**
  * @author Arik
@@ -160,6 +161,11 @@ public class LazyRepoTreeNode extends RepoTreeNode {
             //
             final NodesMap fetched = new NodesMap(5);
             for (RepoPathElement element : pathElements) {
+                final IRepositoryReader reader = element.getReader();
+                if(!model.isShowLocal() && reader.getRootURI().getScheme().startsWith("file"))
+                    continue;
+                if(!model.isShowRemote() && reader.getRootURI().getScheme().startsWith("http"))
+                    continue;
 
                 final RepoPathElement[] childElts = fetchChildren(element);
                 for (final RepoPathElement childElt : childElts) {

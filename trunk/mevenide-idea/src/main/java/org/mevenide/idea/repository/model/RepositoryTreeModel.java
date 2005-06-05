@@ -40,6 +40,9 @@ public class RepositoryTreeModel implements TreeModel {
      */
     private final TreeNode root;
 
+    private boolean showLocal = true;
+    private boolean showRemote = true;
+
     /**
      * Creates an instance for the given repository reader.
      *
@@ -87,6 +90,22 @@ public class RepositoryTreeModel implements TreeModel {
 
     public void removeTreeModelListener(TreeModelListener l) {
         listenerList.remove(TreeModelListener.class, l);
+    }
+
+    public boolean isShowLocal() {
+        return showLocal;
+    }
+
+    public void setShowLocal(final boolean pShowLocal) {
+        showLocal = pShowLocal;
+    }
+
+    public boolean isShowRemote() {
+        return showRemote;
+    }
+
+    public void setShowRemote(final boolean pShowRemote) {
+        showRemote = pShowRemote;
     }
 
     /**
