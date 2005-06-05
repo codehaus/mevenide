@@ -4,21 +4,22 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-config</artifactId>
     <name>Mevenide Config</name>
+    <groupId>mevenide-config</groupId>
     <currentVersion>0.8</currentVersion>
     <package>org.mevenide.config</package>
-<!--    <package>org.mevenide</package> -->
+    <!--    <package>org.mevenide</package> -->
     <description>Mevenide Config allows to manipulate Maven config, e.g. system environment variables, project config (project.properties), user-defined config (build.propertie, ...).</description>
     <versions>
-    	<version>
-			<id>0.3</id>
-			<name>0.3</name>
-			<tag>V_0_3</tag>
-    	</version>
-    	<version>
-			<id>0.2</id>
-			<name>0.2</name>
-			<tag>V_0_2</tag>
-    	</version>
+        <version>
+            <id>0.3</id>
+            <name>0.3</name>
+            <tag>V_0_3</tag>
+        </version>
+        <version>
+            <id>0.2</id>
+            <name>0.2</name>
+            <tag>V_0_2</tag>
+        </version>
     </versions>
     <dependencies>
         <dependency>
@@ -27,7 +28,7 @@
             <version>3.8.1</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -37,7 +38,7 @@
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -46,10 +47,9 @@
             <version>1.2.8</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        
         <!-- for ProjectWalker resolver -->
         <dependency>
             <groupId>maven</groupId>
@@ -57,17 +57,17 @@
             <version>1.0.2</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-    		<version>20030902.160215</version>
+            <version>20030902.160215</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -76,7 +76,7 @@
             <version>1.0.1</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
@@ -85,22 +85,23 @@
             <version>1.0</version>
             <type>jar</type>
             <properties>
-            	<eclipse.plugin.bundle>true</eclipse.plugin.bundle>
+                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
             </properties>
         </dependency>
-        
     </dependencies>
     <build>
-		<resources>
-			<resource>
-				<directory>${basedir}/etc</directory>
-				<includes>
-					<include>*.*</include>
-					<include>org/mevenide/properties/*.*</include>
-					<include>templates/**/*.*</include>
-				</includes>
-			</resource>
-		</resources>
+        <resources>
+            <resource>
+                <directory>${basedir}/etc</directory>
+                <includes>
+                    <include>*.*</include>
+                    <include>org/mevenide/properties/*.*</include>
+                    <include>templates/**/*.*</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
     </build>
 </project>
+
