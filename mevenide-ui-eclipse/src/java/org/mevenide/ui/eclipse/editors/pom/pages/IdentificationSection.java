@@ -16,6 +16,8 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -37,7 +39,13 @@ import org.eclipse.ui.dialogs.ElementTreeSelectionDialog;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.navigator.ResourceSorter;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
@@ -301,9 +309,15 @@ public class IdentificationSection extends PageSection {
 		setIfDefined(artifactIdText, pom.getArtifactId(), isInherited() ? getParentPom().getArtifactId() : null);
 		
 		
-		//setIfDefined(groupIdText, ProjectUtils.getGroupId(pom), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : "");
-        setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? ProjectUtils.getGroupId(getParentPom()) : null);
-        //setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? getParentPom().getGroupId() : null);
+        File pomFile = new File(((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString());
+
+
+        IQueryContext queryContext = new DefaultQueryContext(pomFile.getParentFile());
+        IPropertyResolver resolver = queryContext.getResolver();
+        IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
+        String inheritedGroupId = queryContext.getPOMContext().getFinalProject().getGroupId();
+        
+        setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? inheritedGroupId : null);
 		
 		setIfDefined(gumpRepoIdText, pom.getGumpRepositoryId(), isInherited() ? getParentPom().getGumpRepositoryId() : null);
     }

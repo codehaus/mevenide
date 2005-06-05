@@ -88,7 +88,7 @@ public class OverridableTextEntry extends TextEntry {
         this.inherited = inherited;
         setEnabled(!inherited);
         setFocus();
-        if (overrideToggle != null) {
+        if (overrideToggle != null && !overrideToggle.isDisposed()) {
             overrideToggle.setToolTipText(inherited ? INHERITED_TOOLTIP : OVERRIDEN_TOOLTIP);
         }
     }
