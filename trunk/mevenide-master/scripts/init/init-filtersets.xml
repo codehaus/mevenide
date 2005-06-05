@@ -13,7 +13,7 @@
   </ant:filterset>
   
   <ant:filterset id="project.versions.filterset.id">
-    <ant:filter token="org.mevenide.core.version" value="0.8.0"/>
+    <ant:filter token="org.mevenide.core.version" value="0.9.0"/>
     <ant:filter token="org.mevenide.config.version" value="0.8.0"/>
     <ant:filter token="org.mevenide.grabber.version" value="0.9.0"/>
     <ant:filter token="org.mevenide.grammar.version" value="0.6.0"/>	
