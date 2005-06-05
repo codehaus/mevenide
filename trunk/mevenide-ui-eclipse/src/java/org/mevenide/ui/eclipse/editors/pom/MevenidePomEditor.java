@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.editors.pom;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -44,6 +45,10 @@ import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
@@ -61,6 +66,7 @@ import org.mevenide.ui.eclipse.editors.pom.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.UnitTestsPage;
+import org.mevenide.util.ProjectUtils;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -477,6 +483,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         try {
             updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 
+            
             if (log.isDebugEnabled()) {
                 log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             }
@@ -497,8 +504,9 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         }
         return clean;
     }
+    
 
-    public void updateDocument() {
+	public void updateDocument() {
         if (log.isDebugEnabled()) {
             log.debug("updateDocument entered; modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
@@ -617,7 +625,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             pom.setArtifactId(p.getId().substring(p.getId().indexOf(':') + 1, p.getId().length()));
         }
         pom.setGumpRepositoryId(p.getGumpRepositoryId());
-        pom.setGroupId(p.getGroupId());
+        //pom.setGroupId(p.getGroupId());
+        pom.setGroupId(ProjectUtils.getGroupId(p));
         pom.setExtend(p.getExtend());
         pom.setDistributionSite(p.getDistributionSite());
         pom.setDistributionDirectory(p.getDistributionDirectory());
@@ -630,5 +639,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         pom.setBranches(p.getBranches());
         pom.setArtifacts(p.getArtifacts());
     }
+
+	
     
 }

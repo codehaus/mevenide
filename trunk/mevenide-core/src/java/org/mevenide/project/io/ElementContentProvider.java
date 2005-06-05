@@ -100,4 +100,8 @@ public final class ElementContentProvider implements IContentProvider {
         }
         return null;
     }
+    
+    public Object getBean() {
+    	return element;
+    }
 }

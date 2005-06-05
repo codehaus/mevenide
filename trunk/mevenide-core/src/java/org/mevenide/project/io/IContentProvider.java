@@ -55,4 +55,9 @@ public interface IContentProvider {
      * <key>:<value> formatted string entries.
      */
     List getProperties();
+    
+    /**
+     * returns ths underlying bean
+     */
+    Object getBean();
 }

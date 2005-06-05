@@ -17,6 +17,10 @@
 package org.mevenide.util;
 
 import java.io.File;
+import java.lang.reflect.Field;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IProjectContext;
@@ -29,6 +33,8 @@ import org.mevenide.context.IQueryContext;
  * 
  */
 public class ProjectUtils {
+	private static Log log = LogFactory.getLog(ProjectUtils.class);
+	
     private ProjectUtils() {}
     
     /**
@@ -42,5 +48,31 @@ public class ProjectUtils {
         Project pom = projectContext.getFinalProject();
         pom.setFile(pomFile);
         return pom;
+    }
+    
+    public static void setGroupId(Project pom, String groupId) {
+	    try {
+			Field f = pom.getClass().getDeclaredField("groupId");
+			f.setAccessible(true);
+			f.set(pom, groupId);
+			f.setAccessible(false);
+		} 
+		catch (Exception e) {
+			log.error("unable to retrieve grouId", e);
+		}
+    }
+    
+    public static String getGroupId(Project pom) {
+	    String groupId = null;
+		try {
+			Field f = pom.getClass().getDeclaredField("groupId");
+			f.setAccessible(true);
+			groupId = (String) f.get(pom);
+			f.setAccessible(false);
+		} 
+		catch (Exception e) {
+			log.error("unable to retrieve grouId", e);
+		}
+		return groupId;
     }
 }

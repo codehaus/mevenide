@@ -17,12 +17,14 @@
 package org.mevenide.project;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.Vector;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
@@ -37,9 +39,6 @@ import org.apache.maven.project.Resource;
 import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.util.MevenideUtils;
 
 /**
