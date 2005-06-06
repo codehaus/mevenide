@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-  <release version="0.4.0" date"2005-05-30">
+  <release version="0.4.0" date="2005-05-30">
     <action dev="fdutton" type="fix" issue="MEVENIDE-218">
         Dependency conflict between Maven and Mavenzilla.
     </action>
@@ -173,7 +173,7 @@
     Cannot clear jdom dependency.
     </action>
   </release>
-  	<release version="0.3.0" date="in CVS">
+  	<release version="0.3.0" date="2004-10-01">
   	  <action dev="gdodinet" type="fix" issue="MEVENIDE-80">
 		Added a preference to control the location of tools.jar.
       </action>
