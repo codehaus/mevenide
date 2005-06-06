@@ -14,6 +14,8 @@ import org.mevenide.idea.Res;
 import org.mevenide.idea.util.IDEUtils;
 
 /**
+ * PSI utilities.
+ * 
  * @author Arik
  */
 public abstract class PsiUtils {
@@ -27,7 +29,15 @@ public abstract class PsiUtils {
      */
     private static final Res RES = Res.getInstance(PsiUtils.class);
 
-    public static XmlFile findXmlFile(final Project pProject, final Document pDocument) {
+    /**
+     * Returns the {@link XmlFile} associated with the specified document in the specified project.
+     *
+     * @param pProject  the project context
+     * @param pDocument the document to find the file for
+     * @return the XML file, or {@code null} if the file can't be found (shouldn't happen)
+     */
+    public static XmlFile findXmlFile(final Project pProject,
+                                      final Document pDocument) {
         final PsiDocumentManager psiDocMgr = PsiDocumentManager.getInstance(pProject);
 
         PsiFile psiFile = psiDocMgr.getCachedPsiFile(pDocument);
@@ -41,6 +51,13 @@ public abstract class PsiUtils {
                                                    psiFile.getVirtualFile().getPath()));
     }
 
+    /**
+     * Convenience method for getting a value from a tag. If the given tag is {@code null}, this method will simply
+     * return {@code null} and not fail.
+     *
+     * @param pTag the tag to retrieve the value from (can be {@code null}
+     * @return the text value of the tag (trimmed), or {@code null}
+     */
     public static String getTagValue(final XmlTag pTag) {
         if (pTag == null)
             return null;
@@ -52,6 +69,16 @@ public abstract class PsiUtils {
         return value.getTrimmedText();
     }
 
+    /**
+     * Sets the value of the first tag with the specified name under the given parent tag.
+     *
+     * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
+     *
+     * @param pProject   the project context
+     * @param pParentTag the parent tag (must not be {@code null}
+     * @param pTagName   the child tag name to find (must not be {@code null}
+     * @param pValue     the value to set in the tag
+     */
     public static void setTagValue(final Project pProject,
                                    final XmlTag pParentTag,
                                    final String pTagName,
@@ -80,12 +107,19 @@ public abstract class PsiUtils {
         });
     }
 
+    /**
+     * Sets the value of the given tag.
+     *
+     * @param pProject the project context
+     * @param pTag     the tag (must not be {@code null}
+     * @param pValue   the value to set in the tag
+     */
     public static void setTagValue(final Project pProject,
-                                   final XmlTag pParentTag,
+                                   final XmlTag pTag,
                                    final String pValue) {
         IDEUtils.runCommand(pProject, new Runnable() {
             public void run() {
-                pParentTag.getValue().setText(pValue);
+                pTag.getValue().setText(pValue);
             }
         });
     }
