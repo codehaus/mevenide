@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Set;
 import org.mevenide.context.AbstractQueryContext;
 import org.mevenide.context.IProjectContext;
-import org.mevenide.context.IQueryContext;
 
 /**
  *

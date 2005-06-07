@@ -20,7 +20,6 @@ package org.mevenide.project.dependency;
 import junit.framework.*;
 import org.apache.maven.project.Dependency;
 import org.mevenide.TestQueryContext;
-import org.mevenide.context.IQueryContext;
 
 /**
  * @author  Milos Kleint (ca206216@tiscali.cz)
