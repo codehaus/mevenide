@@ -18,7 +18,6 @@
 package org.mevenide.project.dependency;
 
 import junit.framework.*;
-import java.io.File;
 import java.net.URI;
 
 /**
