@@ -4,7 +4,7 @@
       label="Mevenide, Maven plugin for Eclipse"
       version="@maven.eclipse.plugin.artifact.version@"
       provider-name="The Codehaus"
-      plugin="Mevenide"
+      plugin="@org.mevenide.ui.eclipse.id@"
       image="mevenide.png">
 
    <description>
@@ -16,7 +16,7 @@
    </license>
 
    <url>
-      <update label="Mevenide update" url="http://mevenide.codehaus.org/release/eclipse/update"/>
+      <update label="MevenIDE Update Site" url="http://mevenide.codehaus.org/release/eclipse/update"/>
    </url>
 
    <requires>
