@@ -17,8 +17,7 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -51,13 +50,7 @@ public abstract class AbstractPomLayerPanel extends JPanel implements Disposable
     /**
      * The IDEA project the POM file, that this POM panel edits, belongs to.
      */
-    protected final Project project;
-
-    /**
-     * The POM file's IDEA document. Changes are propagated from the user interface into this
-     * object.
-     */
-    protected final Document document;
+    protected final XmlFile file;
 
     /**
      * The current focused component.
@@ -73,16 +66,11 @@ public abstract class AbstractPomLayerPanel extends JPanel implements Disposable
     /**
      * Creates an instance for the given project and POM document.
      *
-     * @param pProject     the project that the POM file belongs to
-     * @param pPomDocument the POM file's IDEA document
+     * @param pFile the POM file
      */
-    protected AbstractPomLayerPanel(final Project pProject,
-                                    final Document pPomDocument) {
-
+    protected AbstractPomLayerPanel(final XmlFile pFile) {
         LOG = LogFactory.getLog(this.getClass());
-
-        project = pProject;
-        document = pPomDocument;
+        file = pFile;
 
         //
         //this will make sure that when the editor is reselected, the correct

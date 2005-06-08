@@ -16,21 +16,19 @@
  */
 package org.mevenide.idea.editor.pom.ui.layer;
 
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.xml.XmlFile;
+import com.intellij.ui.ScrollPaneFactory;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.lang.reflect.Field;
 import javax.swing.JComboBox;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.ScrollPaneFactory;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.RelativeTextFieldWithBrowseButton;
@@ -66,12 +64,11 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
     private final JTextField orgUrlField = new JTextField();
     private final TextFieldWithBrowseButton orgLogoUrlField;
 
-    public GeneralInfoPanel(final com.intellij.openapi.project.Project pProject,
-                            final Document pPomDocument) {
-        super(pProject, pPomDocument);
+    public GeneralInfoPanel(final XmlFile pFile) {
+        super(pFile);
 
-        final VirtualFile file = FileDocumentManager.getInstance().getFile(document);
-        final VirtualFile dir = file.getParent();
+        final VirtualFile virtualFile = file.getVirtualFile();
+        final VirtualFile dir = virtualFile.getParent();
 
         extendField = new RelativeTextFieldWithBrowseButton(dir);
         logoUrlField = new RelativeTextFieldWithBrowseButton(dir);
@@ -88,19 +85,19 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
         extendField.addBrowseFolderListener(
                 RES.get("choose.pom.parent"),
                 RES.get("choose.pom.parent.desc"),
-                project,
+                file.getProject(),
                 FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         logoUrlField.addBrowseFolderListener(
                 RES.get("choose.org.logo"),
                 RES.get("choose.org.logo.desc"),
-                project,
+                file.getProject(),
                 FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         orgLogoUrlField.addBrowseFolderListener(
                 RES.get("choose.org.logo"),
                 RES.get("choose.org.logo.desc"),
-                project,
+                file.getProject(),
                 FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
@@ -174,23 +171,23 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(file);
 
-            binder.bind(extendField.getTextField(), "extend");
-            binder.bind(nameField, "name");
-            binder.bind(versionField, "currentVersion");
-            binder.bind(artifactIdField, "artifactId");
-            binder.bind(groupIdField, "groupId");
-            binder.bind(inceptionYearField, "inceptionYear");
-            binder.bind(urlField, "url");
-            binder.bind(logoUrlField.getTextField(), "logo");
-            binder.bind(shortDescField, "shortDescription");
-            binder.bind(descField, "description");
-            binder.bind(packageField, "package");
-            binder.bind(issueTrackingUrlField, "issueTrackingUrl");
-            binder.bind(orgNameField, "organization/name");
-            binder.bind(orgUrlField, "organization/url");
-            binder.bind(orgLogoUrlField.getTextField(), "organization/logo");
+            binder.bind(extendField.getTextField(), "project/extend");
+            binder.bind(nameField, "project/name");
+            binder.bind(versionField, "project/currentVersion");
+            binder.bind(artifactIdField, "project/artifactId");
+            binder.bind(groupIdField, "project/groupId");
+            binder.bind(inceptionYearField, "project/inceptionYear");
+            binder.bind(urlField, "project/url");
+            binder.bind(logoUrlField.getTextField(), "project/logo");
+            binder.bind(shortDescField, "project/shortDescription");
+            binder.bind(descField, "project/description");
+            binder.bind(packageField, "project/package");
+            binder.bind(issueTrackingUrlField, "project/issueTrackingUrl");
+            binder.bind(orgNameField, "project/organization/name");
+            binder.bind(orgUrlField, "project/organization/url");
+            binder.bind(orgLogoUrlField.getTextField(), "project/organization/logo");
         }
     }
 }

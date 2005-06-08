@@ -1,18 +1,16 @@
-package org.mevenide.idea.editor.pom.ui.layer.resources;
+package org.mevenide.idea.editor.pom.ui.layer.build;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
-import org.mevenide.idea.util.ui.table.SimpleTagBasedXmlPsiTableModel;
-import org.mevenide.idea.util.IDEUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.util.psi.MultiValuedXmlTagRowsTableModel;
 
 /**
  * The table model for resources table.
  *
- * <p>This class extends the standard {@link SimpleTagBasedXmlPsiTableModel simple tag-based} model
+ * <p>This class extends the standard {@link MultiValuedXmlTagRowsTableModel simple tag-based} model
  * to override the mechanism for extracting the values for the {@code <includes>} and {@code
  * <excludes>} columns.</p>
  *
@@ -28,7 +26,7 @@ import org.apache.commons.logging.LogFactory;
  *
  * @author Arik
  */
-public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
+public class ResourcesTableModel extends MultiValuedXmlTagRowsTableModel {
     /**
      * Logging.
      */
@@ -40,13 +38,23 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
     private static final String[] EMPTY_ARRAY = new String[0];
 
     /**
-     * The titles for the model columns.
+     * The names of the tags that contain lists of patterns. Each
+     * such tag will contain multiple instances of one of the tags
+     * in {@link #PATTERN_TAG_NAMES}.
      */
-    private static final String[] COLUMN_TITLES = new String[]{
-        "Directory",
-        "Target Path",
-        "Includes",
-        "Excludes"
+    private static final String[] PATTERNS_CONTAINER_TAG_NAMES = new String[] {
+        "includes",
+        "excludes"
+    };
+
+    /**
+     * The names of the tags that contain the actual patterns. Each such
+     * tag appears one or more times under one of the {@link #PATTERNS_CONTAINER_TAG_NAMES}
+     * tags.
+     */
+    private static final String[] PATTERN_TAG_NAMES = new String[] {
+        "include",
+        "exclude"
     };
 
     /**
@@ -69,22 +77,15 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
     /**
      * Creates an instance for the given project and document. The model will use the specified
      * container tag name (e.g. {@code build/resources}) since this model can be used to represent
-     * resource lists for more than one location (source code resources, test cases resources,
+     * resource lists for more than one location (source code resources, test cases build,
      * etc).
      *
-     * @param pProject          the project this model belongs to
-     * @param pDocument         the POM document backing up this model
+     * @param pFile the POM file
      * @param pContainerTagName the path to the {@code <resources>} tag, inclusive
      */
-    public ResourcesTableModel(final Project pProject,
-                               final Document pDocument,
+    public ResourcesTableModel(final XmlFile pFile,
                                final String pContainerTagName) {
-        super(pProject,
-              pDocument,
-              pContainerTagName,
-              ROW_TAG_NAME,
-              COLUMN_TITLES,
-              VALUE_TAG_NAMES);
+        super(pFile, pContainerTagName, ROW_TAG_NAME, VALUE_TAG_NAMES);
     }
 
     /**
@@ -95,7 +96,7 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
      * @return boolean
      */
     protected boolean isPatternsColumn(final int pColumn) {
-        return valueTagNames[pColumn] == null;
+        return VALUE_TAG_NAMES[pColumn] == null;
     }
 
     /**
@@ -142,77 +143,50 @@ public class ResourcesTableModel extends SimpleTagBasedXmlPsiTableModel {
         }
     }
 
-    @Override protected void setValueInTag(final XmlTag pRowTag,
-                                           final Object pValue,
-                                           final int pRow,
-                                           final int pColumn) {
-        if (!isPatternsColumn(pColumn)) {
-            super.setValueInTag(pRowTag, pValue, pRow, pColumn);
-            return;
-        }
-
-        //
-        //find the appropriate resource tag for this row
-        //
-        final XmlTag resourceTag = findRowTag(pRow);
-
-        //
-        //determine if we are setting the includes or excludes patterns
-        //
-        final String containerTagName;
-        final String rowTagName;
-        if (pColumn == 2) {
-            containerTagName = "includes";
-            rowTagName = "include";
-        }
-        else {
-            containerTagName = "excludes";
-            rowTagName = "exclude";
-        }
-
-        final Runnable command = new Runnable() {
-            public void run() {
-                try {
-                    final String[] patterns =
-                            pValue == null ?
-                                    EMPTY_ARRAY :
-                                    (String[]) pValue;
-                    setResourcePatterns(resourceTag, containerTagName, rowTagName, patterns);
-                }
-                catch (IncorrectOperationException e) {
-                    LOG.error(e.getMessage(), e);
-                }
-            }
-        };
-        IDEUtils.runCommand(project, command);
-    }
-
-    @Override protected Object getValueFromTag(final XmlTag pTag,
-                                               final int pRow,
-                                               final int pColumn) {
+    protected Object getTagRowValue(final XmlTag pTag, final int pColumn) {
         if (!isPatternsColumn(pColumn))
-            return super.getValueFromTag(pTag, pRow, pColumn);
+            return super.getTagRowValue(pTag, pColumn);
 
-        final String patternContainerTagName;
-        final String patternRowTagName;
-        if (pColumn == 2) {
-            patternContainerTagName = "includes";
-            patternRowTagName = "include";
-        }
-        else {
-            patternContainerTagName = "excludes";
-            patternRowTagName = "exclude";
-        }
-
-        final XmlTag patternContainerTag = pTag.findFirstSubTag(patternContainerTagName);
+        //
+        //find out the appropriate tag names based on the column index
+        //we add 2 to the index, since the tag names arrays start with 0,
+        //but the columns hav two extra columns before the pattern columns
+        //
+        final XmlTag patternContainerTag = pTag.findFirstSubTag(PATTERNS_CONTAINER_TAG_NAMES[pColumn - 2]);
         if (patternContainerTag == null)
             return null;
 
-        final XmlTag[] patternRowTags = patternContainerTag.findSubTags(patternRowTagName);
+        final XmlTag[] patternRowTags = patternContainerTag.findSubTags(PATTERN_TAG_NAMES[pColumn - 2]);
         final String[] patterns = new String[patternRowTags.length];
         for (int i = 0; i < patterns.length; i++)
             patterns[i] = patternRowTags[i].getValue().getTrimmedText();
 
         return patterns;
+    }
+
+    @Override
+    protected void setTagRowValue(final XmlTag pTag, final Object pValue, final int pColumn) {
+        if (!isPatternsColumn(pColumn)) {
+            super.setTagRowValue(pTag, pValue, pColumn);
+            return;
+        }
+
+        try {
+            final String[] patterns =
+                pValue == null ? EMPTY_ARRAY : (String[]) pValue;
+
+            //
+            //find out the appropriate tag names based on the column index
+            //we add 2 to the index, since the tag names arrays start with 0,
+            //but the columns hav two extra columns before the pattern columns
+            //
+            setResourcePatterns(pTag,
+                                PATTERNS_CONTAINER_TAG_NAMES[pColumn - 2],
+                                PATTERN_TAG_NAMES[pColumn - 2],
+                                patterns);
+        }
+        catch (IncorrectOperationException e) {
+            LOG.error(e.getMessage(), e);
+        }
     }
 }

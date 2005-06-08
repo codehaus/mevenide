@@ -1,16 +1,14 @@
 package org.mevenide.idea.editor.pom.ui.layer;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
+import java.awt.Component;
+import java.lang.reflect.Field;
+import javax.swing.JTextField;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
-
-import javax.swing.JTextField;
-import java.awt.Component;
-import java.lang.reflect.Field;
 
 /**
  * @author Arik
@@ -26,8 +24,8 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
     private final JTextField distributionAddressField = new JTextField();
     private final JTextField distributionDirectoryField = new JTextField();
 
-    public DeploymentPanel(final Project pProject, final Document pPomDocument) {
-        super(pProject, pPomDocument);
+    public DeploymentPanel(final XmlFile pFile) {
+        super(pFile);
 
         initComponents();
         layoutComponents();
@@ -67,12 +65,12 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(file);
 
-            binder.bind(siteAddressField, "siteAddress");
-            binder.bind(siteDirectoryField, "siteDirectory");
-            binder.bind(distributionAddressField, "distributionAddress");
-            binder.bind(distributionDirectoryField, "distributionDirectory");
+            binder.bind(siteAddressField, "project/siteAddress");
+            binder.bind(siteDirectoryField, "project/siteDirectory");
+            binder.bind(distributionAddressField, "project/distributionAddress");
+            binder.bind(distributionDirectoryField, "project/distributionDirectory");
         }
     }
 }
