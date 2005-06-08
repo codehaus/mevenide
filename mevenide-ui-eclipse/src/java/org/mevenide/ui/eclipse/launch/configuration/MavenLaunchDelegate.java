@@ -136,7 +136,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
             DebugPlugin.getDefault().getLaunchManager().addLaunches(new ILaunch[] {launch});
             DebugPlugin.getDefault().getLaunchManager().addLaunchListener(launchListener);
             
-            DebugUIPlugin.getDefault().getConsoleDocumentManager().launchAdded(launch);
+            DebugUIPlugin.getDefault().getProcessConsoleManager().launchAdded(launch);
 		}
 
 	}
