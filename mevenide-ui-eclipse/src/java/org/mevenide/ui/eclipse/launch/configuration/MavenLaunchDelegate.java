@@ -69,6 +69,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
 	private ILaunchConfiguration config;
 
+	
 	public void launch(ILaunchConfiguration configuration, String mode, ILaunch launch, IProgressMonitor monitor) throws CoreException {
 		config = configuration;
 		
@@ -135,24 +136,22 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
             DebugPlugin.getDefault().getLaunchManager().addLaunches(new ILaunch[] {launch});
             DebugPlugin.getDefault().getLaunchManager().addLaunchListener(launchListener);
             
-            DebugUIPlugin.getDefault().getProcessConsoleManager().launchAdded(launch);
+            DebugUIPlugin.getDefault().getConsoleDocumentManager().launchAdded(launch);
 		}
 
 	}
+	
 	
 	private void assertRequiredLocationsConfigured() throws CoreException {
 				
         ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
 
-        String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
-        javaHome = org.mevenide.util.StringUtils.isNull(javaHome) ? finder.getJavaHome() : javaHome;
+        String javaHome = getJavaHome();
         
         String mavenHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
         mavenHome = org.mevenide.util.StringUtils.isNull(mavenHome) ? finder.getMavenHome() : mavenHome;
         
-        String toolsJarArg = !org.mevenide.util.StringUtils.isNull(RunnerUtils.getToolsJar()) ? 
-							 RunnerUtils.getToolsJar(this) : PreferencesManager.getManager().getValue("tools.jar"); //$NON-NLS-1$
-        
+        String toolsJarArg = getToolsJar();
         
         boolean mavenHomeDefined = !org.mevenide.util.StringUtils.isNull(mavenHome); 
         boolean javaHomeDefined = !org.mevenide.util.StringUtils.isNull(javaHome);
@@ -298,7 +297,12 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 
 	public String getJavaHome() {
-		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
+		ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
+		
+		String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
+        javaHome = org.mevenide.util.StringUtils.isNull(javaHome) ? finder.getJavaHome() : javaHome;
+        
+        return javaHome;
 	}
 
 	public String getMavenHome() {
@@ -314,7 +318,10 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 
 	public String getToolsJar() {
-		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY);
+		String toolsJar = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY);
+		toolsJar = org.mevenide.util.StringUtils.isNull(toolsJar) ? RunnerUtils.getToolsJar() : toolsJar;
+		
+		return toolsJar;
 	}
 
 }
