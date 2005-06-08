@@ -48,8 +48,11 @@ public class RunnerUtils {
         String toolsJar = javaHome + File.separator + "lib" + File.separator + "tools.jar";
 	    if ( !new File(toolsJar).exists() ) {
 	    	//mac os x..  
-	        //convenient default for MacOSX 10.3.4 where classes.jar is JAVA_HOME/../Classes/classes.jar 
+	        //convenient default for MacOSX 10.3.4 where classes.jar is JAVA_HOME/../Classes/classes.jar
 	    	toolsJar = new File(javaHome).getParent();
+	    	if ( toolsJar == null ) {
+	    		throw new RuntimeException("Can't retrieve tools.jar");
+	    	}
 	    	String classesJarPart = "Classes/classes.jar";
 	    	if ( toolsJar.endsWith("/") ) {
 	    		toolsJar += classesJarPart;
