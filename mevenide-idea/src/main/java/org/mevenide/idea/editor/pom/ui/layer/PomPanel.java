@@ -16,22 +16,23 @@
  */
 package org.mevenide.idea.editor.pom.ui.layer;
 
+import com.intellij.psi.xml.XmlFile;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
-import static org.mevenide.idea.editor.pom.ui.layer.TableModelConstants.MAILING_LISTS;
+import org.mevenide.idea.editor.pom.ui.layer.dependencies.DependenciesPanel;
+import org.mevenide.idea.editor.pom.ui.layer.mailingLists.MailingListsPanel;
 import org.mevenide.idea.editor.pom.ui.layer.reports.ReportsPanel;
+import org.mevenide.idea.editor.pom.ui.layer.scm.ScmPanel;
 import org.mevenide.idea.editor.pom.ui.layer.team.TeamPanel;
+import org.mevenide.idea.editor.pom.ui.layer.tests.TestingPanel;
+import org.mevenide.idea.editor.pom.ui.layer.build.SourcesPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 
 /**
  * This panel displays a single POM layer.
@@ -46,19 +47,18 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
 
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 
-    private final JPanel generalInfoPanel = new GeneralInfoPanel(project, document);
-    private final JPanel mailingListsPanel = new CRUDTablePanel(project, document, MAILING_LISTS);
-    private final JPanel depsPanel = new DependenciesPanel(project, document);
-    private final JPanel deploymentPanel = new DeploymentPanel(project, document);
-    private final JPanel teamPanel = new TeamPanel(project, document);
-    private final JPanel scmPanel = new ScmPanel(project, document);
-    private final JPanel sourcesPanel = new SourcesPanel(project, document);
-    private final JPanel testsPanel = new TestingPanel(project, document);
-    private final JPanel reportsPanel = new ReportsPanel(project, document);
+    private final JPanel generalInfoPanel = new GeneralInfoPanel(file);
+    private final JPanel mailingListsPanel = new MailingListsPanel(file);
+    private final JPanel depsPanel = new DependenciesPanel(file);
+    private final JPanel deploymentPanel = new DeploymentPanel(file);
+    private final JPanel teamPanel = new TeamPanel(file);
+    private final JPanel scmPanel = new ScmPanel(file);
+    private final JPanel sourcesPanel = new SourcesPanel(file);
+    private final JPanel testsPanel = new TestingPanel(file);
+    private final JPanel reportsPanel = new ReportsPanel(file);
 
-    public PomPanel(final Project pProject,
-                    final Document pPomDocument) {
-        super(pProject, pPomDocument);
+    public PomPanel(final XmlFile pFile) {
+        super(pFile);
 
         initComponents();
         layoutComponents();

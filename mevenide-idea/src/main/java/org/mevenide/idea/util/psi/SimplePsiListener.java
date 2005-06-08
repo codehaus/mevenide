@@ -5,19 +5,7 @@ import com.intellij.psi.PsiTreeChangeEvent;
 /**
  * @author Arik
  */
-public interface PsiModifiable {
-    /**
-     * An enum for specifying what is the source of current event.
-     *
-     * <p>When the user modifies the UI (not from the text editor), the {@link
-     * PsiModifiable#getModificationSource} method should return {@link #UI}. If the user modifies
-     * using the text editor, the method should return {@link #EDITOR}.
-     *
-     * <p>This is done because the code responding to UI modifications updates the PSI tree, which
-     * invokes the code responding to PSI modifications, which updates the UI - this can cause an
-     * infinite loop, so we need to know who started the loop to avoid it.</p>
-     */
-    public static enum ModificationSource { UI, EDITOR }
+public interface SimplePsiListener {
 
     /**
      * Returns the source of the current modification taking place.
@@ -40,18 +28,6 @@ public interface PsiModifiable {
      * @param pSource the event source
      */
     void setModificationSource(ModificationSource pSource);
-
-    /**
-     * Completely rebuilds the model from the PSI tree.
-     *
-     * <p>Usually, this method will call the {@link #refreshModel(PsiEventType,PsiTreeChangeEvent)}
-     * method with a {@code null} argument.
-     *
-     * <p>This method should be {@code final} so that only one place will contain synchronization
-     * logic (the {@link #refreshModel(PsiEventType,PsiTreeChangeEvent)} method). When implementing
-     * it, make sure you take into account that the event parameter might be {@code null}.</p>
-     */
-    void refreshModel();
 
     /**
      * This method must synchronize this model with the PSI model, where the PSI model acts as the

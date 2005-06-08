@@ -1,9 +1,9 @@
 package org.mevenide.idea.util.ui.text;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
-
+import com.intellij.psi.xml.XmlFile;
 import javax.swing.text.JTextComponent;
+import org.mevenide.idea.util.psi.XmlSwingDocument;
+import org.mevenide.idea.util.psi.XmlTagPath;
 
 /**
  * @author Arik
@@ -12,40 +12,30 @@ public class XmlPsiDocumentBinder {
     /**
      * The project this binder will find documents for.
      */
-    private final Project project;
-
-    /**
-     * The document that text components will be bound to.
-     */
-    private final Document document;
+    private final XmlFile file;
 
     /**
      * Creates a binder instance for the given project and document.
      *
-     * @param pProject  the project
-     * @param pDocument the document that bound text components will update/listen
+     * @param pFile the XML file to bind to
      */
-    public XmlPsiDocumentBinder(final Project pProject, final Document pDocument) {
-        project = pProject;
-        document = pDocument;
+    public XmlPsiDocumentBinder(final XmlFile pFile) {
+        file = pFile;
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's project and
-     * document.
+     * Bind the given text component to the specified element path in this binder's project and document.
      *
-     * @param pComponent   the component to bind
-     * @param pElementName the element path the component will be bound to - can be a path of
-     *                     elements, a-la {@code project/build/sourceDirectory}.
+     * @param pComponent the component to bind
+     * @param pTagPath   the element path the component will be bound to - can be a path of elements, a-la {@code
+     *                   project/build/sourceDirectory}.
      */
-    public XmlPsiSwingDocument bind(final JTextComponent pComponent,
-                                    final String pElementName) {
+    public XmlSwingDocument bind(final JTextComponent pComponent,
+                                 final String pTagPath) {
         //
         //create the listener
         //
-        final XmlPsiSwingDocument model = new XmlPsiSwingDocument(project,
-                                                                  document,
-                                                                  pElementName);
+        final XmlSwingDocument model = new XmlSwingDocument(file, pTagPath);
         //
         //bind the new listener
         //
@@ -54,20 +44,18 @@ public class XmlPsiDocumentBinder {
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's project and
-     * document.
+     * Bind the given text component to the specified element path in this binder's project and document.
      *
-     * @param pComponent    the component to bind
-     * @param pElementNames the element path the component will be bound to
+     * @param pComponent the component to bind
+     * @param pTagPath   the element path the component will be bound to
      */
-    public XmlPsiSwingDocument bind(final JTextComponent pComponent,
-                                    final String[] pElementNames) {
+    public XmlSwingDocument bind(final JTextComponent pComponent,
+                                 final XmlTagPath pTagPath) {
         //
         //create the listener
         //
-        final XmlPsiSwingDocument model = new XmlPsiSwingDocument(project,
-                                                                  document,
-                                                                  pElementNames);
+        final XmlSwingDocument model = new XmlSwingDocument(pTagPath);
+
         //
         //bind the new listener
         //

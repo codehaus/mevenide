@@ -25,7 +25,7 @@ public abstract class IDEUtils {
                 CommandProcessor.getInstance().executeCommand(
                         pProject,
                         pRunnable,
-                        "Add Dependency",
+                        "Maven Command",
                         "POM");
             }
         });

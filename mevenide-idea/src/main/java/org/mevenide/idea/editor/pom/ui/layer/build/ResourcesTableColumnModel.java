@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.layer.resources;
+package org.mevenide.idea.editor.pom.ui.layer.build;
 
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.util.ui.table.StringListTableCellEditor;

@@ -1,20 +1,18 @@
-package org.mevenide.idea.editor.pom.ui.layer;
+package org.mevenide.idea.editor.pom.ui.layer.tests;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.editor.pom.ui.layer.resources.ResourcesPanel;
-import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.util.ui.table.CRUDTablePanel;
-import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.Component;
 import java.lang.reflect.Field;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.editor.pom.ui.layer.AbstractPomLayerPanel;
+import org.mevenide.idea.editor.pom.ui.layer.build.ResourcesPanel;
+import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
+import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 /**
  * @author Arik
@@ -38,26 +36,29 @@ public class TestingPanel extends AbstractPomLayerPanel {
     /**
      * The test source code resources panel.
      */
-    private final ResourcesPanel testsResourcesPanel = new ResourcesPanel(project, document, "build/unitTest/resources");
+    private final ResourcesPanel testsResourcesPanel;
 
     /**
      * The tests include patterns panel.
      */
-    private final CRUDTablePanel testsIncludesPanel = new CRUDTablePanel(project, document, TableModelConstants.TESTS_INCLUDES);
+    private final TestsPatternsPanel testsIncludesPanel;
 
     /**
      * The tests exclude patterns panel.
      */
-    private final CRUDTablePanel testsExcludesPanel = new CRUDTablePanel(project, document, TableModelConstants.TESTS_EXCLUDES);
+    private final TestsPatternsPanel testsExcludesPanel;
 
     /**
-     * Creates an instance for the given project and document.
+     * Creates an instance for the given file.
      *
-     * @param pProject the project this editor belongs to
-     * @param pPomDocument the document backing up this panel
+     * @param pXmlFile the file we are editing
      */
-    public TestingPanel(final Project pProject, final Document pPomDocument) {
-        super(pProject, pPomDocument);
+    public TestingPanel(final XmlFile pXmlFile) {
+        super(pXmlFile);
+
+        testsIncludesPanel = new TestsPatternsPanel(pXmlFile, "include");
+        testsExcludesPanel = new TestsPatternsPanel(pXmlFile, "exclude");
+        testsResourcesPanel = new ResourcesPanel(pXmlFile, "project/build/unitTest/resources");
 
         initComponents();
         layoutComponents();
@@ -102,9 +103,9 @@ public class TestingPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(file);
 
-            binder.bind(testsSourceDirField, "build/unitTestSourceDirectory");
+            binder.bind(testsSourceDirField, "project/build/unitTestSourceDirectory");
         }
     }
 

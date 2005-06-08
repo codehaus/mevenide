@@ -1,7 +1,6 @@
 package org.mevenide.idea.editor.pom.ui.layer.team;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 
 /**
@@ -9,16 +8,11 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  */
 public class TeamCRUDTablePanel extends CRUDTablePanel {
 
-    public TeamCRUDTablePanel(final Project pProject,
-                              final Document pDocument,
+    public TeamCRUDTablePanel(final XmlFile pFile,
                               final String pContainerTagName,
                               final String pRowTagName) {
-        super(pProject,
-              pDocument,
-              new TeamTableModel(pProject,
-                                 pDocument,
-                                 pContainerTagName,
-                                 pRowTagName));
+        super(pFile,
+              new TeamTableModel(pFile, pContainerTagName, pRowTagName));
         component.setColumnModel(new TeamTableColumnModel(project));
         component.setAutoCreateColumnsFromModel(false);
     }

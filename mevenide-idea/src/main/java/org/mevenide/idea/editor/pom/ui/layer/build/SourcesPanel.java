@@ -1,22 +1,20 @@
-package org.mevenide.idea.editor.pom.ui.layer;
+package org.mevenide.idea.editor.pom.ui.layer.build;
 
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
+import com.intellij.psi.xml.XmlFile;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.editor.pom.ui.layer.resources.ResourcesPanel;
-import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
-
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import static java.awt.GridBagConstraints.BOTH;
 import java.awt.GridBagLayout;
 import java.lang.reflect.Field;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.editor.pom.ui.layer.AbstractPomLayerPanel;
+import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
+import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.text.XmlPsiDocumentBinder;
 
 /**
  * @author Arik
@@ -40,18 +38,17 @@ public class SourcesPanel extends AbstractPomLayerPanel {
     /**
      * The resources panel.
      */
-    private final ResourcesPanel resourcesPanel = new ResourcesPanel(
-            project, document, "build/resources");
+    private final ResourcesPanel resourcesPanel;
 
     /**
      * Creates an instance for the given project and document.
      *
-     * @param pProject the project this editor belongs to
-     * @param pPomDocument the document backing up this panel
+     * @param pFile the POM file
      */
-    public SourcesPanel(final Project pProject, final Document pPomDocument) {
-        super(pProject, pPomDocument);
+    public SourcesPanel(final XmlFile pFile) {
+        super(pFile);
 
+        resourcesPanel = new ResourcesPanel(pFile, "project/build/resources");
         initComponents();
         layoutComponents();
         bindComponents();
@@ -92,10 +89,10 @@ public class SourcesPanel extends AbstractPomLayerPanel {
 
     private void bindComponents() {
         synchronized (this) {
-            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(project, document);
+            final XmlPsiDocumentBinder binder = new XmlPsiDocumentBinder(file);
 
-            binder.bind(sourceDirField, "build/sourceDirectory");
-            binder.bind(aspectSourceDirField, "build/aspectSourceDirectory");
+            binder.bind(sourceDirField, "project/build/sourceDirectory");
+            binder.bind(aspectSourceDirField, "project/build/aspectSourceDirectory");
         }
     }
 

@@ -19,6 +19,7 @@ package org.mevenide.idea.editor.pom;
 import javax.swing.JComponent;
 
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -26,6 +27,7 @@ import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import org.mevenide.idea.editor.pom.ui.layer.PomPanel;
 import org.mevenide.idea.util.components.AbstractFileEditor;
+import org.mevenide.idea.util.psi.PsiUtils;
 
 /**
  * An editor for POM files.
@@ -50,7 +52,11 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     public PomFileEditor(final Project pProject,
                          final VirtualFile pPomFile) {
         super("editor.name", pProject, pPomFile);
-        ui = new PomPanel(project, document);
+
+        final FileDocumentManager filedocMgr = FileDocumentManager.getInstance();
+        final Document document = filedocMgr.getDocument(pPomFile);
+
+        ui = new PomPanel(PsiUtils.findXmlFile(pProject, document));
     }
 
     /**
