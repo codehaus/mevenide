@@ -197,8 +197,12 @@
         <root url="jar://$maven.repo$/com.intellij/jars/openapi-3354.jar!/" />
         <root url="jar://$maven.repo$/com.intellij/jars/extensions-3354.jar!/" />
       </CLASSES>
-      <JAVADOC />
-      <SOURCES />
+      <JAVADOC>
+        <root url="file://$idea.home$/help/openapi" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />
+      </SOURCES>
     </library>
     <library name="commons-beanutils-core-1.7.0">
       <CLASSES>
@@ -225,8 +229,13 @@
       <CLASSES>
         <root url="jar://$maven.repo$/commons-lang/jars/commons-lang-2.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
-      <SOURCES />
+      <JAVADOC>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/docs/api" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/java" />
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/conf" />
+      </SOURCES>
     </library>
     <library name="commons-logging-1.0.3">
       <CLASSES>
