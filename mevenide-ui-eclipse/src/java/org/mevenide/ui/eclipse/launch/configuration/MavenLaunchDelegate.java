@@ -23,9 +23,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -36,7 +38,7 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
-import org.eclipse.debug.internal.ui.DebugUIPlugin;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
@@ -135,8 +137,6 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
             ILaunchesListener2 launchListener = new MavenLaunchesListener();
             DebugPlugin.getDefault().getLaunchManager().addLaunches(new ILaunch[] {launch});
             DebugPlugin.getDefault().getLaunchManager().addLaunchListener(launchListener);
-            
-            //DebugUIPlugin.getDefault().getProcessConsoleManager().launchAdded(launch);
 		}
 
 	}
@@ -211,6 +211,25 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 	
 	public IVMInstall getVMInstall() {
+        IVMInstall vmInstall = null;
+        IProject[] projects = Mevenide.getWorkspace().getRoot().getProjects();
+        IProject project = null;
+        for ( int u = 0; u < projects.length; u++ ) {
+            IProject p = projects[u]; 
+            if ( p.getLocation().toOSString().replaceAll("\\\\", "/").equals(getBasedir().replaceAll("\\\\", "/")) ) {
+                project = p;
+                break;
+            }
+        }
+        try {
+            if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
+                return JavaRuntime.getVMInstall(JavaCore.create(project));
+            }
+        }
+        catch ( Exception e ) {
+            log.error(e);
+        }
+        
 		return JavaRuntime.getDefaultVMInstall();
 	}
 
