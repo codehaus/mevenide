@@ -39,8 +39,8 @@ public interface SimplePsiListener {
      * <p>If the {@code pEvent} parameter is {@code null}, then a complete rebuild of the model from
      * the PSI tree should be performed.* </p>
      *
-     * @param pEventType the PSI event type
+     * @param pType the PSI event type
      * @param pEvent     the PSI event object. This <i>may</i> be {@code null}
      */
-    void refreshModel(PsiEventType pEventType, PsiTreeChangeEvent pEvent);
+    void refreshModel(PsiEventType pType, PsiTreeChangeEvent pEvent);
 }

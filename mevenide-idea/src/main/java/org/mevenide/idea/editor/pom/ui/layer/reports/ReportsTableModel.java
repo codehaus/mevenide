@@ -23,7 +23,7 @@ public class ReportsTableModel extends XmlTagTableModel {
     private final String[] reports;
 
     public ReportsTableModel(final XmlFile pFile, final String[] pReports) {
-        super(pFile, new XmlTagPath(pFile, "project/reports"));
+        super(new XmlTagPath(pFile, "project/reports"));
         reports = pReports;
     }
 

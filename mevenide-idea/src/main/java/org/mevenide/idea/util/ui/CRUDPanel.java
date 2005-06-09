@@ -141,4 +141,16 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
         removeAction = pRemoveAction;
         removeButton.addActionListener(removeAction);
     }
+
+    public JButton getAddButton() {
+        return addButton;
+    }
+
+    public JButton getRemoveButton() {
+        return removeButton;
+    }
+
+    public JButton getEditButton() {
+        return editButton;
+    }
 }

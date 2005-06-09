@@ -26,17 +26,15 @@ public class MultiValuedXmlTagRowsTableModel extends XmlTagRowsTableModel {
                                            final String pTagPath,
                                            final String pRowTagName,
                                            final String[] pValueTagNames) {
-        this(pPsiFile,
-             new XmlTagPath(pPsiFile, pTagPath),
+        this(new XmlTagPath(pPsiFile, pTagPath),
              pRowTagName,
              pValueTagNames);
     }
 
-    public MultiValuedXmlTagRowsTableModel(final XmlFile pPsiFile,
-                                           final XmlTagPath pTagPath,
+    public MultiValuedXmlTagRowsTableModel(final XmlTagPath pTagPath,
                                            final String pRowTagName,
                                            final String[] pValueTagNames) {
-        super(pPsiFile, pTagPath, pRowTagName);
+        super(pTagPath, pRowTagName);
         valueTagNames = pValueTagNames;
     }
 

@@ -86,7 +86,7 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     }
 
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return true;
+        return super.isCellEditable(rowIndex, columnIndex);
     }
 
     /**
@@ -115,7 +115,7 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
         refreshModel(null, null);
     }
 
-    public void refreshModel(final PsiEventType pEventType,
+    public void refreshModel(final PsiEventType pType,
                              final PsiTreeChangeEvent pEvent) {
         fireTableDataChanged();
     }

@@ -1,103 +1,61 @@
 package org.mevenide.idea.editor.pom.ui.layer.dependencies;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.psi.xml.XmlFile;
-import com.intellij.psi.xml.XmlTag;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.JButton;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.RepositoryUtils;
-import org.mevenide.idea.repository.SelectRepositoryItemDialog;
-import org.mevenide.idea.repository.model.NodeDescriptor;
-import org.mevenide.idea.repository.model.RepoTreeNode;
-import org.mevenide.idea.util.IDEUtils;
-import org.mevenide.idea.util.psi.PsiUtils;
-import org.mevenide.idea.util.ui.table.SimpleCRUDTablePanel;
-import org.mevenide.repository.IRepositoryReader;
+import java.awt.BorderLayout;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import org.mevenide.idea.editor.pom.ui.layer.AbstractPomLayerPanel;
+import org.mevenide.idea.util.ui.SplitPanel;
 
 /**
  * @author Arik
  */
-public class DependenciesPanel extends SimpleCRUDTablePanel {
+public class DependenciesPanel extends AbstractPomLayerPanel implements ListSelectionListener {
     /**
-     * Resources
+     * The dependency list table panel.
      */
-    private static final Res RES = Res.getInstance(DependenciesPanel.class);
+    private final DependenciesTablePanel depsPanel = new DependenciesTablePanel(file);
 
-    private static final String TAG_PATH = "project/dependencies";
-    private static final String ROW_TAG_NAME = "dependency";
-    private static final String[] VALUE_TAG_NAMES = new String[]{
-        "groupId",
-        "artifactId",
-        "version",
-        "type"
-    };
+    /**
+     * The dependencies properties table.
+     */
+    private final DependencyPropertiesTablePanel propsPanel = new DependencyPropertiesTablePanel(file);
 
-    private static final String[] COLUMN_TITLES = new String[]{
-        "Group ID",
-        "Artifact ID",
-        "Version",
-        "Type"
-    };
+    public DependenciesPanel(final XmlFile pFile) {
+        super(pFile);
 
-    private final JButton browseDependencyButton = new JButton(RES.get("browse.dep.label"));
-    protected static final String BROWSE_REPO_DLG_TITLE = "Select artifact";
+        propsPanel.getAddButton().setEnabled(false);
+        propsPanel.getRemoveButton().setEnabled(false);
 
-    public DependenciesPanel(final XmlFile pXmlFile) {
-        super(pXmlFile,
-              TAG_PATH,
-              ROW_TAG_NAME,
-              VALUE_TAG_NAMES,
-              COLUMN_TITLES);
+        final JTable depsTable = depsPanel.getComponent();
+        final ListSelectionModel selectionModel = depsTable.getSelectionModel();
+        selectionModel.addListSelectionListener(this);
 
-        browseDependencyButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                final SelectRepositoryItemDialog dlg = new SelectRepositoryItemDialog();
-                dlg.setAllowingArtifacts(false);
-                dlg.setAllowingGroups(false);
-                dlg.setAllowingRoot(false);
-                dlg.setAllowingTypes(false);
-                dlg.setAllowingVersions(true);
-                dlg.setTitle(BROWSE_REPO_DLG_TITLE);
+        final SplitPanel<JPanel, JPanel> splitPanel;
+        splitPanel = new SplitPanel<JPanel, JPanel>(depsPanel, propsPanel, true);
 
-                final Module module = VfsUtil.getModuleForFile(project, getFile());
-                final IRepositoryReader[] readers = RepositoryUtils.createRepoReaders(module);
-                dlg.setRepositoryReaders(readers);
+        setLayout(new BorderLayout());
+        add(splitPanel, BorderLayout.CENTER);
+    }
 
-                final RepoTreeNode[] selectedElements = dlg.show(project);
-                if (selectedElements != null) {
-                    IDEUtils.runCommand(project, new Runnable() {
-                        public void run() {
-                            for (RepoTreeNode elt : selectedElements) {
-                                final NodeDescriptor desc = elt.getNodeDescriptor();
-                                final Object result = getTableModel().appendRow();
-                                if (!(result instanceof XmlTag))
-                                    return;
+    public void valueChanged(ListSelectionEvent e) {
+        final JTable depsTable = depsPanel.getComponent();
+        final int row = depsTable.getSelectedRow();
 
-                                final XmlTag depRow = (XmlTag) result;
-                                PsiUtils.setTagValue(project,
-                                                     depRow,
-                                                     "groupId",
-                                                     desc.getGroupId());
-                                PsiUtils.setTagValue(project,
-                                                     depRow,
-                                                     "artifactId",
-                                                     desc.getArtifactId());
-                                PsiUtils.setTagValue(project, depRow, "type", desc.getType());
-                                PsiUtils.setTagValue(project,
-                                                     depRow,
-                                                     "version",
-                                                     desc.getVersion());
-                            }
-                        }
-                    });
-                }
-            }
-        });
+        final DependencyPropertiesTableModel propsModel;
+        propsModel = (DependencyPropertiesTableModel) propsPanel.getComponent().getModel();
 
-        buttonsBar.addRelatedGap();
-        buttonsBar.addFixed(browseDependencyButton);
+        final String path;
+        if(row < 0)
+            path = null;
+        else
+            path = "project/dependencies/dependency[" + row + "]/properties";
+
+        propsModel.setTagPath(path);
+        propsPanel.getAddButton().setEnabled(row >= 0);
+        propsPanel.getRemoveButton().setEnabled(row >= 0);
     }
 }

@@ -18,11 +18,10 @@ public class SingleValuedXmlTagRowsTableModel extends XmlTagRowsTableModel {
         columnName = pColumnTitle;
     }
 
-    public SingleValuedXmlTagRowsTableModel(final XmlFile pPsiFile,
-                                            final XmlTagPath pTagPath,
+    public SingleValuedXmlTagRowsTableModel(final XmlTagPath pTagPath,
                                             final String pRowTagName,
                                             final String pColumnTitle) {
-        super(pPsiFile, pTagPath, pRowTagName);
+        super(pTagPath, pRowTagName);
         columnName = pColumnTitle;
     }
 
