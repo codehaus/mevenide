@@ -55,6 +55,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
+import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * 
@@ -211,16 +212,9 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 	
 	public IVMInstall getVMInstall() {
-        IVMInstall vmInstall = null;
-        IProject[] projects = Mevenide.getWorkspace().getRoot().getProjects();
-        IProject project = null;
-        for ( int u = 0; u < projects.length; u++ ) {
-            IProject p = projects[u]; 
-            if ( p.getLocation().toOSString().replaceAll("\\\\", "/").equals(getBasedir().replaceAll("\\\\", "/")) ) {
-                project = p;
-                break;
-            }
-        }
+        
+        IProject project = FileUtils.getParentProjectForFile(new File(getBasedir()));
+        
         try {
             if ( project != null && project.hasNature(JavaCore.NATURE_ID) ) {
                 return JavaRuntime.getVMInstall(JavaCore.create(project));
