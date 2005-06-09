@@ -30,13 +30,12 @@ public abstract class XmlTagRowsTableModel extends XmlTagTableModel implements C
     public XmlTagRowsTableModel(final XmlFile pPsiFile,
                                 final String pTagPath,
                                 final String pRowTagName) {
-        this(pPsiFile, new XmlTagPath(pPsiFile, pTagPath), pRowTagName);
+        this(new XmlTagPath(pPsiFile, pTagPath), pRowTagName);
     }
 
-    public XmlTagRowsTableModel(final XmlFile pPsiFile,
-                                final XmlTagPath pTagPath,
+    public XmlTagRowsTableModel(final XmlTagPath pTagPath,
                                 final String pRowTagName) {
-        super(pPsiFile, pTagPath);
+        super(pTagPath);
         setRowTagName(pRowTagName);
     }
 

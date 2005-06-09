@@ -24,13 +24,13 @@ import javax.swing.JTabbedPane;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
+import org.mevenide.idea.editor.pom.ui.layer.build.SourcesPanel;
 import org.mevenide.idea.editor.pom.ui.layer.dependencies.DependenciesPanel;
 import org.mevenide.idea.editor.pom.ui.layer.mailingLists.MailingListsPanel;
 import org.mevenide.idea.editor.pom.ui.layer.reports.ReportsPanel;
 import org.mevenide.idea.editor.pom.ui.layer.scm.ScmPanel;
 import org.mevenide.idea.editor.pom.ui.layer.team.TeamPanel;
 import org.mevenide.idea.editor.pom.ui.layer.tests.TestingPanel;
-import org.mevenide.idea.editor.pom.ui.layer.build.SourcesPanel;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
 

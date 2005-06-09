@@ -29,7 +29,17 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
     private XmlTagPath path;
 
     /**
-     * Creates an model that will update the specified tag path in the given
+     * Creates a model for the given XML file, with no tag path (will be
+     * empty until the path is set via {@link #setTagPath(XmlTagPath)}).
+     *
+     * @param pPsiFile the xml file to update
+     */
+    public XmlTagTableModel(final XmlFile pPsiFile) {
+        super(pPsiFile);
+    }
+
+    /**
+     * Creates a model that will update the specified tag path in the given
      * XML file.
      *
      * @param pPsiFile the xml file to update
@@ -37,19 +47,17 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
      */
     public XmlTagTableModel(final XmlFile pPsiFile,
                             final String pTagPath) {
-        this(pPsiFile, new XmlTagPath(pPsiFile, pTagPath));
+        this(new XmlTagPath(pPsiFile, pTagPath));
     }
 
     /**
-     * Creates an model that will update the specified tag path in the given
-     * XML file.
+     * Creates a model that will update the specified tag path in the given
+     * XML file (file is derived from the tag path object).
      *
-     * @param pPsiFile the xml file to update
      * @param pTagPath the path to the tag this table model will update
      */
-    public XmlTagTableModel(final XmlFile pPsiFile,
-                            final XmlTagPath pTagPath) {
-        super(pPsiFile);
+    public XmlTagTableModel(final XmlTagPath pTagPath) {
+        super(pTagPath.getFile());
         setTagPath(pTagPath);
     }
 
@@ -58,8 +66,22 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
      *
      * @return tag path
      */
-    public final XmlTagPath getTagPath() {
+    protected final XmlTagPath getTagPath() {
         return path;
+    }
+
+    protected final XmlTag getTag() {
+        if(path == null)
+            return null;
+
+        return path.getTag();
+    }
+
+    protected final XmlTag ensureTag() throws IncorrectOperationException {
+        if(path == null)
+            throw new IllegalStateException(RES.get("missing.tag.path"));
+
+        return path.ensureTag();
     }
 
     /**
@@ -67,9 +89,14 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
      *
      * @param pTagPath the tag path to use
      */
-    public final void setTagPath(final XmlTagPath pTagPath) {
+    public final void setTagPath(final String pTagPath) {
         if(pTagPath == null)
-            throw new IllegalArgumentException(RES.get("null.arg", "pTagPath"));
+            setTagPath((XmlTagPath)null);
+        else
+            setTagPath(new XmlTagPath(psiFile, pTagPath));
+    }
+
+    private void setTagPath(final XmlTagPath pTagPath) {
         path = pTagPath;
         refreshModel();
     }
@@ -77,6 +104,9 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
     protected final void setValueAtInternal(final Object pValue,
                                             final int pRow,
                                             final int pColumn) {
+        if(path == null)
+            throw new IllegalStateException(RES.get("missing.tag.path"));
+
         try {
             setTagValue(path.ensureTag(), pValue, pRow, pColumn);
         }
@@ -103,6 +133,9 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
                                         final int pColumn);
 
     public final Object getValueAt(final int pRow, final int pColumn) {
+        if(path == null)
+            return null;
+
         final XmlTag tag = path.getTag();
         if(tag == null)
             return null;

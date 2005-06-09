@@ -22,18 +22,17 @@ public class SimpleCRUDTablePanel extends CRUDTablePanel {
                                        pColumnTitles));
     }
 
-    public SimpleCRUDTablePanel(final XmlFile pXmlFile,
-                                final XmlTagPath pTagPath,
+    public SimpleCRUDTablePanel(final XmlTagPath pTagPath,
                                 final String pRowTagName,
                                 final String[] pValueTagNames,
                                 final String[] pColumnTitles) {
-        super(pXmlFile,
-              new SimpleCRUDTableModel(pXmlFile,
-                                       pTagPath,
+        super(pTagPath.getFile(),
+              new SimpleCRUDTableModel(pTagPath,
                                        pRowTagName,
                                        pValueTagNames,
                                        pColumnTitles));
     }
+
 
     private static class SimpleCRUDTableModel extends MultiValuedXmlTagRowsTableModel {
         private final String[] columnTitles;
@@ -47,12 +46,11 @@ public class SimpleCRUDTablePanel extends CRUDTablePanel {
             columnTitles = pColumnTitles;
         }
 
-        public SimpleCRUDTableModel(final XmlFile pPsiFile,
-                                    final XmlTagPath pTagPath,
+        public SimpleCRUDTableModel(final XmlTagPath pTagPath,
                                     final String pRowTagName,
                                     final String[] pValueTagNames,
                                     final String[] pColumnTitles) {
-            super(pPsiFile, pTagPath, pRowTagName, pValueTagNames);
+            super(pTagPath, pRowTagName, pValueTagNames);
             columnTitles = pColumnTitles;
         }
 
