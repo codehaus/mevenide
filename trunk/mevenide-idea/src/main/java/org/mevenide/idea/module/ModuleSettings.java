@@ -96,6 +96,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             return null;
 
         final VirtualFile pomFile = moduleDir.findChild("project.xml");
+        if(pomFile == null)
+            return null;
+
         if (!pomFile.isValid())
             return null;
 
@@ -106,7 +109,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
         final VirtualFile pomFile = getPomVirtualFile();
         if(pomFile == null)
             return null;
-        
+
         return VfsUtil.virtualToIoFile(pomFile);
     }
 
