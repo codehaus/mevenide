@@ -2,6 +2,7 @@ package org.mevenide.idea.util.psi;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
@@ -49,6 +50,18 @@ public abstract class PsiUtils {
 
         throw new IllegalArgumentException(RES.get("not.xml.document",
                                                    psiFile.getVirtualFile().getPath()));
+    }
+
+    /**
+     * Returns the {@link XmlFile} associated with the specified document in the specified module.
+     *
+     * @param pModule  the module context
+     * @param pDocument the document to find the file for
+     * @return the XML file, or {@code null} if the file can't be found (shouldn't happen)
+     */
+    public static XmlFile findXmlFile(final Module pModule,
+                                      final Document pDocument) {
+        return findXmlFile(pModule.getProject(), pDocument);
     }
 
     /**
