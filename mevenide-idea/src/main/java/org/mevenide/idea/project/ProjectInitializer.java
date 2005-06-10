@@ -16,23 +16,18 @@
  */
 package org.mevenide.idea.project;
 
-import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.toolwindows.goals.GoalsToolWindowUI;
 import org.mevenide.idea.toolwindows.repository.RepositoryToolWindow;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
  */
-public class ProjectInitializer implements ProjectComponent {
-    private final Project project;
+public class ProjectInitializer extends AbstractProjectComponent {
 
     public ProjectInitializer(final Project pProject) {
-        project = pProject;
-    }
-
-    public String getComponentName() {
-        return ProjectInitializer.class.getName();
+        super(pProject);
     }
 
     public void projectOpened() {
@@ -40,14 +35,8 @@ public class ProjectInitializer implements ProjectComponent {
         RepositoryToolWindow.register(project);
     }
 
-    public void initComponent() {
-    }
-
     public void projectClosed() {
         GoalsToolWindowUI.unregister(project);
         RepositoryToolWindow.unregister(project);
-    }
-
-    public void disposeComponent() {
     }
 }
