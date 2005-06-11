@@ -6,6 +6,17 @@
   </properties>
 
   <body>
+  <release version="0.4.1" date="in cvs">
+    <action dev="fdutton" type="fix">
+      Fix feature descriptor to allow to correctly upgrade through update manager
+    </action> 
+    <action dev="gdodinet" type="fix">
+      Fix 3.0.2 compatibility 
+    </action> 
+    <action dev="gdodinet" type="add">
+      Override global preferences on a per-project base
+    </action>
+  </release>
   <release version="0.4.0" date="2005-05-30">
     <action dev="fdutton" type="fix" issue="MEVENIDE-218">
         Dependency conflict between Maven and Mavenzilla.
