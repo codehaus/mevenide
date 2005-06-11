@@ -23,10 +23,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -319,21 +321,42 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 
 	public String getMavenHome() {
-		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
+        return getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
 	}
 
+    private String getValue(String key) {
+        String res = null;
+        
+        IProject project = FileUtils.getParentProjectForFile(new File(getBasedir()));
+        IFile props = project.getFile(".settings/org.mevenide.ui.prefs");
+        
+        try {
+            if ( props.exists() ) {
+                Properties properties = new Properties(); 
+                properties.load(props.getContents(true));
+                res = properties.getProperty(key);
+            }
+            if ( StringUtils.isEmpty(res) ) {
+                res = PreferencesManager.getManager().getValue(key); 
+            }
+        } 
+        catch (Exception e) {
+            log.debug("Problem while loading project overriden properties");
+        }
+        return res;
+    }
+
 	public String getMavenLocalHome() {
-		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
+        return getValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
 	}
 
 	public String getMavenLocalRepository() {
-		return PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
+        return getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
 	}
 
 	public String getToolsJar() {
-		String toolsJar = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY);
-		toolsJar = org.mevenide.util.StringUtils.isNull(toolsJar) ? RunnerUtils.getToolsJar() : toolsJar;
-		
+        String toolsJar = getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY);
+		toolsJar = StringUtils.isEmpty(toolsJar) ? RunnerUtils.getToolsJar() : toolsJar;
 		return toolsJar;
 	}
 

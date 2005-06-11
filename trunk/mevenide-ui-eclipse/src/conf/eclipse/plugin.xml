@@ -375,6 +375,22 @@
              class="org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencePage" 
              id="PDE Plugin "/>
    </extension>
+   <extension point="org.eclipse.ui.propertyPages" name="Mevenide Properties">
+      <!-- Blank page used as Mevenide PropertyPages holder -->
+      <page name="%MavenMenu.label"
+      		adaptable="true"
+      		objectClass="org.eclipse.core.resources.IProject"
+            class="org.mevenide.ui.eclipse.properties.pages.MevenidePropertiesPage"
+            id="org.mevenide.ui.plugin.properties.MavenPropertiesPage">
+      </page>
+      <page name="%LocationPreferencePage.label" 
+      		adaptable="true"
+      		objectClass="org.eclipse.core.resources.IProject"
+      	 	category="org.mevenide.ui.plugin.properties.MavenPropertiesPage" 
+      	 	class="org.mevenide.ui.eclipse.properties.pages.LocationPropertiesPage" 
+      	 	id="org.mevenide.ui.eclipse.properties.pages.LocationPropertiesPage">
+      </page>
+   </extension>
    <extension point="org.eclipse.ui.editors">
    	  <!-- Maven POM editor -->
       <editor
