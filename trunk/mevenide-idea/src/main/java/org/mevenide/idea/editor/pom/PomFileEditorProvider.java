@@ -16,6 +16,7 @@
  */
 package org.mevenide.idea.editor.pom;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.fileEditor.FileEditor;
 import com.intellij.openapi.fileEditor.FileEditorPolicy;
 import com.intellij.openapi.fileEditor.FileEditorProvider;
@@ -24,13 +25,9 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.Disposable;
 import org.jdom.Element;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
-
-import java.io.File;
 
 /**
  * @author Arik
@@ -42,16 +39,11 @@ public class PomFileEditorProvider extends AbstractApplicationComponent implemen
         if(extension == null || extension.trim().length() == 0)
             return false;
 
-        if(!pFile.getName().equalsIgnoreCase("project.xml"))
-            return false;
-
-        final File file = VfsUtil.virtualToIoFile(pFile).getAbsoluteFile();
-
         final Module[] modules = ModuleManager.getInstance(pProject).getModules();
         for(final Module module : modules) {
             final ModuleSettings settings = ModuleSettings.getInstance(module);
-            final File pomFile = settings.getPomFile();
-            if(pomFile != null && pomFile.equals(file))
+            final VirtualFile pomFile = settings.getPomVirtualFile();
+            if(pomFile != null && pomFile.equals(pFile))
                 return true;
         }
 
