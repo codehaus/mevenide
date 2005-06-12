@@ -20,14 +20,12 @@
                 The following is a (partial) list of features we intend to be implementing over
                 the coming months:
                 <ul>
-                    <li>Bidirectional update between IDEA project and POM</li>
+                    <li>Bidirectional update between IDEA project and POM (in progress)</li>
+                    <li>A remote and local repositories browser. (done)</li>
+                    <li>Searching support in the repository browser.</li>
                     <li>A wizard for creating an IDEA project from a POM</li>
                     <li>A wizard for creating a POM from an existing IDEA project.</li>
                     <li>Automatically create IDEA File Templates for POMs.</li>
-                    <li>
-                        Browinsg (and searching) both remote and local repositories, as well as
-                        manually downloading artifacts to the local repository.
-                    </li>
                     <li>Autolaunch goals on specific project events (compilation, etc)</li>
                     <li>
                         Automatic dependency download on project open (or manually) to make
