@@ -277,28 +277,40 @@
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-config-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/java" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/conf" />
+      </SOURCES>
     </library>
     <library name="mevenide-core-0.8">
       <CLASSES>
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/conf" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/java" />
+      </SOURCES>
     </library>
     <library name="mevenide-repository-0.2">
       <CLASSES>
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.2.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/conf" />
+        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/java" />
+      </SOURCES>
     </library>
     <library name="maven-1.0.2">
       <CLASSES>
         <root url="jar://$maven.repo$/maven/jars/maven-1.0.2.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file://C:/Devl/work/maven-1.0.2/src/java" />
+        <root url="file://C:/Devl/work/maven-1.0.2/src/conf" />
+      </SOURCES>
     </library>
     <library name="idea-run-config-eap">
       <CLASSES>
@@ -311,6 +323,18 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES />
+    </library>
+    <library name="commons-httpclient-3.0-rc2">
+      <CLASSES>
+        <root url="jar://$maven.repo$/commons-httpclient/jars/commons-httpclient-3.0-rc2.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/docs/apidocs" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/src/conf" />
+        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/src/java" />
+      </SOURCES>
     </library>
   </component>
   <component name="uidesigner-configuration">
