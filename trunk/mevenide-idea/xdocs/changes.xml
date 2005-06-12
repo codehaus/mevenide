@@ -9,6 +9,12 @@
 
         <release version="0.2" date="unreleased" description="New features">
             <action dev="arikkfir" type="add">
+                Added initial version of a POM&lt;-&gt;IDEA synchronization
+                inspections. These inspections let you know (on demand)
+                if there are any differences between your IDEA project and
+                your POM file.
+            </action>
+            <action dev="arikkfir" type="add">
                 Added support for editing dependency properties to POM editor.
             </action>
             <action dev="arikkfir" type="add">
