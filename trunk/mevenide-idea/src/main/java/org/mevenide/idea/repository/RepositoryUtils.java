@@ -5,11 +5,16 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.ArrayList;
+import java.util.List;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VfsUtil;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.context.IProjectContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
@@ -22,6 +27,13 @@ import org.apache.maven.project.Dependency;
  * @author Arik
  */
 public abstract class RepositoryUtils {
+
+    public static boolean isArtifactInstalled(final VirtualFile pLocalRepo,
+                                              final Dependency dep) {
+        final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
+        final VirtualFile depFile = pLocalRepo.findFileByRelativePath(relPath);
+        return depFile != null;
+    }
 
     public static IRepositoryReader[] createRepoReaders(final Project pProject) {
         final Module[] modules = ModuleManager.getInstance(pProject).getModules();
@@ -155,4 +167,50 @@ public abstract class RepositoryUtils {
 
         return dep;
     }
+
+    public static VirtualFile getLocalRepository(final Module pModule) {
+
+        //
+        //make sure this module is "mavenized"
+        //
+        final ModuleSettings settings = ModuleSettings.getInstance(pModule);
+        final IQueryContext ctx = settings.getQueryContext();
+        if (ctx == null)
+            return null;
+
+        //
+        //find the local repository
+        //
+        final ILocationFinder finder = new ModuleLocationFinder(pModule);
+        final String localRepo = finder.getMavenLocalRepository();
+        if (localRepo == null || localRepo.trim().length() == 0)
+            return null;
+
+        final String url = VfsUtil.pathToUrl(localRepo).replace('\\', '/');
+        return VirtualFileManager.getInstance().findFileByUrl(url);
+    }
+
+    public static Dependency[] getModulePomDependencies(final Module pModule) {
+
+        //
+        //make sure this module is "mavenized"
+        //
+        final ModuleSettings settings = ModuleSettings.getInstance(pModule);
+        final IQueryContext ctx = settings.getQueryContext();
+        if (ctx == null)
+            return new Dependency[0];
+
+        final IProjectContext pomContext = ctx.getPOMContext();
+        if (pomContext == null)
+            return new Dependency[0];
+
+        final org.apache.maven.project.Project project = pomContext.getFinalProject();
+        if (project == null)
+            return new Dependency[0];
+
+        //noinspection UNCHECKED_WARNING
+        final List<Dependency> deps = project.getDependencies();
+        return deps.toArray(new Dependency[deps.size()]);
+    }
+
 }
