@@ -65,6 +65,22 @@
                     </li>
                 </ul>
             </p>
+            <subsection name="News">
+                <p style="font-size: larger; font-weight: bold">
+                    30 May 2005 - MevenIDE for IDEA 0.1 has been released!
+                </p>
+                <p>
+                    This is the first release of the Mevenide for IDEA - and
+                    brings Maven support for the popular IntelliJ IDEA, including
+                    the ability to execute goals, a graphical POM editor,
+                    automatic jumping from Maven errors to source code, and much more.
+                </p>
+                <p>
+                    See
+                    <a href="installation.html">installation instructions</a>for
+                    information on how to download and install.
+                </p>
+            </subsection>
         </section>
 
         <section name="Downloading and Installing">
