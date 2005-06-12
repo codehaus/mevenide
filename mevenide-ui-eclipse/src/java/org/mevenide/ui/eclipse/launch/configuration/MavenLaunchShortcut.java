@@ -60,7 +60,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 
     private static final String MAVEN_LAUNCH_CONFIG_TYPE = "org.mevenide.ui.launching.MavenLaunchConfigType"; //$NON-NLS-1$
 	
-    private boolean showDialog = false;
+    private boolean showDialog = true;
 
 	private String goalsToRun = null;
 	private boolean offline = false;

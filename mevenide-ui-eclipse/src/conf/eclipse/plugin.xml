@@ -476,16 +476,39 @@
       </launchConfigurationTabGroup>
    </extension>
    <!-- Maven LaunchShortcut -->
-   <extension point="org.eclipse.debug.ui.launchShortcuts">
-      <shortcut
-            label="%LaunchShortcut.type.label"
-            icon="icons/etool16/maven_exc.gif"
-            category="org.eclipse.ui.externaltools"
-            class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
-            modes="run"
-            id="org.mevenide.ui.mavenShortcut">
-      </shortcut>
-   </extension>
+  <extension point="org.eclipse.debug.ui.launchShortcuts">
+    <shortcut category="org.eclipse.ui.externaltools"
+              class="org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut"
+              icon="icons/etool16/maven_exc.gif"
+              id="org.mevenide.ui.mavenShortcut"
+              label="%MavenLaunchShortcut.Label"
+              modes="run">
+       <perspective id="org.eclipse.debug.ui.DebugPerspective"/>
+	   <perspective id="org.eclipse.ui.ResourcePerspective"/>
+       <perspective id="org.eclipse.jdt.ui.JavaPerspective"/>   
+       <contextualLaunch>
+          <enablement>
+             <with variable="selection">
+                <count value="1"/>
+                <iterate>
+                   <or>
+                      <and>
+                          <or>
+                              <test property="org.eclipse.debug.ui.matchesPattern"
+                                    value="maven.xml"/>
+                              <test property="org.eclipse.debug.ui.matchesPattern"
+                                    value="project.xml"/>
+                          
+                          </or>
+                      </and>
+                      <adapt type="org.eclipse.core.resources.IProject"/>
+                   </or>
+                </iterate>
+             </with>
+          </enablement>
+       </contextualLaunch>
+    </shortcut>
+  </extension>
    <!-- Maven/Eclipse Synchronization view -->
    <extension point="org.eclipse.ui.views">
       <category name="Maven"
