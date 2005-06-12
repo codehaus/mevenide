@@ -5,6 +5,7 @@ import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.module.Module;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -16,6 +17,11 @@ public abstract class IDEUtils {
      * Logging.
      */
     private static final Log LOG = LogFactory.getLog(IDEUtils.class);
+
+    public static void runCommand(final Module pModule,
+                                  final Runnable pRunnable) {
+        runCommand(pModule.getProject(), pRunnable);
+    }
 
     public static void runCommand(final Project pProject,
                                   final Runnable pRunnable) {
