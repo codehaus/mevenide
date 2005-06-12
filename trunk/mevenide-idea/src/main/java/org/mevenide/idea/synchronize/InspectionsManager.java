@@ -11,8 +11,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.mevenide.idea.synchronize.inspections.dependencies.DependencyNotDownloadedInspector;
-import org.mevenide.idea.synchronize.inspections.dependencies.Idea2POMConformanceInspector;
-import org.mevenide.idea.synchronize.inspections.dependencies.POM2IdeaConformanceInspector;
+import org.mevenide.idea.synchronize.inspections.dependencies.IdeaLibs2POMInspector;
+import org.mevenide.idea.synchronize.inspections.dependencies.POM2IdeaLibsInspector;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
@@ -44,8 +44,8 @@ public class InspectionsManager extends AbstractProjectComponent {
 
         //TODO: somehow dynamically locate all inspectors (allow customization...)
         inspections.add(new DependencyNotDownloadedInspector());
-        inspections.add(new Idea2POMConformanceInspector());
-        inspections.add(new POM2IdeaConformanceInspector());
+        inspections.add(new IdeaLibs2POMInspector());
+        inspections.add(new POM2IdeaLibsInspector());
     }
 
     private void registerSyncAction() {

@@ -12,16 +12,16 @@ import com.intellij.openapi.module.Module;
  * <p>It will search for libraries that are missing from the POM - meaning
  * that problems reported by this inspector will fix the POM to mirror the
  * IDEA project.</p>
- * 
+ *
  * @author Arik
  */
-public class POM2IdeaConformanceInspector extends AbstractModuleInspector {
+public class POM2IdeaLibsInspector extends AbstractModuleInspector {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(Idea2POMConformanceInspector.class);
+    private static final Res RES = Res.getInstance(IdeaLibs2POMInspector.class);
 
-    public POM2IdeaConformanceInspector() {
+    public POM2IdeaLibsInspector() {
         super(RES.get("pom2idea.inspector.name"),
               RES.get("pom2idea.inspector.desc"));
     }
