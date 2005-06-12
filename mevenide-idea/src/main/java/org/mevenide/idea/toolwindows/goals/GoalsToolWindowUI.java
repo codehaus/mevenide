@@ -233,6 +233,12 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         add(ScrollPaneFactory.createScrollPane(goalsTree), c);
     }
 
+    /**
+     * @todo navigate to the specified plugin and goal
+     * @param pModule
+     * @param pPluginName
+     * @param pGoalName
+     */
     private void openProjectGoalInEditor(final Module pModule,
                                          final String pPluginName,
                                          final String pGoalName) {
@@ -286,8 +292,7 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         if (pluginDir == null)
             return null;
 
-        final VirtualFile jellyFile = pluginDir.findChild("plugin.jelly");
-        return jellyFile;
+        return pluginDir.findChild("plugin.jelly");
     }
 
     private void navigateToGoal(final String pFullyQualifiedGoal,
@@ -327,6 +332,9 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         final ModuleSettings moduleSettings = ModuleSettings.getInstance(pModule);
 
         final IQueryContext queryContext = moduleSettings.getQueryContext();
+        if(queryContext == null)
+            return;
+
         final VirtualFile jellyFile = getPluginScriptFile(queryContext, pPluginName);
         if (jellyFile == null)
             return;
