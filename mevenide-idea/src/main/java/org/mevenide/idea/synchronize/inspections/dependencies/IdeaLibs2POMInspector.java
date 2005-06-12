@@ -24,13 +24,13 @@ import org.mevenide.idea.util.ui.UIUtils;
  *
  * @author Arik
  */
-public class Idea2POMConformanceInspector extends AbstractModuleInspector {
+public class IdeaLibs2POMInspector extends AbstractModuleInspector {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(Idea2POMConformanceInspector.class);
+    private static final Res RES = Res.getInstance(IdeaLibs2POMInspector.class);
 
-    public Idea2POMConformanceInspector() {
+    public IdeaLibs2POMInspector() {
         super(RES.get("idea2pom.inspector.name"),
               RES.get("idea2pom.inspector.desc"));
     }
@@ -105,7 +105,7 @@ public class Idea2POMConformanceInspector extends AbstractModuleInspector {
 
         public DependencyMissingInIdeaProblem(final Module pModule,
                                               final Dependency pDependency) {
-            super(Idea2POMConformanceInspector.this, pModule);
+            super(IdeaLibs2POMInspector.this, pModule);
             module = pModule;
             dependency = pDependency;
         }
@@ -147,7 +147,7 @@ public class Idea2POMConformanceInspector extends AbstractModuleInspector {
                     Library lib = libTable.getLibraryByName(dependency.getArtifact());
                     if(lib == null)
                         lib = libTable.createLibrary(dependency.getArtifact());
-                    
+
                     final Library.ModifiableModel model = lib.getModifiableModel();
 
                     final String relPath = RepositoryUtils.getDependencyRelativePath(dependency);
