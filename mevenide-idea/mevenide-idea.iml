@@ -25,6 +25,7 @@
     <orderEntry type="library" name="mevenide-core-0.8" level="project" />
     <orderEntry type="library" name="mevenide-repository-0.2" level="project" />
     <orderEntry type="library" name="maven-1.0.2" level="project" />
+    <orderEntry type="library" name="commons-httpclient-3.0-rc2" level="project" />
     <orderEntryProperties />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
