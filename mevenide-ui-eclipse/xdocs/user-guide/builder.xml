@@ -80,6 +80,12 @@
 						Items added to the menu are disactivated until a change in the workspace matches the specified pattern,
 						then the items will be activated on a per project basis, and will be disactivated once run.
 					</p>
+					<p>
+					  <i>Important Note</i><br/>
+					  While running Maven through Mevenide if you see this message 
+					  <code>ZoneInfo: D:\dev\Java\jrockit-jdk1.5.0_02\lib\zi\ZoneInfoMappings (The system cannot find the path specified)</code>
+					  then you will most probably need to set append '/jre' to the 'Java Home' preference in 'Maven | Locations' preference page.
+					</p>
 				</div>
 			</subsection>
 		</section>
