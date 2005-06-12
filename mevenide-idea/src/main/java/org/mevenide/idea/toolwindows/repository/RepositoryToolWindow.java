@@ -1,18 +1,5 @@
 package org.mevenide.idea.toolwindows.repository;
 
-import java.awt.BorderLayout;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
-import javax.swing.tree.TreePath;
-
 import com.intellij.ide.CommonActionsManager;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -29,6 +16,18 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.ScrollPaneFactory;
+import java.awt.BorderLayout;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.swing.JPanel;
+import javax.swing.JTree;
+import javax.swing.ListSelectionModel;
+import javax.swing.tree.TreePath;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.idea.Res;
@@ -44,7 +43,6 @@ import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.actions.AbstractToggleAnAction;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.RepoPathElement;
 
 /**
@@ -198,7 +196,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
             final ILocationFinder finder = new ModuleLocationFinder(selectedModule);
             final ModuleSettings settings = ModuleSettings.getInstance(selectedModule);
             final IQueryContext queryContext = settings.getQueryContext();
-            final IPropertyResolver resolver = queryContext.getResolver();
+            if(queryContext == null)
+                return;
 
             //
             //prepare list of path elements to download
@@ -217,7 +216,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
                     final RepoPathElement[] pathElementsArray = pathElements.toArray(buffer);
                     try {
                         final ArtifactDownloadManager downloadMgr = ArtifactDownloadManager.getInstance();
-                        downloadMgr.downloadArtifact(finder, resolver, pathElementsArray);
+                        downloadMgr.downloadArtifact(queryContext, finder, pathElementsArray);
                     }
                     catch (IOException e) {
                         UIUtils.showError(selectedModule, e);
