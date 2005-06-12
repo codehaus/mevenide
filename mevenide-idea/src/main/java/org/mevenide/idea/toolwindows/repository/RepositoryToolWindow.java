@@ -191,15 +191,6 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
                 return;
 
             //
-            //locate callbacks
-            //
-            final ILocationFinder finder = new ModuleLocationFinder(selectedModule);
-            final ModuleSettings settings = ModuleSettings.getInstance(selectedModule);
-            final IQueryContext queryContext = settings.getQueryContext();
-            if(queryContext == null)
-                return;
-
-            //
             //prepare list of path elements to download
             //
             final RepoTreeNode[] selectedElements = getSelectedElements();
@@ -212,14 +203,14 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
 
             final Runnable downloader = new Runnable() {
                 public void run() {
-                    final RepoPathElement[] buffer = new RepoPathElement[pathElements.size()];
-                    final RepoPathElement[] pathElementsArray = pathElements.toArray(buffer);
-                    try {
-                        final ArtifactDownloadManager downloadMgr = ArtifactDownloadManager.getInstance();
-                        downloadMgr.downloadArtifact(queryContext, finder, pathElementsArray);
-                    }
-                    catch (IOException e) {
-                        UIUtils.showError(selectedModule, e);
+                    final ArtifactDownloadManager downloadMgr = ArtifactDownloadManager.getInstance();
+                    for (RepoPathElement element : pathElements) {
+                        try {
+                            downloadMgr.downloadArtifact(selectedModule, element);
+                        }
+                        catch (IOException e) {
+                            UIUtils.showError(selectedModule, e);
+                        }
                     }
                 }
             };

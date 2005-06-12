@@ -5,12 +5,11 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
+import java.util.Set;
+import java.util.HashSet;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ILocationFinder;
 import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.IDEUtils;
@@ -23,21 +22,13 @@ import org.mevenide.repository.RepoPathElement;
  * @author Arik
  */
 public class ArtifactDownloadManager extends AbstractApplicationComponent {
-    public void downloadArtifact(final URL pUrl,
-                                 final File pDstFile,
-                                 final String pProxyHost,
-                                 final String pProxyPort,
-                                 final String pProxyUser,
-                                 final String pProxyPassword) throws IOException {
-        downloadArtifact(pUrl.toExternalForm(), pDstFile, pProxyHost, pProxyPort, pProxyUser, pProxyPassword);
-    }
 
-    public void downloadArtifact(final String pUrl,
-                                 final File pDstFile,
-                                 final String pProxyHost,
-                                 final String pProxyPort,
-                                 final String pProxyUser,
-                                 final String pProxyPassword) throws IOException {
+    private void downloadArtifact(final String pUrl,
+                                  final File pDstFile,
+                                  final String pProxyHost,
+                                  final String pProxyPort,
+                                  final String pProxyUser,
+                                  final String pProxyPassword) throws IOException {
         final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
         if (indicator != null && indicator.isCanceled())
             return;
@@ -59,17 +50,27 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
         //
         //download the file
         //
-        HttpUtils.getFile(pUrl,                                 //url to download
-                          pDstFile,                             //destination file
-                          false,                                //ignore errors?
-                          true,                                 //use timestamp
-                          pProxyHost,                           //proxy host
-                          pProxyPort,                           //proxy port
-                          pProxyUser,                           //proxy username
-                          pProxyPassword,                       //proxy password
-                          null, null,                           //login settings
-                          new ProgressIndicatorDownloadMeter()  //download meter
-        );
+        try {
+            HttpUtils.getFile(pUrl,                                 //url to download
+                              pDstFile,                             //destination file
+                              false,                                //ignore errors?
+                              true,                                 //use timestamp
+                              pProxyHost,                           //proxy host
+                              pProxyPort,                           //proxy port
+                              pProxyUser,                           //proxy username
+                              pProxyPassword,                       //proxy password
+                              null, null,                           //login settings
+                              new ProgressIndicatorDownloadMeter()  //download meter
+            );
+        }
+        catch (IOException e) {
+            if (indicator != null) {
+                indicator.finishNonCancelableSection();
+                indicator.setText(e.getMessage());
+                indicator.setText2("");
+            }
+            throw e;
+        }
 
         if (indicator != null) {
             indicator.finishNonCancelableSection();
@@ -80,11 +81,66 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
 
 
     public void downloadArtifact(final Module pModule,
-                                 final Dependency... pDependency) {
+                                 final IRepositoryReader pReader,
+                                 final String pGroupId,
+                                 final String pType,
+                                 final String pArtifactId,
+                                 final String pVersion,
+                                 final String pExtension) throws IOException {
+        final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
+        if (indicator.isCanceled())
+            return;
+
+        final String relativePath = RepositoryUtils.getDependencyRelativePath(pGroupId,
+                                                                              pType,
+                                                                              pArtifactId,
+                                                                              pVersion,
+                                                                              pExtension);
+
         final ModuleSettings settings = ModuleSettings.getInstance(pModule);
         final IQueryContext ctx = settings.getQueryContext();
         if (ctx == null)
             throw new IllegalArgumentException(RES.get("pom.not.defined"));
+
+        //
+        //calculated destination file location
+        //
+        final ModuleLocationFinder finder = new ModuleLocationFinder(pModule);
+        final IPropertyResolver resolver = ctx.getResolver();
+        final File destFile = new File(finder.getMavenLocalRepository(), relativePath);
+
+        //
+        //use proxy if needed
+        //
+        String host = resolver.getResolvedValue("maven.proxy.host");
+        String port = resolver.getResolvedValue("maven.proxy.port");
+        String user = resolver.getResolvedValue("maven.proxy.username");
+        String passwd = resolver.getResolvedValue("maven.proxy.password");
+        if (host != null && host.trim().length() == 0) host = null;
+        if (port != null && port.trim().length() == 0) port = null;
+        if (user != null && user.trim().length() == 0) user = null;
+        if (passwd != null && passwd.trim().length() == 0) passwd = null;
+
+        //
+        //calculate remote URL
+        //
+        String base = pReader.getRootURI().toString();
+        if (!base.endsWith("/"))
+            base = base + "/";
+
+        final String url = base + relativePath;
+        downloadArtifact(url, destFile, host, port, user, passwd);
+    }
+
+    public void downloadArtifact(final Module pModule,
+                                 final String pGroupId,
+                                 final String pType,
+                                 final String pArtifactId,
+                                 final String pVersion,
+                                 final String pExtension) throws ArtifactNotFoundException {
+        final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
+        if (indicator.isCanceled())
+            return;
 
         //
         //acquire the remote repositories
@@ -95,92 +151,88 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
         //
         //iterate the dependencies to download
         //
-        final ModuleLocationFinder finder = new ModuleLocationFinder(pModule);
-        for (Dependency dep : pDependency) {
-            for (IRepositoryReader reader : remoteRepos) {
-                final RepoPathElement repoPath = new RepoPathElement(reader,
-                                                                     null,
-                                                                     dep.getGroupId(),
-                                                                     dep.getType(),
-                                                                     dep.getVersion(),
-                                                                     dep.getArtifactId(),
-                                                                     dep.getExtension());
-                try {
-                    downloadArtifact(finder, ctx.getResolver(), repoPath);
-                }
-                catch (IOException e) {
-                    LOG.error(e.getMessage(), e);
-                }
+        Set<Throwable> errors = null;
+        for (final IRepositoryReader reader : remoteRepos) {
+            try {
+                downloadArtifact(pModule, reader, pGroupId, pType, pArtifactId, pVersion, pExtension);
+                return;
             }
+            catch (IOException e) {
+                if(errors == null)
+                    errors = new HashSet<Throwable>(remoteRepos.length);
+                errors.add(e);
+            }
+        }
+
+        //
+        //if an IO error occured, throw it
+        //
+        if (errors != null && errors.size() > 0) {
+            final Throwable[] buffer = new Throwable[errors.size()];
+            throw new ArtifactNotFoundException(pGroupId,
+                                                pType,
+                                                pArtifactId,
+                                                pVersion,
+                                                pExtension,
+                                                errors.toArray(buffer));
         }
     }
 
-    public void downloadArtifact(final IQueryContext pContext,
-                                 final ILocationFinder pFinder,
-                                 final RepoPathElement... pPathElements) throws IOException {
-        downloadArtifact(pFinder, pContext.getResolver(), pPathElements);
+    public void downloadArtifact(final Module pModule,
+                                 final Dependency pDependency) throws ArtifactNotFoundException {
+        downloadArtifact(pModule,
+                         pDependency.getGroupId(),
+                         pDependency.getType(),
+                         pDependency.getArtifactId(),
+                         pDependency.getVersion(),
+                         pDependency.getExtension());
     }
 
-    public void downloadArtifact(final ILocationFinder pFinder,
-                                 final IPropertyResolver pResolver,
-                                 final RepoPathElement... pPathElements) throws IOException {
+    public void downloadArtifact(final Module pModule,
+                                 final RepoPathElement pathElement) throws IOException {
         final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
-        if (indicator.isCanceled())
+        if (indicator != null && indicator.isCanceled())
             return;
 
-        for (RepoPathElement pathElement : pPathElements) {
-            if (!pathElement.isRemote()) {
-                LOG.warn("Repository element " + pathElement + " is not a remote artifact.");
-                continue;
-            }
-
-            if (!pathElement.isLeaf()) {
-                try {
-                    if (indicator != null)
-                        indicator.startNonCancelableSection();
-                    final RepoPathElement[] children = pathElement.getChildren();
-                    if (indicator != null)
-                        indicator.finishNonCancelableSection();
-                    downloadArtifact(pFinder, pResolver, children);
-                }
-                catch (Exception e) {
-                    LOG.error(e.getMessage(), e);
-                }
-            }
-            else {
-                //
-                //calculated destination file location
-                //
-                final File localRepo = new File(pFinder.getMavenLocalRepository());
-                final String localFileUri = localRepo.toURI() + pathElement.getRelativeURIPath();
-                final File destinationFile = new File(URI.create(localFileUri));
-                final String url = pathElement.getURI().toURL().toString();
-
-                //
-                //make sure the directory for the file exists
-                //
-                destinationFile.getParentFile().mkdirs();
-
-                //
-                //use proxy if needed
-                //
-                String host = pResolver.getResolvedValue("maven.proxy.host");
-                String port = pResolver.getResolvedValue("maven.proxy.port");
-                String user = pResolver.getResolvedValue("maven.proxy.username");
-                String passwd = pResolver.getResolvedValue("maven.proxy.password");
-                if (host != null && host.trim().length() == 0)
-                    host = null;
-                if (port != null && port.trim().length() == 0)
-                    port = null;
-                if (user != null && user.trim().length() == 0)
-                    user = null;
-                if (passwd != null && passwd.trim().length() == 0)
-                    passwd = null;
-
-                downloadArtifact(url, destinationFile, host, port, user, passwd);
-            }
+        if (!pathElement.isRemote()) {
+            LOG.warn("Repository element " + pathElement + " is not a remote artifact.");
+            return;
         }
 
+        if (!pathElement.isLeaf()) {
+            try {
+                if (indicator != null)
+                    indicator.startNonCancelableSection();
+                final RepoPathElement[] children = pathElement.getChildren();
+                if (indicator != null)
+                    indicator.finishNonCancelableSection();
+                for (RepoPathElement e : children)
+                    downloadArtifact(pModule, e);
+            }
+            catch(IOException e) {
+                if (indicator != null) {
+                    indicator.setText(e.getMessage());
+                    indicator.setText2("");
+                }
+                throw e;
+            }
+            catch (Exception e) {
+                if(indicator != null) {
+                    indicator.setText("Error fetching children.");
+                    indicator.setText2("");
+                }
+                LOG.warn(e.getMessage(), e);
+            }
+        }
+        else {
+            downloadArtifact(pModule,
+                             pathElement.getReader(),
+                             pathElement.getGroupId(),
+                             pathElement.getType(),
+                             pathElement.getArtifactId(),
+                             pathElement.getVersion(),
+                             pathElement.getExtension());
+        }
     }
 
     /**
