@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.ArrayList;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
@@ -15,6 +16,7 @@ import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.repository.IRepositoryReader;
 import static org.mevenide.repository.RepositoryReaderFactory.createLocalRepositoryReader;
 import static org.mevenide.repository.RepositoryReaderFactory.createRemoteRepositoryReader;
+import org.apache.maven.project.Dependency;
 
 /**
  * @author Arik
@@ -100,5 +102,57 @@ public abstract class RepositoryUtils {
         }
 
         return readers;
+    }
+
+    public static String getDependencyRelativePath(final String pGroupId,
+                                                   final String pType,
+                                                   final String pArtifactId,
+                                                   final String pVersion,
+                                                   final String pExtension) {
+        final String type =
+            pType == null || pType.trim().length() == 0 ?
+                "jar" :
+                pType;
+
+        final String ext =
+            pExtension == null || pExtension.trim().length() == 0 ?
+                type :
+                pExtension;
+
+        final StringBuilder buf = new StringBuilder(100);
+        buf.append(pGroupId).append('/');
+        buf.append(type).append("s/");
+        buf.append(pArtifactId).append('-');
+        buf.append(pVersion).append('.');
+        buf.append(ext);
+
+        return buf.toString();
+    }
+
+    public static String getDependencyRelativePath(final Dependency pDep) {
+        return getDependencyRelativePath(pDep.getGroupId(),
+                                         pDep.getType(),
+                                         pDep.getArtifactId(),
+                                         pDep.getVersion(),
+                                         pDep.getExtension());
+    }
+
+    public static Dependency cloneDependency(final Dependency pDependency) {
+        final Dependency dep = new Dependency();
+        dep.setArtifactId(pDependency.getArtifactId());
+        dep.setGroupId(pDependency.getGroupId());
+        dep.setJar(pDependency.getJar());
+        dep.setName(pDependency.getName());
+        if(pDependency.getType() == null || pDependency.getType().trim().length() == 0)
+            dep.setType("jar");
+        else
+            dep.setType(pDependency.getType());
+        dep.setUrl(pDependency.getUrl());
+        dep.setVersion(pDependency.getVersion());
+
+        //noinspection UNCHECKED_WARNING
+        dep.setProperties(new ArrayList(pDependency.getProperties()));
+
+        return dep;
     }
 }
