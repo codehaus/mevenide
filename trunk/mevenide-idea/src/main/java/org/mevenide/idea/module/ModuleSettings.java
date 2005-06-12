@@ -347,11 +347,11 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      */
     private class UIQueryErrorCallback implements IQueryErrorCallback {
         public void handleError(int errorNumber, Exception exception) {
-            //TODO: cache these errors and display on the goals tool window
+            //TODO: this should display the error on a custom errors tool window
+            LOG.debug(exception.getMessage(), exception);
         }
 
         public void discardError(int errorNumber) {
-            //TODO: cache these errors and display on the goals tool window
         }
     }
 
