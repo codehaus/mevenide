@@ -55,6 +55,7 @@ public interface ProblemInfo {
 
     /**
      * Fixes the problem.
+     * @todo perhaps this should be replaced to return a "getFixActions" method, since a problem might have multiple solutions
      */
     void fix();
 
