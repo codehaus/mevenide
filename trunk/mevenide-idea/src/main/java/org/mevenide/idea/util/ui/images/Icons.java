@@ -79,4 +79,9 @@ public abstract class Icons {
     public static final Icon REPO_FILTER_LOCAL = IconLoader.getIcon("repoFilterLocal.png", Icons.class);
     public static final Icon REPO_FILTER_REMOTE = IconLoader.getIcon("repoFilterRemote.png", Icons.class);
 
+    public static final Icon FIX_PROBLEMS = IconLoader.getIcon("fixProblems.png", Icons.class);
+    public static final Icon PROBLEM = IconLoader.getIcon("problem.png", Icons.class);
+    public static final Icon UNKNOWN_PROBLEM = IconLoader.getIcon("problemUnknown.png", Icons.class);
+    public static final Icon WARNING = IconLoader.getIcon("warning.png", Icons.class);
+    public static final Icon PROBLEM_FIXED = IconLoader.getIcon("problemOk.png", Icons.class);
 }
