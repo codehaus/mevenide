@@ -1,28 +1,131 @@
 package org.mevenide.idea.repository;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.util.HttpUtils;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.idea.module.ModuleLocationFinder;
+import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 
 /**
- * @todo this should be an idea component, and not a custom singleton
  * @author Arik
  */
 public class ArtifactDownloadManager extends AbstractApplicationComponent {
+    public void downloadArtifact(final URL pUrl,
+                                 final File pDstFile,
+                                 final String pProxyHost,
+                                 final String pProxyPort,
+                                 final String pProxyUser,
+                                 final String pProxyPassword) throws IOException {
+        downloadArtifact(pUrl.toExternalForm(), pDstFile, pProxyHost, pProxyPort, pProxyUser, pProxyPassword);
+    }
+
+    public void downloadArtifact(final String pUrl,
+                                 final File pDstFile,
+                                 final String pProxyHost,
+                                 final String pProxyPort,
+                                 final String pProxyUser,
+                                 final String pProxyPassword) throws IOException {
+        final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
+        if (indicator != null && indicator.isCanceled())
+            return;
+
+        //
+        //make sure the directory for the file exists
+        //
+        pDstFile.getParentFile().mkdirs();
+
+        //
+        //setup the progress indicator, if available
+        //
+        if (indicator != null) {
+            indicator.setText("Downloading from " + pUrl);
+            indicator.setText2("Saving to " + pDstFile.getAbsolutePath());
+            indicator.startNonCancelableSection();
+        }
+
+        //
+        //download the file
+        //
+        HttpUtils.getFile(pUrl,                                 //url to download
+                          pDstFile,                             //destination file
+                          false,                                //ignore errors?
+                          true,                                 //use timestamp
+                          pProxyHost,                           //proxy host
+                          pProxyPort,                           //proxy port
+                          pProxyUser,                           //proxy username
+                          pProxyPassword,                       //proxy password
+                          null, null,                           //login settings
+                          new ProgressIndicatorDownloadMeter()  //download meter
+        );
+
+        if (indicator != null) {
+            indicator.finishNonCancelableSection();
+            indicator.setText("Finished downloading file.");
+            indicator.setText2("");
+        }
+    }
+
+
+    public void downloadArtifact(final Module pModule,
+                                 final Dependency... pDependency) {
+        final ModuleSettings settings = ModuleSettings.getInstance(pModule);
+        final IQueryContext ctx = settings.getQueryContext();
+        if (ctx == null)
+            throw new IllegalArgumentException(RES.get("pom.not.defined"));
+
+        //
+        //acquire the remote repositories
+        //
+        final IRepositoryReader[] remoteRepos = RepositoryUtils.createRepoReaders(
+            false, pModule);
+
+        //
+        //iterate the dependencies to download
+        //
+        final ModuleLocationFinder finder = new ModuleLocationFinder(pModule);
+        for (Dependency dep : pDependency) {
+            for (IRepositoryReader reader : remoteRepos) {
+                final RepoPathElement repoPath = new RepoPathElement(reader,
+                                                                     null,
+                                                                     dep.getGroupId(),
+                                                                     dep.getType(),
+                                                                     dep.getVersion(),
+                                                                     dep.getArtifactId(),
+                                                                     dep.getExtension());
+                try {
+                    downloadArtifact(finder, ctx.getResolver(), repoPath);
+                }
+                catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+
+    public void downloadArtifact(final IQueryContext pContext,
+                                 final ILocationFinder pFinder,
+                                 final RepoPathElement... pPathElements) throws IOException {
+        downloadArtifact(pFinder, pContext.getResolver(), pPathElements);
+    }
 
     public void downloadArtifact(final ILocationFinder pFinder,
                                  final IPropertyResolver pResolver,
                                  final RepoPathElement... pPathElements) throws IOException {
         final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
-        if(indicator.isCanceled())
+        if (indicator.isCanceled())
             return;
 
         for (RepoPathElement pathElement : pPathElements) {
@@ -33,7 +136,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
 
             if (!pathElement.isLeaf()) {
                 try {
-                    if(indicator != null)
+                    if (indicator != null)
                         indicator.startNonCancelableSection();
                     final RepoPathElement[] children = pathElement.getChildren();
                     if (indicator != null)
@@ -74,33 +177,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
                 if (passwd != null && passwd.trim().length() == 0)
                     passwd = null;
 
-                //
-                //setup the progress indicator, if available
-                //
-                if (indicator != null) {
-                    if (indicator.isCanceled())
-                        return;
-                    indicator.setText("Downloading from " + url);
-                    indicator.setText2("Saving to " + destinationFile.getAbsolutePath());
-                    indicator.startNonCancelableSection();
-                }
-
-                //
-                //download the file
-                //
-                HttpUtils.getFile(url,                                  //url to download
-                                  destinationFile,                      //destination file
-                                  false,                                //ignore errors?
-                                  true,                                 //use timestamp
-                                  host, port, user, passwd,             //proxy settings
-                                  null, null,                           //login settings
-                                  new ProgressIndicatorDownloadMeter()  //download meter
-                );
-                if (indicator != null) {
-                    indicator.finishNonCancelableSection();
-                    indicator.setText("Finished downloading file.");
-                    indicator.setText2("");
-                }
+                downloadArtifact(url, destinationFile, host, port, user, passwd);
             }
         }
 
