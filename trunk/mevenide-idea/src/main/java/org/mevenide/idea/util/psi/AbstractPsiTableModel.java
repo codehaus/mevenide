@@ -86,7 +86,7 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     }
 
     public boolean isCellEditable(int rowIndex, int columnIndex) {
-        return super.isCellEditable(rowIndex, columnIndex);
+        return true;
     }
 
     /**
