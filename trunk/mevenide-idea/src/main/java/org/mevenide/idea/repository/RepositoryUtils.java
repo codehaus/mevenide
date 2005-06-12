@@ -26,7 +26,33 @@ public abstract class RepositoryUtils {
         return createRepoReaders(modules);
     }
 
+    public static IRepositoryReader createLocalRepoReader(final Module pModule) {
+        final ModuleSettings moduleSettings = ModuleSettings.getInstance(pModule);
+        final IQueryContext context = moduleSettings.getQueryContext();
+        if (context == null)
+            return null;
+
+        final ILocationFinder finder = new ModuleLocationFinder(pModule);
+        final String localRepoPath = finder.getMavenLocalRepository();
+        final File localRepoFile = new File(localRepoPath);
+        final URI localRepoUri = localRepoFile.toURI();
+        String localRepo = localRepoUri.toString();
+
+        if (localRepo.startsWith("file://"))
+            localRepo = localRepo.substring(7);
+        else
+            localRepo = localRepo.substring(6);
+
+        final File repoFile = new File(localRepo);
+        return createLocalRepositoryReader(repoFile);
+    }
+
     public static IRepositoryReader[] createRepoReaders(final Module... pModules) {
+        return createRepoReaders(true, pModules);
+    }
+
+    public static IRepositoryReader[] createRepoReaders(final boolean pIncludeLocal,
+                                                        final Module... pModules) {
         final Set<String> repoUris = new HashSet<String>();
 
         for (final Module module : pModules) {
@@ -38,12 +64,14 @@ public abstract class RepositoryUtils {
             final String remoteRepos = context.getPropertyValue("maven.repo.remote");
             repoUris.add(remoteRepos);
 
-            final ILocationFinder finder = new ModuleLocationFinder(module);
-            final String localRepoPath = finder.getMavenLocalRepository();
-            final File localRepoFile = new File(localRepoPath);
-            final URI localRepoUri = localRepoFile.toURI();
-            final String localRepo = localRepoUri.toString();
-            repoUris.add(localRepo);
+            if(pIncludeLocal) {
+                final ILocationFinder finder = new ModuleLocationFinder(module);
+                final String localRepoPath = finder.getMavenLocalRepository();
+                final File localRepoFile = new File(localRepoPath);
+                final URI localRepoUri = localRepoFile.toURI();
+                final String localRepo = localRepoUri.toString();
+                repoUris.add(localRepo);
+            }
         }
 
         final Set<String> finalReposSet = new HashSet<String>(repoUris.size());
