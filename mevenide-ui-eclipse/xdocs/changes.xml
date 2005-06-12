@@ -7,6 +7,9 @@
 
   <body>
   <release version="0.4.1" date="in cvs">
+    <action dev="gdodinet" type="add">
+      Provide contextual launchshortcuts ('Run As | Maven Build...')
+    </action> 
     <action dev="fdutton" type="fix">
       Fix feature descriptor to allow to correctly upgrade through update manager
     </action> 
