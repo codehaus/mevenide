@@ -149,7 +149,7 @@ public class StringListEditPanel extends JPanel {
         final String rows = "center:pref, 2dlu, fill:pref:grow";
         final FormLayout formLayout = new FormLayout(cols, rows);
         final DefaultFormBuilder builder = new DefaultFormBuilder(formLayout, this);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
         final CellConstraints cc = new CellConstraints();
 
         builder.add(itemLabel, cc.xy(1, 1));

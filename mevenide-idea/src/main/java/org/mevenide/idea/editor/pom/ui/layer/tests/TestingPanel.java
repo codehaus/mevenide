@@ -86,7 +86,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
         final String rows = "top:min, top:min, top:min, fill:min:grow, top:min, fill:min:grow";
         final FormLayout layout = new FormLayout(cols, rows);
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         UIUtils.installBorder(dirsPanel);
         UIUtils.installBorder(testsIncludesPanel);
@@ -116,7 +116,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
     protected JPanel createDirectoriesPanel() {
         final FormLayout layout = new FormLayout("right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         builder.append(RES.get("test.src.dir"), testsSourceDirField);
         return builder.getPanel();

@@ -124,7 +124,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
                         "right:min:grow(0.05), 2dlu, fill:min:grow(0.45)",          //second column
                                                                                      "");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         //
         //maven pom info
