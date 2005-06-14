@@ -1,8 +1,8 @@
 package org.mevenide.idea.util.psi;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
@@ -16,7 +16,7 @@ import org.mevenide.idea.util.IDEUtils;
 
 /**
  * PSI utilities.
- * 
+ *
  * @author Arik
  */
 public abstract class PsiUtils {
@@ -55,7 +55,7 @@ public abstract class PsiUtils {
     /**
      * Returns the {@link XmlFile} associated with the specified document in the specified module.
      *
-     * @param pModule  the module context
+     * @param pModule   the module context
      * @param pDocument the document to find the file for
      * @return the XML file, or {@code null} if the file can't be found (shouldn't happen)
      */
@@ -79,7 +79,43 @@ public abstract class PsiUtils {
         if (value == null)
             return null;
 
-        return value.getTrimmedText();
+        final String text = value.getTrimmedText();
+        if (text == null || text.trim().length() == 0)
+            return null;
+
+        return text;
+    }
+
+    public static String getTagValue(final XmlTag pParentTag,
+                                     final String pChildTagName) {
+        if (pParentTag == null)
+            return null;
+
+        final XmlTag childTag = pParentTag.findFirstSubTag(pChildTagName);
+        if (childTag == null)
+            return null;
+
+        return getTagValue(childTag);
+    }
+
+    /**
+     * Sets the value of the first tag with the specified name under the given parent tag.
+     *
+     * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
+     *
+     * @param pModule    the module context
+     * @param pParentTag the parent tag (must not be {@code null}
+     * @param pTagName   the child tag name to find (must not be {@code null}
+     * @param pValue     the value to set in the tag
+     */
+    public static void setTagValue(final Module pModule,
+                                   final XmlTag pParentTag,
+                                   final String pTagName,
+                                   final String pValue) {
+        setTagValue(pModule.getProject(),
+                    pParentTag,
+                    pTagName,
+                    pValue);
     }
 
     /**
@@ -104,10 +140,10 @@ public abstract class PsiUtils {
                 }
                 else {
                     final XmlTag newChild = pParentTag.createChildTag(
-                            pTagName,
-                            pParentTag.getNamespace(),
-                            pValue,
-                            false);
+                        pTagName,
+                        pParentTag.getNamespace(),
+                        pValue,
+                        false);
                     try {
                         pParentTag.add(newChild);
                     }
@@ -118,6 +154,21 @@ public abstract class PsiUtils {
                 }
             }
         });
+    }
+
+    /**
+     * Sets the value of the given tag.
+     *
+     * @param pModule the module context
+     * @param pTag    the tag (must not be {@code null}
+     * @param pValue  the value to set in the tag
+     */
+    public static void setTagValue(final Module pModule,
+                                   final XmlTag pTag,
+                                   final String pValue) {
+        setTagValue(pModule.getProject(),
+                    pTag,
+                    pValue);
     }
 
     /**
