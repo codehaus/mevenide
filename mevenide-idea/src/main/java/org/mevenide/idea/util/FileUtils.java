@@ -1,12 +1,12 @@
 package org.mevenide.idea.util;
 
 import java.io.File;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * @author Arik
  */
 public abstract class FileUtils {
-
     public static boolean equals(final File pFirst, final File pSecond) {
         if (pFirst == pSecond)
             return true;
@@ -15,5 +15,16 @@ public abstract class FileUtils {
             return false;
 
         return pFirst.equals(pSecond);
+    }
+
+    public static String fixPath(final VirtualFile pFile) {
+        final StringBuilder buf = new StringBuilder(pFile.getPath());
+        if(pFile.getPath().endsWith("!/"))
+            buf.delete(buf.length() - 2, buf.length());
+
+        if (pFile.getPath().endsWith("!"))
+            buf.delete(buf.length() - 1, buf.length());
+
+        return buf.toString();
     }
 }

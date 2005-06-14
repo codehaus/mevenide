@@ -6,8 +6,12 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.maven.project.Dependency;
 
 /**
  * @author Arik
@@ -45,5 +49,27 @@ public abstract class IDEUtils {
         }
         else
             return mgr.getProgressIndicator();
+    }
+
+    public static Library findLibrary(final Project pProject,
+                                      final Dependency pDependency) {
+        final LibraryTablesRegistrar libTableMgr = LibraryTablesRegistrar.getInstance();
+        final LibraryTable libTable = libTableMgr.getLibraryTable(pProject);
+
+        String libName = pDependency.getArtifact();
+        Library lib = libTable.getLibraryByName(libName);
+        if (lib == null) {
+            String type = pDependency.getType();
+            if(type == null || type.trim().length() == 0)
+                type = "jar";
+
+            if(libName.endsWith("." + type)) {
+                final int newLength = libName.length() - 1 - type.length();
+                libName = libName.substring(0, newLength);
+                lib = libTable.getLibraryByName(libName);
+            }
+        }
+
+        return lib;
     }
 }
