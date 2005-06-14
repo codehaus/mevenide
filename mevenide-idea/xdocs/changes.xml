@@ -9,10 +9,18 @@
 
         <release version="0.2" date="unreleased" description="New features">
             <action dev="arikkfir" type="add">
-                Added initial version of a POM&lt;-&gt;IDEA synchronization
-                inspections. These inspections let you know (on demand)
-                if there are any differences between your IDEA project and
-                your POM file.
+                Added POM&lt;-&gt;IDEA synchronization inspections. These
+                inspections let you know (on demand) if there are any
+                differences between your IDEA project and your POM file.
+                Currently supported are:
+                <ul>
+                    <li>Dependencies defined in POM and missing from IDEA modules</li>
+                    <li>Libraries defined in IDEA module and missing from POM.</li>
+                    <li>Dependencies declared in POM and missing from local repository.</li>
+                </ul>
+                Problems discovered are displayed in the POM Sync tool window,
+                where you can apply one of the multiple auto-fixes for each
+                problem.
             </action>
             <action dev="arikkfir" type="add">
                 Added support for editing dependency properties to POM editor.
