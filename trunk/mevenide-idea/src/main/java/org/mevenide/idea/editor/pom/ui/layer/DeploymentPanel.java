@@ -52,7 +52,7 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
         final FormLayout layout = new FormLayout(
                 "right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, RES.getBundle(), this);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         builder.appendSeparator(RES.get("site.deployment.title"));
         builder.append(RES.get("site.address"), siteAddressField);

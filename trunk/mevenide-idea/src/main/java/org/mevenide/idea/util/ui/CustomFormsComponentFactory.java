@@ -25,7 +25,6 @@ import java.awt.Color;
 import java.awt.Component;
 
 /**
- * @todo should be a singleton
  * @author Arik
  */
 public class CustomFormsComponentFactory implements ComponentFactory {
@@ -33,6 +32,9 @@ public class CustomFormsComponentFactory implements ComponentFactory {
     private static final ComponentFactory INSTANCE = new CustomFormsComponentFactory();
 
     private final ComponentFactory delegate = DefaultComponentFactory.getInstance();
+
+    private CustomFormsComponentFactory() {
+    }
 
     public static ComponentFactory getInstance() {
         return INSTANCE;

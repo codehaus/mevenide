@@ -94,7 +94,7 @@ public class ScmPanel extends AbstractPomLayerPanel {
     private JPanel createRepositoryPanel() {
         final FormLayout layout = new FormLayout("right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout);
-        builder.setComponentFactory(new CustomFormsComponentFactory());
+        builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         //
         //repository
