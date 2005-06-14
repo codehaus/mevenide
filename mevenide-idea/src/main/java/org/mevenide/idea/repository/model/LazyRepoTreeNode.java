@@ -1,15 +1,12 @@
 package org.mevenide.idea.repository.model;
 
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.*;
-
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.tree.TreeNode;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.builder.ToStringBuilder;
-import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik
@@ -51,30 +48,22 @@ public class LazyRepoTreeNode extends RepoTreeNode {
     }
 
     @Override public TreeNode getChildAt(int childIndex) {
-        if(initiateFetchIfNecessary())
-            LOG.trace("getChildAt initiated fetch for " + nodeDescriptor);
-
+        initiateFetchIfNecessary();
         return super.getChildAt(childIndex);
     }
 
     @Override public int getChildCount() {
-        if (initiateFetchIfNecessary())
-            LOG.trace("getChildCount initiated fetch for " + nodeDescriptor);
-
+        initiateFetchIfNecessary();
         return super.getChildCount();
     }
 
     @Override public int getIndex(TreeNode node) {
-        if (initiateFetchIfNecessary())
-            LOG.trace("getIndex initiated fetch for " + nodeDescriptor);
-
+        initiateFetchIfNecessary();
         return super.getIndex(node);
     }
 
     @Override public Enumeration<? extends TreeNode> children() {
-        if (initiateFetchIfNecessary())
-            LOG.trace("children initiated fetch for " + nodeDescriptor);
-
+        initiateFetchIfNecessary();
         return super.children();
     }
 
@@ -92,7 +81,7 @@ public class LazyRepoTreeNode extends RepoTreeNode {
 
             //
             //sort the collection - this is an ugly hack, casting it to List
-            //
+            //noinspection UNCHECKED_WARNING
             Collections.sort((List)nodes);
 
             //
@@ -199,10 +188,7 @@ public class LazyRepoTreeNode extends RepoTreeNode {
         private RepoPathElement[] fetchChildren(final RepoPathElement pPathElement) {
             synchronized (pPathElement.getReader()) {
                 try {
-                    final String elementStr = ToStringBuilder.reflectionToString(pPathElement);
-                    final RepoPathElement[] children = pPathElement.getChildren();
-                    LOG.trace("Fetched " + children.length + " children for " + elementStr);
-                    return children;
+                    return pPathElement.getChildren();
                 }
                 catch (Exception e) {
                     LOG.error(e.getMessage(), e);
