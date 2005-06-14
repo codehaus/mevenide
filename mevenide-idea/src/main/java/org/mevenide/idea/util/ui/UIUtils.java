@@ -35,7 +35,7 @@ public abstract class UIUtils {
     }
 
     public static void showError(final Module pModule, final String pMessage) {
-
+        showError(pModule, pMessage, null);
     }
 
     public static void showError(final Module pModule,
@@ -63,7 +63,12 @@ public abstract class UIUtils {
     public static void showError(final Project pProject,
                                  final String pMessage,
                                  final Throwable pCause) {
-        Messages.showErrorDialog(pProject, pMessage + " (" + pCause.getMessage() + ")", ERROR_TITLE);
+        final String message;
+        if(pCause != null)
+            message = pMessage + " (" + pCause.getMessage() + ")";
+        else
+            message = pMessage;
+        Messages.showErrorDialog(pProject, message, ERROR_TITLE);
     }
 
     public static String buildMessage(final Throwable pCause, final String pDefault) {
