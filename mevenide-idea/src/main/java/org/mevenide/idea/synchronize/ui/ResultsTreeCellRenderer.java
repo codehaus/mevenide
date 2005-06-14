@@ -7,6 +7,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.util.ui.images.Icons;
+import com.intellij.openapi.actionSystem.AnAction;
 
 /**
  * @author Arik
@@ -32,10 +33,14 @@ public class ResultsTreeCellRenderer extends DefaultTreeCellRenderer {
         final Component c = super.getTreeCellRendererComponent(tree, text, sel, expanded, leaf, row, hasFocus);
         if(c instanceof JLabel && problem != null) {
             final JLabel label = (JLabel) c;
-            if(problem.isValid())
-                label.setIcon(problem.canBeFixed() ? Icons.PROBLEM : Icons.WARNING);
-            else
+            final AnAction[] fixActions = problem.getFixActions();
+
+            if(!problem.isValid())
                 label.setIcon(Icons.PROBLEM_FIXED);
+            else if(fixActions != null && fixActions.length > 0)
+                label.setIcon(Icons.PROBLEM);
+            else
+                label.setIcon(Icons.WARNING);
         }
 
         return c;
