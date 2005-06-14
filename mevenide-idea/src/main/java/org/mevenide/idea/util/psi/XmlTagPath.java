@@ -36,7 +36,6 @@ public final class XmlTagPath {
      *
      * @param pFile the XML file
      * @param pPath the tag path expression
-     * @todo move messages to resource bundle
      */
     public XmlTagPath(final XmlFile pFile, final String pPath) {
         if (pFile == null)
@@ -47,7 +46,7 @@ public final class XmlTagPath {
         final String[] pathTokens = pPath.split("/");
         final XmlFilterExpression expr = XmlFilterExpression.create(pathTokens[0]);
         if (expr.getIndex() != null)
-            throw new IllegalArgumentException("The first path token cannot have an index.");
+            throw new IllegalArgumentException(RES.get("indexed.first.token.err"));
 
         file = pFile;
         path = pPath;
