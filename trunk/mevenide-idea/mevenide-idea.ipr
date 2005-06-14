@@ -322,7 +322,12 @@
         <root url="jar://C:/Program Files/Java/jdk1.5.0_03/lib/tools.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="jar://$idea.home$/lib/src/trove4j_src.jar!/" />
+        <root url="jar://$idea.home$/lib/src/src_forms_rt.zip!/" />
+        <root url="jar://$idea.home$/lib/src/ant1_6_2src.jar!/" />
+        <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />
+      </SOURCES>
     </library>
     <library name="commons-httpclient-3.0-rc2">
       <CLASSES>
