@@ -1,6 +1,7 @@
 package org.mevenide.idea.synchronize;
 
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.actionSystem.AnAction;
 
 /**
  * @author Arik
@@ -43,20 +44,14 @@ public interface ProblemInfo {
     boolean isValid();
 
     /**
-     * Returns {@code true} if this problem can be automatically fixed, or
-     * {@code false} if the user has to fix it manually.
+     * Returns the list of actions that can be applied/executed to fix this
+     * problem.
      *
-     * <p>If this method returns {@code false}, the {@link #fix()} method
-     * will never be called.</p>
+     * <p>Returning an empty array, or {@code null} means that this problem
+     * cannot be automatically solved and the user needs to intervene.</p>
      *
-     * @return boolean
+     * @return can return an actions array, {@code null} or an empty array
      */
-    boolean canBeFixed();
-
-    /**
-     * Fixes the problem.
-     * @todo perhaps this should be replaced to return a "getFixActions" method, since a problem might have multiple solutions
-     */
-    void fix();
+    AnAction[] getFixActions();
 
 }

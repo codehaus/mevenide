@@ -3,21 +3,19 @@ package org.mevenide.idea.synchronize;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.IdeActions;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowAnchor;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.mevenide.idea.synchronize.inspections.dependencies.DependencyDiffInspector;
 import org.mevenide.idea.synchronize.inspections.dependencies.DependencyNotDownloadedInspector;
-import org.mevenide.idea.synchronize.inspections.dependencies.IdeaLibs2POMInspector;
-import org.mevenide.idea.synchronize.inspections.dependencies.POM2IdeaLibsInspector;
+import org.mevenide.idea.synchronize.ui.SynchronizationResultsPanel;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
- * @todo find an appropriate place to register the Sync action (in the menu)
- *
  * @author Arik
  */
 public class InspectionsManager extends AbstractProjectComponent {
@@ -40,29 +38,22 @@ public class InspectionsManager extends AbstractProjectComponent {
      */
     @Override
     public void initComponent() {
-        registerSyncAction();
-
         //TODO: somehow dynamically locate all inspectors (allow customization...)
         inspections.add(new DependencyNotDownloadedInspector());
-        inspections.add(new IdeaLibs2POMInspector());
-        inspections.add(new POM2IdeaLibsInspector());
+        inspections.add(new DependencyDiffInspector());
     }
 
-    private void registerSyncAction() {
-        final ActionManager mgr = ActionManager.getInstance();
-        final AnAction inspectAction = mgr.getAction(InspectProjectAction.ID);
-        if (inspectAction == null) {
-            LOG.warn("Could not find action " + InspectProjectAction.ID);
-            return;
-        }
+    @Override
+    public void projectOpened() {
+        final ToolWindowManager toolMgr = ToolWindowManager.getInstance(project);
+        final String twName = SynchronizationResultsPanel.NAME;
 
-        final AnAction exToolsGrp = mgr.getAction(IdeActions.GROUP_FILE);
-        if (exToolsGrp instanceof DefaultActionGroup) {
-            final DefaultActionGroup toolsGrp = (DefaultActionGroup) exToolsGrp;
-            toolsGrp.add(inspectAction);
-        }
-        else
-            LOG.warn("The action group " + IdeActions.GROUP_EXTERNAL_TOOLS + " could not be found (" + exToolsGrp + ")");
+        final SynchronizationResultsPanel ui = new SynchronizationResultsPanel(project);
+        final ToolWindowAnchor anchor = ToolWindowAnchor.BOTTOM;
+        final ToolWindow tw = toolMgr.registerToolWindow(twName, ui, anchor);
+
+        tw.setIcon(Icons.SYNC);
+        tw.setAvailable(false, null);
     }
 
     /**

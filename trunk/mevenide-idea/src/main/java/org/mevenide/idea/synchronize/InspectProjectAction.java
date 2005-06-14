@@ -3,13 +3,12 @@ package org.mevenide.idea.synchronize;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowAnchor;
-import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.synchronize.ui.SynchronizationResultsPanel;
 import org.mevenide.idea.util.actions.AbstractAnAction;
+import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -35,25 +34,22 @@ public class InspectProjectAction extends AbstractAnAction {
 
     public void actionPerformed(AnActionEvent e) {
         final Project project = getProject(e);
-        final InspectionsManager mgr = InspectionsManager.getInstance(project);
-        final ProblemInfo[] problems = mgr.inspect();
-
-        final String twName = SynchronizationResultsPanel.NAME;
-        final ToolWindowManager toolMgr = ToolWindowManager.getInstance(project);
-
-        SynchronizationResultsPanel ui;
-        ToolWindow syncTw = toolMgr.getToolWindow(twName);
-
-        if(syncTw == null) {
-            ui = new SynchronizationResultsPanel(project, problems);
-            toolMgr.registerToolWindow(twName, ui, ToolWindowAnchor.BOTTOM);
-            syncTw = toolMgr.getToolWindow(twName);
-        }
-        else {
-            ui = (SynchronizationResultsPanel) syncTw.getComponent();
-            ui.setProblems(problems);
+        final ToolWindow tw = SynchronizationResultsPanel.getInstance(project);
+        if(tw == null) {
+            UIUtils.showError(project, "Could not find synchronization tool window.");
+            return;
         }
 
-        syncTw.setIcon(Icons.SYNC);
+        tw.setAvailable(true, null);
+        tw.show(new Runnable() {
+            public void run() {
+                final SynchronizationResultsPanel ui;
+                ui = (SynchronizationResultsPanel) tw.getComponent();
+
+                final InspectionsManager mgr = InspectionsManager.getInstance(project);
+                final ProblemInfo[] problems = mgr.inspect();
+                ui.setProblems(problems);
+            }
+        });
     }
 }
