@@ -59,6 +59,9 @@ public class DefaultProjectContextTest extends TestCase {
         assertEquals(result, "has " + basedir.getAbsolutePath() + " value12 xx");
         result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "yy ${prop.test2} xx ${prop.test3}");
         assertEquals(result, "yy has " +basedir.getAbsolutePath() + " value12 xx has " + basedir.getAbsolutePath() + " value123");
+        //fix for MEVENIDE-267
+        result = DefaultProjectContext.doReplaceExtend(basedir, resolver, "yy ${prop.test2} xx ${prop.test3 cc");
+        assertEquals(result, "yy has " +basedir.getAbsolutePath() + " value12 xx ${prop.test3 cc");
     }
 
     // TODO add test methods here. The name must begin with 'test'. For example:

@@ -217,12 +217,16 @@ class DefaultProjectContext implements IProjectContext {
                 if (replace != null) {
                     index = extend.indexOf(gr1);
                     extend = extend.substring(0, index - 2) + replace + extend.substring(index + gr1.length() + 1);
+                    extend = doReplaceExtend(basedir, resolver, extend);
                 } else {
                     // cannot resolve, just exit..
                     return extend;
                 }
+            } else {
+                // wrong parenthesis now, doens't match pattern, just exit.
+                // MEVENIDE-267
+                return extend;
             }
-            extend = doReplaceExtend(basedir, resolver, extend);
         }
         return extend;
     }
