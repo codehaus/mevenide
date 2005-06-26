@@ -20,11 +20,19 @@ package org.mevenide.netbeans.cargo;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.configuration.ConfigurationFactory;
+import org.codehaus.cargo.container.installer.Proxy;
+import org.codehaus.cargo.container.installer.ZipURLInstaller;
 import org.codehaus.cargo.container.property.ServletPropertySet;
+import org.codehaus.cargo.util.monitor.SimpleMonitor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 
 
 /**
@@ -38,6 +46,9 @@ public class ContainerPanel extends javax.swing.JPanel {
         initComponents();
         comType.setModel(new DefaultComboBoxModel(CargoServerRegistry.CONTAINER_TYPES));
         setPreferredSize(new Dimension(500, 150));
+        cbExisting.setSelected(true);
+        lblDownloadUrl.setVisible(false);
+        txtDownloadUrl.setVisible(false);
     }
     
     /** This method is called from within the constructor to
@@ -57,6 +68,10 @@ public class ContainerPanel extends javax.swing.JPanel {
         cbStart = new javax.swing.JCheckBox();
         lblPort = new javax.swing.JLabel();
         txtPort = new javax.swing.JTextField();
+        cbExisting = new javax.swing.JCheckBox();
+        lblDownloadUrl = new javax.swing.JLabel();
+        txtDownloadUrl = new javax.swing.JTextField();
+        jPanel1 = new javax.swing.JPanel();
 
         setLayout(new java.awt.GridBagLayout());
 
@@ -65,6 +80,12 @@ public class ContainerPanel extends javax.swing.JPanel {
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblType, gridBagConstraints);
+
+        comType.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                comTypeActionPerformed(evt);
+            }
+        });
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 2;
@@ -75,14 +96,14 @@ public class ContainerPanel extends javax.swing.JPanel {
         lblInstallDir.setText("Install Directory");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblInstallDir, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
@@ -98,14 +119,14 @@ public class ContainerPanel extends javax.swing.JPanel {
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 4;
         gridBagConstraints.insets = new java.awt.Insets(3, 6, 0, 6);
         add(btnInstallDir, gridBagConstraints);
 
         cbStart.setText("Start Immediately");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 0);
         add(cbStart, gridBagConstraints);
@@ -113,7 +134,7 @@ public class ContainerPanel extends javax.swing.JPanel {
         lblPort.setText("Port");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblPort, gridBagConstraints);
@@ -121,14 +142,74 @@ public class ContainerPanel extends javax.swing.JPanel {
         txtPort.setText("8080");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(txtPort, gridBagConstraints);
 
+        cbExisting.setText("Use existing installation");
+        cbExisting.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(0, 0, 0, 0)));
+        cbExisting.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        cbExisting.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbExistingActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(cbExisting, gridBagConstraints);
+
+        lblDownloadUrl.setText("Download URL");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblDownloadUrl, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtDownloadUrl, gridBagConstraints);
+
+        jPanel1.setMinimumSize(new java.awt.Dimension(10, 19));
+        jPanel1.setPreferredSize(new java.awt.Dimension(10, 19));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 2;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 0, 0, 0);
+        add(jPanel1, gridBagConstraints);
+
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private void comTypeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_comTypeActionPerformed
+        if (!cbExisting.isSelected()) {
+            txtDownloadUrl.setText(CargoServerRegistry.getInstance().getDownloadUrl((String)comType.getSelectedItem()));            
+        } else {
+            txtDownloadUrl.setText("");
+        }
+    }//GEN-LAST:event_comTypeActionPerformed
+
+    private void cbExistingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbExistingActionPerformed
+        lblDownloadUrl.setVisible(!cbExisting.isSelected());
+        txtDownloadUrl.setVisible(!cbExisting.isSelected());
+        if (!cbExisting.isSelected()) {
+            txtDownloadUrl.setText(CargoServerRegistry.getInstance().getDownloadUrl((String)comType.getSelectedItem()));
+        } else {
+            txtDownloadUrl.setText("");
+        }
+    }//GEN-LAST:event_cbExistingActionPerformed
 
     private void btnInstallDirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInstallDirActionPerformed
         JFileChooser chooser = new JFileChooser();
@@ -151,20 +232,53 @@ public class ContainerPanel extends javax.swing.JPanel {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnInstallDir;
+    private javax.swing.JCheckBox cbExisting;
     private javax.swing.JCheckBox cbStart;
     private javax.swing.JComboBox comType;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblDownloadUrl;
     private javax.swing.JLabel lblInstallDir;
     private javax.swing.JLabel lblPort;
     private javax.swing.JLabel lblType;
+    private javax.swing.JTextField txtDownloadUrl;
     private javax.swing.JTextField txtInstallDir;
     private javax.swing.JTextField txtPort;
     // End of variables declaration//GEN-END:variables
     
     public void createContainer() {
+        StatusDisplayer.getDefault().setStatusText("Creating new Cargo Container instance.");
         CargoServerRegistry reg = CargoServerRegistry.getInstance();
-        Container cont = reg.getFactory().createContainer((String)comType.getSelectedItem());
-        File homeDir = new File(txtInstallDir.getText());
-        if (homeDir.exists()) {
+        Container cont = null;
+        File homeDir = null;
+        cont = reg.getFactory().createContainer((String)comType.getSelectedItem());
+        if (cbExisting.isSelected()) {
+            homeDir = new File(txtInstallDir.getText());
+        } else {
+            StatusDisplayer.getDefault().setStatusText("Downloading server binaries...");
+            //download first
+            try {
+                URL url = new URL(txtDownloadUrl.getText());
+                File dir = new File(txtInstallDir.getText());
+                ZipURLInstaller installer = new ZipURLInstaller(url, dir);
+                String host = ProxyUtilities.getProxyHost();
+                String port = ProxyUtilities.getProxyPort();
+                if (host != null && port != null && port.length() > 0 && host.length() > 0) {
+                    Proxy proxy = new Proxy();
+                    proxy.setHost(host);
+                    proxy.setPort(Integer.parseInt(port));
+                    installer.setProxy(proxy);
+                }
+                installer.setMonitor(new SimpleMonitor());
+                installer.install();
+                homeDir = installer.getHomeDir();
+            } catch (MalformedURLException exc) {
+                NotifyDescriptor nd = new NotifyDescriptor.Message("Malformed URL:" + exc.getLocalizedMessage());
+                DialogDisplayer.getDefault().notify(nd);
+                return;
+            }
+        }
+         
+        if (homeDir != null && homeDir.exists()) {
             cont.setHomeDir(homeDir);
             try {
                 cont.setOutput(File.createTempFile(cont.getId(), "log"));
@@ -177,8 +291,10 @@ public class ContainerPanel extends javax.swing.JPanel {
             if (cbStart.isSelected()) {
                 reg.startContainer(cont);
             }
+            StatusDisplayer.getDefault().setStatusText("Installed Cargo container.");
         } else {
-            throw new IllegalArgumentException("TODO");
+            NotifyDescriptor nd = new NotifyDescriptor.Message("Error");
+            DialogDisplayer.getDefault().notify(nd);
         }
     }
 }

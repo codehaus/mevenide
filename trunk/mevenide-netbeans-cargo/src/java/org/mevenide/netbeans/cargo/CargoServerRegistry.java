@@ -26,8 +26,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
-import java.util.TreeSet;
 import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.ContainerException;
 import org.codehaus.cargo.container.ContainerFactory;
@@ -151,6 +149,10 @@ public class CargoServerRegistry {
     
     public DeployableFactory getDeployableFactory() {
         return deployableFactory;
+    }
+    
+    public String getDownloadUrl(String containerId) {
+        return (String)installUrls.get(containerId);
     }
     
     public synchronized Deployer getDeployer(Container container) {

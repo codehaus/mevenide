@@ -19,12 +19,10 @@ package org.mevenide.netbeans.cargo;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.ResourceBundle;
 import javax.swing.Action;
 import org.codehaus.cargo.container.Container;
-import org.openide.util.HelpCtx;
 import org.openide.nodes.*;
-import org.openide.util.NbBundle;
+
 
 /**
  *

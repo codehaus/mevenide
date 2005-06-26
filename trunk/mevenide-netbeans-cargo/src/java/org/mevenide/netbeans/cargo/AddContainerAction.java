@@ -22,6 +22,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -36,11 +37,16 @@ public class AddContainerAction extends AbstractAction {
     }
 
     public void actionPerformed(ActionEvent actionEvent) {
-        ContainerPanel panel = new ContainerPanel();
+        final ContainerPanel panel = new ContainerPanel();
         DialogDescriptor dd = new DialogDescriptor(panel, "Add Container");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == DialogDescriptor.OK_OPTION) {
-            panel.createContainer();
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    panel.createContainer();
+                }
+            });
+            
         }
     }
     
