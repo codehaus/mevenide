@@ -4,7 +4,7 @@
 	<classpathentry kind="src" path="src/test/java"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-jelly/jars/commons-jelly-20030902.160215.jar"/>
-	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
