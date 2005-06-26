@@ -17,13 +17,11 @@
 
 package org.mevenide.netbeans.j2ee.deploy;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentListener;

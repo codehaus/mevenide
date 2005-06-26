@@ -19,27 +19,14 @@ package org.mevenide.netbeans.j2ee.deploy;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import javax.swing.AbstractAction;
 import org.codehaus.cargo.container.Container;
-import org.codehaus.cargo.container.ContainerException;
-import org.codehaus.cargo.container.State;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.WAR;
-import org.codehaus.cargo.container.deployer.DeployableMonitor;
-import org.codehaus.cargo.container.deployer.DeployableMonitorListener;
-import org.codehaus.cargo.container.deployer.Deployer;
-import org.codehaus.cargo.container.deployer.DeployerFactory;
-import org.codehaus.cargo.container.deployer.URLDeployableMonitor;
 import org.mevenide.netbeans.cargo.CargoServerRegistry;
 import org.mevenide.netbeans.project.MavenProject;
-import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.HtmlBrowser;
-import org.openide.awt.StatusDisplayer;
 import org.openide.util.RequestProcessor;
 
 /**
