@@ -25,9 +25,7 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.Set;
 import org.codehaus.cargo.container.Container;
-import org.codehaus.cargo.container.ContainerFactory;
 import org.codehaus.cargo.container.configuration.ConfigurationFactory;
 import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
@@ -113,8 +111,7 @@ public class ContainerPersistance {
             
         } catch (IOException exc) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
-        } finally {
-        }
+        } 
     }
     
     private static void putProperty(Properties props, String key, String value) {
