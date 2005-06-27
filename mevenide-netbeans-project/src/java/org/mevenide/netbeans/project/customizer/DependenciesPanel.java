@@ -128,9 +128,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                 }
             }
         });
-        emptyDep = new DependencyPOMChange("", new HashMap(), 
+        emptyDep = DependencyPOMChange.createChangeInstance(null, 
                 IPropertyLocator.LOCATION_NOT_DEFINED, createFieldMap(), 
-                ocDummyOverride, new HashMap(), false);
+                ocDummyOverride, false);
         
     }
     
@@ -562,11 +562,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     }//GEN-LAST:event_btnEditActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        DependencyPOMChange change = new DependencyPOMChange(
-                      "pom.dependencies.dependency", 
-                       new HashMap(), 0, createFieldMap(), 
-                       ocDummyDependency, 
-                       new HashMap(), false);
+        DependencyPOMChange change = DependencyPOMChange.createChangeInstance(null, 0, 
+                       createFieldMap(), 
+                       ocDummyDependency, false);
         
         DependencyEditor ed = new DependencyEditor(project, change);
         DialogDescriptor dd = new DialogDescriptor(ed, "title");
@@ -608,31 +606,9 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                 Iterator it = deps.iterator();
                 while (it.hasNext()) {
                     Dependency dep = (Dependency)it.next();
-                    HashMap vals = new HashMap();
-                    vals.put("artifactId", dep.getArtifactId());
-                    vals.put("groupId", dep.getGroupId());
-                    vals.put("version", dep.getVersion());
-                    vals.put("type", dep.getType());
-                    vals.put("jar", dep.getJar());
-                    vals.put("url", dep.getUrl());
-                    HashMap props = new HashMap();
-                    Map map = dep.resolvedProperties();
-                    if (map != null) {
-                        Iterator it2 = map.entrySet().iterator();
-                        while (it2.hasNext()) {
-                            Map.Entry ent = (Map.Entry)it2.next();
-                            if (ent.getValue() != null && ent.getValue().toString().trim().length() > 0) {
-                                props.put(ent.getKey(), ent.getValue());
-                            }   
-                        }
-                    }                    
-                    DependencyPOMChange change = new DependencyPOMChange(
-                                        "pom.dependencies.dependency", 
-                                        vals, location, createFieldMap(), 
-                                        ocDummyDependency, 
-                                        props, false);
-                    values.add(change);
+                    values.add(DependencyPOMChange.createChangeInstance(dep, location, createFieldMap(), ocDummyDependency, false));
                     String overrideProp = "maven.jar." + dep.getArtifactId();
+                    //TODO
                 }
             }
         }
@@ -857,13 +833,11 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         
         protected Node[] createNodes(Object obj) {
             DependencyPOMChange chng = (DependencyPOMChange)obj;
-            IContentProvider provider = chng.getChangedContent();
-            //TODO - pass correct context into node
             Lookup look = Lookups.fixed(new Object[] {
                         chng,
-                        chng.getChangedContent()
+                        DependenciesPanel.this.project
             });
-            return new Node[] { new DependencyNode(provider, DependenciesPanel.this.project, look)};
+            return new Node[] { new DependencyNode(look, false)};
         }
         
     }

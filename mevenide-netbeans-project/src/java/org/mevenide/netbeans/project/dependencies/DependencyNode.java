@@ -19,21 +19,42 @@ package org.mevenide.netbeans.project.dependencies;
 
 import java.awt.Component;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSettings;
+import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
+import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
+import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.util.MevenideUtils;
 import org.netbeans.api.project.Project;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
+import org.openide.actions.DeleteAction;
+import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
+import org.openide.util.WeakListeners;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -43,47 +64,81 @@ import org.openide.util.lookup.Lookups;
 public class DependencyNode extends AbstractNode {
     
     private Action actions[];
+    private DependencyPOMChange change;
     private IContentProvider dependency;
     private MavenProject project;
     private boolean isOverriden;
     private String override;
+    private boolean longLiving;
+    private PropertyChangeListener listener;
+    private ChangeListener listener2;
     
-    public DependencyNode(IContentProvider dep, MavenProject proj) {
-        this(dep, proj, Lookups.singleton(dep));
-    }
+//    public DependencyNode(Dependency dep, MavenProject proj) {
+//        this(dep, 0, proj, false);
+//    }
+//    
+//    public DependencyNode(Dependency dep, int location, MavenProject proj, boolean isLongLiving) {
+//        this(createContentProvider(dep), location, proj, Lookups.singleton(dep), isLongLiving);
+//    }
     
-    public DependencyNode(IContentProvider dep, MavenProject proj, Lookup lookup) {
-        super(Children.LEAF, lookup);
-        dependency = dep;
-        project = proj;
-
+    /**
+     *in lookup expect instance of MavenProject, DependencyPOMChange
+     */
+    public  DependencyNode(Lookup lookup, boolean isLongLiving) {
+        super(isLongLiving ? /*new DepChildren()*/ Children.LEAF : Children.LEAF, lookup);
+        project = (MavenProject)lookup.lookup(MavenProject.class);
+        change = (DependencyPOMChange)lookup.lookup(DependencyPOMChange.class);
+        dependency = change.getChangedContent();
+        longLiving = isLongLiving;
+        if (longLiving) {
+            listener = new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                        refreshNode();
+                    }
+                }
+            };
+            project.addPropertyChangeListener(WeakListeners.propertyChange(listener, this));
+            listener2 = new ChangeListener() {
+                public void stateChanged(ChangeEvent event) {
+                    refreshNode();
+                }
+            };
+            MavenFileOwnerQueryImpl.getInstance().addChangeListener(WeakListeners.change(listener2, this));
+        }
         setDisplayName(createName());
         setIconBase();
         checkOverride();
     }
     
     private void setIconBase() {
-        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
-        Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
-        if (depPrj != null) {
+        if (isDependencyProjectOpen()) {
             setIconBase("org/mevenide/netbeans/project/resources/MavenIcon"); //NOI18N
-        } else if ("plugin".equalsIgnoreCase(dependency.getValue("type"))) {
+        } else if (isPluginDependency()) {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyPlugin"); //NOI18N
-        } else if (dependency.getValue("type") != null && "pom".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
-            setIconBase("org/mevenide/netbeans/project/resources/DependencyPom"); //NOI18N
-        } else if ("jar".equalsIgnoreCase(dependency.getValue("type"))) { //NOI18N
+        } else if (isJarDependency()) { //NOI18N
             setIconBase("org/mevenide/netbeans/project/resources/DependencyJar"); //NOI18N
         } else {
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         }        
     }
     
-    public DependencyNode(Dependency dep, MavenProject proj) {
-        this(createContentProvider(dep), proj);
+    private boolean isJarDependency() {
+        return "jar".equalsIgnoreCase(dependency.getValue("type"));
     }
     
-    private static IContentProvider createContentProvider(Dependency dep) {
-        return new DepContentProvider(dep);
+    private boolean isPluginDependency() {
+        return "plugin".equalsIgnoreCase(dependency.getValue("type"));
+    }
+    
+    private boolean isEjbDependency() {
+        return "ejb".equalsIgnoreCase(dependency.getValue("type"));
+    }
+    
+    private boolean isDependencyProjectOpen() {
+        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
+        Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
+        return depPrj != null;
     }
     
     private Dependency createDependencySnapshot() {
@@ -147,7 +202,12 @@ public class DependencyNode extends AbstractNode {
     
     public Action[] getActions( boolean context ) {
         if ( actions == null ) {
-            actions = new Action[0];
+            actions = new Action[] {
+                new EditAction(),
+                DeleteAction.get(DeleteAction.class),
+                null,
+                PropertiesAction.get(PropertiesAction.class)
+            };
         }
         return actions;
     }
@@ -165,8 +225,12 @@ public class DependencyNode extends AbstractNode {
         return false;
     }
     
+    public boolean canCopy() {
+        return false;
+    }
+    
     public boolean hasCustomizer() {
-        return true;
+        return false;
     }
     
     private boolean checkLocal() {
@@ -242,9 +306,6 @@ public class DependencyNode extends AbstractNode {
         return null;
     }
     
-    public boolean canCopy() {
-        return false;
-    }
     
     public java.lang.String getHtmlDisplayName() {
         java.lang.String retValue;
@@ -255,50 +316,30 @@ public class DependencyNode extends AbstractNode {
         }
         return retValue;
     }
+
+    public void destroy() throws java.io.IOException {
+        super.destroy();
+    }
     
-    private static class DepContentProvider implements IContentProvider {
-        private Dependency dependency;
-        public DepContentProvider(Dependency dep) {
-            dependency = dep;
-        }
-        public java.util.List getProperties() {
-            return dependency.getProperties();
-        }
-
-        public IContentProvider getSubContentProvider(String key) {
-            return null;
-        }
-
-        public java.util.List getSubContentProviderList(String parentKey, String childKey) {
-            return null;
-        }
-
-        public String getValue(String key) {
-            if ("artifactId".equals(key)) {
-                return dependency.getArtifactId();
-            }
-            if ("groupId".equals(key)) {
-                return dependency.getGroupId();
-            }
-            if ("version".equals(key)) {
-                return dependency.getVersion();
-            }
-            if ("type".equals(key)) {
-                return dependency.getType();
-            }
-            if ("jar".equals(key)) {
-                return dependency.getJar();
-            }
-            if ("url".equals(key)) {
-                return dependency.getUrl();
-            }
-            return null;
-        }
-
-        public java.util.List getValueList(String parentKey, String childKey) {
-            return null;
+    private class EditAction extends AbstractAction {
+        public EditAction() {
+            putValue(Action.NAME, "Edit...");
         }
         
+        public void actionPerformed(ActionEvent event) {
+            
+            DependencyEditor ed = new DependencyEditor(project, change);
+            DialogDescriptor dd = new DialogDescriptor(ed, "Edit Dependency");
+            Object ret = DialogDisplayer.getDefault().notify(dd);
+            if (ret == NotifyDescriptor.OK_OPTION) {
+                HashMap props = ed.getProperties();
+//                setNewValues(ed.getValues(), props);
+                MavenSettings.getDefault().checkDependencyProperties(props.keySet());
+                //TODO
+            }
+            
+            
+        }
     }
 }
 

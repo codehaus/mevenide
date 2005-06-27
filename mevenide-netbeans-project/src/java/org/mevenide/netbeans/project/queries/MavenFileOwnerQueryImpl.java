@@ -19,9 +19,13 @@ package org.mevenide.netbeans.project.queries;
 
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.MavenProject;
@@ -40,17 +44,19 @@ import org.openide.util.Lookup;
  * and it's artifact in the maven repository. any other files shall be handled by the 
  * default netbeans implementation.
  * 
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
      private static final Log logger = LogFactory.getLog(MavenFileOwnerQueryImpl.class);
     
      private Set set;
      private Object LOCK = new Object();
+     private List listeners;
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
          logger.debug("MavenFileOwnerQueryImpl()");
          set = new HashSet();
+         listeners = new ArrayList();
     }
     
     public static MavenFileOwnerQueryImpl getInstance() {
@@ -70,10 +76,37 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         synchronized (LOCK) {
             set.add(project);
         }
+        fireChange();
     }
     public void removeMavenProject(MavenProject project) {
         synchronized (LOCK) {
             set.remove(project);
+        }
+        fireChange();
+    }
+    
+    public void addChangeListener(ChangeListener list) {
+        synchronized (listeners) {
+            listeners.add(list);
+        }
+    }
+    
+    public void removeChangeListener(ChangeListener list) {
+        synchronized (listeners) {
+            listeners.remove(list);
+        }
+    }
+    
+    private void fireChange() {
+        List lst = new ArrayList();
+        synchronized (listeners) {
+            lst.addAll(listeners);
+        }
+        Iterator it = lst.iterator();
+        ChangeEvent event = new ChangeEvent(this);
+        while (it.hasNext()) {
+            ChangeListener change = (ChangeListener)it.next();
+            change.stateChanged(event);
         }
     }
     

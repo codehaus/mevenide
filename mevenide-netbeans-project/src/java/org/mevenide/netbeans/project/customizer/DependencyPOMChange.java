@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
+import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.project.io.IContentProvider;
 
@@ -58,7 +59,7 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
      * @param propOldValues - key:id value:String
      * @param attachListeners attach listeners from the begining.
      */
-    public DependencyPOMChange(String keyParam, Map oldValues, int oldLocation, 
+    private DependencyPOMChange(String keyParam, Map oldValues, int oldLocation, 
                                Map textfields, OriginChange oc, 
                                Map propOldValues, 
                                boolean attachListeners) 
@@ -78,7 +79,40 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
             attachListeners();
         }
         contentProvider = new DependencyContentProvider();
-    }    
+    } 
+    
+    
+    public static DependencyPOMChange createChangeInstance(Dependency dep,
+            int location, Map fieldMap,
+            OriginChange oc,
+            boolean attachListeners) {
+        HashMap vals = new HashMap();
+        HashMap props = new HashMap();
+        if (dep != null) {
+            vals.put("artifactId", dep.getArtifactId());
+            vals.put("groupId", dep.getGroupId());
+            vals.put("version", dep.getVersion());
+            vals.put("type", dep.getType());
+            vals.put("jar", dep.getJar());
+            vals.put("url", dep.getUrl());  
+            Map map = dep.resolvedProperties();
+            if (map != null) {
+                Iterator it2 = map.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry ent = (Map.Entry)it2.next();
+                if (ent.getValue() != null && ent.getValue().toString().trim().length() > 0) {
+                    props.put(ent.getKey(), ent.getValue());
+                }
+            }
+            }
+        }
+        DependencyPOMChange change = new DependencyPOMChange(
+                "pom.dependencies.dependency",
+                vals, location, fieldMap,
+                oc,
+                props, attachListeners);
+        return change;
+    }
     
     
     public void attachListeners() {
