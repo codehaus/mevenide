@@ -59,6 +59,7 @@ class MavenProjectChildren extends Children.Keys {
     private static final String KEY_WEBAPP = "webapp"; //NOI18N
     private static final String KEY_EAR = "ear"; //NOI18N
     private static final String KEY_EJB = "ejb"; //NOI18N
+    private static final String KEY_DEPENDENCIES = "dependencies"; //NOI18N
     
     
     private MavenProject project;
@@ -141,6 +142,9 @@ class MavenProjectChildren extends Children.Keys {
         if (fo != null) {
             list.add(KEY_JELLY_SCRIPT);
         }
+        
+        list.add(KEY_DEPENDENCIES);
+        
         SourceGroup[] xdocsgroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_XDOCS);
         for (int i = 0; i < xdocsgroup.length; i++) {
             list.add(xdocsgroup[i]);
@@ -172,6 +176,8 @@ class MavenProjectChildren extends Children.Keys {
             n = createEarNode();
         } else if (key == currentEjbKey) {
             n = createEjbNode();
+        } else if (key == KEY_DEPENDENCIES) {
+            n = new DependenciesNode(project);
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
