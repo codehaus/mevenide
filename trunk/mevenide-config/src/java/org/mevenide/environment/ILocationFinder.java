@@ -34,8 +34,8 @@ public interface ILocationFinder {
     
 	String getMavenPluginsDir();
     
-	String getConfigurationFileLocation();
+    String getConfigurationFileLocation();
         
-        String getUserHome();
+    String getUserHome();
 
 }

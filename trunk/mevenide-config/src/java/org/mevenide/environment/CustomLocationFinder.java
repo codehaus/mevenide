@@ -16,60 +16,60 @@
  */
 package org.mevenide.environment;
 
-/**  
+/**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: CustomLocationFinder.java,v 1.1 14 déc. 2003 Exp gdodinet 
+ * @version $Id: CustomLocationFinder.java,v 1.1 14 d?c. 2003 Exp gdodinet
  * 
  */
 public class CustomLocationFinder implements ILocationFinder {
     private String javaHome;
-	private String mavenHome;
-	private String mavenLocalHome;
-	private String mavenLocalRepository; 
-	private String mavenPluginsDir;
-        private String userHome;
-    
+    private String mavenHome;
+    private String mavenLocalHome;
+    private String mavenLocalRepository;
+    private String mavenPluginsDir;
+    private String userHome;
+
     public String getConfigurationFileLocation() {
         return null;
     }
-    
+
     public String getJavaHome() {
         return javaHome;
     }
-    
+
     public void setJavaHome(String javaHome) {
         this.javaHome = javaHome;
     }
-    
+
     public String getMavenHome() {
         return mavenHome;
     }
-    
+
     public void setMavenHome(String mavenHome) {
         this.mavenHome = mavenHome;
     }
-    
+
     public String getMavenLocalHome() {
         return mavenLocalHome;
     }
-    
+
     public void setMavenLocalHome(String mavenLocalHome) {
         this.mavenLocalHome = mavenLocalHome;
     }
-    
+
     public String getMavenLocalRepository() {
         return mavenLocalRepository;
     }
-    
+
     public void setMavenLocalRepository(String mavenLocalRepository) {
         this.mavenLocalRepository = mavenLocalRepository;
     }
-    
+
     public String getMavenPluginsDir() {
         return mavenPluginsDir;
     }
-    
+
     public void setMavenPluginsDir(String mavenPluginsDir) {
         this.mavenPluginsDir = mavenPluginsDir;
     }
@@ -81,6 +81,5 @@ public class CustomLocationFinder implements ILocationFinder {
     public void setUserHome(String userHome) {
         this.userHome = userHome;
     }
-    
-    
+
 }
