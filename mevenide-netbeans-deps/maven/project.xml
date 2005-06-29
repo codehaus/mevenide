@@ -5,9 +5,9 @@
   <id>maven-nb-module</id>
   <artifactId>maven-nb-module</artifactId>
   <groupId>mevenide</groupId>
-  <currentVersion>1.0.1</currentVersion>
+  <currentVersion>1.0.2</currentVersion>
   <package>org.apache.maven</package>
-  <name>Maven 1.0.1 library for Mevenide</name>
+  <name>Maven 1.0.2 library for Mevenide</name>
   <shortDescription>Library for project mevenide,</shortDescription>
   <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
   <url>http://mevenide.codehaus.org</url>
@@ -276,7 +276,7 @@
     <dependency>
       <groupId>maven</groupId>
       <artifactId>maven</artifactId>
-      <version>1.0.1</version>
+      <version>1.0.2</version>
       <properties>
             <netbeans.module.ext>true</netbeans.module.ext>
       </properties>
