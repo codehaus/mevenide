@@ -9,3 +9,6 @@ velocity.log
 .mvnignore
 META-INF
 *.jpage
+about.*
+asl-v20.txt
+welcome.xml
