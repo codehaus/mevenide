@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.maven.repository.Artifact;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -100,7 +99,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 	        	    List downloadList = new ArrayList();
 	        	    for ( Iterator it = selection.iterator(); it.hasNext(); ) {
                         RepoPathElement selectedItem = (RepoPathElement) it.next();
-	                    if ( selectedItem.getLevel() == RepoPathElement.LEVEL_ARTIFACT ) {
+	                    if ( selectedItem.isLeaf() ) {
 	                        downloadList.add(selectedItem);
 	                    }
 	                }
@@ -115,7 +114,6 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         	    else {
         	        downloadAbortedMessage();
         	    }
-        	    
             }
             private void downloadAbortedMessage() {
                 MessageDialog.openWarning(repositoryViewer.getTree().getShell(), "Download aborted", "No artifact have been selected, and thus none will be downloaded.");
@@ -241,8 +239,14 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 			    int refreshableItems = 0;
 			    
 			    for (int i = 0; i < selection.size(); i++) {
-			        if ( selection.get(i) instanceof Artifact ) {
-			            enableDownload = true;
+			        if ( selection.get(i) instanceof RepoPathElement ) {
+			        	RepoPathElement element = (RepoPathElement) selection.get(i);
+			        	if (element.isLeaf()) {
+			        		enableDownload = true;
+			        	}
+				        else {
+				            refreshableItems++;
+				        }
 			        }
 			        else {
 			            refreshableItems++;
@@ -253,8 +257,6 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
             }
         });
     }
-    
-    
 
     public void setFocus() {
     }
