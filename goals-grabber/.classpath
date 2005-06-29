@@ -12,5 +12,5 @@
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/maven-1.0.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/xpp3/jars/xpp3-1.1.2a.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

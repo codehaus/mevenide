@@ -12,5 +12,5 @@
 	<classpathentry kind="src" path="src/plugin-resources"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0.1.jar"/>
 	<classpathentry kind="src" path="src/test/conf"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
