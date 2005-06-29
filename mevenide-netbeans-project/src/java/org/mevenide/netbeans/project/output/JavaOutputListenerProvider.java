@@ -43,7 +43,8 @@ public class JavaOutputListenerProvider extends AbstractOutputProcessor {
     
     /** Creates a new instance of TestOutputListenerProvider */
     public JavaOutputListenerProvider(MavenProject proj) {
-        failPattern = failPattern.compile("(.*)\\.java\\:([0-9]*)\\: (.*)");
+		//[javac] required because of forked compilation
+        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:([0-9]*)\\: (.*)");
         project = proj;
     }
     
