@@ -52,7 +52,6 @@ public class DownloadJob extends Job {
         this.downloader = RepositoryObjectDownloaderFactory.getDownloader(RepositoryObjectDownloader.HTTP, 
                                                                           Mevenide.getInstance().getMavenRepository());
     }
-
     
     protected IStatus run(IProgressMonitor monitor) {
         IStatus status = null;
@@ -74,7 +73,7 @@ public class DownloadJob extends Job {
             status = new Status(IStatus.OK, "org.mevenide.ui", 0, "download completed", null);
         }
         else {
-            String statusMessage = "The following artifacts couldnot be downloaded : ";
+            String statusMessage = "The following artifacts could not be downloaded: ";
             for (int i = 0; i < failedDownloads.size(); i++) {
                 String failedDownload = (String) failedDownloads.get(i);
                 statusMessage += "\n" + failedDownload;
