@@ -183,8 +183,8 @@ public final class RepoPathElement {
     }
     
     /**
-     * get path to relative to the root of repository.
-     * really makes sense just for leaf elements.
+     * Get path to artifact relative to the root of repository.
+     * Really only makes sense for leaf elements.
      */
     public String getRelativeURIPath() {
         StringBuffer buf = new StringBuffer();
@@ -212,12 +212,21 @@ public final class RepoPathElement {
     }
     
     /**
+     * Returns the absolute URI to the root repository of this element.
+     * 
+     * Makes the most sense for leaf elements.
+     */
+    public URI getRootURI() {
+        return reader.getRootURI();
+    }
+ 
+    /**
      * Returns the absolute URI to this element.
      * 
      * Makes the most sense for leaf elements.
      */
     public URI getURI() {
-        String root = reader.getRootURI().toString();
+        String root = getRootURI().toString();
         if (!root.endsWith("/")) {
             root = root + "/";
         }
