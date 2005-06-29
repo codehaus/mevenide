@@ -77,11 +77,11 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
             throw new DownloadException(message, e);
         }
         catch (AuthorizationException e) {
-            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
+            String message = "Secured repositories are not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
             throw new DownloadException(message, e);
         }
         catch (AuthenticationException e) {
-            String message = "Secured repositories not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
+            String message = "Secured repositories are not managed yet. It appears that " + repositoryObject.getURI() + " is secured"; 
             throw new DownloadException(message, e);
         }
         
@@ -104,15 +104,9 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
     												   ResourceDoesNotExistException, 
     												   AuthorizationException {
         Repository repository = new Repository();
-        repository.setUrl(artifact.getURI().toString());
+        repository.setUrl(artifact.getRootURI().toString());
         
-        String resource
-        = artifact.getGroupId() + "/"
-        + artifact.getType() + "/"
-        + artifact.getArtifactId() + "-"
-        + artifact.getVersion() + "."
-        + artifact.getExtension()
-        ;
+        String resource = artifact.getRelativeURIPath();
 
         File destination = new File(localRepositoryPath + "/" + resource);
 
