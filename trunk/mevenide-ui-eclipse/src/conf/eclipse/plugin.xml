@@ -380,15 +380,15 @@
       <page name="%MavenMenu.label"
       		adaptable="true"
       		objectClass="org.eclipse.core.resources.IProject"
-            class="org.mevenide.ui.eclipse.properties.pages.MevenidePropertiesPage"
-            id="org.mevenide.ui.plugin.properties.MavenPropertiesPage">
+            class="org.mevenide.ui.eclipse.properties.pages.MevenidePropertyPage"
+            id="org.mevenide.ui.plugin.properties.MavenPropertyPage">
       </page>
       <page name="%LocationPreferencePage.label" 
       		adaptable="true"
       		objectClass="org.eclipse.core.resources.IProject"
-      	 	category="org.mevenide.ui.plugin.properties.MavenPropertiesPage" 
-      	 	class="org.mevenide.ui.eclipse.properties.pages.LocationPropertiesPage" 
-      	 	id="org.mevenide.ui.eclipse.properties.pages.LocationPropertiesPage">
+      	 	category="org.mevenide.ui.plugin.properties.MavenPropertyPage" 
+      	 	class="org.mevenide.ui.eclipse.properties.pages.LocationPropertyPage" 
+      	 	id="org.mevenide.ui.eclipse.properties.pages.LocationPropertyPage">
       </page>
    </extension>
    <extension point="org.eclipse.ui.editors">
