@@ -18,12 +18,11 @@ package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
-
-
 
 /**  
  * 
@@ -50,7 +49,7 @@ public class RepositoryList {
         DEFAULT_REPOSITORIES.add("http://maven-plugins.sourceforge.net/maven/");
         DEFAULT_REPOSITORIES.add("http://seasar.sourceforge.jp/maven/");
         DEFAULT_REPOSITORIES.add("http://spring-ext.sourceforge.jp/maven/");
-        DEFAULT_REPOSITORIES.add("http://ibiblio.org/geotools");
+        DEFAULT_REPOSITORIES.add("http://ibiblio.org/geotools/");
         DEFAULT_REPOSITORIES.add("http://www.codeczar.com/maven/");
         
         MIRRORS.add("http://mirrors.sunsite.dk/maven/");
@@ -65,19 +64,19 @@ public class RepositoryList {
     }
     
     public static List getDefaultRepositoryList() {
-        return DEFAULT_REPOSITORIES;
+        return Collections.unmodifiableList(DEFAULT_REPOSITORIES);
     }
     
     public static List getDefaultMirrorList() {
-        return MIRRORS;
+        return Collections.unmodifiableList(MIRRORS);
     }
     
     public static List getUserDefinedRepositories() {
-        return getRepositoryList(MAVEN_REPOSITORIES, RepositoryList.DEFAULT_REPOSITORIES);
+        return getRepositoryList(MAVEN_REPOSITORIES, new ArrayList(DEFAULT_REPOSITORIES));
     }
     
     public static List getUserDefinedMirrors() {
-        return getRepositoryList(MAVEN_MIRRORS, RepositoryList.MIRRORS);
+        return getRepositoryList(MAVEN_MIRRORS, new ArrayList(MIRRORS));
     }
     
     private static List getRepositoryList(String preferenceKey, List defaultList) {
@@ -95,6 +94,10 @@ public class RepositoryList {
         return repositories;
     }
     
+    public static boolean containsDefaultRepository(String repository) {
+        return DEFAULT_REPOSITORIES.contains(repository);
+    }
+    
     public static void saveUserDefinedRepositories(List repositories) {
         PreferencesManager preferenceManager = PreferencesManager.getManager();
         String serializedRepos = "";
@@ -104,4 +107,11 @@ public class RepositoryList {
         preferenceManager.setValue(MAVEN_REPOSITORIES, serializedRepos);
         preferenceManager.store();
     }
+    
+    public static void resetToDefaultRepositories() {
+        PreferencesManager preferenceManager = PreferencesManager.getManager();
+        preferenceManager.remove(MAVEN_REPOSITORIES);
+        preferenceManager.store();
+    }
+    
 }
