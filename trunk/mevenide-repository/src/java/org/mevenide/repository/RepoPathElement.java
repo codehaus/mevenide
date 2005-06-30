@@ -137,11 +137,18 @@ public final class RepoPathElement {
     }    
     
     /**
-     * returns true if all it's fields are filled out, identifying the
+     * Returns true if all it's fields are filled out, identifying the
      * artifact in an exact manner.
      */
     public boolean isLeaf() {
         return getLevel() == LEVEL_VERSION;
+    }
+    
+    /**
+     * Returns true if this node represents the root repository.
+     */
+    public boolean isRoot() {
+        return getLevel() == LEVEL_ROOT;
     }
     
     boolean isRepoDirectory() {
