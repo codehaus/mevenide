@@ -66,6 +66,7 @@ public interface IImageRegistry {
     
     public static final String NEW_REPO_DEFINITION = "etool16/newmrepo.gif"; //$NON-NLS-1$
     public static final String REMOVE_REPO_DEFINITION = "etool16/delmrepo.gif"; //$NON-NLS-1$
+    public static final String RESTORE_REPO_DEFINITIONS = "etool16/default_mrepo.gif"; //$NON-NLS-1$
     public static final String MAVEN_REPO = "obj16/maven_repo.gif"; //$NON-NLS-1$
     public static final String MAVEN_REPO_GROUP = "obj16/mrepo_group.gif"; //$NON-NLS-1$
     public static final String MAVEN_REPO_TYPE = "obj16/mtype.gif"; //$NON-NLS-1$
@@ -100,6 +101,7 @@ public interface IImageRegistry {
             PLUGIN_OBJ,
             NEW_REPO_DEFINITION,
             REMOVE_REPO_DEFINITION,
+            RESTORE_REPO_DEFINITIONS,
             DEPENDENCY_OBJ,
             PROPERTY_OBJ,
             MAVEN_PROJECT_OBJ,
