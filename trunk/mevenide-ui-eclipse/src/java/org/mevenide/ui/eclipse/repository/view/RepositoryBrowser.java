@@ -62,6 +62,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     private Action removeRepositoryAction;
     private Action downloadArtifactAction;
     private Action refreshAction;
+    private Action restoreDefaultRepositoriesAction;
     
     private PreferencesManager preferenceManager;
     
@@ -127,6 +128,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
                 int result = dialog.open();
                 String repo = dialog.getRepository();
                 if ( result == Window.OK && !StringUtils.isNull(repo) ) {
+                    if (! repo.endsWith("/")) repo += "/";
                     repositories.add(repo);
                     saveRepositories();
                     asyncUpdateUI();
@@ -150,12 +152,14 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
             }
         };
         removeRepositoryAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REMOVE_REPO_DEFINITION));
-        removeRepositoryAction.setToolTipText("Remove repository");
+        removeRepositoryAction.setToolTipText("Remove selected repositories");
+        removeRepositoryAction.setText("Remove Repository");
+        removeRepositoryAction.setEnabled(false);
         
         refreshAction = new Action(){
             public void run() { 
                 StructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
-                final Object[] obj = ((StructuredSelection) repositoryViewer.getSelection()).toArray();
+                final Object[] obj = selection.toArray();
                 for ( int i = 0; i < obj.length; i++ ) {
                     RepoPathElement selectedObject = (RepoPathElement) obj[i];
                     selectedObject.reset();
@@ -172,6 +176,19 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
         refreshAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.REFRESH_TOOL));
         refreshAction.setToolTipText("Refresh");
         refreshAction.setText("Refresh");
+        refreshAction.setEnabled(false);
+        
+        restoreDefaultRepositoriesAction = new Action() {
+            public void run() {
+                repositories.clear();
+                RepositoryList.resetToDefaultRepositories();
+                loadRepositories();
+                asyncUpdateUI();
+            }
+        };
+        restoreDefaultRepositoriesAction.setImageDescriptor(Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.RESTORE_REPO_DEFINITIONS));
+        restoreDefaultRepositoriesAction.setToolTipText("Restore the default repositories");
+        restoreDefaultRepositoriesAction.setText("Restore Defaults");
         
         createToolBarManager();
         createContextualMenu();
@@ -184,8 +201,9 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 		repositoryViewer.getControl().setMenu(menu);
 		contextManager.addMenuListener(new IMenuListener() {
 			public void menuAboutToShow(IMenuManager manager) {
-				manager.add(downloadArtifactAction);
+                manager.add(removeRepositoryAction);
 				manager.add(refreshAction);
+                manager.add(downloadArtifactAction);
 			}
 		});
 	}
@@ -212,6 +230,7 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 		IToolBarManager toolBarManager = getViewSite().getActionBars().getToolBarManager();
         toolBarManager.add(addRepositoryAction);
         toolBarManager.add(removeRepositoryAction);
+        toolBarManager.add(restoreDefaultRepositoriesAction);
         toolBarManager.add(refreshAction);
 	}
     
@@ -235,24 +254,35 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
             public void selectionChanged(SelectionChangedEvent event) {
 	            List selection = ((StructuredSelection) repositoryViewer.getSelection()).toList();
 			    
-			    boolean enableDownload = false;
+			    boolean enableDownload = true;
+                boolean enableRemove = true;
 			    int refreshableItems = 0;
-			    
-			    for (int i = 0; i < selection.size(); i++) {
-			        if ( selection.get(i) instanceof RepoPathElement ) {
-			        	RepoPathElement element = (RepoPathElement) selection.get(i);
-			        	if (element.isLeaf()) {
-			        		enableDownload = true;
-			        	}
-				        else {
-				            refreshableItems++;
-				        }
-			        }
-			        else {
-			            refreshableItems++;
-			        }
-	            }
+			    if (selection.size() > 0) {
+    			    for (int i = 0; i < selection.size(); i++) {
+    			        if ( selection.get(i) instanceof RepoPathElement ) {
+    			        	RepoPathElement element = (RepoPathElement) selection.get(i);
+    			        	if (! element.isLeaf()) {
+    			        		enableDownload = false;
+    				            refreshableItems++;
+                                if (! element.isRoot()) {
+                                    enableRemove = false;
+                                }
+    				        } else {
+    				            enableRemove = false;
+                            }
+    			        }
+    			        else {
+                            enableDownload = false;
+                            enableRemove = false;
+    			            refreshableItems++;
+    			        }
+    	            }
+                } else {
+                    enableDownload = false;
+                    enableRemove = false;
+                }
 			    downloadArtifactAction.setEnabled(enableDownload);
+                removeRepositoryAction.setEnabled(enableRemove);
 			    refreshAction.setEnabled(refreshableItems > 0);
             }
         });
