@@ -46,6 +46,7 @@ public class PreferencesManager {
 		return manager;
 	}
 	
+    // FIXME: why is this public if it is called from constructor?  should be private, or not called from constructor
 	public void loadPreferences() {
 		preferenceStore = new PreferenceStore(getPreferenceStoreFilename());
 		try {
