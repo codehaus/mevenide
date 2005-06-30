@@ -3,9 +3,9 @@
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="etc"/>
 	<classpathentry kind="src" path="src/conf/eclipse"/>
+	<classpathentry exported="true" kind="src" path="/mevenide-repository"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="src" path="/mevenide-repository"/>
 	<classpathentry sourcepath="/MAVEN_REPO/jdom/distributions/jdom-1.0.zip" kind="var" path="MAVEN_REPO/jdom/jars/jdom-1.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/log4j/jars/log4j-1.2.8.jar"/>
