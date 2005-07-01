@@ -16,9 +16,6 @@
  */
 package org.mevenide.idea.module;
 
-import java.io.File;
-import java.util.Set;
-
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
@@ -26,6 +23,8 @@ import com.intellij.openapi.util.JDOMExternalizableStringList;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.*;
 import com.intellij.util.containers.HashSet;
+import java.io.File;
+import java.util.Set;
 import org.jdom.Element;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
@@ -40,10 +39,11 @@ import org.mevenide.idea.util.goals.grabber.FilteredGoalsGrabber;
 /**
  * @author Arik
  */
-public class ModuleSettings extends AbstractModuleComponent implements JDOMExternalizable {
+public class ModuleSettings extends AbstractModuleComponent
+    implements JDOMExternalizable {
     /**
-     * The module's query context. If <code>null</code>, it means that the module
-     * has no POM, or that an error has occured while reading it.
+     * The module's query context. If <code>null</code>, it means that the module has no
+     * POM, or that an error has occured while reading it.
      */
     private IQueryContext queryContext = null;
 
@@ -53,8 +53,8 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     private Set<String> favoriteGoals = new HashSet<String>(10);
 
     /**
-     * This is a file system listener that synchronizes the module's query
-     * context if maven files change in the module directory.
+     * This is a file system listener that synchronizes the module's query context if
+     * maven files change in the module directory.
      */
     private final FSListener fileSystemListener = new FSListener();
 
@@ -96,7 +96,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             return null;
 
         final VirtualFile pomFile = moduleDir.findChild("project.xml");
-        if(pomFile == null)
+        if (pomFile == null)
             return null;
 
         if (!pomFile.isValid())
@@ -107,7 +107,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
 
     public File getPomFile() {
         final VirtualFile pomFile = getPomVirtualFile();
-        if(pomFile == null)
+        if (pomFile == null)
             return null;
 
         return VfsUtil.virtualToIoFile(pomFile);
@@ -116,8 +116,8 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     /**
      * Initializes the manager.
      *
-     * <p>Registers a file system listener to be notified if maven files change
-     * in the module directory.</p>
+     * <p>Registers a file system listener to be notified if maven files change in the
+     * module directory.</p>
      */
     public void moduleAdded() {
         module.getModuleFile().getFileSystem().addVirtualFileListener(fileSystemListener);
@@ -129,8 +129,10 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      *
      * <p>Unregisters the file system listener.</p>
      */
-    @Override public void disposeComponent() {
-        module.getModuleFile().getFileSystem().removeVirtualFileListener(fileSystemListener);
+    @Override
+    public void disposeComponent() {
+        module.getModuleFile().getFileSystem().removeVirtualFileListener(
+            fileSystemListener);
     }
 
     private VirtualFile getModuleDir() {
@@ -144,9 +146,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     /**
      * Refreshes the query context by recreating it.
      *
-     * <p>This method is called both by the {@link #initComponent()} method and
-     * when a pom file (e.g. a file named <i>project.xml</i>) is created, deleted,
-     * changed or moved in the module directory.</p>
+     * <p>This method is called both by the {@link #initComponent()} method and when a pom
+     * file (e.g. a file named <i>project.xml</i>) is created, deleted, changed or moved
+     * in the module directory.</p>
      */
     protected void refreshQueryContext() {
         synchronized (LOCK) {
@@ -156,7 +158,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             //
             //if the module has no pom, nullify the query context and grabbers
             //
-            if(moduleDir == null || moduleDir.findChild("project.xml") == null) {
+            if (moduleDir == null || moduleDir.findChild("project.xml") == null) {
                 queryContext = null;
                 projectGoalsGrabber = null;
                 globalGoalsGrabber = null;
@@ -167,7 +169,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
                 //create the query context using the module's directory
                 //
                 queryContext = new DefaultQueryContext(
-                        VfsUtil.virtualToIoFile(moduleDir),queryErrorCallback);
+                    VfsUtil.virtualToIoFile(moduleDir), queryErrorCallback);
 
                 //
                 //create the project-specific goals grabber
@@ -189,7 +191,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
             //fire a property change event to notify listeners that the context
             //has changed
             //
-            changeSupport.firePropertyChange("queryContext", oldQueryContext, queryContext);
+            changeSupport.firePropertyChange("queryContext",
+                                             oldQueryContext,
+                                             queryContext);
         }
     }
 
@@ -209,9 +213,9 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     private void createProjectGoalsGrabber() {
         synchronized (LOCK) {
             final File pomFile = getPomFile();
-            if(pomFile != null) {
+            if (pomFile != null) {
                 final File mavenXmlFile = new File(pomFile.getParentFile(), "maven.xml");
-                if(mavenXmlFile.exists()) {
+                if (mavenXmlFile.exists()) {
                     try {
                         final ProjectGoalsGrabber grabber = new ProjectGoalsGrabber();
                         grabber.setMavenXmlFile(mavenXmlFile.getAbsolutePath());
@@ -232,17 +236,17 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     private void createFavoriteGoalsGrabber() {
         synchronized (LOCK) {
             favoriteGoalsGrabber = new FilteredGoalsGrabber(
-                    "Favorites",
-                    globalGoalsGrabber,
-                    getFavoriteGoals());
+                "Favorites",
+                globalGoalsGrabber,
+                getFavoriteGoals());
         }
     }
 
     /**
      * Returns the module's Maven query context.
      *
-     * <p>This method might return <code>null</code>, which means that the module
-     * is not associated with a Maven context.</p>
+     * <p>This method might return <code>null</code>, which means that the module is not
+     * associated with a Maven context.</p>
      *
      * @return a query context, or <code>null</code>
      */
@@ -255,8 +259,8 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     /**
      * Returns the module's favorite goals.
      *
-     * <p>If no favorite goals have been selected, this method will return an empty
-     * array, but never <code>null</code>.</p>
+     * <p>If no favorite goals have been selected, this method will return an empty array,
+     * but never <code>null</code>.</p>
      *
      * @return array of fully-qualified goal names.
      */
@@ -271,13 +275,14 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      *
      * <p>This method will fire a property change event for "favoriteGoals" property.</p>
      *
-     * @param pGoals the favorite goals - fully qualified goal names (may be <code>null</code> or an empty array)
+     * @param pGoals the favorite goals - fully qualified goal names (may be
+     *               <code>null</code> or an empty array)
      */
     public void setFavoriteGoals(final String[] pGoals) {
-        synchronized(LOCK) {
+        synchronized (LOCK) {
             favoriteGoals.clear();
-            if(pGoals != null)
-                for(String goal : pGoals)
+            if (pGoals != null)
+                for (String goal : pGoals)
                     favoriteGoals.add(goal);
 
             refreshQueryContext();
@@ -303,15 +308,15 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {
-        synchronized(LOCK) {
+        synchronized (LOCK) {
             //
             //load favorite goals
             //
             final Element favGoalsElt = pElement.getChild("favoriteGoals");
-            if(favGoalsElt != null) {
+            if (favGoalsElt != null) {
                 final JDOMExternalizableStringList goals = new JDOMExternalizableStringList();
                 goals.readExternal(favGoalsElt);
-                for(String goal : goals) {
+                for (String goal : goals) {
                     favoriteGoals.add(goal);
                 }
             }
@@ -335,6 +340,7 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
      * Returns the module settings instance for the specified module.
      *
      * @param pModule the module to retrieve the settings manager for
+     *
      * @return a ModuleSettings instance
      */
     public static ModuleSettings getInstance(final Module pModule) {
@@ -342,8 +348,8 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     }
 
     /**
-     * A {@link IQueryErrorCallback} implementation which displays the error
-     * to the user in a message box.
+     * A {@link IQueryErrorCallback} implementation which displays the error to the user
+     * in a message box.
      */
     private class UIQueryErrorCallback implements IQueryErrorCallback {
         public void handleError(int errorNumber, Exception exception) {
@@ -356,48 +362,52 @@ public class ModuleSettings extends AbstractModuleComponent implements JDOMExter
     }
 
     /**
-     * A virtual file system listener that refreshes the module's query
-     * context if a Maven file (e.g. <i>project.xml</i>, <i>maven.xml</i>,
-     * <i>project.properties</i> or <i>build.properties</i> change in the
-     * module's directory.
+     * A virtual file system listener that refreshes the module's query context if a Maven
+     * file (e.g. <i>project.xml</i>, <i>maven.xml</i>, <i>project.properties</i> or
+     * <i>build.properties</i> change in the module's directory.
      */
     private class FSListener extends VirtualFileAdapter {
         protected boolean shouldRefresh(final String pFileName) {
             return pFileName.equalsIgnoreCase("project.xml") ||
-                    pFileName.equalsIgnoreCase("maven.xml") ||
-                    pFileName.equalsIgnoreCase("project.properties") ||
-                    pFileName.equalsIgnoreCase("build.properties");
+                pFileName.equalsIgnoreCase("maven.xml") ||
+                pFileName.equalsIgnoreCase("project.properties") ||
+                pFileName.equalsIgnoreCase("build.properties");
         }
 
-        @Override public void propertyChanged(VirtualFilePropertyEvent event) {
-            LOG.trace("ModuleSettings$FSListener.propertyChanged " + event.getFileName() + ":" + event.getPropertyName());
-            if(!event.getPropertyName().equals(VirtualFile.PROP_NAME))
+        @Override
+        public void propertyChanged(VirtualFilePropertyEvent event) {
+//            LOG.trace("ModuleSettings$FSListener.propertyChanged " + event.getFileName() + ":" + event.getPropertyName());
+            if (!event.getPropertyName().equals(VirtualFile.PROP_NAME))
                 return;
 
-            if(shouldRefresh(event.getOldValue().toString()) || shouldRefresh(event.getNewValue().toString()))
+            if (shouldRefresh(event.getOldValue().toString()) || shouldRefresh(event.getNewValue().toString()))
                 refreshQueryContext();
         }
 
-        @Override public void fileCreated(VirtualFileEvent event) {
-            LOG.trace("ModuleSettings$FSListener.fileCreated " + event.getFileName());
-            if(shouldRefresh(event.getFileName()))
-                refreshQueryContext();
-        }
-
-        @Override public void fileDeleted(VirtualFileEvent event) {
-            LOG.trace("ModuleSettings$FSListener.fileDeleted " + event.getFileName());
+        @Override
+        public void fileCreated(VirtualFileEvent event) {
+//            LOG.trace("ModuleSettings$FSListener.fileCreated " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
 
-        @Override public void fileMoved(VirtualFileMoveEvent event) {
-            LOG.trace("ModuleSettings$FSListener.fileMoved " + event.getFileName());
+        @Override
+        public void fileDeleted(VirtualFileEvent event) {
+//            LOG.trace("ModuleSettings$FSListener.fileDeleted " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
 
-        @Override public void contentsChanged(VirtualFileEvent event) {
-            LOG.trace("ModuleSettings$FSListener.contentsChanged " + event.getFileName());
+        @Override
+        public void fileMoved(VirtualFileMoveEvent event) {
+//            LOG.trace("ModuleSettings$FSListener.fileMoved " + event.getFileName());
+            if (shouldRefresh(event.getFileName()))
+                refreshQueryContext();
+        }
+
+        @Override
+        public void contentsChanged(VirtualFileEvent event) {
+//            LOG.trace("ModuleSettings$FSListener.contentsChanged " + event.getFileName());
             if (shouldRefresh(event.getFileName()))
                 refreshQueryContext();
         }
