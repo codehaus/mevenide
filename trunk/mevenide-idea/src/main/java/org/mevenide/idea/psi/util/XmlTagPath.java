@@ -14,7 +14,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.IDEUtils;
-import org.mevenide.idea.util.psi.XmlFilterExpression;
 
 /**
  * @author Arik

@@ -1,4 +1,4 @@
-package org.mevenide.idea.util.psi;
+package org.mevenide.idea.psi.util;
 
 /**
  * @author Arik
