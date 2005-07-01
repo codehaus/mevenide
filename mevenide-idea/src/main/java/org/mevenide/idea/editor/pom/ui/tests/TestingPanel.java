@@ -65,6 +65,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
 
     /**
      * Creates the directories panel.
+     *
      * @return panel
      */
     protected JPanel createDirectoriesPanel() {

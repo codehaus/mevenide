@@ -16,19 +16,6 @@
  */
 package org.mevenide.idea.toolwindows.goals;
 
-import java.awt.Component;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JPanel;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
-
 import com.intellij.ide.AutoScrollToSourceOptionProvider;
 import com.intellij.ide.CommonActionsManager;
 import com.intellij.ide.DataManager;
@@ -61,6 +48,16 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.goals.grabber.IGoalsGrabber;
@@ -84,7 +81,8 @@ import org.mevenide.properties.IPropertyResolver;
 /**
  * @author Arik
  */
-public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptionProvider {
+public class GoalsToolWindowUI extends JPanel
+    implements AutoScrollToSourceOptionProvider {
     /**
      * Resources.
      */
@@ -96,8 +94,7 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
     private static final String NAME = RES.get("title");
 
     /**
-     * The name of the property that points to the maven cache of expanded
-     * plugins.
+     * The name of the property that points to the maven cache of expanded plugins.
      */
     private static final String PROP_PLUGIN_CACHE_DIR = "maven.plugin.unpacked.dir";
 
@@ -107,8 +104,8 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
     private final Project project;
 
     /**
-     * The goals tree. Used by {@link #getSelectedModule()} to find out to which module the selected
-     * goal(s) belong.
+     * The goals tree. Used by {@link #getSelectedModule()} to find out to which module
+     * the selected goal(s) belong.
      */
     private final Tree goalsTree = new Tree();
 
@@ -152,7 +149,8 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         goalsTree.addMouseListener(new MouseAdapter() {
             public void mouseClicked(final MouseEvent pEvent) {
                 if (pEvent.getClickCount() == 2) {
-                    final int row = goalsTree.getRowForLocation(pEvent.getX(), pEvent.getY());
+                    final int row = goalsTree.getRowForLocation(pEvent.getX(),
+                                                                pEvent.getY());
                     if (row < 0)
                         return;
 
@@ -165,11 +163,14 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
                         final PluginTreeNode pluginNode = (PluginTreeNode) node.getParent();
                         final String plugin = pluginNode.getPlugin();
                         final String goal = ((GoalTreeNode) node).getGoal();
-                        final String fqGoalName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+                        final String fqGoalName = GoalsHelper.buildFullyQualifiedName(
+                            plugin,
+                            goal);
                         final Component component = (Component) pEvent.getSource();
-                        final DataContext dataContext = DataManager.getInstance().getDataContext(component,
-                                                                                                 pEvent.getX(),
-                                                                                                 pEvent.getY());
+                        final DataContext dataContext = DataManager.getInstance().getDataContext(
+                            component,
+                            pEvent.getX(),
+                            pEvent.getY());
                         MavenRunner.execute(getSelectedModule(),
                                             new String[]{fqGoalName},
                                             dataContext);
@@ -234,10 +235,11 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
     }
 
     /**
-     * @todo navigate to the specified plugin and goal
      * @param pModule
      * @param pPluginName
      * @param pGoalName
+     *
+     * @todo navigate to the specified plugin and goal
      */
     private void openProjectGoalInEditor(final Module pModule,
                                          final String pPluginName,
@@ -252,7 +254,8 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         FileEditorManager.getInstance(project).openFile(mavenFile, true);
     }
 
-    private IPluginInfo getPlugin(final IQueryContext pQueryContext, final String pPluginName) {
+    private IPluginInfo getPlugin(final IQueryContext pQueryContext,
+                                  final String pPluginName) {
         final PluginInfoFactory pluginInfoFactory = PluginInfoFactory.getInstance();
         final PluginInfoManager mgr = pluginInfoFactory.createManager(pQueryContext);
         final IPluginInfo[] plugins = mgr.getCurrentPlugins();
@@ -332,7 +335,7 @@ public class GoalsToolWindowUI extends JPanel implements AutoScrollToSourceOptio
         final ModuleSettings moduleSettings = ModuleSettings.getInstance(pModule);
 
         final IQueryContext queryContext = moduleSettings.getQueryContext();
-        if(queryContext == null)
+        if (queryContext == null)
             return;
 
         final VirtualFile jellyFile = getPluginScriptFile(queryContext, pPluginName);

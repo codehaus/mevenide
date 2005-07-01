@@ -16,22 +16,21 @@
  */
 package org.mevenide.idea;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.commons.lang.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.*;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * Loads UTF-8 resources from resource bundles.
  *
- * <p>This is an enhancement over the standard java.util.ResourceBundle class which
- * allows providing additional properties to the message (for inline place holders)
- * as well as supporting hierarchical bundles.</p>
+ * <p>This is an enhancement over the standard java.util.ResourceBundle class which allows
+ * providing additional properties to the message (for inline place holders) as well as
+ * supporting hierarchical bundles.</p>
  *
  * @author Arik
  */
@@ -40,7 +39,8 @@ public final class Res {
     private static final Log LOG = LogFactory.getLog(Res.class);
     private static final String UNKNOWN_KEY = "(unknown resource key)";
 
-    private static final Map<String,Res> cache = Collections.synchronizedMap(new HashMap<String, Res>(10));
+    private static final Map<String, Res> cache = Collections.synchronizedMap(new HashMap<String, Res>(
+        10));
 
     private final String packageName;
     private final String bundleName;
@@ -96,14 +96,14 @@ public final class Res {
         final InputStream is = cl.getResourceAsStream(res);
         if (is == null)
             throw new MissingResourceException(
-                    "Can't find resource '" + res + "'", "", "");
+                "Can't find resource '" + res + "'", "", "");
 
         try {
             return IOUtils.toString(is, "UTF-8");
         }
         catch (IOException e) {
             final MissingResourceException exc = new MissingResourceException(
-                            "Error reading resource '" + res + "'", "", "");
+                "Error reading resource '" + res + "'", "", "");
             throw (MissingResourceException) exc.initCause(e);
         }
         finally {
@@ -136,9 +136,9 @@ public final class Res {
 
     public Map getAll() {
         final Enumeration<String> keys = bundle.getKeys();
-        final Map<String,String> all = new HashMap<String, String>();
+        final Map<String, String> all = new HashMap<String, String>();
 
-        while(keys.hasMoreElements()) {
+        while (keys.hasMoreElements()) {
             final String key = keys.nextElement();
             all.put(key, get(key));
         }
@@ -204,9 +204,9 @@ public final class Res {
 
         if (bundle == null) {
             throw new MissingResourceException(
-                    "Can't find bundle for base bundleName '" + baseName + "'",
-                    baseName,
-                    "");
+                "Can't find bundle for base bundleName '" + baseName + "'",
+                baseName,
+                "");
         }
 
         Res parent = null;

@@ -1,14 +1,13 @@
 package org.mevenide.idea.util;
 
+import com.intellij.openapi.module.Module;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.module.ModuleUtils;
-import com.intellij.openapi.module.Module;
 
 /**
  * @author Arik
  */
 public abstract class MavenUtils {
-
     public static boolean dependenciesEqual(final Dependency pFirst,
                                             final Dependency pSecond) {
         String d1GroupId = pFirst.getGroupId();

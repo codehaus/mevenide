@@ -5,15 +5,14 @@ import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
+import java.util.concurrent.atomic.AtomicReference;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.IDEUtils;
-
-import javax.swing.text.AttributeSet;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Arik
@@ -32,7 +31,8 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
     /**
      * The source of current modification.
      */
-    private final AtomicReference<ModificationSource> modSrc = new AtomicReference<ModificationSource>(null);
+    private final AtomicReference<ModificationSource> modSrc = new AtomicReference<ModificationSource>(
+        null);
 
     public XmlSwingDocument(final XmlFile pFile, final String pPath) {
         this(new XmlTagPath(pFile, pPath));
@@ -42,7 +42,7 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
         path = pPath;
 
         final XmlTag tag = path.getTag();
-        if(tag != null) {
+        if (tag != null) {
             try {
                 final String text = tag.getValue().getTrimmedText();
                 replace(0, getLength(), text, null);
@@ -58,7 +58,7 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
     }
 
     private void updatePsiModel() {
-        if(modSrc.compareAndSet(null, ModificationSource.UI))
+        if (modSrc.compareAndSet(null, ModificationSource.UI))
             try {
                 IDEUtils.runCommand(path.getProject(), new PsiUpdateRunnable());
             }
@@ -67,12 +67,14 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
             }
     }
 
-    public void replace(int offset, int length, String text, AttributeSet attrs) throws BadLocationException {
+    public void replace(int offset, int length, String text, AttributeSet attrs)
+        throws BadLocationException {
         super.replace(offset, length, text, attrs);
         updatePsiModel();
     }
 
-    public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+    public void insertString(int offs, String str, AttributeSet a)
+        throws BadLocationException {
         super.insertString(offs, str, a);
         updatePsiModel();
     }
@@ -94,7 +96,7 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
                              final PsiTreeChangeEvent pEvent) {
         final XmlTag tag = path.getTag();
         try {
-            if(tag == null)
+            if (tag == null)
                 replace(0, getLength(), "", null);
             else {
                 final String text = tag.getValue().getTrimmedText();
@@ -110,9 +112,9 @@ public class XmlSwingDocument extends PlainDocument implements SimplePsiListener
         public void run() {
             try {
                 final String text = getText(0, getLength());
-                if(text == null || text.trim().length() == 0) {
+                if (text == null || text.trim().length() == 0) {
                     final XmlTag tag = path.getTag();
-                    if(tag != null)
+                    if (tag != null)
                         tag.delete();
                 }
                 else

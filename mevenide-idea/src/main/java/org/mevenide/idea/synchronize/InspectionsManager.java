@@ -3,9 +3,9 @@ package org.mevenide.idea.synchronize;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
+import com.intellij.openapi.wm.ToolWindowManager;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -77,7 +77,7 @@ public class InspectionsManager extends AbstractProjectComponent {
 
         final Set<ProblemInfo> problems = new HashSet<ProblemInfo>(10);
         for (ProblemInspector inspector : inspections) {
-            if(inspector instanceof ModuleProblemInspector) {
+            if (inspector instanceof ModuleProblemInspector) {
                 final ModuleProblemInspector modInsp = (ModuleProblemInspector) inspector;
                 final Module[] modules = moduleMgr.getModules();
                 for (Module module : modules) {
@@ -86,7 +86,7 @@ public class InspectionsManager extends AbstractProjectComponent {
                         problems.add(problemInfo);
                 }
             }
-            else if(inspector == null)
+            else if (inspector == null)
                 throw new IllegalStateException("null inspector encountered.");
             else
                 throw new UnsupportedOperationException("Unknown inspector type - " + inspector.getClass().getName());

@@ -16,9 +16,6 @@
  */
 package org.mevenide.idea.global;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.fileTypes.StdFileTypes;
@@ -27,6 +24,8 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import org.jdom.Element;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
@@ -36,13 +35,14 @@ import org.mevenide.idea.util.ui.UIUtils;
 /**
  * This application component manages global Maven settings for IDEA.
  *
- * <p>Currently, only the Maven home settings is defined. In the future, we can define here the amount of
- * memory to allocate for Maven processes (e.g. -Xms and -Xmx) and others.</p>
+ * <p>Currently, only the Maven home settings is defined. In the future, we can define
+ * here the amount of memory to allocate for Maven processes (e.g. -Xms and -Xmx) and
+ * others.</p>
  *
  * @author Arik
  */
-public class MavenManager extends AbstractApplicationComponent implements JDOMExternalizable {
-
+public class MavenManager extends AbstractApplicationComponent
+    implements JDOMExternalizable {
     /**
      * The selected Maven home.
      */
@@ -68,14 +68,15 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     }
 
     /**
-     * Sets the Maven home to the specified directory. Throws a {@link FileNotFoundException} if the specified
-     * home points to a file or does not exist.
+     * Sets the Maven home to the specified directory. Throws a {@link
+     * FileNotFoundException} if the specified home points to a file or does not exist.
      *
      * <p>Invoking this method will cause a property-change event.</p>
      *
      * @param pMavenHome the new Maven home - may be <code>null</code>
      *
-     * @throws FileNotFoundException if the the specified home does not point to an existing directory
+     * @throws FileNotFoundException if the the specified home does not point to an
+     *                               existing directory
      */
     public void setMavenHome(final File pMavenHome) throws FileNotFoundException {
         if (pMavenHome != null && !pMavenHome.isDirectory())
@@ -107,7 +108,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     public void setMavenOptions(final String pMavenOptions) {
         final String oldOptions = mavenOptions;
 
-        if(pMavenOptions != null && pMavenOptions.trim().length() == 0)
+        if (pMavenOptions != null && pMavenOptions.trim().length() == 0)
             mavenOptions = null;
         else
             mavenOptions = pMavenOptions;
@@ -136,25 +137,25 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     }
 
     /**
-     * This method is called after the {@link #readExternal(org.jdom.Element)} method
-     * is called. If the {@link #mavenHome} field is still <code>null</code>, then
-     * this method tries to guess it by invoking the {@link SysEnvLocationFinder}'s
-     * default instance's {@link org.mevenide.environment.SysEnvLocationFinder#getMavenHome()}
+     * This method is called after the {@link #readExternal(org.jdom.Element)} method is
+     * called. If the {@link #mavenHome} field is still <code>null</code>, then this
+     * method tries to guess it by invoking the {@link SysEnvLocationFinder}'s default
+     * instance's {@link org.mevenide.environment.SysEnvLocationFinder#getMavenHome()}
      * method.
      *
-     * <p>If it still cannot find the Maven home, or if it finds it invalid, an
-     * error message is shown.</p>
+     * <p>If it still cannot find the Maven home, or if it finds it invalid, an error
+     * message is shown.</p>
      *
      * @todo Allow the user to specify never to both him/her again with the error message
      */
     public void initComponent() {
-        if(mavenHome == null) {
+        if (mavenHome == null) {
             //
             //maven home is null - try to guess
             //
             final ILocationFinder finder = SysEnvLocationFinder.getInstance();
             final String mavenHomePath = finder.getMavenHome();
-            if(mavenHomePath != null && mavenHomePath.trim().length() > 0)
+            if (mavenHomePath != null && mavenHomePath.trim().length() > 0)
                 try {
                     setMavenHome(new File(mavenHomePath).getAbsoluteFile());
                 }
@@ -190,7 +191,8 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         //
         //read maven options
         //
-        final String mavenOptionsValue = JDOMExternalizer.readString(pElement, "mavenOptions");
+        final String mavenOptionsValue = JDOMExternalizer.readString(pElement,
+                                                                     "mavenOptions");
         setMavenOptions(mavenOptionsValue);
 
         //

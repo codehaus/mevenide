@@ -1,13 +1,12 @@
 package org.mevenide.idea.psi.project;
 
-import org.mevenide.idea.psi.support.AbstractPsiNamedPropertyObservable;
 import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.support.AbstractPsiNamedPropertyObservable;
 
 /**
  * @author Arik
  */
 public class PsiScmRepository extends AbstractPsiNamedPropertyObservable {
-
     public PsiScmRepository(final XmlFile pXmlFile) {
         super(pXmlFile, "project/repository");
 

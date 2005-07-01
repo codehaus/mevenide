@@ -1,17 +1,12 @@
 package org.mevenide.idea.util.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import com.intellij.ui.ScrollPaneFactory;
+import com.jgoodies.forms.builder.ButtonStackBuilder;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-import com.intellij.ui.ScrollPaneFactory;
-import com.jgoodies.forms.builder.ButtonStackBuilder;
+import javax.swing.*;
 import org.mevenide.idea.Res;
 
 /**
@@ -64,7 +59,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
     }
 
     private void initComponents() {
-        if(component == null)
+        if (component == null)
             throw new NullPointerException(RES.get("null.arg", "pComponent"));
         buttonsBar.addButtons(getButtons());
     }
@@ -78,7 +73,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         c.weightx = 1;
         c.weighty = 1;
-        if(wrapInScrollPane)
+        if (wrapInScrollPane)
             add(ScrollPaneFactory.createScrollPane(component), c);
         else
             add(component, c);
@@ -92,11 +87,11 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
 
     private JButton[] getButtons() {
         final List<JButton> buttons = new ArrayList<JButton>(3);
-        if(showAddButton)
+        if (showAddButton)
             buttons.add(addButton);
-        if(showEditButton)
+        if (showEditButton)
             buttons.add(editButton);
-        if(showRemoveButton)
+        if (showRemoveButton)
             buttons.add(removeButton);
 
         return buttons.toArray(new JButton[buttons.size()]);
@@ -111,7 +106,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
     }
 
     public void setAddAction(final ActionListener pAddAction) {
-        if(addAction != null)
+        if (addAction != null)
             addButton.removeActionListener(addAction);
 
         addAction = pAddAction;
@@ -123,7 +118,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
     }
 
     public void setEditAction(final ActionListener pEditAction) {
-        if(editAction != null)
+        if (editAction != null)
             editButton.removeActionListener(editAction);
 
         editAction = pEditAction;
@@ -135,7 +130,7 @@ public class CRUDPanel<T extends JComponent> extends JPanel {
     }
 
     public void setRemoveAction(final ActionListener pRemoveAction) {
-        if(removeAction != null)
+        if (removeAction != null)
             removeButton.removeActionListener(removeAction);
 
         removeAction = pRemoveAction;

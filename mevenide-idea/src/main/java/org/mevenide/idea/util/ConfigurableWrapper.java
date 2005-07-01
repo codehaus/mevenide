@@ -18,7 +18,6 @@ package org.mevenide.idea.util;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
-
 import javax.swing.*;
 
 /**

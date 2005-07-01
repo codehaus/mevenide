@@ -8,13 +8,13 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlText;
 import com.intellij.util.IncorrectOperationException;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.event.EventListenerList;
-import org.mevenide.idea.util.event.*;
-import org.mevenide.idea.util.IDEUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import java.util.Set;
-import java.util.HashSet;
+import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.event.*;
 
 /**
  * Manages events for table-like tag model, where a single tag path represents the
@@ -143,7 +143,7 @@ public class PsiIndexedPropertyChangeListener extends PsiTreeChangeAdapter
         final String[] values = new String[rowTags.length];
         for (int i = 0; i < rowTags.length; i++)
             values[i] = rowTags[i].getValue().getTrimmedText();
-        
+
         return values;
     }
 
@@ -181,7 +181,7 @@ public class PsiIndexedPropertyChangeListener extends PsiTreeChangeAdapter
                 rowPath.setRow(pRow);
 
                 final XmlTagPath path;
-                if(pPropertyName == null || pPropertyName.trim().length() == 0)
+                if (pPropertyName == null || pPropertyName.trim().length() == 0)
                     path = rowPath;
                 else
                     path = mapper.getTagPath(pPropertyName);
@@ -196,7 +196,7 @@ public class PsiIndexedPropertyChangeListener extends PsiTreeChangeAdapter
 
     public final int getRowCount() {
         final XmlTag containerTag = containerPath.getTag();
-        if(containerTag == null)
+        if (containerTag == null)
             return 0;
 
         final XmlTag[] rowTags = containerTag.findSubTags(rowTagName);

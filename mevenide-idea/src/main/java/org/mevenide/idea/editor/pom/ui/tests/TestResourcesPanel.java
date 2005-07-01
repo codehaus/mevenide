@@ -28,19 +28,22 @@ public class TestResourcesPanel extends AbstractPomLayerPanel
         final XmlFile xmlFile = project.getXmlFile();
 
         final PsiTestResources psiResources = project.getTestResources();
-        final TestResourcesTableModel resourcesModel = new TestResourcesTableModel(psiResources);
+        final TestResourcesTableModel resourcesModel = new TestResourcesTableModel(
+            psiResources);
         resources = new CRUDTablePanel<TestResourcesTableModel>(xmlFile, resourcesModel);
 
         final PsiTestResourcePatterns psiIncludes = psiResources.getIncludes(-1);
         final TestResourcePatternsTableModel includesModel;
         includesModel = new TestResourcePatternsTableModel(psiIncludes);
-        includes = new CRUDTablePanel<TestResourcePatternsTableModel>(xmlFile, includesModel);
+        includes = new CRUDTablePanel<TestResourcePatternsTableModel>(xmlFile,
+                                                                      includesModel);
         includes.getAddButton().setEnabled(false);
         includes.getRemoveButton().setEnabled(false);
 
         final TestResourcePatternsTableModel excludesModel;
         excludesModel = new TestResourcePatternsTableModel(psiResources.getExcludes(-1));
-        excludes = new CRUDTablePanel<TestResourcePatternsTableModel>(xmlFile, excludesModel);
+        excludes = new CRUDTablePanel<TestResourcePatternsTableModel>(xmlFile,
+                                                                      excludesModel);
         excludes.getAddButton().setEnabled(false);
         excludes.getRemoveButton().setEnabled(false);
 

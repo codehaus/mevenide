@@ -12,8 +12,9 @@ import org.mevenide.idea.util.IDEUtils;
  *
  * @author Arik
  */
-public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends AbstractTableModel
-                                                                                                    implements SimplePsiListener {
+public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile>
+    extends AbstractTableModel
+    implements SimplePsiListener {
     /**
      * The POM file.
      */
@@ -25,8 +26,8 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     protected final PsiSimpleChangeNotifier psiSynchronizationListener;
 
     /**
-     * The source of the current PSI or UI event. Used to prevent infinite loops between the PSI listener and the UI
-     * model code.
+     * The source of the current PSI or UI event. Used to prevent infinite loops between
+     * the PSI listener and the UI model code.
      */
     private final AtomicReference<ModificationSource> modificationSource =
         new AtomicReference<ModificationSource>(null);
@@ -57,11 +58,13 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     }
 
     /**
-     * Called by the view component (the {@link javax.swing.JTable}) when the user sets a value on the ui.
+     * Called by the view component (the {@link javax.swing.JTable}) when the user sets a
+     * value on the ui.
      *
-     * <p>This method will make sure the call did not originate from the PSI listener (as that would cause an infinite
-     * loop), obtain a write lock, and call the abstract {@link #setValueAtInternal(Object, int, int)} method to
-     * actually apply the new value in this model.</p>
+     * <p>This method will make sure the call did not originate from the PSI listener (as
+     * that would cause an infinite loop), obtain a write lock, and call the abstract
+     * {@link #setValueAtInternal(Object, int, int)} method to actually apply the new
+     * value in this model.</p>
      *
      * @param pValue  the new value
      * @param pRow    the row the value was set
@@ -90,10 +93,12 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     }
 
     /**
-     * This method must perform the actual update to the PSI tree, applying the new value.
+     * This method must perform the actual update to the PSI tree, applying the new
+     * value.
      *
-     * <p>This method is called by the {@link #setValueAt(Object, int, int)} method. Usually implementors would find the
-     * appropriate PSI element to update and set its value.</p>
+     * <p>This method is called by the {@link #setValueAt(Object, int, int)} method.
+     * Usually implementors would find the appropriate PSI element to update and set its
+     * value.</p>
      *
      * @param pValue  the new value
      * @param pRow    the row the value was set
@@ -104,12 +109,14 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
                                                final int pColumn);
 
     /**
-     * Completely rebuilds the model from the PSI tree by calling the {@link #refreshModel(org.mevenide.idea.util.psi.PsiEventType,com.intellij.psi.PsiTreeChangeEvent)}
+     * Completely rebuilds the model from the PSI tree by calling the {@link
+     * #refreshModel(org.mevenide.idea.util.psi.PsiEventType,com.intellij.psi.PsiTreeChangeEvent)}
      * method with a {@code null} argument.
      *
-     * <p>This method is {@code final} so that only one place will contain synchronization logic (the {@link
-     * #refreshModel(org.mevenide.idea.util.psi.PsiEventType,com.intellij.psi.PsiTreeChangeEvent)} method). When
-     * implementing it, make sure you take into account that the event parameter might be {@code null}.</p>
+     * <p>This method is {@code final} so that only one place will contain synchronization
+     * logic (the {@link #refreshModel(PsiEventType,com.intellij.psi.PsiTreeChangeEvent)}
+     * method). When implementing it, make sure you take into account that the event
+     * parameter might be {@code null}.</p>
      */
     public final void refreshModel() {
         refreshModel(null, null);
@@ -123,10 +130,11 @@ public abstract class AbstractPsiTableModel<PsiFileType extends PsiFile> extends
     /**
      * Returns the type of the specified column.
      *
-     * <p>By default, this implementation always return {@code String.class}, but you can override and return other
-     * classes instead.</p>
+     * <p>By default, this implementation always return {@code String.class}, but you can
+     * override and return other classes instead.</p>
      *
      * @param pColumn the column to get the class for
+     *
      * @return class
      */
     @Override

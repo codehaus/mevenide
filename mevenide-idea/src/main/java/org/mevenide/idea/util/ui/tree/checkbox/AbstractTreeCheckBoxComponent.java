@@ -16,21 +16,18 @@
  */
 package org.mevenide.idea.util.ui.tree.checkbox;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Arik
  */
-public abstract class AbstractTreeCheckBoxComponent extends JPanel implements ConfigurableTreeCheckBoxComponent {
+public abstract class AbstractTreeCheckBoxComponent extends JPanel
+    implements ConfigurableTreeCheckBoxComponent {
     private static final Log LOG = LogFactory.getLog(AbstractTreeCheckBoxComponent.class);
 
     private static final String CHECKOX_COMPONENT_NAME = "TreeRendererCheckbox";
@@ -38,7 +35,8 @@ public abstract class AbstractTreeCheckBoxComponent extends JPanel implements Co
 
     private final JCheckBox checkBox;
     private final JLabel label;
-    private final Color labelSelectionColor = UIManager.getColor("Tree.selectionForeground");
+    private final Color labelSelectionColor = UIManager.getColor(
+        "Tree.selectionForeground");
     private final Color labelColor = UIManager.getColor("Tree.textForeground");
 
     protected AbstractTreeCheckBoxComponent(final JCheckBox pCheckBox,
@@ -123,7 +121,7 @@ public abstract class AbstractTreeCheckBoxComponent extends JPanel implements Co
             final boolean shouldDisplay = cbModel.shouldDisplayCheckBox(node);
             checkBox.setVisible(shouldDisplay);
 
-            if(shouldDisplay) {
+            if (shouldDisplay) {
                 checkBox.setSelected(cbModel.isChecked(node));
 
                 //

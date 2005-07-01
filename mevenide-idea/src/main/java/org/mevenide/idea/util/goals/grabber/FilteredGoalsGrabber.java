@@ -16,17 +16,15 @@
  */
 package org.mevenide.idea.util.goals.grabber;
 
-import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.idea.util.goals.GoalsHelper;
-
 import java.util.HashSet;
 import java.util.Set;
+import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.idea.util.goals.GoalsHelper;
 
 /**
  * @author Arik
  */
 public class FilteredGoalsGrabber implements IGoalsGrabber {
-
     private final String name;
     private final IGoalsGrabber delegate;
     private final Set<String> goalFilters;
@@ -39,7 +37,7 @@ public class FilteredGoalsGrabber implements IGoalsGrabber {
         name = pName;
 
         pluginFilters = new HashSet<String>(20);
-        if(pGoals == null)
+        if (pGoals == null)
             goalFilters = new HashSet<String>(0);
         else
             goalFilters = new HashSet<String>(pGoals.length);
@@ -51,17 +49,17 @@ public class FilteredGoalsGrabber implements IGoalsGrabber {
         goalFilters.clear();
         pluginFilters.clear();
 
-        if(pGoals == null || pGoals.length == 0)
+        if (pGoals == null || pGoals.length == 0)
             return;
 
-        for(String goal : pGoals) {
+        for (String goal : pGoals) {
             goalFilters.add(goal);
             pluginFilters.add(GoalsHelper.getPluginName(goal));
         }
     }
 
     public String getDescription(String fullyQualifiedGoalName) {
-        if(goalFilters.contains(fullyQualifiedGoalName))
+        if (goalFilters.contains(fullyQualifiedGoalName))
             return delegate.getDescription(fullyQualifiedGoalName);
         else
             return null;
@@ -69,22 +67,22 @@ public class FilteredGoalsGrabber implements IGoalsGrabber {
 
     public String[] getGoals(String plugin) {
         final String[] delegateGoalsArr = delegate.getGoals(plugin);
-        if(delegateGoalsArr == null)
+        if (delegateGoalsArr == null)
             return null;
 
         if (!pluginFilters.contains(plugin))
             return new String[0];
 
-        if(delegateGoalsArr.length == 0)
+        if (delegateGoalsArr.length == 0)
             return delegateGoalsArr;
 
-        if(goalFilters.size() == 0)
+        if (goalFilters.size() == 0)
             return new String[0];
 
         final Set<String> delegateGoals = new HashSet<String>(delegateGoalsArr.length);
-        for(String goal : delegateGoalsArr) {
+        for (String goal : delegateGoalsArr) {
             final String fqName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
-            if(goalFilters.contains(fqName))
+            if (goalFilters.contains(fqName))
                 delegateGoals.add(goal);
         }
 
@@ -92,14 +90,14 @@ public class FilteredGoalsGrabber implements IGoalsGrabber {
     }
 
     public String getName() {
-        if(name == null || name.trim().length() == 0)
+        if (name == null || name.trim().length() == 0)
             return delegate.getName();
         else
             return name;
     }
 
     public String getOrigin(String fullyQualifiedGoalName) {
-        if(!goalFilters.contains(fullyQualifiedGoalName))
+        if (!goalFilters.contains(fullyQualifiedGoalName))
             return null;
 
         return delegate.getOrigin(fullyQualifiedGoalName);
@@ -116,7 +114,7 @@ public class FilteredGoalsGrabber implements IGoalsGrabber {
 
         final Set<String> delegatePlugins = new HashSet<String>(delegatePluginsArr.length);
         for (String plugin : delegatePluginsArr) {
-            if(pluginFilters.contains(plugin))
+            if (pluginFilters.contains(plugin))
                 delegatePlugins.add(plugin);
         }
 

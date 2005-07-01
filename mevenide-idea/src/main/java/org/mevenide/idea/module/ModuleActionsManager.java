@@ -16,15 +16,14 @@
  */
 package org.mevenide.idea.module;
 
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.extensions.PluginId;
+import com.intellij.openapi.module.Module;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.extensions.PluginId;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.GoalsHelper;
@@ -32,26 +31,29 @@ import org.mevenide.idea.util.goals.GoalsHelper;
 /**
  * @author Arik
  */
-public class ModuleActionsManager extends AbstractModuleComponent implements PropertyChangeListener {
-
+public class ModuleActionsManager extends AbstractModuleComponent
+    implements PropertyChangeListener {
     private AnAction[] registeredActions = new AnAction[0];
 
     public ModuleActionsManager(final Module pModule) {
         super(pModule);
     }
 
-    @Override public void moduleAdded() {
-        ModuleSettings.getInstance(module).addPropertyChangeListener("queryContext", this);
+    @Override
+    public void moduleAdded() {
+        ModuleSettings.getInstance(module).addPropertyChangeListener("queryContext",
+                                                                     this);
         unregisterModuleActions();
         refreshActions();
     }
 
-    @Override public void projectClosed() {
+    @Override
+    public void projectClosed() {
         unregisterModuleActions();
     }
 
     public void propertyChange(final PropertyChangeEvent pEvent) {
-        if(pEvent.getPropertyName().equals("queryContext")) {
+        if (pEvent.getPropertyName().equals("queryContext")) {
             unregisterModuleActions();
             refreshActions();
         }
@@ -59,7 +61,7 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
 
     private void refreshActions() {
         final ModuleSettings settings = ModuleSettings.getInstance(module);
-        if(settings == null)
+        if (settings == null)
             return;
 
         final IGoalsGrabber projectGrabber = settings.getProjectGoalsGrabber();
@@ -70,21 +72,25 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
 
         registeredActions = new AnAction[projectActions.length + favoriteActions.length];
         System.arraycopy(projectActions, 0, registeredActions, 0, projectActions.length);
-        System.arraycopy(favoriteActions, 0, registeredActions, projectActions.length, favoriteActions.length);
+        System.arraycopy(favoriteActions,
+                         0,
+                         registeredActions,
+                         projectActions.length,
+                         favoriteActions.length);
     }
 
     private void unregisterModuleActions() {
         final ActionManager mgr = ActionManager.getInstance();
 
-        for(AnAction action : registeredActions) {
+        for (AnAction action : registeredActions) {
             final String id = mgr.getId(action);
-            if(id != null)
+            if (id != null)
                 mgr.unregisterAction(id);
         }
     }
 
     private AnAction[] createActionsFromGrabber(final IGoalsGrabber pGrabber) {
-        if(pGrabber == null)
+        if (pGrabber == null)
             return new AnAction[0];
 
         final ActionManager mgr = ActionManager.getInstance();
@@ -94,9 +100,9 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
         //iterate over available plugins and register their available actions
         //
         final String[] plugins = pGrabber.getPlugins();
-        for(String plugin : plugins) {
+        for (String plugin : plugins) {
             final String[] goals = pGrabber.getGoals(plugin);
-            for(String goal : goals) {
+            for (String goal : goals) {
 
                 //build a fully-qualified goal name
                 final String fqName = GoalsHelper.buildFullyQualifiedName(plugin, goal);

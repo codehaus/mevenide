@@ -1,7 +1,7 @@
 package org.mevenide.idea.psi.support;
 
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.PsiManager;
+import com.intellij.psi.xml.XmlFile;
 import org.mevenide.idea.psi.util.PsiIndexedPropertyChangeListener;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.event.BeanRowsListener;
@@ -10,7 +10,8 @@ import org.mevenide.idea.util.event.BeanRowsObservable;
 /**
  * @author Arik
  */
-public abstract class AbstractPsiBeanRowsObservable extends AbstractPsiObject implements BeanRowsObservable {
+public abstract class AbstractPsiBeanRowsObservable extends AbstractPsiObject
+    implements BeanRowsObservable {
     /**
      * The PSI listener used to trigger property change events.
      */
@@ -45,7 +46,7 @@ public abstract class AbstractPsiBeanRowsObservable extends AbstractPsiObject im
     protected final String[] getValues() {
         return psi.getValues();
     }
-    
+
     protected final String getValue(final int pRow) {
         return getValue(pRow, null);
     }

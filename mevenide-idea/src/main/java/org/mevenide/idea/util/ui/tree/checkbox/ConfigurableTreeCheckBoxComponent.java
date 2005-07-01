@@ -16,9 +16,8 @@
  */
 package org.mevenide.idea.util.ui.tree.checkbox;
 
-import org.mevenide.idea.util.ui.tree.ConfigurableTreeComponent;
-
 import javax.swing.*;
+import org.mevenide.idea.util.ui.tree.ConfigurableTreeComponent;
 
 /**
  * @author Arik

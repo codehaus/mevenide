@@ -1,14 +1,13 @@
 package org.mevenide.idea.util.ui;
 
-import javax.swing.JPanel;
-import javax.swing.JComponent;
-import javax.swing.JSplitPane;
-import java.awt.BorderLayout;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
-public class SplitPanel<Top extends JComponent, Bottom extends JComponent> extends JPanel {
+public class SplitPanel<Top extends JComponent, Bottom extends JComponent>
+    extends JPanel {
     /**
      * The top component.
      */
@@ -39,7 +38,7 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop the top component
+     * @param pTop    the top component
      * @param pBottom the bottom component
      */
     public SplitPanel(final Top pTop, final Bottom pBottom) {
@@ -49,8 +48,8 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop the top component
-     * @param pBottom the bottom component
+     * @param pTop        the top component
+     * @param pBottom     the bottom component
      * @param pAddBorders whether to add en empty border around the components
      */
     public SplitPanel(final Top pTop, final Bottom pBottom, final boolean pAddBorders) {
@@ -60,8 +59,8 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop the top component
-     * @param pBottom the bottom component
+     * @param pTop        the top component
+     * @param pBottom     the bottom component
      * @param pAddBorders whether to add en empty border around the components
      */
     public SplitPanel(final Top pTop,
@@ -69,12 +68,12 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
                       final boolean pAddBorders,
                       final boolean pVertical) {
         split = new JSplitPane(
-                pVertical ?
-                    JSplitPane.VERTICAL_SPLIT :
-                    JSplitPane.HORIZONTAL_SPLIT,
-                true,
-                null,
-                null);
+            pVertical ?
+                JSplitPane.VERTICAL_SPLIT :
+                JSplitPane.HORIZONTAL_SPLIT,
+            true,
+            null,
+            null);
 
         addBorders = pAddBorders;
 
@@ -106,14 +105,14 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
     public void setBottom(final Bottom pBottom) {
         split.setBottomComponent(pBottom);
         bottom = pBottom;
-        if(bottom != null && addBorders)
+        if (bottom != null && addBorders)
             UIUtils.installBorder(bottom);
     }
 
     public void setTop(final Top pTop) {
         split.setTopComponent(pTop);
         top = pTop;
-        if(top != null && addBorders)
+        if (top != null && addBorders)
             UIUtils.installBorder(top);
     }
 }

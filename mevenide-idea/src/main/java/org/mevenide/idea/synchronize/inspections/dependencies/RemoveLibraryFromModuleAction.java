@@ -10,8 +10,8 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -37,7 +37,9 @@ public class RemoveLibraryFromModuleAction extends AbstractFixAction {
                                          final Module pModule,
                                          final VirtualFile pLibraryFile) {
         super(RES.get("remove.lib.from.idea.action.name", pLibraryFile.getPath()),
-              RES.get("remove.lib.from.idea.action.desc", pLibraryFile.getPath(), pModule.getName()),
+              RES.get("remove.lib.from.idea.action.desc",
+                      pLibraryFile.getPath(),
+                      pModule.getName()),
               Icons.FIX_PROBLEMS,
               pProblem);
         module = pModule;
@@ -61,20 +63,20 @@ public class RemoveLibraryFromModuleAction extends AbstractFixAction {
                     final Library lib = libEntry.getLibrary();
 
                     final VirtualFile[] files;
-                    if(lib == null)
+                    if (lib == null)
                         files = libEntry.getFiles(OrderRootType.CLASSES);
                     else
                         files = lib.getFiles(OrderRootType.CLASSES);
 
                     for (VirtualFile file : files) {
                         final String path = FileUtils.fixPath(file);
-                        if(file.equals(libraryFile) || libraryFilePath.equals(path))
+                        if (file.equals(libraryFile) || libraryFilePath.equals(path))
                             model.removeOrderEntry(libEntry);
                     }
                 }
             }
 
-            if(model.isChanged())
+            if (model.isChanged())
                 model.commit();
         }
     }

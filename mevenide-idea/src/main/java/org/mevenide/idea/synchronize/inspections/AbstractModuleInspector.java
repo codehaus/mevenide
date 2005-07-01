@@ -5,8 +5,8 @@ import org.mevenide.idea.synchronize.ModuleProblemInspector;
 /**
  * @author Arik
  */
-public abstract class AbstractModuleInspector extends AbstractInspector implements ModuleProblemInspector {
-
+public abstract class AbstractModuleInspector extends AbstractInspector
+    implements ModuleProblemInspector {
     protected AbstractModuleInspector(final String pName) {
         super(pName);
     }

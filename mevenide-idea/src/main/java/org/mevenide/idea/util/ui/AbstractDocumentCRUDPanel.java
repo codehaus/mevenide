@@ -1,16 +1,16 @@
 package org.mevenide.idea.util.ui;
 
-import javax.swing.JComponent;
-
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
-public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CRUDPanel<T> {
+public abstract class AbstractDocumentCRUDPanel<T extends JComponent>
+    extends CRUDPanel<T> {
     /**
      * The project this panel belongs to.
      */
@@ -33,7 +33,8 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
                                         final boolean pShowAddButton,
                                         final boolean pShowEditButton,
                                         final boolean pShowRemoveButton,
-                                        final Project pProject, final Document pEditorDocument) {
+                                        final Project pProject,
+                                        final Document pEditorDocument) {
         super(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton);
         project = pProject;
         document = pEditorDocument;
@@ -46,7 +47,11 @@ public abstract class AbstractDocumentCRUDPanel<T extends JComponent> extends CR
                                         final boolean pWrapInScrollPane,
                                         final Project pProject,
                                         final Document pEditorDocument) {
-        super(pComponent, pShowAddButton, pShowEditButton, pShowRemoveButton, pWrapInScrollPane);
+        super(pComponent,
+              pShowAddButton,
+              pShowEditButton,
+              pShowRemoveButton,
+              pWrapInScrollPane);
         project = pProject;
         document = pEditorDocument;
     }

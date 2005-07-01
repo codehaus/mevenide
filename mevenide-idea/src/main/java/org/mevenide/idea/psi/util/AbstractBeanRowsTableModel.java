@@ -1,16 +1,16 @@
 package org.mevenide.idea.psi.util;
 
 import javax.swing.table.AbstractTableModel;
-import org.mevenide.idea.util.ui.table.CRUDTableModel;
+import org.mevenide.idea.util.event.BeanRowEvent;
 import org.mevenide.idea.util.event.BeanRowsListener;
 import org.mevenide.idea.util.event.BeanRowsObservable;
-import org.mevenide.idea.util.event.BeanRowEvent;
+import org.mevenide.idea.util.ui.table.CRUDTableModel;
 
 /**
  * @author Arik
  */
-public abstract class AbstractBeanRowsTableModel<PsiModel extends BeanRowsObservable> extends AbstractTableModel implements CRUDTableModel, BeanRowsListener {
-
+public abstract class AbstractBeanRowsTableModel<PsiModel extends BeanRowsObservable>
+    extends AbstractTableModel implements CRUDTableModel, BeanRowsListener {
     protected final PsiModel model;
     protected final String[] columnTitles;
 
@@ -27,7 +27,7 @@ public abstract class AbstractBeanRowsTableModel<PsiModel extends BeanRowsObserv
 
     @Override
     public String getColumnName(int column) {
-        if(columnTitles == null || column >= columnTitles.length)
+        if (columnTitles == null || column >= columnTitles.length)
             return super.getColumnName(column);
         else
             return columnTitles[column];
@@ -80,7 +80,7 @@ public abstract class AbstractBeanRowsTableModel<PsiModel extends BeanRowsObserv
 
     public void rowChanged(final BeanRowEvent pEvent) {
         final int changedColumn = getColumnIndexByProperty(pEvent.getField());
-        if(changedColumn < 0)
+        if (changedColumn < 0)
             fireTableRowsUpdated(pEvent.getRow(), pEvent.getRow());
         else
             fireTableCellUpdated(pEvent.getRow(), changedColumn);

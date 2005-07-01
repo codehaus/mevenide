@@ -4,13 +4,10 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
+import java.io.File;
+import javax.swing.*;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-
-import javax.swing.JCheckBox;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import java.io.File;
 
 /**
  * @author Arik
@@ -55,15 +52,15 @@ public class MavenManagerPanel extends JPanel {
     }
 
     /**
-     * Initializes the panel by creating the required components and laying them out on the
-     * panel.
+     * Initializes the panel by creating the required components and laying them out on
+     * the panel.
      */
     private void initComponents() {
         mavenHomeField.addBrowseFolderListener(
-                RES.get("choose.maven.home"),
-                RES.get("choose.maven.home.desc"),
-                null,
-                FileChooserDescriptorFactory.createSingleFolderDescriptor());
+            RES.get("choose.maven.home"),
+            RES.get("choose.maven.home.desc"),
+            null,
+            FileChooserDescriptorFactory.createSingleFolderDescriptor());
     }
 
     private void layoutComponents() {

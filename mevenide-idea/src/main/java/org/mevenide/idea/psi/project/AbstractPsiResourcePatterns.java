@@ -1,7 +1,7 @@
 package org.mevenide.idea.psi.project;
 
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik

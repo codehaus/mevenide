@@ -1,6 +1,13 @@
 package org.mevenide.idea.util.ui;
 
-import java.awt.Dimension;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogBuilder;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.ScrollPaneFactory;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
@@ -9,18 +16,11 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.DialogBuilder;
-import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.ScrollPaneFactory;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.CellConstraints;
-import com.jgoodies.forms.layout.FormLayout;
 import org.mevenide.idea.Res;
 
 /**
- * Displays a modifable list of strings. The user can add or remove strings from the list.
+ * Displays a modifable list of strings. The user can add or remove strings from the
+ * list.
  *
  * @author Arik
  */
@@ -51,8 +51,8 @@ public class StringListEditPanel extends JPanel {
     private final JList list = new JList(model);
 
     /**
-     * This button adds the currently entered string in the {@link #itemField} into the {@link
-     * #model string list model}.
+     * This button adds the currently entered string in the {@link #itemField} into the
+     * {@link #model string list model}.
      */
     private final JButton addButton = new JButton(RES.get("add.button.title"));
 
@@ -69,8 +69,8 @@ public class StringListEditPanel extends JPanel {
     }
 
     /**
-     * Creates a new instance with the specified preset strings that will appear in the strings
-     * list.
+     * Creates a new instance with the specified preset strings that will appear in the
+     * strings list.
      *
      * @param pItems the preset strings
      */
@@ -79,8 +79,8 @@ public class StringListEditPanel extends JPanel {
     }
 
     /**
-     * Creates a new instance with the specified preset strings that will appear in the strings
-     * list.
+     * Creates a new instance with the specified preset strings that will appear in the
+     * strings list.
      *
      * @param pItems the preset strings
      */
@@ -189,8 +189,8 @@ public class StringListEditPanel extends JPanel {
     }
 
     /**
-     * Returns the list of items selected by the user. These are the items that are still in
-     * the item list.
+     * Returns the list of items selected by the user. These are the items that are still
+     * in the item list.
      *
      * <p>If no items are present in the list, an empty array is returned.</p>
      *
@@ -207,21 +207,24 @@ public class StringListEditPanel extends JPanel {
     /**
      * Displays the items selection dialog, preloaded with the given items list.
      *
-     * <p>If the user cancels the dialog (by clicking the "Cancel" button), {@code null} is
-     * returned. Otherwise, an array of items is returned. If the user does not select any
-     * items, an empty array is returned (to distinguish the case from when the user presses
-     * "Cancel", in which case {@code null} is returned).</p>
+     * <p>If the user cancels the dialog (by clicking the "Cancel" button), {@code null}
+     * is returned. Otherwise, an array of items is returned. If the user does not select
+     * any items, an empty array is returned (to distinguish the case from when the user
+     * presses "Cancel", in which case {@code null} is returned).</p>
      *
-     * @param pProject  the project context
-     * @param pTitle    the dialog title
-     * @param pItems the items to initially display in the dialog
-     * @return {@code null} if the user cancels the dialog, or a (possibly empty) array of strings
+     * @param pProject the project context
+     * @param pTitle   the dialog title
+     * @param pItems   the items to initially display in the dialog
+     *
+     * @return {@code null} if the user cancels the dialog, or a (possibly empty) array of
+     *         strings
      */
     public static String[] showDialog(final Project pProject,
                                       final String pTitle,
                                       final String pItemLabel,
                                       final String[] pItems) {
-        final StringListEditPanel itemsPanel = new StringListEditPanel(pItemLabel, pItems);
+        final StringListEditPanel itemsPanel = new StringListEditPanel(pItemLabel,
+                                                                       pItems);
 
         final DialogBuilder builder = new DialogBuilder(pProject);
         builder.addOkAction();
@@ -237,8 +240,8 @@ public class StringListEditPanel extends JPanel {
     }
 
     /**
-     * Listens to changes in the item field document, and enables/disables relevant fields in the
-     * panel accordingly.
+     * Listens to changes in the item field document, and enables/disables relevant fields
+     * in the panel accordingly.
      */
     private class ItemDocumentListener implements DocumentListener {
         public void changedUpdate(DocumentEvent e) {

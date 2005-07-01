@@ -1,16 +1,15 @@
 package org.mevenide.idea.psi.project;
 
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 import com.intellij.psi.xml.XmlFile;
-import java.util.Map;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
 public abstract class AbstractPsiTeamMembers extends AbstractPsiBeanRowsObservable {
-
     private final Map<Integer, PsiTeamMemberRoles> rolesCache = Collections.synchronizedMap(
         new HashMap<Integer, PsiTeamMemberRoles>(10));
 

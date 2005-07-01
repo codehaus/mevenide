@@ -1,9 +1,8 @@
 package org.mevenide.idea.repository.model;
 
-import java.util.Enumeration;
 import java.util.Collections;
+import java.util.Enumeration;
 import javax.swing.tree.TreeNode;
-
 import org.mevenide.idea.Res;
 
 /**

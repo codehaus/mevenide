@@ -7,7 +7,6 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  * @author Arik
  */
 public class RolesPanel extends CRUDTablePanel<RolesTableModel> {
-
     public RolesPanel(final PsiTeamMemberRoles pRoles) {
         super(pRoles.getXmlFile(), new RolesTableModel(pRoles));
     }

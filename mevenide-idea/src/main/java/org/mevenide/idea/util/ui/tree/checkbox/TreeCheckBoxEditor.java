@@ -16,24 +16,24 @@
  */
 package org.mevenide.idea.util.ui.tree.checkbox;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeCellEditor;
+import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import javax.swing.tree.TreeModel;
-import java.awt.Component;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Arik
  */
-public class TreeCheckBoxEditor extends AbstractCellEditor implements TreeCellEditor, TreeSelectionListener {
+public class TreeCheckBoxEditor extends AbstractCellEditor
+    implements TreeCellEditor, TreeSelectionListener {
     private static final Log LOG = LogFactory.getLog(TreeCheckBoxEditor.class);
 
     private JTree tree;
@@ -45,13 +45,13 @@ public class TreeCheckBoxEditor extends AbstractCellEditor implements TreeCellEd
         editor.getCheckBox().addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 final TreeModel model = tree.getModel();
-                if(!(model instanceof MutableCheckBoxTreeModel))
+                if (!(model instanceof MutableCheckBoxTreeModel))
                     return;
 
                 final MutableCheckBoxTreeModel cbModel = (MutableCheckBoxTreeModel) model;
                 final TreeNode node = (TreeNode) value;
 
-                if(!cbModel.shouldDisplayCheckBox(node) || !cbModel.isCheckable(node))
+                if (!cbModel.shouldDisplayCheckBox(node) || !cbModel.isCheckable(node))
                     return;
 
                 final JCheckBox source = (JCheckBox) e.getSource();
@@ -94,7 +94,13 @@ public class TreeCheckBoxEditor extends AbstractCellEditor implements TreeCellEd
         //
         //configure the component according to the node state
         //
-        editor.configure(pTree, pValue, pSelected, pExpanded, pLeaf, pRow, pTree.hasFocus());
+        editor.configure(pTree,
+                         pValue,
+                         pSelected,
+                         pExpanded,
+                         pLeaf,
+                         pRow,
+                         pTree.hasFocus());
 
         return editor;
     }
@@ -115,7 +121,7 @@ public class TreeCheckBoxEditor extends AbstractCellEditor implements TreeCellEd
         if (newPath != null && newPath.equals(path)) {
             final Object lastPathComponent = path.getLastPathComponent();
             final boolean leaf;
-            if(lastPathComponent instanceof TreeNode)
+            if (lastPathComponent instanceof TreeNode)
                 leaf = ((TreeNode) lastPathComponent).isLeaf();
             else {
                 LOG.warn("Selection is not a TreeNode instance.");

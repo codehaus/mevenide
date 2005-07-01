@@ -2,8 +2,8 @@ package org.mevenide.idea.util.ui.text;
 
 import com.intellij.psi.xml.XmlFile;
 import javax.swing.text.JTextComponent;
-import org.mevenide.idea.util.psi.XmlSwingDocument;
 import org.mevenide.idea.psi.util.XmlTagPath;
+import org.mevenide.idea.util.psi.XmlSwingDocument;
 
 /**
  * @author Arik
@@ -24,11 +24,12 @@ public class XmlPsiDocumentBinder {
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's project and document.
+     * Bind the given text component to the specified element path in this binder's
+     * project and document.
      *
      * @param pComponent the component to bind
-     * @param pTagPath   the element path the component will be bound to - can be a path of elements, a-la {@code
-     *                   project/build/sourceDirectory}.
+     * @param pTagPath   the element path the component will be bound to - can be a path
+     *                   of elements, a-la {@code project/build/sourceDirectory}.
      */
     public XmlSwingDocument bind(final JTextComponent pComponent,
                                  final String pTagPath) {
@@ -44,7 +45,8 @@ public class XmlPsiDocumentBinder {
     }
 
     /**
-     * Bind the given text component to the specified element path in this binder's project and document.
+     * Bind the given text component to the specified element path in this binder's
+     * project and document.
      *
      * @param pComponent the component to bind
      * @param pTagPath   the element path the component will be bound to

@@ -1,23 +1,23 @@
 package org.mevenide.idea.synchronize.inspections.dependencies;
 
-import org.mevenide.idea.synchronize.AbstractFixAction;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.RepositoryUtils;
-import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.util.IDEUtils;
-import org.apache.maven.project.Dependency;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
-import com.intellij.openapi.roots.libraries.LibraryTable;
-import com.intellij.openapi.roots.libraries.Library;
-import com.intellij.openapi.roots.OrderRootType;
-import com.intellij.openapi.roots.ModuleRootManager;
-import com.intellij.openapi.roots.ModifiableRootModel;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.ModifiableRootModel;
+import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.roots.OrderRootType;
+import com.intellij.openapi.roots.libraries.Library;
+import com.intellij.openapi.roots.libraries.LibraryTable;
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
+import com.intellij.openapi.vfs.VirtualFile;
+import org.apache.maven.project.Dependency;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.repository.RepositoryUtils;
+import org.mevenide.idea.synchronize.AbstractFixAction;
+import org.mevenide.idea.synchronize.ProblemInfo;
+import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik

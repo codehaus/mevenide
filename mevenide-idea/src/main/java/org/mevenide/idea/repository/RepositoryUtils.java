@@ -24,7 +24,6 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
  * @author Arik
  */
 public abstract class RepositoryUtils {
-
     public static boolean isArtifactInstalled(final VirtualFile pLocalRepo,
                                               final Dependency dep) {
         final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
@@ -75,7 +74,7 @@ public abstract class RepositoryUtils {
             final String remoteRepos = context.getPropertyValue("maven.repo.remote");
             repoUris.add(remoteRepos);
 
-            if(pIncludeLocal) {
+            if (pIncludeLocal) {
                 final ILocationFinder finder = new ModuleLocationFinder(module);
                 final String localRepoPath = finder.getMavenLocalRepository();
                 final File localRepoFile = new File(localRepoPath);
@@ -95,8 +94,8 @@ public abstract class RepositoryUtils {
         final IRepositoryReader[] readers = new IRepositoryReader[finalReposSet.size()];
         int index = 0;
         for (String repo : finalReposSet) {
-            if(repo.startsWith("file:/")) {
-                if(repo.startsWith("file://"))
+            if (repo.startsWith("file:/")) {
+                if (repo.startsWith("file://"))
                     repo = repo.substring(7);
                 else
                     repo = repo.substring(6);
@@ -152,7 +151,7 @@ public abstract class RepositoryUtils {
         dep.setGroupId(pDependency.getGroupId());
         dep.setJar(pDependency.getJar());
         dep.setName(pDependency.getName());
-        if(pDependency.getType() == null || pDependency.getType().trim().length() == 0)
+        if (pDependency.getType() == null || pDependency.getType().trim().length() == 0)
             dep.setType("jar");
         else
             dep.setType(pDependency.getType());

@@ -6,7 +6,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-
 import org.mevenide.idea.Res;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
@@ -14,13 +13,13 @@ import org.mevenide.repository.RepoPathElement;
 /**
  * A tree model for repository browsing trees.
  *
- * <p>This model uses the actual {@link RepoPathElement} objects as the actual tree nodes, rather
- * than the {@link javax.swing.tree.TreeNode} interface, as there is no need to create additional
- * object per node.</p>
+ * <p>This model uses the actual {@link RepoPathElement} objects as the actual tree nodes,
+ * rather than the {@link javax.swing.tree.TreeNode} interface, as there is no need to
+ * create additional object per node.</p>
  *
  * <p>Code for 'fireXXX' and 'getPathToRoot(*)' methods copied from {@link
- * javax.swing.tree.DefaultTreeModel} since there is no javax.swing.tree.AbstractTreeModel we can
- * extend, and we shouldn't extend {@code DefaultTreeModel}.</p>
+ * javax.swing.tree.DefaultTreeModel} since there is no javax.swing.tree.AbstractTreeModel
+ * we can extend, and we shouldn't extend {@code DefaultTreeModel}.</p>
  *
  * @author Arik
  */
@@ -109,13 +108,15 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on this event type. The
-     * event instance is lazily created using the parameters passed into the fire method.
+     * Notifies all listeners that have registered interest for notification on this event
+     * type. The event instance is lazily created using the parameters passed into the
+     * fire method.
      *
      * @param source       the node where the tree model has changed
      * @param path         the path to the root node
      * @param childIndices the indices of the affected elements
      * @param children     the affected elements
+     *
      * @see EventListenerList
      */
     protected void fireTreeStructureChanged(Object source, Object[] path,
@@ -138,11 +139,12 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all interested listeners that the entire structure inside the
-     * given node has changed.
+     * Notifies all interested listeners that the entire structure inside the given node
+     * has changed.
      *
-     * @param pNode the node where the tree model has changed
-     * @param pNodePath   the path to the root node
+     * @param pNode     the node where the tree model has changed
+     * @param pNodePath the path to the root node
+     *
      * @see EventListenerList
      */
     protected void fireTreeStructureChanged(final TreeNode pNode,
@@ -167,7 +169,8 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies the model listeners the entire structure inside the given node has changed.
+     * Notifies the model listeners the entire structure inside the given node has
+     * changed.
      *
      * @param pNode the node whose structure has changed
      */
@@ -176,9 +179,9 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     /**
-     * Builds the parents of node up to and including the root node, where the original node is the
-     * last element in the returned array. The length of the returned array gives the node's depth
-     * in the tree.
+     * Builds the parents of node up to and including the root node, where the original
+     * node is the last element in the returned array. The length of the returned array
+     * gives the node's depth in the tree.
      *
      * @param aNode the node to get the path for
      */
@@ -187,15 +190,16 @@ public class RepositoryTreeModel implements TreeModel {
     }
 
     /**
-     * Builds the parents of node up to and including the root node, where the original node is the
-     * last element in the returned array. The length of the returned array gives the node's depth
-     * in the tree.
+     * Builds the parents of node up to and including the root node, where the original
+     * node is the last element in the returned array. The length of the returned array
+     * gives the node's depth in the tree.
      *
-     * @param pNode the node to get the path for
-     * @param pDepth an int giving the number of steps already taken towards the root (on recursive
-     *              calls), used to size the returned array
-     * @return an array of {@code RepoPathElement} giving the path from the root to the specified
-     *         node
+     * @param pNode  the node to get the path for
+     * @param pDepth an int giving the number of steps already taken towards the root (on
+     *               recursive calls), used to size the returned array
+     *
+     * @return an array of {@code RepoPathElement} giving the path from the root to the
+     *         specified node
      */
     protected TreeNode[] getPathToRoot(final TreeNode pNode, int pDepth) {
         TreeNode[] retNodes;

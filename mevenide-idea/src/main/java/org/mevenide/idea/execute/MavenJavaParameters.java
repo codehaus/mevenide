@@ -16,13 +16,12 @@
  */
 package org.mevenide.idea.execute;
 
-import java.io.File;
-
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.configurations.JavaParameters;
 import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
+import java.io.File;
 import org.mevenide.idea.MavenHomeNotDefinedException;
 import org.mevenide.idea.PomNotDefinedException;
 import org.mevenide.idea.global.MavenManager;
@@ -32,17 +31,16 @@ import org.mevenide.idea.util.goals.GoalsHelper;
 /**
  * @author Arik
  */
-public class MavenJavaParameters extends JavaParameters
-{
+public class MavenJavaParameters extends JavaParameters {
     private static final String ENDORSED_DIR_NAME = "lib/endorsed";
     private static final String FOREHEAD_MAIN_CLASS = "com.werken.forehead.Forehead";
     private static final String FOREHEAD_CONF_FILE = "bin/forehead.conf";
     private static final String FOREHEAD_JAR_FILE = "lib/forehead-1.0-beta-5.jar";
     public static final String COMPILE_REGEXP =
-    RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
+        RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
     public MavenJavaParameters(final Module pModule, final String... pGoals)
-            throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
+        throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
 
         final MavenManager mavenMgr = MavenManager.getInstance();
 
@@ -72,10 +70,11 @@ public class MavenJavaParameters extends JavaParameters
         //important locations for the command line
         //
         final File foreheadConf = new File(mavenHome, FOREHEAD_CONF_FILE);
-        final File javaEndorsed = new File(jdk.getHomeDirectory().getPath(), ENDORSED_DIR_NAME);
+        final File javaEndorsed = new File(jdk.getHomeDirectory().getPath(),
+                                           ENDORSED_DIR_NAME);
         final File mavenEndorsed = new File(mavenHome, ENDORSED_DIR_NAME);
         final String endorsedDirs =
-                javaEndorsed.getAbsolutePath() + File.pathSeparatorChar + mavenEndorsed.getAbsolutePath();
+            javaEndorsed.getAbsolutePath() + File.pathSeparatorChar + mavenEndorsed.getAbsolutePath();
         final File foreheadJar = new File(mavenHome, FOREHEAD_JAR_FILE);
 
         //
@@ -86,20 +85,21 @@ public class MavenJavaParameters extends JavaParameters
         setMainClass(FOREHEAD_MAIN_CLASS);
         getVMParametersList().defineProperty("maven.home", mavenHome.getAbsolutePath());
         getVMParametersList().defineProperty("tools.jar", jdk.getToolsPath());
-        getVMParametersList().defineProperty("forehead.conf.file", foreheadConf.getAbsolutePath());
+        getVMParametersList().defineProperty("forehead.conf.file",
+                                             foreheadConf.getAbsolutePath());
         getVMParametersList().defineProperty("java.endorsed.dirs", endorsedDirs);
         final String mavenOptions = mavenMgr.getMavenOptions();
-        if(mavenOptions != null && mavenOptions.trim().length() > 0)
+        if (mavenOptions != null && mavenOptions.trim().length() > 0)
             getVMParametersList().add(mavenOptions);
         getClassPath().add(foreheadJar.getAbsolutePath());
 
-        if(mavenMgr.isOffline())
+        if (mavenMgr.isOffline())
             getProgramParametersList().add("-o");
 
         getProgramParametersList().add("-b");
 
-        for(final String goal : pGoals)
-            if(goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
+        for (final String goal : pGoals)
+            if (goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
                 getProgramParametersList().add(GoalsHelper.getPluginName(goal));
             else
                 getProgramParametersList().add(goal);

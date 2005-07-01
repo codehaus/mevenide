@@ -57,13 +57,13 @@ public class DependencyNotDownloadedInspector extends AbstractModuleInspector {
         //
         final Dependency[] deps = ModuleUtils.getModulePomDependencies(pModule);
         for (Dependency dep : deps) {
-            if(dep.getType() == null)
+            if (dep.getType() == null)
                 dep.setType("jar");
 
             if (!dep.isAddedToClasspath())
                 continue;
 
-            if(!RepositoryUtils.isArtifactInstalled(localRepo, dep))
+            if (!RepositoryUtils.isArtifactInstalled(localRepo, dep))
                 problems.add(new DependencyNotDownloadedProblemInfo(this,
                                                                     pModule,
                                                                     localRepo,

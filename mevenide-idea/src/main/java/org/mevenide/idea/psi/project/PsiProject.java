@@ -126,15 +126,14 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
     }
 
     /**
-     * Returns the PSI parent project.
-     * <p/>
-     * <p>This method will parse the "extend" tag value, and use it to find the parent POM file (relative path for this
-     * POM file is supported). If the parent POM project is found, a PSI project is created for it and returned. </p>
-     * <p/>
-     * <p><b>NOTE</b>: this is not a bound property. To track parent changes - track the "extend" property.</p>
+     * Returns the PSI parent project. <p/> <p>This method will parse the "extend" tag
+     * value, and use it to find the parent POM file (relative path for this POM file is
+     * supported). If the parent POM project is found, a PSI project is created for it and
+     * returned. </p> <p/> <p><b>NOTE</b>: this is not a bound property. To track parent
+     * changes - track the "extend" property.</p>
      *
-     * @return a PSI project for the parent POM, or {@code null} if the extend tag has an empty value, or if the parent
-     *         POM cannot be found/parsed.
+     * @return a PSI project for the parent POM, or {@code null} if the extend tag has an
+     *         empty value, or if the parent POM cannot be found/parsed.
      */
     public PsiProject getParent() {
         if (!searchedForParent) {
@@ -172,7 +171,8 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
         return getValue("currentVersion");
     }
 
-    public void setCurrentVersion(final String pValue) throws IncorrectOperationException {
+    public void setCurrentVersion(final String pValue)
+        throws IncorrectOperationException {
         setValue("currentVersion", pValue);
     }
 
@@ -228,7 +228,8 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
         return getValue("shortDescription");
     }
 
-    public void setShortDescription(final String pValue) throws IncorrectOperationException {
+    public void setShortDescription(final String pValue)
+        throws IncorrectOperationException {
         setValue("shortDescription", pValue);
     }
 
@@ -244,7 +245,8 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
         return getValue("issueTrackingUrl");
     }
 
-    public void setIssueTrackingUrl(final String pValue) throws IncorrectOperationException {
+    public void setIssueTrackingUrl(final String pValue)
+        throws IncorrectOperationException {
         setValue("issueTrackingUrl", pValue);
     }
 
@@ -349,10 +351,9 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
     }
 
     /**
-     * Returns the file associated with the value of the "extend" tag.
-     * <p/>
-     * <p>If the value is empty, or does not evaluate to an existing file,
-     * this method will return {@code null}.</p>
+     * Returns the file associated with the value of the "extend" tag. <p/> <p>If the
+     * value is empty, or does not evaluate to an existing file, this method will return
+     * {@code null}.</p>
      *
      * @return a virtual file reference, or {@code null}
      */
@@ -366,10 +367,8 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
     }
 
     /**
-     * Creates a PSI project based on the result of the {@link #getParentFile()}
-     * method.
-     * <p/>
-     * <p>If the {@link #getParentFile()} method returns {@code null}, this method
+     * Creates a PSI project based on the result of the {@link #getParentFile()} method.
+     * <p/> <p>If the {@link #getParentFile()} method returns {@code null}, this method
      * will also return {@code null}.</p>
      *
      * @return a PSI project or {@code null}
@@ -386,7 +385,7 @@ public class PsiProject extends AbstractPsiNamedPropertyObservable {
     private void resetParent() {
         parent = null;
         searchedForParent = false;
-        if(LOG.isTraceEnabled()) {
+        if (LOG.isTraceEnabled()) {
             final VirtualFile virtualFile = xmlFile.getVirtualFile();
             LOG.trace("Reseting parent for " + (virtualFile == null ? null : virtualFile.getPath()));
         }

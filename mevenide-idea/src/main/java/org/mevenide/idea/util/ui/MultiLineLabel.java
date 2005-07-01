@@ -1,13 +1,12 @@
 package org.mevenide.idea.util.ui;
 
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.text.Document;
 
 /**
  * @author Arik
  */
 public class MultiLineLabel extends JTextArea {
-
     public MultiLineLabel(String text, int rows, int columns) {
         super(text, rows, columns);
         init();

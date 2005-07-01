@@ -8,7 +8,6 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  * @author Arik
  */
 public class MailingListsPanel extends CRUDTablePanel {
-
     public MailingListsPanel(final PsiProject pModel) {
         this(pModel.getMailingLists());
     }

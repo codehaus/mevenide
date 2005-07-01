@@ -17,9 +17,8 @@ public class MultiValuedXmlTagRowsTableModel extends XmlTagRowsTableModel {
     private static final Log LOG = LogFactory.getLog(MultiValuedXmlTagRowsTableModel.class);
 
     /**
-     * The names of the value tags. Each tag name corresponds to the
-     * tag that will receive the values for the column at its index in
-     * the array.
+     * The names of the value tags. Each tag name corresponds to the tag that will receive
+     * the values for the column at its index in the array.
      */
     private final String[] valueTagNames;
 
@@ -41,13 +40,15 @@ public class MultiValuedXmlTagRowsTableModel extends XmlTagRowsTableModel {
 
     protected Object getTagRowValue(final XmlTag pTag, final int pColumn) {
         final XmlTag columnTag = pTag.findFirstSubTag(valueTagNames[pColumn]);
-        if(columnTag == null)
+        if (columnTag == null)
             return null;
 
         return columnTag.getValue().getTrimmedText();
     }
 
-    protected void setTagRowValue(final XmlTag pTag, final Object pValue, final int pColumn) {
+    protected void setTagRowValue(final XmlTag pTag,
+                                  final Object pValue,
+                                  final int pColumn) {
         XmlTag columnTag = pTag.findFirstSubTag(valueTagNames[pColumn]);
         if (columnTag == null) {
             try {

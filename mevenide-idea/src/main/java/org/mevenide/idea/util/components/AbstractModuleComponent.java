@@ -16,17 +16,17 @@
  */
 package org.mevenide.idea.util.components;
 
-import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.roots.ProjectRootManager;
-import org.mevenide.idea.util.components.AbstractIdeaComponent;
 
 /**
  * @author Arik
  */
-public abstract class AbstractModuleComponent extends AbstractIdeaComponent implements ModuleComponent {
+public abstract class AbstractModuleComponent extends AbstractIdeaComponent
+    implements ModuleComponent {
     /**
      * The module this component belongs to.
      */
@@ -51,8 +51,9 @@ public abstract class AbstractModuleComponent extends AbstractIdeaComponent impl
     }
 
     /**
-     * Returns the JDK associated with this module. If the module uses the project-designated JDK, that JDK is
-     * returned. If the JDK is invalid, <code>null</code> is returned.
+     * Returns the JDK associated with this module. If the module uses the
+     * project-designated JDK, that JDK is returned. If the JDK is invalid,
+     * <code>null</code> is returned.
      *
      * @return the JDK, or <code>null</code> if not defined/invalid
      */

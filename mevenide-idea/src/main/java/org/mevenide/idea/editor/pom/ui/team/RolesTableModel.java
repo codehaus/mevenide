@@ -1,7 +1,7 @@
 package org.mevenide.idea.editor.pom.ui.team;
 
-import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
 import org.mevenide.idea.psi.project.PsiTeamMemberRoles;
+import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
 
 /**
  * @author Arik

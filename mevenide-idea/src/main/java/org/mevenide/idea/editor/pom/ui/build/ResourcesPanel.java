@@ -1,5 +1,6 @@
 package org.mevenide.idea.editor.pom.ui.build;
 
+import com.intellij.psi.xml.XmlFile;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -10,7 +11,6 @@ import org.mevenide.idea.psi.project.PsiResourcePatterns;
 import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.util.ui.SplitPanel;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
-import com.intellij.psi.xml.XmlFile;
 
 /**
  * @author Arik

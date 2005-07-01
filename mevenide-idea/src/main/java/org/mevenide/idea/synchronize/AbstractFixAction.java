@@ -2,7 +2,7 @@ package org.mevenide.idea.synchronize;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-import javax.swing.Icon;
+import javax.swing.*;
 import org.mevenide.idea.util.actions.AbstractAnAction;
 
 /**
@@ -20,18 +20,21 @@ public abstract class AbstractFixAction extends AbstractAnAction {
         problem = pProblem;
     }
 
-    protected AbstractFixAction(final String pText, final String pDescription, final Icon pIcon, final ProblemInfo pProblem) {
+    protected AbstractFixAction(final String pText,
+                                final String pDescription,
+                                final Icon pIcon,
+                                final ProblemInfo pProblem) {
         super(pText, pDescription, pIcon);
         problem = pProblem;
     }
-    
+
     @Override
     public void update(final AnActionEvent pEvent) {
-        if(pEvent == null)
+        if (pEvent == null)
             return;
 
         final Presentation p = pEvent.getPresentation();
-        if(p == null)
+        if (p == null)
             return;
 
         p.setEnabled(problem.isValid());

@@ -22,7 +22,6 @@ import javax.swing.*;
  * @author Arik
  */
 public class TreeCheckBoxEditingComponent extends AbstractTreeCheckBoxComponent {
-
     public TreeCheckBoxEditingComponent() {
         super(new JCheckBox(), new JLabel());
     }

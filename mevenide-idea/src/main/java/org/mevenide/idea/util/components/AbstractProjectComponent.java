@@ -6,7 +6,8 @@ import com.intellij.openapi.project.Project;
 /**
  * @author Arik
  */
-public abstract class AbstractProjectComponent extends AbstractIdeaComponent implements ProjectComponent {
+public abstract class AbstractProjectComponent extends AbstractIdeaComponent
+    implements ProjectComponent {
     /**
      * The component's project.
      */
@@ -22,15 +23,15 @@ public abstract class AbstractProjectComponent extends AbstractIdeaComponent imp
     }
 
     /**
-     * Does nothing. Implemented for convenience, so subclasses wouldn't have to implement if they have no functionality
-     * in this method.
+     * Does nothing. Implemented for convenience, so subclasses wouldn't have to implement
+     * if they have no functionality in this method.
      */
     public void projectOpened() {
     }
 
     /**
-     * Does nothing. Implemented for convenience, so subclasses wouldn't have to implement if they have no functionality
-     * in this method.
+     * Does nothing. Implemented for convenience, so subclasses wouldn't have to implement
+     * if they have no functionality in this method.
      */
     public void projectClosed() {
     }

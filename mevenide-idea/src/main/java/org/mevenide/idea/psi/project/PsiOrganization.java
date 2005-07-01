@@ -8,7 +8,6 @@ import org.mevenide.idea.psi.support.AbstractPsiNamedPropertyObservable;
  * @author Arik
  */
 public class PsiOrganization extends AbstractPsiNamedPropertyObservable {
-
     public PsiOrganization(final XmlFile pXmlFile) {
         super(pXmlFile, "project/organization");
 

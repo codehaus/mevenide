@@ -30,7 +30,6 @@ import javax.swing.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.RelativeTextFieldWithBrowseButton;
@@ -80,7 +79,7 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
         orgModel = new BeanAdapter(project.getOrganization(), true);
 
         final VirtualFile virtualFile = project.getXmlFile().getVirtualFile();
-        if(virtualFile == null)
+        if (virtualFile == null)
             throw new IllegalStateException("PSI file has no virtual project.");
         final VirtualFile dir = virtualFile.getParent();
 

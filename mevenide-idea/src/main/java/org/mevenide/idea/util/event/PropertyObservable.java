@@ -15,7 +15,8 @@ public interface PropertyObservable extends Observable {
      *
      * @see #removePropertyChangeListener(String, java.beans.PropertyChangeListener)
      */
-    void addPropertyChangeListener(String pPropertyName, PropertyChangeListener pListener);
+    void addPropertyChangeListener(String pPropertyName,
+                                   PropertyChangeListener pListener);
 
 
     /**
@@ -27,5 +28,6 @@ public interface PropertyObservable extends Observable {
      *
      * @see #addPropertyChangeListener(String, PropertyChangeListener)
      */
-    void removePropertyChangeListener(String pPropertyName, PropertyChangeListener pListener);
+    void removePropertyChangeListener(String pPropertyName,
+                                      PropertyChangeListener pListener);
 }

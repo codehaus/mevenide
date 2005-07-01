@@ -9,7 +9,6 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class AbstractResourcePatternsTableModel<Psi extends AbstractPsiResourcePatterns>
     extends AbstractBeanRowsTableModel<Psi> {
-
     public AbstractResourcePatternsTableModel(final Psi pModel) {
         super(pModel, getColumnTitles(pModel.getType()));
     }

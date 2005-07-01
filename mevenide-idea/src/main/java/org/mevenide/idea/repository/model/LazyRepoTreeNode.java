@@ -20,7 +20,8 @@ public class LazyRepoTreeNode extends RepoTreeNode {
     /**
      * The status of this node.
      */
-    private AtomicReference<NodeStatus> status = new AtomicReference<NodeStatus>(NodeStatus.INITIAL);
+    private AtomicReference<NodeStatus> status = new AtomicReference<NodeStatus>(
+        NodeStatus.INITIAL);
 
     public LazyRepoTreeNode(final RepositoryTreeModel pModel,
                             final TreeNode pParent,
@@ -32,9 +33,8 @@ public class LazyRepoTreeNode extends RepoTreeNode {
     }
 
     /**
-     * Checks if this node has not fetched its children yet, and if not, starts a
-     * seperate thread that will fetch this node's children and refresh the
-     * owning model.
+     * Checks if this node has not fetched its children yet, and if not, starts a seperate
+     * thread that will fetch this node's children and refresh the owning model.
      */
     private boolean initiateFetchIfNecessary() {
         if (status.compareAndSet(NodeStatus.INITIAL, NodeStatus.RETRIEVING)) {
@@ -47,28 +47,33 @@ public class LazyRepoTreeNode extends RepoTreeNode {
             return false;
     }
 
-    @Override public TreeNode getChildAt(int childIndex) {
+    @Override
+    public TreeNode getChildAt(int childIndex) {
         initiateFetchIfNecessary();
         return super.getChildAt(childIndex);
     }
 
-    @Override public int getChildCount() {
+    @Override
+    public int getChildCount() {
         initiateFetchIfNecessary();
         return super.getChildCount();
     }
 
-    @Override public int getIndex(TreeNode node) {
+    @Override
+    public int getIndex(TreeNode node) {
         initiateFetchIfNecessary();
         return super.getIndex(node);
     }
 
-    @Override public Enumeration<? extends TreeNode> children() {
+    @Override
+    public Enumeration<? extends TreeNode> children() {
         initiateFetchIfNecessary();
         return super.children();
     }
 
     /**
-     * A runnable, intended to run in a different thread, that retrieves a node's children.
+     * A runnable, intended to run in a different thread, that retrieves a node's
+     * children.
      */
     private class ChildRetriever implements Runnable {
         public void run() {
@@ -82,7 +87,7 @@ public class LazyRepoTreeNode extends RepoTreeNode {
             //
             //sort the collection - this is an ugly hack, casting it to List
             //noinspection UNCHECKED_WARNING
-            Collections.sort((List)nodes);
+            Collections.sort((List) nodes);
 
             //
             //save the new children list as this node's children list and mark
@@ -99,11 +104,12 @@ public class LazyRepoTreeNode extends RepoTreeNode {
         }
 
         /**
-         * Creates and returns a list of tree nodes, created from the given
-         * {@link NodesMap}. Each entry in the nodes map is translated into
-         * a tree node, which represents that entry's repository path elements.
+         * Creates and returns a list of tree nodes, created from the given {@link
+         * NodesMap}. Each entry in the nodes map is translated into a tree node, which
+         * represents that entry's repository path elements.
          *
          * @param pNodes the nodes map
+         *
          * @return list of tree nodes
          */
         private List<TreeNode> createChildNodes(final NodesMap pNodes) {
@@ -127,16 +133,17 @@ public class LazyRepoTreeNode extends RepoTreeNode {
         /**
          * Retrieve all children into a map, keyed by a common node descriptor.
          *
-         * <p>The returned map is keyed by a virtual node descriptor, which identifies a repository
-         * node, regardless of the repository that it belongs to. This enables to aggregate nodes
-         * from different repositories into a unified view.</p>
+         * <p>The returned map is keyed by a virtual node descriptor, which identifies a
+         * repository node, regardless of the repository that it belongs to. This enables
+         * to aggregate nodes from different repositories into a unified view.</p>
          *
-         * <p>In each entry in the map (keyed by this virtual node descriptor) the value is a list
-         * of {@link RepoPathElement}s the conform to the node descriptor, but come from different
-         * repository readers.</p>
+         * <p>In each entry in the map (keyed by this virtual node descriptor) the value
+         * is a list of {@link RepoPathElement}s the conform to the node descriptor, but
+         * come from different repository readers.</p>
          *
-         * <p>Each such entry in the map will later be translated to a single {@code RepoTreeNode}
-         * that will represent all the {@code RepoPathElement}s for that entry.</p>
+         * <p>Each such entry in the map will later be translated to a single {@code
+         * RepoTreeNode} that will represent all the {@code RepoPathElement}s for that
+         * entry.</p>
          *
          * @return a nodes map
          */
@@ -151,9 +158,11 @@ public class LazyRepoTreeNode extends RepoTreeNode {
             final NodesMap fetched = new NodesMap(5);
             for (RepoPathElement element : pathElements) {
                 final IRepositoryReader reader = element.getReader();
-                if(!model.isShowLocal() && reader.getRootURI().getScheme().startsWith("file"))
+                if (!model.isShowLocal() && reader.getRootURI().getScheme().startsWith(
+                    "file"))
                     continue;
-                if(!model.isShowRemote() && reader.getRootURI().getScheme().startsWith("http"))
+                if (!model.isShowRemote() && reader.getRootURI().getScheme().startsWith(
+                    "http"))
                     continue;
 
                 final RepoPathElement[] childElts = fetchChildren(element);
@@ -166,7 +175,8 @@ public class LazyRepoTreeNode extends RepoTreeNode {
                                                                    childElt.getVersion(),
                                                                    childElt.getExtension());
                     if (!fetched.containsKey(desc)) {
-                        final List<RepoPathElement> descItems = new ArrayList<RepoPathElement>(5);
+                        final List<RepoPathElement> descItems = new ArrayList<RepoPathElement>(
+                            5);
                         descItems.add(childElt);
                         fetched.put(desc, descItems);
                     }
@@ -179,10 +189,11 @@ public class LazyRepoTreeNode extends RepoTreeNode {
         }
 
         /**
-         * Fetches the children for the given {@link RepoPathElement}, ignoring (and logging) errors
-         * if they occur. If errors do occur, an empty array is returned.
+         * Fetches the children for the given {@link RepoPathElement}, ignoring (and
+         * logging) errors if they occur. If errors do occur, an empty array is returned.
          *
          * @param pPathElement the parent to retrieve the children for
+         *
          * @return array of children (never {@code null}).
          */
         private RepoPathElement[] fetchChildren(final RepoPathElement pPathElement) {
@@ -199,8 +210,8 @@ public class LazyRepoTreeNode extends RepoTreeNode {
     }
 
     /**
-     * A nodes map, keyed by a node descriptor, and contains a list of repository path elements for
-     * each entry.
+     * A nodes map, keyed by a node descriptor, and contains a list of repository path
+     * elements for each entry.
      */
     private static class NodesMap extends HashMap<NodeDescriptor, List<RepoPathElement>> {
         public NodesMap() {

@@ -16,14 +16,13 @@
  */
 package org.mevenide.idea.util.ui.tree.checkbox;
 
+import java.awt.*;
 import javax.swing.*;
-import java.awt.Rectangle;
 
 /**
  * @author Arik
  */
 public class TreeCheckBoxRenderingComponent extends AbstractTreeCheckBoxComponent {
-
     public TreeCheckBoxRenderingComponent() {
         super(new TreeCheckBox(), new TreeLabel());
     }
@@ -37,23 +36,33 @@ public class TreeCheckBoxRenderingComponent extends AbstractTreeCheckBoxComponen
                                        boolean oldValue, boolean newValue) {
         }
 
-        public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
+        public void firePropertyChange(String propertyName,
+                                       byte oldValue,
+                                       byte newValue) {
         }
 
-        public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+        public void firePropertyChange(String propertyName,
+                                       char oldValue,
+                                       char newValue) {
         }
 
-        public void firePropertyChange(String propertyName, double oldValue, double newValue) {
+        public void firePropertyChange(String propertyName,
+                                       double oldValue,
+                                       double newValue) {
         }
 
-        public void firePropertyChange(String propertyName, float oldValue, float newValue) {
+        public void firePropertyChange(String propertyName,
+                                       float oldValue,
+                                       float newValue) {
         }
 
         public void firePropertyChange(String propertyName,
                                        int oldValue, int newValue) {
         }
 
-        public void firePropertyChange(String propertyName, long oldValue, long newValue) {
+        public void firePropertyChange(String propertyName,
+                                       long oldValue,
+                                       long newValue) {
         }
 
         protected void firePropertyChange(String propertyName,
@@ -62,7 +71,9 @@ public class TreeCheckBoxRenderingComponent extends AbstractTreeCheckBoxComponen
                 super.firePropertyChange(propertyName, oldValue, newValue);
         }
 
-        public void firePropertyChange(String propertyName, short oldValue, short newValue) {
+        public void firePropertyChange(String propertyName,
+                                       short oldValue,
+                                       short newValue) {
         }
 
         public void repaint() {
@@ -90,30 +101,42 @@ public class TreeCheckBoxRenderingComponent extends AbstractTreeCheckBoxComponen
                                        boolean oldValue, boolean newValue) {
         }
 
-        public void firePropertyChange(String propertyName, byte oldValue, byte newValue) {
+        public void firePropertyChange(String propertyName,
+                                       byte oldValue,
+                                       byte newValue) {
         }
 
-        public void firePropertyChange(String propertyName, char oldValue, char newValue) {
+        public void firePropertyChange(String propertyName,
+                                       char oldValue,
+                                       char newValue) {
         }
 
-        public void firePropertyChange(String propertyName, double oldValue, double newValue) {
+        public void firePropertyChange(String propertyName,
+                                       double oldValue,
+                                       double newValue) {
         }
 
-        public void firePropertyChange(String propertyName, float oldValue, float newValue) {
+        public void firePropertyChange(String propertyName,
+                                       float oldValue,
+                                       float newValue) {
         }
 
         public void firePropertyChange(String propertyName,
                                        int oldValue, int newValue) {
         }
 
-        public void firePropertyChange(String propertyName, long oldValue, long newValue) {
+        public void firePropertyChange(String propertyName,
+                                       long oldValue,
+                                       long newValue) {
         }
 
         protected void firePropertyChange(String propertyName,
                                           Object oldValue, Object newValue) {
         }
 
-        public void firePropertyChange(String propertyName, short oldValue, short newValue) {
+        public void firePropertyChange(String propertyName,
+                                       short oldValue,
+                                       short newValue) {
         }
 
         public void repaint() {

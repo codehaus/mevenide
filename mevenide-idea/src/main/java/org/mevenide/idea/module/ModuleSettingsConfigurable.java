@@ -19,24 +19,23 @@ package org.mevenide.idea.module;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import java.util.Arrays;
+import java.util.Collection;
+import javax.swing.*;
 import org.mevenide.idea.module.ui.ModuleSettingsPanel;
 import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
-import javax.swing.*;
-import java.util.Arrays;
-import java.util.Collection;
-
 /**
- * A module component that handles user interface for the module. Acquires data
- * from various module components into a user interface panel and displays to
- * the user. Applies the data back if user chooses to.
+ * A module component that handles user interface for the module. Acquires data from
+ * various module components into a user interface panel and displays to the user. Applies
+ * the data back if user chooses to.
  *
  * @author Arik
  */
-public class ModuleSettingsConfigurable extends AbstractModuleComponent implements Configurable {
-
+public class ModuleSettingsConfigurable extends AbstractModuleComponent
+    implements Configurable {
     /**
      * The user interface component.
      */

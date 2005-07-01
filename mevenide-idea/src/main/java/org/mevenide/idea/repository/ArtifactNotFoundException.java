@@ -15,12 +15,12 @@ public class ArtifactNotFoundException extends Exception {
     private final Throwable[] repoErrors;
 
     public ArtifactNotFoundException(final Dependency pDependency) {
-        this(pDependency, (Throwable)null);
+        this(pDependency, (Throwable) null);
     }
 
     public ArtifactNotFoundException(final Dependency pDependency,
                                      final String pRepoUrl) {
-        this(pDependency, pRepoUrl, (Throwable[])null);
+        this(pDependency, pRepoUrl, (Throwable[]) null);
     }
 
     public ArtifactNotFoundException(final Dependency pDependency,
