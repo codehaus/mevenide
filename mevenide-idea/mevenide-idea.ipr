@@ -191,13 +191,13 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="libraryTable">
-    <library name="com.intellij-3354">
+    <library name="com.intellij-3386">
       <CLASSES>
-        <root url="jar://$maven.repo$/com.intellij/jars/openapi-3378.jar!/" />
-        <root url="jar://$maven.repo$/com.intellij/jars/extensions-3378.jar!/" />
+        <root url="jar://$maven.repo$/com.intellij/jars/extensions-3386.jar!/" />
+        <root url="jar://$maven.repo$/com.intellij/jars/openapi-3386.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="file://$idea.home$/help/openapi" />
+        <root url="jar://$idea.home$/help/openapihelp.jar!/openapi" />
       </JAVADOC>
       <SOURCES>
         <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />
@@ -285,16 +285,6 @@
         <root url="file://C:/Devl/work/mevenide/mevenide-config/src/conf" />
       </SOURCES>
     </library>
-    <library name="mevenide-core-0.8">
-      <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.8.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/conf" />
-        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/java" />
-      </SOURCES>
-    </library>
     <library name="mevenide-repository-0.2">
       <CLASSES>
         <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.2.jar!/" />
@@ -354,6 +344,13 @@
       <SOURCES>
         <root url="jar://C:/Devl/lib/com/jgoodies/binding-1.0/binding-1.0-src.zip!/" />
       </SOURCES>
+    </library>
+    <library name="mevenide-core-0.10-SNAPSHOT">
+      <CLASSES>
+        <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.10-SNAPSHOT.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
   </component>
   <component name="uidesigner-configuration">
