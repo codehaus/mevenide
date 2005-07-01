@@ -84,7 +84,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
      * Removes the given module from the goals tree.
      *
      * @param pModule the module to remove
-     * @param pNotify whether to notify the model listeners that the model has changed
+     * @param pNotify whether to notify the model listeners that the projectModel has changed
      */
     protected void removeModuleTreeNode(final Module pModule,
                                         final boolean pNotify) {
@@ -116,7 +116,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
      * Refreshes the given tree node contents.
      *
      * @param pModuleNode the node to refresh
-     * @param pNotify     whether to notify the model listeners that the model has changed
+     * @param pNotify     whether to notify the projectModel listeners that the model has changed
      */
     protected void refreshModuleTreeNode(final ModuleTreeNode pModuleNode,
                                          final boolean pNotify) {

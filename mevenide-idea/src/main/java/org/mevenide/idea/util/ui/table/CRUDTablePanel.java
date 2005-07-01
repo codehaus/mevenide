@@ -12,7 +12,7 @@ import org.mevenide.idea.util.ui.AbstractDocumentCRUDPanel;
 /**
  * @author Arik
  */
-public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
+public class CRUDTablePanel<ModelType extends CRUDTableModel> extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * The action listener, invoked by the Add button, which adds a new row to the table.
      */
@@ -48,7 +48,7 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
      * @param pModel the model to use
      */
     public CRUDTablePanel(final PsiFile pPsiFile,
-                          final CRUDTableModel pModel) {
+                          final ModelType pModel) {
         super(new Table(),
               true,
               false,
@@ -70,7 +70,19 @@ public class CRUDTablePanel extends AbstractDocumentCRUDPanel<JTable> {
         setRemoveAction(removeActionListener);
     }
 
-    public CRUDTableModel getTableModel() {
-        return (CRUDTableModel) component.getModel();
+    public ModelType getTableModel() {
+        return (ModelType) component.getModel();
+    }
+
+    public void setTableModel(ModelType pModel) {
+        component.setModel(pModel);
+    }
+
+    public JTable getTable() {
+        return getComponent();
+    }
+
+    public int getSelectedRow() {
+        return getComponent().getSelectedRow();
     }
 }

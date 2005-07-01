@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
 import com.intellij.psi.PsiTreeChangeListener;
+import org.mevenide.idea.psi.util.PsiUtils;
 
 /**
  * A generic PSI listener that will notify a {@link SimplePsiListener} instance

@@ -3,7 +3,7 @@ package org.mevenide.idea.util.ui.text;
 import com.intellij.psi.xml.XmlFile;
 import javax.swing.text.JTextComponent;
 import org.mevenide.idea.util.psi.XmlSwingDocument;
-import org.mevenide.idea.util.psi.XmlTagPath;
+import org.mevenide.idea.psi.util.XmlTagPath;
 
 /**
  * @author Arik

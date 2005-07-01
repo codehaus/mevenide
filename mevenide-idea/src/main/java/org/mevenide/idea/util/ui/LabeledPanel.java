@@ -11,19 +11,23 @@ import java.awt.Insets;
  */
 public class LabeledPanel extends JPanel {
 
+    protected final JComponent component;
+
     public LabeledPanel(final String pLabel,
                         final JComponent pComponent) {
-        init(pLabel, pComponent);
+        component = pComponent;
+        init(pLabel);
     }
 
     public LabeledPanel(final boolean pDoubleBuffered,
                         final String pLabel,
                         final JComponent pComponent) {
         super(pDoubleBuffered);
-        init(pLabel, pComponent);
+        component = pComponent;
+        init(pLabel);
     }
 
-    private void init(final String pLabel, final JComponent pComponent) {
+    private void init(final String pLabel) {
         setLayout(new GridBagLayout());
         GridBagConstraints c;
 
@@ -38,6 +42,6 @@ public class LabeledPanel extends JPanel {
         c.fill = GridBagConstraints.BOTH;
         c.insets = new Insets(5, 0, 0, 0);
         c.weighty = 1;
-        add(pComponent, c);
+        add(component, c);
     }
 }

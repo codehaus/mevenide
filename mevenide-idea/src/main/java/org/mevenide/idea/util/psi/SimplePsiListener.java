@@ -30,7 +30,7 @@ public interface SimplePsiListener {
     void setModificationSource(ModificationSource pSource);
 
     /**
-     * This method must synchronize this model with the PSI model, where the PSI model acts as the
+     * This method must synchronize this projectModel with the PSI projectModel, where the PSI model acts as the
      * source and this model as the destination.
      *
      * <p>A possible approach is to completely build this model's values from the PSI tree, or the
