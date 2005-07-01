@@ -6,6 +6,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.ui.table.CRUDTableModel;
 import org.mevenide.idea.util.IDEUtils;
 import java.util.Set;

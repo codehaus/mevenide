@@ -6,6 +6,7 @@ import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.psi.util.XmlTagPath;
 
 /**
  * This table model wraps XML data in the notion of a container tag with
@@ -52,7 +53,7 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
 
     /**
      * Creates a model that will update the specified tag path in the given
-     * XML file (file is derived from the tag path object).
+     * XML file (project is derived from the tag path object).
      *
      * @param pTagPath the path to the tag this table model will update
      */
@@ -85,7 +86,7 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
     }
 
     /**
-     * Sets the tag path for this model, and refreshes the model from it.
+     * Sets the tag path for this projectModel, and refreshes the model from it.
      *
      * @param pTagPath the tag path to use
      */
@@ -147,7 +148,7 @@ public abstract class XmlTagTableModel extends AbstractPsiTableModel<XmlFile> {
      * This method should return the value for the given row and column
      * from the model's tag (given).
      *
-     * <p>If the model's tag does not exist (based on the model's tag
+     * <p>If the projectModel's tag does not exist (based on the model's tag
      * path expression), this method will not be called. Therefor the
      * tag will never be {@code null}.</p>
      *

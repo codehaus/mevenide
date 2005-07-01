@@ -2,7 +2,7 @@ package org.mevenide.idea.util.ui.table;
 
 import com.intellij.psi.xml.XmlFile;
 import org.mevenide.idea.util.psi.MultiValuedXmlTagRowsTableModel;
-import org.mevenide.idea.util.psi.XmlTagPath;
+import org.mevenide.idea.psi.util.XmlTagPath;
 
 /**
  * @author Arik

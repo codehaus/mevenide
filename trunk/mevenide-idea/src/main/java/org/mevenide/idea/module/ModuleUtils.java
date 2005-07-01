@@ -15,8 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.idea.util.psi.PsiUtils;
-import org.mevenide.idea.util.psi.XmlTagPath;
+import org.mevenide.idea.psi.util.PsiUtils;
+import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.FileUtils;
 
 /**

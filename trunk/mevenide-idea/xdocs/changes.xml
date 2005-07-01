@@ -9,6 +9,17 @@
 
         <release version="0.2" date="unreleased" description="New features">
             <action dev="arikkfir" type="add">
+                Refactored POM interpolation mechanism, by creating a JavaBean that
+                is backed by the underlying POM structure, thus exposing the
+                POM as a bean. This simplifies the code in the POM editor,
+                and will be utilized throughout the plugin.
+
+                <p>Currently, the POM editor uses this new API for representing
+                the POM graphically. In later versions, this API will be exposed
+                to other IDEA plugins, and enable customizations of the POM that
+                will automatically be reflected in Maven and in the plugin.</p>
+            </action>
+            <action dev="arikkfir" type="add">
                 Added POM&lt;-&gt;IDEA synchronization inspections. These
                 inspections let you know (on demand) if there are any
                 differences between your IDEA project and your POM file.

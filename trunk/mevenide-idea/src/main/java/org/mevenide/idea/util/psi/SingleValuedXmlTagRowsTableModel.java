@@ -2,6 +2,7 @@ package org.mevenide.idea.util.psi;
 
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import org.mevenide.idea.psi.util.XmlTagPath;
 
 /**
  * @author Arik

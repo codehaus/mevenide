@@ -2,16 +2,18 @@ package org.mevenide.idea.util.psi;
 
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.PlainDocument;
-import javax.swing.text.AttributeSet;
-import java.util.concurrent.atomic.AtomicReference;
-import org.mevenide.idea.util.IDEUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.psi.util.XmlTagPath;
+import org.mevenide.idea.util.IDEUtils;
+
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.PlainDocument;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Arik

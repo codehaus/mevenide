@@ -54,8 +54,24 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent> exten
      * @param pAddBorders whether to add en empty border around the components
      */
     public SplitPanel(final Top pTop, final Bottom pBottom, final boolean pAddBorders) {
+        this(pTop, pBottom, pAddBorders, true);
+    }
+
+    /**
+     * Creates an instance using the two given components.
+     *
+     * @param pTop the top component
+     * @param pBottom the bottom component
+     * @param pAddBorders whether to add en empty border around the components
+     */
+    public SplitPanel(final Top pTop,
+                      final Bottom pBottom,
+                      final boolean pAddBorders,
+                      final boolean pVertical) {
         split = new JSplitPane(
-                JSplitPane.VERTICAL_SPLIT,
+                pVertical ?
+                    JSplitPane.VERTICAL_SPLIT :
+                    JSplitPane.HORIZONTAL_SPLIT,
                 true,
                 null,
                 null);
