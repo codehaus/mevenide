@@ -24,6 +24,7 @@ import java.util.List;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.extensions.PluginId;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.util.components.AbstractModuleComponent;
 import org.mevenide.idea.util.goals.GoalsHelper;
@@ -105,7 +106,7 @@ public class ModuleActionsManager extends AbstractModuleComponent implements Pro
                                                          fqName,
                                                          pGrabber.getDescription(fqName));
                 final String id = module.getProject().getName() + "_" + module.getName() + "_" + fqName;
-                mgr.registerAction(id, action, "Maven");
+                mgr.registerAction(id, action, PluginId.getId("mevenide-idea"));
 
                 //add it to the list of actions that will be returned
                 actions.add(action);
