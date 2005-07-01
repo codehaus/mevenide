@@ -1,4 +1,4 @@
-package org.mevenide.idea.util.psi;
+package org.mevenide.idea.psi.util;
 
 import com.intellij.psi.xml.XmlTag;
 import org.apache.commons.lang.StringUtils;

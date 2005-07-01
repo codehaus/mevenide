@@ -2,14 +2,9 @@ package org.mevenide.idea.editor.pom.ui.build;
 
 import org.mevenide.idea.editor.pom.ui.support.AbstractResourcesTableModel;
 import org.mevenide.idea.psi.project.PsiResources;
-import org.mevenide.idea.util.psi.MultiValuedXmlTagRowsTableModel;
 
 /**
  * The table model for resources table.
- *
- * <p>This class extends the standard {@link MultiValuedXmlTagRowsTableModel simple
- * tag-based} model to override the mechanism for extracting the values for the {@code
- * <includes>} and {@code <excludes>} columns.</p>
  *
  * <p>The includes/excludes columns are not editable directly (the text field is not
  * editable) but have a small "Browse" button which pops up a dialog with the {@link
