@@ -16,18 +16,15 @@
  */
 package org.mevenide.idea.util.ui;
 
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.module.Module;
-
-import javax.swing.JComponent;
-import javax.swing.BorderFactory;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
 public abstract class UIUtils {
-
     public static final String ERROR_TITLE = "Error";
 
     public static void showError(final String pMessage) {
@@ -64,7 +61,7 @@ public abstract class UIUtils {
                                  final String pMessage,
                                  final Throwable pCause) {
         final String message;
-        if(pCause != null)
+        if (pCause != null)
             message = pMessage + " (" + pCause.getMessage() + ")";
         else
             message = pMessage;
@@ -109,7 +106,7 @@ public abstract class UIUtils {
                                      final int pLeft,
                                      final int pBottom,
                                      final int pRight) {
-        if(pComponent != null)
+        if (pComponent != null)
             pComponent.setBorder(BorderFactory.createEmptyBorder(
                 pTop, pLeft, pBottom, pRight));
     }

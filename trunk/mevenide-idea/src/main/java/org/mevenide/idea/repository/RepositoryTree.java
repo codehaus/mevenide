@@ -1,14 +1,12 @@
 package org.mevenide.idea.repository;
 
-import javax.swing.tree.TreeModel;
-
 import com.intellij.util.ui.Tree;
+import javax.swing.tree.TreeModel;
 
 /**
  * @author Arik
  */
 public class RepositoryTree extends Tree {
-
     public RepositoryTree() {
         setShowsRootHandles(true);
         setRootVisible(false);
@@ -19,7 +17,8 @@ public class RepositoryTree extends Tree {
         super(pModel);
     }
 
-    @Override public final void setModel(TreeModel newModel) {
+    @Override
+    public final void setModel(TreeModel newModel) {
         super.setModel(newModel);
         setShowsRootHandles(true);
         setRootVisible(false);

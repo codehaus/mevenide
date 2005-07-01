@@ -16,7 +16,7 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.ScrollPaneFactory;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -24,9 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.tree.TreePath;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
@@ -48,7 +46,8 @@ import org.mevenide.repository.RepoPathElement;
 /**
  * @author Arik
  */
-public class RepositoryToolWindow extends JPanel implements PropertyChangeListener, ModuleListener {
+public class RepositoryToolWindow extends JPanel
+    implements PropertyChangeListener, ModuleListener {
     /**
      * Resources
      */
@@ -96,7 +95,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         actionGroup.addSeparator();
         actionGroup.add(new ShowLocalRepoAction());
         actionGroup.add(new ShowRemoteRepoAction());
-        actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(expander));
+        actionGroup.add(CommonActionsManager.getInstance().createCollapseAllAction(
+            expander));
         final ActionToolbar toolbar =
             ActionManager.getInstance().createActionToolbar(NAME, actionGroup, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
@@ -120,13 +120,13 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
 
     public RepoTreeNode[] getSelectedElements() {
         final TreePath[] selections = tree.getSelectionPaths();
-        if(selections == null || selections.length == 0)
+        if (selections == null || selections.length == 0)
             return new RepoTreeNode[0];
 
         final Set<RepoTreeNode> elements = new HashSet<RepoTreeNode>(selections.length);
         for (TreePath path : selections) {
             final Object elt = path.getLastPathComponent();
-            if(elt instanceof RepoTreeNode)
+            if (elt instanceof RepoTreeNode)
                 elements.add((RepoTreeNode) elt);
         }
 
@@ -137,7 +137,7 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
         final String property = evt.getPropertyName();
         final Object source = evt.getSource();
 
-        if(source instanceof ModuleSettings && property.equals("queryContext"))
+        if (source instanceof ModuleSettings && property.equals("queryContext"))
             refreshModel();
     }
 
@@ -181,20 +181,22 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
                   Icons.DOWNLOAD);
         }
 
-        @Override public boolean displayTextInToolbar() {
+        @Override
+        public boolean displayTextInToolbar() {
             return true;
         }
 
         public void actionPerformed(final AnActionEvent pEvent) {
             final Module selectedModule = getModuleForDownload();
-            if(selectedModule == null)
+            if (selectedModule == null)
                 return;
 
             //
             //prepare list of path elements to download
             //
             final RepoTreeNode[] selectedElements = getSelectedElements();
-            final List<RepoPathElement> pathElements = new ArrayList<RepoPathElement>(selectedElements.length);
+            final List<RepoPathElement> pathElements = new ArrayList<RepoPathElement>(
+                selectedElements.length);
             for (RepoTreeNode node : selectedElements) {
                 final RepoPathElement[] nodeElements = node.getPathElements();
                 for (RepoPathElement pathElement : nodeElements)
@@ -222,7 +224,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
                                                     project);
         }
 
-        @Override public void update(final AnActionEvent pEvent) {
+        @Override
+        public void update(final AnActionEvent pEvent) {
             pEvent.getPresentation().setEnabled(getSelectedElements().length > 0);
         }
 
@@ -249,7 +252,8 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
                         new SelectFromListDialog.ToStringAspect() {
                             public String getToStirng(Object obj) {
                                 final Module module = (Module) obj;
-                                final ILocationFinder finder = new ModuleLocationFinder(module);
+                                final ILocationFinder finder = new ModuleLocationFinder(
+                                    module);
                                 final String repo = finder.getMavenLocalRepository();
                                 return module.getName() + " - Local repository at " + repo;
                             }
@@ -276,7 +280,6 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
     }
 
     private class ShowLocalRepoAction extends AbstractToggleAnAction {
-
         public ShowLocalRepoAction() {
             super(RES.get("toggle.local.repo.text"),
                   RES.get("toggle.local.repo.desc"),
@@ -293,7 +296,6 @@ public class RepositoryToolWindow extends JPanel implements PropertyChangeListen
     }
 
     private class ShowRemoteRepoAction extends AbstractToggleAnAction {
-
         public ShowRemoteRepoAction() {
             super(RES.get("toggle.remote.repo.text"),
                   RES.get("toggle.remote.repo.desc"),

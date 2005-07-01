@@ -3,11 +3,11 @@ package org.mevenide.idea.synchronize.inspections.dependencies;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.io.File;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleUtils;
@@ -15,8 +15,8 @@ import org.mevenide.idea.repository.RepositoryUtils;
 import org.mevenide.idea.synchronize.AbstractProblemInfo;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.synchronize.inspections.AbstractModuleInspector;
-import org.mevenide.idea.util.MavenUtils;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.MavenUtils;
 
 /**
  * @author Arik
@@ -72,7 +72,7 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
 
             final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
             final VirtualFile file = localRepo.findFileByRelativePath(relPath);
-            if(file == null || !file.isValid())
+            if (file == null || !file.isValid())
                 continue;
 
             depFiles.put(file, FileUtils.fixPath(file));
@@ -85,16 +85,16 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
         for (VirtualFile file : files) {
             final String filePath = FileUtils.fixPath(file);
             boolean found = false;
-            for (Map.Entry<VirtualFile,String> entry : depFiles.entrySet()) {
+            for (Map.Entry<VirtualFile, String> entry : depFiles.entrySet()) {
                 final VirtualFile depFile = entry.getKey();
                 final String depFilePath = entry.getValue();
-                if(depFile.equals(file) || depFilePath.equals(filePath)) {
+                if (depFile.equals(file) || depFilePath.equals(filePath)) {
                     found = true;
                     break;
                 }
             }
 
-            if(!found)
+            if (!found)
                 pProblemBuffer.add(
                     new LibraryMissingFromPomProblem(pModule, file));
         }
@@ -130,7 +130,6 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
     }
 
     private class DependencyMissingInIdeaProblem extends AbstractProblemInfo {
-
         private final Module module;
         private final Dependency dependency;
 
@@ -150,7 +149,7 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
         }
 
         public boolean isValid() {
-            if(!MavenUtils.isDependencyDeclared(module, dependency))
+            if (!MavenUtils.isDependencyDeclared(module, dependency))
                 return false;
 
             final String relPath = RepositoryUtils.getDependencyRelativePath(dependency);
@@ -188,14 +187,18 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
             final File ioLibraryFile = VfsUtil.virtualToIoFile(libraryFile);
             final File ioLocalRepo = VfsUtil.virtualToIoFile(localRepo);
 
-            if (localRepo != null && VfsUtil.isAncestor(ioLocalRepo, ioLibraryFile, true)) {
+            if (localRepo != null && VfsUtil.isAncestor(ioLocalRepo,
+                                                        ioLibraryFile,
+                                                        true)) {
                 addFixAction(new AddLibraryToPomAction(this, module, libraryFile));
-                addFixAction(new RemoveLibraryFromModuleAction(this, module, libraryFile));
+                addFixAction(new RemoveLibraryFromModuleAction(this,
+                                                               module,
+                                                               libraryFile));
             }
         }
 
         public boolean isValid() {
-            if(!ModuleUtils.isFileInClasspath(module, libraryFile))
+            if (!ModuleUtils.isFileInClasspath(module, libraryFile))
                 return false;
 
             //
@@ -222,7 +225,7 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
 
                 final String depFilePath = FileUtils.fixPath(depFile);
 
-                if(libraryFile.equals(depFile) || libraryFilePath.equals(depFilePath))
+                if (libraryFile.equals(depFile) || libraryFilePath.equals(depFilePath))
                     return false;
             }
 

@@ -11,12 +11,12 @@ import com.intellij.util.IncorrectOperationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.psi.util.PsiUtils;
+import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.util.IDEUtils;
-import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
@@ -42,7 +42,9 @@ public class AddLibraryToPomAction extends AbstractFixAction {
                                  final Module pModule,
                                  final VirtualFile pLibraryFile) {
         super(RES.get("add.lib2pom.action.name", pLibraryFile.getPath()),
-              RES.get("add.lib2pom.action.desc", pLibraryFile.getPath(), pModule.getName()),
+              RES.get("add.lib2pom.action.desc",
+                      pLibraryFile.getPath(),
+                      pModule.getName()),
               Icons.FIX_PROBLEMS,
               pProblem);
         module = pModule;
@@ -55,7 +57,8 @@ public class AddLibraryToPomAction extends AbstractFixAction {
 
     private class AddToPomRunnable implements Runnable {
         /**
-         * @todo would be nice to show a dialog to let the user verify the new dependency details
+         * @todo would be nice to show a dialog to let the user verify the new dependency
+         * details
          */
         public void run() {
             final VirtualFile typeDir = libraryFile.getParent();
@@ -99,7 +102,7 @@ public class AddLibraryToPomAction extends AbstractFixAction {
                                                                false);
                 final XmlTag depTag = (XmlTag) depsTag.add(childTag);
 
-                if(groupId != null && groupId.trim().length() > 0)
+                if (groupId != null && groupId.trim().length() > 0)
                     PsiUtils.setTagValue(module, depTag, "groupId", groupId);
                 if (artifactId != null && artifactId.trim().length() > 0)
                     PsiUtils.setTagValue(module, depTag, "artifactId", artifactId);

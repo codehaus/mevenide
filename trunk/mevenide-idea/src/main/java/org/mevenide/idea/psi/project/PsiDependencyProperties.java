@@ -7,14 +7,14 @@ import org.mevenide.idea.psi.support.AbstractPsiUnnamedPropertyObservable;
  * @author Arik
  */
 public class PsiDependencyProperties extends AbstractPsiUnnamedPropertyObservable {
-
     /**
      * Creates an instance for the given POM xml file.
      *
      * @param pXmlFile the POM file
      */
     public PsiDependencyProperties(final XmlFile pXmlFile, final int pDependencyRow) {
-        super(pXmlFile, "project/dependencies/dependency[" + pDependencyRow + "]/properties");
+        super(pXmlFile,
+              "project/dependencies/dependency[" + pDependencyRow + "]/properties");
     }
 
     public final String getProperty(final String pPropertyName) {

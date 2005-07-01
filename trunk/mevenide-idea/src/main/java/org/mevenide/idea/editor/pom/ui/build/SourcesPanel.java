@@ -73,6 +73,7 @@ public class SourcesPanel extends AbstractPomLayerPanel {
 
     /**
      * Creates the directories panel.
+     *
      * @return panel
      */
     protected JPanel createDirectoriesPanel() {

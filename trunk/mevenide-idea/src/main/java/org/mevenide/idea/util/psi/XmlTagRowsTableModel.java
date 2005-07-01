@@ -3,19 +3,20 @@ package org.mevenide.idea.util.psi;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.psi.util.XmlTagPath;
-import org.mevenide.idea.util.ui.table.CRUDTableModel;
 import org.mevenide.idea.util.IDEUtils;
-import java.util.Set;
-import java.util.HashSet;
+import org.mevenide.idea.util.ui.table.CRUDTableModel;
 
 /**
  * @author Arik
  */
-public abstract class XmlTagRowsTableModel extends XmlTagTableModel implements CRUDTableModel {
+public abstract class XmlTagRowsTableModel extends XmlTagTableModel
+    implements CRUDTableModel {
     /**
      * Logging.
      */
@@ -55,7 +56,9 @@ public abstract class XmlTagRowsTableModel extends XmlTagTableModel implements C
         return tag == null ? 0 : tag.findSubTags(rowTagName).length;
     }
 
-    protected final Object getTagValue(final XmlTag pTag, final int pRow, final int pColumn) {
+    protected final Object getTagValue(final XmlTag pTag,
+                                       final int pRow,
+                                       final int pColumn) {
         final XmlTag[] rowTags = pTag.findSubTags(rowTagName);
         if (pRow >= rowTags.length)
             return null;
@@ -108,7 +111,7 @@ public abstract class XmlTagRowsTableModel extends XmlTagTableModel implements C
             public void run() {
                 try {
                     final XmlTag containerTag = getTagPath().getTag();
-                    if(containerTag == null)
+                    if (containerTag == null)
                         return;
 
                     final XmlTag[] childTags = containerTag.findSubTags(rowTagName);

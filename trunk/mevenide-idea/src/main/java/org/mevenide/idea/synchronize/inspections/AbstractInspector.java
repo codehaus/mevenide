@@ -6,7 +6,6 @@ import org.mevenide.idea.synchronize.ProblemInspector;
  * @author Arik
  */
 public abstract class AbstractInspector implements ProblemInspector {
-
     private final String name;
     private final String description;
 

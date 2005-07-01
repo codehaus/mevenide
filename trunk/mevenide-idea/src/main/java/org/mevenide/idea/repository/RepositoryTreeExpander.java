@@ -1,16 +1,14 @@
 package org.mevenide.idea.repository;
 
-import javax.swing.JTree;
+import com.intellij.ide.TreeExpander;
+import javax.swing.*;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
-
-import com.intellij.ide.TreeExpander;
 
 /**
  * @author Arik
  */
 public class RepositoryTreeExpander implements TreeExpander {
-
     private final JTree tree;
 
     public RepositoryTreeExpander(final JTree pTree) {
@@ -28,9 +26,9 @@ public class RepositoryTreeExpander implements TreeExpander {
         treePath[0] = root;
 
         final int childCount = model.getChildCount(root);
-        for(int i = 0; i < childCount; i++) {
+        for (int i = 0; i < childCount; i++) {
             treePath[1] = model.getChild(root, i);
-            if(tree.isExpanded(new TreePath(treePath)))
+            if (tree.isExpanded(new TreePath(treePath)))
                 return true;
         }
 

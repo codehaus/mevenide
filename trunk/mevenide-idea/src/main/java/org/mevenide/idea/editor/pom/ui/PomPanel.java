@@ -25,11 +25,11 @@ import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import org.mevenide.idea.editor.pom.ui.build.SourcesPanel;
 import org.mevenide.idea.editor.pom.ui.dependencies.DependenciesPanel;
 import org.mevenide.idea.editor.pom.ui.mailingLists.MailingListsPanel;
+import org.mevenide.idea.editor.pom.ui.reports.ReportsPanel;
 import org.mevenide.idea.editor.pom.ui.scm.ScmPanel;
 import org.mevenide.idea.editor.pom.ui.team.ContributorsPanel;
 import org.mevenide.idea.editor.pom.ui.team.DevelopersPanel;
 import org.mevenide.idea.editor.pom.ui.tests.TestingPanel;
-import org.mevenide.idea.editor.pom.ui.reports.ReportsPanel;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.LabeledPanel;
 import org.mevenide.idea.util.ui.UIUtils;
@@ -50,7 +50,9 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
      */
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 
-    /**** Panels ************************************************************/
+    /**
+     * * Panels ***********************************************************
+     */
 
     private final JPanel generalInfoPanel;
     private final JPanel mailingListsPanel;
@@ -89,7 +91,8 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         final String depsLabel = RES.get("dep.list.desc");
         final String mailLabel = RES.get("mail.lists.desc");
 
-        final LabeledPanel mailingListsLabelPanel = new LabeledPanel(mailLabel, mailingListsPanel);
+        final LabeledPanel mailingListsLabelPanel = new LabeledPanel(mailLabel,
+                                                                     mailingListsPanel);
         final LabeledPanel depsLabelPanel = new LabeledPanel(depsLabel, depsPanel);
         UIUtils.installBorder(generalInfoPanel);
         UIUtils.installBorder(mailingListsLabelPanel);

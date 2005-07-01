@@ -22,7 +22,6 @@ import javax.swing.tree.TreeNode;
  * @author Arik
  */
 public interface CheckBoxTreeModel {
-
     boolean shouldDisplayCheckBox(TreeNode pNode);
 
     boolean isChecked(TreeNode pNode);

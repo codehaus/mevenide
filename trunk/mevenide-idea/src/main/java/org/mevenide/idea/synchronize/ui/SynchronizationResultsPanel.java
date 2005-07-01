@@ -1,26 +1,24 @@
 package org.mevenide.idea.synchronize.ui;
 
-import javax.swing.JPanel;
-import javax.swing.JTree;
-import javax.swing.tree.*;
-import com.intellij.openapi.project.Project;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.util.ui.Tree;
-import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.PopupHandler;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.synchronize.InspectProjectAction;
-import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.actions.AbstractAnAction;
+import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.util.ui.Tree;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.tree.*;
 import org.mevenide.idea.Res;
-import java.awt.BorderLayout;
+import org.mevenide.idea.synchronize.InspectProjectAction;
+import org.mevenide.idea.synchronize.ProblemInfo;
+import org.mevenide.idea.util.actions.AbstractAnAction;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
- * @todo allow grouping problems by module and/or type
- * 
  * @author Arik
+ * @todo allow grouping problems by module and/or type
  */
 public class SynchronizationResultsPanel extends JPanel {
     /**
@@ -60,7 +58,9 @@ public class SynchronizationResultsPanel extends JPanel {
         add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
 
         final ActionManager actMgr = ActionManager.getInstance();
-        final ActionToolbar toolbar = actMgr.createActionToolbar(NAME, actionGroup, false);
+        final ActionToolbar toolbar = actMgr.createActionToolbar(NAME,
+                                                                 actionGroup,
+                                                                 false);
         PopupHandler.installPopupHandler(tree,
                                          new ProblemActionGroup(),
                                          PLACE_PROBLEMS_TREE,
@@ -90,9 +90,8 @@ public class SynchronizationResultsPanel extends JPanel {
     }
 
     private class ProblemActionGroup extends ActionGroup {
-
         public AnAction[] getChildren(final AnActionEvent pEvent) {
-            if(!PLACE_PROBLEMS_TREE.equals(pEvent.getPlace()))
+            if (!PLACE_PROBLEMS_TREE.equals(pEvent.getPlace()))
                 return new AnAction[0];
 
             final TreePath selectedPath = tree.getSelectionPath();
@@ -115,7 +114,6 @@ public class SynchronizationResultsPanel extends JPanel {
     }
 
     private class CloseProblemsPaneAction extends AbstractAnAction {
-
         public CloseProblemsPaneAction() {
             super(RES.get("close.problems.pane.text"),
                   RES.get("close.problems.pane.desc"),

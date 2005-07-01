@@ -1,8 +1,8 @@
 package org.mevenide.idea.util.ui.table;
 
 import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.util.psi.MultiValuedXmlTagRowsTableModel;
 import org.mevenide.idea.psi.util.XmlTagPath;
+import org.mevenide.idea.util.psi.MultiValuedXmlTagRowsTableModel;
 
 /**
  * @author Arik

@@ -18,14 +18,12 @@ package org.mevenide.idea.editor.pom;
 
 import com.intellij.openapi.fileEditor.FileEditorState;
 import com.intellij.openapi.fileEditor.FileEditorStateLevel;
-
 import java.awt.*;
 
 /**
  * @author Arik
  */
 public class PomFileEditorState implements FileEditorState {
-
     private int selectedTabIndex = 0;
     private transient Component currentField = null;
 

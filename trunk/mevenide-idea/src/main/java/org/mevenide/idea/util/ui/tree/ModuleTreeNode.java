@@ -17,14 +17,12 @@
 package org.mevenide.idea.util.ui.tree;
 
 import com.intellij.openapi.module.Module;
-
 import javax.swing.tree.DefaultMutableTreeNode;
 
 /**
  * @author Arik
  */
 public class ModuleTreeNode extends DefaultMutableTreeNode {
-
     public ModuleTreeNode(final Module pModule) {
         super(pModule);
     }

@@ -2,26 +2,23 @@ package org.mevenide.idea.util.ui.table;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.table.TableCellEditor;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.util.ui.StringListEditPanel;
 
-import javax.swing.AbstractCellEditor;
-import javax.swing.BorderFactory;
-import javax.swing.JTable;
-import javax.swing.table.TableCellEditor;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 /**
- * A table cell editor for modifying a string list. This editor displays a non-editable text
- * field and a small browse button. The button opens a dialog with the {@link org.mevenide.idea.util.ui.StringListEditPanel}
- * used for editing the strings.
+ * A table cell editor for modifying a string list. This editor displays a non-editable
+ * text field and a small browse button. The button opens a dialog with the {@link
+ * org.mevenide.idea.util.ui.StringListEditPanel} used for editing the strings.
  *
  * @author Arik
  */
-public class StringListTableCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
+public class StringListTableCellEditor extends AbstractCellEditor
+    implements TableCellEditor, ActionListener {
     /**
      * An empty array, to save instantiations when needed.
      */
@@ -86,9 +83,9 @@ public class StringListTableCellEditor extends AbstractCellEditor implements Tab
 
     public void actionPerformed(final ActionEvent pEvent) {
         final String[] items = StringListEditPanel.showDialog(
-                project, dialogTitle, dialogItemLabel, value);
+            project, dialogTitle, dialogItemLabel, value);
 
-        if(items != null) {
+        if (items != null) {
             value = items;
             field.setText(StringUtils.join(value, ", "));
         }

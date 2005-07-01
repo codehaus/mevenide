@@ -1,16 +1,16 @@
 package org.mevenide.idea.psi.project;
 
 import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
-import java.util.Map;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
-public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePatterns> extends AbstractPsiBeanRowsObservable {
-
+public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePatterns>
+    extends AbstractPsiBeanRowsObservable {
     private final Map<Integer, ResType> includesCache = Collections.synchronizedMap(
         new HashMap<Integer, ResType>(10));
 
@@ -47,7 +47,7 @@ public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePa
     }
 
     protected final ResType getPatterns(final int pRow,
-                                                    final PatternType pType) {
+                                        final PatternType pType) {
         final Map<Integer, ResType> cache;
         if (pType == PatternType.INCLUDES)
             cache = includesCache;
@@ -73,5 +73,6 @@ public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePa
         return getPatterns(pRow, PatternType.EXCLUDES);
     }
 
-    protected abstract ResType createPsiResourcePatterns(final int pRow, final PatternType pType);
+    protected abstract ResType createPsiResourcePatterns(final int pRow,
+                                                         final PatternType pType);
 }

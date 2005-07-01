@@ -1,18 +1,18 @@
 package org.mevenide.idea.util.components;
 
-import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.codeHighlighting.BackgroundEditorHighlighter;
 import com.intellij.ide.structureView.StructureViewBuilder;
-
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 
 /**
  * @author Arik
  */
-public abstract class AbstractFileEditor extends AbstractIdeaComponent implements FileEditor {
+public abstract class AbstractFileEditor extends AbstractIdeaComponent
+    implements FileEditor {
     /**
      * The editor name (both display name and ID).
      */
@@ -24,19 +24,19 @@ public abstract class AbstractFileEditor extends AbstractIdeaComponent implement
     protected final Project project;
 
     /**
-     * The IDEA document for the file. Any modifications we make are to this object -
-     * IDEA will synchronize this with the file system when appropriate.
+     * The IDEA document for the file. Any modifications we make are to this object - IDEA
+     * will synchronize this with the file system when appropriate.
      */
     protected final Document document;
 
     /**
-     * Creates an instance using the given editor name resource key (looked up from
-     * the {@link org.mevenide.idea.Res resources} of the actual class' package),
-     * IDEA project and the edited file.
+     * Creates an instance using the given editor name resource key (looked up from the
+     * {@link org.mevenide.idea.Res resources} of the actual class' package), IDEA project
+     * and the edited file.
      *
      * @param pNameKey the key for the editor name in the resource bundle
      * @param pProject the IDEA project this editor belongs to
-     * @param pFile the file being edited
+     * @param pFile    the file being edited
      */
     protected AbstractFileEditor(final String pNameKey,
                                  final Project pProject,

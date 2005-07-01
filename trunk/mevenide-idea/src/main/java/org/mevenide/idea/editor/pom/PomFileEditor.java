@@ -23,11 +23,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import javax.swing.*;
 import org.mevenide.idea.editor.pom.ui.PomPanel;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.util.components.AbstractFileEditor;
-
-import javax.swing.*;
 
 /**
  * An editor for POM files.
@@ -37,7 +36,6 @@ import javax.swing.*;
  * @author Arik
  */
 public class PomFileEditor extends AbstractFileEditor implements Disposable {
-
     /**
      * The user interface component displaying the POM editor.
      */
@@ -81,10 +79,11 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     }
 
     /**
-     * Returns the current state of the editor. State includes the selected tab,
-     * and current component in that tab.
+     * Returns the current state of the editor. State includes the selected tab, and
+     * current component in that tab.
      *
      * @param level ignored
+     *
      * @return pom editor state
      */
     public FileEditorState getState(final FileEditorStateLevel level) {
@@ -101,33 +100,33 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
      * @param pState the state to set
      */
     public void setState(FileEditorState pState) {
-        if(pState instanceof PomFileEditorState)
+        if (pState instanceof PomFileEditorState)
             ui.setState((PomFileEditorState) pState);
     }
 
     /**
-     * Returns {@code true} if the user interface components were modified, or if the
-     * IDEA document has been modified and not saved.
+     * Returns {@code true} if the user interface components were modified, or if the IDEA
+     * document has been modified and not saved.
      *
      * @return {@code boolean}
      */
     public boolean isModified() {
-        if(PsiDocumentManager.getInstance(project).isUncommited(document))
+        if (PsiDocumentManager.getInstance(project).isUncommited(document))
             return true;
 
         return FileDocumentManager.getInstance().isDocumentUnsaved(document);
     }
 
     /**
-     * Checks if the POM is valid by checking via the PSI file. This is not
-     * a full check - but only checks that the XML is valid .
+     * Checks if the POM is valid by checking via the PSI file. This is not a full check -
+     * but only checks that the XML is valid .
      *
      * @return {@code true} if the POM xml is valid, {@code false} otherwise.
      */
     public boolean isValid() {
         final PsiDocumentManager mgr = PsiDocumentManager.getInstance(project);
         final PsiFile file = mgr.getCachedPsiFile(document);
-        if(file == null)
+        if (file == null)
             return false;
         return file.isValid();
     }

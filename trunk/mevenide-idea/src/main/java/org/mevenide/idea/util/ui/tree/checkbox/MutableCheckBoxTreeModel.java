@@ -22,7 +22,6 @@ import javax.swing.tree.TreeNode;
  * @author Arik
  */
 public interface MutableCheckBoxTreeModel extends CheckBoxTreeModel {
-
     boolean isCheckable(TreeNode pNode);
 
     void setChecked(TreeNode pNode, boolean pChecked);

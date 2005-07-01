@@ -11,13 +11,12 @@ import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.psi.xml.XmlTagValue;
 import com.intellij.util.IncorrectOperationException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.IDEUtils;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /**
  * PSI utilities.
@@ -39,18 +38,21 @@ public abstract class PsiUtils {
                                       final VirtualFile pFile) {
         final FileDocumentManager fileDocMgr = FileDocumentManager.getInstance();
         Document doc = fileDocMgr.getCachedDocument(pFile);
-        if(doc == null)
+        if (doc == null)
             doc = fileDocMgr.getDocument(pFile);
 
         return findXmlFile(pProject, doc);
     }
 
     /**
-     * Returns the {@link XmlFile} associated with the specified document in the specified project.
+     * Returns the {@link XmlFile} associated with the specified document in the specified
+     * project.
      *
      * @param pProject  the project context
      * @param pDocument the document to find the file for
-     * @return the XML project, or {@code null} if the file can't be found (shouldn't happen)
+     *
+     * @return the XML project, or {@code null} if the file can't be found (shouldn't
+     *         happen)
      */
     public static XmlFile findXmlFile(final Project pProject,
                                       final Document pDocument) {
@@ -70,11 +72,14 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Returns the {@link XmlFile} associated with the specified document in the specified module.
+     * Returns the {@link XmlFile} associated with the specified document in the specified
+     * module.
      *
      * @param pModule   the module context
      * @param pDocument the document to find the file for
-     * @return the XML file, or {@code null} if the project can't be found (shouldn't happen)
+     *
+     * @return the XML file, or {@code null} if the project can't be found (shouldn't
+     *         happen)
      */
     public static XmlFile findXmlFile(final Module pModule,
                                       final Document pDocument) {
@@ -90,23 +95,23 @@ public abstract class PsiUtils {
         final String[] tokens = new String[path.length];
         for (int i = 0; i < path.length; i++)
             tokens[i] = path[i].getName();
-        
+
         return tokens;
     }
 
     public static XmlTag[] getPath(final XmlTag pTag, final XmlTag[] pBuffer) {
-        if(pTag == null)
+        if (pTag == null)
             return new XmlTag[0];
-        
+
         final List<XmlTag> tags = new ArrayList<XmlTag>(5);
         XmlTag context = pTag;
-        while(context != null) {
+        while (context != null) {
             tags.add(0, context);
             context = context.getParentTag();
         }
 
         final XmlTag[] buffer;
-        if(pBuffer == null || pBuffer.length < tags.size())
+        if (pBuffer == null || pBuffer.length < tags.size())
             buffer = new XmlTag[tags.size()];
         else
             buffer = pBuffer;
@@ -114,10 +119,11 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Convenience method for getting a value from a tag. If the given tag is {@code null}, this method will simply
-     * return {@code null} and not fail.
+     * Convenience method for getting a value from a tag. If the given tag is {@code
+     * null}, this method will simply return {@code null} and not fail.
      *
      * @param pTag the tag to retrieve the value from (can be {@code null}
+     *
      * @return the text value of the tag (trimmed), or {@code null}
      */
     public static String getTagValue(final XmlTag pTag) {
@@ -148,7 +154,8 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Sets the value of the first tag with the specified name under the given parent tag.
+     * Sets the value of the first tag with the specified name under the given parent
+     * tag.
      *
      * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
      *
@@ -168,7 +175,8 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Sets the value of the first tag with the specified name under the given parent tag.
+     * Sets the value of the first tag with the specified name under the given parent
+     * tag.
      *
      * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
      *
@@ -238,7 +246,8 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Returns the tag path as string tokens, concatenating the given tag name to the end of the tag path.
+     * Returns the tag path as string tokens, concatenating the given tag name to the end
+     * of the tag path.
      *
      * @param pTagName the tag name to add at the end of the path
      *

@@ -16,15 +16,15 @@
  */
 package org.mevenide.idea.execute;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.execution.filters.Filter;
-import com.intellij.execution.filters.ExceptionFilter;
-import com.intellij.execution.filters.RegexpFilter;
-import com.intellij.execution.ExecutionManager;
 import com.intellij.execution.CantRunException;
 import com.intellij.execution.ExecutionException;
+import com.intellij.execution.ExecutionManager;
+import com.intellij.execution.filters.ExceptionFilter;
+import com.intellij.execution.filters.Filter;
+import com.intellij.execution.filters.RegexpFilter;
+import com.intellij.openapi.actionSystem.DataContext;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -33,8 +33,8 @@ import org.mevenide.idea.PomNotDefinedException;
 import org.mevenide.idea.util.ui.UIUtils;
 
 /**
- * Executes Maven processes. This is a non-instantiable class, used only as a
- * services provider for actions, tool windows, etc.
+ * Executes Maven processes. This is a non-instantiable class, used only as a services
+ * provider for actions, tool windows, etc.
  *
  * @author Arik
  */
@@ -53,11 +53,13 @@ public final class MavenRunner {
     /**
      * Executes a Maven process for the given module and goals.
      *
-     * <p>The reason you need to provide a module, is to locate the appropriate
-     * Maven POM and working directory.</p>
+     * <p>The reason you need to provide a module, is to locate the appropriate Maven POM
+     * and working directory.</p>
      *
-     * @param pModule the module to execute the goals for - providing the working dir and POM.
-     * @param pGoals the goals to execute - these must be fully qualified goal names (no '(default)' suffixes)
+     * @param pModule  the module to execute the goals for - providing the working dir and
+     *                 POM.
+     * @param pGoals   the goals to execute - these must be fully qualified goal names (no
+     *                 '(default)' suffixes)
      * @param pContext the context with which to execute
      */
     public static void execute(final Module pModule,
@@ -86,7 +88,7 @@ public final class MavenRunner {
             //executes the process, creating a console window for it
             //
             ExecutionManager.getInstance(pModule.getProject()).execute(
-                    p, StringUtils.join(pGoals, ' '), pContext, filters);
+                p, StringUtils.join(pGoals, ' '), pContext, filters);
         }
         catch (MavenHomeNotDefinedException e) {
             UIUtils.showError(pModule, e);

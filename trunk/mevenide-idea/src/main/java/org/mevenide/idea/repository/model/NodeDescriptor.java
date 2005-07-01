@@ -2,8 +2,8 @@ package org.mevenide.idea.repository.model;
 
 import org.apache.commons.lang.builder.CompareToBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.mevenide.repository.RepoPathElement;
 import org.mevenide.idea.Res;
+import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik
@@ -159,7 +159,8 @@ public class NodeDescriptor implements Comparable {
         }
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return ToStringBuilder.reflectionToString(this);
     }
 }

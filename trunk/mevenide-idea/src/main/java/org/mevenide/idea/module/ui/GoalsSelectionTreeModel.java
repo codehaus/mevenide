@@ -16,21 +16,20 @@
  */
 package org.mevenide.idea.module.ui;
 
+import java.util.*;
+import javax.swing.tree.TreeNode;
 import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.idea.util.goals.GoalsHelper;
 import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 import org.mevenide.idea.util.ui.tree.SimpleGoalsTreeModel;
 import org.mevenide.idea.util.ui.tree.checkbox.MutableCheckBoxTreeModel;
-import org.mevenide.idea.util.goals.GoalsHelper;
-
-import javax.swing.tree.TreeNode;
-import java.util.*;
 
 /**
  * @author Arik
  */
-public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel implements MutableCheckBoxTreeModel {
-
+public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel
+    implements MutableCheckBoxTreeModel {
     private final Set<String> selectedGoals = new HashSet<String>(10);
 
     public GoalsSelectionTreeModel(final IGoalsGrabber pProvider) {
@@ -50,7 +49,7 @@ public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel implements Mut
     }
 
     public boolean isChecked(TreeNode pNode) {
-        if(pNode instanceof GoalTreeNode) {
+        if (pNode instanceof GoalTreeNode) {
             final GoalTreeNode node = (GoalTreeNode) pNode;
             final PluginTreeNode parent = (PluginTreeNode) node.getParent();
             final String plugin = parent.getPlugin();
@@ -58,16 +57,16 @@ public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel implements Mut
             final String fqName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
             return selectedGoals.contains(fqName);
         }
-        else if(pNode instanceof PluginTreeNode) {
+        else if (pNode instanceof PluginTreeNode) {
             final PluginTreeNode node = (PluginTreeNode) pNode;
-            if(node.getChildCount() == 0)
+            if (node.getChildCount() == 0)
                 return false;
 
             final Enumeration children = node.children();
             while (children.hasMoreElements()) {
                 final TreeNode child = (TreeNode) children.nextElement();
                 final boolean checked = shouldDisplayCheckBox(child) && isChecked(child);
-                if(!checked)
+                if (!checked)
                     return false;
             }
             return true;
@@ -91,7 +90,7 @@ public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel implements Mut
             while (children.hasMoreElements()) {
                 final TreeNode child = (TreeNode) children.nextElement();
                 if (shouldDisplayCheckBox(child) && isCheckable(child)) {
-                    if(child instanceof GoalTreeNode)
+                    if (child instanceof GoalTreeNode)
                         setGoalChecked((GoalTreeNode) child, pChecked);
                     else
                         setChecked(child, pChecked);
@@ -122,6 +121,6 @@ public class GoalsSelectionTreeModel extends SimpleGoalsTreeModel implements Mut
 
     public boolean shouldDisplayCheckBox(TreeNode pNode) {
         return pNode instanceof GoalTreeNode ||
-                pNode instanceof PluginTreeNode;
+            pNode instanceof PluginTreeNode;
     }
 }

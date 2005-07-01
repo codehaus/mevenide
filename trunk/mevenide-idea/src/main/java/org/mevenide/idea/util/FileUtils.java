@@ -1,7 +1,7 @@
 package org.mevenide.idea.util;
 
-import java.io.File;
 import com.intellij.openapi.vfs.VirtualFile;
+import java.io.File;
 
 /**
  * @author Arik
@@ -19,7 +19,7 @@ public abstract class FileUtils {
 
     public static String fixPath(final VirtualFile pFile) {
         final StringBuilder buf = new StringBuilder(pFile.getPath());
-        if(pFile.getPath().endsWith("!/"))
+        if (pFile.getPath().endsWith("!/"))
             buf.delete(buf.length() - 2, buf.length());
 
         if (pFile.getPath().endsWith("!"))

@@ -8,7 +8,6 @@ import javax.swing.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 
@@ -20,7 +19,7 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
      * Logging.
      */
     private static final Log LOG = LogFactory.getLog(DeploymentPanel.class);
-    
+
     /**
      * Resources.
      */
@@ -30,7 +29,7 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
     private final JTextField siteDirectoryField = new JTextField();
     private final JTextField distributionAddressField = new JTextField();
     private final JTextField distributionDirectoryField = new JTextField();
-    
+
     protected final PsiProject project;
     protected final BeanAdapter model;
 
@@ -44,8 +43,10 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
 
     private void layoutComponents() {
         final FormLayout layout = new FormLayout(
-                "right:min, 2dlu, fill:pref:grow");
-        DefaultFormBuilder builder = new DefaultFormBuilder(layout, RES.getBundle(), this);
+            "right:min, 2dlu, fill:pref:grow");
+        DefaultFormBuilder builder = new DefaultFormBuilder(layout,
+                                                            RES.getBundle(),
+                                                            this);
         builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
         builder.appendSeparator(RES.get("site.deployment.title"));
@@ -60,7 +61,9 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
     private void bindComponents() {
         Bindings.bind(siteAddressField, model.getValueModel("siteAddress"));
         Bindings.bind(siteDirectoryField, model.getValueModel("siteDirectory"));
-        Bindings.bind(distributionAddressField, model.getValueModel("distributionAddress"));
-        Bindings.bind(distributionDirectoryField, model.getValueModel("distributionDirectory"));
+        Bindings.bind(distributionAddressField,
+                      model.getValueModel("distributionAddress"));
+        Bindings.bind(distributionDirectoryField,
+                      model.getValueModel("distributionDirectory"));
     }
 }

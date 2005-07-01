@@ -27,7 +27,7 @@ public class ScmPanel extends AbstractPomLayerPanel {
      * Logging.
      */
     private static final Log LOG = LogFactory.getLog(ScmPanel.class);
-    
+
     /**
      * Resources
      */

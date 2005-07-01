@@ -32,18 +32,18 @@ import org.mevenide.idea.util.components.AbstractApplicationComponent;
 /**
  * @author Arik
  */
-public class PomFileEditorProvider extends AbstractApplicationComponent implements FileEditorProvider {
-
+public class PomFileEditorProvider extends AbstractApplicationComponent
+    implements FileEditorProvider {
     public boolean accept(final Project pProject, final VirtualFile pFile) {
         final String extension = pFile.getExtension();
-        if(extension == null || extension.trim().length() == 0)
+        if (extension == null || extension.trim().length() == 0)
             return false;
 
         final Module[] modules = ModuleManager.getInstance(pProject).getModules();
-        for(final Module module : modules) {
+        for (final Module module : modules) {
             final ModuleSettings settings = ModuleSettings.getInstance(module);
             final VirtualFile pomFile = settings.getPomVirtualFile();
-            if(pomFile != null && pomFile.equals(pFile))
+            if (pomFile != null && pomFile.equals(pFile))
                 return true;
         }
 
@@ -55,8 +55,8 @@ public class PomFileEditorProvider extends AbstractApplicationComponent implemen
     }
 
     public void disposeEditor(final FileEditor pEditor) {
-        if(pEditor instanceof Disposable)
-            ((Disposable)pEditor).dispose();
+        if (pEditor instanceof Disposable)
+            ((Disposable) pEditor).dispose();
     }
 
     public String getEditorTypeId() {

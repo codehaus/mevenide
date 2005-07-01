@@ -1,7 +1,7 @@
 package org.mevenide.idea.psi.util;
 
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.xml.XmlFile;
 
 /**
  * @author Arik

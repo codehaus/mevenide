@@ -35,7 +35,7 @@ public class InspectProjectAction extends AbstractAnAction {
     public void actionPerformed(AnActionEvent e) {
         final Project project = getProject(e);
         final ToolWindow tw = SynchronizationResultsPanel.getInstance(project);
-        if(tw == null) {
+        if (tw == null) {
             UIUtils.showError(project, "Could not find synchronization tool window.");
             return;
         }

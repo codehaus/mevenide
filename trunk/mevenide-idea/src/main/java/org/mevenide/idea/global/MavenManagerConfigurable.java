@@ -18,26 +18,24 @@ package org.mevenide.idea.global;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.FileUtils;
-
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import java.io.File;
-import java.io.FileNotFoundException;
 
 /**
- * This component manages UI configuration for the {@link MavenManager} component. It displays a window
- * allowing the user to modify the Maven manager settings, and either discards them or applies them based on
- * user actions.
+ * This component manages UI configuration for the {@link MavenManager} component. It
+ * displays a window allowing the user to modify the Maven manager settings, and either
+ * discards them or applies them based on user actions.
  *
  * @author Arik
  */
-public class MavenManagerConfigurable extends AbstractApplicationComponent implements Configurable {
-
+public class MavenManagerConfigurable extends AbstractApplicationComponent
+    implements Configurable {
     /**
      * The user interface component to display to the user.
      */
@@ -95,7 +93,8 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
         final boolean selectedOfflineMode = ui.isOffline();
 
         final boolean offlineModeModified = selectedOfflineMode != offlineMode;
-        final boolean jvmOptionsModified = !StringUtils.equals(mavenOptions, selectedOptions);
+        final boolean jvmOptionsModified = !StringUtils.equals(mavenOptions,
+                                                               selectedOptions);
         final boolean homeModified = FileUtils.equals(selectedHome, mavenHome);
 
         return homeModified || offlineModeModified || jvmOptionsModified;

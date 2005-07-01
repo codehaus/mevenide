@@ -8,7 +8,6 @@ import org.mevenide.idea.psi.util.XmlTagPath;
  * @author Arik
  */
 public class SingleValuedXmlTagRowsTableModel extends XmlTagRowsTableModel {
-
     private final String columnName;
 
     public SingleValuedXmlTagRowsTableModel(final XmlFile pPsiFile,

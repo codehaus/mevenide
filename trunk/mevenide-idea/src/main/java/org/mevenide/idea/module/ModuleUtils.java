@@ -23,15 +23,14 @@ import org.mevenide.idea.util.FileUtils;
  * @author Arik
  */
 public abstract class ModuleUtils {
-
     public static XmlFile getModulePomXmlFile(final Module pModule) {
         final ModuleSettings settings = ModuleSettings.getInstance(pModule);
         final VirtualFile pomFile = settings.getPomVirtualFile();
-        if(pomFile == null)
+        if (pomFile == null)
             return null;
 
         final Document pomDoc = FileDocumentManager.getInstance().getDocument(pomFile);
-        if(pomDoc == null)
+        if (pomDoc == null)
             return null;
 
         return PsiUtils.findXmlFile(pModule, pomDoc);
@@ -64,12 +63,12 @@ public abstract class ModuleUtils {
             if (entry instanceof LibraryOrderEntry) {
                 final LibraryOrderEntry libEntry = (LibraryOrderEntry) entry;
                 final Library lib = libEntry.getLibrary();
-                if(lib == null)
+                if (lib == null)
                     Collections.addAll(files, libEntry.getFiles(OrderRootType.CLASSES));
                 else
                     Collections.addAll(files, lib.getFiles(OrderRootType.CLASSES));
             }
-            else if(pIncludeJdk || !(entry instanceof JdkOrderEntry))
+            else if (pIncludeJdk || !(entry instanceof JdkOrderEntry))
                 Collections.addAll(files, entry.getFiles(OrderRootType.CLASSES));
         }
 
@@ -105,7 +104,7 @@ public abstract class ModuleUtils {
                 dep.setArtifactId(artifactId);
                 dep.setVersion(version);
                 dep.setType(type);
-                if(jar != null)
+                if (jar != null)
                     dep.setJar(jar);
                 dep.setUrl(url);
 
@@ -128,7 +127,7 @@ public abstract class ModuleUtils {
                 final Document doc = docMgr.getDocument(parentPom);
                 final PsiDocumentManager psiMgr = PsiDocumentManager.getInstance(pPomFile.getProject());
                 PsiFile psiFile = psiMgr.getCachedPsiFile(doc);
-                if(psiFile == null)
+                if (psiFile == null)
                     psiFile = psiMgr.getPsiFile(doc);
 
                 final XmlFile xmlFile = (XmlFile) psiFile;

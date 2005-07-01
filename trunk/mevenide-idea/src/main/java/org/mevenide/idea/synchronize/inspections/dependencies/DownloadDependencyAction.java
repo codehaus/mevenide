@@ -1,18 +1,18 @@
 package org.mevenide.idea.synchronize.inspections.dependencies;
 
-import org.mevenide.idea.synchronize.AbstractFixAction;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.ui.UIUtils;
-import org.mevenide.idea.repository.ArtifactDownloadManager;
-import org.mevenide.idea.repository.ArtifactNotFoundException;
-import org.mevenide.idea.Res;
-import org.apache.maven.project.Dependency;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import java.util.concurrent.atomic.AtomicReference;
+import org.apache.maven.project.Dependency;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.repository.ArtifactDownloadManager;
+import org.mevenide.idea.repository.ArtifactNotFoundException;
+import org.mevenide.idea.synchronize.AbstractFixAction;
+import org.mevenide.idea.synchronize.ProblemInfo;
+import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik

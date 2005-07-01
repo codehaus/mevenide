@@ -8,7 +8,7 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  * @author Arik
  */
 public class MailingListsTableModel extends AbstractBeanRowsTableModel<PsiMailingLists> {
-    private static final String[] COLUMN_TITLES = new String[] {
+    private static final String[] COLUMN_TITLES = new String[]{
         "Name",
         "Subscribe",
         "Unsubscribe",
@@ -24,7 +24,7 @@ public class MailingListsTableModel extends AbstractBeanRowsTableModel<PsiMailin
     }
 
     public Object getValueAt(int rowIndex, int columnIndex) {
-        switch(columnIndex) {
+        switch (columnIndex) {
             case 0:
                 return model.getName(rowIndex);
             case 1:

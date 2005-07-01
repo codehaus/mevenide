@@ -1,10 +1,10 @@
 package org.mevenide.idea.psi.project;
 
 import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
@@ -13,7 +13,7 @@ public class PsiDependencies extends AbstractPsiBeanRowsObservable {
     private static final String CONTAINER_TAG_PATH = "project/dependencies";
     private static final String ROW_TAG_NAME = "dependency";
 
-    private final Map<Integer,PsiDependencyProperties> propsCache = Collections.synchronizedMap(
+    private final Map<Integer, PsiDependencyProperties> propsCache = Collections.synchronizedMap(
         new HashMap<Integer, PsiDependencyProperties>(10));
 
     public PsiDependencies(final XmlFile pXmlFile) {
@@ -67,7 +67,7 @@ public class PsiDependencies extends AbstractPsiBeanRowsObservable {
 
     public final PsiDependencyProperties getProperties(final int pRow) {
         PsiDependencyProperties props = propsCache.get(pRow);
-        if(props == null) {
+        if (props == null) {
             props = new PsiDependencyProperties(getXmlFile(), pRow);
             propsCache.put(pRow, props);
         }

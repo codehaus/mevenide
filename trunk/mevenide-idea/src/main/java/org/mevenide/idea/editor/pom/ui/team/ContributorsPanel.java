@@ -7,7 +7,6 @@ import org.mevenide.idea.psi.project.PsiProject;
  * @author Arik
  */
 public class ContributorsPanel extends AbstractTeamPanel<PsiContributors> {
-
     public ContributorsPanel(final PsiProject pModel) {
         this(pModel.getContributors());
     }

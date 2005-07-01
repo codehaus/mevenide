@@ -24,7 +24,6 @@ import javax.swing.tree.TreeNode;
  * @author Arik
  */
 public abstract class AbstractTreeModel extends DefaultTreeModel {
-
     protected AbstractTreeModel() {
         super(null, true);
 
@@ -58,14 +57,14 @@ public abstract class AbstractTreeModel extends DefaultTreeModel {
                                      final NodeVisitor pVisitor,
                                      final int pLevel,
                                      final int pCurrentLevel) {
-        if(pVisitor.accept((pNode)))
+        if (pVisitor.accept((pNode)))
             return pNode;
 
         final int childCount = pNode.getChildCount();
-        for(int i = 0; i < childCount; i++) {
+        for (int i = 0; i < childCount; i++) {
             final TreeNode node = pNode.getChildAt(i);
-            if(pLevel == pCurrentLevel) {
-                if(pVisitor.accept(node))
+            if (pLevel == pCurrentLevel) {
+                if (pVisitor.accept(node))
                     return node;
             }
             else {
@@ -73,7 +72,7 @@ public abstract class AbstractTreeModel extends DefaultTreeModel {
                                                        pVisitor,
                                                        pLevel,
                                                        pCurrentLevel + 1);
-                if(acceptedNode != null)
+                if (acceptedNode != null)
                     return acceptedNode;
             }
         }

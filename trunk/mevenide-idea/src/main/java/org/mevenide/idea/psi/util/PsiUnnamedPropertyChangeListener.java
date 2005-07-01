@@ -18,7 +18,8 @@ import org.mevenide.idea.util.event.*;
 /**
  * @author Arik
  */
-public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener implements BeanRowsObservable {
+public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener
+    implements BeanRowsObservable {
     /**
      * Logging.
      */
@@ -40,10 +41,10 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
     private final XmlTagPath containerPath;
 
     /**
-     * Cache for lazily created tag paths, as property names are not known
-     * in advance.
+     * Cache for lazily created tag paths, as property names are not known in advance.
      */
-    private final Map<String,XmlTagPath> pathsCache = Collections.synchronizedMap(new HashMap<String, XmlTagPath>(10));
+    private final Map<String, XmlTagPath> pathsCache = Collections.synchronizedMap(new HashMap<String, XmlTagPath>(
+        10));
 
     /**
      * Property change listeners container.
@@ -61,7 +62,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
     }
 
     public PsiUnnamedPropertyChangeListener(final XmlTagPath pContainerPath) {
-        if(pContainerPath == null)
+        if (pContainerPath == null)
             throw new IllegalArgumentException(RES.get("null.arg", "pContainerPath"));
         containerPath = pContainerPath;
     }
@@ -87,7 +88,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
                                      final String pNewPropertyName) {
         final XmlTagPath tagPath = getPropertyTagPath(pPropertyName, false);
         XmlTag tag = tagPath == null ? null : tagPath.getTag();
-        if(tag == null)
+        if (tag == null)
             return;
 
         //
@@ -96,7 +97,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
         final TagRenamerRunnable runnable = new TagRenamerRunnable(tag, pNewPropertyName);
         IDEUtils.runCommand(containerPath.getProject(), runnable);
         tag = runnable.getTag();
-        if(tag == null)
+        if (tag == null)
             return;
 
         //
@@ -132,7 +133,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
     protected String getPropertyForElement(final PsiElement pElement) {
         final XmlTag[] tags = getPropertyTags();
         for (XmlTag tag : tags) {
-            if(PsiTreeUtil.isAncestor(tag, pElement, false))
+            if (PsiTreeUtil.isAncestor(tag, pElement, false))
                 return tag.getName();
         }
 
@@ -146,7 +147,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
 
             int i = 0;
             boolean equal = true;
-            while(i < path.length && i < pPath.length && equal) {
+            while (i < path.length && i < pPath.length && equal) {
                 equal = path[i].equals(pPath[i]);
                 i++;
             }
@@ -165,7 +166,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener 
     public final XmlTagPath getPropertyTagPath(final String pProperty,
                                                final boolean pCreateIfNotFound) {
         XmlTagPath path = pathsCache.get(pProperty);
-        if(path == null && pCreateIfNotFound) {
+        if (path == null && pCreateIfNotFound) {
             path = new XmlTagPath(containerPath, pProperty);
             pathsCache.put(pProperty, path);
         }

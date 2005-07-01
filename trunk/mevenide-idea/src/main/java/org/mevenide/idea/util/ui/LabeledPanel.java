@@ -1,16 +1,12 @@
 package org.mevenide.idea.util.ui;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.*;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
 public class LabeledPanel extends JPanel {
-
     protected final JComponent component;
 
     public LabeledPanel(final String pLabel,

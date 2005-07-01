@@ -1,13 +1,12 @@
 package org.mevenide.idea.psi.project;
 
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
 public class PsiVersions extends AbstractPsiBeanRowsObservable {
-
     public PsiVersions(final XmlFile pXmlFile) {
         super(pXmlFile, "project/versions", "version");
         registerTag("id", "id");

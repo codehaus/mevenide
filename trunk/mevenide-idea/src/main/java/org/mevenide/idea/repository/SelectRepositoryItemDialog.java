@@ -1,21 +1,19 @@
 package org.mevenide.idea.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.tree.TreePath;
-
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.ScrollPaneFactory;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.*;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.TreePath;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.model.RepositoryTreeModel;
-import org.mevenide.idea.repository.model.RepoTreeNode;
 import org.mevenide.idea.repository.model.NodeDescriptor;
+import org.mevenide.idea.repository.model.RepoTreeNode;
+import org.mevenide.idea.repository.model.RepositoryTreeModel;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 

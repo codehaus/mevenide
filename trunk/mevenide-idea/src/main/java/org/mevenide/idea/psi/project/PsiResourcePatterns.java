@@ -6,7 +6,6 @@ import com.intellij.psi.xml.XmlFile;
  * @author Arik
  */
 public class PsiResourcePatterns extends AbstractPsiResourcePatterns {
-
     public PsiResourcePatterns(final XmlFile pXmlFile,
                                final int pResourceRow,
                                final PatternType pPatternType) {

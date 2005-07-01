@@ -8,7 +8,6 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  * @author Arik
  */
 public class DependenciesTableModel extends AbstractBeanRowsTableModel<PsiDependencies> {
-
     private static final String[] COLUMN_TITLES = new String[]{
         "Group ID",
         "Artifact ID",

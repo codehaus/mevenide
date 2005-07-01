@@ -18,17 +18,13 @@ package org.mevenide.idea.util.ui;
 
 import com.jgoodies.forms.factories.ComponentFactory;
 import com.jgoodies.forms.factories.DefaultComponentFactory;
-
+import java.awt.*;
 import javax.swing.*;
-import java.awt.Font;
-import java.awt.Color;
-import java.awt.Component;
 
 /**
  * @author Arik
  */
 public class CustomFormsComponentFactory implements ComponentFactory {
-
     private static final ComponentFactory INSTANCE = new CustomFormsComponentFactory();
 
     private final ComponentFactory delegate = DefaultComponentFactory.getInstance();
@@ -46,8 +42,8 @@ public class CustomFormsComponentFactory implements ComponentFactory {
 
     public JComponent createSeparator(String text, int alignment) {
         final JComponent separator = delegate.createSeparator(text, alignment);
-        for(final Component c : separator.getComponents())
-            if(c instanceof JLabel)
+        for (final Component c : separator.getComponents())
+            if (c instanceof JLabel)
                 patchTitleLabel((JLabel) c);
 
         return separator;

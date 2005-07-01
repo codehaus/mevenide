@@ -16,16 +16,14 @@
  */
 package org.mevenide.idea.util.goals.grabber.notify;
 
-import org.mevenide.goals.grabber.IGoalsGrabber;
-
-import javax.swing.event.EventListenerList;
 import java.util.EventListener;
+import javax.swing.event.EventListenerList;
+import org.mevenide.goals.grabber.IGoalsGrabber;
 
 /**
  * @author Arik
  */
 public class NotifyingGoalsGrabberImpl implements NotifyingGoalsGrabber {
-
     private final IGoalsGrabber goalsGrabber;
 
     private final EventListenerList listenerList = new EventListenerList();
@@ -71,7 +69,7 @@ public class NotifyingGoalsGrabberImpl implements NotifyingGoalsGrabber {
 
         final GoalsGrabberRefreshedEvent event = new GoalsGrabberRefreshedEvent(this);
         final EventListener[] listeners = listenerList.getListeners(GoalsGrabberListener.class);
-        for(int i = 0; i < listeners.length; i++) {
+        for (int i = 0; i < listeners.length; i++) {
             final GoalsGrabberListener listener = (GoalsGrabberListener) listeners[i];
             listener.goalsGrabberRefreshed(event);
         }

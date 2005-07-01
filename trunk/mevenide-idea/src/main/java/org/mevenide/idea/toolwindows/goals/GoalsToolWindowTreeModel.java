@@ -20,6 +20,12 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
 import com.intellij.openapi.project.Project;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.List;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.goals.GoalsHelper;
@@ -28,18 +34,11 @@ import org.mevenide.idea.util.ui.tree.GoalTreeNode;
 import org.mevenide.idea.util.ui.tree.ModuleTreeNode;
 import org.mevenide.idea.util.ui.tree.PluginTreeNode;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.MutableTreeNode;
-import javax.swing.tree.TreeNode;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.List;
-
 /**
  * @author Arik
  */
-public class GoalsToolWindowTreeModel extends AbstractTreeModel implements ModuleListener, PropertyChangeListener {
-
+public class GoalsToolWindowTreeModel extends AbstractTreeModel
+    implements ModuleListener, PropertyChangeListener {
     /**
      * Creates an instance.
      */
@@ -63,7 +62,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //register as a listener for module and goal changes
         //
         ModuleSettings.getInstance(pModule).addPropertyChangeListener(
-                "queryContext", this);
+            "queryContext", this);
 
         //
         //create module node
@@ -84,7 +83,8 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
      * Removes the given module from the goals tree.
      *
      * @param pModule the module to remove
-     * @param pNotify whether to notify the model listeners that the projectModel has changed
+     * @param pNotify whether to notify the model listeners that the projectModel has
+     *                changed
      */
     protected void removeModuleTreeNode(final Module pModule,
                                         final boolean pNotify) {
@@ -96,7 +96,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //unregister ourselfs as listeners for module and goal changes
         //
         ModuleSettings.getInstance(pModule).removePropertyChangeListener(
-                "queryContext", this);
+            "queryContext", this);
 
         //
         //remove the node
@@ -116,7 +116,8 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
      * Refreshes the given tree node contents.
      *
      * @param pModuleNode the node to refresh
-     * @param pNotify     whether to notify the projectModel listeners that the model has changed
+     * @param pNotify     whether to notify the projectModel listeners that the model has
+     *                    changed
      */
     protected void refreshModuleTreeNode(final ModuleTreeNode pModuleNode,
                                          final boolean pNotify) {
@@ -135,15 +136,17 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         //add project-specific goals (e.g. maven.xml)
         //
         final IGoalsGrabber projectGoalsGrabber = settings.getProjectGoalsGrabber();
-        final MutableTreeNode projectGoalsNode = createGoalsGrabberNode(projectGoalsGrabber);
-        if(projectGoalsNode != null)
+        final MutableTreeNode projectGoalsNode = createGoalsGrabberNode(
+            projectGoalsGrabber);
+        if (projectGoalsNode != null)
             pModuleNode.insert(projectGoalsNode, pModuleNode.getChildCount());
 
         //
         //add favorite goals
         //
         final IGoalsGrabber favoriteGoalsGrabber = settings.getFavoriteGoalsGrabber();
-        final MutableTreeNode favoriteGoalsNode = createGoalsGrabberNode(favoriteGoalsGrabber);
+        final MutableTreeNode favoriteGoalsNode = createGoalsGrabberNode(
+            favoriteGoalsGrabber);
         if (favoriteGoalsNode != null)
             pModuleNode.insert(favoriteGoalsNode, pModuleNode.getChildCount());
 
@@ -155,15 +158,16 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
     }
 
     /**
-     * Creates a tree node named after the {@link org.mevenide.goals.grabber.IGoalsGrabber#getName() goals grabber name}
-     * with a child node for each plugin, and for each plugin node a node list of its
-     * goals.
+     * Creates a tree node named after the {@link org.mevenide.goals.grabber.IGoalsGrabber#getName()
+     * goals grabber name} with a child node for each plugin, and for each plugin node a
+     * node list of its goals.
      *
      * @param pGoalsGrabber the grabber to introspect
+     *
      * @return a mutable tree node
      */
     protected MutableTreeNode createGoalsGrabberNode(final IGoalsGrabber pGoalsGrabber) {
-        if(pGoalsGrabber == null)
+        if (pGoalsGrabber == null)
             return null;
 
         final MutableTreeNode grabberNode = new DefaultMutableTreeNode(pGoalsGrabber.getName());
@@ -173,10 +177,13 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
 
             final String[] goals = pGoalsGrabber.getGoals(plugin);
             for (final String goal : goals) {
-                final String fqGoalName = GoalsHelper.buildFullyQualifiedName(plugin, goal);
+                final String fqGoalName = GoalsHelper.buildFullyQualifiedName(plugin,
+                                                                              goal);
                 final String description = pGoalsGrabber.getDescription(fqGoalName);
                 final String[] prereqs = pGoalsGrabber.getPrereqs(fqGoalName);
-                final MutableTreeNode goalNode = new GoalTreeNode(goal, description, prereqs);
+                final MutableTreeNode goalNode = new GoalTreeNode(goal,
+                                                                  description,
+                                                                  prereqs);
                 pluginNode.insert(goalNode, pluginNode.getChildCount());
             }
 
@@ -210,7 +217,7 @@ public class GoalsToolWindowTreeModel extends AbstractTreeModel implements Modul
         final String propertyName = pEvent.getPropertyName();
         final boolean moduleEvent = pEvent.getSource() instanceof ModuleSettings;
 
-        if(moduleEvent && propertyName.equalsIgnoreCase("queryContext")) {
+        if (moduleEvent && propertyName.equalsIgnoreCase("queryContext")) {
             final ModuleSettings settings = (ModuleSettings) pEvent.getSource();
             final Module module = settings.getModule();
 

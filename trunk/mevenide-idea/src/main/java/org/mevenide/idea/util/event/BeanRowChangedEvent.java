@@ -4,7 +4,6 @@ package org.mevenide.idea.util.event;
  * @author Arik
  */
 public class BeanRowChangedEvent extends BeanRowEvent {
-
     private final Object value;
 
     public BeanRowChangedEvent(final BeanRowsObservable pSource,

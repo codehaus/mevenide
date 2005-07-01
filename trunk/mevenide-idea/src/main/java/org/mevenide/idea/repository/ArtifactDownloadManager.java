@@ -5,8 +5,8 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.progress.ProgressIndicator;
 import java.io.File;
 import java.io.IOException;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.context.IQueryContext;
@@ -22,7 +22,6 @@ import org.mevenide.repository.RepoPathElement;
  * @author Arik
  */
 public class ArtifactDownloadManager extends AbstractApplicationComponent {
-
     private void downloadArtifact(final String pUrl,
                                   final File pDstFile,
                                   final String pProxyHost,
@@ -137,7 +136,8 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
                                  final String pType,
                                  final String pArtifactId,
                                  final String pVersion,
-                                 final String pExtension) throws ArtifactNotFoundException {
+                                 final String pExtension)
+        throws ArtifactNotFoundException {
         final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
         if (indicator.isCanceled())
             return;
@@ -154,11 +154,17 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
         Set<Throwable> errors = null;
         for (final IRepositoryReader reader : remoteRepos) {
             try {
-                downloadArtifact(pModule, reader, pGroupId, pType, pArtifactId, pVersion, pExtension);
+                downloadArtifact(pModule,
+                                 reader,
+                                 pGroupId,
+                                 pType,
+                                 pArtifactId,
+                                 pVersion,
+                                 pExtension);
                 return;
             }
             catch (IOException e) {
-                if(errors == null)
+                if (errors == null)
                     errors = new HashSet<Throwable>(remoteRepos.length);
                 errors.add(e);
             }
@@ -179,7 +185,8 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
     }
 
     public void downloadArtifact(final Module pModule,
-                                 final Dependency pDependency) throws ArtifactNotFoundException {
+                                 final Dependency pDependency)
+        throws ArtifactNotFoundException {
         downloadArtifact(pModule,
                          pDependency.getGroupId(),
                          pDependency.getType(),
@@ -209,7 +216,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
                 for (RepoPathElement e : children)
                     downloadArtifact(pModule, e);
             }
-            catch(IOException e) {
+            catch (IOException e) {
                 if (indicator != null) {
                     indicator.setText(e.getMessage());
                     indicator.setText2("");
@@ -217,7 +224,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
                 throw e;
             }
             catch (Exception e) {
-                if(indicator != null) {
+                if (indicator != null) {
                     indicator.setText("Error fetching children.");
                     indicator.setText2("");
                 }

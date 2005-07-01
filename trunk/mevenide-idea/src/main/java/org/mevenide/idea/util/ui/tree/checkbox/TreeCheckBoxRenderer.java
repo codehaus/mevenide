@@ -16,9 +16,9 @@
  */
 package org.mevenide.idea.util.ui.tree.checkbox;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import java.awt.Component;
 
 /**
  * @author Arik

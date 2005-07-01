@@ -9,20 +9,18 @@ import com.intellij.psi.PsiTreeChangeListener;
 import org.mevenide.idea.psi.util.PsiUtils;
 
 /**
- * A generic PSI listener that will notify a {@link SimplePsiListener} instance
- * when PSI events occur.
+ * A generic PSI listener that will notify a {@link SimplePsiListener} instance when PSI
+ * events occur.
  *
- * <p>Basically, this listener is just a pipeline for PSI events onto
- * a different kind of PSI listener (a-ka {@code SimplePsiListener}).</p>
+ * <p>Basically, this listener is just a pipeline for PSI events onto a different kind of
+ * PSI listener (a-ka {@code SimplePsiListener}).</p>
  *
- * <p>The purpose for creating this "redundant" listener preventing
- * recursive event loops: if the user makes a change to the UI components,
- * than Swing notifies the Swing models, which usually update the PSI model.
- * This generates a PSI event which is propagated back to the Swing model
- * (since the Swing model will usually also listen to the PSI) which can
- * result in a recursive behavior. This listener, therefor, supports marking
- * the source of the PSI event (either the UI or the model) and stop the
- * recursive loop.</p>
+ * <p>The purpose for creating this "redundant" listener preventing recursive event loops:
+ * if the user makes a change to the UI components, than Swing notifies the Swing models,
+ * which usually update the PSI model. This generates a PSI event which is propagated back
+ * to the Swing model (since the Swing model will usually also listen to the PSI) which
+ * can result in a recursive behavior. This listener, therefor, supports marking the
+ * source of the PSI event (either the UI or the model) and stop the recursive loop.</p>
  *
  * @author Arik
  */
@@ -40,7 +38,7 @@ public class PsiSimpleChangeNotifier implements PsiTreeChangeListener {
     /**
      * Creates an instance.
      *
-     * @param pXmlFile the XML file we listen to
+     * @param pXmlFile       the XML file we listen to
      * @param pPsiModifiable the PSI listener to notify on events
      */
     public PsiSimpleChangeNotifier(final PsiFile pXmlFile,
@@ -52,8 +50,8 @@ public class PsiSimpleChangeNotifier implements PsiTreeChangeListener {
     /**
      * Creates an instance.
      *
-     * @param pProject the project context
-     * @param pDocument the document this listener listens to
+     * @param pProject       the project context
+     * @param pDocument      the document this listener listens to
      * @param pPsiModifiable the PSI listener to notify on events
      */
     public PsiSimpleChangeNotifier(final Project pProject,
@@ -65,12 +63,12 @@ public class PsiSimpleChangeNotifier implements PsiTreeChangeListener {
     /**
      * Notifies, if necessary, the PSI listener about the event.
      *
-     * <p>If the event is not {@link #isEventRelevant(com.intellij.psi.PsiTreeChangeEvent)} relevant},
-     * it will be ignored. Otherwise, the {@link SimplePsiListener#refreshModel(PsiEventType, com.intellij.psi.PsiTreeChangeEvent)}
-     * method will be called.</p.
+     * <p>If the event is not {@link #isEventRelevant(com.intellij.psi.PsiTreeChangeEvent)}
+     * relevant}, it will be ignored. Otherwise, the {@link SimplePsiListener#refreshModel(PsiEventType,
+     * com.intellij.psi.PsiTreeChangeEvent)} method will be called.</p.
      *
      * @param pEventType the event type
-     * @param pEvent the original event object
+     * @param pEvent     the original event object
      */
     private void notifyListener(final PsiEventType pEventType,
                                 final PsiTreeChangeEvent pEvent) {
@@ -116,28 +114,35 @@ public class PsiSimpleChangeNotifier implements PsiTreeChangeListener {
         notifyListener(PsiEventType.PROPERTY_CHANGED, pEvent);
     }
 
-    public void beforeChildAddition(PsiTreeChangeEvent pEvent) {}
+    public void beforeChildAddition(PsiTreeChangeEvent pEvent) {
+    }
 
-    public void beforeChildRemoval(PsiTreeChangeEvent pEvent) {}
+    public void beforeChildRemoval(PsiTreeChangeEvent pEvent) {
+    }
 
-    public void beforeChildReplacement(PsiTreeChangeEvent pEvent) {}
+    public void beforeChildReplacement(PsiTreeChangeEvent pEvent) {
+    }
 
-    public void beforeChildMovement(PsiTreeChangeEvent pEvent) {}
+    public void beforeChildMovement(PsiTreeChangeEvent pEvent) {
+    }
 
-    public void beforeChildrenChange(PsiTreeChangeEvent pEvent) {}
+    public void beforeChildrenChange(PsiTreeChangeEvent pEvent) {
+    }
 
-    public void beforePropertyChange(PsiTreeChangeEvent pEvent) {}
+    public void beforePropertyChange(PsiTreeChangeEvent pEvent) {
+    }
 
     /**
      * Used to filter events that are not related to this listener.
      *
-     * <p>Unfortunately, PSI listeners are global PSI listeners - they receive ALL psi events in ALL files. Since we are
-     * only interested in events pertaining to our {@link #psiFile}, this method can be used to filter such events
-     * out.</p>
+     * <p>Unfortunately, PSI listeners are global PSI listeners - they receive ALL psi
+     * events in ALL files. Since we are only interested in events pertaining to our
+     * {@link #psiFile}, this method can be used to filter such events out.</p>
      *
      * <p>This method can be overriden to further eliminate more events. </p>
      *
      * @param pEvent the event object
+     *
      * @return {@code true} if the event is relevant, {@code false} otherwise.
      */
     protected boolean isEventRelevant(final PsiTreeChangeEvent pEvent) {

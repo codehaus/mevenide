@@ -6,15 +6,14 @@ import com.intellij.openapi.ui.ComponentWithBrowseButton;
 import com.intellij.openapi.ui.TextComponentAccessor;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
-
-import javax.swing.JComponent;
 
 /**
  * @author Arik
  */
 public class RelativeBrowseActionListener<T extends JComponent>
-        extends ComponentWithBrowseButton.BrowseFolderActionListener<T> {
+    extends ComponentWithBrowseButton.BrowseFolderActionListener<T> {
     private final VirtualFile referenceDir;
     private final ComponentWithBrowseButton<T> textField;
     private final TextComponentAccessor<T> accessor;
@@ -32,7 +31,8 @@ public class RelativeBrowseActionListener<T extends JComponent>
         accessor = pAccessor;
     }
 
-    @Override protected void onFileChoosen(final VirtualFile pChosenFile) {
+    @Override
+    protected void onFileChoosen(final VirtualFile pChosenFile) {
         String relativePath = null;
 
         if (referenceDir == null) {

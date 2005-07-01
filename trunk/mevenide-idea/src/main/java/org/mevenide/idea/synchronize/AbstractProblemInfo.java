@@ -1,7 +1,7 @@
 package org.mevenide.idea.synchronize;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.module.Module;
 import java.util.concurrent.atomic.AtomicReference;
 import org.mevenide.idea.Res;
 
@@ -17,13 +17,15 @@ public abstract class AbstractProblemInfo implements ProblemInfo {
     protected final ProblemInspector inspector;
     protected final Module module;
     protected final String description;
-    private final AtomicReference<AnAction[]> fixActions = new AtomicReference<AnAction[]>(new AnAction[0]);
+    private final AtomicReference<AnAction[]> fixActions = new AtomicReference<AnAction[]>(
+        new AnAction[0]);
 
     protected AbstractProblemInfo(final ProblemInspector pInspector) {
         this(pInspector, null);
     }
 
-    protected AbstractProblemInfo(final ProblemInspector pInspector, final Module pModule) {
+    protected AbstractProblemInfo(final ProblemInspector pInspector,
+                                  final Module pModule) {
         this(pInspector, pModule, RES.get("default.problem.desc"));
     }
 

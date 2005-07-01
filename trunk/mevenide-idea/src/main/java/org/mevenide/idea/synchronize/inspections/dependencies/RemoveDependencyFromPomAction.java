@@ -1,8 +1,8 @@
 package org.mevenide.idea.synchronize.inspections.dependencies;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.util.IncorrectOperationException;
@@ -11,14 +11,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.module.ModuleUtils;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
-import org.mevenide.idea.module.ModuleUtils;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ProblemInfo;
+import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.IDEUtils;
 
 /**
  * @author Arik
@@ -66,7 +66,7 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction {
             final XmlFile xmlFile = ModuleUtils.getModulePomXmlFile(module);
             final XmlTagPath path = new XmlTagPath(xmlFile, "project/dependencies");
             final XmlTag depsTag = path.getTag();
-            if(depsTag == null)
+            if (depsTag == null)
                 return;
 
             final XmlTag[] depTags = depsTag.findSubTags("dependency");
@@ -75,10 +75,10 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction {
                 final String artifactId = PsiUtils.getTagValue(tag, "artifactId");
                 final String version = PsiUtils.getTagValue(tag, "version");
                 String type = PsiUtils.getTagValue(tag, "type");
-                if(type == null || type.trim().length() == 0)
+                if (type == null || type.trim().length() == 0)
                     type = "jar";
 
-                if(StringUtils.equals(groupId, dependency.getGroupId()) &&
+                if (StringUtils.equals(groupId, dependency.getGroupId()) &&
                     StringUtils.equals(artifactId, dependency.getArtifactId()) &&
                     StringUtils.equals(version, dependency.getVersion()) &&
                     StringUtils.equals(type, dependency.getType())) {

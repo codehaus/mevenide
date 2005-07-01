@@ -16,9 +16,8 @@
  */
 package org.mevenide.idea.util.ui.tree;
 
-import org.mevenide.idea.Res;
-
 import javax.swing.tree.DefaultMutableTreeNode;
+import org.mevenide.idea.Res;
 
 /**
  * @author Arik
@@ -40,18 +39,21 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
         this(pGoal, null, pPrereqs);
     }
 
-    public GoalTreeNode(final String pGoal, final String pDescription, final String[] pPrereqs) {
+    public GoalTreeNode(final String pGoal,
+                        final String pDescription,
+                        final String[] pPrereqs) {
         super(pGoal);
 
-        if(pGoal == null || pGoal.trim().length() == 0)
+        if (pGoal == null || pGoal.trim().length() == 0)
             throw new IllegalArgumentException(RES.get("empty.goal.name"));
 
-        if(pDescription == null || pDescription.trim().length() == 0 || pDescription.equalsIgnoreCase("null"))
+        if (pDescription == null || pDescription.trim().length() == 0 || pDescription.equalsIgnoreCase(
+            "null"))
             description = null;
         else
             description = pDescription;
 
-        if(pPrereqs == null)
+        if (pPrereqs == null)
             prereqs = new String[0];
         else
             prereqs = pPrereqs;
@@ -80,7 +82,8 @@ public class GoalTreeNode extends DefaultMutableTreeNode {
             return super.toString() + " - " + description;
     }
 
-    @Override public boolean getAllowsChildren() {
+    @Override
+    public boolean getAllowsChildren() {
         return false;
     }
 }

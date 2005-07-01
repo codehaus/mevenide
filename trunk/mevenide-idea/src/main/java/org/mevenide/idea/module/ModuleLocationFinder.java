@@ -18,14 +18,13 @@ package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
+import java.io.File;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.idea.global.MavenManager;
 
-import java.io.File;
-
 /**
- * A location finder which uses an IDEA module to find the Java home and uses the IDEA settings to find the
- * Maven home.
+ * A location finder which uses an IDEA module to find the Java home and uses the IDEA
+ * settings to find the Maven home.
  *
  * @author Arik
  */
@@ -34,7 +33,8 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
 
     /**
      * Creates an instance using the given module. The given module will be used to locate
-     * the appropriate Java home. The Maven home will be taken from the settings defined by the user.
+     * the appropriate Java home. The Maven home will be taken from the settings defined
+     * by the user.
      *
      * @param pModule the module to use
      */
@@ -46,10 +46,11 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
     /**
      * Use the Java home defined for the specified module.
      *
-     * @return the Java home defined for the module, or the default Java home, if not defined for it
+     * @return the Java home defined for the module, or the default Java home, if not
+     *         defined for it
      */
     public String getJavaHome() {
-        if(module == null)
+        if (module == null)
             return super.getJavaHome();
 
         final ProjectJdk jdk = ModuleSettings.getInstance(module).getJdk();
@@ -60,15 +61,15 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
     }
 
     /**
-     * Return the Maven home defined by the user in IDEA settings. If not defined there, lets the superclass
-     * try to guess its location.
+     * Return the Maven home defined by the user in IDEA settings. If not defined there,
+     * lets the superclass try to guess its location.
      *
      * @return maven home directory
      */
     public String getMavenHome() {
         final MavenManager mgr = MavenManager.getInstance();
         final File mavenHome = mgr.getMavenHome();
-        if(mavenHome == null || !mavenHome.exists())
+        if (mavenHome == null || !mavenHome.exists())
             return super.getMavenHome();
         else
             return mavenHome.getAbsolutePath();

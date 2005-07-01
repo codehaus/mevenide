@@ -16,18 +16,16 @@
  */
 package org.mevenide.idea.util.actions;
 
-import javax.swing.Icon;
-
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.project.Project;
+import javax.swing.*;
 
 /**
  * @author Arik
  */
 public abstract class AbstractAnAction extends AnAction {
-
     protected AbstractAnAction() {
     }
 

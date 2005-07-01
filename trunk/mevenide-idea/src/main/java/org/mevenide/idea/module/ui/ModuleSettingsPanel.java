@@ -16,17 +16,13 @@
  */
 package org.mevenide.idea.module.ui;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.util.ArrayList;
-import java.util.Collection;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-
 import com.intellij.openapi.module.Module;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.swing.*;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.idea.Res;
@@ -98,7 +94,7 @@ public class ModuleSettingsPanel extends JPanel {
 
     public void refreshGoals() throws Exception {
         final ModuleSettings moduleSettings = ModuleSettings.getInstance(module);
-        if(moduleSettings.getQueryContext() == null)
+        if (moduleSettings.getQueryContext() == null)
             goalsGrabber = new CustomGoalsGrabber("Not a Maven project");
         else {
             final ModuleLocationFinder finder = new ModuleLocationFinder(module);
@@ -109,14 +105,14 @@ public class ModuleSettingsPanel extends JPanel {
     }
 
     public Collection<String> getSelectedGoals() {
-        if(selectedGoalsModel == null)
+        if (selectedGoalsModel == null)
             return new ArrayList<String>(0);
 
         return selectedGoalsModel.getSelectedGoals();
     }
 
     public void setSelectedGoals(final Collection<String> pGoals) {
-        if(goalsGrabber == null)
+        if (goalsGrabber == null)
             throw new IllegalStateException(RES.get("goals.not.loaded"));
 
         selectedGoalsModel = new GoalsSelectionTreeModel(goalsGrabber);

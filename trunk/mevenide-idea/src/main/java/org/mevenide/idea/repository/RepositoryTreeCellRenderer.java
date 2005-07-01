@@ -1,10 +1,8 @@
 package org.mevenide.idea.repository;
 
-import java.awt.Component;
-import javax.swing.JTree;
-import javax.swing.Icon;
+import java.awt.*;
+import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
-
 import org.mevenide.idea.repository.model.MessageTreeNode;
 import org.mevenide.idea.repository.model.NodeDescriptor;
 import org.mevenide.idea.repository.model.RepoTreeNode;
@@ -15,7 +13,6 @@ import org.mevenide.repository.RepoPathElement;
  * @author Arik
  */
 public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
-
     private final Icon DEFAULT_CLOSED_ICON;
     private final Icon DEFAULT_OPEN_ICON;
     private final Icon DEFAULT_LEAF_ICON;
@@ -27,17 +24,19 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     /**
-     * If the given value is a {@link MessageTreeNode}, show its message. Otherwise, if the node is
-     * a {@link org.mevenide.idea.repository.model.RepoTreeNode}, render its {@link org.mevenide.idea.repository.model.RepoTreeNode#getNodeDescriptor()
-     * node descriptor}. Otherwise, renders the value's {@link Object#toString()}.
+     * If the given value is a {@link MessageTreeNode}, show its message. Otherwise, if
+     * the node is a {@link org.mevenide.idea.repository.model.RepoTreeNode}, render its
+     * {@link org.mevenide.idea.repository.model.RepoTreeNode#getNodeDescriptor() node
+     * descriptor}. Otherwise, renders the value's {@link Object#toString()}.
      */
-    @Override public Component getTreeCellRendererComponent(JTree tree,
-                                                            Object value,
-                                                            boolean sel,
-                                                            boolean expanded,
-                                                            boolean leaf,
-                                                            int row,
-                                                            boolean hasFocus) {
+    @Override
+    public Component getTreeCellRendererComponent(JTree tree,
+                                                  Object value,
+                                                  boolean sel,
+                                                  boolean expanded,
+                                                  boolean leaf,
+                                                  int row,
+                                                  boolean hasFocus) {
         if (value instanceof RepoTreeNode) {
             final NodeDescriptor desc = ((RepoTreeNode) value).getNodeDescriptor();
             switch (desc.getLevel()) {
@@ -66,7 +65,7 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
                     setLeafIcon(DEFAULT_LEAF_ICON);
             }
         }
-        else if(value instanceof MessageTreeNode) {
+        else if (value instanceof MessageTreeNode) {
             setOpenIcon(Icons.REPO_MSG);
             setClosedIcon(Icons.REPO_MSG);
             setLeafIcon(Icons.REPO_MSG);
@@ -131,43 +130,43 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
 
     private void setTypeIcons(final NodeDescriptor pDesc) {
         final String type = pDesc.getType();
-        if("jar".equals(type)) {
+        if ("jar".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_JAR_OPEN);
             setClosedIcon(Icons.REPO_TYPE_JAR_OPEN);
         }
-        else if("distribution".equals(type)) {
+        else if ("distribution".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_DIST_OPEN);
             setClosedIcon(Icons.REPO_TYPE_DIST_CLOSED);
         }
-        else if("pom".equals(type)) {
+        else if ("pom".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_POM_OPEN);
             setClosedIcon(Icons.REPO_TYPE_POM_OPEN);
         }
-        else if("license".equals(type)) {
+        else if ("license".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_LICENSE_OPEN);
             setClosedIcon(Icons.REPO_TYPE_LICENSE_CLOSED);
         }
-        else if("src.jar".equals(type)) {
+        else if ("src.jar".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_SRC_JAR_OPEN);
             setClosedIcon(Icons.REPO_TYPE_SRC_JAR_CLOSED);
         }
-        else if("javadoc.jar".equals(type)) {
+        else if ("javadoc.jar".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_JAVADOC_JAR_OPEN);
             setClosedIcon(Icons.REPO_TYPE_JAVADOC_JAR_CLOSED);
         }
-        else if("ejb".equals(type)) {
+        else if ("ejb".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_EJB_OPEN);
             setClosedIcon(Icons.REPO_TYPE_EJB_CLOSED);
         }
-        else if("war".equals(type)) {
+        else if ("war".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_WAR_OPEN);
             setClosedIcon(Icons.REPO_TYPE_WAR_CLOSED);
         }
-        else if("ear".equals(type)) {
+        else if ("ear".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_EAR_OPEN);
             setClosedIcon(Icons.REPO_TYPE_EAR_OPEN);
         }
-        else if("plugin".equals(type)) {
+        else if ("plugin".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_PLUGIN_OPEN);
             setClosedIcon(Icons.REPO_TYPE_PLUGIN_CLOSED);
         }
