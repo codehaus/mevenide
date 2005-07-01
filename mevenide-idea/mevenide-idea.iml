@@ -26,7 +26,12 @@
     <orderEntry type="library" name="mevenide-repository-0.2" level="project" />
     <orderEntry type="library" name="maven-1.0.2" level="project" />
     <orderEntry type="library" name="commons-httpclient-3.0-rc2" level="project" />
+    <orderEntry type="library" name="binding-1.0" level="project" />
     <orderEntryProperties />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ACTIVE_VCS_NAME" value="CVS" />
+    <option name="USE_PROJECT_VCS" value="true" />
   </component>
   <component name="org.mevenide.idea.module.ModuleSettings">
     <favoriteGoals>
