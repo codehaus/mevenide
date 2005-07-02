@@ -23,6 +23,9 @@ import javax.swing.*;
  * @author Arik
  */
 public abstract class Icons {
+    public static final Icon ADD_DEPENDENCY = icon("addExistingModule.png");
+    public static final Icon REMOVE_DEPENDENCY = icon("removeModule.png");
+
     public static final Icon BACK = icon("back.png");
     public static final Icon CANCEL = icon("cancel.png");
     public static final Icon DOWNLOAD = icon("download.png");
