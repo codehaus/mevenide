@@ -12,9 +12,9 @@ import org.apache.maven.util.HttpUtils;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.repository.util.RepositoryUtils;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
-import org.mevenide.idea.repository.util.RepositoryUtils;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
@@ -129,7 +129,12 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
             base = base + "/";
 
         final String url = base + relativePath;
-        downloadArtifact(url, destFile, host, port, user, passwd);
+        downloadArtifact(url,
+                         destFile,
+                         host,
+                         port,
+                         user,
+                         passwd);
     }
 
     public void downloadArtifact(final Module pModule,
@@ -138,7 +143,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
                                  final String pArtifactId,
                                  final String pVersion,
                                  final String pExtension)
-        throws ArtifactNotFoundException {
+            throws ArtifactNotFoundException {
         final ProgressIndicator indicator = IDEUtils.getProgressIndicator();
         if (indicator.isCanceled())
             return;
@@ -147,7 +152,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
         //acquire the remote repositories
         //
         final IRepositoryReader[] remoteRepos = RepositoryUtils.createRepoReaders(
-            false, pModule);
+                false, pModule);
 
         //
         //iterate the dependencies to download
@@ -187,7 +192,7 @@ public class ArtifactDownloadManager extends AbstractApplicationComponent {
 
     public void downloadArtifact(final Module pModule,
                                  final Dependency pDependency)
-        throws ArtifactNotFoundException {
+            throws ArtifactNotFoundException {
         downloadArtifact(pModule,
                          pDependency.getGroupId(),
                          pDependency.getType(),
