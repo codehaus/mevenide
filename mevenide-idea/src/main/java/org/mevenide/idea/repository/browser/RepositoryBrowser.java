@@ -79,6 +79,13 @@ public class RepositoryBrowser extends JPanel {
         add(treesPanel, BorderLayout.CENTER);
     }
 
+    protected DefaultActionGroup createToolBarActionGroup() {
+        final DefaultActionGroup actGroup = new DefaultActionGroup();
+        actGroup.add(new DownloadArtifactsAction(this));
+        actGroup.add(new RefreshRepoAction(this));
+        return actGroup;
+    }
+
     protected JComponent createToolBar() {
         final JPanel toolbarPanel = new JPanel(new BorderLayout());
 
@@ -105,9 +112,7 @@ public class RepositoryBrowser extends JPanel {
         //
         //create the action group to be used in the toolbar
         //
-        final DefaultActionGroup actGroup = new DefaultActionGroup();
-        actGroup.add(new DownloadArtifactsAction());
-        actGroup.add(new RefreshRepoAction());
+        final DefaultActionGroup actGroup = createToolBarActionGroup();
 
         //
         //create the action group toolbar and add it to the toolbar panel
