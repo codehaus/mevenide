@@ -24,6 +24,7 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
+import com.intellij.openapi.diagnostic.Logger;
 import java.io.File;
 import java.io.FileNotFoundException;
 import org.jdom.Element;
@@ -31,6 +32,8 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.log4j.Level;
 
 /**
  * This application component manages global Maven settings for IDEA.
@@ -149,6 +152,9 @@ public class MavenManager extends AbstractApplicationComponent
      * @todo Allow the user to specify never to both him/her again with the error message
      */
     public void initComponent() {
+        final Logger logger = Logger.getInstance(HttpMethodBase.class.getName());
+        logger.setLevel(Level.ERROR);
+        
         if (mavenHome == null) {
             //
             //maven home is null - try to guess
