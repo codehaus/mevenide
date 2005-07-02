@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.util;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;

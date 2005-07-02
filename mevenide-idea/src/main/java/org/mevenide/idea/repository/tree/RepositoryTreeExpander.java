@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.tree;
 
 import com.intellij.ide.TreeExpander;
 import javax.swing.*;

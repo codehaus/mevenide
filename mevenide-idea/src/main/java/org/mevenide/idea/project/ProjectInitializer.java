@@ -18,25 +18,24 @@ package org.mevenide.idea.project;
 
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.toolwindows.goals.GoalsToolWindowUI;
-import org.mevenide.idea.toolwindows.repository.RepositoryToolWindow;
+import org.mevenide.idea.toolwindows.repository.RepoToolWindow;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
  */
 public class ProjectInitializer extends AbstractProjectComponent {
-
     public ProjectInitializer(final Project pProject) {
         super(pProject);
     }
 
     public void projectOpened() {
         GoalsToolWindowUI.register(project);
-        RepositoryToolWindow.register(project);
+        RepoToolWindow.register(project);
     }
 
     public void projectClosed() {
         GoalsToolWindowUI.unregister(project);
-        RepositoryToolWindow.unregister(project);
+        RepoToolWindow.unregister(project);
     }
 }

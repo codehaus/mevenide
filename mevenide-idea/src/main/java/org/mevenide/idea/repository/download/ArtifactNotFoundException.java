@@ -1,7 +1,8 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.download;
 
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.repository.util.RepositoryUtils;
 
 /**
  * @author Arik

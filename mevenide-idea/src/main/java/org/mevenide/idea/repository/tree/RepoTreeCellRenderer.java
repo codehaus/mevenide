@@ -1,33 +1,32 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.tree;
 
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
-import org.mevenide.idea.repository.model.MessageTreeNode;
-import org.mevenide.idea.repository.model.NodeDescriptor;
-import org.mevenide.idea.repository.model.RepoTreeNode;
+import org.mevenide.idea.repository.tree.model.MessageNode;
+import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik
  */
-public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
+public class RepoTreeCellRenderer extends DefaultTreeCellRenderer {
     private final Icon DEFAULT_CLOSED_ICON;
     private final Icon DEFAULT_OPEN_ICON;
     private final Icon DEFAULT_LEAF_ICON;
 
-    public RepositoryTreeCellRenderer() {
+    public RepoTreeCellRenderer() {
         DEFAULT_CLOSED_ICON = getClosedIcon();
         DEFAULT_OPEN_ICON = getOpenIcon();
         DEFAULT_LEAF_ICON = getLeafIcon();
     }
 
     /**
-     * If the given value is a {@link MessageTreeNode}, show its message. Otherwise, if
-     * the node is a {@link org.mevenide.idea.repository.model.RepoTreeNode}, render its
-     * {@link org.mevenide.idea.repository.model.RepoTreeNode#getNodeDescriptor() node
-     * descriptor}. Otherwise, renders the value's {@link Object#toString()}.
+     * If the given value is a {@link org.mevenide.idea.repository.tree.model.MessageTreeNode},
+     * show its message. Otherwise, if the node is a {@link org.mevenide.idea.repository.tree.model.RepoTreeNode},
+     * render its {@link org.mevenide.idea.repository.tree.model.RepoTreeNode#getNodeDescriptor()
+     * node descriptor}. Otherwise, renders the value's {@link Object#toString()}.
      */
     @Override
     public Component getTreeCellRendererComponent(JTree tree,
@@ -38,7 +37,7 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
                                                   int row,
                                                   boolean hasFocus) {
         if (value instanceof RepoTreeNode) {
-            final NodeDescriptor desc = ((RepoTreeNode) value).getNodeDescriptor();
+            final RepoPathElement desc = ((RepoTreeNode) value).getPathElement();
             switch (desc.getLevel()) {
                 case RepoPathElement.LEVEL_GROUP:
                     setOpenIcon(Icons.REPO_GROUP_OPEN);
@@ -65,7 +64,7 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
                     setLeafIcon(DEFAULT_LEAF_ICON);
             }
         }
-        else if (value instanceof MessageTreeNode) {
+        else if (value instanceof MessageNode) {
             setOpenIcon(Icons.REPO_MSG);
             setClosedIcon(Icons.REPO_MSG);
             setLeafIcon(Icons.REPO_MSG);
@@ -80,7 +79,7 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
                                                   hasFocus);
     }
 
-    private void setArtifactIcons(final NodeDescriptor pDesc) {
+    private void setArtifactIcons(final RepoPathElement pDesc) {
         final String type = pDesc.getType();
         if ("jar".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_ARCHIVE);
@@ -128,7 +127,7 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
         }
     }
 
-    private void setTypeIcons(final NodeDescriptor pDesc) {
+    private void setTypeIcons(final RepoPathElement pDesc) {
         final String type = pDesc.getType();
         if ("jar".equals(type)) {
             setOpenIcon(Icons.REPO_TYPE_JAR_OPEN);
@@ -177,13 +176,32 @@ public class RepositoryTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     private String getTextForValue(final Object value) {
-        if (value instanceof MessageTreeNode)
-            return ((MessageTreeNode) value).getMessage();
+        if (value instanceof MessageNode)
+            return ((MessageNode) value).getMessage();
 
-        else if (value instanceof RepoTreeNode)
-            return ((RepoTreeNode) value).getNodeDescriptor().toDisplayString();
-
+        else if (value instanceof RepoTreeNode) {
+            final RepoTreeNode node = (RepoTreeNode) value;
+            final RepoPathElement pathElement = node.getPathElement();
+            return getTextForPathElement(pathElement);
+        }
         else
             return value == null ? "" : value.toString();
+    }
+
+    private String getTextForPathElement(final RepoPathElement pElt) {
+        switch(pElt.getLevel()) {
+            case RepoPathElement.LEVEL_ARTIFACT:
+                return pElt.getArtifactId();
+            case RepoPathElement.LEVEL_GROUP:
+                return pElt.getGroupId();
+            case RepoPathElement.LEVEL_ROOT:
+                return pElt.getURI().toString();
+            case RepoPathElement.LEVEL_TYPE:
+                return pElt.getType();
+            case RepoPathElement.LEVEL_VERSION:
+                return pElt.getVersion();
+            default:
+                return pElt.getURI().toString();
+        }
     }
 }
