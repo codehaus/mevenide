@@ -1,5 +1,6 @@
 package org.mevenide.idea.toolwindows.repository;
 
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -23,6 +24,13 @@ public class RepoToolWindow extends RepositoryBrowser {
      */
     public RepoToolWindow(final Project pProject) {
         super(pProject);
+    }
+
+    @Override
+    protected DefaultActionGroup createToolBarActionGroup() {
+        final DefaultActionGroup group = super.createToolBarActionGroup();
+        group.add(new AddAsDependencyAction(this));
+        return group;
     }
 
     /**
