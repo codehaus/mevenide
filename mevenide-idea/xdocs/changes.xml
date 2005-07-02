@@ -8,6 +8,18 @@
     <body>
 
         <release version="0.2" date="unreleased" description="New features">
+            <action dev="arikkfir" type="update">
+                Lenient POM editor! The POM editor is now lenient, ignoring
+                syntax errors, illegal tags, and even illegal XML syntax!
+                <p>
+                    This makes the POM editor much more usable, allowing
+                    you to "write first, fix later" the POM, while still
+                    leveraging the capabilities of a slick UI for the POM.
+                    This was made possible by utilizing IDEA's PSI which
+                    exposes XML structure even if it is not valid (kudos
+                    to JetBrains!).
+                </p>
+            </action>
             <action dev="arikkfir" type="add">
                 Refactored POM interpolation mechanism, by creating a JavaBean that
                 is backed by the underlying POM structure, thus exposing the
