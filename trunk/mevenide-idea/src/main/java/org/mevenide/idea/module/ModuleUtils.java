@@ -3,9 +3,12 @@ package org.mevenide.idea.module;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.SelectFromListDialog;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
@@ -18,6 +21,7 @@ import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.FileUtils;
+import javax.swing.*;
 
 /**
  * @author Arik
@@ -120,18 +124,22 @@ public abstract class ModuleUtils {
                 extendUrl = pContext.getResolver().resolveString(extendUrl);
 
             final VirtualFile pomVirtualFile = pPomFile.getVirtualFile();
-            final VirtualFile pomVirtualDir = pomVirtualFile.getParent();
-            final VirtualFile parentPom = pomVirtualDir.findFileByRelativePath(extendUrl);
-            if (parentPom != null) {
-                final FileDocumentManager docMgr = FileDocumentManager.getInstance();
-                final Document doc = docMgr.getDocument(parentPom);
-                final PsiDocumentManager psiMgr = PsiDocumentManager.getInstance(pPomFile.getProject());
-                PsiFile psiFile = psiMgr.getCachedPsiFile(doc);
-                if (psiFile == null)
-                    psiFile = psiMgr.getPsiFile(doc);
+            if(pomVirtualFile != null) {
+                final VirtualFile pomVirtualDir = pomVirtualFile.getParent();
+                if (pomVirtualDir != null) {
+                    final VirtualFile parentPom = pomVirtualDir.findFileByRelativePath(extendUrl);
+                    if (parentPom != null) {
+                        final FileDocumentManager docMgr = FileDocumentManager.getInstance();
+                        final Document doc = docMgr.getDocument(parentPom);
+                        final PsiDocumentManager psiMgr = PsiDocumentManager.getInstance(pPomFile.getProject());
+                        PsiFile psiFile = psiMgr.getCachedPsiFile(doc);
+                        if (psiFile == null)
+                            psiFile = psiMgr.getPsiFile(doc);
 
-                final XmlFile xmlFile = (XmlFile) psiFile;
-                Collections.addAll(deps, getPomDependencies(pContext, xmlFile));
+                        final XmlFile xmlFile = (XmlFile) psiFile;
+                        Collections.addAll(deps, getPomDependencies(pContext, xmlFile));
+                    }
+                }
             }
         }
 
@@ -142,5 +150,60 @@ public abstract class ModuleUtils {
         final ModuleSettings settings = ModuleSettings.getInstance(pModule);
         final IQueryContext ctx = settings.getQueryContext();
         return getPomDependencies(ctx, getModulePomXmlFile(pModule));
+    }
+
+    public static Module selectMavenModule(final Project pProject,
+                                           final SelectFromListDialog.ToStringAspect pToStringAspect) {
+        final Module[] modules = ModuleManager.getInstance(pProject).getModules();
+        return selectMavenModule(modules, pToStringAspect);
+    }
+
+    public static Module selectMavenModule(final Module[] pModules,
+                                           final SelectFromListDialog.ToStringAspect pToStringAspect) {
+        final Module[] mavenModules = ModuleUtils.selectMavenModules(pModules);
+
+        if (mavenModules.length == 0)
+            return null;
+        else if (mavenModules.length == 1)
+            return mavenModules[0];
+        else {
+            final SelectFromListDialog dlg = new SelectFromListDialog(
+                    mavenModules[0].getProject(),
+                    mavenModules,
+                    pToStringAspect,
+                    "Please select a local repository",
+                    ListSelectionModel.SINGLE_SELECTION);
+
+            dlg.show();
+            if (!dlg.isOK())
+                return null;
+
+            final Object[] selection = dlg.getSelection();
+            if (selection == null || selection.length == 0)
+                return null;
+
+            return (Module) selection[0];
+        }
+    }
+
+    public static Module[] selectMavenModules(final Project pProject) {
+        return selectMavenModules(ModuleManager.getInstance(pProject).getModules());
+    }
+
+    public static Module[] selectMavenModules(final Module... pModules) {
+        if(pModules == null || pModules.length == 0)
+            return new Module[0];
+
+        final Set<Module> modules = new HashSet<Module>(pModules.length);
+        for (Module module : pModules) {
+            final ModuleSettings settings = ModuleSettings.getInstance(module);
+            final IQueryContext context = settings.getQueryContext();
+            if (context == null)
+                continue;
+
+            modules.add(module);
+        }
+
+        return modules.toArray(new Module[modules.size()]);
     }
 }
