@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Mevenide Team
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,6 +17,8 @@
 
 package org.mevenide.netbeans.j2ee;
 
+import java.io.IOException;
+import java.math.BigDecimal;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
@@ -24,7 +26,10 @@ import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.api.common.J2eeProjectConstants;
+import org.netbeans.modules.j2ee.dd.api.ejb.DDProvider;
+import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -38,7 +43,7 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
     public MavenEjbJarImpl(MavenProject proj) {
         project = proj;
     }
-
+    
     /**
      */
     public FileObject getDeploymentDescriptor() {
@@ -50,13 +55,23 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
         // WHAT to return here?
         return null;
     }
-
+    
     public String getJ2eePlatformVersion() {
+        DDProvider prov = DDProvider.getDefault();
+        FileObject dd = getDeploymentDescriptor();
+        if (dd != null) {
+            try {
+                EjbJar ejb = prov.getDDRoot(dd);
+                String ejbVersion = ejb.getVersion().toString();
+                return ejbVersion;
+            } catch (IOException exc) {
+                ErrorManager.getDefault().notify(exc);
+            }
+        }
         // hardwire?
-        return J2eeProjectConstants.J2EE_13_LEVEL;
-//        J2eeProjectConstants.J2EE_14_LEVEL;
+        return EjbJar.VERSION_2_0;
     }
-
+    
     public FileObject getMetaInf() {
         FileObject fo = FileUtilities.getFileObjectForProperty("maven.ejb.src", project.getPropertyResolver()); //NOI18N
         if (fo != null) {
@@ -90,8 +105,8 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
             }
         }
         return toRet;
-    }    
-        
+    }
+    
     public boolean isValid() {
         return getDeploymentDescriptor() != null;
     }

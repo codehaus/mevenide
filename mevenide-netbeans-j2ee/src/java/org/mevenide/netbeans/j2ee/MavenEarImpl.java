@@ -17,6 +17,7 @@
 
 package org.mevenide.netbeans.j2ee;
 
+import java.io.IOException;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
@@ -24,8 +25,11 @@ import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.api.common.J2eeProjectConstants;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
+import org.netbeans.modules.j2ee.dd.api.application.Application;
+import org.netbeans.modules.j2ee.dd.api.application.DDProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.web.api.webmodule.WebModule;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -63,9 +67,20 @@ public class MavenEarImpl implements EarImplementation {
     }
 
     public String getJ2eePlatformVersion() {
+        DDProvider prov = DDProvider.getDefault();
+        FileObject dd = getDeploymentDescriptor();
+        if (dd != null) {
+            try {
+                Application app = prov.getDDRoot(dd);
+                String appVersion = app.getVersion().toString();
+                return appVersion;
+            } catch (IOException exc) {
+                ErrorManager.getDefault().notify(exc);
+            }
+        }
         // hardwire?
         return J2eeProjectConstants.J2EE_13_LEVEL;
-//        J2eeProjectConstants.J2EE_14_LEVEL;        
+//        J2eeProjectConstants.J2EE_14_LEVEL;  
     }
 
     public FileObject getMetaInf() {

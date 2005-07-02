@@ -153,6 +153,16 @@
             <version>0.5</version>
             <type>jar</type>
         </dependency>
+        
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-netbeans-modules-j2ee-dd</artifactId>
+            <version>1.4</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>        
     </dependencies>
     <build>
         <sourceDirectory>src/java</sourceDirectory>

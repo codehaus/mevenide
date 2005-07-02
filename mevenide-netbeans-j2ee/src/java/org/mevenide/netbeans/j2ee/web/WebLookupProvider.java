@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.web;
+package org.mevenide.netbeans.j2ee.web;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
