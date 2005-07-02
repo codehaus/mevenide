@@ -77,7 +77,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
     private BeanTreeView btv;
     private boolean initialized = false;
     private boolean isResolvingValues = false;
-    private OriginChange ocDummyDependency;
+    private static OriginChange ocDummyDependency;
     private OriginChange ocDummyOverride;
     private List values = new ArrayList();
     private DependencyPOMChange currentDep;
@@ -567,7 +567,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                        ocDummyDependency, false);
         
         DependencyEditor ed = new DependencyEditor(project, change);
-        DialogDescriptor dd = new DialogDescriptor(ed, "title");
+        DialogDescriptor dd = new DialogDescriptor(ed, "Add Dependency");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             HashMap props = ed.getProperties();
@@ -595,6 +595,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         }
     }
     
+
     
     private void populateChangeInstances() {    
         Project[] projs =  project.getContext().getPOMContext().getProjectLayers();
