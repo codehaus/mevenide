@@ -16,6 +16,7 @@
  */
 
 package org.mevenide.netbeans.project.nodes;
+
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -35,8 +36,10 @@ import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyEditor;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;
+import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -51,7 +54,6 @@ import org.openide.util.lookup.Lookups;
  */
 class DependenciesNode extends AbstractNode {
     private MavenProject project;
-    
     DependenciesNode(MavenProject mavproject) {
         super(new DependenciesChildren(mavproject));
         setName("Dependencies"); //NOI18N
@@ -63,16 +65,16 @@ class DependenciesNode extends AbstractNode {
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
         retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/mevenide/netbeans/project/resources/libraries-badge.png"),
-                        8, 8);
+                Utilities.loadImage("org/mevenide/netbeans/project/resources/libraries-badge.png"),
+                8, 8);
         return retValue;
     }
     
     public java.awt.Image getOpenedIcon(int param) {
         java.awt.Image retValue = super.getOpenedIcon(param);
         retValue = Utilities.mergeImages(retValue,
-                      Utilities.loadImage("org/mevenide/netbeans/project/resources/libraries-badge.png"),
-                      8, 8);
+                Utilities.loadImage("org/mevenide/netbeans/project/resources/libraries-badge.png"),
+                8, 8);
         return retValue;
     }
     
@@ -82,10 +84,11 @@ class DependenciesNode extends AbstractNode {
     
     private MavenProject getProject() {
         return project;
-    } 
+    }
     
     private static class DependenciesChildren extends Children.Keys implements PropertyChangeListener {
         private MavenProject project;
+        List deps;
         public DependenciesChildren(MavenProject proj) {
             super();
             project = proj;
@@ -95,7 +98,8 @@ class DependenciesNode extends AbstractNode {
             DependencyPOMChange combo = (DependencyPOMChange)obj;
             Lookup look = Lookups.fixed(new Object[] {
                 combo,
-                project
+                project, 
+                deps
             });
             return new Node[] { new DependencyNode(look, true) };
         }
@@ -121,19 +125,19 @@ class DependenciesNode extends AbstractNode {
         
         private void regenerateKeys() {
             Project[] projs = project.getContext().getPOMContext().getProjectLayers();
-            List dps = new ArrayList();
+            deps = new ArrayList();
             for (int i = 0; i < projs.length; i++) {
-               List ones = projs[i].getDependencies();
-               if (ones != null) {
-                   Iterator it = ones.iterator();
-                   while (it.hasNext()) {
-                       Dependency dep = (Dependency)it.next();
-                       dps.add(DependencyPOMChange.createChangeInstance(dep, i, new HashMap(),
+                List ones = projs[i].getDependencies();
+                if (ones != null) {
+                    Iterator it = ones.iterator();
+                    while (it.hasNext()) {
+                        Dependency dep = (Dependency)it.next();
+                        deps.add(DependencyPOMChange.createChangeInstance(dep, i, new HashMap(),
                                 LocationComboFactory.createPOMChange(project, false), false));
-                   }
-               }
+                    }
+                }
             }
-            setKeys(dps);
+            setKeys(deps);
         }
     }
     
@@ -148,11 +152,18 @@ class DependenciesNode extends AbstractNode {
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (ret == NotifyDescriptor.OK_OPTION) {
                 HashMap props = ed.getProperties();
-//                setNewValues(ed.getValues(), props);
                 MavenSettings.getDefault().checkDependencyProperties(props.keySet());
-                //TODO
+                change.setNewValues(ed.getValues(), props);
+                try {
+                    NbProjectWriter writer = new NbProjectWriter(project);
+                    List changes = new ArrayList();//DependencyNode.createChangeInstancesList(project, new HashMap());
+                    changes.addAll(((DependenciesChildren)getChildren()).deps);
+                    changes.add(change);
+                    writer.applyChanges(changes);
+                } catch (Exception exc) {
+                    ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+                }
             }
-            
         }
     }
 }

@@ -24,6 +24,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -38,24 +40,26 @@ import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
+import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.util.MevenideUtils;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.DeleteAction;
 import org.openide.actions.PropertiesAction;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
-import org.openide.util.lookup.Lookups;
+import org.openide.util.actions.NodeAction;
+
 
 /**
  * node representing a dependency
@@ -149,6 +153,9 @@ public class DependencyNode extends AbstractNode {
         if (dependency.getValue("groupId") != null) { 
             snap.setGroupId(dependency.getValue("groupId"));
         }
+        if (dependency.getValue("id") != null) {
+            snap.setId(dependency.getValue("groupId"));
+        }
         if (dependency.getValue("version") != null) {
             snap.setVersion(dependency.getValue("version"));
         }
@@ -201,10 +208,18 @@ public class DependencyNode extends AbstractNode {
     }
     
     public Action[] getActions( boolean context ) {
-        if ( actions == null ) {
+        if (!checkLocal()) {
+            actions = new Action[] {
+                DownloadAction.get(DownloadAction.class),
+                new EditAction(),
+                RemoveDepAction.get(RemoveDepAction.class),
+                null,
+                PropertiesAction.get(PropertiesAction.class)
+            };
+        } else {
             actions = new Action[] {
                 new EditAction(),
-                DeleteAction.get(DeleteAction.class),
+                RemoveDepAction.get(RemoveDepAction.class),
                 null,
                 PropertiesAction.get(PropertiesAction.class)
             };
@@ -321,6 +336,8 @@ public class DependencyNode extends AbstractNode {
         super.destroy();
     }
     
+    
+    
     private class EditAction extends AbstractAction {
         public EditAction() {
             putValue(Action.NAME, "Edit...");
@@ -333,13 +350,133 @@ public class DependencyNode extends AbstractNode {
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (ret == NotifyDescriptor.OK_OPTION) {
                 HashMap props = ed.getProperties();
-//                setNewValues(ed.getValues(), props);
                 MavenSettings.getDefault().checkDependencyProperties(props.keySet());
-                //TODO
+                change.setNewValues(ed.getValues(), props);
+                try {
+                    NbProjectWriter writer = new NbProjectWriter(project);
+                    List changes = (List)getLookup().lookup(List.class);
+                    writer.applyChanges(changes);
+                } catch (Exception exc) {
+                    ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+                }
             }
-            
-            
         }
     }
+    
+    private static class DownloadAction extends NodeAction {
+
+        public DownloadAction() {
+        }
+        
+        protected boolean enable(org.openide.nodes.Node[] node) {
+            if (node != null && node.length > 0) {
+                for (int i = 0; i < node.length; i++) {
+                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
+                    if (obj == null) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public String getName() {
+            return "Download artifact";
+        }
+
+        protected void performAction(org.openide.nodes.Node[] node) {
+            if (node != null && node.length > 0) {
+                for (int i = 0; i < node.length; i++) {
+                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
+                    if (obj != null) {
+                    }
+                }
+            }
+        }
+        
+        public HelpCtx getHelpCtx() {
+            return HelpCtx.DEFAULT_HELP;
+        }
+    }
+    
+    private static class RemoveDepAction extends NodeAction {
+
+        public RemoveDepAction() {
+        }
+        
+        protected boolean enable(org.openide.nodes.Node[] node) {
+            MavenProject project = null;
+            if (node != null && node.length > 0) {
+                for (int i = 0; i < node.length; i++) {
+                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
+                    if (obj == null) {
+                        return false;
+                    }
+                    Object proj = node[i].getLookup().lookup(MavenProject.class);
+                    if (project == null) {
+                        project = (MavenProject)proj;
+                    } else {
+                        if (project != proj) {
+                            return false;
+                        }
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        public String getName() {
+            return "Delete";
+        }
+
+        protected void performAction(org.openide.nodes.Node[] node) {
+            List toDelete = new ArrayList();
+            MavenProject project = null;
+            if (node != null && node.length > 0) {
+                for (int i = 0; i < node.length; i++) {
+                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
+                    if (obj != null) {
+                        toDelete.add(obj);
+                    }
+                    if (project == null) {
+                        project = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
+                    }
+                }
+            }
+            if (project == null) {
+                return;
+            }
+            if (toDelete.size() > 0) {
+                NotifyDescriptor desc = new NotifyDescriptor.Confirmation(
+                        "Are you sure you want to remove " + toDelete.size() + " dependencies?",
+                        "Remove Dependencies", 
+                        NotifyDescriptor.YES_NO_OPTION,
+                        NotifyDescriptor.QUESTION_MESSAGE);
+                Object ret = DialogDisplayer.getDefault().notify(desc);
+                if (ret == NotifyDescriptor.YES_OPTION) {
+                    try {
+                        NbProjectWriter writer = new NbProjectWriter(project);
+                        List changes = (List)node[0].getLookup().lookup(List.class);
+                        changes.removeAll(toDelete);
+                        writer.applyChanges(changes);
+                    } catch (Exception exc) {
+                        ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+                    }
+                    
+                }
+            }
+        }
+        
+        public HelpCtx getHelpCtx() {
+            return HelpCtx.DEFAULT_HELP;
+        }
+
+        protected boolean asynchronous() {
+            return true;
+        }
+        
+    }    
 }
 
