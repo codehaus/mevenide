@@ -1,19 +1,15 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.util;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogBuilder;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.ScrollPaneFactory;
-import java.util.ArrayList;
-import java.util.List;
 import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.model.NodeDescriptor;
-import org.mevenide.idea.repository.model.RepoTreeNode;
-import org.mevenide.idea.repository.model.RepositoryTreeModel;
+import org.mevenide.idea.repository.tree.RepoTree;
+import org.mevenide.idea.repository.browser.RepositoryBrowser;
+import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 
@@ -21,12 +17,6 @@ import org.mevenide.repository.RepoPathElement;
  * @author Arik
  */
 public class SelectRepositoryItemDialog {
-    /**
-     * Resources
-     */
-    private static final Res RES = Res.getInstance(SelectRepositoryItemDialog.class);
-
-    private IRepositoryReader[] repoReaders = new IRepositoryReader[0];
     private boolean allowingRoot = false;
     private boolean allowingGroups = false;
     private boolean allowingTypes = false;
@@ -82,43 +72,19 @@ public class SelectRepositoryItemDialog {
         allowingVersions = pAllowingVersions;
     }
 
-    public IRepositoryReader[] getRepositoryReaders() {
-        return repoReaders;
-    }
-
-    public void setRepositoryReaders(final IRepositoryReader[] pReaders) {
-        if (pReaders == null)
-            throw new IllegalArgumentException(RES.get("null.arg", "pReaders"));
-        repoReaders = pReaders;
-    }
-
-    public RepoTreeNode[] show(final Project pProject) {
-        final RepositoryTreeModel model = new RepositoryTreeModel(repoReaders);
-        final RepositoryTree tree = new RepositoryTree(model);
-        final JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(tree);
-
+    public RepoPathElement[] show(final Project pProject) {
         final DialogBuilder builder = new DialogBuilder(pProject);
+        final RepositoryBrowser browser = new DialogRepoBrowser(pProject, builder);
+
         builder.addOkAction();
         builder.addCancelAction();
-        builder.setCenterPanel(scrollPane);
+        builder.setCenterPanel(browser);
         builder.setTitle(title == null || title.trim().length() == 0 ? "Browse Repository" : title);
         builder.setOkActionEnabled(false);
 
-        tree.addTreeSelectionListener(new MyTreeSelectionListener(builder));
-
         final int exitCode = builder.show();
-        if (exitCode == DialogWrapper.OK_EXIT_CODE) {
-
-            final TreePath[] selectedPaths = tree.getSelectionPaths();
-            final List<RepoTreeNode> nodes = new ArrayList<RepoTreeNode>(selectedPaths.length);
-            for (TreePath path : selectedPaths) {
-                final Object node = path.getLastPathComponent();
-                if (node instanceof RepoTreeNode)
-                    nodes.add((RepoTreeNode) node);
-            }
-
-            return nodes.toArray(new RepoTreeNode[nodes.size()]);
-        }
+        if (exitCode == DialogWrapper.OK_EXIT_CODE)
+            return browser.getSelectedItems();
         else
             return null;
     }
@@ -145,7 +111,7 @@ public class SelectRepositoryItemDialog {
                     return false;
 
                 final RepoTreeNode node = (RepoTreeNode) value;
-                final NodeDescriptor desc = node.getNodeDescriptor();
+                final RepoPathElement desc = node.getPathElement();
                 switch (desc.getLevel()) {
                     case RepoPathElement.LEVEL_GROUP:
                         if (!allowingGroups)
@@ -171,6 +137,23 @@ public class SelectRepositoryItemDialog {
             }
 
             return true;
+        }
+    }
+
+    private class DialogRepoBrowser extends RepositoryBrowser {
+        private final SelectRepositoryItemDialog.MyTreeSelectionListener selectionListener;
+
+        public DialogRepoBrowser(final Project pProject,
+                                 final DialogBuilder pBuilder) {
+            super(pProject);
+            selectionListener = new MyTreeSelectionListener(pBuilder);
+        }
+
+        @Override
+        protected RepoTree addRepo(final IRepositoryReader pRepo) {
+            final RepoTree tree = super.addRepo(pRepo);
+            tree.addTreeSelectionListener(selectionListener);
+            return tree;
         }
     }
 }

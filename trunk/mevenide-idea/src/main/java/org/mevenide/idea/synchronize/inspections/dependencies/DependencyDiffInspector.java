@@ -11,7 +11,7 @@ import java.util.Set;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleUtils;
-import org.mevenide.idea.repository.RepositoryUtils;
+import org.mevenide.idea.repository.util.RepositoryUtils;
 import org.mevenide.idea.synchronize.AbstractProblemInfo;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.synchronize.inspections.AbstractModuleInspector;

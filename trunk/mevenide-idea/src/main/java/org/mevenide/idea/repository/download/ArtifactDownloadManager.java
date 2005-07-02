@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository;
+package org.mevenide.idea.repository.download;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
@@ -14,6 +14,7 @@ import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
+import org.mevenide.idea.repository.util.RepositoryUtils;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;

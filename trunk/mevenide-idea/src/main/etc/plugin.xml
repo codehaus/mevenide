@@ -31,7 +31,7 @@
             <implementation-class>org.mevenide.idea.editor.pom.PomFileEditorProvider</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.repository.ArtifactDownloadManager</implementation-class>
+            <implementation-class>org.mevenide.idea.repository.download.ArtifactDownloadManager</implementation-class>
         </component>
     </application-components>
 
