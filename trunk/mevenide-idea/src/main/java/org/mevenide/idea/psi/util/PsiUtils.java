@@ -56,8 +56,6 @@ public abstract class PsiUtils {
      */
     public static XmlFile findXmlFile(final Project pProject,
                                       final Document pDocument) {
-        final FileDocumentManager fileDocMgr = FileDocumentManager.getInstance();
-        final VirtualFile file = fileDocMgr.getFile(pDocument);
         final PsiDocumentManager psiDocMgr = PsiDocumentManager.getInstance(pProject);
 
         PsiFile psiFile = psiDocMgr.getCachedPsiFile(pDocument);
@@ -67,8 +65,13 @@ public abstract class PsiUtils {
         if (psiFile == null || psiFile instanceof XmlFile)
             return (XmlFile) psiFile;
 
-        throw new IllegalArgumentException(RES.get("not.xml.document",
-                                                   psiFile.getVirtualFile().getPath()));
+        final VirtualFile virtualFile = psiFile.getVirtualFile();
+        final String path;
+        if(virtualFile != null)
+            path = virtualFile.getPath();
+        else
+            path = "No virtual file.";
+        throw new IllegalArgumentException(RES.get("not.xml.document", path));
     }
 
     /**
@@ -84,6 +87,11 @@ public abstract class PsiUtils {
     public static XmlFile findXmlFile(final Module pModule,
                                       final Document pDocument) {
         return findXmlFile(pModule.getProject(), pDocument);
+    }
+
+    public static XmlFile findXmlFile(final Module pModule,
+                                      final VirtualFile pFile) {
+        return findXmlFile(pModule.getProject(), pFile);
     }
 
     public static XmlTag[] getPath(final XmlTag pTag) {
