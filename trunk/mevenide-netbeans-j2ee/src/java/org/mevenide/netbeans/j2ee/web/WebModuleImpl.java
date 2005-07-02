@@ -15,10 +15,14 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.web;
+package org.mevenide.netbeans.j2ee.web;
 
+import java.io.IOException;
+import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
+import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.mevenide.netbeans.project.*;
 
@@ -42,7 +46,20 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getJ2eePlatformVersion() {
-        //TODO - how to figure?
+        DDProvider prov = DDProvider.getDefault();
+        FileObject dd = getDeploymentDescriptor();
+        if (dd != null) {
+            try {
+                WebApp wa = prov.getDDRoot(dd);
+                String waVersion = wa.getVersion() ;
+
+                if(WebApp.VERSION_2_4.equals(waVersion)) {
+                    return WebModule.J2EE_14_LEVEL;
+                }
+            } catch (IOException exc) {
+                ErrorManager.getDefault().notify(exc);
+            }
+        }
         return WebModule.J2EE_13_LEVEL;
     }
 

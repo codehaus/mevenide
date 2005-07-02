@@ -15,10 +15,8 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.web;
+package org.mevenide.netbeans.j2ee.web;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
@@ -29,11 +27,10 @@ import org.mevenide.netbeans.project.*;
 
 /**
  * web module provider implementation for maven project type.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class WebModuleProviderImpl implements WebModuleProvider {
     
-    private static final Log logger = LogFactory.getLog(WebModuleProvider.class);
     private MavenProject project;
     public WebModuleProviderImpl(MavenProject proj) {
         project = proj;
