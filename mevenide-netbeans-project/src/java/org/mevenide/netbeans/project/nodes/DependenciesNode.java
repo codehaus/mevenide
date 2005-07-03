@@ -37,6 +37,7 @@ import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyEditor;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
+import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -154,11 +155,45 @@ class DependenciesNode extends AbstractNode {
                 HashMap props = ed.getProperties();
                 MavenSettings.getDefault().checkDependencyProperties(props.keySet());
                 change.setNewValues(ed.getValues(), props);
+                IContentProvider pr = change.getChangedContent();
+                String artifactId = pr.getValue("artifactId");
+                String groupId = pr.getValue("groupId");
+                String type = pr.getValue("type");
+                List changes = new ArrayList();//DependencyNode.createChangeInstancesList(project, new HashMap());
+                changes.addAll(((DependenciesChildren)getChildren()).deps);
+                Iterator it = changes.iterator();
+                boolean reused = false;
+                while (it.hasNext()) {
+                    DependencyPOMChange element = (DependencyPOMChange)it.next();
+                    IContentProvider prov = element.getChangedContent();
+                    String depArtifactId = prov.getValue("artifactId");
+                    String depGroupId = prov.getValue("groupId");
+                    String depId = prov.getValue("id");
+                    String depType = prov.getValue("type");
+                    if (((artifactId.equals(depArtifactId) && 
+                          groupId.equals(depGroupId))
+                       || (artifactId.equals(groupId) && 
+                           artifactId.equals(depId))
+                        ) && (type.equals(depType) || (type.equals("jar") && depType == null))) 
+                    {
+                        NotifyDescriptor d2 = new NotifyDescriptor.Confirmation(
+                                "The project already has a dependency with '" + groupId + ":" + artifactId + "' id. Replace it?",
+                                "Dependency conflict", 
+                                NotifyDescriptor.YES_NO_OPTION,
+                                NotifyDescriptor.QUESTION_MESSAGE);
+                        Object ret2 = DialogDisplayer.getDefault().notify(d2);
+                        if (ret2 != NotifyDescriptor.YES_OPTION) {
+                            return;
+                        }
+                        element.setNewValues(ed.getValues(), props);
+                        reused = true;
+                    }
+                }
+                if (!reused) {
+                    changes.add(change);
+                }
                 try {
                     NbProjectWriter writer = new NbProjectWriter(project);
-                    List changes = new ArrayList();//DependencyNode.createChangeInstancesList(project, new HashMap());
-                    changes.addAll(((DependenciesChildren)getChildren()).deps);
-                    changes.add(change);
                     writer.applyChanges(changes);
                 } catch (Exception exc) {
                     ErrorManager.getDefault().notify(ErrorManager.USER, exc);
