@@ -31,6 +31,7 @@ import java.util.ResourceBundle;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.internal.resources.Workspace;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
@@ -47,18 +48,20 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.ui.IWindowListener;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
+import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
+import org.mevenide.ui.eclipse.pom.manager.DefaultPOMManager;
+import org.mevenide.ui.eclipse.pom.manager.POMManager;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.util.ExceptionHandler;
 import org.mevenide.ui.eclipse.util.FileUtils;
+import org.mevenide.ui.eclipse.util.LifecycleListener;
 import org.mevenide.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -79,9 +82,6 @@ public class Mevenide extends AbstractUIPlugin {
 
     private static Mevenide plugin;
 
-    //we need it to update the menu correctly in the builder 
-    private IWorkbenchWindow lastActiveWindow;
-
     private Object lock = new Object();
 
     public static final String NATURE_ID = "org.mevenide.ui.mavennature"; //$NON-NLS-1$
@@ -96,6 +96,8 @@ public class Mevenide extends AbstractUIPlugin {
 
     private ResourceBundle resourceBundle;
     private ExceptionHandler exceptionHandler;
+    private POMManager pomManager;
+    private MavenClasspathManager mavenClasspathManager;
 
     private String currentDir;
     private IProject project;
@@ -153,25 +155,19 @@ public class Mevenide extends AbstractUIPlugin {
         super.start(context);
         this.exceptionHandler = new ExceptionHandler(this);
 
+        final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        ((Workspace)workspace).addLifecycleListener(new LifecycleListener(this));
+        // NOTE: There is no way to remove a lifecycle listener.
+
         customLocationFinder = new CustomLocationFinder();
         loadPreferences();
         initEnvironment();
-        //DynamicPreferencePageFactory.getFactory().createPages();
-        PlatformUI.getWorkbench().addWindowListener(new IWindowListener() {
-            public void windowOpened(IWorkbenchWindow window) {
-                lastActiveWindow = window;
-            }
 
-            public void windowActivated(IWorkbenchWindow window) {
-                lastActiveWindow = window;
-            }
+        this.pomManager = new DefaultPOMManager();
+        ((DefaultPOMManager)this.pomManager).initialize();
 
-            public void windowClosed(IWorkbenchWindow window) {
-            }
-
-            public void windowDeactivated(IWorkbenchWindow window) {
-            }
-        });
+        this.mavenClasspathManager = new MavenClasspathManager();
+        this.mavenClasspathManager.initialize();
     }
 
     protected void initializeImageRegistry(ImageRegistry reg) {
@@ -185,6 +181,12 @@ public class Mevenide extends AbstractUIPlugin {
      * osgi shutdown : dispose resources
      */
     public void stop(BundleContext context) throws Exception {
+        this.mavenClasspathManager.dispose();
+        this.mavenClasspathManager = null;
+
+        ((DefaultPOMManager)this.pomManager).dispose();
+        this.pomManager = null;
+
         super.stop(context);
     }
 
@@ -279,14 +281,13 @@ public class Mevenide extends AbstractUIPlugin {
     public ResourceBundle getResourceBundle() {
         if (resourceBundle != null) {
             return resourceBundle;
-        } else {
-            synchronized (lock) {
-                if (resourceBundle == null) {
-                    resourceBundle = ResourceBundle
-                            .getBundle("MavenPluginResources"); //$NON-NLS-1$
-                }
-                return resourceBundle;
+        }
+
+        synchronized (lock) {
+            if (resourceBundle == null) {
+                resourceBundle = ResourceBundle.getBundle("MavenPluginResources"); //$NON-NLS-1$
             }
+            return resourceBundle;
         }
     }
 
@@ -605,5 +606,14 @@ public class Mevenide extends AbstractUIPlugin {
      */
     public static final void displayError(String title, String message, Throwable t) {
         getInstance().getExceptionHandler().displayError(title, message, t);
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the POM manager
+     */
+    public POMManager getPOMManager() {
+        return this.pomManager;
     }
 }
