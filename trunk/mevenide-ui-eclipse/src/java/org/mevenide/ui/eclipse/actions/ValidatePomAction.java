@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -30,8 +28,6 @@ import org.mevenide.ui.eclipse.pom.validation.ValidationJob;
  */
 public class ValidatePomAction extends AbstractMevenideAction {
 	
-	private static Log log = LogFactory.getLog(ValidatePomAction.class);
-	 
 	private IFile pomFile;
 	
 	public void run(IAction action) {

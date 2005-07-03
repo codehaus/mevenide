@@ -33,7 +33,6 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate  {
-    private IWorkbenchWindow window;
     protected IProject currentProject;
 	
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -69,6 +68,5 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
     }
 
     public void init(IWorkbenchWindow window) {
-        this.window = window;
     }
 }
