@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.wizard;
 
 import java.io.File;
@@ -448,8 +449,6 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 
 	private String fInitialName;
 	
-	private Project fProject;
-	
 	/**
 	 *  
 	 */
@@ -460,7 +459,6 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 		setTitle(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.page.title")); //$NON-NLS-1$
 		setDescription(Mevenide.getResourceString("MavenProjectWizardBasicSettingsPage.page.description")); //$NON-NLS-1$
 		fInitialName= ""; //$NON-NLS-1$
-		fProject = new Project();
 	}
 
 	public void createControl(Composite parent) {

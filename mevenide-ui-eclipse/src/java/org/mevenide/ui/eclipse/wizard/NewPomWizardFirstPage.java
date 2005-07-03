@@ -1,20 +1,20 @@
-/*
- * ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+/* ==========================================================================
+ * Copyright 2003-2005 MevenIDE Project
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.wizard;
 
 import java.io.ByteArrayInputStream;
@@ -22,18 +22,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceStatus;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,10 +44,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.actions.WorkspaceModifyOperation;
 import org.eclipse.ui.dialogs.ContainerGenerator;
-import org.eclipse.ui.dialogs.ContainerSelectionDialog;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.ide.misc.ResourceAndContainerGroup;
 import org.mevenide.ui.eclipse.IImageRegistry;
@@ -64,9 +61,6 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
     private static final Log log = LogFactory.getLog(NewPomWizardFirstPage.class);
     
     private static final int SIZING_CONTAINER_GROUP_HEIGHT = 250;
-    
-    private Text containerText;
-    private Text fileText;
     
     private IStructuredSelection currentSelection;
     
@@ -180,21 +174,6 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
         return resourceGroup.getResource();
     }
 
-    private void handleBrowse() {
-        ContainerSelectionDialog dialog = 
-            	new ContainerSelectionDialog(getShell(), 
-            	        					 ResourcesPlugin.getWorkspace().getRoot(),
-            	        					 false, 
-            	        					 Mevenide.getResourceString("NewPomWizardFirstPage.ContainerSelection.Message")); //$NON-NLS-1$
-        
-        if ( dialog.open() == ContainerSelectionDialog.OK ) {
-            Object[] result = dialog.getResult();
-            if ( result.length == 1 ) {
-                containerText.setText(((Path) result[0]).toOSString());
-            }
-        }
-    }
-
     protected IFile createFileHandle(IPath filePath) {
         return IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getFile(filePath);
     }
@@ -286,10 +265,5 @@ public class NewPomWizardFirstPage extends WizardPage implements Listener {
         if ( monitor.isCanceled() ) {
             throw new OperationCanceledException();
         }
-    }
-
-    private void updateStatus(String message) {
-        setErrorMessage(message);
-        setPageComplete(message == null);
     }
 }

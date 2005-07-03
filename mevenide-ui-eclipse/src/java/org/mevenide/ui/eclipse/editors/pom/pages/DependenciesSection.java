@@ -106,7 +106,7 @@ public class DependenciesSection extends PageSection {
 					if ( pom.getDependencies() == null ) {
 					    pom.setDependencies(new ArrayList());
 					}
-					NewDependencyWizard wizard = new NewDependencyWizard(new MavenProjectWizardDependencySettingsPage().new Dependencies(pom.getDependencies()));
+                    NewDependencyWizard wizard = new NewDependencyWizard();
 					WizardDialog dialog = new WizardDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), wizard);
 	            	dialog.create();
 	            	int result = dialog.open();

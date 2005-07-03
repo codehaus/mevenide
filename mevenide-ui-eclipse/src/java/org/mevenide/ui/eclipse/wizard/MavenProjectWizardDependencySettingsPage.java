@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.wizard;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizardPage;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.jface.wizard.WizardPage;
@@ -48,6 +50,10 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -305,12 +311,29 @@ public class MavenProjectWizardDependencySettingsPage extends WizardPage {
             }
 
             public void widgetSelected(SelectionEvent e) {
-            	NewDependencyWizard wizard = new NewDependencyWizard(fDependencies);
-            	WizardDialog dialog = new WizardDialog(getShell(), wizard);
-            	dialog.create();
-            	dialog.open();
+                handleAddDependency();
+//            	NewDependencyWizard wizard = new NewDependencyWizard(fDependencies);
+//            	WizardDialog dialog = new WizardDialog(getShell(), wizard);
+//            	dialog.create();
+//            	dialog.open();
             }    	
         });
+    }
+
+    private void handleAddDependency() {
+        IWorkbench workbench = PlatformUI.getWorkbench();
+        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        Shell shell = window.getShell();
+
+        NewDependencyWizard wizard = new NewDependencyWizard();
+
+        WizardDialog dialog = new WizardDialog(shell, wizard);
+        dialog.create();
+        int result = dialog.open();
+        Dependency dependency = wizard.getDependency();
+        if (result == Window.OK && dependency != null) {
+            fDependencies.addDependency(dependency);
+        }
     }
 
 	protected void onEnterPage()

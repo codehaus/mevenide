@@ -147,8 +147,7 @@ public class MevenideNature implements IProjectNature {
 
     private static final void setNatures(final IProject project, final Set natures) throws CoreException {
         if (project != null) {
-            final String[] nature = (natures == null) ? new String[0]
-                    : (String[]) natures.toArray(new String[natures.size()]);
+            final String[] nature = (natures == null) ? new String[0]: (String[]) natures.toArray(new String[natures.size()]);
             final IProjectDescription description = project.getDescription();
             description.setNatureIds(nature);
             project.setDescription(description, null);
@@ -159,7 +158,7 @@ public class MevenideNature implements IProjectNature {
         return natures == null ? false : natures.contains(id);
     }
 
-    private static final boolean hasRequiredNatures(final Set natures) throws CoreException {
+    private static final boolean hasRequiredNatures(final Set natures) {
         return true;
     }
 
