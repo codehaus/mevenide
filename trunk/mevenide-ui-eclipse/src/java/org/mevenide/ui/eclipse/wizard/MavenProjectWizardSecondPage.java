@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -51,12 +50,10 @@ import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.CarefulProjectMarshaller;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.nature.MevenideNature;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
-import org.mevenide.ui.eclipse.util.FileUtils;
 
 /**
  * @author	<a href="mailto:jens@iostream.net">Jens Andersen</a>, Last updated by $Author$
@@ -106,8 +103,6 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
                     throws InvocationTargetException, InterruptedException {
                 try {
                     updateProject(initialize, monitor);
-                } catch (CoreException e) {
-                    throw new InvocationTargetException(e);
                 } catch (OperationCanceledException e) {
                     throw new InterruptedException();
                 }
@@ -195,7 +190,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
         removeProject();
     }
 
-    protected void updateProject(boolean initialize, IProgressMonitor monitor) throws CoreException {
+    protected void updateProject(boolean initialize, IProgressMonitor monitor) {
         fCurrProject = fFirstPage.getProjectHandle();
         fCurrProjectLocation = fFirstPage.getLocationPath();
 
@@ -289,8 +284,6 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 
             IFile referencedProjectFile = fCurrProject.getFile("project.xml"); //$NON-NLS-1$
             referencedProjectFile.create(new ByteArrayInputStream(strWriter.toString().getBytes()), false, null);
-
-            Project pom = ProjectReader.getReader().read(FileUtils.getPom(fCurrProject));
 
             //add maven nature
             MevenideNature.addToProject(fCurrProject);

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.wizard;
 
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -31,7 +31,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated by $Author$
  * @version $Id$
  */
-public class NewDependencyWizardPage extends WizardPage {
+public class NewDependencyWizardPage extends DependencyWizardPage {
 	private Text fGroupIdText;
 	private Text fIdText;
 	private Text fNameText;
@@ -41,15 +41,7 @@ public class NewDependencyWizardPage extends WizardPage {
 	private Text fJarText;
 	private Text fVersionText;
 
-	public NewDependencyWizardPage() {
-		super(Mevenide.getResourceString("NewDependencyWizardPage.page.pageName")); //$NON-NLS-1$
-		setTitle(Mevenide.getResourceString("NewDependencyWizardPage.page.title")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("NewDependencyWizardPage.page.description")); //$NON-NLS-1$
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {

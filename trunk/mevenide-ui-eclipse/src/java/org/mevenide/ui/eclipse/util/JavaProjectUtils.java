@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.util;
 
 import java.io.File;
@@ -169,7 +170,7 @@ public class JavaProjectUtils {
 	public static void addClasspathEntry(IJavaProject project, IClasspathEntry entry) throws Exception {
 		IClasspathEntry[] oldEntries = project.getRawClasspath();
 		if ( entry.getEntryKind() == IClasspathEntry.CPE_SOURCE ) {
-			boolean exclusionAdded = excludePath(entry, oldEntries);
+			excludePath(entry, oldEntries);
 			//should warn user ? would it be better to let him choose wether he wants to : 
 			//1. cancel operation, 2. add the exclusion pattern 3. remove conflicting entry ?
 		}
@@ -178,13 +179,6 @@ public class JavaProjectUtils {
 		newEntries[oldEntries.length] = entry;
 		//checkOutputConflict(project, entry);
 		project.setRawClasspath(newEntries, null);
-	}
-	
-	private static void checkOutputConflict(IJavaProject project, IClasspathEntry entry) throws Exception {
-		IPath projectOutputLocation = project.getOutputLocation();
-		if ( entry.getPath().toString().startsWith(projectOutputLocation.toString()) ) {
-			//project.setOutputLocation(new Path("/"  + project.getProject().getName() + outputFolder), null);
-		}
 	}
 	
 	/**

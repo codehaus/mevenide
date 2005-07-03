@@ -17,7 +17,6 @@
 
 package org.mevenide.ui.eclipse.nature;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -46,26 +46,30 @@ import org.mevenide.ui.eclipse.Mevenide;
 public class MavenBuilder extends IncrementalProjectBuilder {
     public static final String BUILDER_ID = Mevenide.PLUGIN_ID + ".mavenbuilder"; //$NON-NLS-1$
 
+    /* (non-Javadoc)
+     * @see org.eclipse.core.resources.IncrementalProjectBuilder#build(int, java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
+     */
     protected IProject[] build(int kind, Map args, IProgressMonitor monitor) throws CoreException {
         if (getProject() == null) {
             return new IProject[0];
         }
+
         IResourceDelta d = getDelta(getProject());
         if (d != null) {
             List actionDefinitions = Mevenide.getInstance().getActionDefinitionsManager().getDefinitions();
             ActionActivator activator = new ActionActivator(actionDefinitions, getProject());
             d.accept(activator);
         }
+
         return getMavenRequiredProjects();
     }
 
     private IProject[] getMavenRequiredProjects() {
         List projects = new ArrayList();
         try {
-            IFile file = getProject().getFile("project.xml"); //$NON-NLS-1$
-            if (file.exists()) {
-                File currentPomFile = file.getLocation().toFile();
-                Project currentPom = ProjectReader.getReader().read(currentPomFile);
+            IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(getProject());
+            if (context != null) {
+                Project currentPom = context.getPOMContext().getFinalProject();
                 IProject[] wsProjects = ResourcesPlugin.getWorkspace().getRoot().getProjects();
                 for (int i = 0; i < wsProjects.length; i++) {
                     IProject wsProject = wsProjects[i];

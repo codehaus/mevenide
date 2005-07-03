@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.wizard;
 
 import org.apache.maven.project.Dependency;
@@ -23,7 +24,6 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.wizard.MavenProjectWizardDependencySettingsPage.Dependencies;
 import org.mevenide.util.StringUtils;
 
 /**
@@ -31,12 +31,11 @@ import org.mevenide.util.StringUtils;
  * @version $Id$
  */
 public class NewDependencyWizard extends Wizard implements INewWizard {
-	private Dependencies fDependencies;
-	private NewDependencyWizardPage fPage;
+	private DependencyWizardPage fPage;
 	private Dependency fDependency;
 	
-	public NewDependencyWizard(Dependencies dependencies) {
-		fDependencies = dependencies;
+	public NewDependencyWizard() {
+        super();
 		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_ADD_LIBRARY);
 		setWindowTitle(Mevenide.getResourceString("NewDependencyWizard.title")); //$NON-NLS-1$
 	}
@@ -68,7 +67,6 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 		fDependency.setType(fPage.getType());
 		fDependency.setUrl(fPage.getUrl());
 		fDependency.setVersion(fPage.getVersion());
-		fDependencies.addDependency(fDependency);
 		return true;
 		//}
 		//not sure why name shouldnot be empty ?  
