@@ -308,7 +308,6 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private void contextualMenuAboutToShow(IMenuManager menuManager) {
 		Object selection = ((StructuredSelection) goalsViewer.getSelection()).getFirstElement();
 	    if ( selection instanceof Goal ) {
-		    Goal selectedNode = (Goal) selection;
 			menuManager.add(this.runGoalAction);		
 		}
 	}

@@ -2,8 +2,6 @@ package org.mevenide.ui.eclipse.editors.jelly;
 
 import java.util.Map;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -13,8 +11,6 @@ import org.mevenide.ui.eclipse.Mevenide;
 
 
 public abstract class AbstractJellyEditor extends TextEditor {
-    private static final Log log = LogFactory.getLog(AbstractJellyEditor.class);
-    
 	private ColorManager colorManager;
 	
 	private Map namespaces;

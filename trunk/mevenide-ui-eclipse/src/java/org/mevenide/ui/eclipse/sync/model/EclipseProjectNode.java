@@ -16,9 +16,9 @@
  */
 package org.mevenide.ui.eclipse.sync.model;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -53,8 +53,6 @@ public class EclipseProjectNode extends AbstractSynchronizationNode implements I
 	
     private static final Log log = LogFactory.getLog(EclipseProjectNode.class);
 	
-    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
-    
 	private IContainer eclipseContainer;
 	private IProject eclipseProject;
 	private List mavenProjects;
@@ -131,12 +129,6 @@ public class EclipseProjectNode extends AbstractSynchronizationNode implements I
 			artifact = JavaProjectUtils.createArtifactFromProjectEntry(eclipseProject, entry);
 		}
 		return artifact;
-	}
-
-	private boolean isProjectMavenized(String projectBasedir) {
-		File pom = new File(projectBasedir, POM_NAME);
-		log.debug("pom : " + pom.getAbsolutePath() + (pom.exists() ? " " : " not ") + "found");   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$ //$NON-NLS-4$
-		return pom.exists();
 	}
 	
 	private boolean isValidEntry(IClasspathEntry entry) throws Exception {

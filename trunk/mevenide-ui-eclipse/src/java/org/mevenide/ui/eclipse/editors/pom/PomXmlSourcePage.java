@@ -16,11 +16,9 @@
  */
 package org.mevenide.ui.eclipse.editors.pom;
 
-import java.io.InputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.apache.maven.util.StringInputStream;
 import org.eclipse.jface.text.DocumentEvent;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentListener;
@@ -34,9 +32,9 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.IFormPage;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
-import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -258,11 +256,8 @@ public class PomXmlSourcePage
 	}
 	
 	public boolean canLeaveThePage() {
-		IDocument document = getDocumentProvider().getDocument(getEditorInput());
-	    InputStream is = new StringInputStream(document.get());
 	    try {
-		    Project pom = null;
-	    	pom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
+	    	unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 	    	return true;
 		}
 	    catch ( Exception e ) {

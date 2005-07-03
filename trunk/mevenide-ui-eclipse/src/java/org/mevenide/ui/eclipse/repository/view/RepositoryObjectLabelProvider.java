@@ -55,9 +55,7 @@ public class RepositoryObjectLabelProvider implements ILabelProvider {
                     if ( "plugin".equals(ext)) {
                         return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.PLUGIN_OBJ).createImage();
                     }
-                    else {
-                        return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILE_OBJ).createImage();
-                    }
+                    return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.FILE_OBJ).createImage();
                 }
                 case RepoPathElement.LEVEL_GROUP: {
                     return Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.MAVEN_REPO_GROUP).createImage();

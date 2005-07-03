@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.goals.view;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -44,7 +45,6 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -334,24 +334,6 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
         }
     }
 
-    private void updateCheckedPlugin(boolean isSelectionChecked, Plugin plugin) {
-        String pluginName = plugin.getName();
-        String[] goals = goalsProvider.getGoalsGrabber().getGoals(pluginName);
-        if ( goals != null && goals.length > 0 ) {
-        	if ( !Arrays.asList(goals).contains(Goal.DEFAULT_GOAL) ) {
-        		goalsViewer.setChecked(pluginName, false);
-        	}
-        	else {
-        		if ( isSelectionChecked ) {
-        			checkedItems.add(pluginName);
-        		}
-        		else {
-        			checkedItems.remove(pluginName);
-        		}
-        	}
-        }
-    }
-
     private void updateStyledTextWidgetHyperlink(SelectionEvent e) {
 		TreeItem item = (TreeItem) e.item;
 		
@@ -387,7 +369,6 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
  
 		//update tooltip 
         //there should a smarter way to enable tooltip on a treeviewer 
-		Rectangle clientArea = tree.getClientArea ();
 		Point pt = new Point (event.x, event.y);
 		TreeItem item = tree.getItem(pt);
 		if ( item != null ) {

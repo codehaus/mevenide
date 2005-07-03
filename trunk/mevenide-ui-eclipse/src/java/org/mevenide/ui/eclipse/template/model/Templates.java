@@ -86,7 +86,6 @@ public class Templates extends Observable implements IAdaptable {
         Templates templates = new Templates();
         File tmplFolder = Mevenide.getInstance().getStateLocation().append("templates").toFile();//$NON-NLS-1$
         if (tmplFolder.exists()) {
-            Template tmp;
             File f;
             File[] tmpls = tmplFolder.listFiles();
             ProjectReader reader;

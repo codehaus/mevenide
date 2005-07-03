@@ -248,9 +248,7 @@ public class DirectoryNode extends ArtifactNode {
 		        propertySource.addPropertyChangeListener(this);
 		        return propertySource;
 		    }
-		    else {
-		        return new ReadOnlyDirectoryPropertySource(this.directory);
-		    }
+	        return new ReadOnlyDirectoryPropertySource(this.directory);
 		}
 		return null;
 	}

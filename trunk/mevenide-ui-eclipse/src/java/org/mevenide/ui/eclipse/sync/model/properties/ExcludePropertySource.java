@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.sync.model.properties;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -29,8 +27,6 @@ import org.mevenide.ui.eclipse.adapters.properties.AbstractPomPropertySource;
  * @version $Id$
  */
 public class ExcludePropertySource extends AbstractPomPropertySource {
-
-	private static final Log log = LogFactory.getLog(ExcludePropertySource.class);
 
 	public static final String DIRECTORY = "Directory"; //$NON-NLS-1$
 	public static final String EXCLUSION_PATTERN = "Exclusion pattern"; //$NON-NLS-1$

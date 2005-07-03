@@ -18,6 +18,7 @@ package org.mevenide.ui.eclipse.sync.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -44,7 +45,6 @@ import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -58,7 +58,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.part.IPageSite;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.MevenideRuntimeException;
 import org.mevenide.project.IProjectChangeListener;
@@ -108,8 +107,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	private MavenArtifactNodeFilter artifactNodeFilter;
 	private DirectoryNodeFilter directoryNodeFilter;
 	
-    private IPageSite site;
-
     //global actions
     private Action refreshAll;
     private Action viewIdeToPom;
@@ -587,10 +584,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		log.debug("propertyAdded to " + event.getNode()); //$NON-NLS-1$
 		artifactMappingNodeViewer.refresh(event.getNode());
 	}
-	
-	private ITreeContentProvider getContentProvider() {
-		return ((ITreeContentProvider) artifactMappingNodeViewer.getContentProvider());
-	}
 
 	public void artifactAddedToPom(PomArtifactEvent event) {
 		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
@@ -608,7 +601,6 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	}
 	
 	public void artifactRemovedFromPom(PomArtifactEvent event) {
-		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		updatePoms(event.getProject());
 		refreshAll();
 		comparator.compare(event.getProject());
@@ -631,17 +623,14 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	}
 	
 	public void artifactRemovedFromClasspath(IdeArtifactEvent event) {
-		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshAll();
 	}
 	
 	public void artifactIgnored(IdeArtifactEvent event) {
-		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshAll();
 	}
 	
 	public void artifactIgnored(PomArtifactEvent event) {
-		ArtifactNode artifact = (ArtifactNode) event.getArtifact();
 		refreshAll();
 	}
 	

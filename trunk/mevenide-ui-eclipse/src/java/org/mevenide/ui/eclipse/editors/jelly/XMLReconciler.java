@@ -42,7 +42,6 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
     private MavenXmlOutlinePage op;
     private Map namespaces;
     private boolean sendOnlyAdditions = false;
-    private boolean firstTime = true;
 
     public XMLReconciler(AbstractJellyEditor editor, MavenXmlOutlinePage op) {
         this.editor = editor;
@@ -89,7 +88,6 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
             added = (ArrayList) storedPos.clone();
             deleted = new ArrayList();
             fix(pos, 0, root);
-            firstTime = false;
             editor.setNamespaces(namespaces);
         }
         catch (BadPositionCategoryException e) {
@@ -100,7 +98,6 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
     public void documentChanged(DocumentEvent event) {
         IDocument doc = event.getDocument();
         document = doc;
-        XMLNode firstAdded = null;
         try {
             Position[] pos = doc.getPositions("__content_types_category");
             Arrays.sort(pos, new Comparator() {
@@ -141,7 +138,6 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
                         n.setAdded(false);
                         n.setModified(false);
                         if (!fixed) {
-                            firstAdded = n;
                             if (i == 0) {
                                 fix(pos, i, root);
                             }

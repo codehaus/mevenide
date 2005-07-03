@@ -29,7 +29,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.repository.RepoPathElement;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**  
  * 
@@ -38,19 +37,14 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
  * 
  */
 public class SearchResultView extends ViewPart {
-
     
     private static final String GROUP = "Group";
     private static final String ARTIFACT_NAME = "Artifact Name";
     private static final String VERSION = "Version";
     private static final String TYPE = "Type";
     
-    
-    
     private TableViewer searchResults;
     private String[] columnNames = new String[] { GROUP, ARTIFACT_NAME, VERSION, TYPE }; 
-    
-    private PreferencesManager preferencesManager = PreferencesManager.getManager();
     
     public SearchResultView() {
     }

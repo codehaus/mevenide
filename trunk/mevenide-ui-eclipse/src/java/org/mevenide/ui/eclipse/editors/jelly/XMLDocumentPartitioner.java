@@ -101,19 +101,18 @@ public class XMLDocumentPartitioner implements IDocumentPartitioner, IDocumentPa
     }
 
     private IRegion createRegion() {
-        if (fDeleteOffset == -1)
-            if (fStartOffset == -1 || fEndOffset == -1)
-                return null;
-            else
-                return new Region(fStartOffset, fEndOffset - fStartOffset);
+        if (fDeleteOffset == -1) {
+            if (fStartOffset == -1 || fEndOffset == -1) return null;
+            return new Region(fStartOffset, fEndOffset - fStartOffset);
+        }
+
         if (fStartOffset == -1 || fEndOffset == -1) {
             return new Region(fDeleteOffset, 0);
         }
-        else {
-            int offset = Math.min(fDeleteOffset, fStartOffset);
-            int endOffset = Math.max(fDeleteOffset, fEndOffset);
-            return new Region(offset, endOffset - offset);
-        }
+
+        int offset = Math.min(fDeleteOffset, fStartOffset);
+        int endOffset = Math.max(fDeleteOffset, fEndOffset);
+        return new Region(offset, endOffset - offset);
     }
 
     public IRegion documentChanged2(DocumentEvent e) {
@@ -234,8 +233,7 @@ public class XMLDocumentPartitioner implements IDocumentPartitioner, IDocumentPa
         TypedPosition p = findClosestPosition(offset);
         if (p != null && p.includes(offset))
             return p.getType();
-        else
-            return "__dftl_partition_content_type";
+        return "__dftl_partition_content_type";
     }
 
     public ITypedRegion getPartition(int offset) {
@@ -254,19 +252,15 @@ public class XMLDocumentPartitioner implements IDocumentPartitioner, IDocumentPa
                 if (previous.includes(offset)) {
                     return new TypedRegion(previous.getOffset(), previous.getLength(), previous.getType());
                 }
-                else {
-                    int endOffset = previous.getOffset() + previous.getLength();
-                    return new TypedRegion(endOffset, next.getOffset() - endOffset, "__dftl_partition_content_type");
-                }
+                int endOffset = previous.getOffset() + previous.getLength();
+                return new TypedRegion(endOffset, next.getOffset() - endOffset, "__dftl_partition_content_type");
             }
             TypedPosition previous = (TypedPosition) category[category.length - 1];
             if (previous.includes(offset)) {
                 return new TypedRegion(previous.getOffset(), previous.getLength(), previous.getType());
             }
-            else {
-                int endOffset = previous.getOffset() + previous.getLength();
-                return new TypedRegion(endOffset, fDocument.getLength() - endOffset, "__dftl_partition_content_type");
-            }
+            int endOffset = previous.getOffset() + previous.getLength();
+            return new TypedRegion(endOffset, fDocument.getLength() - endOffset, "__dftl_partition_content_type");
         }
         catch (BadPositionCategoryException _ex) {
         }
@@ -338,7 +332,6 @@ public class XMLDocumentPartitioner implements IDocumentPartitioner, IDocumentPa
         Object data = token.getData();
         if (data instanceof String)
             return (String) data;
-        else
-            return null;
+        return null;
     }
 }

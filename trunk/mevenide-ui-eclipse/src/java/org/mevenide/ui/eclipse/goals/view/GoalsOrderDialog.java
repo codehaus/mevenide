@@ -11,8 +11,7 @@
 package org.mevenide.ui.eclipse.goals.view;
 
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -41,9 +40,6 @@ public class GoalsOrderDialog extends Dialog implements ISelectionChangedListene
 	private static final String BUTTON_MOVE_DOWN = "GoalsOrderDialog.MoveDown"; //$NON-NLS-1$
     private static final String BUTTON_MOVE_UP = "GoalsOrderDialog.MoveUp"; //$NON-NLS-1$
     private static final String DIALOG_TITLE = "GoalsOrderDialog.title"; //$NON-NLS-1$
-	
-    private static Log log = LogFactory.getLog(GoalsOrderDialog.class);
-	
 	
 	private Button fUp;
 	private Button fDown;

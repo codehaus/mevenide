@@ -39,8 +39,6 @@ public class RepositoryObjectDownloaderFactory {
         if ( RepositoryObjectDownloader.HTTP.equals(repositoryType) ) {
             return new HttpRepositoryObjectDownloader(localRepository);
         }
-        else {
-            throw new RuntimeException("Only http-based downloader are implemented for now");
-        }
+        throw new RuntimeException("Only http-based downloader are implemented for now");
     }
 }

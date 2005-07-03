@@ -38,8 +38,6 @@ import org.mevenide.ui.eclipse.preferences.pages.LocationPreferencePage;
 public class LocationPropertyPage extends LocationPreferencePage implements IWorkbenchPropertyPage {
     private IAdaptable element;
 
-    private static final String PAGE_ID = "org.mevenide.ui.eclipse.properties.pages.LocationPropertyPage";
-    
     public IAdaptable getElement() {
         return element;
     }

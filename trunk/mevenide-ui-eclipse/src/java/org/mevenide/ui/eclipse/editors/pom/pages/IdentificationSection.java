@@ -43,9 +43,6 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.views.navigator.ResourceSorter;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.properties.IPropertyLocator;
-import org.mevenide.properties.IPropertyResolver;
-import org.mevenide.properties.resolver.PropertyLocatorFactory;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
@@ -313,8 +310,6 @@ public class IdentificationSection extends PageSection {
 
 
         IQueryContext queryContext = new DefaultQueryContext(pomFile.getParentFile());
-        IPropertyResolver resolver = queryContext.getResolver();
-        IPropertyLocator locator = PropertyLocatorFactory.getFactory().createContextBasedLocator(queryContext);
         String inheritedGroupId = queryContext.getPOMContext().getFinalProject().getGroupId();
         
         setIfDefined(groupIdText, ProjectUtils.parseGroupId(getPomFile()), isInherited() ? inheritedGroupId : null);

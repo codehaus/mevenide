@@ -22,8 +22,6 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.mevenide.ui.eclipse.goals.model.Element;
@@ -37,8 +35,6 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class CustomPatternFilter extends ViewerFilter {
-	private static final Log log = LogFactory.getLog(CustomPatternFilter.class);
-
 	public static final String CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom"; //$NON-NLS-1$
 	public static final String APPLY_CUSTOM_FILTERS_KEY = "mevenide.goals.outline.filter.custom.apply"; //$NON-NLS-1$
 

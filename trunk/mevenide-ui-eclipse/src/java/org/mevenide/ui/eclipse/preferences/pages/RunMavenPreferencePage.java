@@ -94,7 +94,6 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
         }
 
         protected String changePressed() {
-        	String backup = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
         	GoalsPickerDialog goalsPickerDialog = new GoalsPickerDialog();
         	goalsPickerDialog.setOverrideMessage(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.override")); //$NON-NLS-1$
         	goalsPickerDialog.setOverrideTitle(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose.message.title")); //$NON-NLS-1$
@@ -103,9 +102,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
         	if ( ok == Window.OK ) {
         		return goalsPickerDialog.getOrderedGoals();
         	}
-        	else {
-        		return defaultGoalsEditor.getTextControl(topLevelContainer).getText();
-        	}
+    		return defaultGoalsEditor.getTextControl(topLevelContainer).getText();
         }
     }
 
@@ -190,22 +187,5 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 	}
 	
 	public void init(IWorkbench workbench) { }
-	
-	private boolean finish() {
-		update();
-		
-		preferencesManager.setValue(
-			MevenidePreferenceKeys.DEFAULT_GOALS_PREFERENCE_KEY, 
-			defaultGoals
-		);
-		
-		if ( heapSize != 0 ) {
-		    preferencesManager.setIntValue(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, heapSize);
-		}
-		
-		Mevenide.getInstance().initEnvironment();
-		
-		return preferencesManager.store();
-	}
     
 }

@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.sync.action;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.ui.eclipse.sync.event.ISynchronizationConstraintListener;
 import org.mevenide.ui.eclipse.sync.event.SynchronizationConstraintEvent;
@@ -30,7 +28,6 @@ import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
  * 
  */
 public class AddToPomAction extends ArtifactAction implements ISynchronizationConstraintListener {
-	private static Log log = LogFactory.getLog(AddToPomAction.class);
 	
 	private boolean shouldWriteProperties;
 	
