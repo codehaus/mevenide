@@ -23,10 +23,10 @@ import java.util.Dictionary;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
+import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Constants;
 
 /**
@@ -37,16 +37,16 @@ import org.osgi.framework.Constants;
  * is written to the platform log.
  */
 public class ExceptionHandler {
-    private AbstractUIPlugin plugin;
-    private String           pluginId;
-    private String           pluginName;
-    private String[]         pluginInfo = new String[6];
+    private Plugin   plugin;
+    private String   pluginId;
+    private String   pluginName;
+    private String[] pluginInfo = new String[6];
 
     /**
      * Initializes this exception handler with contact information from the plugin.
      * @param plugin the plugin to report against
      */
-    public ExceptionHandler(AbstractUIPlugin plugin) {
+    public ExceptionHandler(Plugin plugin) {
         this.plugin = plugin;
 
         final Dictionary headers = plugin.getBundle().getHeaders();
