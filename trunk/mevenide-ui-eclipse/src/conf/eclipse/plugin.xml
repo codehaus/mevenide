@@ -605,5 +605,20 @@
       <persistent value="true"/>
       <super type="org.eclipse.core.resources.problemmarker"/>
    </extension>
+
+  <extension point="org.eclipse.jdt.core.classpathContainerInitializer">
+    <classpathContainerInitializer
+      class="org.mevenide.ui.eclipse.classpath.MavenClasspathContainerInitializer"
+      id="org.mevenide.ui.autosync.dependencies"
+      />
+  </extension>
+
+  <extension point="org.eclipse.jdt.ui.classpathContainerPage">
+    <classpathContainerPage
+      class="org.mevenide.ui.eclipse.classpath.MavenClasspathContainerPage"
+      id="org.mevenide.ui.autosync.dependencies"
+      name="Maven Dependencies"
+      />
+  </extension>
  	
 </plugin>
