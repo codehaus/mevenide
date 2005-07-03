@@ -32,8 +32,6 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  */
 public class PomContentOutlinePage extends ContentOutlinePage {
 
-	private IDocumentProvider documentProvider;
-	private MevenidePomEditor editor;
     private IEditorInput editorInput;
 
     class PomTreeContentProvider implements ITreeContentProvider {
@@ -64,8 +62,6 @@ public class PomContentOutlinePage extends ContentOutlinePage {
     
     public PomContentOutlinePage(IDocumentProvider provider, MevenidePomEditor pomEditor) {
         super();
-        this.documentProvider = provider;
-        this.editor = pomEditor;
     }
     
     public void setInput(IEditorInput input) {

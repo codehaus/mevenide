@@ -66,7 +66,6 @@ public class ActionActivator implements IResourceDeltaVisitor {
 		            else {
 				        IPath path = delta.getFullPath();
 				        List patterns = definition.getPatterns();
-				        DirectoryScanner scanner;
 			            String[] files = scan(patterns);
 			            definition.setEnabled(project, match(path, files));
 				        if ( match(path, files) ) {

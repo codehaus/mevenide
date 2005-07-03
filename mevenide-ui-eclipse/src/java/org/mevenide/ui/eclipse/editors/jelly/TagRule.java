@@ -62,9 +62,7 @@ public class TagRule implements IPredicateRule {
                             if (c == '>') {
                                 return DECLARATION;
                             }
-                            else {
-                                return START_DECLARATION;
-                            }
+                            return START_DECLARATION;
                         }
                     }
                     else {
@@ -78,9 +76,7 @@ public class TagRule implements IPredicateRule {
                             if (c == '>') {
                                 return DECLARATION;
                             }
-                            else {
-                                return START_DECLARATION;
-                            }
+                            return START_DECLARATION;
                         }
                     }
                     break;

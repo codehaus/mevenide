@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.launch.configuration;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.swt.SWT;
@@ -40,7 +38,6 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class MavenMainTab extends ExternalToolsMainTab {
-	private static Log log = LogFactory.getLog(MavenMainTab.class);
 	
 	public MavenMainTab() {
 		super();

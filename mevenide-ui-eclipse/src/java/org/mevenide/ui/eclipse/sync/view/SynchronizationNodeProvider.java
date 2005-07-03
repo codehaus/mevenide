@@ -19,8 +19,6 @@ package org.mevenide.ui.eclipse.sync.view;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -35,9 +33,6 @@ import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
  * 
  */
 public class SynchronizationNodeProvider implements ITreeContentProvider {
-    private static Log log = LogFactory.getLog(SynchronizationNodeProvider.class); 
-    
-    private int direction;
     
     public Object[] getChildren(Object parentElement) {
     	if ( parentElement instanceof ISynchronizationNode ) {

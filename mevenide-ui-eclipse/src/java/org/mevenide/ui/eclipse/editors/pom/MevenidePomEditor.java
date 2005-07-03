@@ -18,14 +18,13 @@ package org.mevenide.ui.eclipse.editors.pom;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.apache.maven.util.StringInputStream;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -45,13 +44,13 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
-import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;
@@ -473,8 +472,6 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         
         boolean clean = false;
 	    
-        IDocument document = documentProvider.getDocument(getEditorInput());
-        InputStream is = new StringInputStream(document.get());
         Project updatedPom = null;
         try {
             updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());

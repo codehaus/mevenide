@@ -135,7 +135,6 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 			String key = keyParts.length == 1 ? keyParts[0] : keyParts[1];
 			String importedKeyValue = DynamicPreferencesManager.getDynamicManager().getValue(key);
 			if ( !StringUtils.isNull(importedKeyValue) ) {
-				String fullyQualifiedKeyValue = preferencesManager.getValue(editor.getPreferenceName());
 				editor.setStringValue(importedKeyValue);
 				
 				//store fully qualified property  
@@ -255,7 +254,6 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         String propertyDefault = pluginProperty.getDefault();
         String propertyLabel = pluginProperty.getLabel();
         String propertyDescription = pluginProperty.getDescription();
-        String propertyType = pluginProperty.getType();
         String pageId = pluginProperty.getPageId();
         
         StringButtonFieldEditor editor = new ClipboardFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, composite);

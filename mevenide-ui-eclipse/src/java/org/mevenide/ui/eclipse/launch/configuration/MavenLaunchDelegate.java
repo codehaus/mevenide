@@ -303,10 +303,6 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	    }
 	}
 
-	private void noMavenHome() {
-	    //EnvironmentUtil.loadEnvironment();
-   }
-
 	protected void launchVM(String[] options, String[] goals) throws Exception {
 		throw new RuntimeException("Altho this class uses facilities offered by AbstractRunner. It is not meant to be run like that. TODO : refactor me."); //$NON-NLS-1$
 	}

@@ -38,8 +38,6 @@ public class DynamicPreferencePageFactory {
 	private Map propertiesHolders = new HashMap();
 
     private static final String EXTENSION_ID = "org.mevenide.ui.preference"; //$NON-NLS-1$
-    private static final String MAIN_PREFERENCE_PAGE_PATH = "org.mevenide.ui.plugin.preferences.MavenPreferencePage"; //$NON-NLS-1$
-    private static final String ROOT_PAGE_PATH = MAIN_PREFERENCE_PAGE_PATH + "/org.mevenide.ui.eclipse.preferences.PluginsRoot"; //$NON-NLS-1$
     
     private static final String PLUGIN_DESCRIPTION = "description"; //$NON-NLS-1$
 	private static final String PLUGIN_PROPERTY = "property"; //$NON-NLS-1$

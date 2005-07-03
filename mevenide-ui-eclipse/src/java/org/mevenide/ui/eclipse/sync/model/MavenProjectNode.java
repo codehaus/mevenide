@@ -85,7 +85,6 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	
         private void intializeEnvironmentLocator() {
             File projectDir = new File(eclipseProject.getLocation().toOSString());
-            File userHomeDir = new File(System.getProperty("user.home")); //$NON-NLS-1$
             IQueryContext context = new DefaultQueryContext(projectDir);
             environmentLocator = context.getResolver();
         }

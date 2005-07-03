@@ -22,8 +22,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -39,8 +37,6 @@ import org.mevenide.repository.RepositoryReaderFactory;
  */
 public class RepositoryContentProvider implements ITreeContentProvider {
 
-    private static final Log log = LogFactory.getLog(RepositoryContentProvider.class);
-    
     private List repositoryEventListeners = new ArrayList();
     
     public void addRepositoryEventListener(RepositoryEventListener listener) {
@@ -68,7 +64,6 @@ public class RepositoryContentProvider implements ITreeContentProvider {
                 }
             }
             else {
-                String baseUrl = currentNodeObject.getURI().toString();
                 RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject);
 	            job.setListeners(this.repositoryEventListeners);
 	            job.schedule(Job.LONG);

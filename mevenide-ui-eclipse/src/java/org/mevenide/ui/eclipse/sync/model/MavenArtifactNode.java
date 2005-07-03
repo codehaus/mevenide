@@ -85,7 +85,6 @@ public class MavenArtifactNode extends ArtifactNode {
 			return false;
 		}
 		MavenArtifactNode node = (MavenArtifactNode) obj;
-		Project context = (Project) parent.getData();
 		return new File(artifact.getPath()).getName() !=  null && new File(artifact.getPath()).getName().equals(new File(node.artifact.getPath()).getName()) ;
 	}
 	
@@ -244,9 +243,7 @@ public class MavenArtifactNode extends ArtifactNode {
 				propertySource.addPropertyChangeListener(this);
 				return propertySource;
 		    }
-		    else {
-		        return new ReadOnlyDependencyPropertySource(artifact.getDependency());
-		    }
+	        return new ReadOnlyDependencyPropertySource(artifact.getDependency());
 		}
 		return null;
 	}

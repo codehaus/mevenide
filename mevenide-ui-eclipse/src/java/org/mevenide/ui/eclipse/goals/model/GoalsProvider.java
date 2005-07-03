@@ -90,7 +90,7 @@ public class GoalsProvider implements ITreeContentProvider {
 			} 
 			return goals;
     	}
-      	else return null;
+      	return null;
     }
 
     public Object getParent(Object element) {

@@ -21,13 +21,13 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchConfigurationWorkingCopy;
 import org.eclipse.debug.ui.AbstractLaunchConfigurationTab;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -44,7 +44,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -80,8 +79,6 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	private Table table;
 	
 	
-	private TreeViewer goalsTreeViewer;
-		 
 	public MavenArgumentsTab() {
 		setDirty(false);
 	}
@@ -134,27 +131,6 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 		}
 	}	
 	
-	
-	
-	
-	private void createMavenVersionLabel(Composite composite) {
-		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING | GridData.FILL_HORIZONTAL);
-		data.horizontalSpan = 2;
-		data.grabExcessHorizontalSpace = true;
-		data.grabExcessVerticalSpace = true;
-		
-		Label label = new Label(composite, SWT.READ_ONLY);
-		label.setText("Maven version: " + "1.0.1");
-                        
-//TODO how to get maven version?
-// in maven 1.0.1 and beyond org.apache.App changed from mavenSession.APP_VERSION                        
-// to reading "driver.properties" file and getting getProperty( "maven.application.version" )                        
-                        
-//                        MavenSession.APP_VERSION); //$NON-NLS-1$
-		
-		label.setLayoutData(data);
-	}
-
 	private void createCheckBoxes(Composite parent) throws Exception {
 		
 		Composite comp = new Composite(parent, SWT.NULL);

@@ -16,8 +16,6 @@
  */
 package org.mevenide.ui.eclipse.editors.pom.pages;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IFormPart;
@@ -40,8 +38,6 @@ import org.mevenide.ui.eclipse.editors.pom.PomXmlSourcePage;
 public abstract class AbstractPomEditorPage 
 	extends FormPage 
 	implements IPomEditorPage, IProjectChangeListener {
-	
-	private static final Log log = LogFactory.getLog(AbstractPomEditorPage.class);
 	
 	private String heading;
 	private boolean updateNeeded;

@@ -17,9 +17,6 @@
 package org.mevenide.ui.eclipse.preferences.dynamic;
 
 import java.util.List;
-import org.eclipse.jface.preference.IPreferencePage;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.swt.graphics.Image;
 
 
 /**  
@@ -39,11 +36,6 @@ public class DynamicPagePropertiesHolder {
     
     private List pluginCategories;
     
-    private IPreferencePage page;
-	private List subNodes;
-	private ImageDescriptor imageDescriptor;
-	private Image image;
-	
     public DynamicPagePropertiesHolder(String pageId, String pageTitle, String pluginDescription, List categories) {
         this.pageId = pageId;
         this.pageTitle = pageTitle; 

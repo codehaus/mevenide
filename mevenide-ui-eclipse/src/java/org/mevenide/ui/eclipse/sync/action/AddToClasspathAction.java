@@ -16,9 +16,6 @@
  */
 package org.mevenide.ui.eclipse.sync.action;
 
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
 
@@ -30,8 +27,6 @@ import org.mevenide.ui.eclipse.sync.model.ArtifactNode;
  *
  */
 public class AddToClasspathAction extends ArtifactAction {
-	private static Log log = LogFactory.getLog(AddToClasspathAction.class);
-	
 	
 	public void addEntry(ArtifactNode item, IProject project) throws Exception {
 		item.addTo(project);

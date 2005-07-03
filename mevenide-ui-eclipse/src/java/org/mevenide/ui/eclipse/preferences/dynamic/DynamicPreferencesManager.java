@@ -63,7 +63,6 @@ public class DynamicPreferencesManager extends PreferencesManager {
 	    Map dynamicPreferences = new HashMap();
 	    for (Iterator it = preferences.keySet().iterator(); it.hasNext();) {
             String key = (String) it.next();
-            String value = (String) preferences.get(key);
             dynamicPreferences.put(key.indexOf(SEPARATOR) != -1 ? key.substring(key.indexOf(SEPARATOR) + 1, key.length()) : key,
                                    key.indexOf(SEPARATOR) != -1 ? key.substring(0, key.indexOf(SEPARATOR)) : null);
         }

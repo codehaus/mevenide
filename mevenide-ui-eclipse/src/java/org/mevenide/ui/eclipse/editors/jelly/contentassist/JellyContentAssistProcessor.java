@@ -404,7 +404,6 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
 
     protected ICompletionProposal[] computeAttributeValues(IDocument doc, XMLNode node, int offset, char quote) {
         ICompletionProposal[] cp = null;
-        Map namespaces = editor.getNamespaces();
         List words = new ArrayList();
         String start = getAttributeValueStart(node, offset, quote);
         XMLNode attribute = node.getAttributeAt(offset);
