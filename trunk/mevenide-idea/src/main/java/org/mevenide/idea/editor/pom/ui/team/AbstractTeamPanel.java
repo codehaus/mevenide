@@ -7,6 +7,7 @@ import javax.swing.event.ListSelectionListener;
 import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
 import org.mevenide.idea.psi.project.PsiTeamMemberRoles;
 import org.mevenide.idea.psi.project.PsiTeamMembers;
+import org.mevenide.idea.util.ui.SplitPanel;
 
 /**
  * @author Arik
@@ -32,11 +33,12 @@ public abstract class AbstractTeamPanel<Psi extends PsiTeamMembers>
     private void layoutComponents() {
         setLayout(new BorderLayout());
 
-        final JSplitPane split = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-        split.setTopComponent(members);
-        split.setBottomComponent(roles);
-
-        add(split, BorderLayout.CENTER);
+        final SplitPanel<JPanel, JPanel> splitPanel = new SplitPanel<JPanel, JPanel>(members,
+                                                                                     roles,
+                                                                                     true,
+                                                                                     true);
+        add(splitPanel,
+            BorderLayout.CENTER);
     }
 
     public void valueChanged(final ListSelectionEvent pEvent) {

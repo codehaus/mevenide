@@ -6,7 +6,6 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
-import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.psi.project.PsiResourcePatterns;
 import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.util.ui.SplitPanel;
@@ -15,31 +14,30 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 /**
  * @author Arik
  */
-public class ResourcesPanel extends AbstractPomLayerPanel
-        implements ListSelectionListener {
+public class ResourcesPanel extends AbstractPomLayerPanel implements ListSelectionListener {
     private final CRUDTablePanel<ResourcesTableModel> resources;
     private final CRUDTablePanel<ResourcePatternsTableModel> includes;
     private final CRUDTablePanel<ResourcePatternsTableModel> excludes;
 
-    private final PsiProject project;
+    private final PsiResources psiResources;
 
-    public ResourcesPanel(final PsiProject pProject) {
-        project = pProject;
-        final XmlFile xmlFile = project.getXmlFile();
+    public ResourcesPanel(final PsiResources pPsiResources) {
+        psiResources = pPsiResources;
 
-        final PsiResources psiMainResources = project.getResources();
-        final ResourcesTableModel resourcesModel = new ResourcesTableModel(psiMainResources);
+        final XmlFile xmlFile = psiResources.getXmlFile();
+
+        final ResourcesTableModel resourcesModel = new ResourcesTableModel(psiResources);
         resources = new CRUDTablePanel<ResourcesTableModel>(xmlFile, resourcesModel);
 
-        final PsiResourcePatterns psiIncludes = psiMainResources.getIncludes(-1);
+        final PsiResourcePatterns psiIncl = psiResources.getIncludes(-1);
         final ResourcePatternsTableModel includesModel;
-        includesModel = new ResourcePatternsTableModel(psiIncludes);
+        includesModel = new ResourcePatternsTableModel(psiIncl);
         includes = new CRUDTablePanel<ResourcePatternsTableModel>(xmlFile, includesModel);
         includes.getAddButton().setEnabled(false);
         includes.getRemoveButton().setEnabled(false);
 
         final ResourcePatternsTableModel excludesModel;
-        excludesModel = new ResourcePatternsTableModel(psiMainResources.getExcludes(-1));
+        excludesModel = new ResourcePatternsTableModel(psiResources.getExcludes(-1));
         excludes = new CRUDTablePanel<ResourcePatternsTableModel>(xmlFile, excludesModel);
         excludes.getAddButton().setEnabled(false);
         excludes.getRemoveButton().setEnabled(false);
@@ -60,13 +58,13 @@ public class ResourcesPanel extends AbstractPomLayerPanel
         add(split, BorderLayout.CENTER);
     }
 
-    public void valueChanged(ListSelectionEvent e) {
+    public void valueChanged(final ListSelectionEvent pEvent) {
         final int row = resources.getSelectedRow();
 
-        final PsiResourcePatterns psiIncludes = project.getResources().getIncludes(row);
+        final PsiResourcePatterns psiIncludes = psiResources.getIncludes(row);
         includes.setTableModel(new ResourcePatternsTableModel(psiIncludes));
 
-        final PsiResourcePatterns psiExcludes = project.getResources().getExcludes(row);
+        final PsiResourcePatterns psiExcludes = psiResources.getExcludes(row);
         excludes.setTableModel(new ResourcePatternsTableModel(psiExcludes));
 
         includes.getAddButton().setEnabled(row >= 0);

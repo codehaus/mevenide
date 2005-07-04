@@ -25,7 +25,6 @@ import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import java.awt.*;
-import java.lang.reflect.Field;
 import javax.swing.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -96,47 +95,34 @@ public class GeneralInfoPanel extends AbstractPomLayerPanel {
         pomVersionField.setEnabled(false);
 
         extendField.addBrowseFolderListener(
-            RES.get("choose.pom.parent"),
-            RES.get("choose.pom.parent.desc"),
-            project.getXmlFile().getProject(),
-            FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
+                RES.get("choose.pom.parent"),
+                RES.get("choose.pom.parent.desc"),
+                project.getXmlFile().getProject(),
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         logoUriField.addBrowseFolderListener(
-            RES.get("choose.org.logo"),
-            RES.get("choose.org.logo.desc"),
-            project.getXmlFile().getProject(),
-            FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
+                RES.get("choose.org.logo"),
+                RES.get("choose.org.logo.desc"),
+                project.getXmlFile().getProject(),
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         orgLogoUrlField.addBrowseFolderListener(
-            RES.get("choose.org.logo"),
-            RES.get("choose.org.logo.desc"),
-            project.getXmlFile().getProject(),
-            FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
+                RES.get("choose.org.logo"),
+                RES.get("choose.org.logo.desc"),
+                project.getXmlFile().getProject(),
+                FileChooserDescriptorFactory.createSingleFileNoJarsDescriptor());
 
         inceptionYearField.setPreferredSize(new Dimension(60, 20));
         descField.setPreferredSize(new Dimension(300, 80));
-        final Field[] fields = this.getClass().getDeclaredFields();
-        for (final Field field : fields) {
-            try {
-                final Object value = field.get(this);
-                if (value != null && value instanceof Component) {
-                    final Component comp = (Component) value;
-                    comp.setName(field.getName());
-                }
-            }
-            catch (IllegalAccessException e) {
-                LOG.error(e.getMessage(), e);
-            }
-        }
     }
 
     private void layoutComponents() {
         final FormLayout layout = new FormLayout(
-            "" +
-                "right:min:grow(0.05), 2dlu, fill:min:grow(0.45), 0dlu, " + //first column
-                "right:min:grow(0.05), 2dlu, fill:min:grow(0.45)",
-            //second column
-            "");
+                "" +
+                        "right:min:grow(0.05), 2dlu, fill:min:grow(0.45), 0dlu, " + //first column
+                        "right:min:grow(0.05), 2dlu, fill:min:grow(0.45)",
+                //second column
+                "");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
         builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
 
