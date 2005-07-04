@@ -17,19 +17,15 @@
 package org.mevenide.idea.editor.pom;
 
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.xml.XmlFile;
 import javax.swing.*;
 import org.mevenide.idea.editor.pom.ui.PomPanel;
+import org.mevenide.idea.psi.PsiPomManager;
 import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
-import org.mevenide.idea.psi.util.PsiUtils;
-import org.mevenide.idea.util.components.AbstractFileEditor;
+import org.mevenide.idea.util.components.AbstractDocumentEditor;
 
 /**
  * An editor for POM files.
@@ -38,28 +34,22 @@ import org.mevenide.idea.util.components.AbstractFileEditor;
  *
  * @author Arik
  */
-public class PomFileEditor extends AbstractFileEditor implements Disposable {
+public class PomFileEditor extends AbstractDocumentEditor implements Disposable {
     /**
      * The user interface component displaying the POM editor.
      */
-    private PomPanel ui;
+    private final PomPanel ui;
 
-    /**
-     * Creates an instance for the given IDEA project and POM file.
-     *
-     * @param pProject the IDEA project
-     * @param pPomFile the POM file to edit
-     */
-    public PomFileEditor(final Project pProject,
-                         final VirtualFile pPomFile) {
-        super("editor.name", pProject, pPomFile);
+    public PomFileEditor(final Module pModule) {
+        this(PsiPomManager.getInstance(pModule).getPsiProject());
+    }
 
-        final FileDocumentManager filedocMgr = FileDocumentManager.getInstance();
-        final Document document = filedocMgr.getDocument(pPomFile);
+    public PomFileEditor(final PsiProject pProject) {
+        super("editor.name",
+              pProject.getXmlFile().getProject(),
+              pProject.getXmlFile().getVirtualFile());
 
-        final XmlFile xmlFile = PsiUtils.findXmlFile(pProject, document);
-        final PsiProject project = new DefaultPsiProject(xmlFile);
-        ui = new PomPanel(project);
+        ui = new PomPanel(pProject);
     }
 
     /**

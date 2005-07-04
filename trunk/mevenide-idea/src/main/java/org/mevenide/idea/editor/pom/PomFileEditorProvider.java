@@ -17,23 +17,24 @@
 package org.mevenide.idea.editor.pom;
 
 import com.intellij.openapi.Disposable;
-import com.intellij.openapi.fileEditor.FileEditor;
-import com.intellij.openapi.fileEditor.FileEditorPolicy;
-import com.intellij.openapi.fileEditor.FileEditorProvider;
-import com.intellij.openapi.fileEditor.FileEditorState;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.fileEditor.*;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.xml.XmlFile;
 import org.jdom.Element;
 import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
+import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 
 /**
  * @author Arik
  */
 public class PomFileEditorProvider extends AbstractApplicationComponent
-    implements FileEditorProvider {
+        implements FileEditorProvider {
     public boolean accept(final Project pProject, final VirtualFile pFile) {
         final String extension = pFile.getExtension();
         if (extension == null || extension.trim().length() == 0)
@@ -50,8 +51,12 @@ public class PomFileEditorProvider extends AbstractApplicationComponent
         return false;
     }
 
-    public FileEditor createEditor(final Project pProject, final VirtualFile pFile) {
-        return new PomFileEditor(pProject, pFile);
+    public FileEditor createEditor(final Project pProject, final VirtualFile pPomFile) {
+        final FileDocumentManager filedocMgr = FileDocumentManager.getInstance();
+        final Document document = filedocMgr.getDocument(pPomFile);
+        final XmlFile xmlFile = PsiUtils.findXmlFile(pProject, document);
+
+        return new PomFileEditor(new DefaultPsiProject(xmlFile));
     }
 
     public void disposeEditor(final FileEditor pEditor) {
