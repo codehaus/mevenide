@@ -23,8 +23,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.xml.XmlFile;
 import javax.swing.*;
 import org.mevenide.idea.editor.pom.ui.PomPanel;
+import org.mevenide.idea.psi.project.PsiProject;
+import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.util.components.AbstractFileEditor;
 
@@ -54,7 +57,9 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
         final FileDocumentManager filedocMgr = FileDocumentManager.getInstance();
         final Document document = filedocMgr.getDocument(pPomFile);
 
-        ui = new PomPanel(PsiUtils.findXmlFile(pProject, document));
+        final XmlFile xmlFile = PsiUtils.findXmlFile(pProject, document);
+        final PsiProject project = new DefaultPsiProject(xmlFile);
+        ui = new PomPanel(project);
     }
 
     /**
@@ -79,8 +84,8 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     }
 
     /**
-     * Returns the current state of the editor. State includes the selected tab, and
-     * current component in that tab.
+     * Returns the current state of the editor. State includes the selected tab, and current
+     * component in that tab.
      *
      * @param level ignored
      *
@@ -94,8 +99,8 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     }
 
     /**
-     * Applies the given state. If the state is an instance of {@link PomFileEditorState},
-     * than the current tab and component are extracted from it and focused.
+     * Applies the given state. If the state is an instance of {@link PomFileEditorState}, than the
+     * current tab and component are extracted from it and focused.
      *
      * @param pState the state to set
      */
@@ -105,8 +110,8 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     }
 
     /**
-     * Returns {@code true} if the user interface components were modified, or if the IDEA
-     * document has been modified and not saved.
+     * Returns {@code true} if the user interface components were modified, or if the IDEA document
+     * has been modified and not saved.
      *
      * @return {@code boolean}
      */
@@ -118,8 +123,8 @@ public class PomFileEditor extends AbstractFileEditor implements Disposable {
     }
 
     /**
-     * Checks if the POM is valid by checking via the PSI file. This is not a full check -
-     * but only checks that the XML is valid .
+     * Checks if the POM is valid by checking via the PSI file. This is not a full check - but only
+     * checks that the XML is valid .
      *
      * @return {@code true} if the POM xml is valid, {@code false} otherwise.
      */

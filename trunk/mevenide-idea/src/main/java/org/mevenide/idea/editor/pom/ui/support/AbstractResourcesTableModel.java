@@ -1,19 +1,18 @@
 package org.mevenide.idea.editor.pom.ui.support;
 
-import org.mevenide.idea.psi.project.AbstractPsiResources;
+import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
 
 /**
  * @author Arik
  */
-public abstract class AbstractResourcesTableModel<Psi extends AbstractPsiResources>
-    extends AbstractBeanRowsTableModel<Psi> {
+public abstract class AbstractResourcesTableModel extends AbstractBeanRowsTableModel<PsiResources> {
     private static final String[] COLUMN_TITLES = new String[]{
         "Directory",
         "Target Path"
     };
 
-    protected AbstractResourcesTableModel(final Psi pModel) {
+    protected AbstractResourcesTableModel(final PsiResources pModel) {
         super(pModel, COLUMN_TITLES);
     }
 

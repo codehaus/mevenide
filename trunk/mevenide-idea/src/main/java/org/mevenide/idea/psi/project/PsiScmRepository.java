@@ -1,41 +1,20 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.psi.support.AbstractPsiNamedPropertyObservable;
+import org.mevenide.idea.psi.support.XmlPsiObject;
 
 /**
  * @author Arik
  */
-public class PsiScmRepository extends AbstractPsiNamedPropertyObservable {
-    public PsiScmRepository(final XmlFile pXmlFile) {
-        super(pXmlFile, "project/repository");
+public interface PsiScmRepository extends XmlPsiObject, PsiChild<PsiProject> {
+    String getAnonymousConnection();
 
-        registerTag("anonymousConnection", "connection");
-        registerTag("developerConnection", "developerConnection");
-        registerTag("url", "url");
-    }
+    void setAnonymousConnection(String pAnonymousConnection);
 
-    public String getAnonymousConnection() {
-        return getValue("anonymousConnection");
-    }
+    String getDeveloperConnection();
 
-    public void setAnonymousConnection(final String pAnonymousConnection) {
-        setValue("anonymousConnection", pAnonymousConnection);
-    }
+    void setDeveloperConnection(String pDeveloperConnection);
 
-    public String getDeveloperConnection() {
-        return getValue("developerConnection");
-    }
+    String getUrl();
 
-    public void setDeveloperConnection(final String pDeveloperConnection) {
-        setValue("developerConnection", pDeveloperConnection);
-    }
-
-    public String getUrl() {
-        return getValue("url");
-    }
-
-    public void setUrl(final String pUrl) {
-        setValue("url", pUrl);
-    }
+    void setUrl(String pUrl);
 }

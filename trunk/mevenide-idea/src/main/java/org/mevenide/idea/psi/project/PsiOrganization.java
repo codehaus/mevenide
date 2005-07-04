@@ -1,42 +1,21 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.IncorrectOperationException;
-import org.mevenide.idea.psi.support.AbstractPsiNamedPropertyObservable;
+import org.mevenide.idea.psi.support.XmlPsiObject;
 
 /**
  * @author Arik
  */
-public class PsiOrganization extends AbstractPsiNamedPropertyObservable {
-    public PsiOrganization(final XmlFile pXmlFile) {
-        super(pXmlFile, "project/organization");
+public interface PsiOrganization extends XmlPsiObject, PsiChild<PsiProject> {
+    String getName();
 
-        registerTag("name", "name");
-        registerTag("url", "url");
-        registerTag("logoUri", "logo");
-    }
+    void setName(String pValue) throws IncorrectOperationException;
 
-    public final String getName() {
-        return getValue("name");
-    }
+    String getUrl();
 
-    public void setName(final String pValue) throws IncorrectOperationException {
-        setValue("name", pValue);
-    }
+    void setUrl(String pValue) throws IncorrectOperationException;
 
-    public final String getUrl() {
-        return getValue("url");
-    }
+    String getLogoUri();
 
-    public void setUrl(final String pValue) throws IncorrectOperationException {
-        setValue("url", pValue);
-    }
-
-    public final String getLogoUri() {
-        return getValue("logoUri");
-    }
-
-    public void setLogoUri(final String pValue) throws IncorrectOperationException {
-        setValue("logoUri", pValue);
-    }
+    void setLogoUri(String pValue) throws IncorrectOperationException;
 }

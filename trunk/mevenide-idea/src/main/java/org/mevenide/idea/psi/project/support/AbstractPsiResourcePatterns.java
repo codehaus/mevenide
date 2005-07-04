@@ -1,19 +1,28 @@
-package org.mevenide.idea.psi.project;
+package org.mevenide.idea.psi.project.support;
 
-import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.project.PatternType;
+import org.mevenide.idea.psi.project.PsiResourcePatterns;
+import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
-public abstract class AbstractPsiResourcePatterns extends AbstractPsiBeanRowsObservable {
+public abstract class AbstractPsiResourcePatterns extends AbstractPsiBeanRowsObservable implements
+                                                                                        PsiResourcePatterns {
     protected final PatternType type;
+    private final PsiResources resources;
 
-    public AbstractPsiResourcePatterns(final XmlFile pXmlFile,
+    public AbstractPsiResourcePatterns(final PsiResources pResources,
                                        final String pContainerTagPath,
                                        final PatternType pType) {
-        super(pXmlFile, pContainerTagPath, getRowTagNameForType(pType));
+        super(pResources.getXmlFile(), pContainerTagPath, getRowTagNameForType(pType));
+        resources = pResources;
         type = pType;
+    }
+
+    public PsiResources getParent() {
+        return resources;
     }
 
     public final String getPattern(final int pRow) {

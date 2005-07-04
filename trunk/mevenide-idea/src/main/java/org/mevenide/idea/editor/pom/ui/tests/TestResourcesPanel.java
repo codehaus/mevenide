@@ -7,8 +7,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
 import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.psi.project.PsiTestResourcePatterns;
-import org.mevenide.idea.psi.project.PsiTestResources;
+import org.mevenide.idea.psi.project.PsiResourcePatterns;
+import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.util.ui.SplitPanel;
 import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 
@@ -16,7 +16,7 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  * @author Arik
  */
 public class TestResourcesPanel extends AbstractPomLayerPanel
-    implements ListSelectionListener {
+        implements ListSelectionListener {
     private final CRUDTablePanel<TestResourcesTableModel> resources;
     private final CRUDTablePanel<TestResourcePatternsTableModel> includes;
     private final CRUDTablePanel<TestResourcePatternsTableModel> excludes;
@@ -27,12 +27,12 @@ public class TestResourcesPanel extends AbstractPomLayerPanel
         project = pProject;
         final XmlFile xmlFile = project.getXmlFile();
 
-        final PsiTestResources psiResources = project.getTestResources();
+        final PsiResources psiResources = project.getTestResources();
         final TestResourcesTableModel resourcesModel = new TestResourcesTableModel(
-            psiResources);
+                psiResources);
         resources = new CRUDTablePanel<TestResourcesTableModel>(xmlFile, resourcesModel);
 
-        final PsiTestResourcePatterns psiIncludes = psiResources.getIncludes(-1);
+        final PsiResourcePatterns psiIncludes = psiResources.getIncludes(-1);
         final TestResourcePatternsTableModel includesModel;
         includesModel = new TestResourcePatternsTableModel(psiIncludes);
         includes = new CRUDTablePanel<TestResourcePatternsTableModel>(xmlFile,
@@ -65,14 +65,14 @@ public class TestResourcesPanel extends AbstractPomLayerPanel
 
     public void valueChanged(ListSelectionEvent e) {
         final int row = resources.getSelectedRow();
-        final PsiTestResources testResources = project.getTestResources();
+        final PsiResources testResources = project.getTestResources();
 
-        final PsiTestResourcePatterns psiIncludes = testResources.getIncludes(row);
+        final PsiResourcePatterns psiIncludes = testResources.getIncludes(row);
         includes.setTableModel(new TestResourcePatternsTableModel(psiIncludes));
         includes.getAddButton().setEnabled(row >= 0);
         includes.getRemoveButton().setEnabled(row >= 0);
 
-        final PsiTestResourcePatterns psiExcludes = testResources.getExcludes(row);
+        final PsiResourcePatterns psiExcludes = testResources.getExcludes(row);
         excludes.setTableModel(new TestResourcePatternsTableModel(psiExcludes));
         excludes.getAddButton().setEnabled(row >= 0);
         excludes.getRemoveButton().setEnabled(row >= 0);

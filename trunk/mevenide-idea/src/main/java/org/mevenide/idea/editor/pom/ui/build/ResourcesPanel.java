@@ -16,7 +16,7 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  * @author Arik
  */
 public class ResourcesPanel extends AbstractPomLayerPanel
-    implements ListSelectionListener {
+        implements ListSelectionListener {
     private final CRUDTablePanel<ResourcesTableModel> resources;
     private final CRUDTablePanel<ResourcePatternsTableModel> includes;
     private final CRUDTablePanel<ResourcePatternsTableModel> excludes;
@@ -27,11 +27,11 @@ public class ResourcesPanel extends AbstractPomLayerPanel
         project = pProject;
         final XmlFile xmlFile = project.getXmlFile();
 
-        final PsiResources psiResources = project.getResources();
-        final ResourcesTableModel resourcesModel = new ResourcesTableModel(psiResources);
+        final PsiResources psiMainResources = project.getResources();
+        final ResourcesTableModel resourcesModel = new ResourcesTableModel(psiMainResources);
         resources = new CRUDTablePanel<ResourcesTableModel>(xmlFile, resourcesModel);
 
-        final PsiResourcePatterns psiIncludes = psiResources.getIncludes(-1);
+        final PsiResourcePatterns psiIncludes = psiMainResources.getIncludes(-1);
         final ResourcePatternsTableModel includesModel;
         includesModel = new ResourcePatternsTableModel(psiIncludes);
         includes = new CRUDTablePanel<ResourcePatternsTableModel>(xmlFile, includesModel);
@@ -39,7 +39,7 @@ public class ResourcesPanel extends AbstractPomLayerPanel
         includes.getRemoveButton().setEnabled(false);
 
         final ResourcePatternsTableModel excludesModel;
-        excludesModel = new ResourcePatternsTableModel(psiResources.getExcludes(-1));
+        excludesModel = new ResourcePatternsTableModel(psiMainResources.getExcludes(-1));
         excludes = new CRUDTablePanel<ResourcePatternsTableModel>(xmlFile, excludesModel);
         excludes.getAddButton().setEnabled(false);
         excludes.getRemoveButton().setEnabled(false);

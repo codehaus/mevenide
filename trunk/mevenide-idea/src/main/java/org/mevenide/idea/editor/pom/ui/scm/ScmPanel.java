@@ -43,16 +43,15 @@ public class ScmPanel extends AbstractPomLayerPanel {
     protected final BeanAdapter model;
 
     public ScmPanel(final PsiProject pProject) {
-        final PsiProject project = pProject;
-        scmRepository = project.getScmRepository();
+        scmRepository = pProject.getScmRepository();
         model = new BeanAdapter(scmRepository, true);
 
         bindComponents();
 
         this.versionsPanel = new LabeledPanel(RES.get("versions.desc"),
-                                              new VersionsPanel(project));
+                                              new VersionsPanel(pProject));
         branchesPanel = new LabeledPanel(RES.get("branches.desc"),
-                                         new BranchesPanel(project));
+                                         new BranchesPanel(pProject));
 
         initComponents();
         layoutComponents();
