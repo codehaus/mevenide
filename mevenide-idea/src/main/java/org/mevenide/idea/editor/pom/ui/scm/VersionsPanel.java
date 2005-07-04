@@ -7,7 +7,7 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 /**
  * @author Arik
  */
-public class VersionsPanel extends CRUDTablePanel {
+public class VersionsPanel extends CRUDTablePanel<VersionsTableModel> {
     public VersionsPanel(final PsiProject pModel) {
         this(pModel.getVersions());
     }

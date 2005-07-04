@@ -1,26 +1,26 @@
 package org.mevenide.idea.editor.pom.ui.team;
 
 import org.mevenide.idea.Res;
-import org.mevenide.idea.psi.project.AbstractPsiTeamMembers;
+import org.mevenide.idea.psi.project.PsiTeamMembers;
 import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
 
 /**
  * @author Arik
  */
-public class MembersTableModel<Psi extends AbstractPsiTeamMembers>
-    extends AbstractBeanRowsTableModel<Psi> {
+public class MembersTableModel<Psi extends PsiTeamMembers>
+        extends AbstractBeanRowsTableModel<Psi> {
     /**
      * Resources
      */
     private static final Res RES = Res.getInstance(MembersTableModel.class);
 
     private static final String[] COLUMN_TITLES = new String[]{
-        RES.get("name.col.title"),
-        RES.get("id.col.title"),
-        RES.get("email.col.title"),
-        RES.get("org.col.title"),
-        RES.get("url.col.title"),
-        RES.get("timezone.col.title")};
+            RES.get("name.col.title"),
+            RES.get("id.col.title"),
+            RES.get("email.col.title"),
+            RES.get("org.col.title"),
+            RES.get("url.col.title"),
+            RES.get("timezone.col.title")};
 
 
     public MembersTableModel(final Psi pModel) {

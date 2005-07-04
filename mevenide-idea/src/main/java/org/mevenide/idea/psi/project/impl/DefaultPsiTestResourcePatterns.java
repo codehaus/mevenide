@@ -1,15 +1,17 @@
-package org.mevenide.idea.psi.project;
+package org.mevenide.idea.psi.project.impl;
 
-import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.project.PatternType;
+import org.mevenide.idea.psi.project.PsiResources;
+import org.mevenide.idea.psi.project.support.AbstractPsiResourcePatterns;
 
 /**
  * @author Arik
  */
-public class PsiTestResourcePatterns extends AbstractPsiResourcePatterns {
-    public PsiTestResourcePatterns(final XmlFile pXmlFile,
-                                   final int pResourceRow,
-                                   final PatternType pPatternType) {
-        super(pXmlFile,
+public class DefaultPsiTestResourcePatterns extends AbstractPsiResourcePatterns {
+    public DefaultPsiTestResourcePatterns(final PsiResources pResources,
+                                          final int pResourceRow,
+                                          final PatternType pPatternType) {
+        super(pResources,
               buildContainerPath(pResourceRow, pPatternType),
               pPatternType);
     }

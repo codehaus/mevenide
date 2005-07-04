@@ -16,7 +16,6 @@
  */
 package org.mevenide.idea.editor.pom.ui;
 
-import com.intellij.psi.xml.XmlFile;
 import java.awt.*;
 import javax.swing.*;
 import org.mevenide.idea.Res;
@@ -67,21 +66,18 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
 
     /**
      * Creates an instance for the given POM file.
-     *
-     * @param pFile the POM xml file
      */
-    public PomPanel(final XmlFile pFile) {
-        final PsiProject project = new PsiProject(pFile);
-        generalInfoPanel = new GeneralInfoPanel(project);
-        mailingListsPanel = new MailingListsPanel(project);
-        depsPanel = new DependenciesPanel(project);
-        deploymentPanel = new DeploymentPanel(project);
-        developersPanel = new DevelopersPanel(project);
-        contributorsPanel = new ContributorsPanel(project);
-        scmPanel = new ScmPanel(project);
-        sourcesPanel = new SourcesPanel(project);
-        testsPanel = new TestingPanel(project);
-        reportsPanel = new ReportsPanel(project.getReports());
+    public PomPanel(final PsiProject pProject) {
+        generalInfoPanel = new GeneralInfoPanel(pProject);
+        mailingListsPanel = new MailingListsPanel(pProject);
+        depsPanel = new DependenciesPanel(pProject);
+        deploymentPanel = new DeploymentPanel(pProject);
+        developersPanel = new DevelopersPanel(pProject);
+        contributorsPanel = new ContributorsPanel(pProject);
+        scmPanel = new ScmPanel(pProject);
+        sourcesPanel = new SourcesPanel(pProject);
+        testsPanel = new TestingPanel(pProject);
+        reportsPanel = new ReportsPanel(pProject.getReports());
 
         initComponents();
         layoutComponents();

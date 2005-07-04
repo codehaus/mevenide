@@ -5,8 +5,6 @@ import com.jgoodies.binding.beans.BeanAdapter;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import javax.swing.*;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
@@ -15,11 +13,6 @@ import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
  * @author Arik
  */
 public class DeploymentPanel extends AbstractPomLayerPanel {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(DeploymentPanel.class);
-
     /**
      * Resources.
      */
@@ -43,7 +36,7 @@ public class DeploymentPanel extends AbstractPomLayerPanel {
 
     private void layoutComponents() {
         final FormLayout layout = new FormLayout(
-            "right:min, 2dlu, fill:pref:grow");
+                "right:min, 2dlu, fill:pref:grow");
         DefaultFormBuilder builder = new DefaultFormBuilder(layout,
                                                             RES.getBundle(),
                                                             this);

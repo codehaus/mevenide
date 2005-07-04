@@ -228,7 +228,7 @@
         <root url="jar://$maven.repo$/com.intellij/jars/openapi-3386.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$idea.home$/help/openapihelp.jar!/openapi" />
+        <root url="file://$idea.home$/help/openapi" />
       </JAVADOC>
       <SOURCES>
         <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />

@@ -1,27 +1,22 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.psi.support.AbstractPsiUnnamedPropertyObservable;
+import org.mevenide.idea.psi.support.XmlPsiObject;
+import org.mevenide.idea.util.event.BeanRowsObservable;
+import org.mevenide.idea.util.event.PropertyObservable;
 
 /**
  * @author Arik
  */
-public class PsiDependencyProperties extends AbstractPsiUnnamedPropertyObservable {
-    /**
-     * Creates an instance for the given POM xml file.
-     *
-     * @param pXmlFile the POM file
-     */
-    public PsiDependencyProperties(final XmlFile pXmlFile, final int pDependencyRow) {
-        super(pXmlFile,
-              "project/dependencies/dependency[" + pDependencyRow + "]/properties");
-    }
+public interface PsiDependencyProperties
+        extends PropertyObservable, BeanRowsObservable, XmlPsiObject,
+                PsiChild<PsiDependencies> {
+    String getProperty(String pPropertyName);
 
-    public final String getProperty(final String pPropertyName) {
-        return getValue(pPropertyName);
-    }
+    void setProperty(String pPropertyName, Object pValue);
 
-    public final void setProperty(final String pPropertyName, final Object pValue) {
-        setValue(pPropertyName, pValue);
-    }
+    String[] getPropertyNames();
+
+    void renameProperty(String pPropertyName, String pNewPropertyName);
+
+    String getUnknownPropertyName();
 }

@@ -1,28 +1,38 @@
-package org.mevenide.idea.psi.project;
+package org.mevenide.idea.psi.project.support;
 
-import com.intellij.psi.xml.XmlFile;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.mevenide.idea.psi.project.PsiProject;
+import org.mevenide.idea.psi.project.PsiTeamMemberRoles;
+import org.mevenide.idea.psi.project.PsiTeamMembers;
+import org.mevenide.idea.psi.project.impl.DefaultPsiTeamMemberRoles;
 import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
-public abstract class AbstractPsiTeamMembers extends AbstractPsiBeanRowsObservable {
+public abstract class AbstractPsiTeamMembers extends AbstractPsiBeanRowsObservable
+        implements PsiTeamMembers {
     private final Map<Integer, PsiTeamMemberRoles> rolesCache = Collections.synchronizedMap(
-        new HashMap<Integer, PsiTeamMemberRoles>(10));
+            new HashMap<Integer, PsiTeamMemberRoles>(10));
+    private final PsiProject project;
 
-    protected AbstractPsiTeamMembers(final XmlFile pXmlFile,
+    protected AbstractPsiTeamMembers(final PsiProject pProject,
                                      final String pContainerTagPath,
                                      final String pRowTagName) {
-        super(pXmlFile, pContainerTagPath, pRowTagName);
+        super(pProject.getXmlFile(), pContainerTagPath, pRowTagName);
+        project = pProject;
         registerTag("name", "name");
         registerTag("id", "id");
         registerTag("email", "email");
         registerTag("organization", "organization");
         registerTag("url", "url");
         registerTag("timezone", "timezone");
+    }
+
+    public PsiProject getParent() {
+        return project;
     }
 
     public String getName(final int pRow) {
@@ -81,7 +91,7 @@ public abstract class AbstractPsiTeamMembers extends AbstractPsiBeanRowsObservab
             buf.append('[').append(pRow).append(']');
             buf.append('/').append("roles");
 
-            props = new PsiTeamMemberRoles(getXmlFile(), buf.toString());
+            props = new DefaultPsiTeamMemberRoles(this, buf.toString());
             rolesCache.put(pRow, props);
         }
 

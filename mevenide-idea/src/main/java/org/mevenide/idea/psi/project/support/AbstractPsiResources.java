@@ -1,25 +1,35 @@
-package org.mevenide.idea.psi.project;
+package org.mevenide.idea.psi.project.support;
 
 import com.intellij.psi.xml.XmlFile;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.mevenide.idea.psi.project.PatternType;
+import org.mevenide.idea.psi.project.PsiProject;
+import org.mevenide.idea.psi.project.PsiResourcePatterns;
+import org.mevenide.idea.psi.project.PsiResources;
 import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
 
 /**
  * @author Arik
  */
-public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePatterns>
-    extends AbstractPsiBeanRowsObservable {
-    private final Map<Integer, ResType> includesCache = Collections.synchronizedMap(
-        new HashMap<Integer, ResType>(10));
+public abstract class AbstractPsiResources extends AbstractPsiBeanRowsObservable
+        implements PsiResources {
+    private final Map<Integer, PsiResourcePatterns> includesCache = Collections.synchronizedMap(
+            new HashMap<Integer, PsiResourcePatterns>(10));
 
-    private final Map<Integer, ResType> excludesCache = Collections.synchronizedMap(
-        new HashMap<Integer, ResType>(10));
+    private final Map<Integer, PsiResourcePatterns> excludesCache = Collections.synchronizedMap(
+            new HashMap<Integer, PsiResourcePatterns>(10));
+    private PsiProject project;
 
-    protected AbstractPsiResources(final XmlFile pXmlFile,
+    protected AbstractPsiResources(final PsiProject pProject,
                                    final String pContainerTagPath) {
-        this(pXmlFile, pContainerTagPath, "resource");
+        this(pProject.getXmlFile(), pContainerTagPath, "resource");
+        project = pProject;
+    }
+
+    public PsiProject getParent() {
+        return project;
     }
 
     protected AbstractPsiResources(final XmlFile pXmlFile,
@@ -46,9 +56,9 @@ public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePa
         setValue(pRow, "targetPath", pValue);
     }
 
-    protected final ResType getPatterns(final int pRow,
-                                        final PatternType pType) {
-        final Map<Integer, ResType> cache;
+    public final PsiResourcePatterns getPatterns(final int pRow,
+                                                 final PatternType pType) {
+        final Map<Integer, PsiResourcePatterns> cache;
         if (pType == PatternType.INCLUDES)
             cache = includesCache;
         else if (pType == PatternType.EXCLUDES)
@@ -56,7 +66,7 @@ public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePa
         else
             throw new IllegalArgumentException("illegal type - " + pType);
 
-        ResType props = cache.get(pRow);
+        PsiResourcePatterns props = cache.get(pRow);
         if (props == null) {
             props = createPsiResourcePatterns(pRow, pType);
             cache.put(pRow, props);
@@ -65,14 +75,14 @@ public abstract class AbstractPsiResources<ResType extends AbstractPsiResourcePa
         return props;
     }
 
-    public final ResType getIncludes(final int pRow) {
+    public final PsiResourcePatterns getIncludes(final int pRow) {
         return getPatterns(pRow, PatternType.INCLUDES);
     }
 
-    public final ResType getExcludes(final int pRow) {
+    public final PsiResourcePatterns getExcludes(final int pRow) {
         return getPatterns(pRow, PatternType.EXCLUDES);
     }
 
-    protected abstract ResType createPsiResourcePatterns(final int pRow,
-                                                         final PatternType pType);
+    protected abstract PsiResourcePatterns createPsiResourcePatterns(final int pRow,
+                                                                     final PatternType pType);
 }

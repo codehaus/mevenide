@@ -1,15 +1,15 @@
 package org.mevenide.idea.editor.pom.ui.support;
 
-import org.mevenide.idea.psi.project.AbstractPsiResourcePatterns;
 import org.mevenide.idea.psi.project.PatternType;
+import org.mevenide.idea.psi.project.PsiResourcePatterns;
 import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
 
 /**
  * @author Arik
  */
-public class AbstractResourcePatternsTableModel<Psi extends AbstractPsiResourcePatterns>
-    extends AbstractBeanRowsTableModel<Psi> {
-    public AbstractResourcePatternsTableModel(final Psi pModel) {
+public class AbstractResourcePatternsTableModel
+        extends AbstractBeanRowsTableModel<PsiResourcePatterns> {
+    public AbstractResourcePatternsTableModel(final PsiResourcePatterns pModel) {
         super(pModel, getColumnTitles(pModel.getType()));
     }
 

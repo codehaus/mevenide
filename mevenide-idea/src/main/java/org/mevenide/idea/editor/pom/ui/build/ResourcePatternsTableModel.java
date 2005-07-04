@@ -6,8 +6,7 @@ import org.mevenide.idea.psi.project.PsiResourcePatterns;
 /**
  * @author Arik
  */
-public class ResourcePatternsTableModel
-    extends AbstractResourcePatternsTableModel<PsiResourcePatterns> {
+public class ResourcePatternsTableModel extends AbstractResourcePatternsTableModel {
     public ResourcePatternsTableModel(final PsiResourcePatterns pModel) {
         super(pModel);
     }

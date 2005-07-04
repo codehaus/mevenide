@@ -5,15 +5,15 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.mevenide.idea.editor.pom.ui.AbstractPomLayerPanel;
-import org.mevenide.idea.psi.project.AbstractPsiTeamMembers;
 import org.mevenide.idea.psi.project.PsiTeamMemberRoles;
+import org.mevenide.idea.psi.project.PsiTeamMembers;
 
 /**
  * @author Arik
  */
-public abstract class AbstractTeamPanel<Psi extends AbstractPsiTeamMembers>
-    extends AbstractPomLayerPanel
-    implements ListSelectionListener {
+public abstract class AbstractTeamPanel<Psi extends PsiTeamMembers>
+        extends AbstractPomLayerPanel
+        implements ListSelectionListener {
     private final Psi model;
     private final MembersPanel members;
     private final RolesPanel roles;

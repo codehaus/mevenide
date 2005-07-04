@@ -1,40 +1,21 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
+import org.mevenide.idea.psi.support.XmlPsiObject;
+import org.mevenide.idea.util.event.BeanRowsObservable;
 
 /**
  * @author Arik
  */
-public class PsiVersions extends AbstractPsiBeanRowsObservable {
-    public PsiVersions(final XmlFile pXmlFile) {
-        super(pXmlFile, "project/versions", "version");
-        registerTag("id", "id");
-        registerTag("name", "name");
-        registerTag("tag", "tag");
-    }
+public interface PsiVersions extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiProject> {
+    String getId(int pRow);
 
-    public String getId(final int pRow) {
-        return getValue(pRow, "id");
-    }
+    void setId(int pRow, String pId);
 
-    public void setId(final int pRow, final String pId) {
-        setValue(pRow, "id", pId);
-    }
+    String getName(int pRow);
 
-    public String getName(final int pRow) {
-        return getValue(pRow, "name");
-    }
+    void setName(int pRow, String pName);
 
-    public void setName(final int pRow, final String pName) {
-        setValue(pRow, "name", pName);
-    }
+    String getTag(int pRow);
 
-    public String getTag(final int pRow) {
-        return getValue(pRow, "tag");
-    }
-
-    public void setTag(final int pRow, final String pTag) {
-        setValue(pRow, "tag", pTag);
-    }
+    void setTag(int pRow, String pTag);
 }

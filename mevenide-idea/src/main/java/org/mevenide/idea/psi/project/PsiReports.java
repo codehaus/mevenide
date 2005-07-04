@@ -1,50 +1,17 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
-import org.apache.commons.lang.ArrayUtils;
-import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
+import org.mevenide.idea.psi.support.XmlPsiObject;
+import org.mevenide.idea.util.event.BeanRowsObservable;
 
 /**
  * @author Arik
  */
-public class PsiReports extends AbstractPsiBeanRowsObservable {
-    private static final String CONTAINER_TAG_PATH = "project/reports";
-    private static final String ROW_TAG_NAME = "report";
+public interface PsiReports extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiProject> {
+    String getReport(int pRow);
 
-    public PsiReports(final XmlFile pXmlFile) {
-        super(pXmlFile, CONTAINER_TAG_PATH, ROW_TAG_NAME);
+    void setReport(int pRow, Object pValue);
 
-/*
-        String[] reports;
-        try {
-            final VirtualFile virtualFile = xmlFile.getVirtualFile();
-            final Project project = xmlFile.getProject();
-            final Module module = VfsUtil.getModuleForFile(project, virtualFile);
-            final ILocationFinder finder = new ModuleLocationFinder(module);
-            final IReportsFinder reportsFinder = new JDomReportsFinder(finder);
-            reports = reportsFinder.findReports();
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            reports = new String[0];
-        }
-*/
-    }
+    String[] getReports();
 
-    public final String getReport(final int pRow) {
-        return getValue(pRow);
-    }
-
-    public final void setReport(final int pRow, final Object pValue) {
-        setValue(pRow, pValue);
-    }
-
-    public final String[] getReports() {
-        return getValues();
-    }
-
-    public final boolean isReportRegistered(final String pReportName) {
-        final String[] reports = getReports();
-        return ArrayUtils.contains(reports, pReportName);
-    }
+    boolean isReportRegistered(String pReportName);
 }

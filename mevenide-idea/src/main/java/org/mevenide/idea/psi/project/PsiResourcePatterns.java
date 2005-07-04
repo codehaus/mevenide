@@ -1,30 +1,18 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.psi.xml.XmlFile;
+import org.mevenide.idea.psi.support.XmlPsiObject;
+import org.mevenide.idea.util.event.BeanRowsObservable;
 
 /**
  * @author Arik
  */
-public class PsiResourcePatterns extends AbstractPsiResourcePatterns {
-    public PsiResourcePatterns(final XmlFile pXmlFile,
-                               final int pResourceRow,
-                               final PatternType pPatternType) {
-        super(pXmlFile,
-              buildContainerPath(pResourceRow, pPatternType),
-              pPatternType);
-    }
+public interface PsiResourcePatterns
+        extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiResources> {
+    String getPattern(int pRow);
 
-    protected static String buildContainerPath(final int pRow,
-                                               final PatternType pType) {
-        final StringBuilder buf = new StringBuilder();
-        buf.append("project/build/resources/resource[").append(pRow).append(']');
+    void setPattern(int pRow, Object pValue);
 
-        if (pType == PatternType.INCLUDES)
-            buf.append("/includes");
-        else
-            buf.append("/excludes");
+    String[] getPatterns();
 
-        return buf.toString();
-    }
-
+    PatternType getType();
 }

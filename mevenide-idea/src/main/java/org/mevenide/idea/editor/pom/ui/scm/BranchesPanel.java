@@ -7,7 +7,7 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
 /**
  * @author Arik
  */
-public class BranchesPanel extends CRUDTablePanel {
+public class BranchesPanel extends CRUDTablePanel<BranchesTableModel> {
     public BranchesPanel(final PsiProject pModel) {
         this(pModel.getScmBranches());
     }
