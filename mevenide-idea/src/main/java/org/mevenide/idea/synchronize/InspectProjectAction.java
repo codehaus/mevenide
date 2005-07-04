@@ -3,8 +3,6 @@ package org.mevenide.idea.synchronize;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.synchronize.ui.SynchronizationResultsPanel;
 import org.mevenide.idea.util.actions.AbstractAnAction;
@@ -15,11 +13,6 @@ import org.mevenide.idea.util.ui.images.Icons;
  * @author Arik
  */
 public class InspectProjectAction extends AbstractAnAction {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(InspectProjectAction.class);
-
     /**
      * Resources
      */
