@@ -44,7 +44,7 @@ public class SourcesPanel extends AbstractPomLayerPanel {
     public SourcesPanel(final PsiProject pProject) {
         model = new BeanAdapter(pProject, true);
 
-        resourcesPanel = new ResourcesPanel(pProject);
+        resourcesPanel = new ResourcesPanel(pProject.getResources());
         layoutComponents();
         bindComponents();
     }
@@ -88,9 +88,6 @@ public class SourcesPanel extends AbstractPomLayerPanel {
         builder.append(RES.get("java.src.dir"), sourceDirField);
         builder.append(RES.get("aspect.src.dir"), aspectSourceDirField);
         builder.appendSeparator(RES.get("conf.dirs.title"));
-        final JPanel panel = builder.getPanel();
-        UIUtils.installBorder(panel, 0, 0, 0, 0);
-
-        return panel;
+        return builder.getPanel();
     }
 }

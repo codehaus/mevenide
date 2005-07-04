@@ -29,14 +29,14 @@ public class LabeledPanel extends JPanel {
 
         c = new GridBagConstraints();
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(0, 0, 5, 0);
+        c.insets = new Insets(10, 10, 5, 10);
         c.weightx = 1;
         add(new MultiLineLabel(pLabel), c);
 
         c = new GridBagConstraints();
         c.gridy = 1;
         c.fill = GridBagConstraints.BOTH;
-        c.insets = new Insets(5, 0, 0, 0);
+        c.insets = new Insets(5, 10, 10, 10);
         c.weighty = 1;
         add(component, c);
     }

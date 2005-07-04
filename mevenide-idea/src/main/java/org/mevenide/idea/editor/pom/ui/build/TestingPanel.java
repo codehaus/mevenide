@@ -1,4 +1,4 @@
-package org.mevenide.idea.editor.pom.ui.tests;
+package org.mevenide.idea.editor.pom.ui.build;
 
 import com.jgoodies.binding.adapter.Bindings;
 import com.jgoodies.binding.beans.BeanAdapter;
@@ -33,7 +33,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
     /**
      * The test source code resources panel.
      */
-    private final TestResourcesPanel resources;
+    private final ResourcesPanel resources;
 
     /**
      * Creates an instance for the given file.
@@ -41,7 +41,7 @@ public class TestingPanel extends AbstractPomLayerPanel {
     public TestingPanel(final PsiProject pProject) {
         final BeanAdapter model = new BeanAdapter(pProject, true);
 
-        resources = new TestResourcesPanel(pProject);
+        resources = new ResourcesPanel(pProject.getTestResources());
         Bindings.bind(testsSourceDirField,
                       model.getValueModel("unitTestSourceDirectory"));
 

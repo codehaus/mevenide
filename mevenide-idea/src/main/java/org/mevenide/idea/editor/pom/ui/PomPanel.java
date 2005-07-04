@@ -17,21 +17,25 @@
 package org.mevenide.idea.editor.pom.ui;
 
 import java.awt.*;
+import java.util.concurrent.Callable;
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.editor.pom.PomFileEditorState;
 import org.mevenide.idea.editor.pom.PomFileEditorStateHandler;
 import org.mevenide.idea.editor.pom.ui.build.SourcesPanel;
+import org.mevenide.idea.editor.pom.ui.build.TestingPanel;
 import org.mevenide.idea.editor.pom.ui.dependencies.DependenciesPanel;
 import org.mevenide.idea.editor.pom.ui.mailingLists.MailingListsPanel;
 import org.mevenide.idea.editor.pom.ui.reports.ReportsPanel;
 import org.mevenide.idea.editor.pom.ui.scm.ScmPanel;
 import org.mevenide.idea.editor.pom.ui.team.ContributorsPanel;
 import org.mevenide.idea.editor.pom.ui.team.DevelopersPanel;
-import org.mevenide.idea.editor.pom.ui.tests.TestingPanel;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.LabeledPanel;
-import org.mevenide.idea.util.ui.UIUtils;
 
 /**
  * This panel displays a single POM layer.
@@ -40,9 +44,19 @@ import org.mevenide.idea.util.ui.UIUtils;
  */
 public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStateHandler {
     /**
+     * Logging.
+     */
+    private static final Log LOG = LogFactory.getLog(PomPanel.class);
+
+    /**
      * Resources
      */
     private static final Res RES = Res.getInstance(PomPanel.class);
+
+    /**
+     * The PSI project model.
+     */
+    private final PsiProject project;
 
     /**
      * Tabbed pane.
@@ -50,67 +64,80 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
     private final JTabbedPane tabs = new JTabbedPane(JTabbedPane.TOP);
 
     /**
-     * * Panels ***********************************************************
-     */
-
-    private final JPanel generalInfoPanel;
-    private final JPanel mailingListsPanel;
-    private final JPanel depsPanel;
-    private final JPanel deploymentPanel;
-    private final JPanel developersPanel;
-    private final JPanel contributorsPanel;
-    private final JPanel scmPanel;
-    private final JPanel sourcesPanel;
-    private final JPanel testsPanel;
-    private final JPanel reportsPanel;
-
-    /**
      * Creates an instance for the given POM file.
      */
     public PomPanel(final PsiProject pProject) {
-        generalInfoPanel = new GeneralInfoPanel(pProject);
-        mailingListsPanel = new MailingListsPanel(pProject);
-        depsPanel = new DependenciesPanel(pProject);
-        deploymentPanel = new DeploymentPanel(pProject);
-        developersPanel = new DevelopersPanel(pProject);
-        contributorsPanel = new ContributorsPanel(pProject);
-        scmPanel = new ScmPanel(pProject);
-        sourcesPanel = new SourcesPanel(pProject);
-        testsPanel = new TestingPanel(pProject);
-        reportsPanel = new ReportsPanel(pProject.getReports());
-
+        project = pProject;
         initComponents();
         layoutComponents();
     }
 
     private void initComponents() {
-        final String depsLabel = RES.get("dep.list.desc");
-        final String mailLabel = RES.get("mail.lists.desc");
+        tabs.add("General", new LabeledPanel(RES.get("general.info.desc"),
+                                             new GeneralInfoPanel(project)));
 
-        final LabeledPanel mailingListsLabelPanel = new LabeledPanel(mailLabel,
-                                                                     mailingListsPanel);
-        final LabeledPanel depsLabelPanel = new LabeledPanel(depsLabel, depsPanel);
-        UIUtils.installBorder(generalInfoPanel);
-        UIUtils.installBorder(mailingListsLabelPanel);
-        UIUtils.installBorder(depsLabelPanel);
-        UIUtils.installBorder(deploymentPanel);
-        UIUtils.installBorder(developersPanel);
-        UIUtils.installBorder(contributorsPanel);
-        UIUtils.installBorder(scmPanel);
-        UIUtils.installBorder(sourcesPanel);
-        UIUtils.installBorder(testsPanel);
-        UIUtils.installBorder(reportsPanel);
+        tabs.add("Mailing lists", new TabPlaceHolder(RES.get("mail.lists.desc"),
+                                                     new Callable<JComponent>() {
+                                                         public JComponent call() throws Exception {
+                                                             return new MailingListsPanel(project);
+                                                         }
+                                                     }));
 
-        tabs.add("General", generalInfoPanel);
-        tabs.add("Mailing lists", mailingListsLabelPanel);
-        tabs.add("Developers", developersPanel);
-        tabs.add("Contributors", contributorsPanel);
-        tabs.add("SCM", scmPanel);
-        tabs.add("Dependencies", depsLabelPanel);
-        tabs.add("Source Code", sourcesPanel);
-        tabs.add("Testing", testsPanel);
-        tabs.add("Deployment", deploymentPanel);
-        tabs.add("Reports", reportsPanel);
+        tabs.add("Developers", new TabPlaceHolder(RES.get("developers.desc"),
+                                                  new Callable<JComponent>() {
+                                                      public JComponent call() throws Exception {
+                                                          return new DevelopersPanel(project);
+                                                      }
+                                                  }));
+
+        tabs.add("Contributors", new TabPlaceHolder(RES.get("contributors.desc"),
+                                                    new Callable<JComponent>() {
+                                                        public JComponent call() throws Exception {
+                                                            return new ContributorsPanel(project);
+                                                        }
+                                                    }));
+
+        tabs.add("SCM", new TabPlaceHolder(RES.get("scm.desc"),
+                                           new Callable<JComponent>() {
+                                               public JComponent call() throws Exception {
+                                                   return new ScmPanel(project);
+                                               }
+                                           }));
+
+        tabs.add("Dependencies", new TabPlaceHolder(RES.get("dep.list.desc"),
+                                                    new Callable<JComponent>() {
+                                                        public JComponent call() throws Exception {
+                                                            return new DependenciesPanel(project);
+                                                        }
+                                                    }));
+
+        tabs.add("Source Code", new TabPlaceHolder(RES.get("src.desc"),
+                                                   new Callable<JComponent>() {
+                                                       public JComponent call() throws Exception {
+                                                           return new SourcesPanel(project);
+                                                       }
+                                                   }));
+
+        tabs.add("Testing", new TabPlaceHolder(RES.get("testing.desc"),
+                                               new Callable<JComponent>() {
+                                                   public JComponent call() throws Exception {
+                                                       return new TestingPanel(project);
+                                                   }
+                                               }));
+
+        tabs.add("Deployment", new TabPlaceHolder(RES.get("deployment.desc"),
+                                                  new Callable<JComponent>() {
+                                                      public JComponent call() throws Exception {
+                                                          return new DeploymentPanel(project);
+                                                      }
+                                                  }));
+
+        tabs.add("Reports", new TabPlaceHolder(RES.get("reports.desc"),
+                                               new Callable<JComponent>() {
+                                                   public JComponent call() throws Exception {
+                                                       return new ReportsPanel(project);
+                                                   }
+                                               }));
     }
 
     private void layoutComponents() {
@@ -135,6 +162,37 @@ public class PomPanel extends AbstractPomLayerPanel implements PomFileEditorStat
         if (component instanceof PomFileEditorStateHandler) {
             PomFileEditorStateHandler handler = (PomFileEditorStateHandler) component;
             handler.setState(pState);
+        }
+    }
+
+    private class TabPlaceHolder extends JPanel {
+        private final Callable<? extends JComponent> initializer;
+        private final String label;
+        private JComponent component = null;
+
+        public TabPlaceHolder(final Callable<? extends JComponent> pInitializer) {
+            this(null, pInitializer);
+        }
+
+        public TabPlaceHolder(final String pLabel,
+                              final Callable<? extends JComponent> pInitializer) {
+            super(new BorderLayout());
+            label = pLabel;
+            initializer = pInitializer;
+            tabs.addChangeListener(new ChangeListener() {
+                public void stateChanged(final ChangeEvent pEvent) {
+                    if (component == null && tabs.getSelectedComponent() == TabPlaceHolder.this)
+                        try {
+                            component = initializer.call();
+                            if (label != null && label.trim().length() > 0)
+                                component = new LabeledPanel(label, component);
+                            add(component, BorderLayout.CENTER);
+                        }
+                        catch (Exception e) {
+                            LOG.error(e.getMessage(), e);
+                        }
+                }
+            });
         }
     }
 }

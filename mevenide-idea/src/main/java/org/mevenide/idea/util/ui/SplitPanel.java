@@ -6,20 +6,20 @@ import javax.swing.*;
 /**
  * @author Arik
  */
-public class SplitPanel<Top extends JComponent, Bottom extends JComponent>
-    extends JPanel {
+public class SplitPanel<First extends JComponent, Second extends JComponent>
+        extends JPanel {
     /**
-     * The top component.
+     * The first component.
      */
-    private Top top;
+    private First first;
 
     /**
-     * The bottom component.
+     * The second component.
      */
-    private Bottom bottom;
+    private Second second;
 
     /**
-     * The split pane component that layouts the top/bottom components.
+     * The split pane component that layouts the first/second components.
      */
     private final JSplitPane split;
 
@@ -38,81 +38,93 @@ public class SplitPanel<Top extends JComponent, Bottom extends JComponent>
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop    the top component
-     * @param pBottom the bottom component
+     * @param pTop    the first component
+     * @param pBottom the second component
      */
-    public SplitPanel(final Top pTop, final Bottom pBottom) {
+    public SplitPanel(final First pTop, final Second pBottom) {
         this(pTop, pBottom, true);
     }
 
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop        the top component
-     * @param pBottom     the bottom component
+     * @param pTop        the first component
+     * @param pBottom     the second component
      * @param pAddBorders whether to add en empty border around the components
      */
-    public SplitPanel(final Top pTop, final Bottom pBottom, final boolean pAddBorders) {
+    public SplitPanel(final First pTop, final Second pBottom, final boolean pAddBorders) {
         this(pTop, pBottom, pAddBorders, true);
     }
 
     /**
      * Creates an instance using the two given components.
      *
-     * @param pTop        the top component
-     * @param pBottom     the bottom component
+     * @param pTop        the first component
+     * @param pBottom     the second component
      * @param pAddBorders whether to add en empty border around the components
      */
-    public SplitPanel(final Top pTop,
-                      final Bottom pBottom,
+    public SplitPanel(final First pTop,
+                      final Second pBottom,
                       final boolean pAddBorders,
                       final boolean pVertical) {
         split = new JSplitPane(
-            pVertical ?
-                JSplitPane.VERTICAL_SPLIT :
-                JSplitPane.HORIZONTAL_SPLIT,
-            true,
-            null,
-            null);
+                pVertical ?
+                        JSplitPane.VERTICAL_SPLIT :
+                        JSplitPane.HORIZONTAL_SPLIT,
+                true,
+                null,
+                null);
 
         addBorders = pAddBorders;
 
         setLayout(new BorderLayout());
         add(split, BorderLayout.CENTER);
 
-        setTop(pTop);
-        setBottom(pBottom);
+        setFirst(pTop);
+        setSecond(pBottom);
     }
 
     /**
-     * Returns the top component.
+     * Returns the first component.
      *
-     * @return the top component
+     * @return the first component
      */
-    public final Top getTop() {
-        return top;
+    public final First getFirst() {
+        return first;
     }
 
     /**
-     * Returns the bottom component.
+     * Returns the second component.
      *
-     * @return the bottom component
+     * @return the second component
      */
-    public final Bottom getBottom() {
-        return bottom;
+    public final Second getSecond() {
+        return second;
     }
 
-    public void setBottom(final Bottom pBottom) {
-        split.setBottomComponent(pBottom);
-        bottom = pBottom;
-        if (bottom != null && addBorders)
-            UIUtils.installBorder(bottom);
+    public void setSecond(final Second pSecond) {
+        split.setBottomComponent(pSecond);
+        second = pSecond;
+        if (second != null && addBorders) {
+            if (split.getOrientation() == JSplitPane.VERTICAL_SPLIT)
+                UIUtils.installBorder(second, 5, 0, 0, 0);
+            else
+                UIUtils.installBorder(second, 0, 5, 0, 0);
+        }
     }
 
-    public void setTop(final Top pTop) {
-        split.setTopComponent(pTop);
-        top = pTop;
-        if (top != null && addBorders)
-            UIUtils.installBorder(top);
+    public void setFirst(final First pFirst) {
+        split.setTopComponent(pFirst);
+        first = pFirst;
+        if (first != null && addBorders) {
+            if (split.getOrientation() == JSplitPane.VERTICAL_SPLIT)
+                UIUtils.installBorder(first, 0, 0, 5, 0);
+            else
+                UIUtils.installBorder(second, 0, 0, 0, 5);
+        }
+    }
+
+    public JSplitPane getSplit() {
+        return split;
     }
 }
