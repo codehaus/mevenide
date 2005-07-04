@@ -24,6 +24,7 @@ import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -244,7 +245,7 @@ public class IdentificationSection extends PageSection {
 							);
 							dialog.setTitle(title);
 							dialog.setMessage(message);
-							dialog.setInput(Mevenide.getWorkspace().getRoot());
+							dialog.setInput(ResourcesPlugin.getWorkspace().getRoot());
 							dialog.addFilter(filter);
 							//dialog.setValidator();
 							dialog.setSorter(new ResourceSorter(ResourceSorter.NAME));

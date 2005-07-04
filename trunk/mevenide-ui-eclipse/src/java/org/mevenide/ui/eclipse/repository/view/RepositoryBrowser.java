@@ -43,7 +43,6 @@ import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 /**  
@@ -63,8 +62,6 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
     private Action downloadArtifactAction;
     private Action refreshAction;
     private Action restoreDefaultRepositoriesAction;
-    
-    private PreferencesManager preferenceManager;
     
     public void dataLoaded(final RepositoryEvent event) {
         if ( repositories.contains(event.getRepositoryUrl()) ) {
