@@ -17,6 +17,7 @@
 
 package org.mevenide.ui.eclipse.pom.manager;
 
+import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.context.IQueryContext;
 
@@ -43,4 +44,14 @@ public interface POMManager {
      *         in the workspace.
      */
     IQueryContext getQueryContext(String groupId, String artifactId);
+
+    /**
+     * Locates a query context for the given artifact.
+     * @param  groupId the artifact's group
+     * @param  artifactId the artifact's id
+     * @return the query context for the given artifact or
+     *         <tt>null</tt> if the artifact does not exist
+     *         in the workspace.
+     */
+    IQueryContext getQueryContext(Dependency dependency);
 }

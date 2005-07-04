@@ -165,11 +165,9 @@ public class MavenClasspathContainer implements IClasspathContainer {
         IClasspathEntry result = null;
 
         if (dependency != null) {
-            final String     groupId    = dependency.getGroupId();
-            final String     artifactId = dependency.getArtifactId();
             final POMManager pomManager = Mevenide.getInstance().getPOMManager();
 
-            final IQueryContext queryContext = pomManager.getQueryContext(groupId, artifactId);
+            final IQueryContext queryContext = pomManager.getQueryContext(dependency);
             if (queryContext != null) {
                 File projectDirectory = queryContext.getProjectDirectory();
                 IPath projectPath = makeWorkspacePath(projectDirectory);

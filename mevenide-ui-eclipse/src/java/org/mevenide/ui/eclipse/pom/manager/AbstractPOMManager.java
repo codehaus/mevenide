@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
@@ -63,6 +64,19 @@ public abstract class AbstractPOMManager implements POMManager {
     public IQueryContext getQueryContext(String groupId, String artifactId) {
         final String key = getProjectKey(groupId, artifactId);
         return (IQueryContext)this.artifactMap.get(key);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#getQueryContext(org.apache.maven.project.Dependency)
+     */
+    public IQueryContext getQueryContext(Dependency dependency) {
+        if (dependency != null) {
+            final String groupId = dependency.getGroupId();
+            final String artifactId = dependency.getArtifactId();
+            return this.getQueryContext(groupId, artifactId);
+        }
+
+        return null;
     }
 
     protected final void addProject(IProject project) throws CoreException {
