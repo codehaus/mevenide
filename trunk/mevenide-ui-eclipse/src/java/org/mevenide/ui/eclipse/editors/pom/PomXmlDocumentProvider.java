@@ -19,7 +19,7 @@ package org.mevenide.ui.eclipse.editors.pom;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentPartitioner;
-import org.eclipse.jface.text.rules.DefaultPartitioner;
+import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
 /**
@@ -30,10 +30,13 @@ import org.eclipse.ui.editors.text.FileDocumentProvider;
  */
 public class PomXmlDocumentProvider extends FileDocumentProvider {
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ui.texteditor.AbstractDocumentProvider#createDocument(java.lang.Object)
+	 */
 	protected IDocument createDocument(Object element) throws CoreException {
 		IDocument document = super.createDocument(element);
 		if (document != null) {
-			IDocumentPartitioner partitioner =	new DefaultPartitioner(
+			IDocumentPartitioner partitioner =	new FastPartitioner(
 				new PomXmlPartitionScanner(),
 				new String[] {
 					PomXmlPartitionScanner.XML_ELEMENT,
