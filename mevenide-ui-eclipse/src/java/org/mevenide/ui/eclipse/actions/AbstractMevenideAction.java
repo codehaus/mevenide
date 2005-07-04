@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.actions;
 
 import org.eclipse.core.resources.IProject;
@@ -32,41 +33,48 @@ import org.mevenide.ui.eclipse.Mevenide;
  * @version $Id$
  * 
  */
-public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate  {
+public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate {
     protected IProject currentProject;
-	
-	public void selectionChanged(IAction action, ISelection selection) {
-        
-        IProject selectedProject = getParentProject(selection);
-        
-        if ( selectedProject != null ) {
-    		Mevenide plugin = Mevenide.getInstance();
-    		
-            currentProject = selectedProject.getProject();
-    		String cdir = currentProject.getLocation().toFile().getAbsolutePath();
-    		plugin.setCurrentDir(cdir);
-            
-            plugin.setProject(selectedProject);
-            
-            plugin.initEnvironment();
-    	}
-	}
-    
-    private IProject getParentProject(ISelection selection) {
-        IProject project = null;
-        Object firstElement = ((StructuredSelection) selection).getFirstElement();
-        if ( firstElement instanceof IResource ) {
-            project = ((IResource) firstElement).getProject();
-    	}
-        if ( firstElement instanceof IJavaElement )  {
-            project = ((IJavaElement) firstElement).getJavaProject().getProject();
-        }
-        return project;
-    }
-    
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+     */
     public void dispose() {
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+     */
     public void init(IWorkbenchWindow window) {
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+
+        IProject selectedProject = getParentProject(selection);
+        if (selectedProject != null) {
+
+            this.currentProject = selectedProject.getProject();
+            String cdir = this.currentProject.getLocation().toFile().getAbsolutePath();
+
+            Mevenide.getInstance().setCurrentDir(cdir);
+            Mevenide.getInstance().setProject(selectedProject);
+            Mevenide.getInstance().initEnvironment();
+        }
+    }
+
+    private IProject getParentProject(ISelection selection) {
+        IProject project = null;
+
+        Object firstElement = ((StructuredSelection) selection).getFirstElement();
+        if (firstElement instanceof IResource) {
+            project = ((IResource) firstElement).getProject();
+        } else if (firstElement instanceof IJavaElement) {
+            project = ((IJavaElement) firstElement).getJavaProject().getProject();
+        }
+
+        return project;
     }
 }

@@ -40,7 +40,6 @@ import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
-import org.mevenide.ui.eclipse.wizard.MavenProjectWizardDependencySettingsPage;
 import org.mevenide.ui.eclipse.wizard.NewDependencyWizard;
 import org.mevenide.util.MevenideUtils;
 
