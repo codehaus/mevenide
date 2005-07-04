@@ -34,57 +34,57 @@ public class DefaultPsiProject extends AbstractPsiNamedPropertyObservable implem
     /**
      * The project organization PSI handler.
      */
-    private final PsiOrganization organization = new DefaultPsiOrganization(this);
+    private PsiOrganization organization = null;
 
     /**
      * Project mailing lists.
      */
-    private final PsiMailingLists mailingLists = new DefaultPsiMailingLists(this);
+    private PsiMailingLists mailingLists = null;
 
     /**
      * Project dependencies.
      */
-    private final PsiDependencies dependencies = new DefaultPsiDependencies(this);
+    private PsiDependencies dependencies = null;
 
     /**
      * Project developers team.
      */
-    private final PsiDevelopers developers = new DefaultPsiDevelopers(this);
+    private PsiDevelopers developers = null;
 
     /**
      * Project contributors.
      */
-    private final PsiContributors contributors = new DefaultPsiContributors(this);
+    private PsiContributors contributors = null;
 
     /**
      * The SCM repository.
      */
-    private final PsiScmRepository scmRepository = new DefaultPsiScmRepository(this);
+    private PsiScmRepository scmRepository = null;
 
     /**
      * The SCM branches.
      */
-    private final PsiScmBranches scmBranches = new DefaultPsiScmBranches(this);
+    private PsiScmBranches scmBranches = null;
 
     /**
      * The versions.
      */
-    private final PsiVersions versions = new DefaultPsiVersions(this);
+    private PsiVersions versions = null;
 
     /**
      * The resources.
      */
-    private final PsiResources mainResources = new DefaultPsiMainResources(this);
+    private PsiResources mainResources = null;
 
     /**
      * The test resources.
      */
-    private final PsiResources testResources = new DefaultPsiTestResources(this);
+    private PsiResources testResources = null;
 
     /**
      * POM reports.
      */
-    private final PsiReports reports = new DefaultPsiReports(this);
+    private PsiReports reports = null;
 
     /**
      * Creates a new instance for the given XML (POM) file.
@@ -308,46 +308,68 @@ public class DefaultPsiProject extends AbstractPsiNamedPropertyObservable implem
     }
 
     public final PsiOrganization getOrganization() {
+        if (organization == null)
+            organization = new DefaultPsiOrganization(this);
         return organization;
     }
 
     public final PsiMailingLists getMailingLists() {
+        if (mailingLists == null)
+            mailingLists = new DefaultPsiMailingLists(this);
         return mailingLists;
     }
 
     public final PsiDependencies getDependencies() {
+        if (dependencies == null)
+            dependencies = new DefaultPsiDependencies(this);
         return dependencies;
     }
 
     public PsiDevelopers getDevelopers() {
+        if (developers == null)
+            developers = new DefaultPsiDevelopers(this);
         return developers;
     }
 
     public PsiContributors getContributors() {
+        if (contributors == null)
+            contributors = new DefaultPsiContributors(this);
         return contributors;
     }
 
     public PsiScmRepository getScmRepository() {
+        if (scmRepository == null)
+            scmRepository = new DefaultPsiScmRepository(this);
         return scmRepository;
     }
 
     public PsiScmBranches getScmBranches() {
+        if (scmBranches == null)
+            scmBranches = new DefaultPsiScmBranches(this);
         return scmBranches;
     }
 
     public PsiVersions getVersions() {
+        if (versions == null)
+            versions = new DefaultPsiVersions(this);
         return versions;
     }
 
     public PsiResources getResources() {
+        if (mainResources == null)
+            mainResources = new DefaultPsiMainResources(this);
         return mainResources;
     }
 
     public PsiResources getTestResources() {
+        if (testResources == null)
+            testResources = new DefaultPsiTestResources(this);
         return testResources;
     }
 
     public PsiReports getReports() {
+        if (reports == null)
+            reports = new DefaultPsiReports(this);
         return reports;
     }
 
