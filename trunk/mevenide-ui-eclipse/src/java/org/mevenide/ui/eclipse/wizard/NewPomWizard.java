@@ -95,9 +95,10 @@ public class NewPomWizard extends BasicNewResourceWizard implements INewWizard {
                     IDE.openEditor(page, file, true);
                 }
             }
-        }
-        catch (PartInitException e) {
-            Mevenide.popUp(Mevenide.getResourceString("NewPomWizard.Error.Title"), e.getMessage()); //$NON-NLS-1$
+        } catch (PartInitException e) {
+            final String title = Mevenide.getResourceString("NewPomWizard.Error.Title");
+            final String message = "Unable to open an editor for " + file.getLocation() + ".";
+            Mevenide.displayError(title, message, e);
         }
         return true;
     }
