@@ -166,10 +166,13 @@ public class DependencyNode extends AbstractNode {
         }
         if (dependency.getValue("type") != null) {
             snap.setType(dependency.getValue("type"));
+        } else {
+            // we need *some* type
+            snap.setType("jar");
         }
         if (dependency.getValue("jar") != null) {
             snap.setJar(dependency.getValue("jar"));
-        }
+        } 
         if (dependency.getValue("url") != null) {
             snap.setUrl(dependency.getValue("url"));
         }

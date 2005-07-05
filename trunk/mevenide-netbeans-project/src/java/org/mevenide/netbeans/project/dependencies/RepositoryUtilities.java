@@ -97,12 +97,13 @@ public class RepositoryUtilities {
             String groupId = dependency.getGroupId() != null ? dependency.getGroupId() : dependency.getId();
             String artId = dependency.getArtifactId() != null ? dependency.getArtifactId() : dependency.getId();
             String type = dependency.getType() != null ? dependency.getType() : "jar";
+            String ext = dependency.getExtension();
             final RepoPathElement el = new RepoPathElement(readers[i], null,
                     groupId,
                     type,
                     dependency.getVersion(),
                     artId,
-                    type);
+                    ext);
             File localRepo = new File(project.getLocFinder().getMavenLocalRepository());
             File destinationFile = new File(URI.create(localRepo.toURI().toString() + el.getRelativeURIPath()));
             if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
