@@ -116,7 +116,7 @@ public final class MavenProject implements Project {
         }
     }
     
-    void firePropertyChange(String property) {
+    public void firePropertyChange(String property) {
         synchronized (support) {
             projectInfo.reset();
             support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));

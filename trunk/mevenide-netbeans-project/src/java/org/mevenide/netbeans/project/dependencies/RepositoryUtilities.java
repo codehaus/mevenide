@@ -18,18 +18,22 @@
 package org.mevenide.netbeans.project.dependencies;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
+import org.apache.maven.project.Dependency;
 import org.apache.maven.util.DownloadMeter;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.ProxyUtilities;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
+import org.openide.awt.StatusDisplayer;
 
 /**
  * remote repository related utilities 
@@ -83,6 +87,39 @@ public class RepositoryUtilities {
             }
         }
         return (URI[])cols.toArray(new URI[cols.size()]);
+    }
+    
+    public static boolean downloadArtifact(IRepositoryReader[] readers,
+            MavenProject project,
+            Dependency dependency) throws Exception {
+        Exception fileNotFound = new Exception();
+        for (int i = 0; i < readers.length; i++) {
+            String groupId = dependency.getGroupId() != null ? dependency.getGroupId() : dependency.getId();
+            String artId = dependency.getArtifactId() != null ? dependency.getArtifactId() : dependency.getId();
+            String type = dependency.getType() != null ? dependency.getType() : "jar";
+            final RepoPathElement el = new RepoPathElement(readers[i], null,
+                    groupId,
+                    type,
+                    dependency.getVersion(),
+                    artId,
+                    type);
+            File localRepo = new File(project.getLocFinder().getMavenLocalRepository());
+            File destinationFile = new File(URI.create(localRepo.toURI().toString() + el.getRelativeURIPath()));
+            if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
+                try {
+                    return RepositoryUtilities.downloadArtifact(project.getLocFinder(),
+                            project.getPropertyResolver(),
+                            el);
+                } catch (FileNotFoundException exc) {
+                    // well can happen, definitely if having multiple repositories
+                    fileNotFound = exc;
+                } 
+            } else {
+                return false;
+            }
+        }
+        // could be a hack.. if all repositories throw filenotfound, report it by rethrowing the last one.
+        throw fileNotFound;
     }
     
     public static boolean downloadArtifact(ILocationFinder finder, 

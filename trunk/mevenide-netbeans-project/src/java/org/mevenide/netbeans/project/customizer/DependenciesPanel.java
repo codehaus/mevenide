@@ -514,7 +514,6 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                                 StatusDisplayer.getDefault().setStatusText("Error downloading " + destinationFile.getName() + " : " + exc.getLocalizedMessage());
                             }
                         }
-                        localRepo = new File(project.getLocFinder().getMavenLocalRepository());
                         destinationFile = new File(URI.create(localRepo.toURI().toString() + docEl.getRelativeURIPath()));
                         if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
                             try {

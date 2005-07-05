@@ -6,6 +6,18 @@
   </properties>
 
   <body>
+    <release version="0.8" date="in cvs" description="Work in progress">
+      <action dev="mkleint" type="add">
+          Dependencies now visible and editable in Project View. Add/Edit/Remove dependency actions
+          accessible from project explorer.
+          One can download the missing dependencies, download/view it's javadoc etc.
+      </action>
+      <action dev="mkleint" type="add">
+          MEVENIDE-165 - allow user to check the remote repositories for javadocs and sources of project's dependencies.
+      </action>
+
+    </release>
+      
     <release version="0.7" date="22/05/2005" description="Works with 4.0 and 4.1.">
       <action dev="mkleint" type="add">
        Added webapp deployment, using Cargo (http://cargo.codehaus.org).
