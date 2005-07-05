@@ -18,9 +18,10 @@ package org.mevenide.idea.module;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
-import java.io.File;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.idea.global.MavenManager;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * A location finder which uses an IDEA module to find the Java home and uses the IDEA
@@ -68,10 +69,10 @@ public class ModuleLocationFinder extends LocationFinderAggregator {
      */
     public String getMavenHome() {
         final MavenManager mgr = MavenManager.getInstance();
-        final File mavenHome = mgr.getMavenHome();
-        if (mavenHome == null || !mavenHome.exists())
+        final VirtualFile mavenHome = mgr.getMavenHome();
+        if (mavenHome == null || !mavenHome.isValid())
             return super.getMavenHome();
         else
-            return mavenHome.getAbsolutePath();
+            return FileUtils.getAbsolutePath(mavenHome);
     }
 }

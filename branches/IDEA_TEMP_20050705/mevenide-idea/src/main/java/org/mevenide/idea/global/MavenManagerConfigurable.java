@@ -18,31 +18,30 @@ package org.mevenide.idea.global;
 
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import java.io.File;
-import java.io.FileNotFoundException;
 import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
-import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
- * This component manages UI configuration for the {@link MavenManager} component. It
- * displays a window allowing the user to modify the Maven manager settings, and either
- * discards them or applies them based on user actions.
+ * This component manages UI configuration for the {@link MavenManager} component. It displays a
+ * window allowing the user to modify the Maven manager settings, and either discards them or
+ * applies them based on user actions.
  *
  * @author Arik
  */
-public class MavenManagerConfigurable extends AbstractApplicationComponent
-    implements Configurable {
+public class MavenManagerConfigurable extends AbstractApplicationComponent implements Configurable {
     /**
      * The user interface component to display to the user.
      */
     private MavenManagerPanel ui;
 
     public void initComponent() {
-        ui = new MavenManagerPanel(true);
+        ui = new MavenManagerPanel();
     }
 
     public void disposeComponent() {
@@ -62,13 +61,13 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent
     }
 
     public void apply() throws ConfigurationException {
+        final MavenManager mavenMgr = MavenManager.getInstance();
         try {
-            final MavenManager mavenMgr = MavenManager.getInstance();
             mavenMgr.setMavenHome(ui.getMavenHome());
             mavenMgr.setMavenOptions(ui.getMavenOptions());
             mavenMgr.setOffline(ui.isOffline());
         }
-        catch (FileNotFoundException e) {
+        catch (IllegalMavenHomeException e) {
             UIUtils.showError(e);
             LOG.trace(e.getMessage(), e);
         }
@@ -84,23 +83,23 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent
     public boolean isModified() {
         final MavenManager mavenMgr = MavenManager.getInstance();
 
-        final File mavenHome = mavenMgr.getMavenHome();
-        final String mavenOptions = mavenMgr.getMavenOptions();
-        final boolean offlineMode = mavenMgr.isOffline();
+        final String selectedHomeValue = ui.getMavenHome();
+        final String selectedPath = selectedHomeValue.replace(File.separatorChar, '/');
+        final String url = VirtualFileManager.constructUrl("file", selectedPath);
+        final VirtualFile selectedHome = VirtualFileManager.getInstance().findFileByUrl(url);
+        final VirtualFile mavenHome = mavenMgr.getMavenHome();
 
-        final File selectedHome = ui.getMavenHome();
-        final String selectedOptions = ui.getMavenOptions();
-        final boolean selectedOfflineMode = ui.isOffline();
-
-        final boolean offlineModeModified = selectedOfflineMode != offlineMode;
-        final boolean jvmOptionsModified = !StringUtils.equals(mavenOptions,
-                                                               selectedOptions);
-        final boolean homeModified = FileUtils.equals(selectedHome, mavenHome);
-
-        return homeModified || offlineModeModified || jvmOptionsModified;
+        if (ui.isOffline() != mavenMgr.isOffline()) return true;
+        if (!StringUtils.equals(mavenMgr.getMavenOptions(), ui.getMavenOptions())) return true;
+        return selectedHome != mavenHome;
     }
 
     public void reset() {
-        ui.readOptions(MavenManager.getInstance());
+        final MavenManager mavenMgr = MavenManager.getInstance();
+
+        final VirtualFile mavenHome = mavenMgr.getMavenHome();
+        ui.setMavenHome(mavenHome == null ? null : mavenHome.getPresentableUrl());
+        ui.setMavenOptions(mavenMgr.getMavenOptions());
+        ui.setOffline(mavenMgr.isOffline());
     }
 }

@@ -420,4 +420,7 @@ public class DefaultPsiProject extends AbstractPsiNamedPropertyObservable implem
             LOG.trace("Reseting parent for " + (virtualFile == null ? null : virtualFile.getPath()));
         }
     }
+
+    public void dispose() {
+    }
 }

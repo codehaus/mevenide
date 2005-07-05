@@ -4,7 +4,6 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import java.io.File;
 import javax.swing.*;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
@@ -37,33 +36,18 @@ public class MavenManagerPanel extends JPanel {
      * Creates an instance.
      */
     public MavenManagerPanel() {
-        initComponents();
-    }
-
-    /**
-     * Creates an instance using (or not using) double buffering.
-     *
-     * @param isDoubleBuffered whether to use double buffering or not
-     */
-    public MavenManagerPanel(boolean isDoubleBuffered) {
-        super(isDoubleBuffered);
-        initComponents();
-        layoutComponents();
-    }
-
-    /**
-     * Initializes the panel by creating the required components and laying them out on
-     * the panel.
-     */
-    private void initComponents() {
+        //
+        //configure the "..." browse button
+        //
         mavenHomeField.addBrowseFolderListener(
-            RES.get("choose.maven.home"),
-            RES.get("choose.maven.home.desc"),
-            null,
-            FileChooserDescriptorFactory.createSingleFolderDescriptor());
-    }
+                RES.get("choose.maven.home.dlg.title"),
+                RES.get("choose.maven.home.dlg.desc"),
+                null,
+                FileChooserDescriptorFactory.createSingleFolderDescriptor());
 
-    private void layoutComponents() {
+        //
+        //layout components
+        //
         final String cols = "right:min, 2dlu, fill:min:grow";
         final FormLayout layout = new FormLayout(cols);
         final DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
@@ -74,29 +58,31 @@ public class MavenManagerPanel extends JPanel {
         builder.append(" ", offlineCheckBox);
     }
 
-    public void readOptions(final MavenManager pManager) {
-        final File mavenHome = pManager.getMavenHome();
-
-        mavenHomeField.setText(mavenHome == null ? null : mavenHome.getAbsolutePath());
-        mavenOptionsField.setText(pManager.getMavenOptions());
-        offlineCheckBox.setSelected(pManager.isOffline());
-    }
-
-    public File getMavenHome() {
+    public String getMavenHome() {
         final String text = mavenHomeField.getText();
-        if (text == null)
-            return null;
-        else if (text.trim().length() == 0)
+        if (text == null || text.trim().length() == 0)
             return null;
         else
-            return new File(text).getAbsoluteFile();
+            return text;
+    }
+
+    public void setMavenHome(final String pMavenHome) {
+        mavenHomeField.setText(pMavenHome);
     }
 
     public String getMavenOptions() {
         return mavenOptionsField.getText();
     }
 
+    public void setMavenOptions(final String pMavenOptions) {
+        mavenOptionsField.setText(pMavenOptions);
+    }
+
     public boolean isOffline() {
         return offlineCheckBox.isSelected();
+    }
+
+    public void setOffline(final boolean pOffline) {
+        offlineCheckBox.setSelected(pOffline);
     }
 }

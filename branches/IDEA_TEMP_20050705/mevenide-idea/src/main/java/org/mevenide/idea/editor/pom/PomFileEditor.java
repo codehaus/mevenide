@@ -18,12 +18,10 @@ package org.mevenide.idea.editor.pom;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.module.Module;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import javax.swing.*;
 import org.mevenide.idea.editor.pom.ui.PomPanel;
-import org.mevenide.idea.psi.PsiPomManager;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.components.AbstractDocumentEditor;
 
@@ -40,9 +38,11 @@ public class PomFileEditor extends AbstractDocumentEditor implements Disposable 
      */
     private final PomPanel ui;
 
+/*
     public PomFileEditor(final Module pModule) {
-        this(PsiPomManager.getInstance(pModule).getPsiProject());
+        this(PomManager.getInstance(pModule).getPsiProject());
     }
+*/
 
     public PomFileEditor(final PsiProject pProject) {
         super("editor.name",

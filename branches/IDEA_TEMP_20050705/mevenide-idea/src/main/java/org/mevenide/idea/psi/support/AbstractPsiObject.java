@@ -1,6 +1,7 @@
 package org.mevenide.idea.psi.support;
 
 import com.intellij.psi.xml.XmlFile;
+import com.intellij.openapi.vfs.VirtualFile;
 
 /**
  * An abstract base class for PSI support classes.
@@ -29,5 +30,9 @@ public abstract class AbstractPsiObject {
      */
     public final XmlFile getXmlFile() {
         return xmlFile;
+    }
+
+    public final VirtualFile getVirtualFile() {
+        return xmlFile.getVirtualFile();
     }
 }

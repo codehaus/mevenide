@@ -1,6 +1,7 @@
 package org.mevenide.idea.util;
 
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VfsUtil;
 import java.io.File;
 
 /**
@@ -26,5 +27,9 @@ public abstract class FileUtils {
             buf.delete(buf.length() - 1, buf.length());
 
         return buf.toString();
+    }
+
+    public static String getAbsolutePath(final VirtualFile pFile) {
+        return VfsUtil.virtualToIoFile(pFile).getAbsolutePath();
     }
 }

@@ -16,16 +16,15 @@
  */
 package org.mevenide.idea.execute;
 
-import com.intellij.execution.CantRunException;
 import com.intellij.execution.configurations.JavaParameters;
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.execution.filters.RegexpFilter;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.projectRoots.ProjectJdk;
+import com.intellij.openapi.vfs.VirtualFile;
 import java.io.File;
-import org.mevenide.idea.MavenHomeNotDefinedException;
-import org.mevenide.idea.PomNotDefinedException;
+import org.mevenide.idea.MavenHomeUndefinedException;
 import org.mevenide.idea.global.MavenManager;
-import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.goals.GoalsHelper;
 
 /**
@@ -37,71 +36,71 @@ public class MavenJavaParameters extends JavaParameters {
     private static final String FOREHEAD_CONF_FILE = "bin/forehead.conf";
     private static final String FOREHEAD_JAR_FILE = "lib/forehead-1.0-beta-5.jar";
     public static final String COMPILE_REGEXP =
-        RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
+            RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
-    public MavenJavaParameters(final Module pModule, final String... pGoals)
-        throws MavenHomeNotDefinedException, PomNotDefinedException, CantRunException {
+    public MavenJavaParameters(final VirtualFile pWorkingDir,
+                               final ProjectJdk pJvm,
+                               final String... pGoals) throws MavenHomeUndefinedException {
 
+        final ParametersList vmArgs = getVMParametersList();
+        final ParametersList params = getProgramParametersList();
         final MavenManager mavenMgr = MavenManager.getInstance();
 
         //
         //make sure the user has set the Maven home location
         //
-        final File mavenHome = mavenMgr.getMavenHome();
+        final VirtualFile mavenHome = mavenMgr.getMavenHome();
         if (mavenHome == null)
-            throw new MavenHomeNotDefinedException();
-
-        //
-        //make sure selected module has a POM file
-        //
-        final ModuleSettings moduleSettings = ModuleSettings.getInstance(pModule);
-        final File pomFile = moduleSettings.getPomFile();
-        if (pomFile == null || !pomFile.exists())
-            throw new PomNotDefinedException();
-
-        //
-        //make sure selected module has a valid JDK set
-        //
-        final ProjectJdk jdk = moduleSettings.getJdk();
-        if (jdk == null)
-            throw CantRunException.noJdkForModule(pModule);
+            throw new MavenHomeUndefinedException();
 
         //
         //important locations for the command line
         //
-        final File foreheadConf = new File(mavenHome, FOREHEAD_CONF_FILE);
-        final File javaEndorsed = new File(jdk.getHomeDirectory().getPath(),
-                                           ENDORSED_DIR_NAME);
-        final File mavenEndorsed = new File(mavenHome, ENDORSED_DIR_NAME);
+        final VirtualFile foreheadConf = mavenHome.findFileByRelativePath(FOREHEAD_CONF_FILE);
+        final VirtualFile jdkHome = pJvm.getHomeDirectory();
+        final VirtualFile javaEndorsed = jdkHome.findFileByRelativePath(ENDORSED_DIR_NAME);
+        final VirtualFile mavenEndorsed = mavenHome.findFileByRelativePath(ENDORSED_DIR_NAME);
+        final VirtualFile foreheadJar = mavenHome.findFileByRelativePath(FOREHEAD_JAR_FILE);
         final String endorsedDirs =
-            javaEndorsed.getAbsolutePath() + File.pathSeparatorChar + mavenEndorsed.getAbsolutePath();
-        final File foreheadJar = new File(mavenHome, FOREHEAD_JAR_FILE);
+                FileUtils.getAbsolutePath(javaEndorsed) +
+                        File.pathSeparatorChar +
+                        FileUtils.getAbsolutePath(mavenEndorsed);
 
         //
-        //build the command line to execute
+        //setup commandline
         //
-        setWorkingDirectory(pomFile.getParentFile());
-        setJdk(moduleSettings.getJdk());
+        setWorkingDirectory(FileUtils.getAbsolutePath(pWorkingDir));
+        setJdk(pJvm);
         setMainClass(FOREHEAD_MAIN_CLASS);
-        getVMParametersList().defineProperty("maven.home", mavenHome.getAbsolutePath());
-        getVMParametersList().defineProperty("tools.jar", jdk.getToolsPath());
-        getVMParametersList().defineProperty("forehead.conf.file",
-                                             foreheadConf.getAbsolutePath());
-        getVMParametersList().defineProperty("java.endorsed.dirs", endorsedDirs);
+
+        //maven-related JVM arguments
+        vmArgs.defineProperty("maven.home", FileUtils.getAbsolutePath(mavenHome));
+        vmArgs.defineProperty("tools.jar", pJvm.getToolsPath());
+        vmArgs.defineProperty("forehead.conf.file", FileUtils.getAbsolutePath(foreheadConf));
+        vmArgs.defineProperty("java.endorsed.dirs", endorsedDirs);
+
+        //user specified JVM arguments
         final String mavenOptions = mavenMgr.getMavenOptions();
         if (mavenOptions != null && mavenOptions.trim().length() > 0)
-            getVMParametersList().add(mavenOptions);
-        getClassPath().add(foreheadJar.getAbsolutePath());
+            vmArgs.add(mavenOptions);
 
+        //only forehead is needed in the classpath
+        getClassPath().add(FileUtils.getAbsolutePath(foreheadJar));
+
+        //set offline mode, if needed
         if (mavenMgr.isOffline())
-            getProgramParametersList().add("-o");
+            params.add("-o");
 
-        getProgramParametersList().add("-b");
+        //suppress banner
+        params.add("-b");
 
+        //
+        //specify the goals to execute
+        //
         for (final String goal : pGoals)
             if (goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
-                getProgramParametersList().add(GoalsHelper.getPluginName(goal));
+                params.add(GoalsHelper.getPluginName(goal));
             else
-                getProgramParametersList().add(goal);
+                params.add(goal);
     }
 }
