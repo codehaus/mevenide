@@ -17,39 +17,44 @@
 package org.mevenide.idea.global;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.fileTypes.StdFileTypes;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizer;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.VirtualFileSystem;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
+import org.apache.commons.httpclient.HttpMethodBase;
+import org.apache.log4j.Level;
 import org.jdom.Element;
-import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.log4j.Level;
 
 /**
  * This application component manages global Maven settings for IDEA.
  *
- * <p>Currently, only the Maven home settings is defined. In the future, we can define
- * here the amount of memory to allocate for Maven processes (e.g. -Xms and -Xmx) and
- * others.</p>
+ * <p>Currently, only the Maven home settings is defined. In the future, we can define here the
+ * amount of memory to allocate for Maven processes (e.g. -Xms and -Xmx) and others.</p>
  *
  * @author Arik
  */
-public class MavenManager extends AbstractApplicationComponent
-    implements JDOMExternalizable {
+public class MavenManager extends AbstractApplicationComponent implements JDOMExternalizable {
+    /**
+     * Jelly scripts extensions.
+     */
+    private static final String[] JELLY_EXTENSIONS = new String[]{"jelly"};
+
     /**
      * The selected Maven home.
      */
-    private File mavenHome;
+    private VirtualFile mavenHome;
 
     /**
      * Extra command line options to send to the Maven process.
@@ -60,35 +65,6 @@ public class MavenManager extends AbstractApplicationComponent
      * Whether to activate Maven in offline mode.
      */
     private boolean offline = false;
-
-    /**
-     * Returns the selected Maven home, or <code>null</code> if not set.
-     *
-     * @return file pointing to the Maven directory, or <code>null</code>
-     */
-    public File getMavenHome() {
-        return mavenHome;
-    }
-
-    /**
-     * Sets the Maven home to the specified directory. Throws a {@link
-     * FileNotFoundException} if the specified home points to a file or does not exist.
-     *
-     * <p>Invoking this method will cause a property-change event.</p>
-     *
-     * @param pMavenHome the new Maven home - may be <code>null</code>
-     *
-     * @throws FileNotFoundException if the the specified home does not point to an
-     *                               existing directory
-     */
-    public void setMavenHome(final File pMavenHome) throws FileNotFoundException {
-        if (pMavenHome != null && !pMavenHome.isDirectory())
-            throw new FileNotFoundException(RES.get("maven.home.error"));
-
-        final File oldMavenHome = mavenHome;
-        mavenHome = pMavenHome;
-        changeSupport.firePropertyChange("mavenHome", oldMavenHome, mavenHome);
-    }
 
     /**
      * Returns the command line options to send to the Maven process when invoked.
@@ -140,81 +116,125 @@ public class MavenManager extends AbstractApplicationComponent
     }
 
     /**
-     * This method is called after the {@link #readExternal(org.jdom.Element)} method is
-     * called. If the {@link #mavenHome} field is still <code>null</code>, then this
-     * method tries to guess it by invoking the {@link SysEnvLocationFinder}'s default
-     * instance's {@link org.mevenide.environment.SysEnvLocationFinder#getMavenHome()}
-     * method.
+     * Returns the selected Maven home, or <code>null</code> if not set.
      *
-     * <p>If it still cannot find the Maven home, or if it finds it invalid, an error
-     * message is shown.</p>
+     * @return file pointing to the Maven directory, or <code>null</code>
+     */
+    public VirtualFile getMavenHome() {
+        return mavenHome;
+    }
+
+    /**
+     * Sets the Maven home to the specified directory. Throws a {@link FileNotFoundException} if the
+     * specified home points to a file or does not exist.
+     *
+     * <p>Invoking this method will cause a property-change event.</p>
+     *
+     * @param pMavenHome the new Maven home - may be <code>null</code>
+     */
+    public void setMavenHome(final String pMavenHome) throws IllegalMavenHomeException {
+        final VirtualFile home;
+        if (pMavenHome == null)
+            home = null;
+        else if (pMavenHome.trim().length() == 0)
+            home = null;
+        else {
+            final String path = pMavenHome.replace(File.separatorChar, '/');
+            final VirtualFileManager vfm = VirtualFileManager.getInstance();
+            final VirtualFileSystem fs = vfm.getFileSystem("file");
+            home = fs.findFileByPath(path);
+        }
+
+        setMavenHome(home);
+    }
+
+    /**
+     * Sets the Maven home to the specified directory. Throws a {@link FileNotFoundException} if the
+     * specified home points to a file or does not exist.
+     *
+     * <p>Invoking this method will cause a property-change event.</p>
+     *
+     * @param pMavenHome the new Maven home - may be <code>null</code>
+     */
+    public void setMavenHome(VirtualFile pMavenHome) throws IllegalMavenHomeException {
+        if (pMavenHome == null)
+            pMavenHome = guessMavenHome();
+
+        if (pMavenHome != null && (!pMavenHome.isValid() || !pMavenHome.isDirectory()))
+            throw new IllegalMavenHomeException(RES.get("file.must.be.dir",
+                                                        pMavenHome.getPresentableUrl()));
+
+        final VirtualFile oldMavenHome = mavenHome;
+        mavenHome = pMavenHome;
+        changeSupport.firePropertyChange("mavenHome", oldMavenHome, mavenHome);
+    }
+
+    /**
+     * This method is called after the {@link #readExternal(org.jdom.Element)} method is called. If
+     * the {@link #mavenHome} field is still <code>null</code>, then this method tries to guess it
+     * by invoking the {@link SysEnvLocationFinder}'s default instance's {@link
+     * org.mevenide.environment.SysEnvLocationFinder#getMavenHome()} method.
+     *
+     * <p>If it still cannot find the Maven home, or if it finds it invalid, an error message is
+     * shown.</p>
      *
      * @todo Allow the user to specify never to both him/her again with the error message
      */
     public void initComponent() {
+
+        //
+        //disable http-client logger as it is quite verbose
+        //
         final Logger logger = Logger.getInstance(HttpMethodBase.class.getName());
         logger.setLevel(Level.ERROR);
-        
-        if (mavenHome == null) {
-            //
-            //maven home is null - try to guess
-            //
-            final ILocationFinder finder = SysEnvLocationFinder.getInstance();
-            final String mavenHomePath = finder.getMavenHome();
-            if (mavenHomePath != null && mavenHomePath.trim().length() > 0)
-                try {
-                    setMavenHome(new File(mavenHomePath).getAbsoluteFile());
-                }
-                catch (FileNotFoundException e) {
-                    UIUtils.showError(RES.get("maven.home.misconfigured", mavenHomePath));
-                }
-            else
-                Messages.showInfoMessage(RES.get("maven.home.undefined"), "Maven");
-        }
 
-        FileTypeManager.getInstance().registerFileType(StdFileTypes.XML,
-                                                       new String[]{"jelly"});
+        //
+        //register the ".jelly" file extension as an XML file
+        //
+        FileTypeManager.getInstance().registerFileType(StdFileTypes.XML, JELLY_EXTENSIONS);
     }
 
     public void readExternal(final Element pElement) throws InvalidDataException {
         //
         //read maven home
         //
-        final String mavenHomeValue = JDOMExternalizer.readString(pElement, "mavenHome");
-        if (mavenHomeValue != null && mavenHomeValue.trim().length() > 0)
-            try {
-                setMavenHome(new File(mavenHomeValue));
-            }
-            catch (FileNotFoundException e) {
-                //
-                //ignoring exception - in 'initComponent', if the maven home is
-                //still null, and MAVEN_HOME is not defined in the environment,
-                //we ask the user to supply one
-                //
-                LOG.trace(e.getMessage(), e);
-            }
+        String mavenHomeValue = JDOMExternalizer.readString(pElement, "mavenHome");
+        try {
+            setMavenHome(mavenHomeValue);
+        }
+        catch (IllegalMavenHomeException e) {
+            UIUtils.showError(e);
+        }
 
         //
         //read maven options
         //
-        final String mavenOptionsValue = JDOMExternalizer.readString(pElement,
-                                                                     "mavenOptions");
+        final String mavenOptionsValue = JDOMExternalizer.readString(pElement, "mavenOptions");
         setMavenOptions(mavenOptionsValue);
 
         //
         //read maven offline mode
-        //TODO: read maven property "maven.online.mode"
         //
-        setOffline(JDOMExternalizer.readBoolean(pElement, "offline"));
+        final boolean offline;
+        String offlineValue = JDOMExternalizer.readString(pElement, "offline");
+        if (offlineValue != null)
+            offline = JDOMExternalizer.readBoolean(pElement, "offline");
+        else {
+            offlineValue = System.getProperty("maven.online.mode");
+            offline = offlineValue != null && offlineValue.equalsIgnoreCase("true");
+        }
+        setOffline(offline);
     }
 
     public void writeExternal(final Element pElement) throws WriteExternalException {
         //
         //write maven home
         //
-        final File mavenHome = getMavenHome();
+        final VirtualFile mavenHome = getMavenHome();
         if (mavenHome != null)
-            JDOMExternalizer.write(pElement, "mavenHome", mavenHome.getAbsolutePath());
+            JDOMExternalizer.write(pElement, "mavenHome", mavenHome.getPath());
+        else
+            JDOMExternalizer.write(pElement, "mavenHome", null);
 
         //
         //write maven options
@@ -225,6 +245,28 @@ public class MavenManager extends AbstractApplicationComponent
         //write offline mode
         //
         JDOMExternalizer.write(pElement, "offline", offline);
+    }
+
+    /**
+     * Tries to guess the Maven home installation from the system environment. Since environment
+     * entries on Windows are case-insensitive, and on UNIX system are case-sensitive, the check is
+     * done in a case-insensitive manner.
+     *
+     * @return the maven home, or {@code null} if could not be detected
+     */
+    protected VirtualFile guessMavenHome() {
+        final Map<String, String> env = System.getenv();
+        for (String key : env.keySet()) {
+            if (key.equalsIgnoreCase("MAVEN_HOME")) {
+                final String value = System.getenv(key);
+                final String path = value.replace(File.separatorChar, '/');
+                final VirtualFileManager vfm = VirtualFileManager.getInstance();
+                final VirtualFileSystem fs = vfm.getFileSystem("file");
+                return fs.findFileByPath(path);
+            }
+        }
+
+        return null;
     }
 
     /**

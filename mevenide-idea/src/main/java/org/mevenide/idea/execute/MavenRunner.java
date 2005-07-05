@@ -25,11 +25,13 @@ import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
+import com.intellij.openapi.projectRoots.ProjectJdk;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.MavenHomeNotDefinedException;
-import org.mevenide.idea.PomNotDefinedException;
+import org.mevenide.idea.MavenHomeUndefinedException;
+import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.ui.UIUtils;
 
 /**
@@ -74,7 +76,11 @@ public final class MavenRunner {
             //
             //create the process descriptor
             //
-            MavenJavaParameters p = new MavenJavaParameters(pModule, pGoals);
+            final VirtualFile moduleDir = pModule.getModuleFile().getParent();
+            final ProjectJdk jdk = ModuleSettings.getInstance(pModule).getJdk();
+            if(jdk == null)
+                throw CantRunException.noJdkForModule(pModule);
+            MavenJavaParameters p = new MavenJavaParameters(moduleDir, jdk, pGoals);
 
             //
             //provide filters which allow linking compilation errors to source files
@@ -87,14 +93,13 @@ public final class MavenRunner {
             //
             //executes the process, creating a console window for it
             //
-            ExecutionManager.getInstance(pModule.getProject()).execute(
-                p, StringUtils.join(pGoals, ' '), pContext, filters);
+            final String contentName = StringUtils.join(pGoals, ' ');
+            ExecutionManager.getInstance(pModule.getProject()).execute(p,
+                                                                       contentName,
+                                                                       pContext,
+                                                                       filters);
         }
-        catch (MavenHomeNotDefinedException e) {
-            UIUtils.showError(pModule, e);
-            LOG.trace(e.getMessage(), e);
-        }
-        catch (PomNotDefinedException e) {
+        catch (MavenHomeUndefinedException e) {
             UIUtils.showError(pModule, e);
             LOG.trace(e.getMessage(), e);
         }

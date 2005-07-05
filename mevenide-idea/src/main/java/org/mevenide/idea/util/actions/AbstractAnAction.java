@@ -19,7 +19,9 @@ package org.mevenide.idea.util.actions;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
+import com.intellij.openapi.actionSystem.DataContext;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 
 /**
@@ -41,5 +43,15 @@ public abstract class AbstractAnAction extends AnAction {
 
     protected Project getProject(final AnActionEvent pEvent) {
         return (Project) pEvent.getDataContext().getData(DataConstants.PROJECT);
+    }
+
+    @Override
+    public void update(final AnActionEvent pEvent) {
+        super.update(pEvent);
+    }
+
+    protected VirtualFile getVirtualFile(final AnActionEvent pEvent) {
+        final DataContext dc = pEvent.getDataContext();
+        return (VirtualFile) dc.getData(DataConstants.VIRTUAL_FILE);
     }
 }

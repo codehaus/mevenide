@@ -18,6 +18,24 @@
                 id="org.mevenide.idea.SyncProject">
             <add-to-group anchor="last" group-id="AnalyzeMenu"/>
         </action>
+        <action class="org.mevenide.idea.project.actions.AddPomAction"
+                text="Add POM"
+                id="org.mevenide.idea.project.actions.AddPomAction">
+
+            <add-to-group anchor="last" group-id="EditorPopupMenu"/>
+            <add-to-group anchor="last" group-id="EditorTabPopupMenu"/>
+            <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+            <add-to-group anchor="last" group-id="CommanderPopupMenu"/>
+        </action>
+        <action class="org.mevenide.idea.project.actions.RemovePomAction"
+                text="Remove POM"
+                id="org.mevenide.idea.project.actions.RemovePomAction">
+
+            <add-to-group anchor="last" group-id="EditorPopupMenu"/>
+            <add-to-group anchor="last" group-id="EditorTabPopupMenu"/>
+            <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+            <add-to-group anchor="last" group-id="CommanderPopupMenu"/>
+        </action>
     </actions>
 
     <application-components>
@@ -37,7 +55,7 @@
 
     <project-components>
         <component>
-            <implementation-class>org.mevenide.idea.project.ProjectInitializer</implementation-class>
+            <implementation-class>org.mevenide.idea.project.PomManager</implementation-class>
         </component>
         <component>
             <implementation-class>org.mevenide.idea.synchronize.InspectionsManager</implementation-class>

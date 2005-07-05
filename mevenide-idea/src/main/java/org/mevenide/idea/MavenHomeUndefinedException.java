@@ -16,27 +16,22 @@
  */
 package org.mevenide.idea;
 
+import org.mevenide.idea.global.IllegalMavenHomeException;
+
 /**
  * @author Arik
  */
-public class PomNotDefinedException extends Exception {
-    private static final Res RES = Res.getInstance(PomNotDefinedException.class);
-    private static final String MSG_KEY = "pom.not.defined";
-    private static final String MSG = RES.get(MSG_KEY);
+public class MavenHomeUndefinedException extends IllegalMavenHomeException {
+    /**
+     * Resources
+     */
+    private static final Res RES = Res.getInstance(MavenHomeUndefinedException.class);
 
-    public PomNotDefinedException() {
-        super(MSG);
+    public MavenHomeUndefinedException() {
+        super(RES.get("maven.home.not.defined"));
     }
 
-    public PomNotDefinedException(final Throwable pCause) {
-        super(MSG, pCause);
-    }
-
-    public PomNotDefinedException(final String pMsg) {
-        super(pMsg);
-    }
-
-    public PomNotDefinedException(final String pMsg, final Throwable pCause) {
-        super(pMsg, pCause);
+    public MavenHomeUndefinedException(final Throwable pCause) {
+        super(RES.get("maven.home.not.defined"), pCause);
     }
 }

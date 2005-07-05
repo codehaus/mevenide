@@ -8,7 +8,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.module.ModuleUtils;
-import org.mevenide.idea.psi.PsiPomManager;
 import org.mevenide.idea.psi.project.PsiDependencies;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.repository.browser.AbstractBrowserAction;
@@ -62,7 +61,7 @@ public class AddAsDependencyAction extends AbstractBrowserAction {
         if (pomFile == null)
             return;
 
-        final PsiProject psi = PsiPomManager.getInstance(module).getPsiProject();
+        final PsiProject psi = null;//PomManager.getInstance(module).getPsiProject();
         final PsiDependencies deps = psi.getDependencies();
         final RepoPathElement[] artifacts = getSelectedItems(RepoPathElement.LEVEL_VERSION);
         for (RepoPathElement pathElement : artifacts) {
