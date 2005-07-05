@@ -14,6 +14,7 @@ import org.mevenide.idea.synchronize.AbstractProblemInfo;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.synchronize.ProblemInspector;
 import org.mevenide.idea.synchronize.inspections.AbstractModuleInspector;
+import org.mevenide.idea.util.MavenUtils;
 
 /**
  * @author Arik
@@ -90,10 +91,19 @@ public class DependencyNotDownloadedInspector extends AbstractModuleInspector {
             addFixAction(new DownloadDependencyAction(this,
                                                       module,
                                                       dependency));
+            addFixAction(new RemoveDependencyFromPomAction(this,
+                                                           module,
+                                                           dependency));
         }
 
         public boolean isValid() {
-            return !RepositoryUtils.isArtifactInstalled(localRepo, dependency);
+            if (!MavenUtils.isDependencyDeclared(module, dependency))
+                return true;
+
+            return !RepositoryUtils.isArtifactInstalled(module.getProject(),
+                                                        localRepo,
+                                                        dependency,
+                                                        true);
         }
 
     }
