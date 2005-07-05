@@ -23,9 +23,15 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -41,12 +47,16 @@ import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.mevenide.properties.IPropertyResolver;
+import org.mevenide.repository.IRepositoryReader;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.PropertiesAction;
+import org.openide.awt.HtmlBrowser;
+import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.HelpCtx;
@@ -81,9 +91,9 @@ public class DependencyNode extends AbstractNode {
 //    }
     
     /**
-     *in lookup expect instance of MavenProject, DependencyPOMChange
+     *in lookup expects instance of MavenProject, DependencyPOMChange
      */
-    public  DependencyNode(Lookup lookup, boolean isLongLiving) {
+    public DependencyNode(Lookup lookup, boolean isLongLiving) {
         super(isLongLiving ? /*new DepChildren()*/ Children.LEAF : Children.LEAF, lookup);
         project = (MavenProject)lookup.lookup(MavenProject.class);
         change = (DependencyPOMChange)lookup.lookup(DependencyPOMChange.class);
@@ -135,12 +145,12 @@ public class DependencyNode extends AbstractNode {
     }
     
     private boolean isDependencyProjectOpen() {
-        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
+        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency), project);
         Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
         return depPrj != null;
     }
     
-    private Dependency createDependencySnapshot() {
+    public static Dependency createDependencySnapshot(IContentProvider dependency) {
         Dependency snap = new Dependency();
         if (dependency.getValue("artifactId") != null) {
             snap.setArtifactId(dependency.getValue("artifactId"));
@@ -203,23 +213,16 @@ public class DependencyNode extends AbstractNode {
     }
     
     public Action[] getActions( boolean context ) {
+        Collection acts = new ArrayList();
+        acts.add(new ViewJavadocAction());
         if (!checkLocal()) {
-            actions = new Action[] {
-                DownloadAction.get(DownloadAction.class),
-                new EditAction(),
-                RemoveDepAction.get(RemoveDepAction.class),
-                null,
-                PropertiesAction.get(PropertiesAction.class)
-            };
-        } else {
-            actions = new Action[] {
-                new EditAction(),
-                RemoveDepAction.get(RemoveDepAction.class),
-                null,
-                PropertiesAction.get(PropertiesAction.class)
-            };
+            acts.add(DownloadAction.get(DownloadAction.class));
         }
-        return actions;
+        acts.add(new EditAction());                
+        acts.add(RemoveDepAction.get(RemoveDepAction.class));
+        acts.add(null);
+        acts.add(PropertiesAction.get(PropertiesAction.class));
+        return (Action[])acts.toArray(new Action[acts.size()]);
     }
     
     public boolean canDestroy() {
@@ -245,13 +248,13 @@ public class DependencyNode extends AbstractNode {
     
     private boolean checkLocal() {
         if (!isOverriden) {
-            URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(), project);
+            URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency), project);
             if (uri != null) {
                 File file = new File(uri);
                 return file.exists();
             }
         } else {
-            String path = JarOverrideReader2.getInstance().processOverride(createDependencySnapshot(), project.getContext());
+            String path = JarOverrideReader2.getInstance().processOverride(createDependencySnapshot(dependency), project.getContext());
             if (path != null) {
                 File file = new File(path);
                 return file.exists();
@@ -261,14 +264,14 @@ public class DependencyNode extends AbstractNode {
     }
     
     public boolean hasJavadocInRepository() {
-        Dependency depSnap = createDependencySnapshot();
+        Dependency depSnap = createDependencySnapshot(dependency);
         depSnap.setType("javadoc.jar");
         URI uri = FileUtilities.getDependencyURI(depSnap, project);
         return (uri != null && new File(uri).exists());
     }
     
     public boolean hasSourceInRepository() {
-        Dependency depSnap = createDependencySnapshot();
+        Dependency depSnap = createDependencySnapshot(dependency);
         depSnap.setType("src.jar");
         URI uri = FileUtilities.getDependencyURI(depSnap, project);
         return (uri != null && new File(uri).exists());
@@ -358,6 +361,30 @@ public class DependencyNode extends AbstractNode {
         }
     }
     
+    private class ViewJavadocAction extends AbstractAction {
+        public ViewJavadocAction() {
+            putValue(Action.NAME, "View Javadoc");
+            setEnabled(hasJavadocInRepository());
+        }
+        public void actionPerformed(ActionEvent event) {
+            Dependency depSnap = createDependencySnapshot(dependency);
+            depSnap.setType("javadoc.jar");
+            URI uri = FileUtilities.getDependencyURI(depSnap, project);
+            try {
+                URL url = uri.toURL();
+                if (FileUtil.isArchiveFile(url)) {
+                    URL archUrl = FileUtil.getArchiveRoot(url);
+                    String path = archUrl.toString() + "index.html";
+                    URL link = new URL(path);
+                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+                }
+            } catch (MalformedURLException e) {
+                ErrorManager.getDefault().notify(e);
+            }
+        }
+    }
+    
+    
     private static class DownloadAction extends NodeAction {
 
         public DownloadAction() {
@@ -382,16 +409,40 @@ public class DependencyNode extends AbstractNode {
 
         protected void performAction(org.openide.nodes.Node[] node) {
             if (node != null && node.length > 0) {
+                Collection projectsToFire = new HashSet();
                 for (int i = 0; i < node.length; i++) {
                     Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
                     if (obj != null) {
+                        DependencyPOMChange change = (DependencyPOMChange)obj;
+                        MavenProject project = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
+                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
+                        Dependency dep = createDependencySnapshot(change.getChangedContent());
+                        try {
+                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                            if (downloaded) {
+                                projectsToFire.add(project);
+                            }
+                        } catch (FileNotFoundException e) {
+                           StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                        } catch (Exception exc) {
+                           StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                        }
                     }
                 }
+                Iterator it = projectsToFire.iterator();
+                while (it.hasNext()) {
+                    ((MavenProject)it.next()).firePropertyChange(MavenProject.PROP_PROJECT);
+                }
+                
             }
         }
         
         public HelpCtx getHelpCtx() {
             return HelpCtx.DEFAULT_HELP;
+        }
+
+        protected boolean asynchronous() {
+            return true;
         }
     }
     

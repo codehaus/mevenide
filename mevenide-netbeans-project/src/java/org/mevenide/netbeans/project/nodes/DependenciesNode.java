@@ -20,6 +20,7 @@ package org.mevenide.netbeans.project.nodes;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,16 +37,20 @@ import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
 import org.mevenide.netbeans.project.dependencies.DependencyEditor;
 import org.mevenide.netbeans.project.dependencies.DependencyNode;
+import org.mevenide.netbeans.project.dependencies.RepositoryUtilities;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.project.io.IContentProvider;
+import org.mevenide.repository.IRepositoryReader;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.StatusDisplayer;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -80,7 +85,11 @@ class DependenciesNode extends AbstractNode {
     }
     
     public Action[] getActions(boolean context) {
-        return new Action[] { new AddDependencyAction() };
+        return new Action[] { new AddDependencyAction(),
+                              null,
+                              new DownloadAction(),
+                              new DownloadJavadocSrcAction()
+        };
     }
     
     private MavenProject getProject() {
@@ -111,6 +120,15 @@ class DependenciesNode extends AbstractNode {
                 refresh();
             }
         }
+        
+//        public void refreshChildren() {
+//            Node[] nods = getNodes();
+//            for (int i = 0; i < nods.length; i++) {
+//                if (nods[i] instanceof DependencyNode) {
+//                    ((DependencyNode)nods[i]).refreshNode();
+//                }
+//            }
+//        }
         
         protected void addNotify() {
             super.addNotify();
@@ -201,5 +219,88 @@ class DependenciesNode extends AbstractNode {
             }
         }
     }
+    
+    private class DownloadAction extends AbstractAction {
+
+        public DownloadAction() {
+            putValue(Action.NAME, "Download missing dependencies");
+        }
+
+        public void actionPerformed(ActionEvent evnt) {
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    List lst = new ArrayList(((DependenciesChildren)getChildren()).deps);
+                    Iterator it = lst.iterator();
+                    boolean atLeastOneDownloaded = false;
+                    while (it.hasNext()) {
+                        DependencyPOMChange change = (DependencyPOMChange)it.next();
+                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
+                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+                        try {
+                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                            if (downloaded) {
+                                atLeastOneDownloaded = true;
+                            }
+                        } catch (FileNotFoundException e) {
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                        } catch (Exception exc) {
+                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                        }
+                    }
+                    if (atLeastOneDownloaded) {
+                        project.firePropertyChange(MavenProject.PROP_PROJECT);
+                    }
+                }
+            });
+        }
+        
+    }
+    
+    private class DownloadJavadocSrcAction extends AbstractAction {
+        public DownloadJavadocSrcAction() {
+            putValue(Action.NAME, "Check repository(ies) for javadoc and sources");
+        }
+        
+        public void actionPerformed(ActionEvent evnt) {
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    List lst = new ArrayList(((DependenciesChildren)getChildren()).deps);
+                    Iterator it = lst.iterator();
+                    boolean atLeastOneDownloaded = false;
+                    while (it.hasNext()) {
+                        DependencyPOMChange change = (DependencyPOMChange)it.next();
+                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
+                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+                        try {
+                            dep.setType("javadoc.jar");
+                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                            if (downloaded) {
+                                atLeastOneDownloaded = true;
+                            }
+                        } catch (FileNotFoundException e) {
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                        } catch (Exception exc) {
+                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                        }
+                        try {
+                            dep.setType("src.jar");
+                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                            if (downloaded) {
+                                atLeastOneDownloaded = true;
+                            }
+                        } catch (FileNotFoundException e) {
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                        } catch (Exception exc) {
+                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                        }
+                    }
+                    if (atLeastOneDownloaded) {
+                        project.firePropertyChange(MavenProject.PROP_PROJECT);
+                    }
+                }
+            });
+        }
+        
+    }    
 }
 
