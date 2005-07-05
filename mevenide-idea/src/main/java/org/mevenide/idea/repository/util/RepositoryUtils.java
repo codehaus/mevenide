@@ -14,6 +14,8 @@ import java.util.Set;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.module.ModuleLocationFinder;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.repository.IRepositoryReader;
@@ -24,6 +26,20 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
  * @author Arik
  */
 public abstract class RepositoryUtils {
+    /**
+     * Resources
+     */
+    private static final Res RES = Res.getInstance(RepositoryUtils.class);
+
+    public static boolean isArtifactInstalled(final Project pProject,
+                                              final VirtualFile pLocalRepo,
+                                              final Dependency dep,
+                                              final boolean pRefresh) {
+        final FileSearcher searcher = new FileSearcher(pLocalRepo, dep, pRefresh);
+        IDEUtils.runCommand(pProject, searcher);
+        return searcher.getDepFile() != null;
+    }
+
     public static boolean isArtifactInstalled(final VirtualFile pLocalRepo,
                                               final Dependency dep) {
         final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
@@ -186,4 +202,66 @@ public abstract class RepositoryUtils {
         return VirtualFileManager.getInstance().findFileByUrl(url);
     }
 
+    private static class FileSearcher implements Runnable {
+        private final VirtualFile localRepo;
+        private final Dependency dep;
+        private final boolean refresh;
+        private VirtualFile depFile = null;
+
+        public FileSearcher(final VirtualFile pLocalRepo,
+                            final Dependency pDep) {
+            this(pLocalRepo, pDep, false);
+        }
+
+        public FileSearcher(final VirtualFile pLocalRepo,
+                            final Dependency pDep,
+                            final boolean pRefresh) {
+            localRepo = pLocalRepo;
+            dep = pDep;
+            refresh = pRefresh;
+        }
+
+        public VirtualFile getDepFile() {
+            return depFile;
+        }
+
+        public void run() {
+            depFile = null;
+
+            final String groupId = dep.getGroupId();
+            final String artifactId = dep.getArtifactId();
+            String version = dep.getVersion();
+            String type = dep.getType();
+            String ext = dep.getExtension();
+
+            if (groupId == null || groupId.trim().length() == 0)
+                throw new IllegalArgumentException(RES.get("incomplete.dep", "groupId"));
+            if (artifactId == null || artifactId.trim().length() == 0)
+                throw new IllegalArgumentException(RES.get("incomplete.dep", "artifactId"));
+            if (version == null || version.trim().length() == 0)
+                version = "SNAPSHOT";
+            if (type == null || type.trim().length() == 0)
+                type = "jar";
+            if (ext == null || ext.trim().length() == 0)
+                ext = type;
+
+            if (refresh)
+                localRepo.refresh(false, false);
+            final VirtualFile groupDir = localRepo.findChild(groupId);
+            if (groupDir == null)
+                return;
+
+            if (refresh)
+                groupDir.refresh(false, false);
+            final VirtualFile typeDir = groupDir.findChild(type + 's');
+            if (typeDir == null)
+                return;
+
+            if (refresh)
+                typeDir.refresh(false, false);
+            final StringBuilder fileName = new StringBuilder(artifactId);
+            fileName.append('-').append(version).append('.').append(ext);
+            depFile = typeDir.findChild(fileName.toString());
+        }
+    }
 }
