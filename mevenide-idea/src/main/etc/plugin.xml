@@ -43,13 +43,20 @@
             <implementation-class>org.mevenide.idea.global.MavenManager</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.global.MavenManagerConfigurable</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.project.PomPropertiesManager</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.editor.pom.PomFileEditorProvider</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.global.MavenManagerConfigurable</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.repository.download.ArtifactDownloadManager</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.editor.pom.PomFileEditorProvider</implementation-class>
+        </component>
+        <component>
+            <implementation-class>
+                org.mevenide.idea.repository.download.ArtifactDownloadManager</implementation-class>
         </component>
     </application-components>
 
@@ -58,7 +65,8 @@
             <implementation-class>org.mevenide.idea.project.PomManager</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.synchronize.InspectionsManager</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.synchronize.InspectionsManager</implementation-class>
         </component>
     </project-components>
 
@@ -67,10 +75,12 @@
             <implementation-class>org.mevenide.idea.module.ModuleSettings</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.module.ModuleSettingsConfigurable</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.module.ModuleSettingsConfigurable</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.module.ModuleActionsManager</implementation-class>
+            <implementation-class>
+                org.mevenide.idea.module.ModuleActionsManager</implementation-class>
         </component>
     </module-components>
 

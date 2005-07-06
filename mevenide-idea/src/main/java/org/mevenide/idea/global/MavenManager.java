@@ -177,8 +177,6 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      *
      * <p>If it still cannot find the Maven home, or if it finds it invalid, an error message is
      * shown.</p>
-     *
-     * @todo Allow the user to specify never to both him/her again with the error message
      */
     public void initComponent() {
 
@@ -194,6 +192,13 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         FileTypeManager.getInstance().registerFileType(StdFileTypes.XML, JELLY_EXTENSIONS);
     }
 
+    /**
+     * Reads configuration from external storage.
+     *
+     * @param pElement XML element to read configuration from
+     *
+     * @throws InvalidDataException if an error occurs
+     */
     public void readExternal(final Element pElement) throws InvalidDataException {
         //
         //read maven home
@@ -226,6 +231,13 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         setOffline(offline);
     }
 
+    /**
+     * Writes configuration to external storage.
+     *
+     * @param pElement XML element to write configuration to
+     *
+     * @throws WriteExternalException if an error occurs
+     */
     public void writeExternal(final Element pElement) throws WriteExternalException {
         //
         //write maven home
@@ -254,7 +266,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      *
      * @return the maven home, or {@code null} if could not be detected
      */
-    protected VirtualFile guessMavenHome() {
+    private VirtualFile guessMavenHome() {
         final Map<String, String> env = System.getenv();
         for (String key : env.keySet()) {
             if (key.equalsIgnoreCase("MAVEN_HOME")) {
