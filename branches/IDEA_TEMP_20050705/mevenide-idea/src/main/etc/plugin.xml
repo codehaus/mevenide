@@ -63,6 +63,10 @@
 
     <project-components>
         <component>
+            <implementation-class>
+                org.mevenide.idea.execute.MavenExecuteManager</implementation-class>
+        </component>
+        <component>
             <implementation-class>org.mevenide.idea.project.PomManager</implementation-class>
         </component>
         <component>

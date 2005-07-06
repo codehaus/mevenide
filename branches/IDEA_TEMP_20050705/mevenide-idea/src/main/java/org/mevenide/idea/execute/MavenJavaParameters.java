@@ -24,6 +24,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.io.File;
 import org.mevenide.idea.MavenHomeUndefinedException;
 import org.mevenide.idea.global.MavenManager;
+import org.mevenide.idea.project.model.GoalInfo;
 import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.goals.GoalsHelper;
 
@@ -31,12 +32,20 @@ import org.mevenide.idea.util.goals.GoalsHelper;
  * @author Arik
  */
 public class MavenJavaParameters extends JavaParameters {
-    private static final String ENDORSED_DIR_NAME = "lib/endorsed";
+    private static final String JRE_ENDORSED_DIR_NAME = "lib/endorsed";
+    private static final String JDK_ENDORSED_DIR_NAME = "jre/lib/endorsed";
+    private static final String MAVEN_ENDORSED_DIR_NAME = "lib/endorsed";
     private static final String FOREHEAD_MAIN_CLASS = "com.werken.forehead.Forehead";
     private static final String FOREHEAD_CONF_FILE = "bin/forehead.conf";
     private static final String FOREHEAD_JAR_FILE = "lib/forehead-1.0-beta-5.jar";
     public static final String COMPILE_REGEXP =
             RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
+
+    public MavenJavaParameters(final VirtualFile pWorkingDir,
+                               final ProjectJdk pJvm,
+                               final GoalInfo... pGoals) throws MavenHomeUndefinedException {
+        this(pWorkingDir, pJvm, extractGoalNames(pGoals));
+    }
 
     public MavenJavaParameters(final VirtualFile pWorkingDir,
                                final ProjectJdk pJvm,
@@ -58,13 +67,21 @@ public class MavenJavaParameters extends JavaParameters {
         //
         final VirtualFile foreheadConf = mavenHome.findFileByRelativePath(FOREHEAD_CONF_FILE);
         final VirtualFile jdkHome = pJvm.getHomeDirectory();
-        final VirtualFile javaEndorsed = jdkHome.findFileByRelativePath(ENDORSED_DIR_NAME);
-        final VirtualFile mavenEndorsed = mavenHome.findFileByRelativePath(ENDORSED_DIR_NAME);
+        VirtualFile javaEndorsed = jdkHome.findFileByRelativePath(JRE_ENDORSED_DIR_NAME);
+        if (javaEndorsed == null)
+            javaEndorsed = jdkHome.findFileByRelativePath(JDK_ENDORSED_DIR_NAME);
+
+        final VirtualFile mavenEndorsed = mavenHome.findFileByRelativePath(MAVEN_ENDORSED_DIR_NAME);
         final VirtualFile foreheadJar = mavenHome.findFileByRelativePath(FOREHEAD_JAR_FILE);
-        final String endorsedDirs =
-                FileUtils.getAbsolutePath(javaEndorsed) +
-                        File.pathSeparatorChar +
-                        FileUtils.getAbsolutePath(mavenEndorsed);
+
+        final StringBuilder endorsedBuf = new StringBuilder();
+        if (javaEndorsed != null) {
+            endorsedBuf.append(FileUtils.getAbsolutePath(javaEndorsed));
+            endorsedBuf.append(File.pathSeparatorChar);
+        }
+        if (mavenEndorsed != null)
+            endorsedBuf.append(FileUtils.getAbsolutePath(mavenEndorsed));
+        final String endorsedDirs = endorsedBuf.toString();
 
         //
         //setup commandline
@@ -77,7 +94,8 @@ public class MavenJavaParameters extends JavaParameters {
         vmArgs.defineProperty("maven.home", FileUtils.getAbsolutePath(mavenHome));
         vmArgs.defineProperty("tools.jar", pJvm.getToolsPath());
         vmArgs.defineProperty("forehead.conf.file", FileUtils.getAbsolutePath(foreheadConf));
-        vmArgs.defineProperty("java.endorsed.dirs", endorsedDirs);
+        vmArgs.defineProperty("java.endorsed.dirs",
+                              endorsedDirs);//TODO: only if endorsedDirs.length() > 0!
 
         //user specified JVM arguments
         final String mavenOptions = mavenMgr.getMavenOptions();
@@ -98,9 +116,17 @@ public class MavenJavaParameters extends JavaParameters {
         //specify the goals to execute
         //
         for (final String goal : pGoals)
-            if (goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))
+            if (goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))//TODO: remove this - no longer needed
                 params.add(GoalsHelper.getPluginName(goal));
             else
                 params.add(goal);
+    }
+
+    private static String[] extractGoalNames(final GoalInfo... pGoals) {
+        final String[] names = new String[pGoals.length];
+        for (int i = 0; i < pGoals.length; i++)
+            names[i] = pGoals[i].getName();
+
+        return names;
     }
 }

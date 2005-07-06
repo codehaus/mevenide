@@ -29,7 +29,6 @@ import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
-import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -73,8 +72,7 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
             mavenMgr.setOffline(ui.offlineCheckBox.isSelected());
         }
         catch (IllegalMavenHomeException e) {
-            UIUtils.showError(e);
-            LOG.trace(e.getMessage(), e);
+            throw new ConfigurationException(e.getMessage());
         }
     }
 

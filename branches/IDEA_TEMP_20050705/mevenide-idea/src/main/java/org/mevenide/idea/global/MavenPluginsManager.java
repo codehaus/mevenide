@@ -5,6 +5,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,9 +26,18 @@ public class MavenPluginsManager extends AbstractProjectComponent {
      * The name of the Maven property that denotes the location of the plugins JAR files.
      */
     private static final String PLUGINS_DIR = "maven.plugin.dir";
-    private static final String POM_NAME_XPATH = "project/name";
+    private static final String POM_ID_XPATH = "project/id";
+    private static final String POM_GROUP_ID_XPATH = "project/groupId";
+    private static final String POM_ARTIFACT_ID_XPATH = "project/artifactId";
     private static final String POM_VERSION_XPATH = "project/currentVersion";
+    private static final String POM_NAME_XPATH = "project/name";
+    private static final String POM_DESC_XPATH = "project/description";
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    /**
+     * Cache for loaded plugin descriptors.
+     */
+    private PluginInfo[] plugins = null;
 
     /**
      * Creates an instance for the given project.
@@ -37,12 +48,64 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         super(pProject);
     }
 
+    @Override
+    public void initComponent() {
+        MavenManager.getInstance().addPropertyChangeListener(
+                "mavenHome",
+                new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        synchronized (this) {
+                            plugins = null;
+                        }
+                    }
+                });
+
+        PropertiesManager.getInstance().addPropertiesListener(
+                new PropertiesListener() {
+                    public void propertiesChanged(PropertiesEvent pEvent) {
+                        synchronized (this) {
+                            plugins = null;
+                        }
+                    }
+                });
+    }
+
+    public PluginInfo getPlugin(final String pId) {
+        final PluginInfo[] plugins = getPlugins();
+        for (PluginInfo plugin : plugins) {
+            if (plugin.getId().equals(pId))
+                return plugin;
+        }
+
+        return null;
+    }
+
+    public PluginInfo getPlugin(final String pGroupId, final String pArtifactId) {
+        final PluginInfo[] plugins = getPlugins();
+        for (PluginInfo plugin : plugins) {
+            if (plugin.getGroupId().equals(pGroupId) && plugin.getArtifactId().equals(pArtifactId))
+                return plugin;
+        }
+
+        return null;
+    }
+
     /**
      * Parses all plugins in the Maven installation.
      *
      * @return list of plugins found in the maven installation
      */
     public PluginInfo[] getPlugins() {
+        synchronized (this) {
+            if (plugins != null)
+                return plugins;
+
+            plugins = loadPlugins();
+            return plugins;
+        }
+    }
+
+    private PluginInfo[] loadPlugins() {
         final VirtualFileManager vfMgr = VirtualFileManager.getInstance();
 
         final PropertiesManager propMgr = PropertiesManager.getInstance();
@@ -92,8 +155,12 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             return null;
 
         final XmlFile pomPsi = PsiUtils.findXmlFile(project, pluginPom);
-        plugin.setName(new XmlTagPath(pomPsi, POM_NAME_XPATH).getStringValue());
+        plugin.setId(new XmlTagPath(pomPsi, POM_ID_XPATH).getStringValue());
+        plugin.setGroupId(new XmlTagPath(pomPsi, POM_GROUP_ID_XPATH).getStringValue());
+        plugin.setArtifactId(new XmlTagPath(pomPsi, POM_ARTIFACT_ID_XPATH).getStringValue());
         plugin.setVersion(new XmlTagPath(pomPsi, POM_VERSION_XPATH).getStringValue());
+        plugin.setName(new XmlTagPath(pomPsi, POM_NAME_XPATH).getStringValue());
+        plugin.setDescription(new XmlTagPath(pomPsi, POM_DESC_XPATH).getStringValue());
 
         //
         //parse plugin Jelly script

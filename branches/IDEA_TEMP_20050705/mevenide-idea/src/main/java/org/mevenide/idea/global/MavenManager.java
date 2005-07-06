@@ -143,6 +143,8 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
             final VirtualFileManager vfm = VirtualFileManager.getInstance();
             final VirtualFileSystem fs = vfm.getFileSystem("file");
             home = fs.findFileByPath(path);
+            if (home == null)
+                throw new IllegalMavenHomeException(RES.get("file.must.be.dir", pMavenHome));
         }
 
         setMavenHome(home);
