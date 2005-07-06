@@ -25,7 +25,7 @@ public class MavenExecuteManager extends AbstractProjectComponent {
         super(pProject);
     }
 
-    public void execute(final VirtualFile pPomFile, final GoalInfo[] pGoals) {
+    public void execute(final VirtualFile pPomFile, final GoalInfo... pGoals) {
         final VirtualFile dir = pPomFile.getParent();
         if (dir == null)
             return;
