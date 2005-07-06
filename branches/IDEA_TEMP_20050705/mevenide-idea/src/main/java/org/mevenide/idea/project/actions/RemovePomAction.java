@@ -1,12 +1,11 @@
 package org.mevenide.idea.project.actions;
 
-import org.mevenide.idea.util.actions.AbstractAnAction;
-import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.Res;
-import org.mevenide.idea.project.actions.AddPomAction;
-import org.mevenide.idea.project.PomManager;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.vfs.VirtualFile;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.project.PomManager;
+import org.mevenide.idea.util.actions.AbstractAnAction;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
@@ -27,7 +26,7 @@ public class RemovePomAction extends AbstractAnAction {
     public void update(final AnActionEvent pEvent) {
         final VirtualFile file = getVirtualFile(pEvent);
         final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
-        pEvent.getPresentation().setEnabled(file != null && pomMgr.isPomRegistered(file));
+        pEvent.getPresentation().setEnabled(file != null && pomMgr.contains(file));
     }
 
     public void actionPerformed(final AnActionEvent pEvent) {
@@ -36,9 +35,9 @@ public class RemovePomAction extends AbstractAnAction {
             return;
 
         final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
-        if (!pomMgr.isPomRegistered(file))
+        if (!pomMgr.contains(file))
             return;
 
-        pomMgr.unregisterPom(file);
+        pomMgr.remove(file);
     }
 }

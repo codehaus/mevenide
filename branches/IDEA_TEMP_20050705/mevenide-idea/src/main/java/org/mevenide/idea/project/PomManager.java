@@ -1,21 +1,22 @@
 package org.mevenide.idea.project;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerListener;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.openapi.util.Key;
 import com.intellij.psi.xml.XmlFile;
+import javax.swing.event.EventListenerList;
 import org.mevenide.idea.project.ui.PomManagerPanel;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
 import org.mevenide.idea.psi.util.PsiUtils;
-import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
-import javax.swing.event.EventListenerList;
+import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
@@ -52,6 +53,18 @@ public class PomManager extends AbstractProjectComponent implements VirtualFileP
     public void add(final String pUrl) {
         final VirtualFilePointer pointer = helper.add(pUrl);
         firePomAddedEvent(pointer);
+    }
+
+    public boolean contains(final String pUrl) {
+        return helper.isRegistered(pUrl);
+    }
+
+    public boolean contains(final VirtualFile pFile) {
+        return helper.isRegistered(pFile);
+    }
+
+    public VirtualFilePointer[] getPomPointers() {
+        return helper.getFilePointers();
     }
 
     public PsiProject getPsiProject(final VirtualFile pFile) {
@@ -122,12 +135,18 @@ public class PomManager extends AbstractProjectComponent implements VirtualFileP
 
     @Override
     public void projectOpened() {
-        final ToolWindowManager twMgr = ToolWindowManager.getInstance(project);
-        final PomManagerPanel ui = new PomManagerPanel(project);
-        final ToolWindow tw = twMgr.registerToolWindow(PomManagerPanel.TITLE,
-                                                       ui,
-                                                       ToolWindowAnchor.RIGHT);
-        tw.setIcon(Icons.MAVEN);
+        final Runnable regToolWinRunnable = new Runnable() {
+            public void run() {
+                final ToolWindowManager twMgr = ToolWindowManager.getInstance(project);
+                final PomManagerPanel ui = new PomManagerPanel(project);
+                final ToolWindow tw = twMgr.registerToolWindow(PomManagerPanel.TITLE,
+                                                               ui,
+                                                               ToolWindowAnchor.RIGHT);
+                tw.setIcon(Icons.MAVEN);
+            }
+        };
+
+        ApplicationManager.getApplication().invokeLater(regToolWinRunnable);
     }
 
     @Override

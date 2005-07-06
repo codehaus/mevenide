@@ -4,10 +4,12 @@ package org.mevenide.idea.project.model;
  * @author Arik
  */
 public class DefaultGoalInfo implements GoalInfo {
+    private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
     private PluginInfo plugin;
     private String name;
     private String description;
-    private GoalInfo[] prereqs;
+    private String[] prereqs = EMPTY_STRING_ARRAY;
 
     public PluginInfo getPlugin() {
         return plugin;
@@ -33,11 +35,11 @@ public class DefaultGoalInfo implements GoalInfo {
         description = pDescription;
     }
 
-    public GoalInfo[] getPrereqs() {
+    public String[] getPrereqs() {
         return prereqs;
     }
 
-    public void setPrereqs(final GoalInfo[] pPrereqs) {
+    public void setPrereqs(final String[] pPrereqs) {
         prereqs = pPrereqs;
     }
 }
