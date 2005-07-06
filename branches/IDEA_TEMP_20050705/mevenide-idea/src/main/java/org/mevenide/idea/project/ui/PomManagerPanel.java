@@ -15,7 +15,9 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.SelectFromListDialog;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlDocument;
@@ -24,6 +26,8 @@ import com.intellij.psi.xml.XmlTag;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.*;
@@ -32,6 +36,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.execute.MavenExecuteManager;
+import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.actions.AddGoalToPomAction;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
 import org.mevenide.idea.project.actions.RefreshPomToolWindowAction;
@@ -103,6 +109,52 @@ public class PomManagerPanel extends JPanel
                     navigateToSource((PluginNode) node);
                 else if (node instanceof GoalNode)
                     navigateToSource((GoalNode) node);
+            }
+        });
+        tree.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(final MouseEvent pEvent) {
+                if (pEvent.getClickCount() == 2) {
+                    final int row = tree.getRowForLocation(pEvent.getX(),
+                                                           pEvent.getY());
+                    if (row < 0)
+                        return;
+
+                    final TreePath path = tree.getPathForRow(row);
+                    if (path == null)
+                        return;
+
+                    final TreeNode node = (TreeNode) path.getLastPathComponent();
+                    if (node instanceof GoalNode) {
+                        final VirtualFile pomFile;
+                        final PomNode pomNode = model.getPomNode(node);
+                        if (pomNode != null)
+                            pomFile = pomNode.getUserObject().getFile();
+                        else {
+                            final SelectFromListDialog dlg = new SelectFromListDialog(
+                                    project,
+                                    PomManager.getInstance(project).getPomPointers(),
+                                    new SelectFromListDialog.ToStringAspect() {
+                                        public String getToStirng(Object obj) {
+                                            final VirtualFilePointer p = (VirtualFilePointer) obj;
+                                            return p.getPresentableUrl();
+                                        }
+                                    },
+                                    "Select POM to execute goal for",
+                                    ListSelectionModel.SINGLE_SELECTION);
+                            dlg.setModal(true);
+                            dlg.setResizable(true);
+                            dlg.show();
+
+                            if (!dlg.isOK())
+                                return;
+
+                            pomFile = ((VirtualFilePointer) dlg.getSelection()[0]).getFile();
+                        }
+
+                        final GoalInfo goal = ((GoalNode) node).getUserObject();
+                        MavenExecuteManager.getInstance(project).execute(pomFile, goal);
+                    }
+                }
             }
         });
         add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
