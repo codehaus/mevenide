@@ -151,7 +151,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         //
         final String pomUrl = "jar://" + pPluginJar.getPath() + "!/project.xml";
         final VirtualFile pluginPom = vfMgr.findFileByUrl(pomUrl);
-        if (pluginPom == null || !pluginPom.isValid())
+        if (pluginPom != null && pluginPom.isValid())
+            plugin.setPomFile(pluginPom);
+        else
             return null;
 
         final XmlFile pomPsi = PsiUtils.findXmlFile(project, pluginPom);
@@ -167,7 +169,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         //
         final String jellyUrl = "jar://" + pPluginJar.getPath() + "!/plugin.jelly";
         final VirtualFile jellyFile = vfMgr.findFileByUrl(jellyUrl);
-        if (jellyFile == null || !jellyFile.isValid())
+        if (jellyFile != null && jellyFile.isValid())
+            plugin.setScriptFile(jellyFile);
+        else
             return null;
 
         final XmlFile jellyPsi = PsiUtils.findXmlFile(project, jellyFile);
