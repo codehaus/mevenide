@@ -16,14 +16,19 @@
  */
 package org.mevenide.idea.global;
 
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
+import com.jgoodies.forms.layout.FormLayout;
 import java.io.File;
 import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
+import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
@@ -63,9 +68,9 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
     public void apply() throws ConfigurationException {
         final MavenManager mavenMgr = MavenManager.getInstance();
         try {
-            mavenMgr.setMavenHome(ui.getMavenHome());
-            mavenMgr.setMavenOptions(ui.getMavenOptions());
-            mavenMgr.setOffline(ui.isOffline());
+            mavenMgr.setMavenHome(ui.mavenHomeField.getText());
+            mavenMgr.setMavenOptions(ui.mavenOptionsField.getText());
+            mavenMgr.setOffline(ui.offlineCheckBox.isSelected());
         }
         catch (IllegalMavenHomeException e) {
             UIUtils.showError(e);
@@ -83,14 +88,26 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
     public boolean isModified() {
         final MavenManager mavenMgr = MavenManager.getInstance();
 
-        final String selectedHomeValue = ui.getMavenHome();
-        final String selectedPath = selectedHomeValue.replace(File.separatorChar, '/');
-        final String url = VirtualFileManager.constructUrl("file", selectedPath);
-        final VirtualFile selectedHome = VirtualFileManager.getInstance().findFileByUrl(url);
-        final VirtualFile mavenHome = mavenMgr.getMavenHome();
+        //check offline mode
+        if (ui.offlineCheckBox.isSelected() != mavenMgr.isOffline())
+            return true;
 
-        if (ui.isOffline() != mavenMgr.isOffline()) return true;
-        if (!StringUtils.equals(mavenMgr.getMavenOptions(), ui.getMavenOptions())) return true;
+        //check maven cmdline options
+        if (!StringUtils.equals(mavenMgr.getMavenOptions(), ui.mavenOptionsField.getText()))
+            return true;
+
+        //check maven home
+        final VirtualFile mavenHome = mavenMgr.getMavenHome();
+        final VirtualFile selectedHome;
+        final String selectedHomeValue = ui.mavenHomeField.getText();
+        if (selectedHomeValue == null || selectedHomeValue.trim().length() == 0)
+            selectedHome = null;
+        else {
+            final String selectedPath = selectedHomeValue.replace(File.separatorChar, '/');
+            final String url = VirtualFileManager.constructUrl("file", selectedPath);
+            selectedHome = VirtualFileManager.getInstance().findFileByUrl(url);
+        }
+
         return selectedHome != mavenHome;
     }
 
@@ -98,8 +115,31 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
         final MavenManager mavenMgr = MavenManager.getInstance();
 
         final VirtualFile mavenHome = mavenMgr.getMavenHome();
-        ui.setMavenHome(mavenHome == null ? null : mavenHome.getPresentableUrl());
-        ui.setMavenOptions(mavenMgr.getMavenOptions());
-        ui.setOffline(mavenMgr.isOffline());
+        ui.mavenHomeField.setText(mavenHome == null ? null : mavenHome.getPresentableUrl());
+        ui.mavenOptionsField.setText(mavenMgr.getMavenOptions());
+        ui.offlineCheckBox.setSelected(mavenMgr.isOffline());
+    }
+
+    private class MavenManagerPanel extends JPanel {
+        private final TextFieldWithBrowseButton mavenHomeField = new TextFieldWithBrowseButton();
+        private final JTextField mavenOptionsField = new JTextField();
+        private final JCheckBox offlineCheckBox = new JCheckBox(RES.get("offline.mode.label"));
+
+        private MavenManagerPanel() {
+            mavenHomeField.addBrowseFolderListener(
+                    RES.get("choose.maven.home.dlg.title"),
+                    RES.get("choose.maven.home.dlg.desc"),
+                    null,
+                    FileChooserDescriptorFactory.createSingleFolderDescriptor());
+
+            //layout components
+            final String cols = "right:min, 2dlu, fill:min:grow";
+            final FormLayout layout = new FormLayout(cols);
+            final DefaultFormBuilder builder = new DefaultFormBuilder(layout, this);
+            builder.setComponentFactory(CustomFormsComponentFactory.getInstance());
+            builder.append(RES.get("maven.home.label"), mavenHomeField);
+            builder.append(RES.get("maven.options.label"), mavenOptionsField);
+            builder.append(" ", offlineCheckBox);
+        }
     }
 }
