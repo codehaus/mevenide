@@ -54,4 +54,6 @@ public abstract class AbstractAnAction extends AnAction {
         final DataContext dc = pEvent.getDataContext();
         return (VirtualFile) dc.getData(DataConstants.VIRTUAL_FILE);
     }
+
+    public abstract void actionPerformed(final AnActionEvent pEvent);
 }

@@ -1,6 +1,7 @@
 package org.mevenide.idea.project.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.project.PomManager;
@@ -30,17 +31,31 @@ public class AddPomAction extends AbstractAnAction {
 
     @Override
     public void update(final AnActionEvent pEvent) {
+        final Project project = getProject(pEvent);
+        if (project == null) {
+            pEvent.getPresentation().setEnabled(false);
+            return;
+        }
+
         final VirtualFile file = getVirtualFile(pEvent);
-        final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
-        pEvent.getPresentation().setEnabled(file != null && !pomMgr.contains(file));
+        final PomManager pomMgr = PomManager.getInstance(project);
+
+        final boolean enabled = file != null && !pomMgr.contains(file);
+        pEvent.getPresentation().setEnabled(enabled);
     }
 
     public void actionPerformed(final AnActionEvent pEvent) {
+        final Project project = getProject(pEvent);
+        if (project == null) {
+            pEvent.getPresentation().setEnabled(false);
+            return;
+        }
+
         final VirtualFile file = getVirtualFile(pEvent);
         if (file == null)
             return;
 
-        final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
+        final PomManager pomMgr = PomManager.getInstance(project);
         if (pomMgr.contains(file))
             return;
 

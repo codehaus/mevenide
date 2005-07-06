@@ -10,6 +10,7 @@ import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
+ * @todo show only relative path to file in POM nodes (or better yet - show the POM name!)
  */
 public class PomManagerTreeCellRenderer extends DefaultTreeCellRenderer {
     @Override
