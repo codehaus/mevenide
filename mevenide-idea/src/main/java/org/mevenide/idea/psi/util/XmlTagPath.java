@@ -95,8 +95,7 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the path project. The project is derived from the XML file we are
-     * searching.
+     * Returns the path project. The project is derived from the XML file we are searching.
      *
      * @return project
      */
@@ -143,9 +142,9 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the XML document. If there is no xml document, this method will throw a
-     * {@link IncorrectOperationException}, as currently the PSI api does not allow
-     * creating a {@link XmlDocument} instance.
+     * Returns the XML document. If there is no xml document, this method will throw a {@link
+     * IncorrectOperationException}, as currently the PSI api does not allow creating a {@link
+     * XmlDocument} instance.
      *
      * @return xml document (never {@code null})
      * @throws IncorrectOperationException
@@ -168,8 +167,8 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the tag path, including or excluding the parent path, as specified by the
-     * given flag.
+     * Returns the tag path, including or excluding the parent path, as specified by the given
+     * flag.
      *
      * @param pIncludeParent whether to use the parent path as a prefix
      *
@@ -202,8 +201,8 @@ public class XmlTagPath {
     /**
      * Returns the row for the last path path.
      *
-     * <p>If this tag path has no path, this method will throw an {@link
-     * IllegalStateException}. If the last tag has no row, {@code null} is returned.</p>
+     * <p>If this tag path has no path, this method will throw an {@link IllegalStateException}. If
+     * the last tag has no row, {@code null} is returned.</p>
      *
      * @return the row number, or {@code null}
      */
@@ -222,9 +221,8 @@ public class XmlTagPath {
     /**
      * Sets the row for the last path path.
      *
-     * <p>If this tag path has no path, this method will throw an {@link
-     * IllegalStateException}. If the last tag already has a row, it is replaced with the
-     * new row number.</p>
+     * <p>If this tag path has no path, this method will throw an {@link IllegalStateException}. If
+     * the last tag already has a row, it is replaced with the new row number.</p>
      *
      * @param pRow the new row number
      */
@@ -244,8 +242,8 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the tag path as string tokens, where each item in the array is a tag name
-     * or expression.
+     * Returns the tag path as string tokens, where each item in the array is a tag name or
+     * expression.
      *
      * @return string array
      */
@@ -254,8 +252,8 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the tag path as string tokens, where each item in the array is a tag name
-     * or expression.
+     * Returns the tag path as string tokens, where each item in the array is a tag name or
+     * expression.
      *
      * @return string array
      */
@@ -264,8 +262,8 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the tag path as string tokens, concatenating the given tag name to the end
-     * of the tag path.
+     * Returns the tag path as string tokens, concatenating the given tag name to the end of the tag
+     * path.
      *
      * @param pTagName the tag name to add at the end of the path
      *
@@ -278,8 +276,8 @@ public class XmlTagPath {
     /**
      * Returns the root tag.
      *
-     * <p>If the root tag does not exist, or if it exists but has the wrong name
-     * (according to the tag path expression), {@code null} is returned. </p>
+     * <p>If the root tag does not exist, or if it exists but has the wrong name (according to the
+     * tag path expression), {@code null} is returned. </p>
      *
      * @return the root tag, or {@code null}
      */
@@ -302,17 +300,17 @@ public class XmlTagPath {
     /**
      * Returns (and creates if necessary) the root tag.
      *
-     * <p>This method will first check if the XML document already contains a root tag. If
-     * so, it will make sure that it matches the tag expression - if it doesn't, an {@link
+     * <p>This method will first check if the XML document already contains a root tag. If so, it
+     * will make sure that it matches the tag expression - if it doesn't, an {@link
      * IncorrectOperationException} is thrown, indicating that.</p>
      *
-     * <p>Otherwise, if the root tag does exist and satisfy the tag expression, it is
-     * simply returned. If it does not exist, it will be created using the tag expression
-     * to find its name.</p>
+     * <p>Otherwise, if the root tag does exist and satisfy the tag expression, it is simply
+     * returned. If it does not exist, it will be created using the tag expression to find its
+     * name.</p>
      *
      * @return the root tag (existing, or newly created) - never {@code null}
-     * @throws IncorrectOperationException if the root already exists, but does not
-     *                                     satisfy the tag path expression
+     * @throws IncorrectOperationException if the root already exists, but does not satisfy the tag
+     *                                     path expression
      */
     private XmlTag ensureRootTag() throws IncorrectOperationException {
         final XmlDocument xmlDocument = ensureXmlDocument();
@@ -321,7 +319,7 @@ public class XmlTagPath {
             final String rootTagName = rootTag.getName();
             if (!rootTagName.equals(parseRootTagName()))
                 throw new IncorrectOperationException(
-                    RES.get("incorrect.root.tag", rootTagName));
+                        RES.get("incorrect.root.tag", rootTagName));
             else
                 return rootTag;
         }
@@ -338,8 +336,8 @@ public class XmlTagPath {
     /**
      * Returns (but does not create) the xml tag for the tag path expression.
      *
-     * <p>This method will <b>not</b> create the path, and will return {@code null} if the
-     * path cannot be parsed (missing tags).</p>
+     * <p>This method will <b>not</b> create the path, and will return {@code null} if the path
+     * cannot be parsed (missing tags).</p>
      *
      * @return the xml tag, or {@code null}
      */
@@ -358,7 +356,7 @@ public class XmlTagPath {
         XmlTag context = rootTag;
         for (int i = 1; i < pathTokens.length; i++) {
             final XmlFilterExpression expr =
-                XmlFilterExpression.create(pathTokens[i]);
+                    XmlFilterExpression.create(pathTokens[i]);
 
             context = expr.findChildTag(context);
             if (context == null)
@@ -369,11 +367,59 @@ public class XmlTagPath {
     }
 
     /**
-     * Returns the tags in the tag-path as an array. The length of the array will be of
-     * the number of tags that exist in the path.
+     * Returns (but does not create) all xml tags for the tag path expression. The difference
+     * between this method and the {@link #getTag()} method is that if the last tag name matches
+     * multiple tags, all of them are returned.
      *
-     * <p>For instance, if the path is set to {@code "a/b/c"}, and tag {@code "c"} does
-     * not exist, the returned array will be: {@code ["a","b"]}.</p>
+     * <p>For example, suppose you use the path "project/goal", and there are multiple "goal" tags
+     * under "project" tag, all the "goal" tag instances are returned, whereas the {@link #getTag()}
+     * would simply return the first "goal" tag.</p>
+     *
+     * <p>This method will <b>not</b> create the path, and will return {@code null} if the path
+     * cannot be parsed (missing tags).</p>
+     *
+     * <p>If the path does not fully exist (some tag in the path does not exist), this method will
+     * return an empty array, rather than {@code null}. </p>
+     *
+     * <p><b>NOTE: it is illegal to call this method for a tag path whose last token has an index
+     * (e.g. has a {@code [x]} at the end).</b></p>
+     *
+     * @return an array of xml tags (never {@code null})
+     */
+    public final XmlTag[] getAllTags() {
+        final String[] pathTokens = getPathTokens();
+        final XmlTag rootTag = getRootTag();
+        if (rootTag == null)
+            return new XmlTag[0];
+
+        //
+        //The getRootTag method used above already makes sure that the root
+        //tag name matches the tag name in the tag-path's first token, and
+        //returns null if not, therefor we can safely start the iteration
+        //at index 1 rather than 0 (where 0 is the root tag's expression).
+        //
+        XmlTag context = rootTag;
+        for (int i = 1; i < pathTokens.length - 1; i++) {
+            final XmlFilterExpression expr =
+                    XmlFilterExpression.create(pathTokens[i]);
+
+            context = expr.findChildTag(context);
+            if (context == null)
+                break;
+        }
+
+        if (context != null)
+            return context.findSubTags(pathTokens[pathTokens.length - 1]);
+        else
+            return new XmlTag[0];
+    }
+
+    /**
+     * Returns the tags in the tag-path as an array. The length of the array will be of the number
+     * of tags that exist in the path.
+     *
+     * <p>For instance, if the path is set to {@code "a/b/c"}, and tag {@code "c"} does not exist,
+     * the returned array will be: {@code ["a","b"]}.</p>
      *
      * @return a tag of {@link XmlTag} instances
      */
@@ -382,14 +428,13 @@ public class XmlTagPath {
     }
 
     /**
-     * Like the {@link #getTag()} method, this method will return the final tag for the
-     * tag path.
+     * Like the {@link #getTag()} method, this method will return the final tag for the tag path.
      *
      * <p>If, however, the tag path cannot be found, it will be created.</p>
      *
      * @return the xml tag
-     * @throws IncorrectOperationException if the root tag does not satisfy the tag
-     *                                     expression (incorrect name)
+     * @throws IncorrectOperationException if the root tag does not satisfy the tag expression
+     *                                     (incorrect name)
      */
     public final XmlTag ensureTag() throws IncorrectOperationException {
         //
@@ -402,15 +447,15 @@ public class XmlTagPath {
         final String[] pathTokens = getPathTokens();
         for (int i = 1; i < pathTokens.length; i++) {
             final XmlFilterExpression expr =
-                XmlFilterExpression.create(pathTokens[i]);
+                    XmlFilterExpression.create(pathTokens[i]);
 
             XmlTag child = expr.findChildTag(context);
             if (child == null) {
                 child = context.createChildTag(
-                    expr.getTagName(),
-                    context.getNamespace(),
-                    null,
-                    false);
+                        expr.getTagName(),
+                        context.getNamespace(),
+                        null,
+                        false);
                 child = (XmlTag) context.add(child);
             }
 

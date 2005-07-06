@@ -10,9 +10,9 @@ import org.mevenide.idea.util.ui.images.Icons;
 /**
  * Registers a new POM file.
  *
- * <p>This action inspects the place at which the action was invoked, and based
- * on it discovers the file to add. If the place is not a predefined supported
- * place, the user is asked to browse for the POM file.</p>
+ * <p>This action inspects the place at which the action was invoked, and based on it discovers the
+ * file to add. If the place is not a predefined supported place, the user is asked to browse for
+ * the POM file.</p>
  *
  * @author Arik
  */
@@ -32,19 +32,19 @@ public class AddPomAction extends AbstractAnAction {
     public void update(final AnActionEvent pEvent) {
         final VirtualFile file = getVirtualFile(pEvent);
         final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
-        pEvent.getPresentation().setEnabled(file != null && !pomMgr.isPomRegistered(file));
+        pEvent.getPresentation().setEnabled(file != null && !pomMgr.contains(file));
     }
 
     public void actionPerformed(final AnActionEvent pEvent) {
         final VirtualFile file = getVirtualFile(pEvent);
-        if(file == null)
+        if (file == null)
             return;
 
         final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
-        if(pomMgr.isPomRegistered(file))
+        if (pomMgr.contains(file))
             return;
 
-        pomMgr.registerPom(file);
+        pomMgr.add(file);
     }
 
 }

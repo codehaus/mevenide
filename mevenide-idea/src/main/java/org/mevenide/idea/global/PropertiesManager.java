@@ -1,4 +1,4 @@
-package org.mevenide.idea.project;
+package org.mevenide.idea.global;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -12,21 +12,32 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
+import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 
 /**
+ * Resolves Maven properties by looking in all possible places - POM property files, user files,
+ * system properties and in the Maven installation itself.
+ *
+ * <p>Resolves property values by supporting the "${property}" property expression convention (which
+ * is used by Maven).</p>
+ *
  * @author Arik
  */
-public class PomPropertiesManager extends AbstractApplicationComponent
+public class PropertiesManager extends AbstractApplicationComponent
         implements PropertyChangeListener,
                    VirtualFilePointerListener {
     /**
      * Logging.
      */
-    private static final Log LOG = LogFactory.getLog(PomPropertiesManager.class);
+    private static final Log LOG = LogFactory.getLog(PropertiesManager.class);
+
+    /**
+     * Manages listeners.
+     */
+    private final EventListenerList listenerList = new EventListenerList();
 
     /**
      * The user's home directory.
@@ -48,6 +59,28 @@ public class PomPropertiesManager extends AbstractApplicationComponent
      */
     private VirtualFilePointer mavenDriverPropertiesPointer;
 
+    /**
+     * Registers the given properties listener.
+     *
+     * @param pListener the listener to register
+     */
+    public void addPropertiesListener(final PropertiesListener pListener) {
+        listenerList.add(PropertiesListener.class, pListener);
+    }
+
+    /**
+     * Unregisters the given properties listener.
+     *
+     * @param pListener the listener to unregister
+     */
+    public void removePropertiesListener(final PropertiesListener pListener) {
+        listenerList.remove(PropertiesListener.class, pListener);
+    }
+
+    /**
+     * Internal. Initializes the component and file pointers. Registers as a listener to {@link
+     * MavenManager}'s properties.
+     */
     @Override
     public void initComponent() {
         final MavenManager mavenMgr = MavenManager.getInstance();
@@ -110,6 +143,15 @@ public class PomPropertiesManager extends AbstractApplicationComponent
      * @return property value, or {@code null} if it could not be found
      */
     public String getProperty(final VirtualFile pPomFile, final String pName) {
+
+        //
+        //check some preconfigured properties that are not present in
+        //configuration files, but Maven expects them because they are
+        //passed by the maven shell scripts
+        //
+        if (pName.equals("maven.home"))
+            return MavenManager.getInstance().getMavenHome().getPath();
+
         //
         //system properties
         //
@@ -223,7 +265,7 @@ public class PomPropertiesManager extends AbstractApplicationComponent
     }
 
     /**
-     * Internal.
+     * Internal. Does nothing.
      *
      * @param pPointers
      */
@@ -231,11 +273,31 @@ public class PomPropertiesManager extends AbstractApplicationComponent
     }
 
     /**
-     * Internal.
+     * Internal. Called by the file pointers if the files change validity, and notifies all
+     * registered {@link PropertiesListener}s that the properties files changed.
      *
      * @param pPointers
      */
     public void validityChanged(final VirtualFilePointer[] pPointers) {
+        for (VirtualFilePointer pointer : pPointers) {
+            if (pointer == userPropertiesPointer ||
+                    pointer == mavenDefaultPropertiesPointer ||
+                    pointer == mavenDriverPropertiesPointer)
+                firePropertiesChangedEvent();
+        }
+    }
+
+    /**
+     * Fires the propertiesChanged event to all listeners.
+     */
+    private void firePropertiesChangedEvent() {
+        final PropertiesListener[] listeners = listenerList.getListeners(PropertiesListener.class);
+        PropertiesEvent e = null;
+        for (PropertiesListener listener : listeners) {
+            if (e == null)
+                e = new PropertiesEvent(this);
+            listener.propertiesChanged(e);
+        }
     }
 
     /**
@@ -250,20 +312,22 @@ public class PomPropertiesManager extends AbstractApplicationComponent
         return VirtualFileManager.getInstance().findFileByUrl(homeUrl);
     }
 
+    /**
+     * Initializes the file pointers (to properties files) based on the given maven home.
+     *
+     * @param pMavenHome the new maven home
+     */
     private void initializePointers(final VirtualFile pMavenHome) {
         final VirtualFilePointerManager pointerMgr = VirtualFilePointerManager.getInstance();
 
-        //
-        //create a pointer to maven installation property files
-        //
         if (pMavenHome != null) {
             final String homePath = pMavenHome.getPath();
             String url;
 
-            url = homePath + "/lib/maven.jar!/defaults.properties";
+            url = "jar://" + homePath + "/lib/maven.jar!/defaults.properties";
             mavenDefaultPropertiesPointer = pointerMgr.create(url, this);
 
-            url = homePath + "/lib/maven.jar!/driver.properties";
+            url = "jar://" + homePath + "/lib/maven.jar!/driver.properties";
             mavenDriverPropertiesPointer = pointerMgr.create(url, this);
         }
         else {
@@ -272,6 +336,18 @@ public class PomPropertiesManager extends AbstractApplicationComponent
         }
     }
 
+    /**
+     * Searches for the given property in the specified file, and if found, returns its value. If
+     * the property is not found, {@code null} is returned.
+     *
+     * <p><b>Note:</b> this method does not resolve the value - it is returned "raw".</p>
+     *
+     * @param pFile the file to search in
+     * @param pName the name of the property to search for
+     *
+     * @return property value as a string, or {@code null} if not found
+     * @throws IOException if an error occurs while reading the file
+     */
     private String getFilePropertyValue(final VirtualFile pFile, final String pName)
             throws IOException {
         final Properties props = new Properties();
@@ -279,6 +355,21 @@ public class PomPropertiesManager extends AbstractApplicationComponent
         return props.getProperty(pName);
     }
 
+    /**
+     * Searches for the given property in a file, and if found, returns its value. If the property
+     * or file is not found, {@code null} is returned.
+     *
+     * <p>The file that is searched is the file that corresponds to the relative path specified. The
+     * path is resolved against the {@code pFile} argument.</p>
+     *
+     * <p><b>Note:</b> this method does not resolve the value - it is returned "raw".</p>
+     *
+     * @param pFile the file to search in
+     * @param pName the name of the property to search for
+     *
+     * @return property value as a string, or {@code null} if not found
+     * @throws IOException if an error occurs while reading the file
+     */
     private String getFilePropertyValue(final VirtualFile pFile,
                                         final String pChildFileName,
                                         final String pName) throws IOException {
@@ -289,6 +380,19 @@ public class PomPropertiesManager extends AbstractApplicationComponent
             return null;
     }
 
+    /**
+     * Searches for the given property in a file, and if found, returns its value. If the property
+     * or file is not found, {@code null} is returned.
+     *
+     * <p>The file is found using the given file pointer. If the pointer reports that the file does
+     * not exist, {@code null} is returned.</p>
+     *
+     * @param pPointer the pointer to the file to search in
+     * @param pName    the name of the property to search for
+     *
+     * @return the property value, or {@code null} if the file or property are not found
+     * @throws IOException if an error occurs while reading the file
+     */
     private String getFilePointerPropertyValue(final VirtualFilePointer pPointer,
                                                final String pName) throws IOException {
         if (pPointer == null || !pPointer.isValid())
@@ -298,7 +402,12 @@ public class PomPropertiesManager extends AbstractApplicationComponent
         return getFilePropertyValue(file, pName);
     }
 
-    public static PomPropertiesManager getInstance() {
-        return ApplicationManager.getApplication().getComponent(PomPropertiesManager.class);
+    /**
+     * Returns an instance of the component.
+     *
+     * @return instance
+     */
+    public static PropertiesManager getInstance() {
+        return ApplicationManager.getApplication().getComponent(PropertiesManager.class);
     }
 }

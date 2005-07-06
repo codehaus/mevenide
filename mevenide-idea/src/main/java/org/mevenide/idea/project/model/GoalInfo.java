@@ -10,5 +10,5 @@ public interface GoalInfo {
 
     String getDescription();
 
-    GoalInfo[] getPrereqs();
+    String[] getPrereqs();
 }
