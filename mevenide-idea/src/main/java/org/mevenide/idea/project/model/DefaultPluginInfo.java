@@ -1,5 +1,9 @@
 package org.mevenide.idea.project.model;
 
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
+
 /**
  * @author Arik
  */
@@ -11,6 +15,8 @@ public class DefaultPluginInfo implements PluginInfo {
     private String name;
     private String description;
     private GoalInfo[] goals;
+    private VirtualFilePointer scriptFilePointer;
+    private VirtualFilePointer pomFilePointer;
 
     public String getId() {
         if (id != null && id.trim().length() > 0)
@@ -78,5 +84,47 @@ public class DefaultPluginInfo implements PluginInfo {
         }
 
         return null;
+    }
+
+    public VirtualFile getScriptFile() {
+        if (scriptFilePointer == null || !scriptFilePointer.isValid())
+            return null;
+        else
+            return scriptFilePointer.getFile();
+    }
+
+    public void setScriptFile(final VirtualFile pScriptFile) {
+        if (pScriptFile == null)
+            setScriptFile((VirtualFilePointer) null);
+        else {
+            final String url = pScriptFile.getUrl();
+            final VirtualFilePointerManager vfpMgr = VirtualFilePointerManager.getInstance();
+            setScriptFile(vfpMgr.create(url, null));
+        }
+    }
+
+    public void setScriptFile(final VirtualFilePointer pScriptFilePointer) {
+        scriptFilePointer = pScriptFilePointer;
+    }
+
+    public VirtualFile getPomFile() {
+        if (pomFilePointer == null || !pomFilePointer.isValid())
+            return null;
+        else
+            return pomFilePointer.getFile();
+    }
+
+    public void setPomFile(final VirtualFile pPomFile) {
+        if (pPomFile == null)
+            setPomFile((VirtualFilePointer) null);
+        else {
+            final String url = pPomFile.getUrl();
+            final VirtualFilePointerManager vfpMgr = VirtualFilePointerManager.getInstance();
+            setPomFile(vfpMgr.create(url, null));
+        }
+    }
+
+    public void setPomFile(final VirtualFilePointer pPomFilePointer) {
+        pomFilePointer = pPomFilePointer;
     }
 }

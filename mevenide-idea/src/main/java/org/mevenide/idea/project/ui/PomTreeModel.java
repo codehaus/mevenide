@@ -11,6 +11,7 @@ import java.util.Enumeration;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.global.MavenPluginsManager;
 import org.mevenide.idea.project.PomManager;
@@ -270,6 +271,33 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
                 return node;
         }
 
+        return null;
+    }
+
+    public PomNode getPomNode(final TreeNode pNode) {
+        TreeNode parent = pNode;
+        while (parent != null && !(parent instanceof PomNode)) parent = parent.getParent();
+
+        return (PomNode) parent;
+    }
+
+    public PluginNode getPluginNode(final GoalNode pNode) {
+        final GoalInfo goal = pNode.getUserObject();
+        final PluginInfo plugin = goal.getPlugin();
+
+        //noinspection UNCHECKED_WARNING
+        final Enumeration<TreeNode> pluginNodes = pluginsNode.children();
+
+        while (pluginNodes.hasMoreElements()) {
+            final TreeNode node = pluginNodes.nextElement();
+            if (!(node instanceof PluginNode))
+                continue;
+
+            final PluginNode pluginNode = (PluginNode) node;
+            final PluginInfo currentPlugin = pluginNode.getUserObject();
+            if (currentPlugin.getId().equals(plugin.getId()))
+                return pluginNode;
+        }
         return null;
     }
 }
