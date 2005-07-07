@@ -45,7 +45,7 @@
             <implementation-class>org.mevenide.idea.global.MavenManager</implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.global.PropertiesManager</implementation-class>
+            <implementation-class>org.mevenide.idea.global.properties.PropertiesManager</implementation-class>
         </component>
         <component>
             <implementation-class>org.mevenide.idea.global.MavenManagerConfigurable</implementation-class>
@@ -61,6 +61,9 @@
     <project-components>
         <component>
             <implementation-class>org.mevenide.idea.execute.MavenExecuteManager</implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.mevenide.idea.global.reports.MavenReportManager</implementation-class>
         </component>
         <component>
             <implementation-class>org.mevenide.idea.project.jdk.PomJdkManager</implementation-class>
