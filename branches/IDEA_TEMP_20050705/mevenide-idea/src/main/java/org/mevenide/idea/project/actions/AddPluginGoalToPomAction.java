@@ -52,7 +52,7 @@ public class AddPluginGoalToPomAction extends AbstractAnAction {
                 return;
             }
 
-            final Goal[] goals = ui.getSelectedGoalsForPom(null);
+            final Goal[] goals = ui.getSelectedGoalsForPom(null, true);
             pEvent.getPresentation().setEnabled(goals.length > 0);
         }
     }
@@ -69,7 +69,7 @@ public class AddPluginGoalToPomAction extends AbstractAnAction {
                 return;
 
             final String[] projects = ui.getPomsWithSelectedGoals(false);
-            final Goal[] goals = ui.getSelectedGoalsForPom(null);
+            final Goal[] goals = ui.getSelectedGoalsForPom(null, true);
             if (projects.length > 0 || goals.length == 0)
                 return;
 

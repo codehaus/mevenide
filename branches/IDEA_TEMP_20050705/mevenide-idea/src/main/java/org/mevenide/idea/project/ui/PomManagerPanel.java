@@ -47,6 +47,7 @@ import org.mevenide.idea.project.actions.RemovePluginGoalFromPomAction;
 import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.project.goals.GoalContainer;
 import org.mevenide.idea.project.goals.PluginGoal;
+import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.project.util.PomUtils;
 
 /**
@@ -195,6 +196,11 @@ public class PomManagerPanel extends JPanel
     }
 
     public Goal[] getSelectedGoalsForPom(final String pUrl) {
+        return getSelectedGoalsForPom(pUrl, false);
+    }
+
+    public Goal[] getSelectedGoalsForPom(final String pUrl,
+                                         final boolean pRecursePluginNodes) {
         final TreePath[] selection = tree.getSelectionPaths();
         if (selection == null)
             return new Goal[0];
@@ -202,17 +208,23 @@ public class PomManagerPanel extends JPanel
         final Set<Goal> goals = new HashSet<Goal>(selection.length);
         for (TreePath path : selection) {
             final Object item = path.getLastPathComponent();
-            if (!(item instanceof GoalNode))
-                continue;
+            if (item instanceof PluginNode && pRecursePluginNodes && pUrl == null) {
+                final PluginNode node = (PluginNode) item;
+                final PluginGoalContainer plugin = node.getUserObject();
+                final Goal[] pluginGoals = plugin.getGoals();
+                for (Goal goal : pluginGoals)
+                    goals.add(goal);
+            }
+            else if (item instanceof GoalNode) {
+                final GoalNode node = (GoalNode) item;
+                final Goal goal = node.getUserObject();
 
-            final GoalNode node = (GoalNode) item;
-            final Goal goal = node.getUserObject();
-
-            final PomNode pomNode = model.getPomNode(node);
-            if (pomNode == null && pUrl == null)
-                goals.add(goal);
-            else if (pomNode != null && pomNode.getUserObject().equals(pUrl))
-                goals.add(goal);
+                final PomNode pomNode = model.getPomNode(node);
+                if (pomNode == null && pUrl == null)
+                    goals.add(goal);
+                else if (pomNode != null && pomNode.getUserObject().equals(pUrl))
+                    goals.add(goal);
+            }
         }
 
         return goals.toArray(new PluginGoal[goals.size()]);
@@ -364,7 +376,7 @@ public class PomManagerPanel extends JPanel
     private class PomTreeExpander implements TreeExpander {
         private boolean hasExpandedProjects() {
             final TreeNode projectsNode = model.getProjectsNode();
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             final Enumeration<TreeNode> projectNodes = projectsNode.children();
             while (projectNodes.hasMoreElements()) {
                 final TreeNode node = projectNodes.nextElement();
@@ -390,7 +402,7 @@ public class PomManagerPanel extends JPanel
 
         public void collapseAll() {
             final TreeNode projectsNode = model.getProjectsNode();
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             final Enumeration<TreeNode> projectNodes = projectsNode.children();
             while (projectNodes.hasMoreElements()) {
                 final TreeNode node = projectNodes.nextElement();
@@ -406,7 +418,7 @@ public class PomManagerPanel extends JPanel
             tree.expandPath(new TreePath(model.getPathToRoot(pluginsNode)));
 
             final TreeNode projectsNode = model.getProjectsNode();
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             final Enumeration<TreeNode> projectNodes = projectsNode.children();
             while (projectNodes.hasMoreElements()) {
                 final TreeNode node = projectNodes.nextElement();

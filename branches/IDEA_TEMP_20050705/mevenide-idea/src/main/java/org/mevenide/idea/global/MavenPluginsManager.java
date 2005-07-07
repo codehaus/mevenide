@@ -2,14 +2,23 @@ package org.mevenide.idea.global;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointerListener;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
+import org.mevenide.idea.global.properties.PropertiesEvent;
+import org.mevenide.idea.global.properties.PropertiesListener;
+import org.mevenide.idea.global.properties.PropertiesManager;
 import org.mevenide.idea.project.goals.DefaultPluginGoal;
 import org.mevenide.idea.project.goals.DefaultPluginGoalContainer;
 import org.mevenide.idea.project.goals.PluginGoal;
@@ -20,12 +29,14 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
+ * @todo raise event when plugin cache is refreshed
  */
-public class MavenPluginsManager extends AbstractProjectComponent {
+public class MavenPluginsManager extends AbstractProjectComponent
+        implements VirtualFilePointerListener {
     /**
      * The name of the Maven property that denotes the location of the plugins JAR files.
      */
-    private static final String PLUGINS_DIR = "maven.plugin.dir";
+    private static final String CACHE_DIR_PROPERTY = "maven.plugin.unpacked.dir";
     private static final String POM_ID_XPATH = "project/id";
     private static final String POM_GROUP_ID_XPATH = "project/groupId";
     private static final String POM_ARTIFACT_ID_XPATH = "project/artifactId";
@@ -33,6 +44,8 @@ public class MavenPluginsManager extends AbstractProjectComponent {
     private static final String POM_NAME_XPATH = "project/name";
     private static final String POM_DESC_XPATH = "project/description";
     private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+    private VirtualFilePointer pluginsFilePointer = null;
 
     /**
      * Cache for loaded plugin descriptors.
@@ -50,44 +63,60 @@ public class MavenPluginsManager extends AbstractProjectComponent {
 
     @Override
     public void initComponent() {
+        final VirtualFilePointerManager vfpMgr = VirtualFilePointerManager.getInstance();
+
         MavenManager.getInstance().addPropertyChangeListener(
                 "mavenHome",
                 new PropertyChangeListener() {
                     public void propertyChange(PropertyChangeEvent evt) {
                         synchronized (this) {
                             plugins = null;
+                            if (pluginsFilePointer != null)
+                                vfpMgr.kill(pluginsFilePointer);
+                            pluginsFilePointer = createPluginsFilePointer();
                         }
                     }
                 });
 
-        PropertiesManager.getInstance().addPropertiesListener(
+        final PropertiesManager propsMg = PropertiesManager.getInstance();
+        propsMg.addPropertiesListener(
                 new PropertiesListener() {
                     public void propertiesChanged(PropertiesEvent pEvent) {
                         synchronized (this) {
                             plugins = null;
+                            if (pluginsFilePointer != null)
+                                vfpMgr.kill(pluginsFilePointer);
+                            pluginsFilePointer = createPluginsFilePointer();
                         }
                     }
                 });
+
+        pluginsFilePointer = createPluginsFilePointer();
     }
 
     public PluginGoalContainer getPlugin(final String pId) {
-        final PluginGoalContainer[] plugins = getPlugins();
-        for (PluginGoalContainer plugin : plugins) {
-            if (plugin.getId().equals(pId))
-                return plugin;
-        }
+        synchronized (this) {
+            final PluginGoalContainer[] plugins = getPlugins();
+            for (PluginGoalContainer plugin : plugins) {
+                if (plugin.getId().equals(pId))
+                    return plugin;
+            }
 
-        return null;
+            return null;
+        }
     }
 
     public PluginGoalContainer getPlugin(final String pGroupId, final String pArtifactId) {
-        final PluginGoalContainer[] plugins = getPlugins();
-        for (PluginGoalContainer plugin : plugins) {
-            if (plugin.getGroupId().equals(pGroupId) && plugin.getArtifactId().equals(pArtifactId))
-                return plugin;
-        }
+        synchronized (this) {
+            final PluginGoalContainer[] plugins = getPlugins();
+            for (PluginGoalContainer plugin : plugins) {
+                if (plugin.getGroupId().equals(pGroupId) && plugin.getArtifactId().equals(
+                        pArtifactId))
+                    return plugin;
+            }
 
-        return null;
+            return null;
+        }
     }
 
     /**
@@ -97,34 +126,81 @@ public class MavenPluginsManager extends AbstractProjectComponent {
      */
     public PluginGoalContainer[] getPlugins() {
         synchronized (this) {
-            if (plugins != null)
-                return plugins;
-
-            plugins = loadPlugins();
+            if (plugins == null)
+                try {
+                    plugins = loadPlugins();
+                }
+                catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                    plugins = new PluginGoalContainer[0];
+                }
             return plugins;
         }
     }
 
-    private PluginGoalContainer[] loadPlugins() {
-        final VirtualFileManager vfMgr = VirtualFileManager.getInstance();
+    /**
+     * Internal. Does nothing.
+     *
+     * @param pointers files about to change validity
+     */
+    public void beforeValidityChanged(VirtualFilePointer[] pointers) {
+    }
 
-        final PropertiesManager propMgr = PropertiesManager.getInstance();
-        final String pluginsDirName = propMgr.getProperty(PLUGINS_DIR);
-        if (pluginsDirName == null || pluginsDirName.trim().length() == 0)
+    /**
+     * Internal. Refreshes plugins cache if needed.
+     *
+     * @param pointers changed files
+     */
+    public void validityChanged(VirtualFilePointer[] pointers) {
+        for (VirtualFilePointer pointer : pointers) {
+            if (pointer != pluginsFilePointer)
+                continue;
+
+            synchronized (this) {
+                if (pointer.isValid())
+                    getPlugins();
+                else
+                    plugins = null;
+            }
+        }
+    }
+
+    /**
+     * Loads and parses all available plugins in the user's cache directory.
+     *
+     * @return available plugins
+     * @throws IOException if an error occurs
+     */
+    private PluginGoalContainer[] loadPlugins() throws IOException {
+        if (pluginsFilePointer == null || !pluginsFilePointer.isValid())
             return new PluginGoalContainer[0];
 
-        final String url = "file://" + pluginsDirName.replace(File.separatorChar, '/');
-        final VirtualFile pluginsDir = vfMgr.findFileByUrl(url);
+        final VirtualFile pluginsFile = pluginsFilePointer.getFile();
+        if (pluginsFile == null || !pluginsFile.isValid() || pluginsFile.isDirectory())
+            return new PluginGoalContainer[0];
+
+        final VirtualFile pluginsDir = pluginsFile.getParent();
         if (pluginsDir == null || !pluginsDir.isValid() || !pluginsDir.isDirectory())
             return new PluginGoalContainer[0];
 
-        final Set<PluginGoalContainer> plugins = new HashSet<PluginGoalContainer>(30);
-        final VirtualFile[] children = pluginsDir.getChildren();
-        for (VirtualFile pluginFile : children) {
-            if (!"jar".equalsIgnoreCase(pluginFile.getExtension()))
-                continue;
+        final Properties props = new Properties();
+        final byte[] data = pluginsFile.contentsToByteArray();
+        final ByteArrayInputStream stream = new ByteArrayInputStream(data);
+        props.load(stream);
 
-            final PluginGoalContainer plugin = parsePlugin(pluginFile);
+        final Set<PluginGoalContainer> plugins = new HashSet<PluginGoalContainer>(30);
+        final Set<Map.Entry<Object, Object>> entries = props.entrySet();
+        for (Map.Entry<Object, Object> entry : entries) {
+            final String pluginName = entry.getValue().toString();
+            final String artifactId = entry.getKey().toString();
+
+            final VirtualFile pluginDir = pluginsDir.findChild(artifactId);
+            if (pluginDir == null || !pluginDir.isValid() || !pluginDir.isDirectory()) {
+                LOG.warn("Could not load plugin '" + pluginName + "'");
+                continue;
+            }
+
+            final PluginGoalContainer plugin = parsePlugin(pluginDir);
             if (plugin != null)
                 plugins.add(plugin);
         }
@@ -135,22 +211,17 @@ public class MavenPluginsManager extends AbstractProjectComponent {
     /**
      * Parses the given plugin JAR and extracts general plugin information and available goals.
      *
-     * @param pPluginJar the plugin JAR file
+     * @param pPluginDir the plugin directory
      *
      * @return plugin descriptor
      */
-    private PluginGoalContainer parsePlugin(final VirtualFile pPluginJar) {
-        if (pPluginJar == null || !pPluginJar.isValid())
-            return null;
-
-        final VirtualFileManager vfMgr = VirtualFileManager.getInstance();
+    private PluginGoalContainer parsePlugin(final VirtualFile pPluginDir) {
         final DefaultPluginGoalContainer plugin = new DefaultPluginGoalContainer();
 
         //
         //parse plugin POM
         //
-        final String pomUrl = "jar://" + pPluginJar.getPath() + "!/project.xml";
-        final VirtualFile pluginPom = vfMgr.findFileByUrl(pomUrl);
+        final VirtualFile pluginPom = pPluginDir.findChild("project.xml");
         if (pluginPom != null && pluginPom.isValid())
             plugin.setPomFile(pluginPom);
         else
@@ -167,8 +238,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         //
         //parse plugin Jelly script
         //
-        final String jellyUrl = "jar://" + pPluginJar.getPath() + "!/plugin.jelly";
-        final VirtualFile jellyFile = vfMgr.findFileByUrl(jellyUrl);
+        final VirtualFile jellyFile = pPluginDir.findChild("plugin.jelly");
         if (jellyFile != null && jellyFile.isValid())
             plugin.setScriptFile(jellyFile);
         else
@@ -196,6 +266,22 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         plugin.setGoals(goals);
 
         return plugin;
+    }
+
+    private VirtualFilePointer createPluginsFilePointer() {
+        final PropertiesManager propsMg = PropertiesManager.getInstance();
+        final String pluginsDirName = propsMg.getProperty(CACHE_DIR_PROPERTY);
+        if (pluginsDirName == null || pluginsDirName.trim().length() == 0)
+            return null;
+
+        final StringBuilder url = new StringBuilder("file://");
+        url.append(pluginsDirName.replace(File.separatorChar, '/'));
+        if (url.charAt(url.length() - 1) != '/')
+            url.append('/');
+        url.append("/artifactIdToPlugin.cache");
+
+        final VirtualFilePointerManager vfpMgr = VirtualFilePointerManager.getInstance();
+        return vfpMgr.create(url.toString(), this);
     }
 
     public static MavenPluginsManager getInstance(final Project pProject) {

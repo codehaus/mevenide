@@ -1,4 +1,4 @@
-package org.mevenide.idea.global;
+package org.mevenide.idea.global.properties;
 
 import java.util.EventObject;
 

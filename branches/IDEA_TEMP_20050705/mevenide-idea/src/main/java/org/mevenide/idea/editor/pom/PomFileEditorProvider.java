@@ -19,13 +19,11 @@ package org.mevenide.idea.editor.pom;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.fileEditor.*;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.xml.XmlFile;
 import org.jdom.Element;
-import org.mevenide.idea.module.ModuleSettings;
+import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
@@ -36,19 +34,7 @@ import org.mevenide.idea.util.components.AbstractApplicationComponent;
 public class PomFileEditorProvider extends AbstractApplicationComponent
         implements FileEditorProvider {
     public boolean accept(final Project pProject, final VirtualFile pFile) {
-        final String extension = pFile.getExtension();
-        if (extension == null || extension.trim().length() == 0)
-            return false;
-
-        final Module[] modules = ModuleManager.getInstance(pProject).getModules();
-        for (final Module module : modules) {
-            final ModuleSettings settings = ModuleSettings.getInstance(module);
-            final VirtualFile pomFile = settings.getPomVirtualFile();
-            if (pomFile != null && pomFile.equals(pFile))
-                return true;
-        }
-
-        return false;
+        return PomManager.getInstance(pProject).isValid(pFile.getUrl());
     }
 
     public FileEditor createEditor(final Project pProject, final VirtualFile pPomFile) {

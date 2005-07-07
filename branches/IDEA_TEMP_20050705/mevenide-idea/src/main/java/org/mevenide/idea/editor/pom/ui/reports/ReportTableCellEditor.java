@@ -1,34 +1,28 @@
 package org.mevenide.idea.editor.pom.ui.reports;
 
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SelectFromListDialog;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.xml.XmlFile;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.idea.module.ModuleLocationFinder;
+import org.mevenide.idea.Res;
+import org.mevenide.idea.global.reports.MavenReportManager;
+import org.mevenide.idea.global.reports.Report;
 import org.mevenide.idea.psi.project.PsiReports;
-import org.mevenide.reports.IReportsFinder;
-import org.mevenide.reports.JDomReportsFinder;
+import org.mevenide.idea.util.ui.MultiLineLabel;
 
 /**
  * @author Arik
  */
 public class ReportTableCellEditor extends AbstractCellEditor
-    implements TableCellEditor, ActionListener {
+        implements TableCellEditor, ActionListener {
     /**
-     * Logging.
+     * Resources
      */
-    private static final Log LOG = LogFactory.getLog(ReportTableCellEditor.class);
+    private static final Res RES = Res.getInstance(ReportTableCellEditor.class);
 
     /**
      * The field for editing with a browse button.
@@ -46,9 +40,16 @@ public class ReportTableCellEditor extends AbstractCellEditor
     private final PsiReports model;
     private static final String TITLE = "Select a report";
     private static final SelectFromListDialog.ToStringAspect TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
-        public String getToStirng(
-            Object obj) {
-            return obj.toString();
+        public String getToStirng(Object obj) {
+            if (obj instanceof Report) {
+                final Report report = (Report) obj;
+                final StringBuilder buf = new StringBuilder(report.getName());
+                buf.append(" - ").append(report.getId()).append(": ");
+                buf.append(report.getDescription());
+                return buf.toString();
+            }
+            else
+                return obj == null ? "Unknown" : obj.toString();
         }
     };
 
@@ -76,21 +77,19 @@ public class ReportTableCellEditor extends AbstractCellEditor
     }
 
     public void actionPerformed(final ActionEvent pEvent) {
-        final XmlFile xmlFile = model.getXmlFile();
-        final VirtualFile virtualFile = xmlFile.getVirtualFile();
-        final Project project = xmlFile.getProject();
-        final Module module = VfsUtil.getModuleForFile(project, virtualFile);
-        final ILocationFinder finder = new ModuleLocationFinder(module);
-        final IReportsFinder reportsFinder = new JDomReportsFinder(finder);
-
-        String[] reports = findAvailableReports(reportsFinder);
+        final Project project = model.getXmlFile().getProject();
+        final MavenReportManager mgr = MavenReportManager.getInstance(project);
+        final Report[] reports = mgr.getReports();
 
         final SelectFromListDialog dlg = new SelectFromListDialog(
-            project,
-            reports,
-            TO_STRING_ASPECT,
-            TITLE,
-            ListSelectionModel.SINGLE_SELECTION);
+                project,
+                reports,
+                TO_STRING_ASPECT,
+                TITLE,
+                ListSelectionModel.SINGLE_SELECTION);
+
+        dlg.addToDialog(new MultiLineLabel(RES.get("select.report.label")),
+                        BorderLayout.PAGE_START);
 
         dlg.setModal(true);
         dlg.setResizable(true);
@@ -101,21 +100,11 @@ public class ReportTableCellEditor extends AbstractCellEditor
             final Object[] selection = dlg.getSelection();
 
             if (selection != null && selection.length > 0)
-                value = selection[0].toString();
+                value = ((Report) selection[0]).getId();
             else
-                value = null;
+                return;
 
             field.setText(value);
-        }
-    }
-
-    private String[] findAvailableReports(final IReportsFinder pReportsFinder) {
-        try {
-            return pReportsFinder.findReports();
-        }
-        catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            return new String[0];
         }
     }
 }

@@ -17,6 +17,7 @@ import org.mevenide.idea.util.IDEUtils;
 
 /**
  * @author Arik
+ * @todo add support for attribute selection in path (e.g. like XPath's "@id='abc'")
  */
 public class XmlTagPath {
     /**
