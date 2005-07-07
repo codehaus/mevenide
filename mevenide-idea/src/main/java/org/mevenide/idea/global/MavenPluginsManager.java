@@ -10,10 +10,10 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-import org.mevenide.idea.project.model.DefaultGoalInfo;
-import org.mevenide.idea.project.model.DefaultPluginInfo;
-import org.mevenide.idea.project.model.GoalInfo;
-import org.mevenide.idea.project.model.PluginInfo;
+import org.mevenide.idea.project.goals.DefaultPluginGoal;
+import org.mevenide.idea.project.goals.DefaultPluginGoalContainer;
+import org.mevenide.idea.project.goals.PluginGoal;
+import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
@@ -37,7 +37,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
     /**
      * Cache for loaded plugin descriptors.
      */
-    private PluginInfo[] plugins = null;
+    private PluginGoalContainer[] plugins = null;
 
     /**
      * Creates an instance for the given project.
@@ -70,9 +70,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
                 });
     }
 
-    public PluginInfo getPlugin(final String pId) {
-        final PluginInfo[] plugins = getPlugins();
-        for (PluginInfo plugin : plugins) {
+    public PluginGoalContainer getPlugin(final String pId) {
+        final PluginGoalContainer[] plugins = getPlugins();
+        for (PluginGoalContainer plugin : plugins) {
             if (plugin.getId().equals(pId))
                 return plugin;
         }
@@ -80,9 +80,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         return null;
     }
 
-    public PluginInfo getPlugin(final String pGroupId, final String pArtifactId) {
-        final PluginInfo[] plugins = getPlugins();
-        for (PluginInfo plugin : plugins) {
+    public PluginGoalContainer getPlugin(final String pGroupId, final String pArtifactId) {
+        final PluginGoalContainer[] plugins = getPlugins();
+        for (PluginGoalContainer plugin : plugins) {
             if (plugin.getGroupId().equals(pGroupId) && plugin.getArtifactId().equals(pArtifactId))
                 return plugin;
         }
@@ -95,7 +95,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
      *
      * @return list of plugins found in the maven installation
      */
-    public PluginInfo[] getPlugins() {
+    public PluginGoalContainer[] getPlugins() {
         synchronized (this) {
             if (plugins != null)
                 return plugins;
@@ -105,31 +105,31 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         }
     }
 
-    private PluginInfo[] loadPlugins() {
+    private PluginGoalContainer[] loadPlugins() {
         final VirtualFileManager vfMgr = VirtualFileManager.getInstance();
 
         final PropertiesManager propMgr = PropertiesManager.getInstance();
         final String pluginsDirName = propMgr.getProperty(PLUGINS_DIR);
         if (pluginsDirName == null || pluginsDirName.trim().length() == 0)
-            return new PluginInfo[0];
+            return new PluginGoalContainer[0];
 
         final String url = "file://" + pluginsDirName.replace(File.separatorChar, '/');
         final VirtualFile pluginsDir = vfMgr.findFileByUrl(url);
         if (pluginsDir == null || !pluginsDir.isValid() || !pluginsDir.isDirectory())
-            return new PluginInfo[0];
+            return new PluginGoalContainer[0];
 
-        final Set<PluginInfo> plugins = new HashSet<PluginInfo>(30);
+        final Set<PluginGoalContainer> plugins = new HashSet<PluginGoalContainer>(30);
         final VirtualFile[] children = pluginsDir.getChildren();
         for (VirtualFile pluginFile : children) {
             if (!"jar".equalsIgnoreCase(pluginFile.getExtension()))
                 continue;
 
-            final PluginInfo plugin = parsePlugin(pluginFile);
+            final PluginGoalContainer plugin = parsePlugin(pluginFile);
             if (plugin != null)
                 plugins.add(plugin);
         }
 
-        return plugins.toArray(new PluginInfo[plugins.size()]);
+        return plugins.toArray(new PluginGoalContainer[plugins.size()]);
     }
 
     /**
@@ -139,12 +139,12 @@ public class MavenPluginsManager extends AbstractProjectComponent {
      *
      * @return plugin descriptor
      */
-    private PluginInfo parsePlugin(final VirtualFile pPluginJar) {
+    private PluginGoalContainer parsePlugin(final VirtualFile pPluginJar) {
         if (pPluginJar == null || !pPluginJar.isValid())
             return null;
 
         final VirtualFileManager vfMgr = VirtualFileManager.getInstance();
-        final DefaultPluginInfo plugin = new DefaultPluginInfo();
+        final DefaultPluginGoalContainer plugin = new DefaultPluginGoalContainer();
 
         //
         //parse plugin POM
@@ -177,7 +177,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         final XmlFile jellyPsi = PsiUtils.findXmlFile(project, jellyFile);
         final XmlTagPath goalsPath = new XmlTagPath(jellyPsi, "project/goal");
         final XmlTag[] goalTags = goalsPath.getAllTags();
-        final GoalInfo[] goals = new GoalInfo[goalTags.length];
+        final PluginGoal[] goals = new PluginGoal[goalTags.length];
         for (int i = 0; i < goalTags.length; i++) {
             XmlTag tag = goalTags[i];
             final String name = tag.getAttributeValue("name");
@@ -186,10 +186,10 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             final String[] preReqs = preReqsValue == null ? EMPTY_STRING_ARRAY : preReqsValue.split(
                     ",");
 
-            final DefaultGoalInfo goal = new DefaultGoalInfo();
+            final DefaultPluginGoal goal = new DefaultPluginGoal();
             goal.setName(name);
             goal.setDescription(desc);
-            goal.setPlugin(plugin);
+            goal.setContainer(plugin);
             goal.setPrereqs(preReqs);
             goals[i] = goal;
         }

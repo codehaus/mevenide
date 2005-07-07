@@ -33,24 +33,23 @@ public class RemovePomAction extends AbstractAnAction {
 
         final VirtualFile file = getVirtualFile(pEvent);
         final PomManager pomMgr = PomManager.getInstance(project);
-        pEvent.getPresentation().setEnabled(file != null && pomMgr.contains(file));
+        pEvent.getPresentation().setEnabled(
+                file != null && pomMgr.contains(file.getUrl()));
     }
 
     public void actionPerformed(final AnActionEvent pEvent) {
         final Project project = getProject(pEvent);
-        if (project == null) {
-            pEvent.getPresentation().setEnabled(false);
+        if (project == null)
             return;
-        }
 
         final VirtualFile file = getVirtualFile(pEvent);
         if (file == null)
             return;
 
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (!pomMgr.contains(file))
+        if (!pomMgr.contains(file.getUrl()))
             return;
 
-        pomMgr.remove(file);
+        pomMgr.remove(file.getUrl());
     }
 }

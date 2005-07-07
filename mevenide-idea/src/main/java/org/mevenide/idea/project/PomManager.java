@@ -1,31 +1,22 @@
 package org.mevenide.idea.project;
 
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.ProjectJdk;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointerContainer;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointerListener;
+import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.xml.XmlFile;
-import java.util.*;
+import java.util.List;
 import javax.swing.event.EventListenerList;
 import org.jdom.Element;
-import org.mevenide.idea.global.MavenPluginsManager;
-import org.mevenide.idea.project.model.GoalInfo;
-import org.mevenide.idea.project.model.PluginInfo;
 import org.mevenide.idea.project.ui.PomManagerPanel;
-import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.psi.project.impl.DefaultPsiProject;
-import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.util.ui.images.Icons;
 
@@ -35,41 +26,15 @@ import org.mevenide.idea.util.ui.images.Icons;
 public class PomManager extends AbstractProjectComponent
         implements JDOMExternalizable, VirtualFilePointerListener {
     /**
-     * The key under which the POM entries are stored in the file pointers.
+     * The map of file pointers to acquire their associated PSI projects.
      */
-    private static final Key<PsiProject> POM_KEY = Key.create(PsiProject.class.getName());
-
-    /**
-     * The key under which the POM entries are stored in the file pointers.
-     */
-    private static final Key<Set<GoalInfo>> GOALS_KEY = Key.create("goals");
-
-    /**
-     * The key under which the JDK to use for running goals is stored.
-     */
-    private static final Key<ProjectJdk> JDK_KEY = Key.create(ProjectJdk.class.getName());
-
-    /**
-     * Tracks file pointers.
-     */
-    private final VirtualFilePointerHelper helper = new VirtualFilePointerHelper(this);
+    protected final VirtualFilePointerContainer entries = VirtualFilePointerManager.getInstance().createContainer(
+            this);
 
     /**
      * Event listeners support.
      */
     private final EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * Used as a temporary cache for data loaded in {@link #readExternal(org.jdom.Element)}. This
-     * data will then be incorporated into saved file pointers in the {@link #projectOpened()}
-     * method.
-     *
-     * <p>The reason the {@link #readExternal(org.jdom.Element)} method doesn't load the data into
-     * the file pointers is simply because PSI access is disallowed in IDEA before startup has
-     * completed.</p>
-     */
-    private final Map<String, Map<String, Set<String>>> loadedGoals = new HashMap<String, Map<String, Set<String>>>(
-            10);
 
     /**
      * Creates an instance for the given project. Called by IDEA on project load.
@@ -80,145 +45,66 @@ public class PomManager extends AbstractProjectComponent
         super(pProject);
     }
 
-    public void add(final VirtualFile pFile) {
-        add(pFile.getUrl());
-    }
-
     public void add(final String pUrl) {
-        final VirtualFilePointer pointer = helper.add(pUrl);
-        firePomAddedEvent(pointer);
+        if (pUrl == null || pUrl.trim().length() == 0 || contains(pUrl))
+            return;
+
+        entries.add(pUrl);
+        firePomAddedEvent(pUrl);
     }
 
     public boolean contains(final String pUrl) {
-        return helper.isRegistered(pUrl);
+        if (pUrl == null || pUrl.trim().length() == 0)
+            return false;
+
+        return entries.findByUrl(pUrl) != null;
     }
 
-    public boolean contains(final VirtualFile pFile) {
-        return helper.isRegistered(pFile);
+    public boolean isValid(final String pUrl) {
+        if (pUrl == null || pUrl.trim().length() == 0)
+            return false;
+
+        if (!contains(pUrl))
+            return false;
+
+        final VirtualFilePointer pointer = getPointer(pUrl);
+        return pointer != null && pointer.isValid() && pointer.getFile() != null;
     }
 
-    public VirtualFilePointer[] getPomPointers() {
-        return helper.getFilePointers();
+    public VirtualFile getFile(final String pUrl) {
+        if (pUrl == null || pUrl.trim().length() == 0)
+            return null;
+
+        final VirtualFilePointer pointer = getPointer(pUrl);
+        if (pointer == null || !pointer.isValid())
+            return null;
+
+        return pointer.getFile();
     }
 
-    public void remove(final VirtualFile pFile) {
-        remove(pFile.getUrl());
+    public VirtualFilePointer getPointer(final String pUrl) {
+        if (pUrl == null || pUrl.trim().length() == 0)
+            return null;
+
+        return entries.findByUrl(pUrl);
+    }
+
+    public String[] getFileUrls() {
+        return entries.getUrls();
+    }
+
+    public VirtualFilePointer[] getFilePointers() {
+        final List<VirtualFilePointer> list = entries.getList();
+        return list.toArray(new VirtualFilePointer[list.size()]);
     }
 
     public void remove(final String pUrl) {
-        final VirtualFilePointer pointer = helper.remove(pUrl);
-        firePomRemovedEvent(pointer);
-    }
-
-    public ProjectJdk getJdk(final VirtualFile pFile) {
-        return getJdk(pFile.getUrl());
-    }
-
-    public ProjectJdk getJdk(final String pUrl) {
-        final ProjectJdk defJDk = ProjectRootManager.getInstance(project).getProjectJdk();
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null)
-            return defJDk;
-
-        final ProjectJdk jdk = filePointer.getUserData(JDK_KEY);
-        return jdk == null ? defJDk : jdk;
-    }
-
-    public void setJdk(final VirtualFile pFile, final ProjectJdk pJdk) {
-        setJdk(pFile.getUrl(), pJdk);
-    }
-
-    public void setJdk(final String pUrl, final ProjectJdk pJdk) {
-        if (!contains(pUrl))
+        if (pUrl == null || pUrl.trim().length() == 0 || !contains(pUrl))
             return;
 
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null)
-            return;
-
-        filePointer.putUserData(JDK_KEY, pJdk);
-        firePomJdkChangedEvent(filePointer);
-    }
-
-    public PsiProject getPsiProject(final VirtualFile pFile) {
-        return getPsiProject(pFile.getUrl());
-    }
-
-    public PsiProject getPsiProject(final String pUrl) {
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null || !filePointer.isValid())
-            return null;
-
-        final VirtualFile file = filePointer.getFile();
-        if (file == null || !file.isValid() || file.isDirectory())
-            return null;
-
-        PsiProject psi = filePointer.getUserData(POM_KEY);
-        if (psi == null || !file.equals(psi.getXmlFile().getVirtualFile())) {
-            final XmlFile xmlFile = PsiUtils.findXmlFile(project, file);
-            assert xmlFile != null;
-            psi = new DefaultPsiProject(xmlFile);
-        }
-
-        return psi;
-    }
-
-    public void addGoal(final VirtualFile pFile, final GoalInfo pGoal) {
-        addGoal(pFile.getUrl(), pGoal);
-    }
-
-    public void addGoal(final String pUrl, final GoalInfo pGoal) {
-        if (!contains(pUrl) || pGoal == null)
-            return;
-
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null)
-            return;
-
-        Set<GoalInfo> goals = filePointer.getUserData(GOALS_KEY);
-        if (goals == null) {
-            goals = new HashSet<GoalInfo>(10);
-            filePointer.putUserData(GOALS_KEY, goals);
-        }
-
-        goals.add(pGoal);
-        firePomGoalsChangedEvent(filePointer);
-    }
-
-    public GoalInfo[] getGoals(final VirtualFile pFile) {
-        return getGoals(pFile.getUrl());
-    }
-
-    public GoalInfo[] getGoals(final String pUrl) {
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null)
-            return new GoalInfo[0];
-
-        final Set<GoalInfo> goals = filePointer.getUserData(GOALS_KEY);
-        if (goals == null)
-            return new GoalInfo[0];
-
-        return goals.toArray(new GoalInfo[goals.size()]);
-    }
-
-    public void removeGoal(final VirtualFile pFile, final GoalInfo pGoal) {
-        removeGoal(pFile.getUrl(), pGoal);
-    }
-
-    public void removeGoal(final String pUrl, final GoalInfo pGoal) {
-        if (!contains(pUrl) || pGoal == null)
-            return;
-
-        final VirtualFilePointer filePointer = helper.get(pUrl);
-        if (filePointer == null)
-            return;
-
-        Set<GoalInfo> goals = filePointer.getUserData(GOALS_KEY);
-        if (goals == null)
-            return;
-
-        goals.remove(pGoal);
-        firePomGoalsChangedEvent(filePointer);
+        final VirtualFilePointer pointer = getPointer(pUrl);
+        entries.remove(pointer);
+        firePomRemovedEvent(pUrl);
     }
 
     /**
@@ -239,6 +125,11 @@ public class PomManager extends AbstractProjectComponent
         listenerList.remove(PomManagerListener.class, pListener);
     }
 
+    /**
+     * Internal. Does nothing.
+     *
+     * @param pointers ignored
+     */
     public void beforeValidityChanged(VirtualFilePointer[] pointers) {
     }
 
@@ -252,35 +143,13 @@ public class PomManager extends AbstractProjectComponent
      */
     public void validityChanged(final VirtualFilePointer[] pPointers) {
         for (VirtualFilePointer pointer : pPointers)
-            firePomValidityChangedEvent(pointer);
+            firePomValidityChangedEvent(pointer.getUrl());
     }
 
     @Override
     public void projectOpened() {
         final Runnable regToolWinRunnable = new Runnable() {
             public void run() {
-                final MavenPluginsManager pluginsMgr = MavenPluginsManager.getInstance(project);
-
-                //
-                //load registered POMs and goals
-                //
-                final Set<Map.Entry<String, Map<String, Set<String>>>> entries = loadedGoals.entrySet();
-                for (Map.Entry<String, Map<String, Set<String>>> pomEntry : entries) {
-                    final String url = pomEntry.getKey();
-                    final Map<String, Set<String>> goalsCache = pomEntry.getValue();
-
-                    final Set<Map.Entry<String, Set<String>>> goalEntries = goalsCache.entrySet();
-                    for (Map.Entry<String, Set<String>> goalEntry : goalEntries) {
-                        final String id = goalEntry.getKey();
-                        final PluginInfo plugin = pluginsMgr.getPlugin(id);
-
-                        final Set<String> goals = goalEntry.getValue();
-                        for (String goalName : goals) {
-                            final GoalInfo goal = plugin.getGoal(goalName);
-                            addGoal(url, goal);
-                        }
-                    }
-                }
 
                 //
                 //register tool window - this is done in a future runnable
@@ -297,7 +166,8 @@ public class PomManager extends AbstractProjectComponent
             }
         };
 
-        ApplicationManager.getApplication().invokeLater(regToolWinRunnable);
+        final StartupManager mgr = StartupManager.getInstance(project);
+        mgr.registerPostStartupActivity(regToolWinRunnable);
     }
 
     @Override
@@ -327,14 +197,14 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomAdded(PomManagerEvent)} event.
      *
-     * @param pPointer the file pointer of the modified POM
+     * @param pUrl the modified POM
      */
-    protected void firePomAddedEvent(final VirtualFilePointer pPointer) {
+    protected void firePomAddedEvent(final String pUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null) {
-                event = new PomManagerEvent(this, pPointer);
+                event = new PomManagerEvent(this, pUrl);
             }
             listener.pomAdded(event);
         }
@@ -343,14 +213,14 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomRemoved(PomManagerEvent)} event.
      *
-     * @param pPointer the file pointer of the modified POM
+     * @param pUrl the modified POM
      */
-    protected void firePomRemovedEvent(final VirtualFilePointer pPointer) {
+    protected void firePomRemovedEvent(final String pUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null)
-                event = new PomManagerEvent(this, pPointer);
+                event = new PomManagerEvent(this, pUrl);
             listener.pomRemoved(event);
         }
     }
@@ -358,50 +228,19 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomValidityChanged(PomManagerEvent)} event.
      *
-     * @param pPointer the file pointer of the modified POM
+     * @param pUrl the modified POM
      */
-    protected void firePomValidityChangedEvent(final VirtualFilePointer pPointer) {
+    protected void firePomValidityChangedEvent(final String pUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null)
-                event = new PomManagerEvent(this, pPointer);
+                event = new PomManagerEvent(this, pUrl);
             listener.pomValidityChanged(event);
         }
     }
 
-    /**
-     * Fires the {@link PomManagerListener#pomGoalsChanged(PomManagerEvent)} event.
-     *
-     * @param pPointer the file pointer of the modified POM
-     */
-    protected void firePomGoalsChangedEvent(final VirtualFilePointer pPointer) {
-        final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
-        PomManagerEvent event = null;
-        for (PomManagerListener listener : listeners) {
-            if (event == null)
-                event = new PomManagerEvent(this, pPointer);
-            listener.pomGoalsChanged(event);
-        }
-    }
-
-    /**
-     * Fires the {@link PomManagerListener#pomJdkChanged(PomManagerEvent)} event.
-     *
-     * @param pPointer the file pointer of the modified POM
-     */
-    protected void firePomJdkChangedEvent(final VirtualFilePointer pPointer) {
-        final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
-        PomManagerEvent event = null;
-        for (PomManagerListener listener : listeners) {
-            if (event == null)
-                event = new PomManagerEvent(this, pPointer);
-            listener.pomJdkChanged(event);
-        }
-    }
-
     public void readExternal(final Element pElt) throws InvalidDataException {
-        loadedGoals.clear();
 
         //noinspection UNCHECKED_WARNING
         final List<Element> pomElts = pElt.getChildren("pom");
@@ -411,46 +250,14 @@ public class PomManager extends AbstractProjectComponent
                 continue;
 
             add(url);
-            final String jdkName = pomElt.getAttributeValue("jdk");
-            if (jdkName != null && jdkName.trim().length() > 0) {
-                final ProjectJdk jdk = ProjectJdkTable.getInstance().findJdk(jdkName);
-                setJdk(url, jdk);
-            }
-
-            final Map<String, Set<String>> goalsCache = new HashMap<String, Set<String>>();
-            loadedGoals.put(url, goalsCache);
-
-            //noinspection UNCHECKED_WARNING
-            final List<Element> goalElts = pomElt.getChildren("goal");
-            for (Element goalElt : goalElts) {
-                final String goal = goalElt.getAttributeValue("name");
-                final String plugin = goalElt.getAttributeValue("plugin");
-
-                if (!goalsCache.containsKey(plugin))
-                    goalsCache.put(plugin, new HashSet<String>());
-
-                goalsCache.get(plugin).add(goal);
-            }
         }
     }
 
     public void writeExternal(final Element pElt) throws WriteExternalException {
-        final VirtualFilePointer[] filePointers = helper.getFilePointers();
+        final VirtualFilePointer[] filePointers = getFilePointers();
         for (VirtualFilePointer pointer : filePointers) {
             final Element pomElt = new Element("pom");
             pomElt.setAttribute("url", pointer.getUrl());
-            final ProjectJdk jdk = getJdk(pointer.getUrl());
-            if (jdk != null)
-                pomElt.setAttribute("jdk", jdk.getName());
-
-            final GoalInfo[] goals = getGoals(pointer.getUrl());
-            for (GoalInfo goal : goals) {
-                final Element goalElt = new Element("goal");
-                goalElt.setAttribute("plugin", goal.getPlugin().getId());
-                goalElt.setAttribute("name", goal.getName());
-                pomElt.addContent(goalElt);
-            }
-
             pElt.addContent(pomElt);
         }
     }
@@ -465,6 +272,4 @@ public class PomManager extends AbstractProjectComponent
     public static PomManager getInstance(final Project pProject) {
         return pProject.getComponent(PomManager.class);
     }
-
-
 }

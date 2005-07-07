@@ -2,11 +2,11 @@ package org.mevenide.idea.project.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.model.GoalInfo;
+import org.mevenide.idea.project.goals.Goal;
+import org.mevenide.idea.project.goals.PluginGoal;
+import org.mevenide.idea.project.goals.PomPluginGoalsManager;
 import org.mevenide.idea.project.ui.PomManagerPanel;
 import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.ui.images.Icons;
@@ -14,13 +14,13 @@ import org.mevenide.idea.util.ui.images.Icons;
 /**
  * @author Arik
  */
-public class RemoveGoalFromPomAction extends AbstractAnAction {
+public class RemovePluginGoalFromPomAction extends AbstractAnAction {
     /**
      * Resources
      */
-    private static final Res RES = Res.getInstance(RemoveGoalFromPomAction.class);
+    private static final Res RES = Res.getInstance(RemovePluginGoalFromPomAction.class);
 
-    public RemoveGoalFromPomAction() {
+    public RemovePluginGoalFromPomAction() {
         super(RES.get("remove.goal.action.name"),
               RES.get("remove.goal.action.desc"),
               Icons.REMOVE_DEPENDENCY);
@@ -28,34 +28,6 @@ public class RemoveGoalFromPomAction extends AbstractAnAction {
 
     @Override
     public void update(final AnActionEvent pEvent) {
-        pEvent.getPresentation().setEnabled(false);
-
-        final Project project = getProject(pEvent);
-        if (project == null)
-            return;
-
-        final PomManager pomMgr = PomManager.getInstance(project);
-
-        final VirtualFilePointer[] pointers = pomMgr.getPomPointers();
-        if (pointers.length == 0)
-            return;
-
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
-            final PomManagerPanel ui = pomMgr.getToolWindowComponent();
-            if (ui == null) {
-                return;
-            }
-
-            final VirtualFile[] projects = ui.getSelectedProjects(false);
-            if (projects.length != 1)
-                return;
-
-            final GoalInfo[] goals = ui.getSelectedGoals(projects[0]);
-            pEvent.getPresentation().setEnabled(goals.length > 0);
-        }
-    }
-
-    public void actionPerformed(final AnActionEvent pEvent) {
         final Project project = getProject(pEvent);
         if (project == null) {
             pEvent.getPresentation().setEnabled(false);
@@ -63,23 +35,39 @@ public class RemoveGoalFromPomAction extends AbstractAnAction {
         }
 
         final PomManager pomMgr = PomManager.getInstance(project);
+        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+            final PomManagerPanel ui = pomMgr.getToolWindowComponent();
+            if (ui == null) {
+                pEvent.getPresentation().setEnabled(false);
+                return;
+            }
 
-        final VirtualFilePointer[] pointers = pomMgr.getPomPointers();
-        if (pointers.length == 0)
+            final String[] projects = ui.getPomsWithSelectedGoals(false);
+            pEvent.getPresentation().setEnabled(projects.length > 0);
+        }
+    }
+
+    public void actionPerformed(final AnActionEvent pEvent) {
+        final Project project = getProject(pEvent);
+        if (project == null)
             return;
 
+        final PomManager pomMgr = PomManager.getInstance(project);
         if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = pomMgr.getToolWindowComponent();
             if (ui == null)
                 return;
 
-            final VirtualFile[] projects = ui.getSelectedProjects(false);
-            if (projects.length != 1)
-                return;
+            final PomPluginGoalsManager plgMgr = PomPluginGoalsManager.getInstance(project);
 
-            final GoalInfo[] goals = ui.getSelectedGoals(projects[0]);
-            for (GoalInfo goal : goals)
-                pomMgr.removeGoal(projects[0], goal);
+            final String[] projects = ui.getPomsWithSelectedGoals(false);
+            for (String url : projects) {
+                final Goal[] goals = ui.getSelectedGoalsForPom(url);
+                for (Goal goal : goals)
+                    if (goal instanceof PluginGoal)
+                        plgMgr.removePluginGoal(url, (PluginGoal) goal);
+            }
+
         }
     }
 }

@@ -12,8 +12,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.idea.MavenHomeUndefinedException;
-import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.model.GoalInfo;
+import org.mevenide.idea.project.goals.Goal;
+import org.mevenide.idea.project.jdk.PomJdkManager;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 
@@ -25,7 +25,7 @@ public class MavenExecuteManager extends AbstractProjectComponent {
         super(pProject);
     }
 
-    public void execute(final VirtualFile pPomFile, final GoalInfo... pGoals) {
+    public void execute(final VirtualFile pPomFile, final Goal... pGoals) {
         final VirtualFile dir = pPomFile.getParent();
         if (dir == null)
             return;
@@ -39,7 +39,7 @@ public class MavenExecuteManager extends AbstractProjectComponent {
             //
             //create the process descriptor
             //
-            final ProjectJdk jdk = PomManager.getInstance(project).getJdk(pPomFile);
+            final ProjectJdk jdk = PomJdkManager.getInstance(project).getJdk(pPomFile.getUrl());
             if (jdk == null)
                 throw CantRunException.noJdkConfigured();
             MavenJavaParameters p = new MavenJavaParameters(dir, jdk, pGoals);
@@ -56,7 +56,7 @@ public class MavenExecuteManager extends AbstractProjectComponent {
             //executes the process, creating a console window for it
             //
             final StringBuilder contentNameBuf = new StringBuilder();
-            for (GoalInfo goal : pGoals) {
+            for (Goal goal : pGoals) {
                 if (contentNameBuf.length() > 0)
                     contentNameBuf.append(' ');
                 contentNameBuf.append(goal.getName());
