@@ -2,6 +2,7 @@ package org.mevenide.idea.project.ui;
 
 import com.intellij.ide.AutoScrollToSourceOptionProvider;
 import com.intellij.ide.CommonActionsManager;
+import com.intellij.ide.TreeExpander;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -27,6 +28,7 @@ import com.intellij.util.ui.Tree;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.*;
@@ -78,6 +80,11 @@ public class PomManagerPanel extends JPanel
     private final JTree tree;
 
     /**
+     * Used by the expand/collapse all actions.
+     */
+    private final TreeExpander treeExpanded = new PomTreeExpander();
+
+    /**
      * Whether autoscroll to source is on or off.
      */
     private boolean autoScrollToSource;
@@ -120,8 +127,12 @@ public class PomManagerPanel extends JPanel
         actionGrp.add(new ExecuteGoalAction());
         actionGrp.add(new AddPluginGoalToPomAction());
         actionGrp.add(new RemovePluginGoalFromPomAction());
+        actionGrp.addSeparator();
         actionGrp.add(new RefreshPomToolWindowAction());
         actionGrp.add(autoScrollAction);
+        actionGrp.addSeparator();
+        actionGrp.add(cmnActionsMgr.createCollapseAllAction(treeExpanded));
+        actionGrp.add(cmnActionsMgr.createExpandAllAction(treeExpanded));
 
         final ActionToolbar toolbar = actionMgr.createActionToolbar(TITLE, actionGrp, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
@@ -347,6 +358,60 @@ public class PomManagerPanel extends JPanel
                 navigateToSource((GoalNode) node);
             else if (node instanceof PomNode)
                 navigateToSource((PomNode) node);
+        }
+    }
+
+    private class PomTreeExpander implements TreeExpander {
+        private boolean hasExpandedProjects() {
+            final TreeNode projectsNode = model.getProjectsNode();
+            //noinspection UNCHECKED_WARNING
+            final Enumeration<TreeNode> projectNodes = projectsNode.children();
+            while (projectNodes.hasMoreElements()) {
+                final TreeNode node = projectNodes.nextElement();
+                if (tree.isExpanded(new TreePath(model.getPathToRoot(node))))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private boolean isPluginsNodeExpanded() {
+            final TreeNode pluginsNode = model.getPluginsNode();
+            return tree.isExpanded(new TreePath(model.getPathToRoot(pluginsNode)));
+        }
+
+        public boolean canCollapse() {
+            return hasExpandedProjects() || isPluginsNodeExpanded();
+        }
+
+        public boolean canExpand() {
+            return !hasExpandedProjects() || !isPluginsNodeExpanded();
+        }
+
+        public void collapseAll() {
+            final TreeNode projectsNode = model.getProjectsNode();
+            //noinspection UNCHECKED_WARNING
+            final Enumeration<TreeNode> projectNodes = projectsNode.children();
+            while (projectNodes.hasMoreElements()) {
+                final TreeNode node = projectNodes.nextElement();
+                tree.collapsePath(new TreePath(model.getPathToRoot(node)));
+            }
+
+            final TreeNode pluginsNode = model.getPluginsNode();
+            tree.collapsePath(new TreePath(model.getPathToRoot(pluginsNode)));
+        }
+
+        public void expandAll() {
+            final TreeNode pluginsNode = model.getPluginsNode();
+            tree.expandPath(new TreePath(model.getPathToRoot(pluginsNode)));
+
+            final TreeNode projectsNode = model.getProjectsNode();
+            //noinspection UNCHECKED_WARNING
+            final Enumeration<TreeNode> projectNodes = projectsNode.children();
+            while (projectNodes.hasMoreElements()) {
+                final TreeNode node = projectNodes.nextElement();
+                tree.expandPath(new TreePath(model.getPathToRoot(node)));
+            }
         }
     }
 }
