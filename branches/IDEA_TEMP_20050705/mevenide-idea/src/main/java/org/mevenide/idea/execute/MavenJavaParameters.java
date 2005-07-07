@@ -24,9 +24,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.io.File;
 import org.mevenide.idea.MavenHomeUndefinedException;
 import org.mevenide.idea.global.MavenManager;
-import org.mevenide.idea.project.model.GoalInfo;
+import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.util.FileUtils;
-import org.mevenide.idea.util.goals.GoalsHelper;
 
 /**
  * @author Arik
@@ -41,13 +40,13 @@ public class MavenJavaParameters extends JavaParameters {
     public static final String COMPILE_REGEXP =
             RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
-    public MavenJavaParameters(final VirtualFile pWorkingDir,
+    public MavenJavaParameters(final VirtualFile pPomFile,
                                final ProjectJdk pJvm,
-                               final GoalInfo... pGoals) throws MavenHomeUndefinedException {
-        this(pWorkingDir, pJvm, extractGoalNames(pGoals));
+                               final Goal... pGoals) throws MavenHomeUndefinedException {
+        this(pPomFile, pJvm, extractGoalNames(pGoals));
     }
 
-    public MavenJavaParameters(final VirtualFile pWorkingDir,
+    public MavenJavaParameters(final VirtualFile pPomFile,
                                final ProjectJdk pJvm,
                                final String... pGoals) throws MavenHomeUndefinedException {
 
@@ -86,7 +85,10 @@ public class MavenJavaParameters extends JavaParameters {
         //
         //setup commandline
         //
-        setWorkingDirectory(FileUtils.getAbsolutePath(pWorkingDir));
+        final VirtualFile dir = pPomFile.getParent();
+        if (dir == null)
+            throw new IllegalArgumentException("POM file has no directory.");
+        setWorkingDirectory(FileUtils.getAbsolutePath(dir));
         setJdk(pJvm);
         setMainClass(FOREHEAD_MAIN_CLASS);
 
@@ -94,8 +96,8 @@ public class MavenJavaParameters extends JavaParameters {
         vmArgs.defineProperty("maven.home", FileUtils.getAbsolutePath(mavenHome));
         vmArgs.defineProperty("tools.jar", pJvm.getToolsPath());
         vmArgs.defineProperty("forehead.conf.file", FileUtils.getAbsolutePath(foreheadConf));
-        vmArgs.defineProperty("java.endorsed.dirs",
-                              endorsedDirs);//TODO: only if endorsedDirs.length() > 0!
+        if (endorsedDirs != null && endorsedDirs.trim().length() > 0)
+            vmArgs.defineProperty("java.endorsed.dirs", endorsedDirs);
 
         //user specified JVM arguments
         final String mavenOptions = mavenMgr.getMavenOptions();
@@ -111,18 +113,16 @@ public class MavenJavaParameters extends JavaParameters {
 
         //suppress banner
         params.add("-b");
+        params.add("-p", pPomFile.getName());
 
         //
         //specify the goals to execute
         //
         for (final String goal : pGoals)
-            if (goal.endsWith(GoalsHelper.DEFAULT_GOAL_NAME))//TODO: remove this - no longer needed
-                params.add(GoalsHelper.getPluginName(goal));
-            else
-                params.add(goal);
+            params.add(goal);
     }
 
-    private static String[] extractGoalNames(final GoalInfo... pGoals) {
+    private static String[] extractGoalNames(final Goal... pGoals) {
         final String[] names = new String[pGoals.length];
         for (int i = 0; i < pGoals.length; i++)
             names[i] = pGoals[i].getName();

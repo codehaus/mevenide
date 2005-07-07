@@ -11,8 +11,4 @@ public interface PomManagerListener extends EventListener {
     void pomRemoved(PomManagerEvent pEvent);
 
     void pomValidityChanged(PomManagerEvent pEvent);
-
-    void pomGoalsChanged(PomManagerEvent pEvent);
-
-    void pomJdkChanged(PomManagerEvent pEvent);
 }

@@ -1,10 +1,10 @@
-package org.mevenide.idea.project.model;
+package org.mevenide.idea.project.goals;
 
 /**
  * @author Arik
  */
-public interface GoalInfo {
-    PluginInfo getPlugin();
+public interface Goal {
+    GoalContainer getContainer();
 
     String getName();
 

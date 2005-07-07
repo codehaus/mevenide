@@ -40,7 +40,7 @@ public class AddPomAction extends AbstractAnAction {
         final VirtualFile file = getVirtualFile(pEvent);
         final PomManager pomMgr = PomManager.getInstance(project);
 
-        final boolean enabled = file != null && !pomMgr.contains(file);
+        final boolean enabled = file != null && !pomMgr.contains(file.getUrl());
         pEvent.getPresentation().setEnabled(enabled);
     }
 
@@ -56,10 +56,10 @@ public class AddPomAction extends AbstractAnAction {
             return;
 
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (pomMgr.contains(file))
+        if (pomMgr.contains(file.getUrl()))
             return;
 
-        pomMgr.add(file);
+        pomMgr.add(file.getUrl());
     }
 
 }

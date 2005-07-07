@@ -15,7 +15,6 @@ import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.fileEditor.TextEditor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.SelectFromListDialog;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import com.intellij.psi.PsiDocumentManager;
@@ -35,15 +34,18 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeSelectionModel;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.execute.MavenExecuteManager;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.actions.AddGoalToPomAction;
+import org.mevenide.idea.project.actions.AddPluginGoalToPomAction;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
 import org.mevenide.idea.project.actions.RefreshPomToolWindowAction;
-import org.mevenide.idea.project.actions.RemoveGoalFromPomAction;
-import org.mevenide.idea.project.model.GoalInfo;
-import org.mevenide.idea.project.model.PluginInfo;
+import org.mevenide.idea.project.actions.RemovePluginGoalFromPomAction;
+import org.mevenide.idea.project.goals.Goal;
+import org.mevenide.idea.project.goals.GoalContainer;
+import org.mevenide.idea.project.goals.PluginGoal;
+import org.mevenide.idea.project.util.PomUtils;
 
 /**
  * @author Arik
@@ -90,92 +92,39 @@ public class PomManagerPanel extends JPanel
 
         project = pProject;
         model = new PomTreeModel(project);
-        tree = new Tree(model);
 
+        //
+        //create the tree
+        //
+        tree = new Tree(model);
         tree.setRootVisible(false);
         tree.setShowsRootHandles(true);
-        tree.setCellRenderer(new PomManagerTreeCellRenderer());
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-                if (!autoScrollToSource)
-                    return;
-
-                final TreePath selection = tree.getSelectionPath();
-                if (selection == null)
-                    return;
-
-                final TreeNode node = (TreeNode) selection.getLastPathComponent();
-                if (node instanceof PluginNode)
-                    navigateToSource((PluginNode) node);
-                else if (node instanceof GoalNode)
-                    navigateToSource((GoalNode) node);
-            }
-        });
-        tree.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(final MouseEvent pEvent) {
-                if (pEvent.getClickCount() == 2) {
-                    final int row = tree.getRowForLocation(pEvent.getX(),
-                                                           pEvent.getY());
-                    if (row < 0)
-                        return;
-
-                    final TreePath path = tree.getPathForRow(row);
-                    if (path == null)
-                        return;
-
-                    final TreeNode node = (TreeNode) path.getLastPathComponent();
-                    if (node instanceof GoalNode) {
-                        final VirtualFile pomFile;
-                        final PomNode pomNode = model.getPomNode(node);
-                        if (pomNode != null)
-                            pomFile = pomNode.getUserObject().getFile();
-                        else {
-                            final SelectFromListDialog dlg = new SelectFromListDialog(
-                                    project,
-                                    PomManager.getInstance(project).getPomPointers(),
-                                    new SelectFromListDialog.ToStringAspect() {
-                                        public String getToStirng(Object obj) {
-                                            final VirtualFilePointer p = (VirtualFilePointer) obj;
-                                            return p.getPresentableUrl();
-                                        }
-                                    },
-                                    "Select POM to execute goal for",
-                                    ListSelectionModel.SINGLE_SELECTION);
-                            dlg.setModal(true);
-                            dlg.setResizable(true);
-                            dlg.show();
-
-                            if (!dlg.isOK())
-                                return;
-
-                            pomFile = ((VirtualFilePointer) dlg.getSelection()[0]).getFile();
-                        }
-
-                        final GoalInfo goal = ((GoalNode) node).getUserObject();
-                        MavenExecuteManager.getInstance(project).execute(pomFile, goal);
-                    }
-                }
-            }
-        });
+        tree.setCellRenderer(new PomManagerTreeCellRenderer(project));
+        tree.addTreeSelectionListener(new TreeSelectionHandler());
+        tree.addMouseListener(new DblClickHandler());
+        final TreeSelectionModel treeSelModel = tree.getSelectionModel();
+        treeSelModel.setSelectionMode(TreeSelectionModel.DISCONTIGUOUS_TREE_SELECTION);
         add(ScrollPaneFactory.createScrollPane(tree), BorderLayout.CENTER);
 
+        //
+        //create the toolbar
+        //
+        final ActionManager actionMgr = ActionManager.getInstance();
         final CommonActionsManager cmnActionsMgr = CommonActionsManager.getInstance();
         final AnAction autoScrollAction =
-                cmnActionsMgr.installAutoscrollToSourceHandler(project, tree, this);
+                cmnActionsMgr.installAutoscrollToSourceHandler(project,
+                                                               tree,
+                                                               this);
 
         final DefaultActionGroup actionGrp = new DefaultActionGroup("POM Manager", false);
         actionGrp.add(new ExecuteGoalAction());
-        actionGrp.add(new AddGoalToPomAction());
-        actionGrp.add(new RemoveGoalFromPomAction());
+        actionGrp.add(new AddPluginGoalToPomAction());
+        actionGrp.add(new RemovePluginGoalFromPomAction());
         actionGrp.add(new RefreshPomToolWindowAction());
         actionGrp.add(autoScrollAction);
-        final ActionManager actionMgr = ActionManager.getInstance();
+
         final ActionToolbar toolbar = actionMgr.createActionToolbar(TITLE, actionGrp, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
-    }
-
-    public Project getProject() {
-        return project;
     }
 
     public void refresh() {
@@ -190,94 +139,116 @@ public class PomManagerPanel extends JPanel
         autoScrollToSource = pState;
     }
 
-    public VirtualFile[] getSelectedProjects() {
-        return getSelectedProjects(true);
-    }
-
-    public VirtualFile[] getSelectedProjects(final boolean pStrict) {
+    public String[] getPomsWithSelectedGoals(final boolean pIncludePluginGoals) {
         final TreePath[] selection = tree.getSelectionPaths();
         if (selection == null)
-            return new VirtualFile[0];
+            return new String[0];
 
-        final Set<PomNode> projects = new HashSet<PomNode>(3);
+        final Set<String> projects = new HashSet<String>(3);
         for (TreePath path : selection) {
             final Object item = path.getLastPathComponent();
-            if (item instanceof PomNode)
-                projects.add(((PomNode) item));
-            else if (!pStrict && item instanceof GoalNode) {
-                final GoalNode node = (GoalNode) item;
-                final PomNode pomParent = model.getPomNode(node);
-                if (pomParent != null)
-                    projects.add(pomParent);
+            if (item instanceof GoalNode) {
+                final PomNode pomParent = model.getPomNode((GoalNode) item);
+                if (pomParent != null || pIncludePluginGoals) {
+                    final String url;
+                    if (pomParent == null)
+                        url = null;
+                    else
+                        url = pomParent.getUserObject();
+                    projects.add(url);
+                }
             }
         }
 
         final int size = projects.size();
-        final PomNode[] nodes = projects.toArray(new PomNode[size]);
-        final VirtualFile[] files = new VirtualFile[projects.size()];
-        for (int i = 0; i < nodes.length; i++)
-            files[i] = nodes[i].getUserObject().getFile();
-
-        return files;
+        return projects.toArray(new String[size]);
     }
 
-    public GoalInfo[] getSelectedGoals(final VirtualFile pPomFile) {
+    public Goal[] getSelectedGoals() {
         final TreePath[] selection = tree.getSelectionPaths();
         if (selection == null)
-            return new GoalInfo[0];
+            return new Goal[0];
 
-        final Set<GoalInfo> goals = new HashSet<GoalInfo>(selection.length);
+        final Set<Goal> goals = new HashSet<Goal>(selection.length);
         for (TreePath path : selection) {
             final Object item = path.getLastPathComponent();
             if (!(item instanceof GoalNode))
                 continue;
 
             final GoalNode node = (GoalNode) item;
-            final GoalInfo goal = node.getUserObject();
+            final Goal goal = node.getUserObject();
+            goals.add(goal);
+        }
+
+        return goals.toArray(new PluginGoal[goals.size()]);
+    }
+
+    public Goal[] getSelectedGoalsForPom(final String pUrl) {
+        final TreePath[] selection = tree.getSelectionPaths();
+        if (selection == null)
+            return new Goal[0];
+
+        final Set<Goal> goals = new HashSet<Goal>(selection.length);
+        for (TreePath path : selection) {
+            final Object item = path.getLastPathComponent();
+            if (!(item instanceof GoalNode))
+                continue;
+
+            final GoalNode node = (GoalNode) item;
+            final Goal goal = node.getUserObject();
+
             final PomNode pomNode = model.getPomNode(node);
-
-            if (pomNode == null && pPomFile == null)
+            if (pomNode == null && pUrl == null)
                 goals.add(goal);
-
-            else if (pPomFile != null && pomNode != null &&
-                    pPomFile.equals(pomNode.getUserObject().getFile()))
+            else if (pomNode != null && pomNode.getUserObject().equals(pUrl))
                 goals.add(goal);
         }
 
-        return goals.toArray(new GoalInfo[goals.size()]);
+        return goals.toArray(new PluginGoal[goals.size()]);
+    }
+
+    private VirtualFile getGoalContainerFile(final GoalContainerNode pNode) {
+        return getGoalContainerFile(pNode.getUserObject());
+    }
+
+    private void navigateToSource(final PomNode pPomNode) {
+        final PomManager pomMgr = PomManager.getInstance(project);
+        final String url = pPomNode.getUserObject();
+        final VirtualFile pomFile = pomMgr.getFile(url);
+        if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory())
+            return;
+
+        final OpenFileDescriptor desc = new OpenFileDescriptor(project, pomFile);
+        if (desc.canNavigateToSource())
+            desc.navigate(true);
     }
 
     public void navigateToSource(final PluginNode pNode) {
-        final PluginInfo plugin = pNode.getUserObject();
-        final VirtualFile scriptFile = plugin.getScriptFile();
-        if (scriptFile == null)
+        final VirtualFile script = getGoalContainerFile(pNode);
+        if (script == null || !script.isValid())
             return;
 
-        final OpenFileDescriptor desc = new OpenFileDescriptor(project,
-                                                               scriptFile);
+        final OpenFileDescriptor desc = new OpenFileDescriptor(project, script);
         if (desc.canNavigateToSource())
             desc.navigate(true);
     }
 
     public void navigateToSource(final GoalNode pNode) {
+        navigateToSource(pNode.getUserObject());
+    }
+
+    public void navigateToSource(final Goal pGoal) {
         final PsiDocumentManager psiMgr = PsiDocumentManager.getInstance(project);
         final FileEditorManager fileMgr = FileEditorManager.getInstance(project);
 
-        final GoalInfo goal = pNode.getUserObject();
-        final PluginNode pluginNode = model.getPluginNode(pNode);
-        if (pluginNode == null)
+        final VirtualFile script = getGoalContainerFile(pGoal.getContainer());
+        if (script == null)
             return;
 
-        final PluginInfo plugin = pluginNode.getUserObject();
-        final VirtualFile scriptFile = plugin.getScriptFile();
-        if (scriptFile == null)
-            return;
-
-        final OpenFileDescriptor desc = new OpenFileDescriptor(project,
-                                                               scriptFile);
+        final OpenFileDescriptor desc = new OpenFileDescriptor(project, script);
         if (desc.canNavigateToSource()) {
             desc.navigate(true);
-            final FileEditor fileEditor = fileMgr.getSelectedEditor(scriptFile);
+            final FileEditor fileEditor = fileMgr.getSelectedEditor(script);
             if (fileEditor instanceof TextEditor) {
                 final Editor editor = ((TextEditor) fileEditor).getEditor();
                 final Document document = editor.getDocument();
@@ -295,8 +266,9 @@ public class PomManagerPanel extends JPanel
                     return;
 
                 final XmlTag[] goals = projectTag.findSubTags("goal");
+                final String goalName = pGoal.getName();
                 for (XmlTag goalTag : goals) {
-                    if (goal.getName().equals(goalTag.getAttributeValue("name"))) {
+                    if (goalName.equals(goalTag.getAttributeValue("name"))) {
                         final int offset = goalTag.getTextOffset();
                         editor.getCaretModel().moveToOffset(offset);
                         editor.getScrollingModel().scrollToCaret(ScrollType.CENTER);
@@ -309,5 +281,72 @@ public class PomManagerPanel extends JPanel
 
     public void dispose() {
         model.dispose();
+    }
+
+    private VirtualFile getGoalContainerFile(final GoalContainer pContainer) {
+        final VirtualFilePointer scriptFile = pContainer.getScriptFile();
+        if (scriptFile == null || !scriptFile.isValid())
+            return null;
+
+        final VirtualFile file = scriptFile.getFile();
+        if (file == null || !file.isValid())
+            return null;
+
+        return file;
+    }
+
+    private class DblClickHandler extends MouseAdapter {
+        @Override
+        public void mouseClicked(final MouseEvent pEvent) {
+            if (pEvent.getClickCount() != 2)
+                return;
+
+            final int row = tree.getRowForLocation(pEvent.getX(), pEvent.getY());
+            if (row < 0)
+                return;
+
+            final TreePath path = tree.getPathForRow(row);
+            if (path == null)
+                return;
+
+            final PomManager pomMgr = PomManager.getInstance(project);
+
+            final TreeNode node = (TreeNode) path.getLastPathComponent();
+            if (!(node instanceof GoalNode))
+                return;
+
+            final VirtualFile pomFile;
+            final PomNode pomNode = model.getPomNode(node);
+
+            if (pomNode != null)
+                pomFile = pomMgr.getFile(pomNode.getUserObject());
+            else
+                pomFile = pomMgr.getFile(PomUtils.selectPom(project));
+
+            if (pomFile == null)
+                return;
+
+            final Goal goal = ((GoalNode) node).getUserObject();
+            MavenExecuteManager.getInstance(project).execute(pomFile, goal);
+        }
+    }
+
+    private class TreeSelectionHandler implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent e) {
+            if (!autoScrollToSource)
+                return;
+
+            final TreePath selection = tree.getSelectionPath();
+            if (selection == null)
+                return;
+
+            final TreeNode node = (TreeNode) selection.getLastPathComponent();
+            if (node instanceof PluginNode)
+                navigateToSource((PluginNode) node);
+            else if (node instanceof GoalNode)
+                navigateToSource((GoalNode) node);
+            else if (node instanceof PomNode)
+                navigateToSource((PomNode) node);
+        }
     }
 }

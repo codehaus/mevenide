@@ -1,20 +1,15 @@
 package org.mevenide.idea.project.ui;
 
-import com.intellij.openapi.actionSystem.ActionGroup;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import javax.swing.tree.DefaultMutableTreeNode;
-import org.mevenide.idea.project.actions.ExecuteGoalAction;
-import org.mevenide.idea.project.model.GoalInfo;
+import org.mevenide.idea.project.goals.Goal;
+import org.mevenide.idea.project.goals.GoalContainer;
 
 /**
  * @author Arik
  */
-public class GoalNode extends DefaultMutableTreeNode implements PopupMenuNode {
-    private final DefaultActionGroup popupActions = new DefaultActionGroup();
-
-    public GoalNode(final GoalInfo pGoal) {
+public abstract class GoalNode<GoalType extends Goal> extends DefaultMutableTreeNode {
+    public GoalNode(final GoalType pGoal) {
         super(pGoal, false);
-        popupActions.add(new ExecuteGoalAction());
     }
 
     @Override
@@ -22,12 +17,21 @@ public class GoalNode extends DefaultMutableTreeNode implements PopupMenuNode {
         return true;
     }
 
-    @Override
-    public GoalInfo getUserObject() {
-        return (GoalInfo) super.getUserObject();
+    public GoalContainer getContainer() {
+        final GoalType goal = getGoal();
+        if (goal == null)
+            return null;
+
+        return goal.getContainer();
     }
 
-    public ActionGroup getPopupActions() {
-        return popupActions;
+    public final GoalType getGoal() {
+        return getUserObject();
+    }
+
+    @Override
+    public GoalType getUserObject() {
+        //noinspection UNCHECKED_WARNING
+        return (GoalType) super.getUserObject();
     }
 }

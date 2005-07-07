@@ -2,7 +2,6 @@ package org.mevenide.idea.project.ui;
 
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
@@ -17,13 +16,14 @@ import org.mevenide.idea.global.MavenPluginsManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.PomManagerEvent;
 import org.mevenide.idea.project.PomManagerListener;
-import org.mevenide.idea.project.model.GoalInfo;
-import org.mevenide.idea.project.model.PluginInfo;
+import org.mevenide.idea.project.goals.*;
 
 /**
  * @author Arik
  */
-public class PomTreeModel extends DefaultTreeModel implements Disposable, PomManagerListener,
+public class PomTreeModel extends DefaultTreeModel implements Disposable,
+                                                              PomManagerListener,
+                                                              PomPluginGoalsListener,
                                                               PropertyChangeListener {
     /**
      * The project this tree is created for.
@@ -41,6 +41,24 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
     private DefaultMutableTreeNode projectsNode = new DefaultMutableTreeNode("Projects");
 
     /**
+     * Comparator for sorting {@link Goal goals}.
+     */
+    private static final Comparator<Goal> GOAL_COMPARATOR = new Comparator<Goal>() {
+        public int compare(final Goal o1, final Goal o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+    };
+
+    /**
+     * Comparator for sorting {@link GoalContainer goal containers}.
+     */
+    private static final Comparator<GoalContainer> GOAL_CONTAINER_COMPARATOR = new Comparator<GoalContainer>() {
+        public int compare(final GoalContainer o1, final GoalContainer o2) {
+            return o1.getId().compareTo(o2.getId());
+        }
+    };
+
+    /**
      * Creates an instance for the given project.
      *
      * @param pProject the project
@@ -54,6 +72,7 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
         //
         MavenManager.getInstance().addPropertyChangeListener("mavenHome", this);
         PomManager.getInstance(project).addPomManagerListener(this);
+        PomPluginGoalsManager.getInstance(project).addPomPluginGoalsListener(this);
 
         //
         //build model
@@ -67,57 +86,43 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
     public void dispose() {
         MavenManager.getInstance().removePropertyChangeListener("mavenHome", this);
         PomManager.getInstance(project).removePomManagerListener(this);
-    }
-
-    public PomNode[] getProjectNodes() {
-        final PomNode[] pomNodes = new PomNode[projectsNode.getChildCount()];
-        int i = 0;
-        //noinspection UNCHECKED_WARNING
-        final Enumeration<PomNode> children = projectsNode.children();
-        while (children.hasMoreElements()) pomNodes[i++] = children.nextElement();
-
-        return pomNodes;
+        PomPluginGoalsManager.getInstance(project).removePomPluginGoalsListener(this);
     }
 
     public void refresh() {
         refresh(true);
     }
 
-    public void refresh(final boolean pNotifyListeners) {
-        refreshProjects(pNotifyListeners);
-        refreshPlugins(pNotifyListeners);
-    }
-
     public void refreshProjects() {
         refreshProjects(true);
-    }
-
-    public void refreshProjects(final boolean pNotifyListeners) {
-        parseProjects();
-        if (pNotifyListeners)
-            nodeStructureChanged(projectsNode);
     }
 
     public void refreshPlugins() {
         refreshPlugins(true);
     }
 
-    public void refreshPlugins(final boolean pNotifyListeners) {
-        parsePlugins();
-        if (pNotifyListeners)
-            nodeStructureChanged(pluginsNode);
+    /**
+     * Returns the ancestor {@link PomNode} for the given node.
+     *
+     * @param pNode the node
+     *
+     * @return a {@link PomNode} up the given node's hierarchy, or {@code null}
+     */
+    public PomNode getPomNode(final TreeNode pNode) {
+        TreeNode parent = pNode;
+        while (parent != null && !(parent instanceof PomNode)) parent = parent.getParent();
+
+        return (PomNode) parent;
     }
 
     public void pomAdded(final PomManagerEvent pEvent) {
-        final VirtualFilePointer pointer = pEvent.getFilePointer();
-
-        final PomNode node = createPomNode(pointer);
+        final PomNode node = createPomNode(pEvent.getUrl());
         projectsNode.insert(node, projectsNode.getChildCount());
         nodesWereInserted(projectsNode, new int[]{projectsNode.getIndex(node)});
     }
 
     public void pomRemoved(final PomManagerEvent pEvent) {
-        final MutableTreeNode node = findPomNode(pEvent.getFilePointer());
+        final MutableTreeNode node = findPomNode(pEvent.getUrl());
         if (node != null) {
             final int index = projectsNode.getIndex(node);
             node.removeFromParent();
@@ -126,14 +131,15 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
     }
 
     public void pomValidityChanged(final PomManagerEvent pEvent) {
-        final VirtualFilePointer filePointer = pEvent.getFilePointer();
-        final PomNode node = findPomNode(filePointer);
+        final PomManager pomMgr = PomManager.getInstance(project);
+        final String url = pEvent.getUrl();
+        final PomNode node = findPomNode(url);
         if (node != null) {
-            if (filePointer.isValid()) {
+            if (pomMgr.isValid(url)) {
                 final int index = projectsNode.getIndex(node);
 
                 node.removeFromParent();
-                projectsNode.insert(createPomNode(filePointer), index);
+                projectsNode.insert(createPomNode(url), index);
 
                 nodeStructureChanged(projectsNode);
             }
@@ -144,20 +150,38 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
         }
     }
 
-    public void pomGoalsChanged(final PomManagerEvent pEvent) {
-        final VirtualFilePointer filePointer = pEvent.getFilePointer();
-        final PomNode node = findPomNode(filePointer);
-        if (node != null) {
-            final int index = projectsNode.getIndex(node);
+    public void pomPluginGoalAdded(final PomPluginGoalEvent pEvent) {
+        final PluginGoal goal = pEvent.getAddedGoal();
+        final PluginGoalNode goalNode = new PluginGoalNode(goal);
+        final PomNode pomNode = findPomNode(pEvent.getPomUrl());
+        pomNode.insert(goalNode, pomNode.getChildCount());
 
-            node.removeFromParent();
-            projectsNode.insert(createPomNode(filePointer), index);
-
-            nodeStructureChanged(projectsNode);
-        }
+        final int[] childIndices = new int[]{pomNode.getIndex(goalNode)};
+        nodesWereInserted(pomNode, childIndices);
     }
 
-    public void pomJdkChanged(PomManagerEvent pEvent) {
+    public void pomPluginGoalRemoved(final PomPluginGoalEvent pEvent) {
+        final PluginGoal goal = pEvent.getRemovedGoal();
+        final PomNode pomNode = findPomNode(pEvent.getPomUrl());
+
+        //noinspection UNCHECKED_WARNING
+        final Enumeration<TreeNode> children = pomNode.children();
+        while (children.hasMoreElements()) {
+            final TreeNode node = children.nextElement();
+            if (node instanceof PluginGoalNode) {
+                final PluginGoalNode goalNode = (PluginGoalNode) node;
+                if (goalNode.getGoal().equals(goal)) {
+
+                    final int index = pomNode.getIndex(goalNode);
+                    final int[] childIndices = new int[]{index};
+                    final Object[] removedChildren = new Object[]{goalNode};
+
+                    goalNode.removeFromParent();
+                    nodesWereRemoved(pomNode, childIndices, removedChildren);
+                    return;
+                }
+            }
+        }
     }
 
     public void propertyChange(final PropertyChangeEvent pEvent) {
@@ -171,46 +195,34 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
     private void parseProjects() {
         projectsNode.removeAllChildren();
         final PomManager pomManager = PomManager.getInstance(project);
-        final VirtualFilePointer[] pointers = pomManager.getPomPointers();
+        final String[] urls = pomManager.getFileUrls();
 
         //
         //sort the projects by file name (url)
         //
-        Arrays.sort(pointers, new Comparator<VirtualFilePointer>() {
-            public int compare(final VirtualFilePointer o1, final VirtualFilePointer o2) {
-                return o1.getPresentableUrl().compareToIgnoreCase(o2.getPresentableUrl());
-            }
-        });
+        Arrays.sort(urls);
 
         //
         //create tree nodes
         //
-        for (VirtualFilePointer pointer : pointers) {
-            final PomNode pomNode = createPomNode(pointer);
+        for (String url : urls) {
+            final PomNode pomNode = createPomNode(url);
             projectsNode.insert(pomNode, projectsNode.getChildCount());
         }
     }
 
-    private PomNode createPomNode(final VirtualFilePointer pPointer) {
-        final PomManager pomMgr = PomManager.getInstance(project);
+    private PomNode createPomNode(final String pUrl) {
+        final PomPluginGoalsManager plgMgr = PomPluginGoalsManager.getInstance(project);
 
-        final PomNode pomNode = new PomNode(pPointer);
-        final GoalInfo[] goals = pomMgr.getGoals(pPointer.getUrl());
-
-        //
-        //sort goals
-        //
-        Arrays.sort(goals, new Comparator<GoalInfo>() {
-            public int compare(final GoalInfo o1, final GoalInfo o2) {
-                return o1.getName().compareTo(o2.getName());
-            }
-        });
+        final PomNode pomNode = new PomNode(pUrl);
+        final PluginGoal[] goals = plgMgr.getPluginGoals(pUrl);
+        Arrays.sort(goals, GOAL_COMPARATOR);
 
         //
         //create nodes
         //
-        for (GoalInfo goal : goals) {
-            final GoalNode goalNode = new GoalNode(goal);
+        for (PluginGoal goal : goals) {
+            final PluginGoalNode goalNode = new PluginGoalNode(goal);
             pomNode.insert(goalNode, pomNode.getChildCount());
         }
 
@@ -220,84 +232,68 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable, PomMan
     private void parsePlugins() {
         pluginsNode.removeAllChildren();
         final MavenPluginsManager pluginsMgr = MavenPluginsManager.getInstance(project);
-        final PluginInfo[] plugins = pluginsMgr.getPlugins();
+        final PluginGoalContainer[] plugins = pluginsMgr.getPlugins();
 
         //
         //sort the plugins by name
         //
-        Arrays.sort(plugins, new Comparator<PluginInfo>() {
-            public int compare(final PluginInfo o1, final PluginInfo o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        Arrays.sort(plugins, GOAL_CONTAINER_COMPARATOR);
 
         //
         //create tree nodes
         //
-        for (PluginInfo plugin : plugins) {
+        for (PluginGoalContainer plugin : plugins) {
             final PluginNode pluginNode = createPluginNode(plugin);
             pluginsNode.insert(pluginNode, pluginsNode.getChildCount());
         }
     }
 
-    private PluginNode createPluginNode(final PluginInfo plugin) {
+    private PluginNode createPluginNode(final PluginGoalContainer plugin) {
         final PluginNode pluginNode = new PluginNode(plugin);
-        final GoalInfo[] goals = plugin.getGoals();
+        final PluginGoal[] goals = plugin.getGoals();
 
         //
         //sort the plugins by name
         //
-        Arrays.sort(goals, new Comparator<GoalInfo>() {
-            public int compare(final GoalInfo o1, final GoalInfo o2) {
-                return o1.getName().compareToIgnoreCase(o2.getName());
-            }
-        });
+        Arrays.sort(goals, GOAL_COMPARATOR);
 
         //
         //create tree nodes
         //
-        for (GoalInfo goal : goals)
-            pluginNode.insert(new GoalNode(goal), pluginNode.getChildCount());
+        for (PluginGoal goal : goals) {
+            final PluginGoalNode node = new PluginGoalNode(goal);
+            pluginNode.insert(node, pluginNode.getChildCount());
+        }
 
         return pluginNode;
     }
 
-    private PomNode findPomNode(final VirtualFilePointer pPointer) {
+    private PomNode findPomNode(final String pUrl) {
         //noinspection UNCHECKED_WARNING
         final Enumeration<PomNode> children = projectsNode.children();
         while (children.hasMoreElements()) {
             final PomNode node = children.nextElement();
-            if (pPointer.equals(node.getUserObject()))
+            if (pUrl.equalsIgnoreCase(node.getUserObject()))
                 return node;
         }
 
         return null;
     }
 
-    public PomNode getPomNode(final TreeNode pNode) {
-        TreeNode parent = pNode;
-        while (parent != null && !(parent instanceof PomNode)) parent = parent.getParent();
-
-        return (PomNode) parent;
+    private void refresh(final boolean pNotifyListeners) {
+        refreshProjects(pNotifyListeners);
+        refreshPlugins(pNotifyListeners);
     }
 
-    public PluginNode getPluginNode(final GoalNode pNode) {
-        final GoalInfo goal = pNode.getUserObject();
-        final PluginInfo plugin = goal.getPlugin();
+    private void refreshProjects(final boolean pNotifyListeners) {
+        parseProjects();
+        if (pNotifyListeners)
+            nodeStructureChanged(projectsNode);
+    }
 
-        //noinspection UNCHECKED_WARNING
-        final Enumeration<TreeNode> pluginNodes = pluginsNode.children();
-
-        while (pluginNodes.hasMoreElements()) {
-            final TreeNode node = pluginNodes.nextElement();
-            if (!(node instanceof PluginNode))
-                continue;
-
-            final PluginNode pluginNode = (PluginNode) node;
-            final PluginInfo currentPlugin = pluginNode.getUserObject();
-            if (currentPlugin.getId().equals(plugin.getId()))
-                return pluginNode;
-        }
-        return null;
+    private void refreshPlugins(final boolean pNotifyListeners) {
+        parsePlugins();
+        if (pNotifyListeners)
+            nodeStructureChanged(pluginsNode);
     }
 }

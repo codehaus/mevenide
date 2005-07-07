@@ -1,7 +1,6 @@
 package org.mevenide.idea.project;
 
 import java.util.EventObject;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 
 /**
  * Called when a POM file is added, removed or changed in the {@link PomManager}.
@@ -12,18 +11,18 @@ public class PomManagerEvent extends EventObject {
     /**
      * A pointer to the POM file (might not be valid).
      */
-    private final VirtualFilePointer filePointer;
+    private final String url;
 
     /**
      * Creates an instance for the given POM manager and file.
      *
      * @param pSource the POM manager generating the event
-     * @param pFilePointer the POM file that has changed
+     * @param pUrl    the POM file that has changed
      */
     public PomManagerEvent(final PomManager pSource,
-                           final VirtualFilePointer pFilePointer) {
+                           final String pUrl) {
         super(pSource);
-        filePointer = pFilePointer;
+        url = pUrl;
     }
 
     /**
@@ -37,12 +36,12 @@ public class PomManagerEvent extends EventObject {
     }
 
     /**
-     * Returns a pointer to the POM file that changed. Note that the pointer
-     * might not be valid (use {@link com.intellij.openapi.vfs.pointers.VirtualFilePointer#isValid()}).
+     * Returns a pointer to the POM file that changed. Note that the pointer might not be valid (use
+     * {@link com.intellij.openapi.vfs.pointers.VirtualFilePointer#isValid()}).
      *
      * @return pointer
      */
-    public VirtualFilePointer getFilePointer() {
-        return filePointer;
+    public String getUrl() {
+        return url;
     }
 }
