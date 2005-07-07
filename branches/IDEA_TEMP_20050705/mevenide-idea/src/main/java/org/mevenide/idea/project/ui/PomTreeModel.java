@@ -83,6 +83,14 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         refresh(false);
     }
 
+    public DefaultMutableTreeNode getPluginsNode() {
+        return pluginsNode;
+    }
+
+    public DefaultMutableTreeNode getProjectsNode() {
+        return projectsNode;
+    }
+
     public void dispose() {
         MavenManager.getInstance().removePropertyChangeListener("mavenHome", this);
         PomManager.getInstance(project).removePomManagerListener(this);
