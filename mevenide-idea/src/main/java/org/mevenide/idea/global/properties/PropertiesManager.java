@@ -1,4 +1,4 @@
-package org.mevenide.idea.global;
+package org.mevenide.idea.global.properties;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -15,6 +15,7 @@ import java.util.Properties;
 import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 
 /**

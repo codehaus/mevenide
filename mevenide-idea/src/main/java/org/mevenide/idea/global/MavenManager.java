@@ -157,6 +157,8 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      * <p>Invoking this method will cause a property-change event.</p>
      *
      * @param pMavenHome the new Maven home - may be <code>null</code>
+     *
+     * @todo check that this is a valid maven installation (check forehead, libs, etc)
      */
     public void setMavenHome(VirtualFile pMavenHome) throws IllegalMavenHomeException {
         if (pMavenHome == null)

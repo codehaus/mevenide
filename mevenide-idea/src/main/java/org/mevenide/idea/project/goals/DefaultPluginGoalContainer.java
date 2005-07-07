@@ -5,4 +5,8 @@ package org.mevenide.idea.project.goals;
  */
 public class DefaultPluginGoalContainer extends AbstractGoalContainer<PluginGoal>
         implements PluginGoalContainer {
+    @Override
+    public String toString() {
+        return "Plugin " + getId();
+    }
 }
