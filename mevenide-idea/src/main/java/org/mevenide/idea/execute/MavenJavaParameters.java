@@ -22,7 +22,7 @@ import com.intellij.execution.filters.RegexpFilter;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.vfs.VirtualFile;
 import java.io.File;
-import org.mevenide.idea.MavenHomeUndefinedException;
+import org.mevenide.idea.global.MavenHomeUndefinedException;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.util.FileUtils;

@@ -11,7 +11,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.mevenide.idea.MavenHomeUndefinedException;
+import org.mevenide.idea.global.MavenHomeUndefinedException;
 import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.project.jdk.PomJdkManager;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
