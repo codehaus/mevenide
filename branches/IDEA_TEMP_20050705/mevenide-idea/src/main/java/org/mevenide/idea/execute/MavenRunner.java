@@ -30,13 +30,13 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.idea.MavenHomeUndefinedException;
+import org.mevenide.idea.global.MavenHomeUndefinedException;
 import org.mevenide.idea.module.ModuleSettings;
 import org.mevenide.idea.util.ui.UIUtils;
 
 /**
- * Executes Maven processes. This is a non-instantiable class, used only as a services
- * provider for actions, tool windows, etc.
+ * Executes Maven processes. This is a non-instantiable class, used only as a services provider for
+ * actions, tool windows, etc.
  *
  * @author Arik
  */
@@ -55,11 +55,10 @@ public final class MavenRunner {
     /**
      * Executes a Maven process for the given module and goals.
      *
-     * <p>The reason you need to provide a module, is to locate the appropriate Maven POM
-     * and working directory.</p>
+     * <p>The reason you need to provide a module, is to locate the appropriate Maven POM and
+     * working directory.</p>
      *
-     * @param pModule  the module to execute the goals for - providing the working dir and
-     *                 POM.
+     * @param pModule  the module to execute the goals for - providing the working dir and POM.
      * @param pGoals   the goals to execute - these must be fully qualified goal names (no
      *                 '(default)' suffixes)
      * @param pContext the context with which to execute
@@ -78,7 +77,7 @@ public final class MavenRunner {
             //
             final VirtualFile moduleDir = pModule.getModuleFile().getParent();
             final ProjectJdk jdk = ModuleSettings.getInstance(pModule).getJdk();
-            if(jdk == null)
+            if (jdk == null)
                 throw CantRunException.noJdkForModule(pModule);
             MavenJavaParameters p = new MavenJavaParameters(moduleDir, jdk, pGoals);
 
@@ -86,8 +85,8 @@ public final class MavenRunner {
             //provide filters which allow linking compilation errors to source files
             //
             Filter[] filters = new Filter[]{
-                new ExceptionFilter(pModule.getProject()),
-                new RegexpFilter(pModule.getProject(), MavenJavaParameters.COMPILE_REGEXP)
+                    new ExceptionFilter(pModule.getProject()),
+                    new RegexpFilter(pModule.getProject(), MavenJavaParameters.COMPILE_REGEXP)
             };
 
             //

@@ -14,9 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.idea;
+package org.mevenide.idea.global;
 
-import org.mevenide.idea.global.IllegalMavenHomeException;
+import org.mevenide.idea.Res;
 
 /**
  * @author Arik
