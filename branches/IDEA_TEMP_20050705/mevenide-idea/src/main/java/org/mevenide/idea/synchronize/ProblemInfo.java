@@ -1,7 +1,6 @@
 package org.mevenide.idea.synchronize;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.module.Module;
 
 /**
  * @author Arik
@@ -13,14 +12,6 @@ public interface ProblemInfo {
      * @return string
      */
     String getDescription();
-
-    /**
-     * Returns the module this problem pertains to. Can return {@code null} if this
-     * problem relates to the entire project rather than a specific module.
-     *
-     * @return module, or {@code null} if in project level
-     */
-    Module getModule();
 
     /**
      * Returns the inspector that discovered this problem. This is used mainly for

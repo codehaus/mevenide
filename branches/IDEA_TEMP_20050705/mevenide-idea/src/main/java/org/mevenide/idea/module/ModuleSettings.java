@@ -50,10 +50,10 @@ public class ModuleSettings extends AbstractModuleComponent
     /**
      * The module's favorite goals.
      */
-    private Set<String> favoriteGoals = new HashSet<String/**
+    private Set<String> favoriteGoals = new HashSet<String>();
+    /**
      * This is a file system listener that synchronizes the module's query context if maven files
      * change in the module directory.
-     */ory.
      */
     private final FSListener fileSystemListener = new FSListener();
 
@@ -109,12 +109,14 @@ public class ModuleSettings extends AbstractModuleComponent
         if (pomFile == null)
             return null;
 
-        return VfsUtil.virtualToIoFile(pomFile);/**
+        return VfsUtil.virtualToIoFile(pomFile);
+    }
+
+    /**
      * Initializes the manager.
      *
      * <p>Registers a file system listener to be notified if maven files change in the module
      * directory.</p>
-     */</p>
      */
     public void moduleAdded() {
         module.getModuleFile().getFileSystem().addVirtualFileListener(fileSystemListener);
@@ -128,8 +130,7 @@ public class ModuleSettings extends AbstractModuleComponent
      */
     @Override
     public void disposeComponent() {
-        module.getModuleFile().getFileSystem().removeVirtualF
-                            fileSystemListener);
+        module.getModuleFile().getFileSystem().removeVirtualFileListener(fileSystemListener);
     }
 
     private VirtualFile getModuleDir() {
@@ -137,13 +138,15 @@ public class ModuleSettings extends AbstractModuleComponent
         if (moduleFile == null)
             return null;
 
-        return moduleFile.getParent();/**
+        return moduleFile.getParent();
+    }
+
+    /**
      * Refreshes the query context by recreating it.
      *
      * <p>This method is called both by the {@link #initComponent()} method and when a pom file
      * (e.g. a file named <i>project.xml</i>) is created, deleted, changed or moved in the module
      * directory.</p>
-     */</p>
      */
     protected void refreshQueryContext() {
         synchronized (LOCK) {
@@ -163,8 +166,9 @@ public class ModuleSettings extends AbstractModuleComponent
                 //
                 //create the query context using the module's directory
                 //
-                queryContext = new DefaultQ
-                                    VfsUtil.virtualToIoFile(moduleDir), queryErrorCallback);
+                queryContext = new DefaultQueryContext(
+                        VfsUtil.virtualToIoFile(moduleDir),
+                        queryErrorCallback);
 
                 //
                 //create the project-specific goals grabber
@@ -230,42 +234,45 @@ public class ModuleSettings extends AbstractModuleComponent
 
     private void createFavoriteGoalsGrabber() {
         synchronized (LOCK) {
-            favoriteGoalsGrabber = new FilteredG
+            favoriteGoalsGrabber = new FilteredGoalsGrabber(getFavoriteGoals());
+        }
+    }
 
-                                globalG
-                                getFavoriteGoals());
-        }/**
+    /**
      * Returns the module's Maven query context.
      *
      * <p>This method might return <code>null</code>, which means that the module is not associated
      * with a Maven context.</p>
      *
      * @return a query context, or <code>null</code>
-     */ode>
      */
     public IQueryContext getQueryContext() {
         synchronized (LOCK) {
             return queryContext;
-        }/**
+        }
+    }
+
+    /**
      * Returns the module's favorite goals.
      *
      * <p>If no favorite goals have been selected, this method will return an empty array, but never
      * <code>null</code>.</p>
      *
      * @return array of fully-qualified goal names.
-     */mes.
      */
     public String[] getFavoriteGoals() {
         synchronized (LOCK) {
             return favoriteGoals.toArray(new String[favoriteGoals.size()]);
-        }/**
+        }
+    }
+
+    /**
      * Sets the module's favorite goals.
      *
      * <p>This method will fire a property change event for "favoriteGoals" property.</p>
      *
      * @param pGoals the favorite goals - fully qualified goal names (may be <code>null</code> or an
      *               empty array)
-     */ray)
      */
     public void setFavoriteGoals(final String[] pGoals) {
         synchronized (LOCK) {
@@ -333,10 +340,12 @@ public class ModuleSettings extends AbstractModuleComponent
      * @return a ModuleSettings instance
      */
     private static ModuleSettings getInstance(final Module pModule) {
-        return pModule.getComponent(ModuleSettings.class);/**
+        return pModule.getComponent(ModuleSettings.class);
+    }
+
+    /**
      * A {@link IQueryErrorCallback} implementation which displays the error to the user in a
      * message box.
-     */box.
      */
     private class UIQueryErrorCallback implements IQueryErrorCallback {
         public void handleError(int errorNumber, Exception exception) {
@@ -345,17 +354,19 @@ public class ModuleSettings extends AbstractModuleComponent
         }
 
         public void discardError(int errorNumber) {
-        }/**
+        }
+    }
+
+    /**
      * A virtual file system listener that refreshes the module's query context if a Maven file
      * (e.g. <i>project.xml</i>, <i>maven.xml</i>, <i>project.properties</i> or
      * <i>build.properties</i> change in the module's directory.
-     */ory.
      */
     private class FSListener extends VirtualFileAdapter {
         protected boolean shouldRefresh(final String pFileName) {
-            return pFileName.equalsIgnoreCase("proj
-                                pFileName.equalsIgnoreCase("ma
-                                pFileName.equalsIgnoreCase("project.pro
+            return pFileName.equalsIgnoreCase("project.xml") ||
+                                pFileName.equalsIgnoreCase("maven.xml") ||
+                                pFileName.equalsIgnoreCase("project.properties") ||
                                 pFileName.equalsIgnoreCase("build.properties");
         }
 
