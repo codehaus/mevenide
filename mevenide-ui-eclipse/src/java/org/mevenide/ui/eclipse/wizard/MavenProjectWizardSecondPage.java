@@ -18,7 +18,6 @@
 package org.mevenide.ui.eclipse.wizard;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -46,13 +45,9 @@ import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.wizards.JavaCapabilityConfigurationPage;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.ui.actions.WorkspaceModifyDelegatingOperation;
-import org.mevenide.context.DefaultQueryContext;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.nature.MevenideNature;
-import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 
 /**
  * @author	<a href="mailto:jens@iostream.net">Jens Andersen</a>, Last updated by $Author$
@@ -255,16 +250,8 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
                 //set maven repo if not set 
                 IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO"); //$NON-NLS-1$
                 if (mavenRepoVar == null) {
-                    //lookup maven repo in all available locations
-                    IPath mavenRepo = new Path(Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
-                    if (mavenRepo == null) {
-                        //TODO - the context shall be somehow shared and not created here..
-                        IQueryContext context = new DefaultQueryContext(new File(fCurrProjectLocation.toOSString()));
-                        LocationFinderAggregator locationFinder = new LocationFinderAggregator(context);
-                        System.err.println(fCurrProjectLocation.toOSString());
-                        mavenRepo = new Path(locationFinder.getMavenLocalRepository());
-                    }
-                    JavaCore.setClasspathVariable("MAVEN_REPO", mavenRepo, null); //$NON-NLS-1$
+                    final String mavenRepo = Mevenide.getInstance().getDefaultLocationFinder().getMavenLocalRepository();
+                    JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null); //$NON-NLS-1$
                 }
 
             }
