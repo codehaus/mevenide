@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,15 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.goals.model;
 
-import java.io.File;
+package org.mevenide.ui.eclipse.goals.model;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
@@ -33,80 +34,65 @@ import org.mevenide.goals.manager.GoalsGrabbersManager;
  * 
  */
 public class GoalsProvider implements ITreeContentProvider {
-	
     private static final Log log = LogFactory.getLog(GoalsProvider.class);
 
-    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
-	
-	private String basedir;
-	
-	private IGoalsGrabber goalsGrabber;
-	private IGoalsGrabber defaultGrabber;
-	
-	public GoalsProvider() {
-		try {
-			goalsGrabber = new DefaultGoalsGrabber();
-			defaultGrabber = new DefaultGoalsGrabber();
-		} 
-		catch (Exception e) {
-			log.debug(e);
-		}
-	}
-	
-    public String getBasedir() {
-        return basedir;
+    private IGoalsGrabber goalsGrabber;
+
+    public GoalsProvider() {
+        this(null);
     }
 
-    public void setBasedir(String basedir) throws Exception {
-        this.basedir = basedir;
-		try {
-            goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(new File(basedir, POM_NAME).getAbsolutePath());
-        }
-        catch (Exception e) {
-            goalsGrabber = defaultGrabber;
-            log.error("Unable to set basedir. It is highly probable that maven.xml is badly formed."); //$NON-NLS-1$
+    public GoalsProvider(IQueryContext context) {
+        try {
+            if (context != null) {
+                goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(context, new LocationFinderAggregator(context));
+            } else {
+                goalsGrabber = new DefaultGoalsGrabber();
+            }
+        } catch (Exception e) {
+            log.debug(e);
         }
     }
 
     public Object[] getChildren(Object parent) {
-    	if ( parent == Element.NULL_ROOT ) {
-    		Plugin[] plugins = new Plugin[goalsGrabber.getPlugins().length];
-    		
-    		for (int i = 0; i < plugins.length; i++) {
-    			Plugin plugin = new Plugin();
-    			plugin.setName(goalsGrabber.getPlugins()[i]);
+        if (parent == Element.NULL_ROOT) {
+            Plugin[] plugins = new Plugin[goalsGrabber.getPlugins().length];
+
+            for (int i = 0; i < plugins.length; i++) {
+                Plugin plugin = new Plugin();
+                plugin.setName(goalsGrabber.getPlugins()[i]);
                 plugins[i] = plugin;
-            } 
-      	    return plugins;
-    	}
-    	if ( parent instanceof Plugin ) {
-			String pluginName = ((Plugin) parent).getName();
-			Goal[] goals = new Goal[goalsGrabber.getGoals(pluginName).length];
-			for (int i = 0; i < goals.length; i++) {
-				Goal goal = new Goal();
-				goal.setName(goalsGrabber.getGoals(pluginName)[i]);
-				goal.setPlugin((Plugin) parent);
-				goals[i] = goal;
-			} 
-			return goals;
-    	}
-      	return null;
+            }
+            return plugins;
+        }
+        if (parent instanceof Plugin) {
+            String pluginName = ((Plugin) parent).getName();
+            Goal[] goals = new Goal[goalsGrabber.getGoals(pluginName).length];
+            for (int i = 0; i < goals.length; i++) {
+                Goal goal = new Goal();
+                goal.setName(goalsGrabber.getGoals(pluginName)[i]);
+                goal.setPlugin((Plugin) parent);
+                goals[i] = goal;
+            }
+            return goals;
+        }
+        return null;
     }
 
     public Object getParent(Object element) {
-    	if ( element instanceof Plugin ) {
-    		return Element.NULL_ROOT;
-    	}
-    	if ( element instanceof Goal ) {
-    		return ((Goal) element).getPlugin();
-    	}
+        if (element instanceof Plugin) {
+            return Element.NULL_ROOT;
+        }
+        if (element instanceof Goal) {
+            return ((Goal) element).getPlugin();
+        }
         return null;
     }
 
     public boolean hasChildren(Object arg0) {
-        return 
-        	( arg0  == Element.NULL_ROOT && goalsGrabber.getPlugins().length > 0 )
-        	|| ( arg0 instanceof Plugin && goalsGrabber.getGoals(((Plugin) arg0).getName()).length > 0);
+        return (arg0 == Element.NULL_ROOT && goalsGrabber.getPlugins().length > 0)
+                || (arg0 instanceof Plugin && goalsGrabber
+                        .getGoals(((Plugin) arg0).getName()).length > 0);
     }
 
     public Object[] getElements(Object arg0) {
@@ -114,13 +100,12 @@ public class GoalsProvider implements ITreeContentProvider {
     }
 
     public void dispose() {
-        
+
     }
 
     public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-        
+
     }
-    
 
     public IGoalsGrabber getGoalsGrabber() {
         return goalsGrabber;

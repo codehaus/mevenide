@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.dynamic;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
+
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
@@ -40,14 +42,14 @@ public class DynamicPreferencesManager extends PreferencesManager {
     }
     
     protected String getPreferenceStoreFilename() {
-	    return Mevenide.getInstance().getDynamicPreferencesFilename();
+        return Mevenide.getInstance().getStateLocation().append("dyn_prefs.ini").toOSString();
 	}
     
 	public static DynamicPreferencesManager getDynamicManager()  {
 		return manager;
 	}
 	
-	public Map getPreferences() {
+    public Map getPreferences() {
 	    Map preferences = super.getPreferences();
 	    Map dynamicPreferences = new HashMap();
 	    for (Iterator it = preferences.keySet().iterator(); it.hasNext();) {

@@ -1,23 +1,24 @@
-/*
- * ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+/* ==========================================================================
+ * Copyright 2003-2005 MevenIDE Project
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import java.io.File;
+
 import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -40,7 +41,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
 import org.mevenide.ui.eclipse.template.model.Templates;
@@ -59,15 +59,21 @@ import org.mevenide.util.StringUtils;
  * @version $Id$
  */
 public class TemplatePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+    private static final String PAGE_NAME = Mevenide.getResourceString("TemplatePreferencePage.label"); //$NON-NLS-1$
+//    private static final String PAGE_DESC = Mevenide.getResourceString("TemplatePreferencePage.description"); //$NON-NLS-1$
 
     private Templates fTemplates;
     private TreeViewer templateViewer;
     private Template fCurrentSelection;
     private ISelectionChangedListener fSelectionProvider;
 
+    /**
+     * Initializes a new instance of TemplatePreferencePage.
+     */
     public TemplatePreferencePage() {
-        super(Mevenide.getResourceString("TemplatePreferencePage.label"));//$NON-NLS-1$
-        setPreferenceStore(PreferencesManager.getManager().getPreferenceStore());
+        super(PAGE_NAME);
+//        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
     }
 
     public void init(IWorkbench arg0) {

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.repository.http;
 
 import java.io.File;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,8 +31,8 @@ import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authorization.AuthorizationException;
 import org.apache.maven.wagon.providers.http.LightweightHttpWagon;
 import org.apache.maven.wagon.repository.Repository;
-import org.mevenide.environment.ConfigUtils;
 import org.mevenide.repository.RepoPathElement;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
 
@@ -54,7 +56,7 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
     
     public HttpRepositoryObjectDownloader(String localRepositoryPath) {
         this.localRepositoryPath = org.mevenide.util.StringUtils.isNull(localRepositoryPath) ?
-            ConfigUtils.getDefaultLocationFinder().getMavenLocalRepository() :
+                Mevenide.getInstance().getDefaultLocationFinder().getMavenLocalRepository() :
             localRepositoryPath;
         this.localRepositoryPath = StringUtils.stripEnd(this.localRepositoryPath, "/");
         wagon = new LightweightHttpWagon();

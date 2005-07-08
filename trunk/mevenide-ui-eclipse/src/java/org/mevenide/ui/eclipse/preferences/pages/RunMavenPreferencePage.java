@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -23,8 +24,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -33,14 +32,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
-import org.mevenide.util.StringUtils;
 
 
 /**  
@@ -50,7 +46,9 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class RunMavenPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    
+    private static final String PAGE_NAME = Mevenide.getResourceString("RunMavenPreferencePage.title"); //$NON-NLS-1$
+//    private static final String PAGE_DESC = Mevenide.getResourceString("RunMavenPreferencePage.description"); //$NON-NLS-1$
+
 	private final class DefaultGoalsEditor extends StringButtonFieldEditor {
 
         private Button changeButton;
@@ -111,17 +109,13 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
     private IntegerFieldEditor heapSizeEditor;
 	private StringButtonFieldEditor defaultGoalsEditor;
 	
-	private int heapSize;
-	private String defaultGoals;
-	
-	private PreferencesManager preferencesManager;
 	private Composite topLevelContainer;
 	
 	public RunMavenPreferencePage() {
-        super(Mevenide.getResourceString("RunMavenPreferencePage.title")); //$NON-NLS-1$
-        //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-        preferencesManager = PreferencesManager.getManager();
-        preferencesManager.loadPreferences();
+        super(PAGE_NAME);
+//        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
+//        super.setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
     }
 	
     protected Control createContents(Composite parent) {
@@ -144,7 +138,7 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 			topLevelContainer
 		);
 		heapSizeEditor.fillIntoGrid(topLevelContainer, 2);
-		heapSizeEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		heapSizeEditor.setPreferenceStore(getPreferenceStore());
 		heapSizeEditor.load();
 		if ( heapSizeEditor.getIntValue() <= 0 ) {
 			heapSizeEditor.setStringValue(DEFAULT_HEAP_SIZE);
@@ -156,36 +150,14 @@ public class RunMavenPreferencePage extends PreferencePage implements IWorkbench
 		defaultGoalsEditor = new DefaultGoalsEditor(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, Mevenide.getResourceString("RunMavenPreferencePage.default.goals.label"), topLevelContainer); //$NON-NLS-1$
 		
 		defaultGoalsEditor.fillIntoGrid(topLevelContainer, 3);
-		defaultGoalsEditor.setPreferenceStore(preferencesManager.getPreferenceStore());
+		defaultGoalsEditor.setPreferenceStore(getPreferenceStore());
 		defaultGoalsEditor.load();
 		if ( defaultGoalsEditor.getStringValue() == null ) {
 			defaultGoalsEditor.setStringValue(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.null")); //$NON-NLS-1$
 		} 
 		defaultGoalsEditor.setChangeButtonText(Mevenide.getResourceString("RunMavenPreferencePage.default.goals.choose")); //$NON-NLS-1$
-		
-		defaultGoalsEditor.getTextControl(topLevelContainer).addModifyListener(
-			new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
-					defaultGoals = ((Text)e.getSource()).getText();
-				}
-			}
-		);
-		if ( StringUtils.isNull(defaultGoalsEditor.getStringValue()) ) {
-		    defaultGoalsEditor.getTextControl(topLevelContainer).setText(Mevenide.getInstance().getDefaultGoals());
-		}
-    
-	}
-	
-	public void update() {
-		defaultGoals = defaultGoalsEditor.getTextControl(topLevelContainer).getText();
-		Mevenide.getInstance().setDefaultGoals(defaultGoals);
-
-		heapSize = heapSizeEditor.getIntValue();
-		if ( heapSize != 0 ) {
-			Mevenide.getInstance().setHeapSize(heapSize);
-		}
 	}
 	
 	public void init(IWorkbench workbench) { }
-    
+
 }

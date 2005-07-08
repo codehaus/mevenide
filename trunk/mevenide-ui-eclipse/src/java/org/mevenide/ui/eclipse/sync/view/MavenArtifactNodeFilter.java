@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.view;
 
 import org.apache.maven.repository.Artifact;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.util.StringUtils;
 
@@ -39,11 +41,8 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 	private String groupIdFilter;
 	
 	MavenArtifactNodeFilter() {
-		PreferencesManager preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
-		
-		filterMavenArtifacts = preferencesManager.getBooleanValue(APPLY_FILTERS_KEY);
-		groupIdFilter = preferencesManager.getValue(GROUP_ID_FILTER);
+		filterMavenArtifacts = getPreferenceStore().getBoolean(APPLY_FILTERS_KEY);
+		groupIdFilter = getPreferenceStore().getString(GROUP_ID_FILTER);
 	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -70,4 +69,12 @@ public class MavenArtifactNodeFilter extends ViewerFilter {
 	public void setGroupIdFilter(String groupIdFilter) {
 		this.groupIdFilter = groupIdFilter;
 	}
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.filter;
 
 import java.util.ArrayList;
@@ -22,10 +23,11 @@ import java.util.StringTokenizer;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.model.Element;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /** 
  * 
@@ -43,10 +45,7 @@ public class GlobalGoalFilter extends ViewerFilter {
 	public GlobalGoalFilter() {
 		try {
 		
-			PreferencesManager preferencesManager = PreferencesManager.getManager();
-			preferencesManager.loadPreferences();
-			
-			setFilteredGoals(preferencesManager.getValue(ORIGIN_FILTER_GOALS));
+			setFilteredGoals(getPreferenceStore().getString(ORIGIN_FILTER_GOALS));
 		} 
 		catch (Exception e) {
 			log.error("Unable to create DefaultGoalsGrabber : ", e); //$NON-NLS-1$
@@ -70,7 +69,13 @@ public class GlobalGoalFilter extends ViewerFilter {
 			filteredGoals.add(token);
 		}
 	}
-	
-	
-	
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
+
 }

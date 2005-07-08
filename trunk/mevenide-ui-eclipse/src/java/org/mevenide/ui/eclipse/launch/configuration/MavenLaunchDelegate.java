@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.launch.configuration;
 
 import java.io.File;
@@ -48,14 +49,11 @@ import org.eclipse.jdt.launching.VMRunnerConfiguration;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ConfigUtils;
-import org.mevenide.environment.ILocationFinder;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 import org.mevenide.ui.eclipse.util.FileUtils;
 
@@ -147,13 +145,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	
 	private void assertRequiredLocationsConfigured() throws CoreException {
 				
-        ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
-
         String javaHome = getJavaHome();
-        
-        String mavenHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
-        mavenHome = org.mevenide.util.StringUtils.isNull(mavenHome) ? finder.getMavenHome() : mavenHome;
-        
+        String mavenHome = Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
         String toolsJarArg = getToolsJar();
         
         boolean mavenHomeDefined = !org.mevenide.util.StringUtils.isNull(mavenHome); 
@@ -188,10 +181,8 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
             }
         }
         
-        //dynamic preferences -- should they instead be merged with customVmArgs ? 
-        DynamicPreferencesManager preferencesManager = DynamicPreferencesManager.getDynamicManager();
-        preferencesManager.loadPreferences();
-        Map dynamicPreferencesMap = preferencesManager.getPreferences();
+        //dynamic preferences -- should they instead be merged with customVmArgs ?
+        Map dynamicPreferencesMap = DynamicPreferencesManager.getDynamicManager().getPreferences();
         List dynamicPreferencesList = new ArrayList();
         for (Iterator it = dynamicPreferencesMap.keySet().iterator(); it.hasNext(); ) {
             String key = (String) it.next();
@@ -298,9 +289,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 
 	protected void initEnvironment() throws Exception  {
-		if ( !org.mevenide.util.StringUtils.isNull(Mevenide.getInstance().getMavenHome()) ) { 
-			Mevenide.getInstance().initEnvironment();
-	    }
+		Mevenide.getInstance().initEnvironment();
 	}
 
 	protected void launchVM(String[] options, String[] goals) throws Exception {
@@ -308,12 +297,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 	}
 
 	public String getJavaHome() {
-		ILocationFinder finder = ConfigUtils.getDefaultLocationFinder();
-		
-		String javaHome = PreferencesManager.getManager().getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
-        javaHome = org.mevenide.util.StringUtils.isNull(javaHome) ? finder.getJavaHome() : javaHome;
-        
-        return javaHome;
+		return Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
 	}
 
 	public String getMavenHome() {
@@ -333,7 +317,7 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
                 res = properties.getProperty(key);
             }
             if ( StringUtils.isEmpty(res) ) {
-                res = PreferencesManager.getManager().getValue(key); 
+                res = Mevenide.getInstance().getCustomPreferenceStore().getString(key); 
             }
         } 
         catch (Exception e) {

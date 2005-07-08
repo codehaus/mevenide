@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,18 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.repository.view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
 /**  
@@ -80,8 +84,7 @@ public class RepositoryList {
     }
     
     private static List getRepositoryList(String preferenceKey, List defaultList) {
-        PreferencesManager preferenceManager = PreferencesManager.getManager();
-        String repos = preferenceManager.getValue(preferenceKey);
+        String repos = getPreferenceStore().getString(preferenceKey);
         
         List repositories = new ArrayList();
         
@@ -99,19 +102,38 @@ public class RepositoryList {
     }
     
     public static void saveUserDefinedRepositories(List repositories) {
-        PreferencesManager preferenceManager = PreferencesManager.getManager();
         String serializedRepos = "";
         for (Iterator it = repositories.iterator(); it.hasNext();) {
             serializedRepos += it.next() + ",";
         }
-        preferenceManager.setValue(MAVEN_REPOSITORIES, serializedRepos);
-        preferenceManager.store();
+        getPreferenceStore().setValue(MAVEN_REPOSITORIES, serializedRepos);
+        commitChanges();
     }
     
     public static void resetToDefaultRepositories() {
-        PreferencesManager preferenceManager = PreferencesManager.getManager();
-        preferenceManager.remove(MAVEN_REPOSITORIES);
-        preferenceManager.store();
+        getPreferenceStore().setToDefault(MAVEN_REPOSITORIES);
+        commitChanges();
+    }
+
+    /**
+     * TODO: Describe what commitChanges does.
+     */
+    private static boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private static IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
     }
     
 }

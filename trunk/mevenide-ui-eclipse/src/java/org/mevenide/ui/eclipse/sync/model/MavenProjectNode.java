@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.ui.eclipse.sync.model;
 
+package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -36,6 +36,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.MevenideRuntimeException;
 import org.mevenide.context.DefaultQueryContext;
@@ -45,6 +46,7 @@ import org.mevenide.project.ProjectConstants;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.sync.model.properties.MavenProjectPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
 import org.mevenide.ui.eclipse.util.JavaProjectUtils;
@@ -164,7 +166,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 			}
 			if ( !foundJunit ) {
 				try {
-					File cacheDir = new File(Mevenide.getInstance().getMavenLocalHome(), "cache");
+					File cacheDir = new File(getPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY), "cache");
 					if ( cacheDir.exists() ) {
 						File[] list = cacheDir.listFiles(new FileFilter() {
 							public boolean accept(File pathname) { 
@@ -224,7 +226,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	    String backupUserDir = System.getProperty("user.dir"); //$NON-NLS-1$
 		System.setProperty("user.dir", project.getFile().getParentFile().getAbsolutePath()); //$NON-NLS-1$
 		//needed for rc3 to correctly setRelativePaths
-	    System.setProperty("maven.home", Mevenide.getInstance().getMavenHome()); //$NON-NLS-1$
+	    System.setProperty("maven.home", getPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY)); //$NON-NLS-1$
 		project.setContext(MavenUtils.createContext(project.getFile().getParentFile()));
 		if ( project.getDependencies() == null ) {
 	        project.setDependencies(new ArrayList());
@@ -453,6 +455,14 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
             return new MavenProjectPropertySource(this.mavenProject);
         }
         return null;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
     }
 }
 

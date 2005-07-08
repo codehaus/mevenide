@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.view;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,6 +43,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -66,7 +69,6 @@ import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.sync.action.ToggleViewAction;
 import org.mevenide.ui.eclipse.sync.action.ToggleWritePropertiesAction;
 import org.mevenide.ui.eclipse.sync.event.IActionListener;
@@ -83,8 +85,6 @@ import org.mevenide.ui.eclipse.sync.model.ISynchronizationNode;
 import org.mevenide.ui.eclipse.sync.model.MavenArtifactNode;
 import org.mevenide.ui.eclipse.sync.model.PropertyNode;
 import org.mevenide.util.MevenideUtils;
-
-
 
 /**
  * 
@@ -142,17 +142,13 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     
 	private boolean isDisposed;
 	
-	private PreferencesManager preferencesManager ;
-
     private boolean initialShouldWriteProperties;
 	
 	public SynchronizationView() {
 		super();
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		workspace.addResourceChangeListener(this, IResourceChangeEvent.POST_CHANGE);
-		preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
-		direction = preferencesManager.getIntValue(SYNC_DIRECTION_VIEW);
+		direction = getPreferenceStore().getInt(SYNC_DIRECTION_VIEW);
 		initializeDirection();
 	}
 	
@@ -261,8 +257,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	        artifactMappingNodeViewer.refresh();
 	        activateWritePropertiesAction(direction);
 			fireDirectionChanged();
-			preferencesManager.setIntValue(SYNC_DIRECTION_VIEW, direction);
-			preferencesManager.store();
+            getPreferenceStore().setValue(SYNC_DIRECTION_VIEW, direction);
+            commitChanges();
 		}
     }
 
@@ -359,7 +355,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		
 		Action writePropertiesAction = actionFactory.getAction(SynchronizeActionFactory.WRITE_PROPERTIES); 
 		writeProperties = new ActionContributionItem(writePropertiesAction);
-		initialShouldWriteProperties = preferencesManager.getBooleanValue(SYNC_SHOULD_WRITE_PROPERTIES);
+		initialShouldWriteProperties = getPreferenceStore().getBoolean(SYNC_SHOULD_WRITE_PROPERTIES);
         writePropertiesAction.setChecked(initialShouldWriteProperties);
 		
 		pushToPom = actionFactory.getAction(SynchronizeActionFactory.ADD_TO_POM);
@@ -514,8 +510,8 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		if ( event.getSource() instanceof ToggleWritePropertiesAction && Action.CHECKED.equals(event.getProperty())) {
 			boolean shouldWriteProperties = ((Boolean) event.getNewValue()).booleanValue();
             fireSynchronizationConstraintEvent(new SynchronizationConstraintEvent(SynchronizationConstraintEvent.WRITE_PROPERTIES, shouldWriteProperties));
-		    preferencesManager.setBooleanValue(SYNC_SHOULD_WRITE_PROPERTIES, shouldWriteProperties);
-		    preferencesManager.store();
+            getPreferenceStore().setValue(SYNC_SHOULD_WRITE_PROPERTIES, shouldWriteProperties);
+            commitChanges();
 		}
 		if ( toolBarManager != null ) {
 			log.debug("property changed. updating"); //$NON-NLS-1$
@@ -704,6 +700,29 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 	
     public boolean getInitialShouldWriteProperties() {
         return initialShouldWriteProperties;
+    }
+
+    /**
+     * TODO: Describe what commitChanges does.
+     * @return
+     */
+    private boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
     }
 }
 

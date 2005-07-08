@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.view;
 
+import java.io.IOException;
+
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -30,7 +34,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**  
  * 
@@ -39,8 +42,6 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
  * 
  */
 public class NodeFilterDialog extends Dialog {
-	
-	private PreferencesManager preferencesManager;
 	
 	private Text groupIdText;
 	
@@ -68,8 +69,6 @@ public class NodeFilterDialog extends Dialog {
 	NodeFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 		super.setBlockOnOpen(true);
-		preferencesManager = PreferencesManager.getManager(); 
-		preferencesManager.loadPreferences();
 	}
 	
 	protected Control createDialogArea(Composite parent) {
@@ -98,14 +97,14 @@ public class NodeFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		enableArtifactFilteringButton = new Button(composite, SWT.CHECK);
-		enableArtifactFilteringButton.setSelection(preferencesManager.getBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY));
+		enableArtifactFilteringButton.setSelection(getPreferenceStore().getBoolean(MavenArtifactNodeFilter.APPLY_FILTERS_KEY));
 		enableArtifactFilteringButton.setText(Mevenide.getResourceString("NodeFilterDialog.Enable.Filtering.Text")); //$NON-NLS-1$
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		enableArtifactFilteringButton.setLayoutData(checkboxData);
 		
 		groupIdText = new Text(composite, SWT.BORDER );
-		groupIdText.setText(preferencesManager.getValue(MavenArtifactNodeFilter.GROUP_ID_FILTER));
+		groupIdText.setText(getPreferenceStore().getString(MavenArtifactNodeFilter.GROUP_ID_FILTER));
 		groupIdText.setEnabled(enableArtifactFilteringButton.getSelection());
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
@@ -134,7 +133,7 @@ public class NodeFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		enableDirectoryFilteringButton = new Button(composite, SWT.CHECK);
-		enableDirectoryFilteringButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_FILTERS_KEY));
+		enableDirectoryFilteringButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_FILTERS_KEY));
 		enableDirectoryFilteringButton.setText(Mevenide.getResourceString("NodeFilterDialog.Directory.Filtering.Text")); //$NON-NLS-1$
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
@@ -150,23 +149,23 @@ public class NodeFilterDialog extends Dialog {
 		
 		String buttonText = Mevenide.getResourceString("NodeFilterDialog.Source.Filtering.Text"); //$NON-NLS-1$
 		sourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
-		sourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY));
+		sourceButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY));
 		
 		buttonText = Mevenide.getResourceString("NodeFilterDialog.Test.Filtering.Text"); //$NON-NLS-1$
 		testButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
-		testButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY));
+		testButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY));
 		
 		buttonText = Mevenide.getResourceString("NodeFilterDialog.Aspects.Filtering.Text"); //$NON-NLS-1$
 		aspectButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
-		aspectButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY));
+		aspectButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY));
 		
 		buttonText = Mevenide.getResourceString("NodeFilterDialog.Resources.Filtering.Text"); //$NON-NLS-1$
 		resourceButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
-		resourceButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY));
+		resourceButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY));
 		
 		buttonText = Mevenide.getResourceString("NodeFilterDialog.Output.Filtering.Text"); //$NON-NLS-1$
 		outputButton = createDirectoryTypeButton(directoryTypeChoiceGroup, buttonText);
-		outputButton.setSelection(preferencesManager.getBooleanValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY));
+		outputButton.setSelection(getPreferenceStore().getBoolean(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY));
 		
 		enableDirectoryFilteringButton.addSelectionListener(
 			new SelectionAdapter() {
@@ -207,18 +206,17 @@ public class NodeFilterDialog extends Dialog {
 		filterAspect = this.aspectButton.getSelection();
 		filterResource = this.resourceButton.getSelection();
 		
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_FILTERS_KEY, enableDirectoryFiltering);
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY, filterSource);
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY, filterTest);
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY, filterAspect);
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY, filterResource);
-		preferencesManager.setBooleanValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY, filterOutput);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_FILTERS_KEY, enableDirectoryFiltering);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_SOURCE_FILTERS_KEY, filterSource);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_TEST_FILTERS_KEY, filterTest);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_ASPECT_FILTERS_KEY, filterAspect);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_RESOURCE_FILTERS_KEY, filterResource);
+        getPreferenceStore().setValue(DirectoryNodeFilter.APPLY_OUTPUT_FILTERS_KEY, filterOutput);
 		
-		preferencesManager.setBooleanValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY, enableArtifactFiltering);
-		preferencesManager.setValue(MavenArtifactNodeFilter.GROUP_ID_FILTER, groupIdFilter);
-		
-		preferencesManager.store();
-		
+        getPreferenceStore().setValue(MavenArtifactNodeFilter.APPLY_FILTERS_KEY, enableArtifactFiltering);
+        getPreferenceStore().setValue(MavenArtifactNodeFilter.GROUP_ID_FILTER, groupIdFilter);
+
+        commitChanges();
 		super.okPressed();
 	}
 	
@@ -246,5 +244,27 @@ public class NodeFilterDialog extends Dialog {
 	public String getGroupIdFilter() {
 		return groupIdFilter;
 	}
-	
+
+    /**
+     * TODO: Describe what commitChanges does.
+     * @return
+     */
+    private boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }

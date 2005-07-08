@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.launch.configuration;
 
 import java.util.HashMap;
@@ -53,6 +54,7 @@ import org.mevenide.runner.OptionsRegistry;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.view.GoalsPickerDialog;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 
 /**
  * 
@@ -92,7 +94,7 @@ public class MavenArgumentsTab extends AbstractLaunchConfigurationTab  {
 	}
 	
 	public void setDefaults(ILaunchConfigurationWorkingCopy configuration) {
-		configuration.setAttribute(GOALS_TO_RUN, Mevenide.getInstance().getDefaultGoals());
+		configuration.setAttribute(GOALS_TO_RUN, Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY));
 	}
 
 	

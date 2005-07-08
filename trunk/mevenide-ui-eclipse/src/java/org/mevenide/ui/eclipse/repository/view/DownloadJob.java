@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.repository.view;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.repository.DownloadException;
 import org.mevenide.ui.eclipse.repository.RepositoryObjectDownloader;
 import org.mevenide.ui.eclipse.repository.factory.RepositoryObjectDownloaderFactory;
@@ -50,7 +52,7 @@ public class DownloadJob extends Job {
         super("Downloading artifact");
         this.downloadList = downloadList;
         this.downloader = RepositoryObjectDownloaderFactory.getDownloader(RepositoryObjectDownloader.HTTP, 
-                                                                          Mevenide.getInstance().getMavenRepository());
+                Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
     }
     
     protected IStatus run(IProgressMonitor monitor) {

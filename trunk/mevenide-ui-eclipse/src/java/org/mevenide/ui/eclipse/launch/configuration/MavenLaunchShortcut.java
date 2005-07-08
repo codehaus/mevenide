@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.launch.configuration;
 
 
@@ -47,6 +48,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.model.IExternalToolConstants;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.model.Goal;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 
 /**
  * 
@@ -153,7 +155,7 @@ public class MavenLaunchShortcut implements ILaunchShortcut {
 		ILaunchConfigurationType type = manager.getLaunchConfigurationType(MAVEN_LAUNCH_CONFIG_TYPE);
 		
 		String name = "[" + basedir.lastSegment() + "] "; //$NON-NLS-1$ //$NON-NLS-2$
-		String goals = goalsToRun == null ? Mevenide.getInstance().getDefaultGoals() : goalsToRun;
+		String goals = goalsToRun == null ? Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY) : goalsToRun;
 		name += StringUtils.replace(goals, Goal.SEPARATOR, "_"); //$NON-NLS-1$
 		
 		ILaunch[] launches = manager.getLaunches();

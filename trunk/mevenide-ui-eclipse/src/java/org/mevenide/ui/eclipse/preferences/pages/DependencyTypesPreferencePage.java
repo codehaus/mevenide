@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,11 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -44,7 +46,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 
@@ -55,26 +56,22 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class DependencyTypesPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    
-	
+    private static final String PAGE_NAME = Mevenide.getResourceString("DependencyTypesPreferencePage.title"); //$NON-NLS-1$
+//    private static final String PAGE_DESC = Mevenide.getResourceString("DependencyTypesPreferencePage.description"); //$NON-NLS-1$
+
     private static final String ROOT = "ROOT"; //$NON-NLS-1$
     private List types = new ArrayList();   
     
-	private static PreferencesManager preferencesManager;
-	
 	private Composite topLevelContainer;
     private TableViewer typesViewer;
     private Button addTypeButton;
     private Button removeTypeButton;
-	
-    static {
-        preferencesManager = PreferencesManager.getManager();
-        preferencesManager.loadPreferences();        
-    }
     
 	public DependencyTypesPreferencePage() {
-        super(Mevenide.getResourceString("DependencyTypesPreferencePage.title")); //$NON-NLS-1$
-        //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
+        super(PAGE_NAME);
+//        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
+//        super.setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
     }
 	
     protected Control createContents(Composite parent) {
@@ -223,6 +220,4 @@ public class DependencyTypesPreferencePage extends PreferencePage implements IWo
         types.add(newType);
         typesViewer.refresh();
     }
-	
-    
 }

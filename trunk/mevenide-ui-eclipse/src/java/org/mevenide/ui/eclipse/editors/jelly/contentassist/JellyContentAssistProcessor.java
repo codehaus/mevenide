@@ -1,20 +1,20 @@
-/*
- * ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+/* ==========================================================================
+ * Copyright 2003-2005 MevenIDE Project
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.editors.jelly.contentassist;
 
 import java.io.File;
@@ -29,6 +29,7 @@ import java.util.TreeSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPositionCategoryException;
 import org.eclipse.jface.text.IDocument;
@@ -49,7 +50,6 @@ import org.mevenide.ui.eclipse.editors.jelly.AbstractJellyEditor;
 import org.mevenide.ui.eclipse.editors.jelly.ITypeConstants;
 import org.mevenide.ui.eclipse.editors.jelly.Namespace;
 import org.mevenide.ui.eclipse.editors.jelly.XMLNode;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**
  * @author <a href="mailto:rhill2@free.fr">Gilles Dodinet </a>
@@ -62,14 +62,12 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
     
     private AbstractJellyEditor editor;
 
-    private PreferencesManager preferencesManager;
+//    private PreferencesManager preferencesManager;
     
     private AttributeCompletion attributeCompletor ; 
     
     public JellyContentAssistProcessor(AbstractJellyEditor editor) {
         this.editor = editor;
-        preferencesManager = PreferencesManager.getManager();
-        preferencesManager.loadPreferences();
         try {
             attributeCompletor = new GoalsAttributeCompletionImpl();
             String basedir = new File(((FileEditorInput) editor.getEditorInput()).getFile().getLocation().toOSString()).getParent();
@@ -173,7 +171,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
             int i = 0;
             for (Iterator it = words.iterator(); it.hasNext();) {
                 String text = (String) it.next();
-                if (preferencesManager.getBooleanValue("InsertEndTag")) {
+                if (getPreferenceStore().getBoolean("InsertEndTag")) {
                     cp[i] = new CompletionProposal("<" + text + "></" + text + ">", offset, 0, text.length() + 2, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text,
                             null, null);
                 }
@@ -201,7 +199,7 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
                 for ( Iterator it = words.iterator(); it.hasNext();) {
                     String text = (String) it.next();
                     
-                    if (preferencesManager.getBooleanValue("InsertEndTag")) {
+                    if (getPreferenceStore().getBoolean("InsertEndTag")) {
                         if (isAfterLesserThan) {
                             cp[i] = new CompletionProposal(text, offset, 0, text.length() + 1, Mevenide.getInstance().getImageRegistry().get(IImageRegistry.XML_TAG_OBJ), text,
                                     null, null);
@@ -497,5 +495,13 @@ public abstract class JellyContentAssistProcessor implements IContentAssistProce
 
     protected AbstractJellyEditor getEditor() {
         return editor;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
     }
 }
