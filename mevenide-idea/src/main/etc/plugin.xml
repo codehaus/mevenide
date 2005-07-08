@@ -13,12 +13,6 @@
     <idea-version since-build="3339"/>
 
     <actions>
-        <action class="org.mevenide.idea.synchronize.InspectProjectAction"
-                text="Synchronize POM with IDEA project"
-                id="org.mevenide.idea.SyncProject">
-            <add-to-group anchor="last" group-id="AnalyzeMenu"/>
-        </action>
-
         <action class="org.mevenide.idea.project.actions.AddPomAction"
                 text="Add POM"
                 id="org.mevenide.idea.project.actions.AddPomAction">

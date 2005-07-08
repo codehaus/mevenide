@@ -40,16 +40,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     private static final IRepositoryReader[] EMPTY_REPO_ARRAY = new IRepositoryReader[0];
 
-    private final SelectFromListDialog.ToStringAspect POM_TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
-        public String getToStirng(Object obj) {
-            final String pomUrl = obj.toString();
-            final IRepositoryReader localRepo = getLocalRepositoryReader(pomUrl);
-            final URI uri = localRepo.getRootURI();
-            final File rootFile = new File(uri);
-            return rootFile.getAbsolutePath();
-        }
-    };
-
     private static final SelectFromListDialog.ToStringAspect SIMPLE_TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
         public String getToStirng(Object obj) {
             return obj.toString();
@@ -71,7 +61,10 @@ public class PomRepoManager extends AbstractPomSettingsManager {
          *         registered
          */
     public String selectDestinationRepo() {
-        return selectDest/**
+        return selectDestinationRepo(null, null);
+    }
+
+    /**
      * Displays a list of available local repositories to the user, and returns the selected
      * repository url.
      *
@@ -82,10 +75,12 @@ public class PomRepoManager extends AbstractPomSettingsManager {
      *
      * @return the selected repository's url, {@code null} if no url is selected, or no POMs are
      *         registered
-     */d, or no POMs are registered
      */
     public String selectDestinationRepo(final String pTitle) {
-        return selectDestin/**
+        return selectDestinationRepo(pTitle, null);
+    }
+
+    /**
      * Displays a list of available local repositories to the user, and returns the selected
      * repository url.
      *
@@ -97,7 +92,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
      *
      * @return the selected repository's url, {@code null} if no url is selected, or no POMs are
      *         registered
-     */d, or no POMs are registered
      */
     public String selectDestinationRepo(final String pTitle, final String pLabel) {
         final PomManager pomMgr = PomManager.getInstance(project);
@@ -147,7 +141,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     }
 
     public IRepositoryReader[] getRemoteRepositoryReaders() {
-        final String[] urls = PomManager.getInstance(project).getF ileUrls();
+        final String[] urls = PomManager.getInstance(project).getFileUrls();
         final Map<String,IRepositoryReader> repos = new HashMap<String, IRepositoryReader>();
         for (String url : urls) {
             final IRepositoryReader[] readers = getRemoteRepositoryReaders(url);
@@ -160,7 +154,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     public IRepositoryReader[] getRemoteRepositoryReaders(final String pPomUrl) {
         final PropertiesManager mgr = PropertiesManager.getInstance(project);
-        final String value = mgr.getProperty(pPomU rl, "maven.repo.remote");
+        final String value = mgr.getProperty(pPomUrl, "maven.repo.remote");
         if(value == null || value.trim().length() == 0)
             return EMPTY_REPO_ARRAY;
 
@@ -304,18 +298,12 @@ public class PomRepoManager extends AbstractPomSettingsManager {
                                             errors.toArray(buffer));
     }
 
-    public Virtua
-                                g pPomUrl,
-
-                                emoteRepo,
-
-                                 pGroupId,
-
-                                rtifactId,
-
-                                ing pType,
-
-                                 pVersion,
+    public VirtualFile download(final String pPomUrl,
+                                final IRepositoryReader pRemoteRepo,
+                                final String pGroupId,
+                                final String pArtifactId,
+                                final String pType,
+                                final String pVersion,
                          final String pExtension) throws IOException {
         return download(pPomUrl, pRemoteRepo, convertToRelativePath(pGroupId,
                                                                     pArtifactId,
@@ -438,9 +426,13 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         if (pExtension == null || pExtension.trim().length() == 0)
             pExtension = pType;
 
-        final StringBuilder buf = new StringBuilder(pGroupId);
-        buf.append('/').append(pType).append('s').append('/').app
-                end(pArtifactId).append('-').append(pVersion).append('.').append(pExtension);
+        final StringBuilder buf = new StringBuilder();
+        buf.append(pGroupId).
+                append('/').
+                append(pType).append('s').
+                append('/').
+                append(pArtifactId).append('-').append(pVersion).
+                append('.').append(pExtension);
         return buf.toString();
     }
 
@@ -488,8 +480,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
                             final String pArtifactId,
                             final String pType,
                             final String pVersion,
-                            final String pExtens
-                  on) {
+                            final String pExtension) {
             super(pLocalRepo, convertToRelativePath(pGroupId, pArtifactId, pType, pVersion, pExtension));
         }
     }

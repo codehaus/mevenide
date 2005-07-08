@@ -3,8 +3,10 @@ package org.mevenide.idea.repository.browser;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.PopupHandler;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,14 +59,28 @@ public class RepositoryBrowser extends JPanel {
      */
     protected final JPanel treesPanel = new JPanel(treesCardLayout);
 
+    /**
+     * Available actions for the tree.
+     */
+    private final ActionGroup actionGroup;
+
+    /**
+     * Creates
+     * @param pProject
+     */
     public RepositoryBrowser(final Project pProject) {
         super(new BorderLayout());
         project = pProject;
 
         //
+        //create the action group to be used in the toolbar
+        //
+        actionGroup = createToolBarActionGroup();
+
+        //
         //create the toolbar panel
         //
-        add(createToolBar(), BorderLayout.PAGE_START);
+        add(createToolBar(actionGroup), BorderLayout.PAGE_START);
 
         //
         //add a panel containing the various trees
@@ -75,18 +91,19 @@ public class RepositoryBrowser extends JPanel {
         //
         //Initialy, set an empty tree
         //
-        treesPanel.add(ScrollPaneFactory.createScrollPane(new RepoTree()), EMPTY_TREE_NAME);
+        final JTree initialTree = createRepoTree(null);
+        treesPanel.add(ScrollPaneFactory.createScrollPane(initialTree), EMPTY_TREE_NAME);
         add(treesPanel, BorderLayout.CENTER);
     }
 
-    protected DefaultActionGroup createToolBarActionGroup() {
+    protected ActionGroup createToolBarActionGroup() {
         final DefaultActionGroup actGroup = new DefaultActionGroup();
         actGroup.add(new DownloadArtifactsAction(this));
         actGroup.add(new RefreshRepoAction(this));
         return actGroup;
     }
 
-    protected JComponent createToolBar() {
+    protected JComponent createToolBar(final ActionGroup pActions) {
         final JPanel toolbarPanel = new JPanel(new BorderLayout());
 
         //
@@ -110,15 +127,10 @@ public class RepositoryBrowser extends JPanel {
         });
 
         //
-        //create the action group to be used in the toolbar
-        //
-        final DefaultActionGroup actGroup = createToolBarActionGroup();
-
-        //
         //create the action group toolbar and add it to the toolbar panel
         //
         final ActionManager actMgr = ActionManager.getInstance();
-        final ActionToolbar toolbar = actMgr.createActionToolbar(PLACE, actGroup, true);
+        final ActionToolbar toolbar = actMgr.createActionToolbar(PLACE, pActions, true);
         toolbarPanel.add(toolbar.getComponent(), BorderLayout.LINE_START);
 
         //
@@ -214,6 +226,13 @@ public class RepositoryBrowser extends JPanel {
             addRepo(pRepo);
     }
 
+    protected RepoTree createRepoTree(final IRepositoryReader pRepo) {
+        final RepoTree tree = new RepoTree();
+        final ActionManager actionMgr = ActionManager.getInstance();
+        PopupHandler.installPopupHandler(tree, actionGroup, PLACE, actionMgr);
+        return tree;
+    }
+
     /**
      * Adds the given repository to the list of registered repositories. A corresponding tree and
      * model are created for it, registered and added to the UI.
@@ -227,7 +246,7 @@ public class RepositoryBrowser extends JPanel {
         //create new tree and model for the repo
         //
         final RepoTreeModel repoModel = new RepoTreeModel(pRepo);
-        final RepoTree repoTree = new RepoTree(repoModel);
+        final RepoTree repoTree = createRepoTree(pRepo);
 
         //
         //store the tree in the tree-cache, and add it to the layout
