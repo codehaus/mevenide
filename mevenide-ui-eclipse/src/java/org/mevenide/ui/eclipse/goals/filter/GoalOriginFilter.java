@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,21 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.filter;
+
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /** 
  * 
@@ -44,11 +48,7 @@ public class GoalOriginFilter extends ViewerFilter {
 	public GoalOriginFilter() {
 		try {
 			defaultGoalsGrabber = new DefaultGoalsGrabber();
-			
-			PreferencesManager preferencesManager = PreferencesManager.getManager();
-			preferencesManager.loadPreferences();
-			
-			isFilteringEnable = preferencesManager.getBooleanValue(ORIGIN_FILTER_KEY);
+			isFilteringEnable = getPreferenceStore().getBoolean(ORIGIN_FILTER_KEY);
 			
 		} 
 		catch (Exception e) {
@@ -89,14 +89,35 @@ public class GoalOriginFilter extends ViewerFilter {
 		this.isFilteringEnable = enable;
 		
 		//should see how to save them in more optimized way : i/o access everytime we set the value..
-		PreferencesManager preferencesManager = PreferencesManager.getManager();
-		preferencesManager.setBooleanValue(ORIGIN_FILTER_KEY, enable);
-		preferencesManager.store();
-		
+        getPreferenceStore().setValue(ORIGIN_FILTER_KEY, enable);
+        commitChanges();
 	}
 	
 	public boolean isEnabled() {
 		return isFilteringEnable;
 	}
+
+    /**
+     * TODO: Describe what commitChanges does.
+     * @return
+     */
+    private boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 	
 }

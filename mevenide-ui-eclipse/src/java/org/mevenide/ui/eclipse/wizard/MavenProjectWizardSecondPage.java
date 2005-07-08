@@ -53,7 +53,6 @@ import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.nature.MevenideNature;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**
  * @author	<a href="mailto:jens@iostream.net">Jens Andersen</a>, Last updated by $Author$
@@ -253,15 +252,11 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 
                 init(JavaCore.create(fCurrProject), outputLocation, entries, false);
 
-                //Setup the MAVEN_REPO variable
-                PreferencesManager manager = PreferencesManager.getManager();
-                manager.loadPreferences();
-
                 //set maven repo if not set 
                 IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO"); //$NON-NLS-1$
                 if (mavenRepoVar == null) {
                     //lookup maven repo in all available locations
-                    IPath mavenRepo = new Path(manager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
+                    IPath mavenRepo = new Path(Mevenide.getInstance().getCustomPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY));
                     if (mavenRepo == null) {
                         //TODO - the context shall be somehow shared and not created here..
                         IQueryContext context = new DefaultQueryContext(new File(fCurrProjectLocation.toOSString()));

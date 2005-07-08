@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,17 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.dynamic;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -48,7 +52,6 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 
@@ -59,7 +62,9 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class DynamicPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    
+    private static final String PAGE_NAME = Mevenide.getResourceString("DynamicPreferencePage.title"); //$NON-NLS-1$
+    private static final String PAGE_DESC = Mevenide.getResourceString("DynamicPreferencePage.description"); //$NON-NLS-1$
+
     private class ClipboardFieldEditor extends StringButtonFieldEditor {
 
         private Button changeButton;
@@ -117,14 +122,12 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
     
     private Map editors = new HashMap();
     
-    private PreferencesManager preferencesManager;
-    
     private List dirtyProperties = new ArrayList();
     
     public DynamicPreferencePage() {
-        super();
-        preferencesManager = DynamicPreferencesManager.getDynamicManager();
-		preferencesManager.loadPreferences();
+        super(PAGE_NAME);
+        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getDynamicPreferenceStore());
     }
     
     public void setVisible(boolean visible) {
@@ -133,16 +136,29 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
             StringFieldEditor editor = (StringFieldEditor) editors.get(pluginProperty);
             String[] keyParts = org.apache.commons.lang.StringUtils.split(editor.getPreferenceName(), "|");
 			String key = keyParts.length == 1 ? keyParts[0] : keyParts[1];
-			String importedKeyValue = DynamicPreferencesManager.getDynamicManager().getValue(key);
+			String importedKeyValue = getPreferenceStore().getString(key);
 			if ( !StringUtils.isNull(importedKeyValue) ) {
 				editor.setStringValue(importedKeyValue);
 				
 				//store fully qualified property  
-				preferencesManager.remove(key);
-				editor.store();
+                getPreferenceStore().setToDefault(key);
+                commitChanges();
 			}
         }
         super.setVisible(visible);
+    }
+
+    /**
+     * TODO: Describe what commitChanges does.
+     */
+    private boolean commitChanges() {
+        try {
+            ((IPersistentPreferenceStore)getPreferenceStore()).save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+        return false;
     }
     
     protected Control createContents(Composite parent) {
@@ -258,7 +274,7 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
         
         StringButtonFieldEditor editor = new ClipboardFieldEditor(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, propertyLabel, composite);
         
-        editor.setPreferenceStore(preferencesManager.getPreferenceStore());
+        editor.setPreferenceStore(getPreferenceStore());
         editor.load();
 
         editor.setEmptyStringAllowed(!pluginProperty.isRequired());
@@ -336,14 +352,15 @@ public class DynamicPreferencePage extends PreferencePage implements IWorkbenchP
 	            String pageId = pluginProperty.getPageId();
 	            String propertyName = pluginProperty.getName();
 	            if ( !StringUtils.relaxEqual(pluginProperty.getDefault(), editor.getStringValue()) ) {
-	                preferencesManager.setValue(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, editor.getStringValue());
+                    getPreferenceStore().setValue(pageId + DynamicPreferencesManager.SEPARATOR + propertyName, editor.getStringValue());
 	            }
 	            else {
-	                preferencesManager.remove(pageId + DynamicPreferencesManager.SEPARATOR + propertyName);
+                    getPreferenceStore().setToDefault(pageId + DynamicPreferencesManager.SEPARATOR + propertyName);
 	            }
             }
         }
-        return preferencesManager.store();
+        commitChanges();
+        return false;
     }
     
     public String getPluginDescription() {

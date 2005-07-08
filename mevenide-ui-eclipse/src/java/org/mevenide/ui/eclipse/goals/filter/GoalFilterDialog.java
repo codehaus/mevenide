@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,17 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.filter;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
@@ -48,7 +51,6 @@ import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.model.Plugin;
 import org.mevenide.ui.eclipse.goals.view.GoalsLabelProvider;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 /**  
@@ -59,8 +61,6 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class GoalFilterDialog extends Dialog {
-	
-	private PreferencesManager preferencesManager;
 	
 	private Text patternText;
 	private boolean shouldApplyCustomFilters;
@@ -76,8 +76,6 @@ public class GoalFilterDialog extends Dialog {
 	
 	public GoalFilterDialog() {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-		preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
 	}
 	
 	protected Control createContents(Composite parent) {
@@ -166,14 +164,14 @@ public class GoalFilterDialog extends Dialog {
 		composite.setLayoutData(gridData);
 		
 		applyCustomFiltersButton = new Button(composite, SWT.CHECK);
-		applyCustomFiltersButton.setSelection(preferencesManager.getBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
+		applyCustomFiltersButton.setSelection(getPreferenceStore().getBoolean(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY));
 		applyCustomFiltersButton.setText(Mevenide.getResourceString("GoalFilterDialog.RegexFilter.Text")); //$NON-NLS-1$
 		GridData checkboxData = new GridData();
 		checkboxData.grabExcessHorizontalSpace = false;
 		applyCustomFiltersButton.setLayoutData(checkboxData);
 		
 		patternText = new Text(composite, SWT.BORDER );
-		patternText.setText(preferencesManager.getValue(CustomPatternFilter.CUSTOM_FILTERS_KEY));
+		patternText.setText(getPreferenceStore().getString(CustomPatternFilter.CUSTOM_FILTERS_KEY));
 		patternText.setEnabled(applyCustomFiltersButton.getSelection());
 		GridData textData = new GridData(GridData.FILL_HORIZONTAL);
 		textData.grabExcessHorizontalSpace = true;
@@ -250,7 +248,7 @@ public class GoalFilterDialog extends Dialog {
 	}
 
 	private void initializeTree() {
-		String goalsAsString = preferencesManager.getValue(GlobalGoalFilter.ORIGIN_FILTER_GOALS);
+		String goalsAsString = getPreferenceStore().getString(GlobalGoalFilter.ORIGIN_FILTER_GOALS);
 		List goals = deserializeFilteredGoals(goalsAsString);  
 		TreeItem[] children = goalsViewer.getTree().getItems();
 		for (int i = 0; i < children.length; i++) {
@@ -317,16 +315,15 @@ public class GoalFilterDialog extends Dialog {
 	
 	protected void okPressed() {
 		shouldApplyCustomFilters = applyCustomFiltersButton.getSelection();
-		preferencesManager.setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, shouldApplyCustomFilters);
+        getPreferenceStore().setValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, shouldApplyCustomFilters);
 		
 	    regex = patternText.getText();
-	    preferencesManager.setValue(CustomPatternFilter.CUSTOM_FILTERS_KEY, regex);
+        getPreferenceStore().setValue(CustomPatternFilter.CUSTOM_FILTERS_KEY, regex);
 	    
 	    filteredGoals = getSerializedFilteredGoals();
-		preferencesManager.setValue(GlobalGoalFilter.ORIGIN_FILTER_GOALS, filteredGoals);
+        getPreferenceStore().setValue(GlobalGoalFilter.ORIGIN_FILTER_GOALS, filteredGoals);
 	    
-	    preferencesManager.store();
-	    
+	    commitChanges();
 	    super.okPressed();
 	}
 	
@@ -353,4 +350,27 @@ public class GoalFilterDialog extends Dialog {
 	public String getFilteredGoals() {
 		return filteredGoals;
 	}
+
+    /**
+     * TODO: Describe what commitChanges does.
+     * @return
+     */
+    private boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }

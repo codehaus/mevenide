@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,10 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -46,18 +48,26 @@ public class PreferencesManager {
 		return manager;
 	}
 	
-    // FIXME: why is this public if it is called from constructor?  should be private, or not called from constructor
-	public void loadPreferences() {
-		preferenceStore = new PreferenceStore(getPreferenceStoreFilename());
-		try {
+	private void loadPreferences() {
+        try {
+            final String name = getPreferenceStoreFilename();
+
+            final File file = new File(name);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+    
+    		preferenceStore = new PreferenceStore(name);
 			preferenceStore.load();
+            preferenceStore.setDefault(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, "test");
+            preferenceStore.setDefault(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 160);
 		}
 		catch ( Exception ex ) {
 			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename(), ex); //$NON-NLS-1$
 		}
 	}
 	
-	public boolean store() {
+    protected boolean store() {
 		try {
 			preferenceStore.save();		
 			return true;
@@ -69,33 +79,17 @@ public class PreferencesManager {
 	}
 	
 	protected String getPreferenceStoreFilename() {
-	    return Mevenide.getInstance().getPreferencesFilename();
+        return Mevenide.getInstance().getStateLocation().append("prefs.ini").toOSString();
 	}
 	
-	public String getValue(String property) {
+	protected String getValue(String property) {
 		return preferenceStore.getString(property);
 	}
 	
-	public void setValue(String property, String value) {
+    protected void setValue(String property, String value) {
 	    if ( preferenceStore == null ) {
 	        loadPreferences();
 	    }
-		preferenceStore.setValue(property, value);
-	}
-	
-	public boolean getBooleanValue(String property) {
-		return preferenceStore.getBoolean(property);
-	}
-	
-	public int getIntValue(String property) {
-		return preferenceStore.getInt(property);
-	}
-	
-	public void setBooleanValue(String property, boolean value) {
-		preferenceStore.setValue(property, value);
-	}
-	
-	public void setIntValue(String property, int value) {
 		preferenceStore.setValue(property, value);
 	}
 		
@@ -103,11 +97,7 @@ public class PreferencesManager {
 		return preferenceStore;
 	}
 
-	public void setPreferenceStore(PreferenceStore store) {
-		preferenceStore = store;
-	}
-
-	public Map getPreferences() {
+    protected Map getPreferences() {
 	    Map preferences = new HashMap();
 	    //initialize preferenceStore if not already done
 	    if ( getPreferenceStore() == null ) {
@@ -117,7 +107,7 @@ public class PreferencesManager {
             String[] names = preferenceStore.preferenceNames();
             if ( names != null ) {
                 for (int i = 0; i < names.length; i++) {
-                    preferences.put(names[i], getValue(names[i]));
+                    preferences.put(names[i], preferenceStore.getString(names[i]));
                 }
             }
         }
@@ -130,7 +120,7 @@ public class PreferencesManager {
 	    return preferences;
 	}
 	
-	public void remove(String key) {
+    protected void remove(String key) {
 	    preferenceStore.setToDefault(key);
 	}
 }

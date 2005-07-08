@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import java.io.File;
@@ -22,6 +23,7 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferencePage;
@@ -38,7 +40,6 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 import org.mevenide.util.StringUtils;
 
@@ -52,16 +53,17 @@ import org.mevenide.util.StringUtils;
 public class PluginsRootPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     private static final Log log = LogFactory.getLog(PluginsRootPreferencePage.class);
     
+    private static final String PAGE_NAME = Mevenide.getResourceString("PluginsRootPreferencePage.title"); //$NON-NLS-1$
+//    private static final String PAGE_DESC = Mevenide.getResourceString("PluginsRootPreferencePage.description"); //$NON-NLS-1$
+
     private static final String LAST_IMPORT_FOLDER = "PluginsRoot.Import.LastOpenFolder"; //$NON-NLS-1$
     private static final String LAST_EXPORT_FOLDER = "PluginsRoot.Export.LastOpenFolder"; //$NON-NLS-1$
     
-    private PreferencesManager preferencesManager;
-    
     public PluginsRootPreferencePage() {
-        super(Mevenide.getResourceString("PluginsRootPreferencePage.title")); //$NON-NLS-1$
-        preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
-		noDefaultAndApplyButton();
+        super(PAGE_NAME);
+//        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
+        super.noDefaultAndApplyButton();
     }
 
 	protected Control createContents(Composite parent) {
@@ -172,16 +174,14 @@ public class PluginsRootPreferencePage extends PreferencePage implements IWorkbe
     private String openFileChoiceDialog(String filterPathKey) {
         FileDialog dialog = new FileDialog(PlatformUI.getWorkbench().getDisplay().getActiveShell());
         dialog.setFilterExtensions(new String[] {"*.properties", "*.*"}); //$NON-NLS-1$ //$NON-NLS-2$
-        String lastOpenLocation = preferencesManager.getValue(filterPathKey); 
+        String lastOpenLocation = getPreferenceStore().getString(filterPathKey); 
         dialog.setFilterPath(!StringUtils.isNull(lastOpenLocation) ? lastOpenLocation : System.getProperty("user.home")); //$NON-NLS-1$
         String choice = dialog.open();
         if ( !StringUtils.isNull(choice) ) {
             File f = new File(choice);
             lastOpenLocation = f.getParent();
-            preferencesManager.setValue(filterPathKey, lastOpenLocation); 
+            getPreferenceStore().setValue(filterPathKey, lastOpenLocation); 
         }
         return choice;
     }
 }
-    
-    

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences.pages;
 
 import java.io.IOException;
@@ -22,8 +23,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FileFieldEditor;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -33,12 +34,10 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 
@@ -51,8 +50,9 @@ import org.mevenide.util.StringUtils;
 public class LocationPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
     private static Log log = LogFactory.getLog(LocationPreferencePage.class);
     
-    private PreferencesManager preferencesManager;
-	
+    private static final String PAGE_NAME = Mevenide.getResourceString("LocationPreferencePage.title"); //$NON-NLS-1$
+//    private static final String PAGE_DESC = Mevenide.getResourceString("LocationPreferencePage.description"); //$NON-NLS-1$
+
     private Group topLevelContainer;
     
 	private DirectoryFieldEditor mavenHomeEditor;
@@ -69,10 +69,10 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     private String toolsJarLocation;
 	
     public LocationPreferencePage() {
-        super(Mevenide.getResourceString("LocationPreferencePage.title")); //$NON-NLS-1$
-        //setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
-		preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
+        super(PAGE_NAME);
+//        super.setDescription(PAGE_DESC);
+        super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
+//        super.setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
     }
 
 	protected Control createContents(Composite parent) {
@@ -138,7 +138,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 
     private void reloadMavenRepository() {
         reloadEditor(mavenRepositoryEditor, 
-                     preferencesManager.getValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY), 
+                     getPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY), 
                      getDefaultLocationFinder().getMavenLocalRepository());
     }
 
@@ -161,7 +161,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 										             topLevelContainer);
 	    
 	    toolsJarEditor.fillIntoGrid(topLevelContainer, 3);
-	    toolsJarEditor.setPreferenceStore(getStore());
+	    toolsJarEditor.setPreferenceStore(getPreferenceStore());
 	    toolsJarEditor.load();
 		
 	    if ( StringUtils.isNull(toolsJarEditor.getStringValue()) ) {
@@ -169,13 +169,9 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 		}
     }
 
-    protected PreferenceStore getStore() {
-        return preferencesManager.getPreferenceStore();
-    }
-	
     private void reloadToolsJarLocation() {
         reloadEditor(toolsJarEditor, 
-                     preferencesManager.getValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY), 
+                     getPreferenceStore().getString(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY), 
                      RunnerUtils.getToolsJar());
     }
 
@@ -192,7 +188,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 
     private void reloadMavenLocalHome() {
         reloadEditor(mavenLocalHomeEditor, 
-                     preferencesManager.getValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY), 
+                     getPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY), 
                      getDefaultLocationFinder().getMavenLocalHome());
     }
 
@@ -211,7 +207,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 
     private void reloadMavenHome() {
         reloadEditor(mavenHomeEditor, 
-                     preferencesManager.getValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY), 
+                     getPreferenceStore().getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY), 
                      getDefaultLocationFinder().getMavenHome());
     }
 
@@ -230,14 +226,14 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 
     private void reloadJavaHome() {
         reloadEditor(javaHomeEditor, 
-                    preferencesManager.getValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY), 
+                    getPreferenceStore().getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY), 
                     getDefaultLocationFinder().getJavaHome());
     }
 
     private DirectoryFieldEditor createEditor(String property, String name, String value) {
 		DirectoryFieldEditor editor = new DirectoryFieldEditor(property, name, topLevelContainer);
 		editor.fillIntoGrid(topLevelContainer, 3);
-		editor.setPreferenceStore(getStore());
+		editor.setPreferenceStore(getPreferenceStore());
 		editor.load();
 		return editor;
 	}
@@ -260,27 +256,29 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	private boolean finish() {
 		update();
 		
-		getStore().setValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, mavenHome);
-		getStore().setValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, mavenLocalHome);
-		getStore().setValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, javaHome);
-		getStore().setValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, mavenRepository);
-		getStore().setValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, toolsJarLocation);
-		
-		Mevenide.getInstance().initEnvironment();
-		
-        try {
-            getStore().save();
-            return true;
-            //return preferencesManager.store();
-        }
-        catch (IOException e) {
-            log.debug("Unable to save preferences to file '" + getStore(), e); //$NON-NLS-1$
-            return false;
-        }
+		getPreferenceStore().setValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, mavenHome);
+		getPreferenceStore().setValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, mavenLocalHome);
+		getPreferenceStore().setValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, javaHome);
+		getPreferenceStore().setValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, mavenRepository);
+		getPreferenceStore().setValue(MevenidePreferenceKeys.TOOLS_JAR_PREFERENCE_KEY, toolsJarLocation);
+        return commitChanges();
 	}
-	
+
+    /**
+     * TODO: Describe what commitChanges does.
+     */
+    private boolean commitChanges() {
+        try {
+            ((IPersistentPreferenceStore)getPreferenceStore()).save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+        return false;
+    }
+
 	private ILocationFinder getDefaultLocationFinder() {
-        return ConfigUtils.getDefaultLocationFinder();
+        return Mevenide.getInstance().getDefaultLocationFinder();
     }
 	
 	public void update() {
@@ -289,19 +287,6 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	    mavenLocalHome = mavenLocalHomeEditor.getTextControl(topLevelContainer).getText();
 	    mavenRepository = mavenRepositoryEditor.getTextControl(topLevelContainer).getText();
 	    toolsJarLocation = toolsJarEditor.getTextControl(topLevelContainer).getText();
-        
-        if ( !isPropertyPage() ) {
-    		Mevenide.getInstance().setMavenHome(mavenHome);
-    		Mevenide.getInstance().setJavaHome(javaHome);
-    	
-    		if ( !StringUtils.isNull(mavenLocalHome) ) {
-    			Mevenide.getInstance().setMavenLocalHome(mavenLocalHome);
-    		}
-    				
-    		if ( !StringUtils.isNull(mavenRepository) ) {
-    			Mevenide.getInstance().setMavenRepository(mavenRepository);
-    		}    		
-        }
 	}
 	
 	public void init(IWorkbench workbench) {

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.preferences;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
@@ -36,10 +40,8 @@ public class DependencyTypeRegistry {
     }
 
     public static String[] getUserRegisteredTypes() {
-        PreferencesManager preferencesManager = PreferencesManager.getManager(); 
-        
         List prefTypes = new ArrayList();
-        String registeredTypes = preferencesManager.getValue(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
+        String registeredTypes = getPreferenceStore().getString(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
         if ( !StringUtils.isNull(registeredTypes) ) {
             StringTokenizer tokenizer = new StringTokenizer(registeredTypes, ","); //$NON-NLS-1$
             while ( tokenizer.hasMoreTokens() ) {
@@ -53,19 +55,40 @@ public class DependencyTypeRegistry {
     }
 
     public static boolean storeTypes(List types) {
-        PreferencesManager preferencesManager = PreferencesManager.getManager();
-        
         String registeredTypes = ""; //$NON-NLS-1$
         for (int i = 0; i < types.size(); i++) {
             if ( !Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES).contains(types.get(i)) ) {
                 registeredTypes += (String) types.get(i) + ","; //$NON-NLS-1$
             }
         }
-        preferencesManager.setValue(
+        getPreferenceStore().setValue(
         	MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES, 
         	registeredTypes
         );
         
-        return preferencesManager.store();
+        return commitChanges();
+    }
+
+    /**
+     * TODO: Describe what commitChanges does.
+     * @return
+     */
+    private static boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private static IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
     }
 }

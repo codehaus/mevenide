@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,19 +14,21 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.outline;
 
-import java.io.File;
+import java.io.IOException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -48,6 +50,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.part.Page;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
@@ -60,7 +63,6 @@ import org.mevenide.ui.eclipse.goals.model.Goal;
 import org.mevenide.ui.eclipse.goals.model.GoalsProvider;
 import org.mevenide.ui.eclipse.goals.view.GoalsLabelProvider;
 import org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 
 /**  
  * 
@@ -96,32 +98,29 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	private IAction runGoalAction;
 	
 	private boolean runOffline;
-	
-	private String basedir; 
-	private IPath basedirPath;  
+    private IFileEditorInput input;
 	
 	public MavenXmlOutlinePage(IFileEditorInput input) {
-		this.basedir = new File(input.getFile().getLocation().toOSString()).getParent();
-		this.basedirPath = input.getFile().getParent().getFullPath();
+        this.input = input;
 	}
 	
 	public void createControl(Composite parent) {
 		try {
-			control = new Composite(parent, SWT.NONE);
-        	control.setLayout(new GridLayout());
+			this.control = new Composite(parent, SWT.NONE);
+            this.control.setLayout(new GridLayout());
         	
 			GridData gridData = new GridData(GridData.FILL_BOTH);
 			gridData.grabExcessVerticalSpace = true;
 			gridData.grabExcessHorizontalSpace = true;
             gridData.horizontalAlignment = GridData.FILL;
 			gridData.verticalAlignment = GridData.BEGINNING;
-			control.setLayoutData(gridData);
+            this.control.setLayoutData(gridData);
 
-            goalsViewer = createViewer(control);
+            this.goalsViewer = createViewer(control);
             
 			configureViewer();
 			
-			goalsViewer.setInput(Element.NULL_ROOT);
+            this.goalsViewer.setInput(Element.NULL_ROOT);
         }
         catch (Exception e) {
             log.error("Unable to create goals TreeViewer host : ", e); //$NON-NLS-1$
@@ -158,19 +157,21 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
     }
 	
 	private void setupFilters() {
-		patternFilter = new CustomPatternFilter();
-		goalsViewer.addFilter(patternFilter);
+        this.patternFilter = new CustomPatternFilter();
+        this.goalsViewer.addFilter(patternFilter);
 
-		globalGoalFilter = new GlobalGoalFilter();
-		goalsViewer.addFilter(globalGoalFilter);
+        this.globalGoalFilter = new GlobalGoalFilter();
+        this.goalsViewer.addFilter(globalGoalFilter);
 		
-		goalOriginFilter = new GoalOriginFilter();
-		goalsViewer.addFilter(goalOriginFilter);
+        this.goalOriginFilter = new GoalOriginFilter();
+        this.goalsViewer.addFilter(goalOriginFilter);
 	}
 
 	private void setupProviders() throws Exception {
-		goalsProvider = new GoalsProvider();
-    	goalsProvider.setBasedir(basedir);
+        final IProject project = this.input.getFile().getProject();
+        IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(project);
+        goalsProvider = new GoalsProvider(context);
+
 		goalsViewer.setContentProvider(goalsProvider);
 
 		goalsLabelProvider = new GoalsLabelProvider() {
@@ -284,8 +285,8 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			public void run() {
 				patternFilter.apply(isChecked());
 				setToolTipText(isChecked() ? Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Disable") : Mevenide.getResourceString("MavenXmlOutlinePage.RegexFilters.Enable"));  //$NON-NLS-1$//$NON-NLS-2$
-				PreferencesManager.getManager().setBooleanValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, isChecked());
-				PreferencesManager.getManager().store();
+                getPreferenceStore().setValue(CustomPatternFilter.APPLY_CUSTOM_FILTERS_KEY, isChecked());
+                commitChanges();
 				goalsViewer.refresh(false); 
 			}
 		};
@@ -341,7 +342,7 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 			}
 			shortcut.setGoalsToRun(goalToRun);
 			shortcut.setOffline(runOffline);
-			shortcut.launch(basedirPath);
+			shortcut.launch(this.input.getFile().getProject().getLocation());
 		}
 	}
 	
@@ -374,11 +375,34 @@ public class MavenXmlOutlinePage extends Page implements IContentOutlinePage {
 	
 	public void forceRefresh() {
 		try {
-			goalsProvider.setBasedir(basedir);
+            final IProject project = this.input.getFile().getProject();
+            IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(project);
+            goalsProvider = new GoalsProvider(context);
 		} 
 		catch (Exception e) {
 			log.error("unable to refresh goalsProvider", e); //$NON-NLS-1$
 		}
 		goalsViewer.refresh(true);
 	}
+
+    /**
+     * TODO: Describe what commitChanges does.
+     */
+    private boolean commitChanges() {
+        try {
+            getPreferenceStore().save();
+            return true;
+        } catch (IOException e) {
+            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+        }
+        return false;
+    }
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }

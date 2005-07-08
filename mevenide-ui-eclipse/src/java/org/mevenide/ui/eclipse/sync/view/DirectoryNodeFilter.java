@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.view;
 
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.mevenide.project.ProjectConstants;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.sync.model.Directory;
 import org.mevenide.ui.eclipse.sync.model.DirectoryNode;
 
@@ -47,15 +49,12 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	private boolean filterOutputDirectories;
 	
 	DirectoryNodeFilter() {
-		PreferencesManager preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
-		
-		filterDirectoryNodes = preferencesManager.getBooleanValue(APPLY_FILTERS_KEY);
-		filterSourceDirectories = preferencesManager.getBooleanValue(APPLY_SOURCE_FILTERS_KEY);
-		filterTestDirectories = preferencesManager.getBooleanValue(APPLY_TEST_FILTERS_KEY);
-		filterAspectDirectories = preferencesManager.getBooleanValue(APPLY_ASPECT_FILTERS_KEY);
-		filterResourceDirectories = preferencesManager.getBooleanValue(APPLY_RESOURCE_FILTERS_KEY);
-		filterOutputDirectories = preferencesManager.getBooleanValue(APPLY_OUTPUT_FILTERS_KEY);
+		filterDirectoryNodes = getPreferenceStore().getBoolean(APPLY_FILTERS_KEY);
+		filterSourceDirectories = getPreferenceStore().getBoolean(APPLY_SOURCE_FILTERS_KEY);
+		filterTestDirectories = getPreferenceStore().getBoolean(APPLY_TEST_FILTERS_KEY);
+		filterAspectDirectories = getPreferenceStore().getBoolean(APPLY_ASPECT_FILTERS_KEY);
+		filterResourceDirectories = getPreferenceStore().getBoolean(APPLY_RESOURCE_FILTERS_KEY);
+		filterOutputDirectories = getPreferenceStore().getBoolean(APPLY_OUTPUT_FILTERS_KEY);
 	}
 	
 	public boolean select(Viewer viewer, Object parentElement, Object element) {
@@ -101,4 +100,12 @@ public class DirectoryNodeFilter extends ViewerFilter {
 	public void setFilterOutputDirectories(boolean filterOutputDirectories) {
 		this.filterOutputDirectories = filterOutputDirectories;
 	}
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse;
 
 import java.util.List;
@@ -74,7 +75,7 @@ public class DefaultPathResolver implements IPathResolver {
 		if ( project == null ) {
 			throw new Exception("project should not be null"); //$NON-NLS-1$
 		}
-		Document doc = new SAXBuilder().build(Mevenide.getInstance().getFile(SOURCE_TYPES_XML_FILE));
+		Document doc = new SAXBuilder().build(Mevenide.getInstance().getStateLocation().append(SOURCE_TYPES_XML_FILE).toOSString());
 		Element root = doc.getRootElement();
 		List sdGroupElements = root.getChildren(XmlSerializationConstants.SOURCE_DIRECTORY_GROUP_ELEM);
 		

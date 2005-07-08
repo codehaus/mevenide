@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.view;
 
 import java.util.ArrayList;
@@ -26,13 +27,17 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.help.browser.IBrowser;
 import org.eclipse.help.internal.browser.BrowserDescriptor;
 import org.eclipse.help.internal.browser.BrowserManager;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ICheckStateListener;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -56,7 +61,9 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.ISelectionService;
 import org.eclipse.ui.PlatformUI;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideColors;
 import org.mevenide.ui.eclipse.goals.model.Element;
@@ -453,16 +460,11 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
     }
 
     private CheckboxTreeViewer getViewer(Composite parent) throws Exception {
-    	String basedir = Mevenide.getInstance().getCurrentDir();
-    	
-    	CheckboxTreeViewer viewer = new CheckboxTreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
-    	
-    	goalsProvider = new GoalsProvider();
-        GoalsLabelProvider goalsLabelProvider = new GoalsLabelProvider();
-    	goalsProvider.setBasedir(basedir);
-    	
-    	viewer.setContentProvider(goalsProvider);
-    	viewer.setLabelProvider(goalsLabelProvider);
+        this.goalsProvider = new GoalsProvider(getQueryContext());
+
+        CheckboxTreeViewer viewer = new CheckboxTreeViewer(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+    	viewer.setContentProvider(this.goalsProvider);
+    	viewer.setLabelProvider(new GoalsLabelProvider());
     	
     	GridData gridData = new GridData(GridData.FILL_BOTH | SWT.V_SCROLL | SWT.H_SCROLL);
     	gridData.grabExcessVerticalSpace = true;
@@ -472,6 +474,32 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
     	viewer.getTree().setLayoutData(gridData);
     	
         return viewer;
+    }
+
+    /**
+     * TODO: Describe what getQueryContext does.
+     */
+    private IQueryContext getQueryContext() {
+        IQueryContext context = null;
+
+        ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+        ISelection selection = selectionService.getSelection();
+        if (selection instanceof IStructuredSelection) {
+            IStructuredSelection ss = (IStructuredSelection)selection;
+            Object firstElement = ss.getFirstElement();
+            if (firstElement instanceof IJavaProject) {
+                firstElement = ((IJavaProject)firstElement).getProject();
+            }
+            if (firstElement instanceof IResource) {
+                IResource resource = (IResource)firstElement;
+                IProject project = resource.getProject();
+                if (project != null) {
+                    context = Mevenide.getInstance().getPOMManager().getQueryContext(project);
+                }
+            }
+        }
+
+        return context;
     }
 
 

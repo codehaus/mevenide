@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.goals.filter;
 
 import java.util.ArrayList;
@@ -22,10 +23,11 @@ import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.model.Element;
-import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.util.StringUtils;
 
 /**  
@@ -43,11 +45,8 @@ public class CustomPatternFilter extends ViewerFilter {
 
 	
 	public CustomPatternFilter() {
-	    PreferencesManager preferencesManager = PreferencesManager.getManager();
-		preferencesManager.loadPreferences();
-		
-		shouldApply = preferencesManager.getBooleanValue(APPLY_CUSTOM_FILTERS_KEY);
-		setPatternFilters(preferencesManager.getValue(CUSTOM_FILTERS_KEY));
+		shouldApply = getPreferenceStore().getBoolean(APPLY_CUSTOM_FILTERS_KEY);
+		setPatternFilters(getPreferenceStore().getString(CUSTOM_FILTERS_KEY));
 				
 	}
 	
@@ -106,4 +105,12 @@ public class CustomPatternFilter extends ViewerFilter {
 	public void apply(boolean shouldApply) {
 	    this.shouldApply = shouldApply;
 	}
+
+    /**
+     * TODO: Describe what getPreferenceStore does.
+     * @return
+     */
+    private IPersistentPreferenceStore getPreferenceStore() {
+        return Mevenide.getInstance().getCustomPreferenceStore();
+    }
 }
