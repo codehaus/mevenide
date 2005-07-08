@@ -40,8 +40,8 @@ public class MavenActionsManager extends AbstractProjectComponent {
         private final Goal[] goals;
 
         public GoalAction(final Goal pGoal) {
-            super("Execute '" + pGoal.getName() + "' goal",
-                  "Execute the Maen goal '" + pGoal.getName() + "'");
+            super(RES.get("goal.action.text", pGoal.getName()),
+                  RES.get("goal.action.desc", pGoal.getName()));
             goals = new Goal[]{pGoal};
         }
 
