@@ -91,10 +91,10 @@ public class DependencyNode extends AbstractNode {
 //    }
     
     /**
-     *in lookup expects instance of MavenProject, DependencyPOMChange
+     *@param lookup - expects instance of MavenProject, DependencyPOMChange
      */
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
-        super(isLongLiving ? /*new DepChildren()*/ Children.LEAF : Children.LEAF, lookup);
+        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
         project = (MavenProject)lookup.lookup(MavenProject.class);
         change = (DependencyPOMChange)lookup.lookup(DependencyPOMChange.class);
         dependency = change.getChangedContent();
@@ -144,7 +144,7 @@ public class DependencyNode extends AbstractNode {
         return "ejb".equalsIgnoreCase(dependency.getValue("type"));
     }
     
-    private boolean isDependencyProjectOpen() {
+    boolean isDependencyProjectOpen() {
         URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency), project);
         Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
         return depPrj != null;
@@ -186,6 +186,9 @@ public class DependencyNode extends AbstractNode {
         checkOverride();
         fireIconChange();
         fireDisplayNameChange(null, getDisplayName());
+        if (longLiving) {
+            ((DependencyChildren)getChildren()).doRefresh();
+        }
     }
     
     private String createName() {
@@ -336,7 +339,6 @@ public class DependencyNode extends AbstractNode {
     public void destroy() throws java.io.IOException {
         super.destroy();
     }
-    
     
     
     private class EditAction extends AbstractAction {
