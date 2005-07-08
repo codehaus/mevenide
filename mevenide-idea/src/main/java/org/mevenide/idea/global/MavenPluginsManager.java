@@ -78,7 +78,7 @@ public class MavenPluginsManager extends AbstractProjectComponent
                     }
                 });
 
-        final PropertiesManager propsMg = PropertiesManager.getInstance();
+        final PropertiesManager propsMg = PropertiesManager.getInstance(project);
         propsMg.addPropertiesListener(
                 new PropertiesListener() {
                     public void propertiesChanged(PropertiesEvent pEvent) {
@@ -269,7 +269,7 @@ public class MavenPluginsManager extends AbstractProjectComponent
     }
 
     private VirtualFilePointer createPluginsFilePointer() {
-        final PropertiesManager propsMg = PropertiesManager.getInstance();
+        final PropertiesManager propsMg = PropertiesManager.getInstance(project);
         final String pluginsDirName = propsMg.getProperty(CACHE_DIR_PROPERTY);
         if (pluginsDirName == null || pluginsDirName.trim().length() == 0)
             return null;

@@ -7,14 +7,15 @@ import javax.swing.*;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
-import org.mevenide.idea.repository.tree.RepoTree;
 import org.mevenide.idea.repository.browser.RepositoryBrowser;
+import org.mevenide.idea.repository.tree.RepoTree;
 import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik
+ * @todo rename to RepositoryBrowserDialog
  */
 public class SelectRepositoryItemDialog {
     private boolean allowingRoot = false;

@@ -26,6 +26,7 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
+ * @todo should be moved to 'project' package
  */
 public class MavenReportManager extends AbstractProjectComponent {
     private Report[] reports = null;
@@ -124,7 +125,7 @@ public class MavenReportManager extends AbstractProjectComponent {
                     }
                 });
 
-        PropertiesManager.getInstance().addPropertiesListener(
+        PropertiesManager.getInstance(project).addPropertiesListener(
                 new PropertiesListener() {
                     public void propertiesChanged(PropertiesEvent pEvent) {
                         synchronized (this) {

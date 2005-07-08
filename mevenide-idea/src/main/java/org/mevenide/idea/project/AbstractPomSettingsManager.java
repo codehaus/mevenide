@@ -1,4 +1,4 @@
-package org.mevenide.idea.project.support;
+package org.mevenide.idea.project;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
@@ -6,7 +6,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.beans.PropertyChangeEvent;
 import javax.swing.event.EventListenerList;
-import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
@@ -22,32 +21,32 @@ public abstract class AbstractPomSettingsManager extends AbstractProjectComponen
         super(pProject);
     }
 
-    protected final boolean isRegistered(final String pUrl) {
-        return PomManager.getInstance(project).contains(pUrl);
+    protected final boolean isRegistered(final String pPomUrl) {
+        return PomManager.getInstance(project).contains(pPomUrl);
     }
 
-    protected final boolean isValid(final String pUrl) {
-        return PomManager.getInstance(project).isValid(pUrl);
+    protected final boolean isValid(final String pPomUrl) {
+        return PomManager.getInstance(project).isValid(pPomUrl);
     }
 
-    protected final <T> T get(final Key<T> pKey, final String pUrl) {
-        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pUrl);
+    protected final <T> T get(final Key<T> pKey, final String pPomUrl) {
+        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pPomUrl);
         if (file == null)
             return null;
 
         return file.getUserData(pKey);
     }
 
-    protected final <T> void put(final Key<T> pKey, final String pUrl, final T pValue) {
-        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pUrl);
+    protected final <T> void put(final Key<T> pKey, final String pPomUrl, final T pValue) {
+        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pPomUrl);
         if (file == null)
             return;
 
         file.putUserData(pKey, pValue);
     }
 
-    protected final VirtualFile getFile(final String pUrl) {
-        final VirtualFilePointer filePointer = PomManager.getInstance(project).getPointer(pUrl);
+    protected final VirtualFile getFile(final String pPomUrl) {
+        final VirtualFilePointer filePointer = PomManager.getInstance(project).getPointer(pPomUrl);
         if (filePointer == null)
             return null;
 
@@ -59,12 +58,12 @@ public abstract class AbstractPomSettingsManager extends AbstractProjectComponen
         private final String url;
 
         protected PomPropertyChangeEvent(final SourceType source,
-                                         final String pUrl,
+                                         final String pPomUrl,
                                          final String propertyName,
                                          final ValueType oldValue,
                                          final ValueType newValue) {
             super(source, propertyName, oldValue, newValue);
-            url = pUrl;
+            url = pPomUrl;
         }
 
         @Override

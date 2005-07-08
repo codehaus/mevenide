@@ -12,7 +12,6 @@ import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.util.RepositoryUtils;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.util.IDEUtils;

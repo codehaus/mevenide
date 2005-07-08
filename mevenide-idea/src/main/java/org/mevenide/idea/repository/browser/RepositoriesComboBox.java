@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.ComboBox;
 import java.awt.*;
 import java.net.URI;
 import javax.swing.*;
-import org.mevenide.idea.repository.util.RepositoryUtils;
+import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.repository.IRepositoryReader;
 
@@ -14,8 +14,12 @@ import org.mevenide.repository.IRepositoryReader;
  * @todo refresh repository list when modules change query context
  */
 public class RepositoriesComboBox extends ComboBox {
+    public RepositoriesComboBox(final Project pProject, final String pPomUrl) {
+        this(PomRepoManager.getInstance(pProject).getRepositoryReaders(pPomUrl));
+    }
+
     public RepositoriesComboBox(final Project pProject) {
-        this(RepositoryUtils.createRepoReaders(pProject));
+        this(PomRepoManager.getInstance(pProject).getRepositoryReaders());
     }
 
     public RepositoriesComboBox(final IRepositoryReader... pRepos) {
@@ -56,10 +60,10 @@ public class RepositoriesComboBox extends ComboBox {
                                                                    index,
                                                                    isSelected,
                                                                    cellHasFocus);
-            if(c instanceof JLabel) {
+            if (c instanceof JLabel) {
                 final JLabel label = (JLabel) c;
 
-                if(value instanceof IRepositoryReader) {
+                if (value instanceof IRepositoryReader) {
                     final IRepositoryReader repo = (IRepositoryReader) value;
                     final URI uri = repo.getRootURI();
                     final String scheme = uri.getScheme();

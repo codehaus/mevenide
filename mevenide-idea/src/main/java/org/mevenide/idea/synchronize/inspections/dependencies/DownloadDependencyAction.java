@@ -7,8 +7,7 @@ import com.intellij.openapi.module.Module;
 import java.util.concurrent.atomic.AtomicReference;
 import org.apache.maven.project.Dependency;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.repository.download.ArtifactDownloadManager;
-import org.mevenide.idea.repository.download.ArtifactNotFoundException;
+import org.mevenide.idea.repository.ArtifactNotFoundException;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.util.ui.UIUtils;
@@ -16,7 +15,8 @@ import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
- */ class DownloadDependencyAction extends AbstractFixAction {
+ */
+class DownloadDependencyAction extends AbstractFixAction {
     /**
      * Resources
      */

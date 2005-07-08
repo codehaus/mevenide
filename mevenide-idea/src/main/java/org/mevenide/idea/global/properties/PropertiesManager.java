@@ -1,6 +1,6 @@
 package org.mevenide.idea.global.properties;
 
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
@@ -16,7 +16,8 @@ import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.global.MavenManager;
-import org.mevenide.idea.util.components.AbstractApplicationComponent;
+import org.mevenide.idea.project.PomManager;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * Resolves Maven properties by looking in all possible places - POM property files, user files,
@@ -26,10 +27,10 @@ import org.mevenide.idea.util.components.AbstractApplicationComponent;
  * is used by Maven).</p>
  *
  * @author Arik
+ * @todo should be moved to 'project' package
  */
-public class PropertiesManager extends AbstractApplicationComponent
-        implements PropertyChangeListener,
-                   VirtualFilePointerListener {
+public class PropertiesManager extends AbstractProjectComponent implements PropertyChangeListener,
+                                                                           VirtualFilePointerListener {
     /**
      * Logging.
      */
@@ -59,6 +60,15 @@ public class PropertiesManager extends AbstractApplicationComponent
      * A file pointer to the Maven installation's default properties file.
      */
     private VirtualFilePointer mavenDriverPropertiesPointer;
+
+    /**
+     * Creates an instance for the given project.
+     *
+     * @param pProject the project
+     */
+    public PropertiesManager(final Project pProject) {
+        super(pProject);
+    }
 
     /**
      * Registers the given properties listener.
@@ -129,21 +139,22 @@ public class PropertiesManager extends AbstractApplicationComponent
     }
 
     /**
-     * Returns the value of the given property. The value is located the same way Maven resolves
-     * properties - in the following order:
-     *
-     * <p><ol> <li>system properties ({@code -Dx=y})</li> <li>user's properties ({@code
-     * build.properties} under the user's home)</li> <li>build properties ({@code build.properties}
-     * in the POM directory)</li> <li>project properties ({@code project.properties} in the POM
-     * directory</li> <li>maven properties (maven-provided defaults)</li> </ol></p>
-     *
-     * @param pPomFile the POM for which we resolve the property. The POM is needed, since each POM
-     *                 defines its own set of properties
-     * @param pName    name of the property to resolve
-     *
-     * @return property value, or {@code null} if it could not be found
-     */
-    public String getProperty(final VirtualFile pPomFile, final String pName) {
+         * Returns the value of the given property. The value is located the same way Maven resolves
+         * properties - in the following order:
+         *
+         * <p><ol> <li>system properties ({@code -Dx=y})</li> <li>user's properties ({@code
+         * build.properties} under the user's home)</li> <li>build properties ({@code build.properties}
+         * in the POM directory)</li> <li>project properties ({@code project.properties} in the POM
+         * directory</li> <li>maven properties (maven-provided defaults)</li> </ol></p>
+         *
+         * @param pPomUrl the POM file url for which we resolve the property. The POM is needed, since
+         *                each POM defines its own set of properties
+         * @param pName   name of the property to resolve
+         *
+         * @return property value, or {@code null} if it could not be found
+         */
+    public String getProperty(final String pPomUrl, final String pName) {
+        final VirtualFile pPomFile = PomManager.getInstance(project).getFile(pPomUrl);
 
         //
         //check some preconfigured properties that are not present in
@@ -251,7 +262,8 @@ public class PropertiesManager extends AbstractApplicationComponent
                     final int exprEnd = buf.indexOf("}", exprStart);
                     if (exprEnd >= 0) {
                         final String expr = buf.substring(exprStart + 2, exprEnd);
-                        final String value = getProperty(pPomFile, expr);
+                        final String url = pPomFile == null ? null : pPomFile.getUrl();
+                        final String value = getProperty(url, expr);
                         buf.replace(exprStart, exprEnd + 1, value == null ? "" : value);
                         exprStart--;
                     }
@@ -408,7 +420,7 @@ public class PropertiesManager extends AbstractApplicationComponent
      *
      * @return instance
      */
-    public static PropertiesManager getInstance() {
-        return ApplicationManager.getApplication().getComponent(PropertiesManager.class);
+    public static PropertiesManager getInstance(final Project pProject) {
+        return pProject.getComponent(PropertiesManager.class);
     }
 }

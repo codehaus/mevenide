@@ -1,17 +1,12 @@
-package org.mevenide.idea.toolwindows.repository;
+package org.mevenide.idea.repository.browser;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.SelectFromListDialog;
-import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.module.ModuleUtils;
+import org.mevenide.idea.project.util.PomUtils;
+import org.mevenide.idea.psi.PomModelManager;
 import org.mevenide.idea.psi.project.PsiDependencies;
 import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.repository.browser.AbstractBrowserAction;
-import org.mevenide.idea.repository.browser.RepositoryBrowser;
 import org.mevenide.idea.util.ui.images.Icons;
 import org.mevenide.repository.RepoPathElement;
 
@@ -24,15 +19,10 @@ public class AddAsDependencyAction extends AbstractBrowserAction {
      */
     private static final Res RES = Res.getInstance(AddAsDependencyAction.class);
 
-    /**
-     * Used to render modules in a list when selecting from multiple modules.
-     */
-    private static final ModuleToStringAspect MODULE_TO_STRING_ASPECT = new ModuleToStringAspect();
-
     public AddAsDependencyAction(final RepositoryBrowser pBrowser) {
         super(pBrowser,
-              RES.get("add.dep.text"),
-              RES.get("add.dep.desc"),
+              RES.get("add.dep.action.text"),
+              RES.get("add.dep.action.desc"),
               Icons.ADD_DEPENDENCY);
     }
 
@@ -52,16 +42,14 @@ public class AddAsDependencyAction extends AbstractBrowserAction {
         if (project == null)
             return;
 
-        final Module module = ModuleUtils.selectMavenModule(project, MODULE_TO_STRING_ASPECT);
-        if (module == null)
+        final String pomUrl = PomUtils.selectPom(project,
+                                                 "Select POM",
+                                                 "Please select the project you wish to add the dependency for:");
+        if (pomUrl == null || pomUrl.trim().length() == 0)
             return;
 
-        final ModuleSettings mavenSettings = ModuleSettings.getInstance(module);
-        final VirtualFile pomFile = mavenSettings.getPomVirtualFile();
-        if (pomFile == null)
-            return;
-
-        final PsiProject psi = null;//PomManager.getInstance(module).getPsiProject();
+        final PomModelManager pomMgr = PomModelManager.getInstance(project);
+        final PsiProject psi = pomMgr.getPsiProject(pomUrl);
         final PsiDependencies deps = psi.getDependencies();
         final RepoPathElement[] artifacts = getSelectedItems(RepoPathElement.LEVEL_VERSION);
         for (RepoPathElement pathElement : artifacts) {
@@ -70,16 +58,6 @@ public class AddAsDependencyAction extends AbstractBrowserAction {
             deps.setArtifactId(row, pathElement.getArtifactId());
             deps.setType(row, pathElement.getType());
             deps.setVersion(row, pathElement.getVersion());
-        }
-    }
-
-    private static class ModuleToStringAspect implements SelectFromListDialog.ToStringAspect {
-        public String getToStirng(Object obj) {
-            final Module module = (Module) obj;
-            final ModuleSettings mavenSettings = ModuleSettings.getInstance(module);
-            final VirtualFile pomFile = mavenSettings.getPomVirtualFile();
-            final String loc = pomFile == null ? "(unknown POM file)" : pomFile.getPath();
-            return module.getName() + " - " + loc;
         }
     }
 }
