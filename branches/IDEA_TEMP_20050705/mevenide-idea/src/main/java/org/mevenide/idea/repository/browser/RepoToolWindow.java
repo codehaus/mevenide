@@ -1,11 +1,10 @@
-package org.mevenide.idea.toolwindows.repository;
+package org.mevenide.idea.repository.browser;
 
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import org.mevenide.idea.repository.browser.RepositoryBrowser;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
@@ -54,18 +53,5 @@ public class RepoToolWindow extends RepositoryBrowser {
     public static void unregister(final Project project) {
         final ToolWindowManager toolMgr = ToolWindowManager.getInstance(project);
         toolMgr.unregisterToolWindow(NAME);
-    }
-
-    /**
-     * Returns the tool window instance for the given project.
-     *
-     * @param pProject the project to return the instance for
-     *
-     * @return repositories tool window
-     */
-    public static RepoToolWindow getInstance(final Project pProject) {
-        final ToolWindowManager mgr = ToolWindowManager.getInstance(pProject);
-        final ToolWindow tw = mgr.getToolWindow(NAME);
-        return (RepoToolWindow) tw.getComponent();
     }
 }

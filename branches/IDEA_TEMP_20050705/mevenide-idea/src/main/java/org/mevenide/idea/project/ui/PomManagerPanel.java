@@ -38,16 +38,12 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.execute.MavenExecuteManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.actions.AddPluginGoalToPomAction;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
 import org.mevenide.idea.project.actions.RefreshPomToolWindowAction;
 import org.mevenide.idea.project.actions.RemovePluginGoalFromPomAction;
-import org.mevenide.idea.project.goals.Goal;
-import org.mevenide.idea.project.goals.GoalContainer;
-import org.mevenide.idea.project.goals.PluginGoal;
-import org.mevenide.idea.project.goals.PluginGoalContainer;
+import org.mevenide.idea.project.goals.*;
 import org.mevenide.idea.project.util.PomUtils;
 
 /**
@@ -195,11 +191,11 @@ public class PomManagerPanel extends JPanel
         return goals.toArray(new PluginGoal[goals.size()]);
     }
 
-    public Goal[] getSelectedGoalsForPom(final String pUrl) {
-        return getSelectedGoalsForPom(pUrl, false);
+    public Goal[] getSelectedGoalsForPom(final String pPomUrl) {
+        return getSelectedGoalsForPom(pPomUrl, false);
     }
 
-    public Goal[] getSelectedGoalsForPom(final String pUrl,
+    public Goal[] getSelectedGoalsForPom(final String pPomUrl,
                                          final boolean pRecursePluginNodes) {
         final TreePath[] selection = tree.getSelectionPaths();
         if (selection == null)
@@ -208,7 +204,7 @@ public class PomManagerPanel extends JPanel
         final Set<Goal> goals = new HashSet<Goal>(selection.length);
         for (TreePath path : selection) {
             final Object item = path.getLastPathComponent();
-            if (item instanceof PluginNode && pRecursePluginNodes && pUrl == null) {
+            if (item instanceof PluginNode && pRecursePluginNodes && pPomUrl == null) {
                 final PluginNode node = (PluginNode) item;
                 final PluginGoalContainer plugin = node.getUserObject();
                 final Goal[] pluginGoals = plugin.getGoals();
@@ -220,9 +216,9 @@ public class PomManagerPanel extends JPanel
                 final Goal goal = node.getUserObject();
 
                 final PomNode pomNode = model.getPomNode(node);
-                if (pomNode == null && pUrl == null)
+                if (pomNode == null && pPomUrl == null)
                     goals.add(goal);
-                else if (pomNode != null && pomNode.getUserObject().equals(pUrl))
+                else if (pomNode != null && pomNode.getUserObject().equals(pPomUrl))
                     goals.add(goal);
             }
         }
@@ -350,7 +346,7 @@ public class PomManagerPanel extends JPanel
                 return;
 
             final Goal goal = ((GoalNode) node).getUserObject();
-            MavenExecuteManager.getInstance(project).execute(pomFile, goal);
+            PomPluginGoalsManager.getInstance(project).execute(pomFile, goal);
         }
     }
 

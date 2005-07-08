@@ -219,11 +219,11 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         }
     }
 
-    private PomNode createPomNode(final String pUrl) {
+    private PomNode createPomNode(final String pPomUrl) {
         final PomPluginGoalsManager plgMgr = PomPluginGoalsManager.getInstance(project);
 
-        final PomNode pomNode = new PomNode(pUrl);
-        final PluginGoal[] goals = plgMgr.getPluginGoals(pUrl);
+        final PomNode pomNode = new PomNode(pPomUrl);
+        final PluginGoal[] goals = plgMgr.getPluginGoals(pPomUrl);
         Arrays.sort(goals, GOAL_COMPARATOR);
 
         //
@@ -276,12 +276,12 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         return pluginNode;
     }
 
-    private PomNode findPomNode(final String pUrl) {
-        //noinspection UNCHECKED_WARNING
+    private PomNode findPomNode(final String pPomUrl) {
+        //noinspection unchecked
         final Enumeration<PomNode> children = projectsNode.children();
         while (children.hasMoreElements()) {
             final PomNode node = children.nextElement();
-            if (pUrl.equalsIgnoreCase(node.getUserObject()))
+            if (pPomUrl.equalsIgnoreCase(node.getUserObject()))
                 return node;
         }
 

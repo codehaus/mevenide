@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository.download;
+package org.mevenide.idea.repository;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import java.util.concurrent.atomic.AtomicBoolean;

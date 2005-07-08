@@ -6,9 +6,9 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.PomModelManager;
 import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
+import org.mevenide.idea.psi.PomModelManager;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.util.ui.images.Icons;
 

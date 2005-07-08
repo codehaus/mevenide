@@ -6,8 +6,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author Arik
  */
 public class PomNode extends DefaultMutableTreeNode {
-    public PomNode(final String pUrl) {
-        super(pUrl);
+    public PomNode(final String pPomUrl) {
+        super(pPomUrl);
     }
 
     @Override

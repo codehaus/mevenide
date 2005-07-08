@@ -11,8 +11,8 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.util.List;
 import org.jdom.Element;
+import org.mevenide.idea.project.AbstractPomSettingsManager;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.support.AbstractPomSettingsManager;
 
 /**
  * @author Arik
@@ -24,32 +24,32 @@ public class PomJdkManager extends AbstractPomSettingsManager implements JDOMExt
         super(pProject);
     }
 
-    public ProjectJdk getJdk(final String pUrl) {
-        if (!isRegistered(pUrl))
+    public ProjectJdk getJdk(final String pPomUrl) {
+        if (!isRegistered(pPomUrl))
             return null;
 
-        final ProjectJdk jdk = get(KEY, pUrl);
+        final ProjectJdk jdk = get(KEY, pPomUrl);
         if (jdk != null)
             return jdk;
 
         return ProjectRootManager.getInstance(project).getProjectJdk();
     }
 
-    public void setJdk(final String pUrl, final ProjectJdk pJdk) {
-        if (!isRegistered(pUrl))
+    public void setJdk(final String pPomUrl, final ProjectJdk pJdk) {
+        if (!isRegistered(pPomUrl))
             return;
 
         final ProjectRootManager rootMgr = ProjectRootManager.getInstance(project);
         final ProjectJdk defJdk = rootMgr.getProjectJdk();
 
-        final ProjectJdk oldJdk = getJdk(pUrl);
+        final ProjectJdk oldJdk = getJdk(pPomUrl);
         if (pJdk.equals(defJdk))
-            put(KEY, pUrl, null);
+            put(KEY, pPomUrl, null);
         else
-            put(KEY, pUrl, pJdk);
+            put(KEY, pPomUrl, pJdk);
 
         changeSupport.firePropertyChange(
-                new JdkPropertyChangeEvent(this, "jdk", oldJdk, pJdk, pUrl));
+                new JdkPropertyChangeEvent(this, "jdk", oldJdk, pJdk, pPomUrl));
     }
 
     public void readExternal(final Element pElt) throws InvalidDataException {
@@ -91,8 +91,8 @@ public class PomJdkManager extends AbstractPomSettingsManager implements JDOMExt
                                       final String propertyName,
                                       final ProjectJdk oldValue,
                                       final ProjectJdk newValue,
-                                      final String pUrl) {
-            super(source, pUrl, propertyName, oldValue, newValue);
+                                      final String pPomUrl) {
+            super(source, pPomUrl, propertyName, oldValue, newValue);
         }
     }
 }

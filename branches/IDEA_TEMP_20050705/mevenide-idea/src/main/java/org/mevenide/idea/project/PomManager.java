@@ -45,48 +45,48 @@ public class PomManager extends AbstractProjectComponent
         super(pProject);
     }
 
-    public void add(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0 || contains(pUrl))
+    public void add(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0 || contains(pPomUrl))
             return;
 
-        entries.add(pUrl);
-        firePomAddedEvent(pUrl);
+        entries.add(pPomUrl);
+        firePomAddedEvent(pPomUrl);
     }
 
-    public boolean contains(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0)
+    public boolean contains(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0)
             return false;
 
-        return entries.findByUrl(pUrl) != null;
+        return entries.findByUrl(pPomUrl) != null;
     }
 
-    public boolean isValid(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0)
+    public boolean isValid(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0)
             return false;
 
-        if (!contains(pUrl))
+        if (!contains(pPomUrl))
             return false;
 
-        final VirtualFilePointer pointer = getPointer(pUrl);
+        final VirtualFilePointer pointer = getPointer(pPomUrl);
         return pointer != null && pointer.isValid() && pointer.getFile() != null;
     }
 
-    public VirtualFile getFile(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0)
+    public VirtualFile getFile(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0)
             return null;
 
-        final VirtualFilePointer pointer = getPointer(pUrl);
+        final VirtualFilePointer pointer = getPointer(pPomUrl);
         if (pointer == null || !pointer.isValid())
             return null;
 
         return pointer.getFile();
     }
 
-    public VirtualFilePointer getPointer(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0)
+    public VirtualFilePointer getPointer(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0)
             return null;
 
-        return entries.findByUrl(pUrl);
+        return entries.findByUrl(pPomUrl);
     }
 
     public String[] getFileUrls() {
@@ -98,13 +98,13 @@ public class PomManager extends AbstractProjectComponent
         return list.toArray(new VirtualFilePointer[list.size()]);
     }
 
-    public void remove(final String pUrl) {
-        if (pUrl == null || pUrl.trim().length() == 0 || !contains(pUrl))
+    public void remove(final String pPomUrl) {
+        if (pPomUrl == null || pPomUrl.trim().length() == 0 || !contains(pPomUrl))
             return;
 
-        final VirtualFilePointer pointer = getPointer(pUrl);
+        final VirtualFilePointer pointer = getPointer(pPomUrl);
         entries.remove(pointer);
-        firePomRemovedEvent(pUrl);
+        firePomRemovedEvent(pPomUrl);
     }
 
     /**
@@ -197,14 +197,14 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomAdded(PomManagerEvent)} event.
      *
-     * @param pUrl the modified POM
+     * @param pPomUrl the modified POM
      */
-    protected void firePomAddedEvent(final String pUrl) {
+    protected void firePomAddedEvent(final String pPomUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null) {
-                event = new PomManagerEvent(this, pUrl);
+                event = new PomManagerEvent(this, pPomUrl);
             }
             listener.pomAdded(event);
         }
@@ -213,14 +213,14 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomRemoved(PomManagerEvent)} event.
      *
-     * @param pUrl the modified POM
+     * @param pPomUrl the modified POM
      */
-    protected void firePomRemovedEvent(final String pUrl) {
+    protected void firePomRemovedEvent(final String pPomUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null)
-                event = new PomManagerEvent(this, pUrl);
+                event = new PomManagerEvent(this, pPomUrl);
             listener.pomRemoved(event);
         }
     }
@@ -228,14 +228,14 @@ public class PomManager extends AbstractProjectComponent
     /**
      * Fires the {@link PomManagerListener#pomValidityChanged(PomManagerEvent)} event.
      *
-     * @param pUrl the modified POM
+     * @param pPomUrl the modified POM
      */
-    protected void firePomValidityChangedEvent(final String pUrl) {
+    protected void firePomValidityChangedEvent(final String pPomUrl) {
         final PomManagerListener[] listeners = listenerList.getListeners(PomManagerListener.class);
         PomManagerEvent event = null;
         for (PomManagerListener listener : listeners) {
             if (event == null)
-                event = new PomManagerEvent(this, pUrl);
+                event = new PomManagerEvent(this, pPomUrl);
             listener.pomValidityChanged(event);
         }
     }

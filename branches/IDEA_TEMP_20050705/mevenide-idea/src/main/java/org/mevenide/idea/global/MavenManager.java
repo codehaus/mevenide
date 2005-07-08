@@ -44,6 +44,7 @@ import org.mevenide.idea.util.ui.UIUtils;
  * amount of memory to allocate for Maven processes (e.g. -Xms and -Xmx) and others.</p>
  *
  * @author Arik
+ * @todo allow setting custom Maven home per project
  */
 public class MavenManager extends AbstractApplicationComponent implements JDOMExternalizable {
     /**

@@ -14,15 +14,15 @@ public class PomManagerEvent extends EventObject {
     private final String url;
 
     /**
-     * Creates an instance for the given POM manager and file.
-     *
-     * @param pSource the POM manager generating the event
-     * @param pUrl    the POM file that has changed
-     */
+         * Creates an instance for the given POM manager and file.
+         *
+         * @param pSource the POM manager generating the event
+         * @param pPomUrl the POM file that has changed
+         */
     public PomManagerEvent(final PomManager pSource,
-                           final String pUrl) {
+                           final String pPomUrl) {
         super(pSource);
-        url = pUrl;
+        url = pPomUrl;
     }
 
     /**
