@@ -102,9 +102,7 @@ public abstract class AbstractPOMManager implements POMManager {
      * @return
      */
     protected IQueryContext createQueryContext(String location) {
-        IQueryContext context = new DefaultQueryContext(new File(location));
-        context.getPOMContext().getFinalProject().setFile(new File(context.getProjectDirectory(), "project.xml"));
-        return context;
+        return new DefaultQueryContext(new File(location));
     }
 
     /**
