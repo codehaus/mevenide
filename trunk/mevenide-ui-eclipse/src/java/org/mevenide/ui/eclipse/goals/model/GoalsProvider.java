@@ -17,8 +17,6 @@
 
 package org.mevenide.ui.eclipse.goals.model;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.mevenide.context.IQueryContext;
@@ -26,6 +24,7 @@ import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.manager.GoalsGrabbersManager;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -34,8 +33,6 @@ import org.mevenide.goals.manager.GoalsGrabbersManager;
  * 
  */
 public class GoalsProvider implements ITreeContentProvider {
-    private static final Log log = LogFactory.getLog(GoalsProvider.class);
-
     private IGoalsGrabber goalsGrabber;
 
     public GoalsProvider() {
@@ -45,12 +42,15 @@ public class GoalsProvider implements ITreeContentProvider {
     public GoalsProvider(IQueryContext context) {
         try {
             if (context != null) {
-                goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(context, new LocationFinderAggregator(context));
+                LocationFinderAggregator locationFinder = new LocationFinderAggregator(context);
+                locationFinder.setCustomLocationFinder(Mevenide.getInstance().getCustomLocationFinder());
+                goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(context, locationFinder);
             } else {
                 goalsGrabber = new DefaultGoalsGrabber();
             }
         } catch (Exception e) {
-            log.debug(e);
+            final String msg = "Unable to retreave goals for " + context.getProjectDirectory().getName() + ".";
+            Mevenide.displayError("Internal MevenIDE Error", msg, e);
         }
     }
 

@@ -17,24 +17,14 @@
 
 package org.mevenide.ui.eclipse.actions;
 
-import java.io.File;
-
-import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
-import org.mevenide.project.io.ProjectReader;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
-import org.mevenide.ui.eclipse.util.StatusConstants;
 
 /**
  * either synchronize pom add .classpath 
@@ -44,19 +34,14 @@ import org.mevenide.ui.eclipse.util.StatusConstants;
  */
 public class SynchronizePomAction extends AbstractMevenideAction {
 
-    private Project mavenProject;
-//    private IQueryContext context;
-
     /* (non-Javadoc)
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
         try {
-            final IWorkbench workbench = PlatformUI.getWorkbench();
-            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            final IWorkbenchPage page = window.getActivePage();
+            final IWorkbenchPage page = getWorkbenchWindow().getActivePage();
             SynchronizationView view = (SynchronizationView) page.showView(Mevenide.SYNCHRONIZE_VIEW_ID);
-            view.setInput(this.mavenProject);
+            view.setInput(getCurrentProject());
         } catch (PartInitException e) {
             final String message = "Unable to open the POM synchronization view.";
             Mevenide.displayError("Internal MevenIDE Error", message, e);
@@ -68,30 +53,22 @@ public class SynchronizePomAction extends AbstractMevenideAction {
      */
     public void selectionChanged(IAction action, ISelection selection) {
         super.selectionChanged(action, selection);
+        action.setEnabled(!isAutosyncEnabled() && hasQueryContext(getCurrentProject()));
+    }
 
-//        this.context = Mevenide.getInstance().getPOMManager().getQueryContext(super.currentProject);
-//        action.setEnabled(this.context != null);
+    /**
+     * A convienence method.
+     * @return <tt>true</tt> if the given project has an associated IQueryContext
+     */
+    private static final boolean hasQueryContext(IProject project) {
+        return Mevenide.getInstance().getPOMManager().getQueryContext(project) != null;
+    }
 
-        Object firstElement = ((StructuredSelection) selection).getFirstElement();
-        if (firstElement != null) {
-            action.setEnabled(true);
-            if (firstElement instanceof IFile) {
-                IFile selectedFile = (IFile) firstElement;
-                File projectFile = selectedFile.getLocation().toFile();
-
-                try {
-                    this.mavenProject = ProjectReader.getReader().read(projectFile);
-                    this.mavenProject.setFile(projectFile);
-                } catch (Exception e) {
-                    final String message = "Unable to read the Maven project file " + selectedFile + ".";
-                    final IStatus status = new Status(IStatus.ERROR, Mevenide.PLUGIN_ID, StatusConstants.INTERNAL_ERROR, message, e);
-                    Mevenide.getInstance().getLog().log(status);
-        
-//                    log.error("Unable to read project file", e); //$NON-NLS-1$
-//                    shouldnot warn b/c malformed xml will then prevent user to do any action on that resource
-//                    MessageDialog.openError(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Invalid POM", "Unable to read project descriptor.");
-                }
-            }
-        }
+    /**
+     * A convienence method.
+     * @return <tt>true</tt> if automatic POM synchronization is enabled
+     */
+    private static final boolean isAutosyncEnabled() {
+        return Mevenide.getInstance().getPreferenceStore().getBoolean(MevenidePreferenceKeys.AUTOSYNC_ENABLED);
     }
 }
