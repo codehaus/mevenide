@@ -79,15 +79,24 @@ class DefaultProjectContext implements IProjectContext {
         projects.clear();
         jdomRootElements.clear();
         mergedProject = new Project();
-        readProject(new File(queryContext.getProjectDirectory(), "project.xml"), 1);
-        Iterator it = jdomRootElements.iterator();
         mergedJDomRoot = factory.element("project"); // blank initial root
-        while (it.hasNext()) {
-            Element root = (Element)it.next();
-            mergedJDomRoot = mergeProjectDOMs(mergedJDomRoot, root);
-            projects.add(unmarshaller.generateProject(root));
+
+        File rootFile = new File(queryContext.getProjectDirectory(), "project.xml");
+        readProject(rootFile, 1);
+
+        for (int i = 0; i < this.jdomRootElements.size(); ++i) {
+            Element root = (Element)this.jdomRootElements.get(i);
+            File    file = (File)this.projectFiles.get(i);
+
+            this.mergedJDomRoot = mergeProjectDOMs(this.mergedJDomRoot, root);
+
+            Project project = this.unmarshaller.generateProject(root);
+            project.setFile(file);
+            this.projects.add(project);
         }
-        mergedProject = unmarshaller.generateProject(mergedJDomRoot);
+
+        this.mergedProject = this.unmarshaller.generateProject(this.mergedJDomRoot);
+        this.mergedProject.setFile(rootFile);
     }
     
     public Project getFinalProject() {
