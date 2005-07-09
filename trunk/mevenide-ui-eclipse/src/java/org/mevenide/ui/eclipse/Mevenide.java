@@ -47,18 +47,15 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
 import org.mevenide.ui.eclipse.pom.manager.DefaultPOMManager;
 import org.mevenide.ui.eclipse.pom.manager.POMManager;
-import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 import org.mevenide.ui.eclipse.util.ExceptionHandler;
 import org.mevenide.ui.eclipse.util.LifecycleListener;
-import org.mevenide.util.StringUtils;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -68,22 +65,15 @@ import org.osgi.framework.Constants;
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  * @version $Id$
- * 
- * @todo clean-me move preferences related fields outside of Mevenide class 
- *  
  */
 public class Mevenide extends AbstractUIPlugin {
+    public static final String PLUGIN_ID = "org.mevenide.ui"; //$NON-NLS-1$
 
     private static Log log = LogFactory.getLog(Mevenide.class);
 
     private static Mevenide plugin;
 
     private Object lock = new Object();
-
-    public static final String NATURE_ID = "org.mevenide.ui.mavennature"; //$NON-NLS-1$
-    public static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView"; //$NON-NLS-1$
-    public static final String PLUGIN_ID = "org.mevenide.ui"; //$NON-NLS-1$
-    public static final String PLUGIN_NAME = "Mevenide"; //$NON-NLS-1$
 
     private static final String ICONS_PATH = "icons/"; //$NON-NLS-1$
     private static final String LIB_FOLDER = "lib/"; //$NON-NLS-1$
@@ -98,12 +88,6 @@ public class Mevenide extends AbstractUIPlugin {
     private String currentDir;
     private IProject project;
 
-    public static final String DEPENDENCY_TYPE_JAR = "jar"; //$NON-NLS-1$
-    public static final String DEPENDENCY_TYPE_EJB = "ejb"; //$NON-NLS-1$
-    public static final String DEPENDENCY_TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
-    public static final String DEPENDENCY_TYPE_ASPECT = "aspect"; //$NON-NLS-1$
-    public static final String DEPENDENCY_TYPE_WAR = "war"; //$NON-NLS-1$
-
     private ActionDefinitionsManager actionDefinitionsManager;
 
     public ActionDefinitionsManager getActionDefinitionsManager() {
@@ -113,24 +97,11 @@ public class Mevenide extends AbstractUIPlugin {
         return actionDefinitionsManager;
     }
 
-    public static final String[] KNOWN_DEPENDENCY_TYPES = new String[] {
-        DEPENDENCY_TYPE_JAR,
-        DEPENDENCY_TYPE_EJB,
-        DEPENDENCY_TYPE_PLUGIN,
-        DEPENDENCY_TYPE_ASPECT,
-        DEPENDENCY_TYPE_WAR
-    };
-
-    public static final String MAVEN_MENU_ID = "org.mevenide.maven.menu.id";
-
-    /// initialization methods ---
-    public Mevenide() throws Exception {
-        try {
-            plugin = this;
-        } catch (Exception x) {
-            log.debug("Mevenide couldnot initialize due to : ", x); //$NON-NLS-1$
-            throw x;
-        }
+    /**
+     * Initializes a new instance of Mevenide.
+     */
+    public Mevenide() {
+        plugin = this;
     }
 
     /**
@@ -406,107 +377,5 @@ public class Mevenide extends AbstractUIPlugin {
      */
     public POMManager getPOMManager() {
         return this.pomManager;
-    }
-
-////////////////////////////////////////////////////////////////////////////////
-
-    public static class WorkspaceLocationFinder extends CustomLocationFinder {
-        private IPersistentPreferenceStore preferences;
-        private String defaultMavenLocalHome;
-
-        public WorkspaceLocationFinder(IPersistentPreferenceStore preferences) {
-            this.preferences = preferences;
-            this.defaultMavenLocalHome = new File(new File(getUserHome()), ".maven").getAbsolutePath();
-        }
-
-        public String getConfigurationFileLocation() {
-            return null;
-        }
-
-        public String getJavaHome() {
-            return this.preferences.getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
-        }
-
-        public void setJavaHome(String javaHome) {
-            this.preferences.setValue(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY, javaHome);
-        }
-
-        public String getMavenHome() {
-            return this.preferences.getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY);
-        }
-
-        public void setMavenHome(String mavenHome) {
-            this.preferences.setValue(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY, mavenHome);
-        }
-
-        public String getMavenLocalHome() {
-            final String localHome = this.preferences.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
-            return StringUtils.isNull(localHome)? this.defaultMavenLocalHome: localHome;
-        }
-
-        public void setMavenLocalHome(String mavenLocalHome) {
-            this.preferences.setValue(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY, mavenLocalHome);
-        }
-
-        public String getMavenLocalRepository() {
-            final String mavenRepo = this.preferences.getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
-            return StringUtils.isNull(mavenRepo)? new File(getMavenLocalHome(), "repository").getAbsolutePath(): mavenRepo;
-        }
-
-        public void setMavenLocalRepository(String mavenLocalRepository) {
-            this.preferences.setValue(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY, mavenLocalRepository);
-        }
-
-        public String getMavenPluginsDir() {
-            return new File(getMavenLocalHome(), "cache").getAbsolutePath();
-        }
-
-        public void setMavenPluginsDir(String mavenPluginsDir) {
-        }
-
-        public String getUserHome() {
-            return System.getProperty("user.home");
-        }
-
-        public void setUserHome(String userHome) {
-        }
-
-    }
-
-    public static class PreferenceBasedLocationFinder extends CustomLocationFinder {
-        private IPersistentPreferenceStore preferences;
-        private String defaultMavenLocalHome;
-
-        public PreferenceBasedLocationFinder(IPersistentPreferenceStore preferences) {
-            this.preferences = preferences;
-            this.defaultMavenLocalHome = new File(new File(getUserHome()), ".maven").getAbsolutePath(); //$NON-NLS-1$
-
-            setMavenHome(preferences.getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY));
-
-            //preferences that are defaulted
-            String localHome = preferences.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
-            //maven.local.home has not been initialized - defaults to ${user.home}/.maven
-            if (StringUtils.isNull(localHome)) {
-                localHome = defaultMavenLocalHome;
-            }
-            super.setMavenLocalHome(localHome);
-
-            String mavenRepo = preferences.getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
-            //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
-            if (StringUtils.isNull(mavenRepo)) {
-                mavenRepo = new File(super.getMavenLocalHome(), "repository").getAbsolutePath(); //$NON-NLS-1$
-            }
-            super.setMavenLocalRepository(mavenRepo);
-
-            super.setMavenPluginsDir(new File(super.getMavenLocalHome(), "cache").getAbsolutePath()); //$NON-NLS-1$
-        }
-
-        public String getJavaHome() {
-            return this.preferences.getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
-        }
-
-        public final String getUserHome() {
-            return System.getProperty("user.home");
-        }
     }
 }

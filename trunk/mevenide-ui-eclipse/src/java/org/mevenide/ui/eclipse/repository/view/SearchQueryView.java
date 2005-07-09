@@ -228,14 +228,14 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
         toolkit.paintBordersFor(composite);
         
         updateTypeCombo();
-        typeCombo.setText(Mevenide.DEPENDENCY_TYPE_JAR);
+        typeCombo.setText(DependencyTypeRegistry.TYPE_JAR);
     }
 
     private void updateTypeCombo() {
         String[] userTypes = DependencyTypeRegistry.getUserRegisteredTypes();
         List items = new ArrayList();
         items.addAll(Arrays.asList(userTypes));
-        items.addAll(Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES));
+        items.addAll(Arrays.asList(DependencyTypeRegistry.KNOWN_TYPES));
         String[] types = (String[]) items.toArray(new String[items.size()]);
         typeCombo.setItems(types);
     }

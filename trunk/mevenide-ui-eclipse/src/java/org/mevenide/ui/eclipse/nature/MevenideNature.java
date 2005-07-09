@@ -103,7 +103,7 @@ public class MevenideNature implements IProjectNature {
         final IWorkbenchWindow activeWnd = workbench.getActiveWorkbenchWindow();
         final IWorkbenchPage activePage = activeWnd.getActivePage();
 
-        SynchronizationView view = (SynchronizationView) activePage.showView(Mevenide.SYNCHRONIZE_VIEW_ID);
+        SynchronizationView view = (SynchronizationView) activePage.showView(SynchronizationView.ID);
         view.setInput(getProject());
     }
 

@@ -36,6 +36,20 @@ import org.mevenide.util.StringUtils;
  */
 public class DependencyTypeRegistry {
 
+    public static final String TYPE_JAR = "jar"; //$NON-NLS-1$
+    public static final String TYPE_EJB = "ejb"; //$NON-NLS-1$
+    public static final String TYPE_PLUGIN = "plugin"; //$NON-NLS-1$
+    public static final String TYPE_ASPECT = "aspect"; //$NON-NLS-1$
+    public static final String TYPE_WAR = "war"; //$NON-NLS-1$
+
+    public static final String[] KNOWN_TYPES = new String[] {
+        TYPE_JAR,
+        TYPE_EJB,
+        TYPE_PLUGIN,
+        TYPE_ASPECT,
+        TYPE_WAR
+    };
+
     private DependencyTypeRegistry() {
     }
 
@@ -55,9 +69,11 @@ public class DependencyTypeRegistry {
     }
 
     public static boolean storeTypes(List types) {
+        final List knownTypes = Arrays.asList(KNOWN_TYPES);
+
         String registeredTypes = ""; //$NON-NLS-1$
         for (int i = 0; i < types.size(); i++) {
-            if ( !Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES).contains(types.get(i)) ) {
+            if ( !knownTypes.contains(types.get(i)) ) {
                 registeredTypes += (String) types.get(i) + ","; //$NON-NLS-1$
             }
         }

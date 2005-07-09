@@ -17,6 +17,7 @@
 package org.mevenide.ui.eclipse.nature;
 
 import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.plexus.util.DirectoryScanner;
@@ -26,7 +27,6 @@ import org.eclipse.core.resources.IResourceDeltaVisitor;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.IAction;
-import org.mevenide.ui.eclipse.Mevenide;
 
 
 /**  
@@ -59,7 +59,7 @@ public class ActionActivator implements IResourceDeltaVisitor {
                     shouldSkipDefinitions[i] = true;
                 }
                 else {
-		            if ( !project.hasNature(Mevenide.NATURE_ID) ) {
+		            if ( !MevenideNature.hasNature(project) ) {
 		                definition.setEnabled(project, false);
 		                shouldSkipDefinitions[i] = true;
 		            }

@@ -115,7 +115,7 @@ public class DependencyTypesPreferencePage extends PreferencePage implements IWo
                 if ( typesViewer.getSelection() != null ) {
                     IStructuredSelection selection = (IStructuredSelection) typesViewer.getSelection();
                     String currentType = (String) selection.getFirstElement();
-                    boolean enableRemove = !Arrays.asList(Mevenide.KNOWN_DEPENDENCY_TYPES).contains(currentType);
+                    boolean enableRemove = !Arrays.asList(DependencyTypeRegistry.KNOWN_TYPES).contains(currentType);
                     removeTypeButton.setEnabled(enableRemove);
                 }
             }	 
@@ -141,8 +141,8 @@ public class DependencyTypesPreferencePage extends PreferencePage implements IWo
             types.add(registeredTypes[i]);
         }
         
-        for (int i = 0; i < Mevenide.KNOWN_DEPENDENCY_TYPES.length; i++) {
-            types.add(Mevenide.KNOWN_DEPENDENCY_TYPES[i]);
+        for (int i = 0; i < DependencyTypeRegistry.KNOWN_TYPES.length; i++) {
+            types.add(DependencyTypeRegistry.KNOWN_TYPES[i]);
         }
     }
 

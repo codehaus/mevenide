@@ -30,7 +30,6 @@ import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.ui.eclipse.Mevenide.PreferenceBasedLocationFinder;
 
 /**
  * The default implementation of a POMManager. This implementation scans all workspace projects
