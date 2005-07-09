@@ -34,18 +34,22 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate {
-    protected IProject currentProject;
+    private IProject currentProject;
+    private IWorkbenchWindow workbenchWindow;
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
      */
     public void dispose() {
+        this.workbenchWindow = null;
+        this.currentProject = null;
     }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
      */
     public void init(IWorkbenchWindow window) {
+        this.workbenchWindow = window;
     }
 
     /* (non-Javadoc)
@@ -76,5 +80,19 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
         }
 
         return project;
+    }
+
+    /**
+     * @return Returns the currentProject.
+     */
+    protected IProject getCurrentProject() {
+        return currentProject;
+    }
+
+    /**
+     * @return Returns the workbenchWindow.
+     */
+    protected IWorkbenchWindow getWorkbenchWindow() {
+        return workbenchWindow;
     }
 }

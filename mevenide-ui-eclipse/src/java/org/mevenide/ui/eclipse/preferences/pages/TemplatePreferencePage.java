@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.mevenide.project.io.ProjectReader;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.template.model.Template;
 import org.mevenide.ui.eclipse.template.model.TemplateContentProvider;
@@ -174,18 +174,21 @@ public class TemplatePreferencePage extends PreferencePage implements IWorkbench
     }
 
     private boolean copyTemplateToPreferences(IPath source) {
+        JDomProjectUnmarshaller unmarshaller = new JDomProjectUnmarshaller();
+
         try {
-            ProjectReader reader = ProjectReader.getReader();
-            Project pom = reader.read(source.toFile());
+            Project pom = unmarshaller.parse(source.toFile());
+
             IPath dest = Mevenide.getInstance().getStateLocation().append("templates");//$NON-NLS-1$
-            //If it's the first template we are going to add then create the
-            //template folder
+            // If it's the first template we are going to add then create the template folder
             if (!dest.toFile().exists()) {
                 dest.toFile().mkdir();
             }
             dest = dest.append(pom.toString() + pom.hashCode() + ".tmpl");//$NON-NLS-1$
+
             FileUtils.copyFile(source.toFile(), dest.toFile());
-            pom = reader.read(dest.toFile());
+
+            pom = unmarshaller.parse(dest.toFile());
             fTemplates.addTemplate(new Template(pom));
             return true;
         }

@@ -35,11 +35,11 @@ public class AddMavenNatureAction extends AbstractMevenideAction {
      */
     public void run(IAction action) {
         try {
-            if (super.currentProject != null) {
-                MevenideNature.addToProject(super.currentProject);
+            if (getCurrentProject() != null) {
+                MevenideNature.addToProject(getCurrentProject());
             }
         } catch (CoreException e) {
-            final String msg = "Unable to add Maven nature to " + super.currentProject.getName() + ".";
+            final String msg = "Unable to add Maven nature to " + getCurrentProject().getName() + ".";
             Mevenide.displayError(action.getDescription(), msg, e);
         }
     }

@@ -1,29 +1,30 @@
-/*
- * ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+/* ==========================================================================
+ * Copyright 2003-2005 MevenIDE Project
  * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- * 
- * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.template.model;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+
 import org.apache.maven.project.Project;
 import org.eclipse.core.runtime.IAdaptable;
-import org.mevenide.project.io.ProjectReader;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -86,15 +87,13 @@ public class Templates extends Observable implements IAdaptable {
         Templates templates = new Templates();
         File tmplFolder = Mevenide.getInstance().getStateLocation().append("templates").toFile();//$NON-NLS-1$
         if (tmplFolder.exists()) {
-            File f;
-            File[] tmpls = tmplFolder.listFiles();
-            ProjectReader reader;
-            for (int i = 0; i < tmpls.length; i++) {
+            JDomProjectUnmarshaller unmarshaller = new JDomProjectUnmarshaller();
+
+            File[] file = tmplFolder.listFiles();
+            for (int i = 0; i < file.length; i++) {
                 try {
-                    f = tmpls[i];
-                    if (f.getName().endsWith("tmpl")) { //$NON-NLS-1$
-                        reader = ProjectReader.getReader();
-                        Project pom = reader.read(f);
+                    if (file[i].getName().endsWith("tmpl")) { //$NON-NLS-1$
+                        Project pom = unmarshaller.parse(file[i]);
                         templates.addTemplate(new Template(pom));
                     }
                 }

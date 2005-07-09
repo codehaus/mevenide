@@ -32,11 +32,11 @@ public class RemoveMavenNatureAction extends AbstractMevenideAction {
 
     public void run(IAction action) {
         try {
-            if (currentProject != null) {
-                MevenideNature.removeFromProject(currentProject);
+            if (getCurrentProject() != null) {
+                MevenideNature.removeFromProject(getCurrentProject());
             }
         } catch (CoreException e) {
-            final String msg = "Unable to remove Maven nature from " + super.currentProject.getName() + ".";
+            final String msg = "Unable to remove Maven nature from " + getCurrentProject().getName() + ".";
             Mevenide.displayError(action.getDescription(), msg, e);
         }
     }

@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.model;
 
 import java.io.File;
@@ -39,6 +40,7 @@ import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.dependency.DependencyUtil;
 import org.mevenide.project.io.ProjectWriter;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.adapters.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.sync.model.properties.ReadOnlyDependencyPropertySource;
 import org.mevenide.ui.eclipse.util.FileUtils;
@@ -68,6 +70,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		this.artifact = artifact;
 		parent = project;
 		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile().getParentFile()));
+        ((LocationFinderAggregator)locationFinder).setCustomLocationFinder(Mevenide.getInstance().getCustomLocationFinder());
 		initialize();
 	}
 	
