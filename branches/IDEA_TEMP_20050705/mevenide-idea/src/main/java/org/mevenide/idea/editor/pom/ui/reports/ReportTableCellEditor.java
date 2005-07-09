@@ -9,8 +9,8 @@ import java.awt.event.ActionListener;
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.global.reports.MavenReportManager;
-import org.mevenide.idea.global.reports.Report;
+import org.mevenide.idea.project.reports.MavenReportManager;
+import org.mevenide.idea.project.reports.Report;
 import org.mevenide.idea.psi.project.PsiReports;
 import org.mevenide.idea.util.ui.MultiLineLabel;
 

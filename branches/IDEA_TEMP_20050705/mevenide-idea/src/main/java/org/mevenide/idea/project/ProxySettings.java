@@ -1,7 +1,7 @@
 package org.mevenide.idea.project;
 
 import com.intellij.openapi.project.Project;
-import org.mevenide.idea.global.properties.PropertiesManager;
+import org.mevenide.idea.project.properties.PropertiesManager;
 
 /**
  * Created by IntelliJ IDEA. User: Arik Date: 08/07/2005 Time: 18:44:02 To change this template use

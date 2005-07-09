@@ -1,4 +1,4 @@
-package org.mevenide.idea.global.reports;
+package org.mevenide.idea.project.reports;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.startup.StartupManager;
@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.global.MavenPluginsManager;
-import org.mevenide.idea.global.properties.PropertiesEvent;
-import org.mevenide.idea.global.properties.PropertiesListener;
-import org.mevenide.idea.global.properties.PropertiesManager;
+import org.mevenide.idea.project.properties.PropertiesEvent;
+import org.mevenide.idea.project.properties.PropertiesListener;
+import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
@@ -26,7 +26,6 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
- * @todo should be moved to 'project' package
  */
 public class MavenReportManager extends AbstractProjectComponent {
     private Report[] reports = null;

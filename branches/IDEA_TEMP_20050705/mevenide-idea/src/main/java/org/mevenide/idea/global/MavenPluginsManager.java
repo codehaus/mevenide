@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import org.mevenide.idea.global.properties.PropertiesEvent;
-import org.mevenide.idea.global.properties.PropertiesListener;
-import org.mevenide.idea.global.properties.PropertiesManager;
+import org.mevenide.idea.project.properties.PropertiesEvent;
+import org.mevenide.idea.project.properties.PropertiesListener;
+import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.project.goals.DefaultPluginGoal;
 import org.mevenide.idea.project.goals.DefaultPluginGoalContainer;
 import org.mevenide.idea.project.goals.PluginGoal;
@@ -214,7 +214,6 @@ public class MavenPluginsManager extends AbstractProjectComponent
      * @param pPluginDir the plugin directory
      *
      * @return plugin descriptor
-     * @todo ignore 'register' and 'deregister' goals
      */
     private PluginGoalContainer parsePlugin(final VirtualFile pPluginDir) {
         final DefaultPluginGoalContainer plugin = new DefaultPluginGoalContainer();
@@ -252,6 +251,10 @@ public class MavenPluginsManager extends AbstractProjectComponent
         for (int i = 0; i < goalTags.length; i++) {
             XmlTag tag = goalTags[i];
             final String name = tag.getAttributeValue("name");
+            final String lcName = name.toLowerCase();
+            if(lcName.equalsIgnoreCase("register") || lcName.equalsIgnoreCase("deregister"))
+                continue;
+
             final String desc = tag.getAttributeValue("description");
             final String preReqsValue = tag.getAttributeValue("prereqs");
             final String[] preReqs = preReqsValue == null ? EMPTY_STRING_ARRAY : preReqsValue.split(

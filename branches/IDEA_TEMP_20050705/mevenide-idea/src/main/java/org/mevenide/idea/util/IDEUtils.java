@@ -22,6 +22,10 @@ public abstract class IDEUtils {
      */
     private static final Log LOG = LogFactory.getLog(IDEUtils.class);
 
+    public static void runWriteAction(final Runnable pRunnable) {
+        ApplicationManager.getApplication().runWriteAction(pRunnable);
+    }
+    
     public static void runCommand(final Module pModule,
                                   final Runnable pRunnable) {
         runCommand(pModule.getProject(), pRunnable);

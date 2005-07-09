@@ -1,4 +1,4 @@
-package org.mevenide.idea.global.reports;
+package org.mevenide.idea.project.reports;
 
 import org.mevenide.idea.project.goals.PluginGoalContainer;
 

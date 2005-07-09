@@ -1,6 +1,7 @@
 package org.mevenide.idea.project.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
 import java.awt.*;
 import javax.swing.*;
@@ -48,25 +49,37 @@ public class PomManagerTreeCellRenderer extends DefaultTreeCellRenderer {
 
                 final PomManager pomMgr = PomManager.getInstance(project);
                 final String url = pomNode.getUserObject();
-                if (!pomMgr.isValid(url))
-                    label.setForeground(Color.RED);
 
-                final PomModelManager modelMgr = PomModelManager.getInstance(project);
-                final PsiProject psi = modelMgr.getPsiProject(url);
-
-                //TODO: show path relative to project root
                 String text = PathUtil.toPresentableUrl(url);
-                if (psi != null) {
-                    final String name = psi.getName();
-                    if (name == null || name.trim().length() == 0) {
-                        final String groupId = psi.getGroupId();
-                        final String artifactId = psi.getArtifactId();
-                        if (groupId != null && groupId.trim().length() > 0 && artifactId != null && artifactId.trim().length() > 0)
-                            text = groupId + ":" + artifactId;
+
+                if (pomMgr.isValid(url)) {
+                    final PomModelManager modelMgr = PomModelManager.getInstance(project);
+                    final PsiProject psi = modelMgr.getPsiProject(url);
+                    if (psi != null) {
+                        final String name = psi.getName();
+                        if (name == null || name.trim().length() == 0) {
+                            final String groupId = psi.getGroupId();
+                            final String artifactId = psi.getArtifactId();
+                            if (groupId != null && groupId.trim().length() > 0 && artifactId != null && artifactId.trim().length() > 0)
+                                text = groupId + ":" + artifactId;
+                        }
+                        else
+                            text = name;
                     }
-                    else
-                        text = name;
                 }
+                else {
+                    label.setForeground(Color.RED);
+                    final VirtualFile projectFile = project.getProjectFile();
+                    if(projectFile != null) {
+                        final VirtualFile projectDir = projectFile.getParent();
+                        if(projectDir != null) {
+                            final String projectPath = projectDir.getPresentableUrl();
+                            if(url.toLowerCase().startsWith(projectPath.toLowerCase()))
+                                text = url.substring(projectPath.length());
+                        }
+                    }
+                }
+
                 label.setText(text);
             }
             else if (pValue instanceof PluginNode) {
