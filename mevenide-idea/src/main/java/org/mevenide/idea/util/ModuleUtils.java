@@ -1,4 +1,4 @@
-package org.mevenide.idea.module;
+package org.mevenide.idea.util;
 
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.*;
