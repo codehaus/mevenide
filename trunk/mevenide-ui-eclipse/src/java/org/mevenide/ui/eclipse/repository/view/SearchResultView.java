@@ -86,7 +86,7 @@ public class SearchResultView extends ViewPart {
                         return ((RepoPathElement) inputElement).getChildren();
                     } catch (Exception e) {
                         final String msg = "Unable to fetch children.";
-                        Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                        Mevenide.displayError(msg, e);
                     } 
                 }
                 return null;

@@ -26,7 +26,6 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
-import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -61,16 +60,9 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
      * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
      */
     public void selectionChanged(IAction action, ISelection selection) {
-
         IProject selectedProject = getParentProject(selection);
         if (selectedProject != null) {
-
             this.currentProject = selectedProject.getProject();
-            String cdir = this.currentProject.getLocation().toFile().getAbsolutePath();
-
-            Mevenide.getInstance().setCurrentDir(cdir);
-            Mevenide.getInstance().setProject(selectedProject);
-            Mevenide.getInstance().initEnvironment();
         }
     }
 

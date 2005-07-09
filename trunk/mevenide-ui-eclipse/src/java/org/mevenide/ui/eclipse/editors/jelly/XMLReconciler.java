@@ -178,7 +178,7 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
             document.replace(to.getOffset(), 0, "<" + name + "/>");
         }
         catch (BadLocationException e) {
-            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
+            Mevenide.displayError(e.getLocalizedMessage(), e);
         }
     }
 
@@ -188,7 +188,7 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
             document.replace(to.getOffset() + to.getLength(), 0, "<" + name + "/>");
         }
         catch (BadLocationException e) {
-            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
+            Mevenide.displayError(e.getLocalizedMessage(), e);
         }
     }
 

@@ -88,7 +88,7 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
 //                                removeProject((IProject)c);
 //                            }
 //                        } catch (CoreException e) {
-//                            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
+//                            Mevenide.displayError(e.getLocalizedMessage(), e);
 //                        }
 //                    }
 //                }

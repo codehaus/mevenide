@@ -200,7 +200,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
                 userAlreadyNotified = true;
                 final String msg = "Unable to get the name of the POM.";
                 IStatus status = new Status(IStatus.ERROR, Mevenide.PLUGIN_ID, StatusConstants.INTERNAL_ERROR, msg, null);
-                Mevenide.displayError("Internal MevenIDE Error", msg, status);
+                Mevenide.displayError(msg, status);
             }
 
             return "UNKNOWN";

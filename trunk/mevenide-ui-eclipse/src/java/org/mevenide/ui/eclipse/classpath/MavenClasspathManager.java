@@ -92,7 +92,7 @@ public class MavenClasspathManager implements IPropertyChangeListener {
                 }
             } catch (CoreException e) {
                 final String msg = "Unable to initialize the Maven classpath container " + CONTAINER_PATH + ".";
-                Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                Mevenide.displayError(msg, e);
             }
         }
 
@@ -109,7 +109,7 @@ public class MavenClasspathManager implements IPropertyChangeListener {
                 }
             } catch (CoreException e) {
                 final String msg = "Unable to remove the Maven classpath container " + CONTAINER_PATH + ".";
-                Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                Mevenide.displayError(msg, e);
             }
         }
 

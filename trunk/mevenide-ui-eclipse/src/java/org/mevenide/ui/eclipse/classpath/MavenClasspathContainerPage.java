@@ -404,7 +404,7 @@ public class MavenClasspathContainerPage extends WizardPage implements
                 container = (MavenClasspathContainer) JavaCore.getClasspathContainer(entry.getPath(), this.javaProject);
             } catch (JavaModelException e) {
                 final String message = "An error occurred while retreaving Maven classpath container for " + this.javaProject.getProject().getName();
-                Mevenide.displayError("Internal MevenIDE Error", message, e);
+                Mevenide.displayError(message, e);
             }
         }
 
