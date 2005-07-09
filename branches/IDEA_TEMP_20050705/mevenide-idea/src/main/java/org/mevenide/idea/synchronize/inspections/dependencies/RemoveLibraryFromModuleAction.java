@@ -5,46 +5,37 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.vfs.VirtualFile;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.synchronize.AbstractFixAction;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.synchronize.FileProblemInfo;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
  */
-public class RemoveLibraryFromModuleAction extends AbstractFixAction {
-    /**
-     * Logging.
-     */
-    private static final Log LOG = LogFactory.getLog(RemoveLibraryFromModuleAction.class);
-
+public class RemoveLibraryFromModuleAction extends AbstractFixAction<FileProblemInfo> {
     /**
      * Resources
      */
     private static final Res RES = Res.getInstance(RemoveLibraryFromModuleAction.class);
 
     private final Runnable libraryRemover = new RemoveFromIdeaRunnable();
-    private final Module module;
-    private final VirtualFile libraryFile;
-    private final String libraryFilePath;
 
-    public RemoveLibraryFromModuleAction(final ProblemInfo pProblem,
-                                         final Module pModule,
-                                         final VirtualFile pLibraryFile) {
-        super(RES.get("remove.lib.from.idea.action.name", pLibraryFile.getPath()),
+    /**
+     * The module in which the problem was discovered.
+     */
+    private final Module module;
+
+    public RemoveLibraryFromModuleAction(final FileProblemInfo pProblem,
+                                         final Module pModule) {
+        super(RES.get("remove.lib.from.idea.action.name", pProblem.getFile().getPath()),
               RES.get("remove.lib.from.idea.action.desc",
-                      pLibraryFile.getPath(),
+                      pProblem.getFile().getPresentableName(),
                       pModule.getName()),
               Icons.FIX_PROBLEMS,
               pProblem);
         module = pModule;
-        libraryFile = pLibraryFile;
-        libraryFilePath = FileUtils.fixPath(libraryFile);
     }
 
     public void actionPerformed(AnActionEvent e) {
@@ -68,11 +59,9 @@ public class RemoveLibraryFromModuleAction extends AbstractFixAction {
                     else
                         files = lib.getFiles(OrderRootType.CLASSES);
 
-                    for (VirtualFile file : files) {
-                        final String path = FileUtils.fixPath(file);
-                        if (file.equals(libraryFile) || libraryFilePath.equals(path))
+                    for (VirtualFile file : files)
+                        if (file.equals(problem.getFile()))
                             model.removeOrderEntry(libEntry);
-                    }
                 }
             }
 

@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
-import org.mevenide.idea.Res;
 import org.mevenide.idea.global.properties.PropertiesManager;
 import org.mevenide.idea.project.AbstractPomSettingsManager;
 import org.mevenide.idea.project.PomManager;
@@ -33,10 +32,6 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
  * @author Arik
  */
 public class PomRepoManager extends AbstractPomSettingsManager {
-    /**
-     * Resources.
-     */
-    private static final Res RES = Res.getInstance(PomRepoManager.class);
 
     private static final IRepositoryReader[] EMPTY_REPO_ARRAY = new IRepositoryReader[0];
 
@@ -48,6 +43,19 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     public PomRepoManager(final Project pProject) {
         super(pProject);
+    }
+
+    public VirtualFile findFile(final String pPomUrl, final Artifact pArtifact) {
+        final VirtualFile localRepo = getLocalRepositoryDirectory(pPomUrl);
+        if (localRepo == null)
+            return null;
+
+        final FileFinder finder = new FileFinder(localRepo, pArtifact);
+        IDEUtils.runCommand(project, finder);
+        if (!finder.isFound())
+            return null;
+
+        return finder.getFile();
     }
 
     /**
@@ -181,6 +189,21 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         return repos;
     }
 
+    public VirtualFile getLocalRepositoryDirectory(final String pPomUrl) {
+        final IRepositoryReader localRepo = getLocalRepositoryReader(pPomUrl);
+        if (localRepo == null)
+            return null;
+
+        final URI localRepoRootUri = localRepo.getRootURI();
+        try {
+            return VfsUtil.findFileByURL(localRepoRootUri.toURL());
+        }
+        catch (MalformedURLException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
     public IRepositoryReader getLocalRepositoryReader(final String pPomUrl) {
         final PropertiesManager mgr = PropertiesManager.getInstance(project);
         final String value = mgr.getProperty(pPomUrl, "maven.repo.local");
@@ -213,20 +236,10 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     }
 
     public boolean isInstalled(final String pPomUrl, final RepoPathElement pElement) {
-        return isInstalled(pPomUrl,
-                           pElement.getGroupId(),
-                           pElement.getArtifactId(),
-                           pElement.getType(),
-                           pElement.getVersion(),
-                           pElement.getExtension());
+        return isInstalled(pPomUrl, Artifact.fromRepoPathElement(pElement));
     }
 
-    public boolean isInstalled(final String pPomUrl,
-                               final String pGroupId,
-                               final String pArtifactId,
-                               final String pType,
-                               final String pVersion,
-                               final String pExtension) {
+    public boolean isInstalled(final String pPomUrl, final Artifact pArtifact) {
         final IRepositoryReader localRepo = getLocalRepositoryReader(pPomUrl);
         if (localRepo == null)
             return false;
@@ -234,14 +247,9 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         final URI localRepoRootUri = localRepo.getRootURI();
         try {
             final VirtualFile localRepoFile = VfsUtil.findFileByURL(localRepoRootUri.toURL());
-            final FileSearcher searcher = new FileSearcher(localRepoFile,
-                                                           pGroupId,
-                                                           pArtifactId,
-                                                           pType,
-                                                           pVersion,
-                                                           pExtension);
-            IDEUtils.runCommand(project, searcher);
-            return searcher.isFound();
+            final FileFinder finder = new FileFinder(localRepoFile, pArtifact);
+            IDEUtils.runCommand(project, finder);
+            return finder.isFound();
         }
         catch (MalformedURLException e) {
             LOG.error(e.getMessage(), e);
@@ -251,20 +259,10 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     public VirtualFile download(final String pPomUrl, final RepoPathElement pathElement)
             throws ArtifactNotFoundException {
-        return download(pPomUrl,
-                        pathElement.getGroupId(),
-                        pathElement.getType(),
-                        pathElement.getArtifactId(),
-                        pathElement.getVersion(),
-                        pathElement.getExtension());
+        return download(pPomUrl, Artifact.fromRepoPathElement(pathElement));
     }
 
-    public VirtualFile download(final String pPomUrl,
-                                final String pGroupId,
-                                final String pArtifactId,
-                                final String pType,
-                                final String pVersion,
-                                final String pExtension) throws ArtifactNotFoundException {
+    public VirtualFile download(final String pPomUrl, final Artifact pArtifact) throws ArtifactNotFoundException {
         //
         //iterate over the POM's remote repositories, and try each one. The first one
         //that succeeds is returned.
@@ -273,13 +271,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         final Set<Throwable> errors = new HashSet<Throwable>(remoteRepos.length);
         for (final IRepositoryReader reader : remoteRepos) {
             try {
-                return download(pPomUrl,
-                                reader,
-                                pGroupId,
-                                pType,
-                                pArtifactId,
-                                pVersion,
-                                pExtension);
+                return download(pPomUrl, reader, pArtifact);
             }
             catch (IOException e) {
                 errors.add(e);
@@ -290,26 +282,13 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         //if we got here, errors occured - throw an exception specifying the error(s)
         //
         final Throwable[] buffer = new Throwable[errors.size()];
-        throw new ArtifactNotFoundException(pGroupId,
-                                            pType,
-                                            pArtifactId,
-                                            pVersion,
-                                            pExtension,
-                                            errors.toArray(buffer));
+        throw new ArtifactNotFoundException(pArtifact, errors.toArray(buffer));
     }
 
     public VirtualFile download(final String pPomUrl,
                                 final IRepositoryReader pRemoteRepo,
-                                final String pGroupId,
-                                final String pArtifactId,
-                                final String pType,
-                                final String pVersion,
-                         final String pExtension) throws IOException {
-        return download(pPomUrl, pRemoteRepo, convertToRelativePath(pGroupId,
-                                                                    pArtifactId,
-                                                                    pType,
-                                                                    pVersion,
-                                                                    pExtension));
+                                final Artifact pArtifact) throws IOException {
+        return download(pPomUrl, pRemoteRepo, pArtifact.getRelativePath());
     }
 
     private VirtualFile download(final String pPomUrl,
@@ -406,61 +385,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         }
     }
 
-    public static String getPresentableName(final String pGroupId,
-                                            final String pArtifactId,
-                                            String pType,
-                                            String pVersion,
-                                            String pExtension) {
-        if (pGroupId == null || pGroupId.trim().length() == 0)
-            throw new IllegalArgumentException(RES.get("null.arg", "pGroupId"));
-
-        if (pType == null || pType.trim().length() == 0)
-            pType = "jar";
-
-        if (pArtifactId == null || pArtifactId.trim().length() == 0)
-            throw new IllegalArgumentException(RES.get("null.arg", "pArtifactId"));
-
-        if (pVersion == null || pVersion.trim().length() == 0)
-            pVersion = "SNAPSHOT";
-
-        if (pExtension == null || pExtension.trim().length() == 0)
-            pExtension = pType;
-
-        final StringBuilder buf = new StringBuilder(100);
-        buf.append(pArtifactId).append('-').append(pVersion).append('.').append(pExtension);
-        return buf.toString();
-    }
-
-    public static String convertToRelativePath(final String pGroupId,
-                                               final String pArtifactId,
-                                               String pType,
-                                               String pVersion,
-                                               String pExtension) {
-        if (pGroupId == null || pGroupId.trim().length() == 0)
-            throw new IllegalArgumentException(RES.get("null.arg", "pGroupId"));
-
-        if (pType == null || pType.trim().length() == 0)
-            pType = "jar";
-
-        if (pArtifactId == null || pArtifactId.trim().length() == 0)
-            throw new IllegalArgumentException(RES.get("null.arg", "pArtifactId"));
-
-        if (pVersion == null || pVersion.trim().length() == 0)
-            pVersion = "SNAPSHOT";
-
-        if (pExtension == null || pExtension.trim().length() == 0)
-            pExtension = pType;
-
-        final StringBuilder buf = new StringBuilder(100);
-        buf.append(pGroupId).
-                append('/').
-                append(pType).append('s').
-                append('/').
-                append(pArtifactId).append('-').append(pVersion).
-                append('.').append(pExtension);
-        return buf.toString();
-    }
-
     public static PomRepoManager getInstance(final Project pProject) {
         return pProject.getComponent(PomRepoManager.class);
     }
@@ -490,23 +414,13 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         }
     }
 
-    private static class FileSearcher extends PathSearcher {
-        public FileSearcher(final VirtualFile pLocalRepo, final RepoPathElement pElement) {
-            this(pLocalRepo,
-                 pElement.getGroupId(),
-                 pElement.getArtifactId(),
-                 pElement.getType(),
-                 pElement.getVersion(),
-                 pElement.getExtension());
+    private static class FileFinder extends PathSearcher {
+        public FileFinder(final VirtualFile pLocalRepo, final RepoPathElement pElement) {
+            this(pLocalRepo, Artifact.fromRepoPathElement(pElement));
         }
 
-        public FileSearcher(final VirtualFile pLocalRepo,
-                            final String pGroupId,
-                            final String pArtifactId,
-                            final String pType,
-                            final String pVersion,
-                            final String pExtension) {
-            super(pLocalRepo, convertToRelativePath(pGroupId, pArtifactId, pType, pVersion, pExtension));
+        public FileFinder(final VirtualFile pLocalRepo, final Artifact pArtifact) {
+            super(pLocalRepo, pArtifact.getRelativePath());
         }
     }
 }

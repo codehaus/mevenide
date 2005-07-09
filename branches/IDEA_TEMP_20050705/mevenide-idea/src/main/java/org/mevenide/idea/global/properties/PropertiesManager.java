@@ -246,6 +246,20 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
      * Resolves all property expressions in the given string to their values. Property expressions
      * are written in the familiar format of {@code ${propertyname}}.
      *
+     * @param pPomUrl the POM by which property values will be fetched if needed
+     * @param pValue   the string containing expressions
+     *
+     * @return expanded string with property values
+     */
+    public String resolveProperty(final String pPomUrl, final String pValue) {
+        final VirtualFile pomFile = PomManager.getInstance(project).getFile(pPomUrl);
+        return resolveProperty(pomFile, pValue);
+    }
+
+    /**
+     * Resolves all property expressions in the given string to their values. Property expressions
+     * are written in the familiar format of {@code ${propertyname}}.
+     *
      * @param pPomFile the POM by which property values will be fetched if needed
      * @param pValue   the string containing expressions
      *

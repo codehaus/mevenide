@@ -11,7 +11,7 @@ import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.maven.project.Dependency;
+import org.mevenide.idea.repository.Artifact;
 
 /**
  * @author Arik
@@ -51,12 +51,11 @@ public abstract class IDEUtils {
             return mgr.getProgressIndicator();
     }
 
-    public static Library findLibrary(final Project pProject,
-                                      final Dependency pDependency) {
+    public static Library findLibrary(final Project pProject, final Artifact pDependency) {
         final LibraryTablesRegistrar libTableMgr = LibraryTablesRegistrar.getInstance();
         final LibraryTable libTable = libTableMgr.getLibraryTable(pProject);
 
-        String libName = pDependency.getArtifact();
+        String libName = pDependency.toString();
         Library lib = libTable.getLibraryByName(libName);
         if (lib == null) {
             String type = pDependency.getType();

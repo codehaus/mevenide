@@ -472,9 +472,13 @@ public class XmlTagPath {
 
     public void setValue(final Object pValue) throws IncorrectOperationException {
         final String value = pValue == null ? null : pValue.toString();
-
-        final XmlTag tag = ensureTag();
-        PsiUtils.setTagValue(getProject(), tag, value);
+        if(value == null) {
+            XmlTag tag = getTag();
+            if(tag != null)
+                tag.delete();
+        }
+        else
+            PsiUtils.setTagValue(getProject(), ensureTag(), value);
     }
 
     public final void setValueProtected(final Object pValue) {

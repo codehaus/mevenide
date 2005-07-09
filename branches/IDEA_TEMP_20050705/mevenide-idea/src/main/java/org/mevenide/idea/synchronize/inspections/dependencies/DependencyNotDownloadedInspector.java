@@ -1,15 +1,16 @@
 package org.mevenide.idea.synchronize.inspections.dependencies;
 
 import com.intellij.openapi.project.Project;
-import com.sun.java_cup.internal.version;
 import java.util.HashSet;
 import java.util.Set;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.project.util.PomUtils;
+import org.mevenide.idea.repository.Artifact;
 import org.mevenide.idea.repository.PomRepoManager;
-import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.psi.project.PsiDependencies;
-import org.mevenide.idea.psi.PomModelManager;
-import org.mevenide.idea.synchronize.*;
+import org.mevenide.idea.synchronize.AbstractProblemInfo;
+import org.mevenide.idea.synchronize.ArtifactProblemInfo;
+import org.mevenide.idea.synchronize.ProblemInfo;
+import org.mevenide.idea.synchronize.ProjectProblemInspector;
 import org.mevenide.idea.synchronize.inspections.AbstractInspector;
 
 /**
@@ -36,72 +37,39 @@ public class DependencyNotDownloadedInspector extends AbstractInspector implemen
         //exists in the local repository
         //
         final PomRepoManager repoMgr = PomRepoManager.getInstance(pProject);
-        final PomModelManager modelMgr = PomModelManager.getInstance(pProject);
-
-        final PsiProject psi = modelMgr.getPsiProject(pPomUrl);
-        final PsiDependencies deps = psi.getDependencies();
-        for(int row = 0; row < deps.getRowCount(); row++) {
-            String type = deps.getType(row);
-            if(type == null || type.trim().length() == 0)
-                type = "jar";
-
-            if(!"jar".equalsIgnoreCase(type) || !"ejb".equalsIgnoreCase(type))
-                continue;
-
-            final String groupId = deps.getGroupId(row);
-            final String artifactId = deps.getArtifactId(row);
-            final String version = deps.getVersion(row);
-            final String extension = deps.getExtension(row);
-            if(!repoMgr.isInstalled(pPomUrl, groupId, artifactId, type, version, extension))
+        final Artifact[] artifacts = PomUtils.getPomClassPathArtifacts(pProject, pPomUrl);
+        for (Artifact artifact : artifacts) {
+            if(!repoMgr.isInstalled(pPomUrl, artifact))
                 problems.add(new DependencyNotDownloadedProblemInfo(pProject,
-                                                                    this,
                                                                     pPomUrl,
-                                                                    groupId,
-                                                                    artifactId,
-                                                                    type,
-                                                                    version,
-                                                                    extension));
+                                                                    artifact));
         }
 
         return problems.toArray(new ProblemInfo[problems.size()]);
     }
 
-    private class DependencyNotDownloadedProblemInfo extends AbstractArtifactProblemInfo {
+    private class DependencyNotDownloadedProblemInfo extends AbstractProblemInfo implements ArtifactProblemInfo {
+        private final Artifact artifact;
 
         public DependencyNotDownloadedProblemInfo(final Project pProject,
-                                                  final ProblemInspector pInspector,
                                                   final String pPomUrl,
-                                                  final String pGroupId,
-                                                  final String pArtifactId,
-                                                  final String pType,
-                                                  final String pVersion,
-                                                  final String pExtension) {
-            super(pInspector,
+                                                  final Artifact pArtifact) {
+            super(DependencyNotDownloadedInspector.this,
                   pProject,
                   pPomUrl,
-                  RES.get("dep.missing.problem.desc",
-                          PomRepoManager.getPresentableName(pGroupId,
-                                                            pArtifactId,
-                                                            pType,
-                                                            pVersion,
-                                                            pExtension)),
-                  pGroupId,
-                  pArtifactId,
-                  pType,
-                  pVersion,
-                  pExtension);
+                  RES.get("dep.missing.problem.desc", pArtifact));
 
+            artifact = pArtifact;
             addFixAction(new DownloadDependencyAction(this));
             addFixAction(new RemoveDependencyFromPomAction(this));
         }
 
+        public Artifact getArtifact() {
+            return artifact;
+        }
+
         public boolean isValid() {
-            return PomRepoManager.getInstance(project).isInstalled(pomUrl,
-                                                                   groupId,
-                                                                   artifactId,
-                                                                   type,
-                                                                   version,
-                                                                   extension);
+            return PomRepoManager.getInstance(project).isInstalled(pomUrl, artifact);
         }
     }
 }

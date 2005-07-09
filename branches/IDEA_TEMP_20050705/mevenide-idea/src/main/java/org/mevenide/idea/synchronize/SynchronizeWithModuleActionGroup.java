@@ -61,6 +61,7 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
     }
 
     private class SynchronizeWithModuleAction extends AbstractAnAction {
+        private final String pomUrl;
         private final Module module;
 
         public SynchronizeWithModuleAction(final String pPomUrl,
@@ -71,6 +72,7 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
                           pModule.getName()),
                   Icons.SYNC);
 
+            pomUrl = pPomUrl;
             module = pModule;
         }
 
@@ -88,10 +90,8 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
                 public void run() {
                     final SynchronizationResultsPanel ui;
                     ui = (SynchronizationResultsPanel) tw.getComponent();
-
-                    //TODO: inspect only our module!
                     final InspectionsManager mgr = InspectionsManager.getInstance(project);
-                    final ProblemInfo[] problems = mgr.inspect();
+                    final ProblemInfo[] problems = mgr.inspect(pomUrl, module);
                     ui.setProblems(problems);
                 }
             });
