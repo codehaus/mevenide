@@ -44,7 +44,7 @@ public class SynchronizePomAction extends AbstractMevenideAction {
     public void run(IAction action) {
         try {
             final IWorkbenchPage page = getWorkbenchWindow().getActivePage();
-            SynchronizationView view = (SynchronizationView) page.showView(Mevenide.SYNCHRONIZE_VIEW_ID);
+            SynchronizationView view = (SynchronizationView) page.showView(SynchronizationView.ID);
             view.setInput(getCurrentProject());
         } catch (PartInitException e) {
             final String message = "Unable to open the POM synchronization view.";

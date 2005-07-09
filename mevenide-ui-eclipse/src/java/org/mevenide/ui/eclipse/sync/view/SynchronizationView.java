@@ -94,7 +94,8 @@ import org.mevenide.util.MevenideUtils;
  *
  */
 public class SynchronizationView extends ViewPart implements IActionListener, IResourceChangeListener, IPropertyChangeListener, IProjectChangeListener, ISynchronizationNodeListener {
-    
+    public static final String ID = Mevenide.PLUGIN_ID  + ".synchronize.view.SynchronizationView"; //$NON-NLS-1$
+
 	private static final Log log = LogFactory.getLog(SynchronizationView.class);
 
     private static final String SYNC_DIRECTION_VIEW = "SynchronizationView.SYNC_DIRECTION_VIEW"; //$NON-NLS-1$
@@ -233,7 +234,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
     }
 
     private void hideView() {
-        SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(Mevenide.SYNCHRONIZE_VIEW_ID);
+        SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(ID);
         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().hideView(view);
     }
 

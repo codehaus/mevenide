@@ -47,7 +47,7 @@ public class DependencyPropertySource extends AbstractPomPropertySource {
 
 	private String[] getAvailableTypes() {
 	    String[] userRegisteredTypes = DependencyTypeRegistry.getUserRegisteredTypes();
-	    String[] coreTypes = Mevenide.KNOWN_DEPENDENCY_TYPES;
+	    String[] coreTypes = DependencyTypeRegistry.KNOWN_TYPES;
 	    String[] availableTypes = new String[userRegisteredTypes.length + coreTypes.length];
 	    
 	    System.arraycopy(userRegisteredTypes, 0, availableTypes, 0, userRegisteredTypes.length);

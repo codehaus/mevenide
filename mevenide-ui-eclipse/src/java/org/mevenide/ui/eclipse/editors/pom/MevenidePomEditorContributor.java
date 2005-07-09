@@ -47,6 +47,8 @@ import org.mevenide.ui.eclipse.pom.validation.ValidationJob;
  * @version $Id$
  */
 public class MevenidePomEditorContributor extends MultiPageEditorActionBarContributor {
+    private static final String ID = "org.mevenide.maven.menu.id";
+
     private static final Log log = LogFactory.getLog(MevenidePomEditorContributor.class);
     
     private IEditorPart activeEditorPart;
@@ -155,7 +157,7 @@ public class MevenidePomEditorContributor extends MultiPageEditorActionBarContri
     }
 
     public void contributeToMenu(IMenuManager manager) {
-        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"), Mevenide.MAVEN_MENU_ID); //$NON-NLS-1$
+        IMenuManager menu = new MenuManager(Mevenide.getResourceString("MevenidePomEditorContributor.Menu.Text"), ID); //$NON-NLS-1$
         manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
         menu.add(validatePomAction);
         menu.add(clearMarkersAction);
