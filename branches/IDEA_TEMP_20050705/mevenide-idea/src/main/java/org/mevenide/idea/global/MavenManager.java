@@ -33,7 +33,6 @@ import java.util.Map;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.log4j.Level;
 import org.jdom.Element;
-import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 
@@ -174,15 +173,6 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         changeSupport.firePropertyChange("mavenHome", oldMavenHome, mavenHome);
     }
 
-    /**
-     * This method is called after the {@link #readExternal(org.jdom.Element)} method is called. If
-     * the {@link #mavenHome} field is still <code>null</code>, then this method tries to guess it
-     * by invoking the {@link SysEnvLocationFinder}'s default instance's {@link
-     * org.mevenide.environment.SysEnvLocationFinder#getMavenHome()} method.
-     *
-     * <p>If it still cannot find the Maven home, or if it finds it invalid, an error message is
-     * shown.</p>
-     */
     public void initComponent() {
 
         //

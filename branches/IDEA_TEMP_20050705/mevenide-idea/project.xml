@@ -65,14 +65,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly</artifactId>
-            <version>20030902.160215</version>
-            <properties>
-                <idea.plugin.bundle>true</idea.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
             <version>2.0</version>
@@ -84,14 +76,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.0.3</version>
-            <properties>
-                <idea.plugin.bundle>true</idea.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.4-dev-8</version>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
             </properties>
@@ -118,27 +102,15 @@
             </properties>
         </dependency>
         <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.8</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
             <version>1.0.2</version>
-            <properties>
-                <idea.plugin.bundle>true</idea.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>goals-grabber</artifactId>
-            <version>0.9</version>
-            <type>jar</type>
-            <properties>
-                <idea.plugin.bundle>true</idea.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
-            <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
             </properties>
@@ -160,20 +132,6 @@
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
             </properties>
-        </dependency>
-        <dependency>
-            <groupId>xpp3</groupId>
-            <artifactId>xpp3</artifactId>
-            <version>1.1.2a</version>
-            <properties>
-                <idea.plugin.bundle>true</idea.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <build>
