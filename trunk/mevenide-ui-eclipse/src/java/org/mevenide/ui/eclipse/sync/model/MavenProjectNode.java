@@ -197,8 +197,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 					}
 				} 
 				catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
 				}
 				//Artifact artifact = new GenericArtifact(dependency);
 				
@@ -455,8 +454,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
     }
 
     /**
-     * TODO: Describe what getPreferenceStore does.
-     * @return
+     * @return the preference store to use in this object
      */
     private IPersistentPreferenceStore getPreferenceStore() {
         return Mevenide.getInstance().getCustomPreferenceStore();

@@ -18,7 +18,7 @@
 package org.mevenide.ui.eclipse.wizard;
 
 /**
- * TODO: Describe what IHelpContextIds represents.
+ * Holds the context IDs for the help system. A convenience class.
  */
 public interface IHelpContextIds
 {

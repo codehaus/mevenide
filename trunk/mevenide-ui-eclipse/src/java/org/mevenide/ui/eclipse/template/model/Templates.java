@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Observable;
 
 import org.apache.maven.project.Project;
-import org.eclipse.core.runtime.IAdaptable;
 import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.ui.eclipse.Mevenide;
 
@@ -34,7 +33,7 @@ import org.mevenide.ui.eclipse.Mevenide;
  *         by $Author$
  * @version $Id$
  */
-public class Templates extends Observable implements IAdaptable {
+public class Templates extends Observable {
 
     private List fTemplates;
 
@@ -71,16 +70,6 @@ public class Templates extends Observable implements IAdaptable {
      */
     public Object[] getTemplates() {
         return fTemplates.toArray();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
-    public Object getAdapter(Class arg0) {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public static Templates newTemplates() {

@@ -42,7 +42,7 @@ import org.mevenide.ui.eclipse.nature.MevenideNature;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 
 /**
- * TODO: Describe what MavenClasspathManager represents.
+ * Manages the classpaths for all Maven enabled projects.
  */
 public class MavenClasspathManager implements IPropertyChangeListener {
     private static final IPath CONTAINER_PATH = new Path(MavenClasspathContainer.ID);
@@ -262,9 +262,9 @@ public class MavenClasspathManager implements IPropertyChangeListener {
     }
 
     /**
-     * TODO: Describe what addContainerEntries does.
-     * @param entries
-     * @param context
+     * Adds the classpath entries described by the context to the provided list.
+     * @param entries the classpath entries are added to this list
+     * @param context the context that contains the classpath entries
      */
     private static final void addContainerEntries(final List entries, final IQueryContext context) {
         MavenClasspathContainer container = new MavenClasspathContainer(context);
@@ -287,9 +287,9 @@ public class MavenClasspathManager implements IPropertyChangeListener {
     }
 
     /**
-     * TODO: Describe what convertToVariableEntry does.
-     * @param entry
-     * @return
+     * Converts an absolute classpath entry into a relative path within the local Maven repository.
+     * @param entry the absolute path to the library entry
+     * @return a relative classpath entry within the local Maven reposity
      */
     private static final IClasspathEntry convertToVariableEntry(final IClasspathEntry entry) {
         IClasspathEntry newEntry = null;

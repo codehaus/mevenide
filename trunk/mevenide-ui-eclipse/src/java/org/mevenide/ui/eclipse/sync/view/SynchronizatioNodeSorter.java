@@ -16,7 +16,6 @@
  */
 package org.mevenide.ui.eclipse.sync.view;
 
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.ui.eclipse.sync.model.Directory;
@@ -64,9 +63,5 @@ public class SynchronizatioNodeSorter extends ViewerSorter {
 			return NON_CATEGORIZED_DIRECTORY_CATEGORY;
 		}
 		return super.category(element);
-	}
-	public int compare(Viewer viewer, Object e1, Object e2) {
-		// TODO Auto-generated method stub
-		return super.compare(viewer, e1, e2);
 	}
 }

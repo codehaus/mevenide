@@ -97,18 +97,18 @@ public abstract class AbstractPOMManager implements POMManager {
     }
 
     /**
-     * TODO: Describe what createQueryContext does.
-     * @param location
-     * @return
+     * Creates a new query context for the POM at the given location.
+     * @param location the absolute path to the folder that contains the POM.
+     * @return a newly created query context.
      */
     protected IQueryContext createQueryContext(String location) {
         return new DefaultQueryContext(new File(location));
     }
 
     /**
-     * TODO: Describe what addQueryContext does.
-     * @param location
-     * @param context
+     * Registers the given context with this manager.
+     * @param location the absolute path to the Eclipse project that contains the POM.
+     * @param context the context representing the Maven POM.
      */
     protected void addQueryContext(String location, IQueryContext context) {
         if (!this.projectMap.containsKey(location)) {
@@ -126,10 +126,10 @@ public abstract class AbstractPOMManager implements POMManager {
     }
 
     /**
-     * TODO: Describe what getProjectKey does.
-     * @param group
-     * @param artifact
-     * @return
+     * Constructs a string suitable for use as a key.
+     * @param group the group
+     * @param artifact the artifact
+     * @return the key
      */
     private static final String getProjectKey(final String group, final String artifact) {
         return group + ":" + artifact;

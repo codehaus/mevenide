@@ -46,8 +46,8 @@ public abstract class AbstractPomEditorPage
 		this(pomEditor, pageId, tabTitle);
 		this.heading = pageHeading;
 	}
-	
-	public AbstractPomEditorPage(MevenidePomEditor pomEditor, String pageId, String tabTitle) {
+
+    public AbstractPomEditorPage(MevenidePomEditor pomEditor, String pageId, String tabTitle) {
 		super(pomEditor, pageId, tabTitle);
 	}
 	
@@ -99,7 +99,7 @@ public abstract class AbstractPomEditorPage
 	/**
 	 * @see org.eclipse.swt.widgets.Control#update()
 	 */
-	public void update() {
+	private void update() {
 		if (isUpdateNeeded()) {
 			update(getPomEditor().getPom());
 		}
@@ -117,17 +117,20 @@ public abstract class AbstractPomEditorPage
 	        //mark as allRefreshNeeded so that when page activates later it will update
 	    }
 	}
-	
-	protected boolean isUpdateNeeded() {
-		return updateNeeded;
-	}
-	
-	/**
-	 * FIXME: nothing calls this method currently - remove?
-	 */
-	protected void setUpdateNeeded(boolean needsUpdate) {
-		this.updateNeeded = needsUpdate;
-	}
+    
+    /**
+     * @return <tt>true</tt> If the form's sections need updating.
+     */
+    protected boolean isUpdateNeeded() {
+        return updateNeeded;
+    }
+
+    /**
+     * @param updateNeeded Indicates that the form's sections need updating.
+     */
+    protected void setUpdateNeeded(boolean updateNeeded) {
+        this.updateNeeded = updateNeeded;
+    }
 	
 	/**
 	 * @see org.mevenide.ui.eclipse.editors.pom.IPomEditorPage#isPropertySourceSupplier()

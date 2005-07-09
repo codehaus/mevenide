@@ -28,6 +28,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -59,15 +60,14 @@ public class RepositoryContentProvider implements ITreeContentProvider {
                 try {
                     return currentNodeObject.getChildren();
                 } catch (Exception e) {
-                    // FIXME: Auto-generated catch block
-                    e.printStackTrace();
+                    final String msg = "Unable to fetch children.";
+                    Mevenide.displayError("Internal MevenIDE Error", msg, e);
                 }
-            }
-            else {
+            } else {
                 RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject);
-	            job.setListeners(this.repositoryEventListeners);
-	            job.schedule(Job.LONG);
-                return new String[]{"Pending..."};
+                job.setListeners(this.repositoryEventListeners);
+                job.schedule(Job.LONG);
+                return new String[] { "Pending..." };
             }
         }
         return null;

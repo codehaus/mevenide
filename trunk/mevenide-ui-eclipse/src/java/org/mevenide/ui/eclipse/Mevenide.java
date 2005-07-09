@@ -236,9 +236,6 @@ public class Mevenide extends AbstractUIPlugin {
      * should not be necessary since the setters already take care of configuring the environment.
      */
     public void initEnvironment() {
-//		TODO Milos: what to do with HeapSize, not in ILocationFinder..
-//		Environment.setHeapSize(getHeapSize());
-
         RunnerHelper.setHelper(new RunnerHelper() {
             private String foreHead = null;
 

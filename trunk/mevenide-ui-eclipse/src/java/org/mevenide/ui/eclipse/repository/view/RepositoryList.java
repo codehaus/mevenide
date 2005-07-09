@@ -116,7 +116,8 @@ public class RepositoryList {
     }
 
     /**
-     * TODO: Describe what commitChanges does.
+     * Saves the changes made to preferences.
+     * @return <tt>true</tt> if the preferences were saved
      */
     private static boolean commitChanges() {
         try {
@@ -129,8 +130,7 @@ public class RepositoryList {
     }
 
     /**
-     * TODO: Describe what getPreferenceStore does.
-     * @return
+     * @return the preference store to use in this object
      */
     private static IPersistentPreferenceStore getPreferenceStore() {
         return Mevenide.getInstance().getCustomPreferenceStore();

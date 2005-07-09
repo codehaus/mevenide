@@ -23,6 +23,7 @@ import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TypedRegion;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.goals.outline.MavenXmlOutlinePage;
 
 /**
@@ -177,8 +178,7 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
             document.replace(to.getOffset(), 0, "<" + name + "/>");
         }
         catch (BadLocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
         }
     }
 
@@ -188,8 +188,7 @@ public class XMLReconciler implements IReconcilingStrategy, IDocumentListener {
             document.replace(to.getOffset() + to.getLength(), 0, "<" + name + "/>");
         }
         catch (BadLocationException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
         }
     }
 

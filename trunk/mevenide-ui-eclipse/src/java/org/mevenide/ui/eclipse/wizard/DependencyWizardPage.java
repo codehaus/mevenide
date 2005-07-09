@@ -21,7 +21,7 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
- * TODO: Describe what DependencyWizardPage represents.
+ * A base class for all wizard pages that manipulate a Dependency.
  */
 public abstract class DependencyWizardPage extends WizardPage {
 
