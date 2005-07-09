@@ -97,10 +97,6 @@ public class PomPluginGoalsManager extends AbstractPomSettingsManager
     }
 
     public void execute(final VirtualFile pPomFile, final Goal... pGoals) {
-        final VirtualFile dir = pPomFile.getParent();
-        if (dir == null)
-            return;
-
         //
         //always save all modified files before invoking maven
         //
@@ -113,7 +109,7 @@ public class PomPluginGoalsManager extends AbstractPomSettingsManager
             final ProjectJdk jdk = PomJdkManager.getInstance(project).getJdk(pPomFile.getUrl());
             if (jdk == null)
                 throw CantRunException.noJdkConfigured();
-            MavenJavaParameters p = new MavenJavaParameters(dir, jdk, pGoals);
+            MavenJavaParameters p = new MavenJavaParameters(pPomFile, jdk, pGoals);
 
             //
             //provide filters which allow linking compilation errors to source files
@@ -156,7 +152,7 @@ public class PomPluginGoalsManager extends AbstractPomSettingsManager
         final Map<String, Map<String, Set<String>>> data = new HashMap<String, Map<String, Set<String>>>(
                 10);
 
-        //noinspection UNCHECKED_WARNING
+        //noinspection unchecked
         final List<Element> pomElts = pElt.getChildren("pom");
         for (Element pomElt : pomElts) {
             final String url = pomElt.getAttributeValue("url");
@@ -166,7 +162,7 @@ public class PomPluginGoalsManager extends AbstractPomSettingsManager
             final Map<String, Set<String>> goals = new HashMap<String, Set<String>>();
             data.put(url, goals);
 
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             final List<Element> goalElts = pomElt.getChildren("goal");
             for (Element goalElt : goalElts) {
                 final String goal = goalElt.getAttributeValue("name");

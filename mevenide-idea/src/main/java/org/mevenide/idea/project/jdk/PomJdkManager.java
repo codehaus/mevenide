@@ -43,7 +43,7 @@ public class PomJdkManager extends AbstractPomSettingsManager implements JDOMExt
         final ProjectJdk defJdk = rootMgr.getProjectJdk();
 
         final ProjectJdk oldJdk = getJdk(pPomUrl);
-        if (pJdk.equals(defJdk))
+        if (pJdk == null || pJdk.equals(defJdk))
             put(KEY, pPomUrl, null);
         else
             put(KEY, pPomUrl, pJdk);
