@@ -1,7 +1,7 @@
 package org.mevenide.idea.synchronize;
 
 import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.module.Module;
+import com.intellij.openapi.project.Project;
 import java.util.concurrent.atomic.AtomicReference;
 import org.mevenide.idea.Res;
 
@@ -14,35 +14,71 @@ public abstract class AbstractProblemInfo implements ProblemInfo {
      */
     private static final Res RES = Res.getInstance(AbstractProblemInfo.class);
 
+    /**
+     * The inspector that discovered this problem.
+     */
     protected final ProblemInspector inspector;
-    protected final Module module;
+
+    /**
+     * The project context.
+     */
+    protected final Project project;
+
+    /**
+     * The url of the POM that was inspected.
+     */
+    protected final String pomUrl;
+
+    /**
+     * Default description of the problem. If the description changes on state,
+     * you can override {@link #getDescription()}.
+     */
     protected final String description;
+
+    /**
+     * Default fix actions. If the available actions change on state,
+     * you can override {@link #getFixActions()}.
+     */
     private final AtomicReference<AnAction[]> fixActions = new AtomicReference<AnAction[]>(
         new AnAction[0]);
 
-    protected AbstractProblemInfo(final ProblemInspector pInspector) {
-        this(pInspector, null);
+    /**
+     * Creates an instance with the default problem description.
+     *
+     * @param pInspector inspector that discovered the problem.
+     */
+    protected AbstractProblemInfo(final ProblemInspector pInspector,
+                                  final Project pProject,
+                                  final String pPomUrl) {
+        this(pInspector, pProject, pPomUrl, RES.get("default.problem.desc"));
     }
 
+    /**
+     * Creates an instance with the given description.
+     *
+     * @param pInspector inspector that discovered the problem.
+     * @param pDescription problem description
+     */
     protected AbstractProblemInfo(final ProblemInspector pInspector,
-                                  final Module pModule) {
-        this(pInspector, pModule, RES.get("default.problem.desc"));
-    }
-
-    protected AbstractProblemInfo(final ProblemInspector pInspector,
-                                  final Module pModule,
+                                  final Project pProject,
+                                  final String pPomUrl,
                                   final String pDescription) {
         inspector = pInspector;
-        module = pModule;
+        project = pProject;
+        pomUrl = pPomUrl;
         description = pDescription;
-    }
-
-    public Module getModule() {
-        return module;
     }
 
     public final ProblemInspector getInspector() {
         return inspector;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public String getPomUrl() {
+        return pomUrl;
     }
 
     public String getDescription() {

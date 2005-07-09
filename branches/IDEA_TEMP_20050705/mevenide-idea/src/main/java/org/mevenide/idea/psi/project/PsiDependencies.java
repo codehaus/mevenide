@@ -7,6 +7,9 @@ import org.mevenide.idea.util.event.BeanRowsObservable;
  * @author Arik
  */
 public interface PsiDependencies extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiProject> {
+
+    int findRow(String pGroupId, String pArtifactId, String pType, String pVersion, String pExtension);
+    
     String getGroupId(int pRow);
 
     void setGroupId(int pRow, String pGroupId);
@@ -26,6 +29,10 @@ public interface PsiDependencies extends BeanRowsObservable, XmlPsiObject, PsiCh
     String getUrl(int pRow);
 
     void setUrl(int pRow, String pUrl);
+
+    String getExtension(int pRow);
+
+    void setExtension(int pRow, String pExtension);
 
     PsiDependencyProperties getProperties(int pRow);
 }

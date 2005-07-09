@@ -339,8 +339,8 @@
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="file://C:/Devl/work/maven-1.0.2/src/java" />
-        <root url="file://C:/Devl/work/maven-1.0.2/src/conf" />
+        <root url="file://C:/Devl/work/maven/maven-1.0.2/src/java" />
+        <root url="file://C:/Devl/work/maven/maven-1.0.2/src/conf" />
       </SOURCES>
     </library>
     <library name="idea-run-config-eap">

@@ -34,6 +34,49 @@ public class DefaultPsiDependencies extends AbstractPsiBeanRowsObservable
         return project;
     }
 
+    public int findRow(final String pGroupId,
+                       final String pArtifactId,
+                       String pType,
+                       String pVersion,
+                       String pExtension) {
+        if(pType == null || pType.trim().length() == 0)
+            pType = "jar";
+
+        if(pVersion == null || pType.trim().length() == 0)
+            pVersion = "SNAPSHOT";
+
+        if(pExtension == null || pExtension.trim().length() == 0)
+            pExtension = pType;
+
+        for(int row = 0; row < getRowCount(); row++) {
+            if(!pGroupId.equals(getGroupId(row)))
+                continue;
+
+            if(!pArtifactId.equals(getArtifactId(row)))
+                continue;
+
+            String type = getType(row);
+            if(type == null || type.trim().length() == 0) type = "jar";
+            if(!pType.equals(type))
+                continue;
+
+            String version = getVersion(row);
+            if(version == null || version.trim().length() == 0) version = "SNAPSHOT";
+            if(!pVersion.equalsIgnoreCase(version))
+                continue;
+
+            String extension = getExtension(row);
+            if(extension == null || extension.trim().length() == 0)
+                extension = type;
+            if(!pExtension.equalsIgnoreCase(extension))
+                continue;
+
+            return row;
+        }
+
+        return -1;
+    }
+
     public final String getGroupId(final int pRow) {
         return getValue(pRow, "groupId");
     }
@@ -72,6 +115,14 @@ public class DefaultPsiDependencies extends AbstractPsiBeanRowsObservable
 
     public void setUrl(final int pRow, final String pUrl) {
         setValue(pRow, "url", pUrl);
+    }
+
+    public final String getExtension(final int pRow) {
+        return getValue(pRow, "extension");
+    }
+
+    public void setExtension(final int pRow, final String pExtension) {
+        setValue(pRow, "extension", pExtension);
     }
 
     public final PsiDependencyProperties getProperties(final int pRow) {

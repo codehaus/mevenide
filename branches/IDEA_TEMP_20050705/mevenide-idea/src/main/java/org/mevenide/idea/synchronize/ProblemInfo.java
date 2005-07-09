@@ -1,11 +1,26 @@
 package org.mevenide.idea.synchronize;
 
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.project.Project;
 
 /**
  * @author Arik
  */
 public interface ProblemInfo {
+    /**
+     * Returns the project context in which the inspection was performed.
+     *
+     * @return IDEA project
+     */
+    Project getProject();
+
+    /**
+     * The url of the POM that was inspected.
+     *
+     * @return pom url (can be used with pom managers like {@link org.mevenide.idea.project.PomManager})
+     */
+    String getPomUrl();
+
     /**
      * Returns the description of the problem.
      *

@@ -50,7 +50,7 @@ public class ExecuteGoalAction extends AbstractAnAction {
         }
 
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+        if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = pomMgr.getToolWindowComponent();
             if (ui == null) {
                 pEvent.getPresentation().setEnabled(false);
@@ -79,7 +79,7 @@ public class ExecuteGoalAction extends AbstractAnAction {
         final PomManager pomMgr = PomManager.getInstance(getProject(pEvent));
 
         final String[] poms;
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+        if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = pomMgr.getToolWindowComponent();
             if (ui != null)
                 poms = ui.getPomsWithSelectedGoals(false);
@@ -98,7 +98,7 @@ public class ExecuteGoalAction extends AbstractAnAction {
         if (project == null)
             return new Goal[0];
 
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+        if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = PomManager.getInstance(project).getToolWindowComponent();
             if (ui != null) {
                 final Goal[] goals = ui.getSelectedGoals();

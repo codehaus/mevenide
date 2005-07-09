@@ -51,15 +51,15 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     }
 
     /**
-         * Displays a list of available local repositories to the user, and returns the selected
-         * repository url.
-         *
-         * <p>If the {@link org.mevenide.idea.project.PomManager#getFileUrls()} method reports that only
-         * one POM is registered, no dialog is displayed to the user.</p>
-         *
-         * @return the selected repository's url, {@code null} if no url is selected, or no POMs are
-         *         registered
-         */
+     * Displays a list of available local repositories to the user, and returns the selected
+     * repository url.
+     *
+     * <p>If the {@link org.mevenide.idea.project.PomManager#getFileUrls()} method reports that only
+     * one POM is registered, no dialog is displayed to the user.</p>
+     *
+     * @return the selected repository's url, {@code null} if no url is selected, or no POMs are
+     *         registered
+     */
     public String selectDestinationRepo() {
         return selectDestinationRepo(null, null);
     }
@@ -406,6 +406,31 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         }
     }
 
+    public static String getPresentableName(final String pGroupId,
+                                            final String pArtifactId,
+                                            String pType,
+                                            String pVersion,
+                                            String pExtension) {
+        if (pGroupId == null || pGroupId.trim().length() == 0)
+            throw new IllegalArgumentException(RES.get("null.arg", "pGroupId"));
+
+        if (pType == null || pType.trim().length() == 0)
+            pType = "jar";
+
+        if (pArtifactId == null || pArtifactId.trim().length() == 0)
+            throw new IllegalArgumentException(RES.get("null.arg", "pArtifactId"));
+
+        if (pVersion == null || pVersion.trim().length() == 0)
+            pVersion = "SNAPSHOT";
+
+        if (pExtension == null || pExtension.trim().length() == 0)
+            pExtension = pType;
+
+        final StringBuilder buf = new StringBuilder(100);
+        buf.append(pArtifactId).append('-').append(pVersion).append('.').append(pExtension);
+        return buf.toString();
+    }
+
     public static String convertToRelativePath(final String pGroupId,
                                                final String pArtifactId,
                                                String pType,
@@ -426,7 +451,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         if (pExtension == null || pExtension.trim().length() == 0)
             pExtension = pType;
 
-        final StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder(100);
         buf.append(pGroupId).
                 append('/').
                 append(pType).append('s').
