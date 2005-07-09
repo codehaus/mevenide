@@ -214,6 +214,7 @@ public class MavenPluginsManager extends AbstractProjectComponent
      * @param pPluginDir the plugin directory
      *
      * @return plugin descriptor
+     * @todo ignore 'register' and 'deregister' goals
      */
     private PluginGoalContainer parsePlugin(final VirtualFile pPluginDir) {
         final DefaultPluginGoalContainer plugin = new DefaultPluginGoalContainer();
