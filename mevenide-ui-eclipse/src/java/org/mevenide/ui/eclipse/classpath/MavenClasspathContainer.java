@@ -42,8 +42,8 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.pom.manager.POMManager;
 import org.mevenide.util.ResolverUtils;
 
-/**
- * TODO: Describe what MavenClasspathContainer represents.
+/** 
+ * Maven POM Container - resolves a classpath container variable to the dependencies declared in a Maven POM.
  */
 public class MavenClasspathContainer implements IClasspathContainer {
     public static final String ID = Mevenide.PLUGIN_ID + ".autosync.dependencies"; //$NON-NLS-1$
@@ -118,9 +118,9 @@ public class MavenClasspathContainer implements IClasspathContainer {
     }
 
     /**
-     * TODO: Describe what addDependency does.
-     * @param project
-     * @param dependency
+     * Adds the given dependency to this container. The dependency is
+     * ignored if it is not either a JAR or an EJB.
+     * @param dependency the dependency to add
      */
     private void addDependency(Dependency dependency) {
         if (dependency != null) {
@@ -134,9 +134,9 @@ public class MavenClasspathContainer implements IClasspathContainer {
     }
 
     /**
-     * TODO: Describe what buildClasspath does.
-     * @param dependency
-     * @return
+     * Creates a classpath entry from a dependency.
+     * @param dependency the dependency
+     * @return a classpath entry representing the given dependency
      */
     public IClasspathEntry buildClasspath(Dependency dependency) {
 
@@ -157,9 +157,10 @@ public class MavenClasspathContainer implements IClasspathContainer {
     }
 
     /**
-     * TODO: Describe what findWorkspaceEntry does.
-     * @param dependency
-     * @return
+     * Locates a classpath entry to an open project within the workspace.
+     * @param dependency the dependency
+     * @return a classpath entry to the project or <tt>null</tt> if the dependency
+     *         does not match any open project within the workspace
      */
     private static final IClasspathEntry findWorkspaceEntry(final Dependency dependency) {
         IClasspathEntry result = null;
@@ -202,8 +203,7 @@ public class MavenClasspathContainer implements IClasspathContainer {
     }
 
     /**
-     * TODO: Describe what getRepositoryPath does.
-     * @return
+     * @return the path to the local Maven repository
      */
     private IPath getRepositoryPath() {
         IPath mavenRepo = JavaCore.getClasspathVariable("MAVEN_REPO");

@@ -265,7 +265,8 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
 	}
 
     /**
-     * TODO: Describe what commitChanges does.
+     * Saves the changes made to preferences.
+     * @return <tt>true</tt> if the preferences were saved
      */
     private boolean commitChanges() {
         try {

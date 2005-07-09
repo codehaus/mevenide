@@ -33,15 +33,16 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.Mevenide.PreferenceBasedLocationFinder;
 
 /**
- * TODO: Describe what DefaultPOMManager represents.
+ * The default implementation of a POMManager. This implementation scans all workspace projects
+ * and registers any POMs it finds.
  */
 public class DefaultPOMManager extends AbstractPOMManager implements IResourceChangeListener {
     private CustomLocationFinder customLocationFinder;
     private LocationFinderAggregator defaultLocationFinder;
 
     /**
-     * TODO: Describe what initialize does.
-     * @throws CoreException
+     * Initializes this manager.
+     * @throws CoreException if anything goes wrong
      */
     public void initialize() throws CoreException {
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);

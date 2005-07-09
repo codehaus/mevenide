@@ -107,8 +107,7 @@ public class CustomPatternFilter extends ViewerFilter {
 	}
 
     /**
-     * TODO: Describe what getPreferenceStore does.
-     * @return
+     * @return the preference store to use in this object
      */
     private IPersistentPreferenceStore getPreferenceStore() {
         return Mevenide.getInstance().getCustomPreferenceStore();

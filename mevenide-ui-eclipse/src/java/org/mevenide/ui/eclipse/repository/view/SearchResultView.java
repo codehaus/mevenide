@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.part.ViewPart;
 import org.mevenide.repository.RepoPathElement;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**  
  * 
@@ -84,8 +85,8 @@ public class SearchResultView extends ViewPart {
                     try {
                         return ((RepoPathElement) inputElement).getChildren();
                     } catch (Exception e) {
-                        // FIXME: Auto-generated catch block
-                        e.printStackTrace();
+                        final String msg = "Unable to fetch children.";
+                        Mevenide.displayError("Internal MevenIDE Error", msg, e);
                     } 
                 }
                 return null;

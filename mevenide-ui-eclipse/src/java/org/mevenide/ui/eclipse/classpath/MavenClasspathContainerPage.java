@@ -75,7 +75,7 @@ import org.mevenide.ui.eclipse.wizard.IHelpContextIds;
 import org.mevenide.ui.eclipse.wizard.NewDependencyWizard;
 
 /**
- * TODO: Describe what MavenClasspathContainerPage represents.
+ * Displays the contents of a Maven classpath container in a tablular format.
  */
 public class MavenClasspathContainerPage extends WizardPage implements
         IClasspathContainerPage, IClasspathContainerPageExtension {
@@ -155,10 +155,6 @@ public class MavenClasspathContainerPage extends WizardPage implements
         }
     }
 
-    /**
-     * TODO: Describe what createClasspathEntry does.
-     * @return
-     */
     private IClasspathEntry createClasspathEntry() throws CoreException {
         // make sure the nature is present
         MevenideNature.addToProject(this.javaProject.getProject());
@@ -247,11 +243,6 @@ public class MavenClasspathContainerPage extends WizardPage implements
         return tableViewer;
     }
 
-    /**
-     * TODO: Describe what createTable does.
-     * @param parent
-     * @return
-     */
     private Table createTable(Composite parent) {
         Table table = new Table(parent, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         table.setHeaderVisible(true);
@@ -285,10 +276,6 @@ public class MavenClasspathContainerPage extends WizardPage implements
         return table;
     }
 
-    /**
-     * TODO: Describe what createButtonPanel does.
-     * @param parent
-     */
     private Composite createButtonPanel(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
 

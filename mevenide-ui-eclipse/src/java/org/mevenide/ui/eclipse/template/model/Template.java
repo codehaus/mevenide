@@ -18,7 +18,6 @@
 package org.mevenide.ui.eclipse.template.model;
 
 import org.apache.maven.project.Project;
-import org.eclipse.core.runtime.IAdaptable;
 
 /**
  * A template is just a wrapper for a Project object
@@ -27,7 +26,7 @@ import org.eclipse.core.runtime.IAdaptable;
  *         by $Author$
  * @version $Id$
  */
-public class Template implements IAdaptable {
+public class Template {
 
     private Project fProject;
 
@@ -41,15 +40,5 @@ public class Template implements IAdaptable {
 
     public Project getProject() {
         return fProject;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
-    public Object getAdapter(Class arg0) {
-        // TODO Auto-generated method stub
-        return null;
     }
 }

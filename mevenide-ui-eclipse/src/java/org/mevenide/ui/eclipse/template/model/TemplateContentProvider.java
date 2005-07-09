@@ -28,18 +28,14 @@ public class TemplateContentProvider implements ITreeContentProvider, Observer {
     private Object[] EMPTY_ARRAY = new Object[0];
     private Viewer fViewer;
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITreeContentProvider#hasChildren(java.lang.Object)
      */
     public boolean hasChildren(Object arg0) {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getChildren(java.lang.Object)
      */
     public Object[] getChildren(Object obj) {
@@ -49,28 +45,21 @@ public class TemplateContentProvider implements ITreeContentProvider, Observer {
         return EMPTY_ARRAY;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
      */
     public Object[] getElements(Object obj) {
         return getChildren(obj);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.ITreeContentProvider#getParent(java.lang.Object)
      */
     public Object getParent(Object arg0) {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface.viewers.Viewer,
      *      java.lang.Object, java.lang.Object)
      */
@@ -82,25 +71,19 @@ public class TemplateContentProvider implements ITreeContentProvider, Observer {
             ((Templates) newInput).addObserver(this);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     public void dispose() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see java.util.Observer#update(java.util.Observable, java.lang.Object)
      */
     public void update(Observable o, Object arg) {
         Display.getDefault().syncExec(new Runnable() {
 
-            /*
-             * (non-Javadoc)
-             * 
+            /* (non-Javadoc)
              * @see java.lang.Runnable#run()
              */
             public void run() {

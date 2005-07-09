@@ -195,7 +195,6 @@ public class XMLNode extends TypedPosition implements IAdaptable, IWorkbenchAdap
     }
 
     public Object getParent(Object o) {
-        // TODO Auto-generated method stub
         return this;
     }
 

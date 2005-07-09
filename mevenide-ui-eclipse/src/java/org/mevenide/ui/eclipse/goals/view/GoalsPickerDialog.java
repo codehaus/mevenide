@@ -476,9 +476,6 @@ public class GoalsPickerDialog  extends TitleAreaDialog {
         return viewer;
     }
 
-    /**
-     * TODO: Describe what getQueryContext does.
-     */
     private IQueryContext getQueryContext() {
         IQueryContext context = null;
 

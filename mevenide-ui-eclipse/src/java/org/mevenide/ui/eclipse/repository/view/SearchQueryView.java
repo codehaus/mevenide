@@ -274,8 +274,8 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                     try {
                         launchSearch();
                     } catch (Exception e1) {
-                        // FIXME: Auto-generated catch block
-                        e1.printStackTrace();
+                        final String msg = "Unable to launch search.";
+                        Mevenide.displayError("Internal MevenIDE Error", msg, e1);
                     }
                 }
             }
@@ -294,8 +294,8 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                 try {
                     launchSearch();
                 } catch (Exception e) {
-                    // FIXME: Auto-generated catch block
-                    e.printStackTrace();
+                    final String msg = "Unable to launch search.";
+                    Mevenide.displayError("Internal MevenIDE Error", msg, e);
                 }
                 
             }
@@ -311,8 +311,8 @@ public class SearchQueryView extends ViewPart implements RepositoryEventListener
                     try {
                         child = element.getChildren();
                     } catch (Exception e1) {
-                        // FIXME: Auto-generated catch block
-                        e1.printStackTrace();
+                        final String msg = "Unable to fetch children.";
+                        Mevenide.displayError("Internal MevenIDE Error", msg, e1);
                     }
 			        if ( child != null && child.length > 0) {
 				        SearchResultView view;

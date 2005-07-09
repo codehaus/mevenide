@@ -123,7 +123,7 @@ public class PomXmlSourcePage
     			setModelNeedsUpdating(false);
     		}
     		
-    		// FIXME: error marks for invalid model
+    		// TODO: Add error marks for invalid model.
     	}
 	}
 
@@ -243,7 +243,6 @@ public class PomXmlSourcePage
 	 * @see org.eclipse.ui.forms.editor.IFormPage#isEditor()
 	 */
 	public boolean isEditor() {
-		//TODO Auto-generated method stub
 		return true;
 	}
 	
@@ -251,7 +250,6 @@ public class PomXmlSourcePage
 	 * @see org.eclipse.ui.forms.editor.IFormPage#selectReveal(java.lang.Object)
 	 */
 	public boolean selectReveal(Object object) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

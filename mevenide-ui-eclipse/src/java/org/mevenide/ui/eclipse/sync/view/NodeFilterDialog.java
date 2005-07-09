@@ -246,8 +246,8 @@ public class NodeFilterDialog extends Dialog {
 	}
 
     /**
-     * TODO: Describe what commitChanges does.
-     * @return
+     * Saves the changes made to preferences.
+     * @return <tt>true</tt> if the preferences were saved
      */
     private boolean commitChanges() {
         try {
@@ -261,8 +261,7 @@ public class NodeFilterDialog extends Dialog {
     }
 
     /**
-     * TODO: Describe what getPreferenceStore does.
-     * @return
+     * @return the preference store to use in this object
      */
     private IPersistentPreferenceStore getPreferenceStore() {
         return Mevenide.getInstance().getCustomPreferenceStore();

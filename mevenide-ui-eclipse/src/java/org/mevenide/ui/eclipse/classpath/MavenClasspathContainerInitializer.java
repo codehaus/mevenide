@@ -28,7 +28,7 @@ import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 
 /**
- * TODO: Describe what MavenClasspathContainerInitializer represents.
+ * Used to initialize a newly created MavenClasspathContainer.
  */
 public class MavenClasspathContainerInitializer extends ClasspathContainerInitializer {
 
