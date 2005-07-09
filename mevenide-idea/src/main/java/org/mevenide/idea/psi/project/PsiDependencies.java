@@ -2,14 +2,17 @@ package org.mevenide.idea.psi.project;
 
 import org.mevenide.idea.psi.support.XmlPsiObject;
 import org.mevenide.idea.util.event.BeanRowsObservable;
+import org.mevenide.idea.repository.Artifact;
 
 /**
  * @author Arik
  */
 public interface PsiDependencies extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiProject> {
 
-    int findRow(String pGroupId, String pArtifactId, String pType, String pVersion, String pExtension);
-    
+    int findRow(Artifact pArtifact);
+
+    Artifact getArtifact(int pRow);
+
     String getGroupId(int pRow);
 
     void setGroupId(int pRow, String pGroupId);

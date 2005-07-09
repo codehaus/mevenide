@@ -6,7 +6,6 @@ import org.mevenide.idea.Res;
 import org.mevenide.idea.psi.PomModelManager;
 import org.mevenide.idea.psi.project.PsiDependencies;
 import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ArtifactProblemInfo;
 import org.mevenide.idea.util.ui.images.Icons;
@@ -21,18 +20,8 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction<ArtifactPro
     private static final Res RES = Res.getInstance(RemoveDependencyFromPomAction.class);
 
     public RemoveDependencyFromPomAction(final ArtifactProblemInfo pProblemInfo) {
-        super(RES.get("remove.dep.from.pom.action.name",
-                      PomRepoManager.getPresentableName(pProblemInfo.getGroupId(),
-                                                        pProblemInfo.getArtifactId(),
-                                                        pProblemInfo.getType(),
-                                                        pProblemInfo.getVersion(),
-                                                        pProblemInfo.getExtension())),
-              RES.get("remove.dep.from.pom.action.desc",
-                      PomRepoManager.getPresentableName(pProblemInfo.getGroupId(),
-                                                        pProblemInfo.getArtifactId(),
-                                                        pProblemInfo.getType(),
-                                                        pProblemInfo.getVersion(),
-                                                        pProblemInfo.getExtension())),
+        super(RES.get("remove.dep.from.pom.action.name", pProblemInfo.getArtifact()),
+              RES.get("remove.dep.from.pom.action.desc", pProblemInfo.getArtifact()),
               Icons.FIX_PROBLEMS,
               pProblemInfo);
     }
@@ -42,11 +31,7 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction<ArtifactPro
         final PomModelManager modelMgr = PomModelManager.getInstance(project);
         final PsiProject psi = modelMgr.getPsiProject(problem.getPomUrl());
         final PsiDependencies deps = psi.getDependencies();
-        final int row = deps.findRow(problem.getGroupId(),
-                                     problem.getArtifactId(),
-                                     problem.getType(),
-                                     problem.getVersion(),
-                                     problem.getExtension());
+        final int row = deps.findRow(problem.getArtifact());
         if(row >= 0)
             deps.deleteRows(row);
     }

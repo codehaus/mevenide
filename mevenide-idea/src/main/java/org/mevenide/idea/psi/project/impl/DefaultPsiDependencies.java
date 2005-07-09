@@ -7,6 +7,7 @@ import org.mevenide.idea.psi.project.PsiDependencies;
 import org.mevenide.idea.psi.project.PsiDependencyProperties;
 import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.psi.support.AbstractPsiBeanRowsObservable;
+import org.mevenide.idea.repository.Artifact;
 
 /**
  * @author Arik
@@ -34,41 +35,39 @@ public class DefaultPsiDependencies extends AbstractPsiBeanRowsObservable
         return project;
     }
 
-    public int findRow(final String pGroupId,
-                       final String pArtifactId,
-                       String pType,
-                       String pVersion,
-                       String pExtension) {
-        if(pType == null || pType.trim().length() == 0)
-            pType = "jar";
+    public Artifact getArtifact(int pRow) {
+        final Artifact artifact = new Artifact();
+        artifact.setGroupId(getGroupId(pRow));
+        artifact.setArtifactId(getArtifactId(pRow));
+        artifact.setType(getType(pRow));
+        artifact.setVersion(getVersion(pRow));
+        artifact.setExtension(getExtension(pRow));
+        return artifact;
+    }
 
-        if(pVersion == null || pType.trim().length() == 0)
-            pVersion = "SNAPSHOT";
-
-        if(pExtension == null || pExtension.trim().length() == 0)
-            pExtension = pType;
-
-        for(int row = 0; row < getRowCount(); row++) {
-            if(!pGroupId.equals(getGroupId(row)))
+    public int findRow(final Artifact pArtifact) {
+        final Artifact artifact = pArtifact.getCompleteArtifact();
+        for (int row = 0; row < getRowCount(); row++) {
+            if (!artifact.getGroupId().equals(getGroupId(row)))
                 continue;
 
-            if(!pArtifactId.equals(getArtifactId(row)))
+            if (!artifact.getArtifactId().equals(getArtifactId(row)))
                 continue;
 
             String type = getType(row);
-            if(type == null || type.trim().length() == 0) type = "jar";
-            if(!pType.equals(type))
+            if (type == null || type.trim().length() == 0) type = "jar";
+            if (!artifact.getType().equals(type))
                 continue;
 
             String version = getVersion(row);
-            if(version == null || version.trim().length() == 0) version = "SNAPSHOT";
-            if(!pVersion.equalsIgnoreCase(version))
+            if (version == null || version.trim().length() == 0) version = "SNAPSHOT";
+            if (!artifact.getVersion().equalsIgnoreCase(version))
                 continue;
 
             String extension = getExtension(row);
-            if(extension == null || extension.trim().length() == 0)
+            if (extension == null || extension.trim().length() == 0)
                 extension = type;
-            if(!pExtension.equalsIgnoreCase(extension))
+            if (!artifact.getExtension().equalsIgnoreCase(extension))
                 continue;
 
             return row;

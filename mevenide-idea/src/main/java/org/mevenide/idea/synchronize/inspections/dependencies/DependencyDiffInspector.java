@@ -3,24 +3,21 @@ package org.mevenide.idea.synchronize.inspections.dependencies;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.vfs.VfsUtil;
 import com.intellij.openapi.vfs.VirtualFile;
-import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import org.apache.maven.project.Dependency;
+import org.apache.commons.lang.ArrayUtils;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.module.ModuleUtils;
-import org.mevenide.idea.synchronize.AbstractProblemInfo;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.synchronize.inspections.AbstractModuleInspector;
-import org.mevenide.idea.util.FileUtils;
-import org.mevenide.idea.util.MavenUtils;
+import org.mevenide.idea.project.util.PomUtils;
+import org.mevenide.idea.repository.Artifact;
+import org.mevenide.idea.repository.PomRepoManager;
+import org.mevenide.idea.synchronize.*;
+import org.mevenide.idea.synchronize.inspections.AbstractInspector;
 
 /**
  * @author Arik
  */
-public class DependencyDiffInspector extends AbstractModuleInspector {
+public class DependencyDiffInspector extends AbstractInspector implements ModuleProblemInspector {
     /**
      * Resources
      */
@@ -31,7 +28,7 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
               RES.get("dep.diff.inspector.desc"));
     }
 
-    public ProblemInfo[] inspect(Module pModule) {
+    public ProblemInfo[] inspect(String pPomUrl, Module pModule) {
 
         //
         //buffer for the set of problems we'll encounter
@@ -41,12 +38,12 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
         //
         //find dependencies defined in POM and not in the IDEA module
         //
-        findDepsMissingFromIdea(problems, pModule);
+        findDepsMissingFromIdea(problems, pPomUrl, pModule);
 
         //
         //find libraries defined in IDEA module and missing from POM
         //
-        findLibsMissingFromPom(problems, pModule);
+        findLibsMissingFromPom(problems, pPomUrl, pModule);
 
         //
         //return the problems found
@@ -55,180 +52,128 @@ public class DependencyDiffInspector extends AbstractModuleInspector {
     }
 
     protected final void findLibsMissingFromPom(final Set<ProblemInfo> pProblemBuffer,
+                                                final String pPomUrl,
                                                 final Module pModule) {
-        //
-        //find the local repository
-        //
-        final VirtualFile localRepo = RepositoryUtils.getLocalRepository(pModule);
-        if (localRepo == null)
-            return;
+        final VirtualFile[] pomLibs = PomUtils.getPomClassPathFiles(pModule.getProject(), pPomUrl);
+        final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(pModule);
 
-        final Dependency[] deps = ModuleUtils.getModulePomDependencies(pModule);
-        final Map<VirtualFile, String> depFiles = new HashMap<VirtualFile, String>(deps.length);
-        for (Dependency dep : deps) {
-            if (!dep.isAddedToClasspath())
+        for (VirtualFile ideaFile : ideaLibs) {
+            if(!ideaFile.isValid())
                 continue;
 
-            final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
-            final VirtualFile file = localRepo.findFileByRelativePath(relPath);
-            if (file == null || !file.isValid())
-                continue;
-
-            depFiles.put(file, FileUtils.fixPath(file));
-        }
-
-        //
-        //find module's classpath files
-        //
-        final VirtualFile[] files = ModuleUtils.getModuleClasspath(pModule);
-        for (VirtualFile file : files) {
-            final String filePath = FileUtils.fixPath(file);
             boolean found = false;
-            for (Map.Entry<VirtualFile, String> entry : depFiles.entrySet()) {
-                final VirtualFile depFile = entry.getKey();
-                final String depFilePath = entry.getValue();
-                if (depFile.equals(file) || depFilePath.equals(filePath)) {
+            for (VirtualFile pomFile : pomLibs)
+                if(pomFile.isValid() && pomFile.equals(ideaFile)) {
                     found = true;
                     break;
                 }
-            }
 
-            if (!found)
-                pProblemBuffer.add(
-                        new LibraryMissingFromPomProblem(pModule, file));
+            if(!found)
+                pProblemBuffer.add(new LibraryMissingFromPomProblem(pPomUrl, pModule, ideaFile));
         }
     }
 
     protected final void findDepsMissingFromIdea(final Set<ProblemInfo> pProblemBuffer,
+                                                 final String pPomUrl,
                                                  final Module pModule) {
-        //
-        //find the local repository
-        //
-        final VirtualFile localRepo = RepositoryUtils.getLocalRepository(pModule);
-        if (localRepo == null)
-            return;
+        final Artifact[] pomLibs = PomUtils.getPomClassPathArtifacts(pModule.getProject(), pPomUrl);
+        final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(pModule);
 
-        //
-        //iterate over the project dependencies, and check each one if it
-        //exists in the local repository
-        //
-        final Dependency[] deps = ModuleUtils.getModulePomDependencies(pModule);
-        for (Dependency dep : deps) {
-            if (!dep.isAddedToClasspath())
+        final PomRepoManager repoMgr = PomRepoManager.getInstance(pModule.getProject());
+        for (Artifact artifact : pomLibs) {
+            final VirtualFile file = repoMgr.findFile(pPomUrl, artifact);
+            if(file == null || !file.isValid())
                 continue;
 
-            final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
-            final VirtualFile depFile = localRepo.findFileByRelativePath(relPath);
-            if (depFile == null)
-                continue;
+            boolean found = false;
+            for (VirtualFile ideaFile : ideaLibs)
+                if (ideaFile.isValid() && ideaFile.equals(file)) {
+                    found = true;
+                    break;
+                }
 
-            if (!ModuleUtils.isFileInClasspath(pModule, depFile))
-                pProblemBuffer.add(
-                        new DependencyMissingInIdeaProblem(pModule, dep));
+            if (!found)
+                pProblemBuffer.add(new DependencyMissingInIdeaProblem(pModule, artifact));
         }
     }
 
-    private class DependencyMissingInIdeaProblem extends AbstractProblemInfo {
-        private final Module module;
-        private final Dependency dependency;
+    private class DependencyMissingInIdeaProblem extends AbstractModuleProblemInfo implements
+                                                                                   ModuleArtifactProblemInfo {
+        private final Artifact artifact;
 
-        public DependencyMissingInIdeaProblem(final Module pModule,
-                                              final Dependency pDependency) {
+        public DependencyMissingInIdeaProblem(final Module pModule, final Artifact pArtifact) {
             super(DependencyDiffInspector.this,
                   pModule,
                   RES.get("dep.missing.from.idea.problem",
-                          RepositoryUtils.getDependencyRelativePath(pDependency),
+                          pArtifact,
                           pModule.getName()));
+            artifact = pArtifact;
 
-            module = pModule;
-            dependency = pDependency;
+            addFixAction(new AddDependencyToIdeaAction(this));
+            addFixAction(new RemoveDependencyFromPomAction(this));
+        }
 
-            addFixAction(new AddDependencyToIdeaAction(this, module, dependency));
-            addFixAction(new RemoveDependencyFromPomAction(this, module, dependency));
+        public Artifact getArtifact() {
+            return artifact;
         }
 
         public boolean isValid() {
-            if (!MavenUtils.isDependencyDeclared(module, dependency))
+            if (!PomUtils.isArtifactDeclared(getProject(), pomUrl, artifact))
                 return false;
 
-            final String relPath = RepositoryUtils.getDependencyRelativePath(dependency);
-            final VirtualFile localRepo = RepositoryUtils.getLocalRepository(module);
-            final VirtualFile depFile = localRepo.findFileByRelativePath(relPath);
-            if (depFile == null)
-                return true;
+            final PomRepoManager repoMgr = PomRepoManager.getInstance(getProject());
+            final VirtualFile file = repoMgr.findFile(pomUrl, artifact);
+            if(file == null || !file.isValid())
+                return false;
 
-            return !ModuleUtils.isFileInClasspath(module, depFile);
+            return !ModuleUtils.isFileInClasspath(module, file);
         }
     }
 
-    private class LibraryMissingFromPomProblem extends AbstractProblemInfo {
-        private final Module module;
+    private class LibraryMissingFromPomProblem extends AbstractModuleProblemInfo implements
+                                                                                 FileProblemInfo {
         private final VirtualFile libraryFile;
-        private final String libraryFilePath;
 
-        public LibraryMissingFromPomProblem(final Module pModule,
+        public LibraryMissingFromPomProblem(final String pPomUrl,
+                                            final Module pModule,
                                             final VirtualFile pLibraryFile) {
             super(DependencyDiffInspector.this,
-                  pModule,
+                  pPomUrl,
                   RES.get("lib.missing.from.pom.problem",
-                          FileUtils.fixPath(pLibraryFile),
-                          pModule.getName()));
-            module = pModule;
+                          pLibraryFile.getPresentableUrl(),
+                          pModule.getName()),
+                  pModule);
             libraryFile = pLibraryFile;
-            libraryFilePath = FileUtils.fixPath(libraryFile);
 
             //
             //find the local repository - if the file is not under the
             //local repo, we cannot derive the group and artifact ids,
             //and therefor we cannot fix the problem (return empty array)
             //
-            final VirtualFile localRepo = RepositoryUtils.getLocalRepository(module);
-            final File ioLibraryFile = VfsUtil.virtualToIoFile(libraryFile);
-            final File ioLocalRepo = VfsUtil.virtualToIoFile(localRepo);
-
-            if (localRepo != null && VfsUtil.isAncestor(ioLocalRepo,
-                                                        ioLibraryFile,
-                                                        true)) {
-                addFixAction(new AddLibraryToPomAction(this, module, libraryFile));
-                addFixAction(new RemoveLibraryFromModuleAction(this,
-                                                               module,
-                                                               libraryFile));
+            final PomRepoManager pomMgr = PomRepoManager.getInstance(module.getProject());
+            final VirtualFile localRepo = pomMgr.getLocalRepositoryDirectory(pPomUrl);
+            if (localRepo != null && VfsUtil.isAncestor(localRepo, libraryFile, true)) {
+                addFixAction(new AddLibraryToPomAction(this, module));
+                addFixAction(new RemoveLibraryFromModuleAction(this, module));
             }
         }
 
-        public boolean isValid() {
-            if (!ModuleUtils.isFileInClasspath(module, libraryFile))
-                return false;
+        public VirtualFile getFile() {
+            return libraryFile;
+        }
 
-            //
-            //find the local repository
-            //
-            final VirtualFile localRepo = RepositoryUtils.getLocalRepository(module);
-            if (localRepo == null)
-                return true;
+        public boolean isValid() {
+            final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(module);
+            if(!ArrayUtils.contains(ideaLibs, libraryFile))
+                return false;
 
             //
             //search for the file in the POM dependencies - if found, then
             //the problem is no longer relevant, and return false. Otherwise
             //return true
             //
-            final Dependency[] deps = ModuleUtils.getModulePomDependencies(module);
-            for (Dependency dep : deps) {
-                if (!dep.isAddedToClasspath())
-                    continue;
-
-                final String relPath = RepositoryUtils.getDependencyRelativePath(dep);
-                final VirtualFile depFile = localRepo.findFileByRelativePath(relPath);
-                if (depFile == null || !depFile.isValid())
-                    continue;
-
-                final String depFilePath = FileUtils.fixPath(depFile);
-
-                if (libraryFile.equals(depFile) || libraryFilePath.equals(depFilePath))
-                    return false;
-            }
-
-            return true;
+            final VirtualFile[] pomLibs = PomUtils.getPomClassPathFiles(project, pomUrl);
+            return ArrayUtils.contains(pomLibs, libraryFile);
         }
     }
 }

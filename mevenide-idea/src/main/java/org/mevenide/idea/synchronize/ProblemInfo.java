@@ -54,6 +54,7 @@ public interface ProblemInfo {
      * automatically solved and the user needs to intervene.</p>
      *
      * @return can return an actions array, {@code null} or an empty array
+     * @todo how about returning a list of a new Fixable interface?
      */
     AnAction[] getFixActions();
 

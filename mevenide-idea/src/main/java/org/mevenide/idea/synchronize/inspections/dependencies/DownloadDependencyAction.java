@@ -3,7 +3,6 @@ package org.mevenide.idea.synchronize.inspections.dependencies;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.application.Application;
 import com.intellij.openapi.application.ApplicationManager;
-import java.util.concurrent.atomic.AtomicReference;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.synchronize.AbstractFixAction;
@@ -28,12 +27,7 @@ class DownloadDependencyAction extends AbstractFixAction<ArtifactProblemInfo> {
 
     public DownloadDependencyAction(final ArtifactProblemInfo pProblemInfo) {
         super(RES.get("dep.missing.fix.download.title"),
-              RES.get("dep.missing.fix.download.desc",
-                      PomRepoManager.getPresentableName(pProblemInfo.getGroupId(),
-                                                        pProblemInfo.getArtifactId(),
-                                                        pProblemInfo.getType(),
-                                                        pProblemInfo.getVersion(),
-                                                        pProblemInfo.getExtension())),
+              RES.get("dep.missing.fix.download.desc", pProblemInfo.getArtifact()),
               Icons.DOWNLOAD,
               pProblemInfo);
     }
@@ -50,26 +44,21 @@ class DownloadDependencyAction extends AbstractFixAction<ArtifactProblemInfo> {
     }
 
     private class Downloader implements Runnable {
-        private final AtomicReference<Throwable> error = new AtomicReference<Throwable>();
+        private Throwable error = null;
 
         public void run() {
-            error.set(null);
+            error = null;
             try {
                 final PomRepoManager mgr = PomRepoManager.getInstance(problem.getProject());
-                mgr.download(problem.getPomUrl(),
-                             problem.getGroupId(),
-                             problem.getArtifactId(),
-                             problem.getType(),
-                             problem.getVersion(),
-                             problem.getExtension());
+                mgr.download(problem.getPomUrl(), problem.getArtifact());
             }
             catch (Exception e) {
-                error.set(e);
+                error = e;
             }
         }
 
         public Throwable getError() {
-            return error.get();
+            return error;
         }
     }
 }

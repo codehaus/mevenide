@@ -13,18 +13,9 @@ public class ArtifactNotFoundException extends Exception {
 
     private final Throwable[] repoErrors;
 
-    public ArtifactNotFoundException(final String pGroupId,
-                                     final String pType,
-                                     final String pArtifactId,
-                                     final String pVersion,
-                                     final String pExtension,
+    public ArtifactNotFoundException(final Artifact pArtifact,
                                      final Throwable... pCauses) {
-        this(PomRepoManager.convertToRelativePath(pGroupId,
-                                                  pType,
-                                                  pArtifactId,
-                                                  pVersion,
-                                                  pExtension),
-             pCauses);
+        this(pArtifact.getRelativePath(), pCauses);
     }
 
     public ArtifactNotFoundException(final String pRelativePath,

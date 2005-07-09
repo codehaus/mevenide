@@ -25,9 +25,6 @@ public class PomModelManager extends AbstractPomSettingsManager {
     }
 
     public PsiProject getPsiProject(final String pPomUrl) {
-        if (!isValid(pPomUrl))
-            return null;
-
         boolean recreate = true;
         PsiProject psi = get(KEY, pPomUrl);
 

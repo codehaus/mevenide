@@ -7,7 +7,7 @@ import com.intellij.openapi.module.Module;
  */
 public abstract class AbstractModuleProblemInfo extends AbstractProblemInfo {
 
-    private final Module module;
+    protected final Module module;
 
     protected AbstractModuleProblemInfo(final ProblemInspector pInspector,
                                         final Module pModule,

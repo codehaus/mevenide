@@ -48,8 +48,8 @@ public class AddAsDependencyAction extends AbstractBrowserAction {
         if (pomUrl == null || pomUrl.trim().length() == 0)
             return;
 
-        final PomModelManager pomMgr = PomModelManager.getInstance(project);
-        final PsiProject psi = pomMgr.getPsiProject(pomUrl);
+        final PomModelManager modelMgr = PomModelManager.getInstance(project);
+        final PsiProject psi = modelMgr.getPsiProject(pomUrl);
         final PsiDependencies deps = psi.getDependencies();
         final RepoPathElement[] artifacts = getSelectedItems(RepoPathElement.LEVEL_VERSION);
         for (RepoPathElement pathElement : artifacts) {
