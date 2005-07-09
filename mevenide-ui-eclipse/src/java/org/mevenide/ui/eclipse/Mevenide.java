@@ -17,37 +17,24 @@
 
 package org.mevenide.ui.eclipse;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.MissingResourceException;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.internal.resources.Workspace;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
 import org.mevenide.ui.eclipse.pom.manager.DefaultPOMManager;
@@ -67,35 +54,23 @@ import org.osgi.framework.Constants;
  * @version $Id$
  */
 public class Mevenide extends AbstractUIPlugin {
+    /**
+     * TODO: Describe how <code>DEFAULT_ERROR_TITLE</code> is used.
+     */
+    private static final String DEFAULT_ERROR_TITLE = "Internal MevenIDE Error";
+
     public static final String PLUGIN_ID = "org.mevenide.ui"; //$NON-NLS-1$
 
-    private static Log log = LogFactory.getLog(Mevenide.class);
+    private static final String ICONS_PATH = "/icons"; //$NON-NLS-1$
 
     private static Mevenide plugin;
 
     private Object lock = new Object();
-
-    private static final String ICONS_PATH = "icons/"; //$NON-NLS-1$
-    private static final String LIB_FOLDER = "lib/"; //$NON-NLS-1$
-    private static final String FOREHEAD_LIBRARY = "forehead-1.0-beta-5.jar"; //$NON-NLS-1$
-    private static final String PROJECT_PROPERTIES_FILE_NAME = "project.properties"; //$NON-NLS-1$
-
     private ResourceBundle resourceBundle;
     private ExceptionHandler exceptionHandler;
     private POMManager pomManager;
     private MavenClasspathManager mavenClasspathManager;
-
-    private String currentDir;
-    private IProject project;
-
     private ActionDefinitionsManager actionDefinitionsManager;
-
-    public ActionDefinitionsManager getActionDefinitionsManager() {
-        if (actionDefinitionsManager == null) {
-            actionDefinitionsManager = new ActionDefinitionsManager();
-        }
-        return actionDefinitionsManager;
-    }
 
     /**
      * Initializes a new instance of Mevenide.
@@ -104,8 +79,8 @@ public class Mevenide extends AbstractUIPlugin {
         plugin = this;
     }
 
-    /**
-     * osgi startup : initialize resources
+    /* (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
@@ -115,26 +90,21 @@ public class Mevenide extends AbstractUIPlugin {
         ((Workspace)workspace).addLifecycleListener(new LifecycleListener(this));
         // NOTE: There is no way to remove a lifecycle listener.
 
-        initEnvironment();
-
         this.pomManager = new DefaultPOMManager();
         ((DefaultPOMManager)this.pomManager).initialize();
 
         this.mavenClasspathManager = new MavenClasspathManager();
         this.mavenClasspathManager.initialize();
+
+        this.actionDefinitionsManager = new ActionDefinitionsManager();
     }
 
-    protected void initializeImageRegistry(ImageRegistry reg) {
-        for (int i = 0; i < IImageRegistry.IMAGE_KEYS.length; i++) {
-            reg.put(IImageRegistry.IMAGE_KEYS[i],
-                    getImageDescriptor(IImageRegistry.IMAGE_KEYS[i]));
-        }
-    }
-
-    /**
-     * osgi shutdown : dispose resources
+    /* (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
      */
     public void stop(BundleContext context) throws Exception {
+        this.actionDefinitionsManager = null; 
+
         this.mavenClasspathManager.dispose();
         this.mavenClasspathManager = null;
 
@@ -142,6 +112,33 @@ public class Mevenide extends AbstractUIPlugin {
         this.pomManager = null;
 
         super.stop(context);
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#initializeImageRegistry(org.eclipse.jface.resource.ImageRegistry)
+     */
+    protected void initializeImageRegistry(ImageRegistry reg) {
+        URL rootURL;
+        try {
+            rootURL = Platform.resolve(getBundle().getEntry(ICONS_PATH));
+        } catch (IOException e) {
+            final String msg = "Unable to resolve the root URL for the icons in this plugin.";
+            displayError(DEFAULT_ERROR_TITLE, msg, e);
+            return;
+        }
+
+        for (int i = 0; i < IImageRegistry.IMAGE_KEYS.length; i++) {
+            final String relativePath = IImageRegistry.IMAGE_KEYS[i];
+
+            try {
+                URL url = new URL(rootURL, relativePath);
+                reg.put(relativePath, ImageDescriptor.createFromURL(url));
+            } catch (MalformedURLException e) {
+                final String msg = "Cannot find image descriptor for '" + relativePath + "'.";
+                displayError(DEFAULT_ERROR_TITLE, msg, e);
+                reg.put(relativePath, ImageDescriptor.getMissingImageDescriptor());
+            }
+        }
     }
 
     public IPersistentPreferenceStore getCustomPreferenceStore() {
@@ -164,7 +161,8 @@ public class Mevenide extends AbstractUIPlugin {
         try {
             return bundle.getString(key);
         } catch (MissingResourceException e) {
-            log.error("Cannot find Bundle Key '" + key + "'", e); //$NON-NLS-1$//$NON-NLS-2$
+            final String msg = "Cannot find value for '" + key + "' in the resource bundle."; //$NON-NLS-1$//$NON-NLS-2$
+            displayError(DEFAULT_ERROR_TITLE, msg, e);
             return key;
         }
     }
@@ -178,93 +176,145 @@ public class Mevenide extends AbstractUIPlugin {
     }
 
     public ResourceBundle getResourceBundle() {
-        if (resourceBundle != null) {
-            return resourceBundle;
+        if (this.resourceBundle != null) {
+            return this.resourceBundle;
         }
 
-        synchronized (lock) {
-            if (resourceBundle == null) {
-                resourceBundle = ResourceBundle.getBundle("MavenPluginResources"); //$NON-NLS-1$
+        synchronized (this.lock) {
+            if (this.resourceBundle == null) {
+                this.resourceBundle = ResourceBundle.getBundle("MavenPluginResources"); //$NON-NLS-1$
             }
-            return resourceBundle;
+            return this.resourceBundle;
         }
     }
 
-    private ImageDescriptor getImageDescriptor(String relativePath) {
-        String iconPath = ICONS_PATH;
-        try {
-            URL installURL = plugin.getBundle().getEntry("/"); //$NON-NLS-1$
-            URL url = new URL(installURL, iconPath + "/" + relativePath); //$NON-NLS-1$
-            return ImageDescriptor.createFromURL(url);
-        } catch (MalformedURLException e) {
-            // should not happen
-            log.debug("Cannot find ImageDescriptor for '" + relativePath + "' due to : " + relativePath); //$NON-NLS-1$ //$NON-NLS-2$
-            return ImageDescriptor.getMissingImageDescriptor();
-        }
+////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return The exception handler for this plugin.
+     */
+    public ExceptionHandler getExceptionHandler() {
+        return this.exceptionHandler;
     }
 
     /**
-     * should not be necessary since the setters already take care of configuring the environment.
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param e
+     *            the error to show to the user
      */
-    public void initEnvironment() {
-        RunnerHelper.setHelper(new RunnerHelper() {
-            private String foreHead = null;
-
-            public String getForeheadLibrary() {
-                if (foreHead == null) {
-                    try {
-                        URL foreHeadURL = new URL(Platform.resolve(getBundle().getEntry("/")), LIB_FOLDER + FOREHEAD_LIBRARY); //$NON-NLS-1$
-                        foreHead = foreHeadURL.getFile();
-                        log.debug("ForeHead library : " + foreHeadURL); //$NON-NLS-1$
-                    } catch (IOException e) {
-                        log.debug("Unable to get forehead lib : ", e); //$NON-NLS-1$
-                    }
-
-                }
-                return foreHead;
-            }
-        });
+    public static final void displayError(String message, CoreException e) {
+        displayError(null, message, e);
     }
 
-    public void setBuildPath() throws Exception {
-        Mevenide r = Mevenide.getInstance();
-        IFile props = r.project.getFile(Mevenide.PROJECT_PROPERTIES_FILE_NAME);
-        if (!props.exists()) {
-            props.create(new ByteArrayInputStream(new byte[0]), false, null);
-        }
-
-        IJavaProject javaProject = JavaCore.create(project);
-
-        if (!javaProject.exists()) {
-            return;
-        }
-
-        File f = new Path(project.getLocation().append(PROJECT_PROPERTIES_FILE_NAME).toOSString()).toFile();
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(f));
-
-        IPathResolver resolver = new DefaultPathResolver();
-
-        String buildPath = resolver.getRelativePath(project, javaProject.getOutputLocation());
-        properties.setProperty("maven.build.dest", buildPath); //$NON-NLS-1$
-        properties.store(new FileOutputStream(f), null);
-
-        initEnvironment();
+    /**
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param title
+     *            the title to use for this dialog, or <code>null</code> to
+     *            indicate that the default title should be used
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param e
+     *            the error to show to the user
+     */
+    public static final void displayError(String title, String message, CoreException e) {
+        final String theTitle = (title == null)? Mevenide.getResourceString("Mevenide.error.title"): title;
+        getInstance().getExceptionHandler().displayError(theTitle, message, e);
     }
 
-    /// setter/getter methods ---
-
-    public String getCurrentDir() {
-        return currentDir;
+    /**
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param s
+     *            the error to show to the user
+     */
+    public static final void displayError(String message, IStatus s) {
+        getInstance().getExceptionHandler().displayError(null, message, s);
     }
 
-    public void setCurrentDir(String currentDir) {
-        this.currentDir = currentDir;
+    /**
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param title
+     *            the title to use for this dialog, or <code>null</code> to
+     *            indicate that the default title should be used
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param s
+     *            the error to show to the user
+     */
+    public static final void displayError(String title, String message, IStatus s) {
+        final String theTitle = (title == null)? Mevenide.getResourceString("Mevenide.error.title"): title;
+        getInstance().getExceptionHandler().displayError(theTitle, message, s);
     }
 
-    public void setProject(IProject project) {
-        this.project = project;
-        this.currentDir = project.getLocation().toOSString();
+    /**
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param t
+     *            the error to show to the user
+     */
+    public static final void displayError(String message, Throwable t) {
+        getInstance().getExceptionHandler().displayError(null, message, t);
+    }
+
+    /**
+     * Opens an error dialog to display the given error
+     * and logs the error in the plugin's error log.
+     * 
+     * @param title
+     *            the title to use for this dialog, or <code>null</code> to
+     *            indicate that the default title should be used
+     * @param message
+     *            the message to show in this dialog, or <code>null</code> to
+     *            indicate that the error's message should be shown as the
+     *            primary message
+     * @param t
+     *            the error to show to the user
+     */
+    public static final void displayError(String title, String message, Throwable t) {
+        final String theTitle = (title == null)? Mevenide.getResourceString("Mevenide.error.title"): title;
+        getInstance().getExceptionHandler().displayError(theTitle, message, t);
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the action-definition manager
+     */
+    public ActionDefinitionsManager getActionDefinitionsManager() {
+        return this.actionDefinitionsManager;
+    }
+
+////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return the POM manager
+     */
+    public POMManager getPOMManager() {
+        return this.pomManager;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -306,76 +356,4 @@ public class Mevenide extends AbstractUIPlugin {
 
     public static final PluginVersionIdentifier ECLIPSE_FORMS_3_0_0 = new PluginVersionIdentifier(3, 0, 0);
     public static final PluginVersionIdentifier ECLIPSE_FORMS_3_1_0 = new PluginVersionIdentifier(3, 1, 0);
-
-////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @return The exception handler for this plugin.
-     */
-    public ExceptionHandler getExceptionHandler() {
-        return this.exceptionHandler;
-    }
-
-    /**
-     * Opens an error dialog to display the given error
-     * and logs the error in the plugin's error log.
-     * 
-     * @param title
-     *            the title to use for this dialog, or <code>null</code> to
-     *            indicate that the default title should be used
-     * @param message
-     *            the message to show in this dialog, or <code>null</code> to
-     *            indicate that the error's message should be shown as the
-     *            primary message
-     * @param e
-     *            the error to show to the user
-     */
-    public static final void displayError(String title, String message, CoreException e) {
-        getInstance().getExceptionHandler().displayError(title, message, e);
-    }
-
-    /**
-     * Opens an error dialog to display the given error
-     * and logs the error in the plugin's error log.
-     * 
-     * @param title
-     *            the title to use for this dialog, or <code>null</code> to
-     *            indicate that the default title should be used
-     * @param message
-     *            the message to show in this dialog, or <code>null</code> to
-     *            indicate that the error's message should be shown as the
-     *            primary message
-     * @param s
-     *            the error to show to the user
-     */
-    public static final void displayError(String title, String message, IStatus s) {
-        getInstance().getExceptionHandler().displayError(title, message, s);
-    }
-
-    /**
-     * Opens an error dialog to display the given error
-     * and logs the error in the plugin's error log.
-     * 
-     * @param title
-     *            the title to use for this dialog, or <code>null</code> to
-     *            indicate that the default title should be used
-     * @param message
-     *            the message to show in this dialog, or <code>null</code> to
-     *            indicate that the error's message should be shown as the
-     *            primary message
-     * @param t
-     *            the error to show to the user
-     */
-    public static final void displayError(String title, String message, Throwable t) {
-        getInstance().getExceptionHandler().displayError(title, message, t);
-    }
-
-////////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * @return the POM manager
-     */
-    public POMManager getPOMManager() {
-        return this.pomManager;
-    }
 }

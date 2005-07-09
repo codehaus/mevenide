@@ -18,6 +18,8 @@
 package org.mevenide.ui.eclipse.launch.configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,9 +33,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.ILaunch;
@@ -41,16 +45,22 @@ import org.eclipse.debug.core.ILaunchConfiguration;
 import org.eclipse.debug.core.ILaunchManager;
 import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.ISelectionService;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
+import org.mevenide.runner.RunnerHelper;
 import org.mevenide.runner.RunnerUtils;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
@@ -68,6 +78,7 @@ import org.mevenide.ui.eclipse.util.FileUtils;
 public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfigurationDelegate {
 	private static Log log = LogFactory.getLog(MavenLaunchDelegate.class); 
 	
+    private static final String FOREHEAD_LIBRARY = "lib/forehead-1.0-beta-5.jar"; //$NON-NLS-1$
 	public static final String MAVEN_LAUNCH = "org.mevenide.maven.launched"; //$NON-NLS-1$
 
 	private ILaunchConfiguration config;
@@ -277,19 +288,51 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 
     protected String getBasedir() {
         try {
-			//return Mevenide.getPlugin().getCurrentDir();
-			log.debug("basedir = " + ExternalToolsUtil.getWorkingDirectory(config).toOSString()); //$NON-NLS-1$
 			return ExternalToolsUtil.getWorkingDirectory(config).toOSString();
-			
-		} 
-		catch (Exception e) {
+		} catch (Exception e) {
 			log.debug("Unable to obtain basedir due to : " + e + " ; returning : Mevenide.getPlugin().getCurrentDir()");  //$NON-NLS-1$//$NON-NLS-2$
-			return Mevenide.getInstance().getCurrentDir();
+
+            ISelectionService selectionService = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService();
+            ISelection selection = selectionService.getSelection();
+            if (selection instanceof IStructuredSelection) {
+                IStructuredSelection ss = (IStructuredSelection)selection;
+                Object firstElement = ss.getFirstElement();
+                if (firstElement instanceof IJavaProject) {
+                    firstElement = ((IJavaProject)firstElement).getProject();
+                }
+                if (firstElement instanceof IResource) {
+                    IResource resource = (IResource)firstElement;
+                    IProject project = resource.getProject();
+                    if (project != null) {
+                        return project.getLocation().toOSString();
+                    }
+                }
+            }
+
+            return ""; //$NON-NLS-1$
 		}
 	}
 
 	protected void initEnvironment() throws Exception  {
-		Mevenide.getInstance().initEnvironment();
+        RunnerHelper.setHelper(new RunnerHelper() {
+            private String foreHead = null;
+        
+            public String getForeheadLibrary() {
+                if (this.foreHead == null) {
+                    final URL rootURL = Mevenide.getInstance().getBundle().getEntry("/"); //$NON-NLS-1$
+                    try {
+                        URL foreHeadURL = new URL(Platform.resolve(rootURL), FOREHEAD_LIBRARY);
+                        this.foreHead = foreHeadURL.getFile();
+                    } catch (IOException e) {
+                        final String msg = "Unable to resolve path to the Forehead library at '" + FOREHEAD_LIBRARY + "'."; //$NON-NLS-1$//$NON-NLS-2$
+                        Mevenide.displayError(msg, e);
+                        this.foreHead = rootURL.getFile();
+                    }
+        
+                }
+                return this.foreHead;
+            }
+        });
 	}
 
 	protected void launchVM(String[] options, String[] goals) throws Exception {

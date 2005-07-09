@@ -50,7 +50,7 @@ public class GoalsProvider implements ITreeContentProvider {
             }
         } catch (Exception e) {
             final String msg = "Unable to retreave goals for " + context.getProjectDirectory().getName() + ".";
-            Mevenide.displayError("Internal MevenIDE Error", msg, e);
+            Mevenide.displayError(msg, e);
         }
     }
 

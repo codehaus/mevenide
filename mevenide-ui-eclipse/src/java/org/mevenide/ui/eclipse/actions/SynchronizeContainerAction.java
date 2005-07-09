@@ -45,7 +45,7 @@ public class SynchronizeContainerAction extends AbstractMevenideAction {
             view.setInput(getCurrentProject());
         } catch (PartInitException e) {
             final String message = "Unable to open the POM synchronization view.";
-            Mevenide.displayError("Internal MevenIDE Error", message, e);
+            Mevenide.displayError(message, e);
         }
     }
 

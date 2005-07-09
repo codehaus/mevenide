@@ -196,7 +196,7 @@ public class MavenClasspathContainer implements IClasspathContainer {
             int cnt = root.matchingFirstSegments(path);
             path = path.removeFirstSegments(cnt).makeAbsolute().setDevice(null);
         } catch (IOException e) {
-            Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
+            Mevenide.displayError(e.getLocalizedMessage(), e);
         }
 
         return path;

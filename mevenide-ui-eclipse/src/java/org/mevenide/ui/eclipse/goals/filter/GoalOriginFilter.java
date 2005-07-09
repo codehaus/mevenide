@@ -106,7 +106,7 @@ public class GoalOriginFilter extends ViewerFilter {
             getPreferenceStore().save();
             return true;
         } catch (IOException e) {
-            Mevenide.displayError("Internal MevenIDE Error", "Unable to save preferences.", e);
+            Mevenide.displayError("Unable to save preferences.", e);
         }
 
         return false;

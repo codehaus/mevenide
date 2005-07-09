@@ -197,7 +197,7 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 					}
 				} 
 				catch (Exception e) {
-					Mevenide.displayError("Internal MevenIDE Error", e.getLocalizedMessage(), e);
+					Mevenide.displayError(e.getLocalizedMessage(), e);
 				}
 				//Artifact artifact = new GenericArtifact(dependency);
 				

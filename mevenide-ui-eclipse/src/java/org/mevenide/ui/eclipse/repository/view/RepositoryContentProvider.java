@@ -61,7 +61,7 @@ public class RepositoryContentProvider implements ITreeContentProvider {
                     return currentNodeObject.getChildren();
                 } catch (Exception e) {
                     final String msg = "Unable to fetch children.";
-                    Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                    Mevenide.displayError(msg, e);
                 }
             } else {
                 RepositoryObjectCollectorJob job = new RepositoryObjectCollectorJob(currentNodeObject);

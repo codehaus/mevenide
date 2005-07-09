@@ -42,7 +42,7 @@ public class MavenClasspathContainerInitializer extends ClasspathContainerInitia
                 MavenClasspathManager.initializeClasspathContainer(containerPath, javaProject);
             } catch (CoreException e) {
                 final String msg = "Unable to initialize the Maven classpath container " + containerPath + ".";
-                Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                Mevenide.displayError(msg, e);
             }
         } else {
             // This project has the Maven classpath container but autosync is disabled.
@@ -53,7 +53,7 @@ public class MavenClasspathContainerInitializer extends ClasspathContainerInitia
                 MavenClasspathManager.removeClasspathContainer(javaProject);
             } catch (CoreException e) {
                 final String msg = "Unable to remove the Maven classpath container " + containerPath + ".";
-                Mevenide.displayError("Internal MevenIDE Error", msg, e);
+                Mevenide.displayError(msg, e);
             }
         }
     }
