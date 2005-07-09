@@ -167,7 +167,7 @@ public class SynchronizationView extends ViewPart implements IActionListener, IR
 		try {
 			this.container = input;
 			//poms = FileUtils.getPoms(input);
-		    poms = new PomChooser(input).openPomChoiceDialog(false);
+		    poms = new PomChooser(input.getProject()).openPomChoiceDialog(false);
 		    
 		    if ( poms != null ) {
 		        synchronizeProjectWithPoms(input.getProject(), poms);

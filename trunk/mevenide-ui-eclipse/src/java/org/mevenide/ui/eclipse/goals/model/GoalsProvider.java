@@ -43,7 +43,7 @@ public class GoalsProvider implements ITreeContentProvider {
         try {
             if (context != null) {
                 LocationFinderAggregator locationFinder = new LocationFinderAggregator(context);
-                locationFinder.setCustomLocationFinder(Mevenide.getInstance().getCustomLocationFinder());
+                locationFinder.setCustomLocationFinder(Mevenide.getInstance().getPOMManager().getCustomLocationFinder());
                 goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(context, locationFinder);
             } else {
                 goalsGrabber = new DefaultGoalsGrabber();

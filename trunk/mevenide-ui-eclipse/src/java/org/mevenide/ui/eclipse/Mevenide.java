@@ -47,10 +47,7 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.environment.CustomLocationFinder;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.runner.RunnerHelper;
 import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
@@ -147,7 +144,6 @@ public class Mevenide extends AbstractUIPlugin {
         ((Workspace)workspace).addLifecycleListener(new LifecycleListener(this));
         // NOTE: There is no way to remove a lifecycle listener.
 
-        initializeDefaultLocationFinder();
         initEnvironment();
 
         this.pomManager = new DefaultPOMManager();
@@ -185,19 +181,6 @@ public class Mevenide extends AbstractUIPlugin {
     public IPersistentPreferenceStore getDynamicPreferenceStore() {
         // TODO: Switch to IoC for creating the custom preference store.
         return DynamicPreferencesManager.getManager().getPreferenceStore();
-    }
-
-    private LocationFinderAggregator defaultLocationFinder;
-    private void initializeDefaultLocationFinder() {
-        this.defaultLocationFinder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
-        this.defaultLocationFinder.setCustomLocationFinder(new PreferenceBasedLocationFinder(getCustomPreferenceStore()));
-    }
-
-    /**
-     * @return Returns the defaultLocationFinder.
-     */
-    public ILocationFinder getDefaultLocationFinder() {
-        return defaultLocationFinder;
     }
 
     /// usual Plugin methods ---  

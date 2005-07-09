@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.actions;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.eclipse.core.resources.IContainer;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
 
 /**
@@ -35,36 +34,42 @@ import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
  * 
  */
 public class SynchronizeContainerAction extends AbstractMevenideAction {
-    
-    private static Log log = LogFactory.getLog(SynchronizeContainerAction.class);
-	
-    private static final String SYNCHRONIZE_VIEW_ID = "org.mevenide.ui.synchronize.view.SynchronizationView"; //$NON-NLS-1$
 
-    private IContainer container;
-
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+     */
     public void run(IAction action) {
         try {
-            SynchronizationView view = (SynchronizationView) PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(SYNCHRONIZE_VIEW_ID);
-			IContainer f = ResourcesPlugin.getWorkspace().getRoot().getContainerForLocation(container.getLocation());
-			view.setInput(f);
-        }
-        catch ( Exception e ) {
-            log.error("Unable to create Pom Synchronization View", e); //$NON-NLS-1$
-        }
-	}
-
-	public void selectionChanged(IAction action, ISelection selection) {
-        super.selectionChanged(action, selection);
-		
-		Object firstElement = ((StructuredSelection) selection).getFirstElement();
-       
-		if ( firstElement instanceof IContainer ) {
-            container = (IContainer) firstElement;        
-        }
-        if ( firstElement instanceof IJavaProject ) {
-            container = ((IJavaProject) firstElement).getProject(); 
+            final IWorkbenchPage page = getWorkbenchWindow().getActivePage();
+            SynchronizationView view = (SynchronizationView) page.showView(Mevenide.SYNCHRONIZE_VIEW_ID);
+            view.setInput(getCurrentProject());
+        } catch (PartInitException e) {
+            final String message = "Unable to open the POM synchronization view.";
+            Mevenide.displayError("Internal MevenIDE Error", message, e);
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        super.selectionChanged(action, selection);
+        action.setEnabled(!isAutosyncEnabled() && hasQueryContext(getCurrentProject()));
+    }
 
+    /**
+     * A convienence method.
+     * @return <tt>true</tt> if the given project has an associated IQueryContext
+     */
+    private static final boolean hasQueryContext(IProject project) {
+        return Mevenide.getInstance().getPOMManager().getQueryContext(project) != null;
+    }
+
+    /**
+     * A convienence method.
+     * @return <tt>true</tt> if automatic POM synchronization is enabled
+     */
+    private static final boolean isAutosyncEnabled() {
+        return Mevenide.getInstance().getPreferenceStore().getBoolean(MevenidePreferenceKeys.AUTOSYNC_ENABLED);
+    }
 }

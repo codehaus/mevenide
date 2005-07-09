@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,22 +14,18 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.sync.view;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.dialogs.Dialog;
-import org.mevenide.project.io.ProjectReader;
-import org.mevenide.properties.resolver.ProjectWalker;
-import org.mevenide.ui.eclipse.util.FileUtils;
-import org.mevenide.ui.eclipse.util.JavaProjectUtils;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * 
@@ -39,27 +35,21 @@ import org.mevenide.ui.eclipse.util.JavaProjectUtils;
  */
 public class PomChooser {
     
-    private static final Log log = LogFactory.getLog(PomChooser.class);
+	private IProject eclipseProject;
+    private Project  mavenProject;
 	
-    private static final String POM_NAME = "project.xml"; //$NON-NLS-1$
-    
-	private IContainer container;
-	
-	private List poms;
-
 	/**
-	 * explicitely set poms [size = 1], so we wont recurse into container. 
+	 * explicitely set poms [size = 1], so we wont recurse into eclipseProject. 
 	 * 
-	 * @warn if using this constructor, container isnot initialized
+	 * @warn if using this constructor, eclipseProject is not initialized
 	 * @open do we want to recurse into pom hierarchy ??  
 	 */
 	public PomChooser(Project project) {
-		poms = new ArrayList();
-		poms.add(project.getFile());
+        this.mavenProject = project;
 	}
 	
-	public PomChooser(IContainer container) {
-		this.container = container;
+	public PomChooser(IProject container) {
+		this.eclipseProject = container;
 	}
 	
 	/**
@@ -67,125 +57,31 @@ public class PomChooser {
 	 * if theres only zero or one available pom, it directly returned  
 	 */
 	public List openPomChoiceDialog(boolean singleSelection) throws Exception {
-		
-		List projects = new ArrayList();
-		
-		//handle case when theres no available pom
-		if ( getPoms().size() == 0 ) {
-			return projects;
-		}
-
-		//special handling when theres only one pom into the current container
-		if ( getPoms().size() == 1 ) {
-		    File pom = (File) getPoms().get(0);
-			Project project = ProjectReader.getReader().read(pom);
-			project.setFile(pom);
-			projects.add(project);
-			return projects;
-		}
-		
-		PomChoiceDialog dialog = new PomChoiceDialog(this, singleSelection);
-		
-		int result = dialog.open();
-		
-		if ( result == Dialog.CANCEL ) {
-			return projects;
-		}
-		
-		List chosenPoms = dialog.getPoms();
-		for (int i = 0; i < chosenPoms.size(); i++) {
-		    File pom = (File) chosenPoms.get(i);
-			Project project = ProjectReader.getReader().read(pom);
-			project.setFile(pom);
-			projects.add(project);
+        List projects = new ArrayList();
+        
+        if (this.mavenProject != null) {
+            projects.add(this.mavenProject);
+            return projects;
         }
-		return projects;
-	}
-	
-	
-	public synchronized List getPoms() {
-		//donot search multiple times
-		if ( poms == null ) {
-			File projectRoot = new File(container.getLocation().toOSString());
-			List allPoms = findPoms(projectRoot);
-			log.debug("Found " + allPoms.size() + " POM file"); //$NON-NLS-1$ //$NON-NLS-2$
-			poms = allPoms;
-		}
-		return poms;
-	}
-	
-	/** 
-	 * @pre rootDirectory is a valid Eclipse IResource
-	 */
-	private List findPoms(File rootDirectory) {
-	    
-	    IProject project = FileUtils.getParentProjectForFile(rootDirectory);
-	    
-	    List outputFolders = JavaProjectUtils.getOutputFolders(project);
-		if ( log.isDebugEnabled() ) {
-		    log.debug("Found " + outputFolders.size() + " output folders"); //$NON-NLS-1$ //$NON-NLS-2$
-			for (int j = 0; j < outputFolders.size(); j++) {
-				log.debug("Found OutputFolder : " + outputFolders.get(j)); //$NON-NLS-1$
-			}
-		}
-	    
-		List allPoms = new ArrayList(); 
-		
-		String fileName = POM_NAME;
-		
-		File[] f = rootDirectory.listFiles();
-		for (int i = 0; i < f.length; i++) {
-			log.debug(f[i].getAbsolutePath());
-			if ( f[i].isDirectory() ) {
-				//@todo exclude ${maven.build.dest}, ${maven.test.dest}, etc. => shoudl be customizable thanks a properties file
-				
-			    if ( !outputFolders.contains(f[i]) ) {
-			        allPoms.addAll(findPoms(f[i]));
-			    }
-			}
-			else {
-				if ( f[i].getName().equals(fileName) ) {
-					allPoms.add(f[i]);
-					allPoms.addAll(findAncestors(f[i]));
-				}
-			}
-		}
-		return allPoms;
-	}
-	
-	private List findAncestors(File pom) {
-		List ancestors = new ArrayList();
-		
-		try {
-		
-			Project project = ProjectReader.getReader().read(pom);
-			String parent = project.getExtend();
-			log.debug(parent);
-			if ( parent != null ) {
-				File parentPomFile = resolveFile(pom, project, parent);
-				if ( parentPomFile.exists() ) {
-					ancestors.add(parentPomFile);
-					ancestors.addAll(findAncestors(parentPomFile));
-				}
-			}
-		}
-		catch ( Exception e ) {
-			log.error("Unable to retrieve ancestors for " + pom.getAbsolutePath(), e); //$NON-NLS-1$
-		}
-		
-		return ancestors;
-	}
 
-	private File resolveFile(File pom, Project project, String parent) throws Exception{
-		String resolvedParent = new ProjectWalker(project).resolve(parent, true);
-		resolvedParent = resolvedParent.replaceAll("\\$\\{basedir\\}", pom.getParent().replaceAll("\\\\", "/"));   //$NON-NLS-1$//$NON-NLS-2$//$NON-NLS-3$
-		log.debug(resolvedParent);
-		File parentPomFile = new File(resolvedParent).getCanonicalFile();
-		if ( !parentPomFile.exists() ) {
-			//most probably extend isnot prefixed by^${basedir}
-			//what are the other other use cases ?
-			parentPomFile = new File(pom.getParent(), resolvedParent).getCanonicalFile(); 
-		}
-		return parentPomFile;
+        if (this.eclipseProject != null) {
+            IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(this.eclipseProject);
+            if (context != null) {
+                projects.addAll(Arrays.asList(context.getPOMContext().getProjectLayers()));
+            }
+        }
+
+        if (projects.size() < 2) {
+            return projects;
+        }
+
+		PomChoiceDialog dialog = new PomChoiceDialog(projects, singleSelection);
+
+        int result = dialog.open();
+        if (result == Dialog.CANCEL) {
+            return projects;
+        }
+		
+		return dialog.getPoms();
 	}
 }
