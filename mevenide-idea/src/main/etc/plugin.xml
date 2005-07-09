@@ -55,7 +55,7 @@
 
     <project-components>
         <component>
-            <implementation-class>org.mevenide.idea.global.properties.PropertiesManager
+            <implementation-class>org.mevenide.idea.project.properties.PropertiesManager
             </implementation-class>
         </component>
         <component>
@@ -63,7 +63,7 @@
             </implementation-class>
         </component>
         <component>
-            <implementation-class>org.mevenide.idea.global.reports.MavenReportManager
+            <implementation-class>org.mevenide.idea.project.reports.MavenReportManager
             </implementation-class>
         </component>
         <component>

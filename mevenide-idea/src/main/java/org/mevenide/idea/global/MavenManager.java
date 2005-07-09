@@ -35,6 +35,7 @@ import org.apache.log4j.Level;
 import org.jdom.Element;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
+import org.mevenide.idea.util.IDEUtils;
 
 /**
  * This application component manages global Maven settings for IDEA.
@@ -164,9 +165,16 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         if (pMavenHome == null)
             pMavenHome = guessMavenHome();
 
-        if (pMavenHome != null && (!pMavenHome.isValid() || !pMavenHome.isDirectory()))
-            throw new IllegalMavenHomeException(RES.get("file.must.be.dir",
-                                                        pMavenHome.getPresentableUrl()));
+        if(pMavenHome != null) {
+            if(!pMavenHome.isValid() || !pMavenHome.isDirectory())
+                throw new IllegalMavenHomeException(RES.get("file.must.be.dir",
+                                                            pMavenHome.getPresentableUrl()));
+            IDEUtils.runWriteAction(new FileRefresher(pMavenHome, true));
+            final VirtualFile mavenLib = pMavenHome.findFileByRelativePath("lib/maven.jar");
+            if(mavenLib == null || !mavenLib.isValid() || mavenLib.isDirectory())
+                throw new IllegalMavenHomeException(RES.get("illegal.maven.home",
+                                                            pMavenHome.getPresentableUrl()));
+        }
 
         final VirtualFile oldMavenHome = mavenHome;
         mavenHome = pMavenHome;
@@ -283,5 +291,20 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      */
     public static MavenManager getInstance() {
         return ApplicationManager.getApplication().getComponent(MavenManager.class);
+    }
+
+    private class FileRefresher implements Runnable {
+        private final VirtualFile file;
+        private final boolean deep;
+
+        public FileRefresher(final VirtualFile pFile, final boolean pDeep) {
+            file = pFile;
+            deep = pDeep;
+        }
+
+        public void run() {
+            if (file != null)
+                file.refresh(false, deep);
+        }
     }
 }

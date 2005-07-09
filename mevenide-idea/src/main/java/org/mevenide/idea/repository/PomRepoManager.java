@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
-import org.mevenide.idea.global.properties.PropertiesManager;
+import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.project.AbstractPomSettingsManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.ProxySettings;

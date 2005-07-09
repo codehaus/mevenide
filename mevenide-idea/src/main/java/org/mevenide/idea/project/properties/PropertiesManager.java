@@ -1,4 +1,4 @@
-package org.mevenide.idea.global.properties;
+package org.mevenide.idea.project.properties;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -27,7 +27,6 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
  * is used by Maven).</p>
  *
  * @author Arik
- * @todo should be moved to 'project' package
  */
 public class PropertiesManager extends AbstractProjectComponent implements PropertyChangeListener,
                                                                            VirtualFilePointerListener {

@@ -1,4 +1,4 @@
-package org.mevenide.idea.global.properties;
+package org.mevenide.idea.project.properties;
 
 import java.util.EventListener;
 
