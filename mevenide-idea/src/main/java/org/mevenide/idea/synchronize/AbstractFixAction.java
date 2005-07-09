@@ -8,14 +8,14 @@ import org.mevenide.idea.util.actions.AbstractAnAction;
 /**
  * @author Arik
  */
-public abstract class AbstractFixAction extends AbstractAnAction {
-    private final ProblemInfo problem;
+public abstract class AbstractFixAction<ProblemType extends ProblemInfo> extends AbstractAnAction {
+    protected final ProblemType problem;
 
-    protected AbstractFixAction(final ProblemInfo pProblem) {
+    protected AbstractFixAction(final ProblemType pProblem) {
         problem = pProblem;
     }
 
-    protected AbstractFixAction(final String pText, final ProblemInfo pProblem) {
+    protected AbstractFixAction(final String pText, final ProblemType pProblem) {
         super(pText);
         problem = pProblem;
     }
@@ -23,7 +23,7 @@ public abstract class AbstractFixAction extends AbstractAnAction {
     protected AbstractFixAction(final String pText,
                                 final String pDescription,
                                 final Icon pIcon,
-                                final ProblemInfo pProblem) {
+                                final ProblemType pProblem) {
         super(pText, pDescription, pIcon);
         problem = pProblem;
     }

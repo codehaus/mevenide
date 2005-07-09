@@ -62,6 +62,11 @@ public class PomManagerPanel extends JPanel
     public static final String TITLE = RES.get("pom.manager.name");
 
     /**
+     * The 'place' set in events by IDEA when actions from this component are invoked.
+     */
+    public static final String PLACE = TITLE;
+
+    /**
      * The project this instance is registered for.
      */
     private final Project project;
@@ -131,7 +136,7 @@ public class PomManagerPanel extends JPanel
         actionGrp.add(cmnActionsMgr.createCollapseAllAction(treeExpanded));
         actionGrp.add(cmnActionsMgr.createExpandAllAction(treeExpanded));
 
-        final ActionToolbar toolbar = actionMgr.createActionToolbar(TITLE, actionGrp, true);
+        final ActionToolbar toolbar = actionMgr.createActionToolbar(PLACE, actionGrp, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
     }
 
@@ -145,6 +150,18 @@ public class PomManagerPanel extends JPanel
 
     public void setAutoScrollMode(final boolean pState) {
         autoScrollToSource = pState;
+    }
+
+    public String getSelectedPomUrl() {
+       final TreePath path = tree.getLeadSelectionPath();
+        if (path == null)
+            return null;
+
+        final Object item = path.getLastPathComponent();
+        if (item instanceof PomNode)
+            return ((PomNode) item).getUserObject();
+        else
+            return null;
     }
 
     public String[] getPomsWithSelectedGoals(final boolean pIncludePluginGoals) {

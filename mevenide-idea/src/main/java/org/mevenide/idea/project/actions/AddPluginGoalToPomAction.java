@@ -39,7 +39,7 @@ public class AddPluginGoalToPomAction extends AbstractAnAction {
         }
 
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+        if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = pomMgr.getToolWindowComponent();
             if (ui == null) {
                 pEvent.getPresentation().setEnabled(false);
@@ -63,7 +63,7 @@ public class AddPluginGoalToPomAction extends AbstractAnAction {
             return;
 
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (PomManagerPanel.TITLE.equals(pEvent.getPlace())) {
+        if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
             final PomManagerPanel ui = pomMgr.getToolWindowComponent();
             if (ui == null)
                 return;

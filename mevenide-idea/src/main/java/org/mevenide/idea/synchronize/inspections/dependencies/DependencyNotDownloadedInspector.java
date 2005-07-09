@@ -1,51 +1,31 @@
 package org.mevenide.idea.synchronize.inspections.dependencies;
 
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.project.Project;
+import com.sun.java_cup.internal.version;
 import java.util.HashSet;
 import java.util.Set;
-import org.apache.maven.project.Dependency;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.module.ModuleSettings;
-import org.mevenide.idea.module.ModuleUtils;
-import org.mevenide.idea.synchronize.AbstractProblemInfo;
-import org.mevenide.idea.synchronize.ProblemInfo;
-import org.mevenide.idea.synchronize.ProblemInspector;
-import org.mevenide.idea.synchronize.inspections.AbstractModuleInspector;
-import org.mevenide.idea.util.MavenUtils;
+import org.mevenide.idea.repository.PomRepoManager;
+import org.mevenide.idea.psi.project.PsiProject;
+import org.mevenide.idea.psi.project.PsiDependencies;
+import org.mevenide.idea.psi.PomModelManager;
+import org.mevenide.idea.synchronize.*;
+import org.mevenide.idea.synchronize.inspections.AbstractInspector;
 
 /**
  * @author Arik
  */
-public class DependencyNotDownloadedInspector extends AbstractModuleInspector {
+public class DependencyNotDownloadedInspector extends AbstractInspector implements ProjectProblemInspector {
     /**
      * Resources
      */
     private static final Res RES = Res.getInstance(DependencyNotDownloadedInspector.class);
 
     public DependencyNotDownloadedInspector() {
-        super(RES.get("dep.missing.inspector.name"),
-              RES.get("dep.missing.inspector.desc"));
+        super(RES.get("dep.missing.inspector.name"), RES.get("dep.missing.inspector.desc"));
     }
 
-    public ProblemInfo[] inspect(Module pModule) {
-
-        //
-        //make sure this module is "mavenized"
-        //
-        final ModuleSettings settings = ModuleSettings.getInstance(pModule);
-        final IQueryContext ctx = settings.getQueryContext();
-        if (ctx == null)
-            return new ProblemInfo[0];
-
-        //
-        //find the local repository
-        //
-        final VirtualFile localRepo = RepositoryUtils.getLocalRepository(pModule);
-        if (localRepo == null)
-            return new ProblemInfo[0];
-
+    public ProblemInfo[] inspect(String pPomUrl, Project pProject) {
         //
         //buffer for the set of problems we'll encounter
         //
@@ -55,55 +35,73 @@ public class DependencyNotDownloadedInspector extends AbstractModuleInspector {
         //iterate over the project dependencies, and check each one if it
         //exists in the local repository
         //
-        final Dependency[] deps = ModuleUtils.getModulePomDependencies(pModule);
-        for (Dependency dep : deps) {
-            if (dep.getType() == null)
-                dep.setType("jar");
+        final PomRepoManager repoMgr = PomRepoManager.getInstance(pProject);
+        final PomModelManager modelMgr = PomModelManager.getInstance(pProject);
 
-            if (!dep.isAddedToClasspath())
+        final PsiProject psi = modelMgr.getPsiProject(pPomUrl);
+        final PsiDependencies deps = psi.getDependencies();
+        for(int row = 0; row < deps.getRowCount(); row++) {
+            String type = deps.getType(row);
+            if(type == null || type.trim().length() == 0)
+                type = "jar";
+
+            if(!"jar".equalsIgnoreCase(type) || !"ejb".equalsIgnoreCase(type))
                 continue;
 
-            if (!RepositoryUtils.isArtifactInstalled(localRepo, dep))
-                problems.add(new DependencyNotDownloadedProblemInfo(this,
-                                                                    pModule,
-                                                                    localRepo,
-                                                                    dep));
+            final String groupId = deps.getGroupId(row);
+            final String artifactId = deps.getArtifactId(row);
+            final String version = deps.getVersion(row);
+            final String extension = deps.getExtension(row);
+            if(!repoMgr.isInstalled(pPomUrl, groupId, artifactId, type, version, extension))
+                problems.add(new DependencyNotDownloadedProblemInfo(pProject,
+                                                                    this,
+                                                                    pPomUrl,
+                                                                    groupId,
+                                                                    artifactId,
+                                                                    type,
+                                                                    version,
+                                                                    extension));
         }
 
         return problems.toArray(new ProblemInfo[problems.size()]);
     }
 
-    private class DependencyNotDownloadedProblemInfo extends AbstractProblemInfo {
-        private final VirtualFile localRepo;
-        private final Dependency dependency;
+    private class DependencyNotDownloadedProblemInfo extends AbstractArtifactProblemInfo {
 
-        public DependencyNotDownloadedProblemInfo(final ProblemInspector pInspector,
-                                                  final Module pModule,
-                                                  final VirtualFile pLocalRepo,
-                                                  final Dependency pDependency) {
+        public DependencyNotDownloadedProblemInfo(final Project pProject,
+                                                  final ProblemInspector pInspector,
+                                                  final String pPomUrl,
+                                                  final String pGroupId,
+                                                  final String pArtifactId,
+                                                  final String pType,
+                                                  final String pVersion,
+                                                  final String pExtension) {
             super(pInspector,
-                  pModule,
-                  RES.get("dep.missing.problem.desc", pDependency.getArtifact()));
+                  pProject,
+                  pPomUrl,
+                  RES.get("dep.missing.problem.desc",
+                          PomRepoManager.getPresentableName(pGroupId,
+                                                            pArtifactId,
+                                                            pType,
+                                                            pVersion,
+                                                            pExtension)),
+                  pGroupId,
+                  pArtifactId,
+                  pType,
+                  pVersion,
+                  pExtension);
 
-            localRepo = pLocalRepo;
-            dependency = pDependency;
-            addFixAction(new DownloadDependencyAction(this,
-                                                      module,
-                                                      dependency));
-            addFixAction(new RemoveDependencyFromPomAction(this,
-                                                           module,
-                                                           dependency));
+            addFixAction(new DownloadDependencyAction(this));
+            addFixAction(new RemoveDependencyFromPomAction(this));
         }
 
         public boolean isValid() {
-            if (!MavenUtils.isDependencyDeclared(module, dependency))
-                return true;
-
-            return !RepositoryUtils.isArtifactInstalled(module.getProject(),
-                                                        localRepo,
-                                                        dependency,
-                                                        true);
+            return PomRepoManager.getInstance(project).isInstalled(pomUrl,
+                                                                   groupId,
+                                                                   artifactId,
+                                                                   type,
+                                                                   version,
+                                                                   extension);
         }
-
     }
 }

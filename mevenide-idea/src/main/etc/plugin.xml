@@ -13,6 +13,11 @@
     <idea-version since-build="3339"/>
 
     <actions>
+
+        <group class="org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup"
+               id="org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup"
+               text="Synchronize"/>
+        
         <action class="org.mevenide.idea.project.actions.AddPomAction"
                 text="Add POM"
                 id="org.mevenide.idea.project.actions.AddPomAction">

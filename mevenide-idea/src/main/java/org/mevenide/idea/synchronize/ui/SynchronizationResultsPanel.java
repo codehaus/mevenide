@@ -11,7 +11,7 @@ import java.awt.*;
 import javax.swing.*;
 import javax.swing.tree.*;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.synchronize.InspectProjectAction;
+import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
 import org.mevenide.idea.synchronize.ProblemInfo;
 import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.ui.images.Icons;
@@ -42,7 +42,7 @@ public class SynchronizationResultsPanel extends JPanel {
         project = pProject;
         tree = new Tree();
 
-        final InspectProjectAction rerunAction = new InspectProjectAction();
+        final SynchronizeWithModuleActionGroup rerunAction = new SynchronizeWithModuleActionGroup();
         rerunAction.getTemplatePresentation().setIcon(Icons.RERUN);
 
         actionGroup = new DefaultActionGroup();
