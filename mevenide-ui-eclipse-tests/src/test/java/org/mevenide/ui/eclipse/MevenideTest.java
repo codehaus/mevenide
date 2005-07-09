@@ -51,10 +51,6 @@ public class MevenideTest extends TestCase {
 		assertNotNull(Mevenide.getInstance());
 	}
 
-	public void testGetWorkspace() {
-		assertNotNull(Mevenide.getWorkspace());
-	}
-
 	/*
 	 * Class to test for String getResourceString(String)
 	 */
