@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.module.ModuleUtils;
+import org.mevenide.idea.util.ModuleUtils;
 import org.mevenide.idea.project.util.PomUtils;
 import org.mevenide.idea.repository.Artifact;
 import org.mevenide.idea.repository.PomRepoManager;
