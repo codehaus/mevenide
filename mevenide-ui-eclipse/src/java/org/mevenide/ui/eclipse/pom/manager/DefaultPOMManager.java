@@ -25,12 +25,19 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.ILocationFinder;
+import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.Mevenide.PreferenceBasedLocationFinder;
 
 /**
  * TODO: Describe what DefaultPOMManager represents.
  */
 public class DefaultPOMManager extends AbstractPOMManager implements IResourceChangeListener {
+    private CustomLocationFinder customLocationFinder;
+    private LocationFinderAggregator defaultLocationFinder;
 
     /**
      * TODO: Describe what initialize does.
@@ -43,8 +50,12 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
         for (int i = 0; i < project.length; ++i) {
             addProject(project[i]);
         }
+
+        this.customLocationFinder = new PreferenceBasedLocationFinder(Mevenide.getInstance().getCustomPreferenceStore());
+        this.defaultLocationFinder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
+        this.defaultLocationFinder.setCustomLocationFinder(this.customLocationFinder);
     }
-    
+
     public void dispose() {
         ResourcesPlugin.getWorkspace().removeResourceChangeListener(this);
     }
@@ -118,5 +129,19 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
             final IStatus status = new Status(IStatus.INFO, Mevenide.PLUGIN_ID, 0, message, null);
             Mevenide.getInstance().getLog().log(status);
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#getCustomLocationFinder()
+     */
+    public CustomLocationFinder getCustomLocationFinder() {
+        return this.customLocationFinder;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#getDefaultLocationFinder()
+     */
+    public ILocationFinder getDefaultLocationFinder() {
+        return this.defaultLocationFinder;
     }
 }

@@ -250,7 +250,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
                 //set maven repo if not set 
                 IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO"); //$NON-NLS-1$
                 if (mavenRepoVar == null) {
-                    final String mavenRepo = Mevenide.getInstance().getDefaultLocationFinder().getMavenLocalRepository();
+                    final String mavenRepo = Mevenide.getInstance().getPOMManager().getDefaultLocationFinder().getMavenLocalRepository();
                     JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null); //$NON-NLS-1$
                 }
 

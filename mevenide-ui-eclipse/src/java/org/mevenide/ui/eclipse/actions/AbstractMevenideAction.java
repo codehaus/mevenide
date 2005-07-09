@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -36,6 +37,10 @@ import org.mevenide.ui.eclipse.Mevenide;
 public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDelegate {
     private IProject currentProject;
     private IWorkbenchWindow workbenchWindow;
+
+    protected AbstractMevenideAction() {
+        this.workbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    }
 
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
@@ -49,7 +54,7 @@ public abstract class AbstractMevenideAction implements IWorkbenchWindowActionDe
      * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
      */
     public void init(IWorkbenchWindow window) {
-        this.workbenchWindow = window;
+        this.workbenchWindow = (window != null)? window: PlatformUI.getWorkbench().getActiveWorkbenchWindow();
     }
 
     /* (non-Javadoc)

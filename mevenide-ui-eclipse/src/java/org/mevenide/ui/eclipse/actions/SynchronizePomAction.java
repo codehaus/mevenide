@@ -17,11 +17,15 @@
 
 package org.mevenide.ui.eclipse.actions;
 
-import org.eclipse.core.resources.IProject;
+import java.io.File;
+
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
 import org.mevenide.ui.eclipse.sync.view.SynchronizationView;
@@ -53,15 +57,27 @@ public class SynchronizePomAction extends AbstractMevenideAction {
      */
     public void selectionChanged(IAction action, ISelection selection) {
         super.selectionChanged(action, selection);
-        action.setEnabled(!isAutosyncEnabled() && hasQueryContext(getCurrentProject()));
+        action.setEnabled(!isAutosyncEnabled() && isPOMSelected(selection));
     }
 
     /**
      * A convienence method.
      * @return <tt>true</tt> if the given project has an associated IQueryContext
      */
-    private static final boolean hasQueryContext(IProject project) {
-        return Mevenide.getInstance().getPOMManager().getQueryContext(project) != null;
+    private static final boolean isPOMSelected(ISelection selection) {
+        if (((StructuredSelection) selection).size() == 1) {
+            Object firstElement = ((StructuredSelection) selection).getFirstElement();
+            if (firstElement instanceof IResource) {
+                final IResource resource = (IResource)firstElement;
+                final IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(resource.getProject());
+                if (context != null) {
+                    final File pomFile = context.getPOMContext().getFinalProject().getFile();
+                    return pomFile.equals(resource.getLocation().toFile());
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

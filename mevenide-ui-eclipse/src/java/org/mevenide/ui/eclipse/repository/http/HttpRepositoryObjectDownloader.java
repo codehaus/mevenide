@@ -56,7 +56,7 @@ public class HttpRepositoryObjectDownloader implements RepositoryObjectDownloade
     
     public HttpRepositoryObjectDownloader(String localRepositoryPath) {
         this.localRepositoryPath = org.mevenide.util.StringUtils.isNull(localRepositoryPath) ?
-                Mevenide.getInstance().getDefaultLocationFinder().getMavenLocalRepository() :
+                Mevenide.getInstance().getPOMManager().getDefaultLocationFinder().getMavenLocalRepository() :
             localRepositoryPath;
         this.localRepositoryPath = StringUtils.stripEnd(this.localRepositoryPath, "/");
         wagon = new LightweightHttpWagon();

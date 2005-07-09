@@ -20,6 +20,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.maven.project.Project;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.util.Assert;
@@ -42,6 +45,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.util.StatusConstants;
 
 /**
  * 
@@ -50,26 +54,23 @@ import org.mevenide.ui.eclipse.Mevenide;
  * 
  */
 public class PomChoiceDialog extends TitleAreaDialog {
-    
-    
     private static final String POM_CHOICE_MESSAGE = Mevenide.getResourceString("PomChoiceDialog.Message"); //$NON-NLS-1$
     private static final String DIALOG_NAME = Mevenide.getResourceString("PomChoiceDialog.Name"); //$NON-NLS-1$
     private static final String POM_CHOICE_TITLE = Mevenide.getResourceString("PomChoiceDialog.Title"); //$NON-NLS-1$
     
-	private PomChooser pomChooser;
-	
 	private CheckboxTableViewer tableViewer;
 	
+    private List initialContents;
 	private List chosenPoms = new ArrayList();
 
     private Button okButton;
 	
     private boolean singleSelection;
     
-	public PomChoiceDialog(PomChooser chooser, boolean singleSelection) {
+	public PomChoiceDialog(List initialContents, boolean singleSelection) {
 		super(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 		super.setBlockOnOpen(true);
-		this.pomChooser = chooser;
+		this.initialContents = initialContents;
 		this.singleSelection = singleSelection;
 	}
 	
@@ -103,8 +104,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		
 		createSelectionButtonsArea(composite);
 		
-		List allPoms = pomChooser.getPoms();
-		setInput(allPoms);	
+		setInput(this.initialContents);	
 
 		return composite;
 	}
@@ -173,10 +173,7 @@ public class PomChoiceDialog extends TitleAreaDialog {
 		tableViewer.setLabelProvider(
 			new LabelProvider() {
 				public String getText(Object element) {
-					if ( element instanceof File ) {
-						return ((File) element).getAbsolutePath();
-					}
-					return Mevenide.getResourceString("PomChoiceDialog.UnexpectedChild"); //$NON-NLS-1$
+                    return getProjectLabel(element);
 				}
 			}
 		);
@@ -190,14 +187,36 @@ public class PomChoiceDialog extends TitleAreaDialog {
 			}
 		);
 	}
-	
-	private void itemStateChaged(CheckStateChangedEvent event) {
-		//dirty trick to enable single selection since SWT.SINGLE doesnot do what i want, nor does CheckboxTableViewer.newCheckList(SWT.SINGLE)
+
+    private boolean userAlreadyNotified = false;
+    private String getProjectLabel(Object element) {
+        if (element != null && element instanceof Project) {
+            final File file = ((Project) element).getFile();
+            if (file != null) {
+                return file.getAbsolutePath();
+            }
+
+            if (!userAlreadyNotified) {
+                userAlreadyNotified = true;
+                final String msg = "Unable to get the name of the POM.";
+                IStatus status = new Status(IStatus.ERROR, Mevenide.PLUGIN_ID, StatusConstants.INTERNAL_ERROR, msg, null);
+                Mevenide.displayError("Internal MevenIDE Error", msg, status);
+            }
+
+            return "UNKNOWN";
+        }
+
+        return Mevenide.getResourceString("PomChoiceDialog.UnexpectedChild"); //$NON-NLS-1$
+    }
+
+    private void itemStateChaged(CheckStateChangedEvent event) {
+		// dirty trick to enable single selection since SWT.SINGLE
+        // does not do what i want, nor does CheckboxTableViewer.newCheckList(SWT.SINGLE)
 	    if ( singleSelection ) {
 	        tableViewer.setCheckedElements(new Object[0]);
 	        chosenPoms.clear();
 	    }
-	    File checkedElement = (File) event.getElement();
+	    Object checkedElement = event.getElement();
 	    if ( event.getChecked() ) {
 		    chosenPoms.add(checkedElement);
 			//dirty trick bis repetita

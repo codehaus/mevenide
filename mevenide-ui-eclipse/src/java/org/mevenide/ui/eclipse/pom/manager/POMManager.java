@@ -20,6 +20,8 @@ package org.mevenide.ui.eclipse.pom.manager;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.CustomLocationFinder;
+import org.mevenide.environment.ILocationFinder;
 
 /**
  * Provides a central access point for all POMs in the workspace.
@@ -54,4 +56,14 @@ public interface POMManager {
      *         in the workspace.
      */
     IQueryContext getQueryContext(Dependency dependency);
+
+    /**
+     * @return Returns the customLocationFinder.
+     */
+    CustomLocationFinder getCustomLocationFinder();
+
+    /**
+     * @return Returns the defaultLocationFinder.
+     */
+    ILocationFinder getDefaultLocationFinder();
 }

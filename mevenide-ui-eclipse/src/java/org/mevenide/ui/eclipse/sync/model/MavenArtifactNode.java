@@ -70,7 +70,7 @@ public class MavenArtifactNode extends ArtifactNode {
 		this.artifact = artifact;
 		parent = project;
 		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile().getParentFile()));
-        ((LocationFinderAggregator)locationFinder).setCustomLocationFinder(Mevenide.getInstance().getCustomLocationFinder());
+        ((LocationFinderAggregator)locationFinder).setCustomLocationFinder(Mevenide.getInstance().getPOMManager().getCustomLocationFinder());
 		initialize();
 	}
 	

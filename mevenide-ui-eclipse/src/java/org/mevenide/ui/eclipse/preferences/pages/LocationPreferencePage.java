@@ -278,7 +278,7 @@ public class LocationPreferencePage extends PreferencePage implements IWorkbench
     }
 
 	private ILocationFinder getDefaultLocationFinder() {
-        return Mevenide.getInstance().getDefaultLocationFinder();
+        return Mevenide.getInstance().getPOMManager().getDefaultLocationFinder();
     }
 	
 	public void update() {

@@ -38,7 +38,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.ui.views.properties.IPropertySource;
-import org.mevenide.MevenideRuntimeException;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.context.JDomProjectUnmarshaller;
@@ -438,15 +437,13 @@ public class MavenProjectNode extends AbstractSynchronizationNode implements ISe
 	}
 	
 	public boolean equals(Object obj) {
-		if ( !(obj instanceof MavenProjectNode) ) {
+		if ( obj == null || !(obj instanceof MavenProjectNode) ) {
 			return false;
 		}
-		MavenProjectNode node = ((MavenProjectNode) obj);
-		if ( mavenProject.getName() == null ) {
-		    throw new MevenideRuntimeException(Mevenide.getResourceString("MavenProjectNode.PomName.Null")); //$NON-NLS-1$
-		}
-		return mavenProject.getName().equals(node.mavenProject.getName())
-		       && parentNode.equals(node.parentNode);
+
+		MavenProjectNode other = ((MavenProjectNode) obj);
+		return this.mavenProject.getFile().equals(other.mavenProject.getFile())
+		       && parentNode.equals(other.parentNode);
 	}
 	
 	
