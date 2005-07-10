@@ -225,7 +225,10 @@ public class RepoTreeNode implements TreeNode {
             try {
                 status = SearchStatus.SEARCHING;
                 listener.fetchStarted(RepoTreeNode.this);
-                return fetchResult.get();
+                LOG.trace("Received fetch future - waiting for results...");
+                final RepoPathElement[] children = fetchResult.get();
+                LOG.trace("Received fetch future results - " + children.length);
+                return children;
             }
             catch (InterruptedException e) {
                 throw e;
@@ -241,6 +244,7 @@ public class RepoTreeNode implements TreeNode {
                 nodes = getPathElements();
             }
             catch(Exception e) {
+                LOG.trace(e.getMessage(), e);
                 final RepoTreeNode parent = RepoTreeNode.this;
                 if (e instanceof CancellationException)
                     listener.fetchCancelled(parent, (CancellationException) e);
@@ -253,6 +257,7 @@ public class RepoTreeNode implements TreeNode {
 
             lock.lock();
             try {
+                LOG.trace("Received results (" + nodes.length + ") - created tree nodes");
                 final SortedSet<RepoTreeNode> treeNodes;
                 treeNodes = new TreeSet<RepoTreeNode>(new NodeComparator());
 
@@ -269,9 +274,9 @@ public class RepoTreeNode implements TreeNode {
                 listener.fetchComplete(RepoTreeNode.this);
             }
             catch (Exception e) {
+                LOG.error(e.getMessage(), e);
                 status = SearchStatus.SEARCHED;
                 listener.fetchError(RepoTreeNode.this, e);
-                LOG.error(e.getMessage(), e);
             }
             finally {
                 lock.unlock();

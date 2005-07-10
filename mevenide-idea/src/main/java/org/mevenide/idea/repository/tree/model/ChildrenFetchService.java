@@ -9,11 +9,18 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @author Arik
  */
 public final class ChildrenFetchService {
+    /**
+     * Logger.
+     */
+    private static final Log LOG = LogFactory.getLog(ChildrenFetchService.class);
+
     /**
      * The singleton instance.
      */
@@ -41,6 +48,7 @@ public final class ChildrenFetchService {
             executors.put(repo, Executors.newSingleThreadExecutor());
 
         final ExecutorService service = executors.get(repo);
+        LOG.trace("Submitting fetch task for repo executor " + repo.getRootURI());
         return service.submit(new ChildFetcher(pPathElement));
     }
 
@@ -52,7 +60,17 @@ public final class ChildrenFetchService {
         }
 
         public RepoPathElement[] call() throws Exception {
-            return pathElement.getChildren();
+            try {
+                LOG.trace("Fetching RepoPathElement's children");
+                return pathElement.getChildren();
+            }
+            catch (Exception e) {
+                LOG.error(e, e);
+                throw e;
+            }
+            finally {
+                LOG.trace("Fetched RepoPathElement's children");
+            }
         }
     }
 }

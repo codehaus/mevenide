@@ -20,7 +20,7 @@
     <orderEntry type="library" name="forms-1.0.5" level="project" />
     <orderEntry type="library" name="commons-io-1.0" level="project" />
     <orderEntry type="library" name="jdom-1.0" level="project" />
-    <orderEntry type="library" name="mevenide-repository-0.2" level="project" />
+    <orderEntry type="library" name="mevenide-repository-0.3-SNAPSHOT" level="project" />
     <orderEntry type="library" name="commons-httpclient-3.0-rc2" level="project" />
     <orderEntry type="library" name="binding-1.0" level="project" />
     <orderEntry type="library" name="mevenide-core-0.10-SNAPSHOT" level="project" />

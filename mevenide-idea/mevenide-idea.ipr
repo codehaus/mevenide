@@ -323,9 +323,9 @@
         <root url="file://C:/Devl/work/mevenide/mevenide-config/src/conf" />
       </SOURCES>
     </library>
-    <library name="mevenide-repository-0.2">
+    <library name="mevenide-repository-0.3-SNAPSHOT">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.2.jar!/" />
+        <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.3-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
