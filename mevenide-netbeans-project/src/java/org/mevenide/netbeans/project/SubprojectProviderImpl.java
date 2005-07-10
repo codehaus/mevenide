@@ -20,11 +20,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import org.apache.maven.project.Dependency;
 import org.mevenide.properties.IPropertyLocator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.lang.StringUtils;
+import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.SubprojectProvider;
@@ -38,7 +42,7 @@ import org.apache.tools.ant.DirectoryScanner;
  * finds subprojects (projects this one depends on) that are locally available
  * and can be build as one unit. Uses maven multiproject infrastructure. (maven.multiproject.includes)
  * TODO: maybe could also need non-maven style of dependency linking.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
     private static final Log logger = LogFactory.getLog(SubprojectProviderImpl.class);
@@ -75,8 +79,31 @@ public class SubprojectProviderImpl implements SubprojectProvider {
                 String[] results = scanner.getIncludedFiles();
                 for (int i = 0; i < results.length; i++) {
                     Project proj = processOneSubproject(basefile, results[i]);
-                    if (proj != null) {
-                        toReturn.add(proj);
+                    if (proj != null && proj instanceof MavenProject) {
+						//#MEVENIDE-287
+                        MavenProject prj = (MavenProject)proj;
+                        IPropertyResolver prjRes = prj.getPropertyResolver();
+                        String version = prjRes.resolveString(prj.getOriginalMavenProject().getCurrentVersion());
+                        String id = prjRes.resolveString(prj.getOriginalMavenProject().getId());
+                        List deps = project.getOriginalMavenProject().getDependencies();
+                        Dependency dp = null;
+                        if (deps != null) {
+                            Iterator it = deps.iterator();
+                            while (it.hasNext()) {
+                                Dependency xx = (Dependency)it.next();
+                                if (id.equals(xx.getId())) {
+                                    dp = xx;
+                                    break;
+                                }
+                                
+                            }
+                        }
+                        if (dp != null) {
+                            String dpVersion = project.getPropertyResolver().resolveString(dp.getVersion());
+                            if (dpVersion != null && (dpVersion.equals(version) || "SNAPSHOT".equals(dpVersion))) {
+                                toReturn.add(proj);
+                            }
+                        }
                     }
                 }
             } else {
