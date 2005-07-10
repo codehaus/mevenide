@@ -6,6 +6,12 @@
   </properties>
 
   <body>
+    <release version="1.4" date="20050710" description="Bug fix release.">
+      <action dev="mkleint" type="fix">
+      MEVENIDE-221 - nbm:fill-repository goal also checks ${netbeans.home}/platform*/lib directory
+       where openide-util and openide-modules reside in 4.2 sources/binaries
+      </action>
+    </release>
     <release version="1.3" date="20050514" description="Bug fix release.">
       <action dev="mkleint" type="fix">
       MEVENIDE-224 - signing of the nbm is performed only when signature available.
