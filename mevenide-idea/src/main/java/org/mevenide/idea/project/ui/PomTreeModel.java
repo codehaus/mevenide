@@ -11,7 +11,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.global.MavenPluginsManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.PomManagerEvent;
@@ -23,8 +22,7 @@ import org.mevenide.idea.project.goals.*;
  */
 public class PomTreeModel extends DefaultTreeModel implements Disposable,
                                                               PomManagerListener,
-                                                              PomPluginGoalsListener,
-                                                              PropertyChangeListener {
+                                                              PomPluginGoalsListener {
     /**
      * The project this tree is created for.
      */
@@ -58,6 +56,13 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         }
     };
 
+    private final PropertyChangeListener MAVEN_PLUGINS_LISTENER = new PropertyChangeListener() {
+        public void propertyChange(PropertyChangeEvent evt) {
+            if("plugins".equals(evt.getPropertyName()))
+                refreshPlugins();
+        }
+    };
+
     /**
      * Creates an instance for the given project.
      *
@@ -70,9 +75,10 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         //
         //register for events, to refresh when needed
         //
-        MavenManager.getInstance().addPropertyChangeListener("mavenHome", this);
         PomManager.getInstance(project).addPomManagerListener(this);
         PomPluginGoalsManager.getInstance(project).addPomPluginGoalsListener(this);
+        MavenPluginsManager.getInstance(project).addPropertyChangeListener(
+                "plugins", MAVEN_PLUGINS_LISTENER);
 
         //
         //build model
@@ -92,9 +98,9 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
     }
 
     public void dispose() {
-        MavenManager.getInstance().removePropertyChangeListener("mavenHome", this);
         PomManager.getInstance(project).removePomManagerListener(this);
         PomPluginGoalsManager.getInstance(project).removePomPluginGoalsListener(this);
+        MavenPluginsManager.getInstance(project).removePropertyChangeListener("plugins", MAVEN_PLUGINS_LISTENER);
     }
 
     public void refresh() {
@@ -172,7 +178,7 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         final PluginGoal goal = pEvent.getRemovedGoal();
         final PomNode pomNode = findPomNode(pEvent.getPomUrl());
 
-        //noinspection UNCHECKED_WARNING
+        //noinspection unchecked
         final Enumeration<TreeNode> children = pomNode.children();
         while (children.hasMoreElements()) {
             final TreeNode node = children.nextElement();
@@ -190,14 +196,6 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
                 }
             }
         }
-    }
-
-    public void propertyChange(final PropertyChangeEvent pEvent) {
-        final Object src = pEvent.getSource();
-        final String propertyName = pEvent.getPropertyName();
-
-        if (src instanceof MavenManager && "mavenHome".equals(propertyName))
-            refreshPlugins();
     }
 
     private void parseProjects() {

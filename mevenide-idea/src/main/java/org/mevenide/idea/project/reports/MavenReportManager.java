@@ -1,24 +1,20 @@
 package org.mevenide.idea.project.reports;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.startup.StartupManager;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import org.mevenide.idea.global.MavenManager;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 import org.mevenide.idea.global.MavenPluginsManager;
-import org.mevenide.idea.project.properties.PropertiesEvent;
-import org.mevenide.idea.project.properties.PropertiesListener;
-import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
@@ -28,7 +24,7 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
  * @author Arik
  */
 public class MavenReportManager extends AbstractProjectComponent {
-    private Report[] reports = null;
+    private Report[] reports = new Report[0];
 
     public MavenReportManager(final Project pProject) {
         super(pProject);
@@ -46,13 +42,22 @@ public class MavenReportManager extends AbstractProjectComponent {
     public Report[] getReports() {
         synchronized (this) {
             if (reports == null)
-                reports = loadReports();
+                refresh();
 
             return reports;
         }
     }
 
+    public void refresh() {
+        synchronized (this) {
+            final Report[] oldReports = reports;
+            reports = loadReports();
+            changeSupport.firePropertyChange("reports", oldReports, reports);
+        }
+    }
+
     private Report[] loadReports() {
+        LOG.trace("Retrieving reports");
         final MavenPluginsManager plgMgr = MavenPluginsManager.getInstance(project);
         final PluginGoalContainer[] plugins = plgMgr.getPlugins();
         final Set<Report> reports = new HashSet<Report>(plugins.length);
@@ -113,31 +118,23 @@ public class MavenReportManager extends AbstractProjectComponent {
     }
 
     @Override
-    public void initComponent() {
-        MavenManager.getInstance().addPropertyChangeListener(
-                "mavenHome",
-                new PropertyChangeListener() {
-                    public void propertyChange(PropertyChangeEvent evt) {
-                        synchronized (this) {
-                            reports = null;
-                        }
-                    }
-                });
-
-        PropertiesManager.getInstance(project).addPropertiesListener(
-                new PropertiesListener() {
-                    public void propertiesChanged(PropertiesEvent pEvent) {
-                        synchronized (this) {
-                            reports = null;
-                        }
-                    }
-                });
-
-        StartupManager.getInstance(project).registerPostStartupActivity(new Runnable() {
+    public void projectOpened() {
+        final Runnable runnable = new Runnable() {
             public void run() {
-                getReports();
+                MavenPluginsManager.getInstance(project).addPropertyChangeListener(
+                        "plugins",
+                        new PropertyChangeListener() {
+                            public void propertyChange(final PropertyChangeEvent pEvent) {
+                                refresh();
+                            }
+                        });
+
+                refresh();
             }
-        });
+        };
+
+        final StartupManager startUpMgr = StartupManager.getInstance(project);
+        startUpMgr.registerPostStartupActivity(runnable);
     }
 
     public static MavenReportManager getInstance(final Project pProject) {

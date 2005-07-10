@@ -3,16 +3,10 @@ package org.mevenide.idea.project.properties;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointerListener;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointerManager;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
-import javax.swing.event.EventListenerList;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.global.MavenManager;
@@ -28,37 +22,11 @@ import org.mevenide.idea.util.components.AbstractProjectComponent;
  *
  * @author Arik
  */
-public class PropertiesManager extends AbstractProjectComponent implements PropertyChangeListener,
-                                                                           VirtualFilePointerListener {
+public class PropertiesManager extends AbstractProjectComponent {
     /**
      * Logging.
      */
     private static final Log LOG = LogFactory.getLog(PropertiesManager.class);
-
-    /**
-     * Manages listeners.
-     */
-    private final EventListenerList listenerList = new EventListenerList();
-
-    /**
-     * The user's home directory.
-     */
-    private final VirtualFile userHome = getUserHome();
-
-    /**
-     * A file pointer to the user's 'build.properties' file.
-     */
-    private VirtualFilePointer userPropertiesPointer;
-
-    /**
-     * A file pointer to the Maven installation's default properties file.
-     */
-    private VirtualFilePointer mavenDefaultPropertiesPointer;
-
-    /**
-     * A file pointer to the Maven installation's default properties file.
-     */
-    private VirtualFilePointer mavenDriverPropertiesPointer;
 
     /**
      * Creates an instance for the given project.
@@ -67,55 +35,6 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
      */
     public PropertiesManager(final Project pProject) {
         super(pProject);
-    }
-
-    /**
-     * Registers the given properties listener.
-     *
-     * @param pListener the listener to register
-     */
-    public void addPropertiesListener(final PropertiesListener pListener) {
-        listenerList.add(PropertiesListener.class, pListener);
-    }
-
-    /**
-     * Unregisters the given properties listener.
-     *
-     * @param pListener the listener to unregister
-     */
-    public void removePropertiesListener(final PropertiesListener pListener) {
-        listenerList.remove(PropertiesListener.class, pListener);
-    }
-
-    /**
-     * Internal. Initializes the component and file pointers. Registers as a listener to {@link
-     * MavenManager}'s properties.
-     */
-    @Override
-    public void initComponent() {
-        final MavenManager mavenMgr = MavenManager.getInstance();
-        mavenMgr.addPropertyChangeListener("mavenHome", this);
-
-        //
-        //create a file pointer to the user's 'build.properties'
-        //
-        final String userPropsUrl = userHome.getUrl() + "/build.properties";
-        final VirtualFilePointerManager pntrMgr = VirtualFilePointerManager.getInstance();
-        userPropertiesPointer = pntrMgr.create(userPropsUrl, this);
-
-        //
-        //initialize file pointers to match the maven home
-        //
-        initializePointers(mavenMgr.getMavenHome());
-    }
-
-    public void propertyChange(final PropertyChangeEvent pEvent) {
-        final Object source = pEvent.getSource();
-        final String propertyName = pEvent.getPropertyName();
-        if (source instanceof MavenManager && "mavenHome".equals(propertyName)) {
-            final MavenManager mgr = (MavenManager) source;
-            initializePointers(mgr.getMavenHome());
-        }
     }
 
     /**
@@ -160,8 +79,10 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
         //configuration files, but Maven expects them because they are
         //passed by the maven shell scripts
         //
+        final MavenManager mavenMgr = MavenManager.getInstance();
+        final VirtualFile mavenHome = mavenMgr.getMavenHome();
         if (pName.equals("maven.home"))
-            return MavenManager.getInstance().getMavenHome().getPath();
+            return mavenHome == null ? null : mavenHome.getPath();
 
         //
         //system properties
@@ -174,9 +95,15 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
         //user properties
         //
         try {
-            value = getFilePointerPropertyValue(userPropertiesPointer, pName);
-            if (value != null)
-                return resolveProperty(pPomFile, value);
+            final VirtualFile home = getUserHome();
+            if(home != null && home.isValid() && home.isDirectory()) {
+                final VirtualFile propsFile = home.findChild("build.properties");
+                if(propsFile != null && propsFile.isValid() && !propsFile.isDirectory()) {
+                    value = getFilePropertyValue(propsFile, pName);
+                    if (value != null)
+                        return resolveProperty(pPomFile, value);
+                }
+            }
         }
         catch (IOException e) {
             LOG.warn(e.getMessage(), e);
@@ -214,13 +141,21 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
             }
         }
 
+        if(mavenHome == null || !mavenHome.isValid() || !mavenHome.isDirectory())
+            return null;
+        final String baseJarUrl = "jar://" + mavenHome.getPath() + "/lib/maven.jar!/";
+
         //
         //maven defaults properties
         //
         try {
-            value = getFilePointerPropertyValue(mavenDefaultPropertiesPointer, pName);
-            if (value != null)
-                return resolveProperty(pPomFile, value);
+            final String url = baseJarUrl + "defaults.properties";
+            final VirtualFile propsFile = VirtualFileManager.getInstance().findFileByUrl(url);
+            if(propsFile != null) {
+                value = getFilePropertyValue(propsFile, pName);
+                if (value != null)
+                    return resolveProperty(pPomFile, value);
+            }
         }
         catch (IOException e) {
             LOG.warn(e.getMessage(), e);
@@ -230,9 +165,13 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
         //maven driver properties
         //
         try {
-            value = getFilePointerPropertyValue(mavenDriverPropertiesPointer, pName);
-            if (value != null)
-                return resolveProperty(pPomFile, value);
+            final String url = baseJarUrl + "driver.properties";
+            final VirtualFile propsFile = VirtualFileManager.getInstance().findFileByUrl(url);
+            if (propsFile != null) {
+                value = getFilePropertyValue(propsFile, pName);
+                if (value != null)
+                    return resolveProperty(pPomFile, value);
+            }
         }
         catch (IOException e) {
             LOG.warn(e.getMessage(), e);
@@ -291,42 +230,6 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
     }
 
     /**
-     * Internal. Does nothing.
-     *
-     * @param pPointers
-     */
-    public void beforeValidityChanged(final VirtualFilePointer[] pPointers) {
-    }
-
-    /**
-     * Internal. Called by the file pointers if the files change validity, and notifies all
-     * registered {@link PropertiesListener}s that the properties files changed.
-     *
-     * @param pPointers
-     */
-    public void validityChanged(final VirtualFilePointer[] pPointers) {
-        for (VirtualFilePointer pointer : pPointers) {
-            if (pointer == userPropertiesPointer ||
-                    pointer == mavenDefaultPropertiesPointer ||
-                    pointer == mavenDriverPropertiesPointer)
-                firePropertiesChangedEvent();
-        }
-    }
-
-    /**
-     * Fires the propertiesChanged event to all listeners.
-     */
-    private void firePropertiesChangedEvent() {
-        final PropertiesListener[] listeners = listenerList.getListeners(PropertiesListener.class);
-        PropertiesEvent e = null;
-        for (PropertiesListener listener : listeners) {
-            if (e == null)
-                e = new PropertiesEvent(this);
-            listener.propertiesChanged(e);
-        }
-    }
-
-    /**
      * Returns the user's home directory, or {@code null} if it can't be found.
      *
      * @return file
@@ -336,30 +239,6 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
         final String fixedPath = homePath.replace(File.separatorChar, '/');
         final String homeUrl = VirtualFileManager.constructUrl("file", fixedPath);
         return VirtualFileManager.getInstance().findFileByUrl(homeUrl);
-    }
-
-    /**
-     * Initializes the file pointers (to properties files) based on the given maven home.
-     *
-     * @param pMavenHome the new maven home
-     */
-    private void initializePointers(final VirtualFile pMavenHome) {
-        final VirtualFilePointerManager pointerMgr = VirtualFilePointerManager.getInstance();
-
-        if (pMavenHome != null) {
-            final String homePath = pMavenHome.getPath();
-            String url;
-
-            url = "jar://" + homePath + "/lib/maven.jar!/defaults.properties";
-            mavenDefaultPropertiesPointer = pointerMgr.create(url, this);
-
-            url = "jar://" + homePath + "/lib/maven.jar!/driver.properties";
-            mavenDriverPropertiesPointer = pointerMgr.create(url, this);
-        }
-        else {
-            mavenDefaultPropertiesPointer = null;
-            mavenDriverPropertiesPointer = null;
-        }
     }
 
     /**
@@ -404,28 +283,6 @@ public class PropertiesManager extends AbstractProjectComponent implements Prope
             return getFilePropertyValue(child, pName);
         else
             return null;
-    }
-
-    /**
-     * Searches for the given property in a file, and if found, returns its value. If the property
-     * or file is not found, {@code null} is returned.
-     *
-     * <p>The file is found using the given file pointer. If the pointer reports that the file does
-     * not exist, {@code null} is returned.</p>
-     *
-     * @param pPointer the pointer to the file to search in
-     * @param pName    the name of the property to search for
-     *
-     * @return the property value, or {@code null} if the file or property are not found
-     * @throws IOException if an error occurs while reading the file
-     */
-    private String getFilePointerPropertyValue(final VirtualFilePointer pPointer,
-                                               final String pName) throws IOException {
-        if (pPointer == null || !pPointer.isValid())
-            return null;
-
-        final VirtualFile file = pPointer.getFile();
-        return getFilePropertyValue(file, pName);
     }
 
     /**
