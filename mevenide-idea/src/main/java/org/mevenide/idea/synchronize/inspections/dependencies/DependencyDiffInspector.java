@@ -8,6 +8,7 @@ import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.util.ModuleUtils;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.project.util.PomUtils;
 import org.mevenide.idea.repository.Artifact;
 import org.mevenide.idea.repository.PomRepoManager;
@@ -58,12 +59,12 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
         final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(pModule);
 
         for (VirtualFile ideaFile : ideaLibs) {
-            if(!ideaFile.isValid())
+            if(!ideaFile.isValid() || !FileUtils.exists(ideaFile))
                 continue;
 
             boolean found = false;
             for (VirtualFile pomFile : pomLibs)
-                if(pomFile.isValid() && pomFile.equals(ideaFile)) {
+                if(pomFile.isValid() && pomFile.equals(ideaFile) && FileUtils.exists(pomFile)) {
                     found = true;
                     break;
                 }
@@ -82,12 +83,12 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
         final PomRepoManager repoMgr = PomRepoManager.getInstance(pModule.getProject());
         for (Artifact artifact : pomLibs) {
             final VirtualFile file = repoMgr.findFile(pPomUrl, artifact);
-            if(file == null || !file.isValid())
+            if(file == null || !file.isValid() || !FileUtils.exists(file))
                 continue;
 
             boolean found = false;
             for (VirtualFile ideaFile : ideaLibs)
-                if (ideaFile.isValid() && ideaFile.equals(file)) {
+                if (ideaFile.isValid() && ideaFile.equals(file) && FileUtils.exists(ideaFile)) {
                     found = true;
                     break;
                 }
@@ -123,7 +124,7 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
 
             final PomRepoManager repoMgr = PomRepoManager.getInstance(getProject());
             final VirtualFile file = repoMgr.findFile(pomUrl, artifact);
-            if(file == null || !file.isValid())
+            if(file == null || !file.isValid() || !FileUtils.exists(file))
                 return false;
 
             return !ModuleUtils.isFileInClasspath(module, file);

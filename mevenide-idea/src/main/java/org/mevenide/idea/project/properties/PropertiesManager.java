@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * Resolves Maven properties by looking in all possible places - POM property files, user files,
@@ -96,9 +97,9 @@ public class PropertiesManager extends AbstractProjectComponent {
         //
         try {
             final VirtualFile home = getUserHome();
-            if(home != null && home.isValid() && home.isDirectory()) {
+            if(home != null && home.isValid() && home.isDirectory() && FileUtils.exists(home)) {
                 final VirtualFile propsFile = home.findChild("build.properties");
-                if(propsFile != null && propsFile.isValid() && !propsFile.isDirectory()) {
+                if(propsFile != null && propsFile.isValid() && !propsFile.isDirectory() && FileUtils.exists(propsFile)) {
                     value = getFilePropertyValue(propsFile, pName);
                     if (value != null)
                         return resolveProperty(pPomFile, value);
@@ -141,7 +142,7 @@ public class PropertiesManager extends AbstractProjectComponent {
             }
         }
 
-        if(mavenHome == null || !mavenHome.isValid() || !mavenHome.isDirectory())
+        if(mavenHome == null || !FileUtils.exists(mavenHome) || !mavenHome.isValid() || !mavenHome.isDirectory())
             return null;
         final String baseJarUrl = "jar://" + mavenHome.getPath() + "/lib/maven.jar!/";
 
@@ -279,7 +280,7 @@ public class PropertiesManager extends AbstractProjectComponent {
                                         final String pChildFileName,
                                         final String pName) throws IOException {
         final VirtualFile child = pFile.findFileByRelativePath(pChildFileName);
-        if (child != null && child.isValid() && !child.isDirectory())
+        if (child != null && child.isValid() && !child.isDirectory() && FileUtils.exists(child))
             return getFilePropertyValue(child, pName);
         else
             return null;
