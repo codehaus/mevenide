@@ -320,6 +320,20 @@ public class DependencyNode extends AbstractNode {
         java.awt.Image retValue;
         retValue = super.getOpenedIcon(type);
         if (checkLocal()) {
+            if ("jar".equalsIgnoreCase(dependency.getValue("type"))) {
+                if (hasJavadocInRepository()) {
+                    retValue = Utilities.mergeImages(retValue, 
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
+                        12, 12);
+                }
+                if (hasSourceInRepository()) {
+                    retValue = Utilities.mergeImages(retValue, 
+                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencySrcIncluded.png"),
+                        12, 8);
+                }
+                return retValue;
+                
+            } 
             return retValue;
         } else {
             return Utilities.mergeImages(retValue, 
