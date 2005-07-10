@@ -18,21 +18,26 @@
 package org.mevenide.ui.eclipse.pom.manager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.ISafeRunnable;
+import org.eclipse.core.runtime.Platform;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.ui.eclipse.nature.MevenideNature;
+import org.mevenide.context.IQueryErrorCallback;
+import org.mevenide.ui.eclipse.Mevenide;
 
 /**
  * Provides the basic behavior of a POMManager.
  */
 public abstract class AbstractPOMManager implements POMManager {
+    private List listeners = new ArrayList(1);
 
     /**
      * Holds the mapping between a project path and a query context.
@@ -79,20 +84,41 @@ public abstract class AbstractPOMManager implements POMManager {
         return null;
     }
 
-    protected final void addProject(IProject project) throws CoreException {
-        if (project != null && MevenideNature.hasNature(project)) {
+    protected final IQueryContext addProject(IProject project) {
+        if (project != null && project.isOpen()) {
             String location = project.getLocation().toOSString();
             if (!this.projectMap.containsKey(location)) {
                 IQueryContext context = createQueryContext(location);
-                addQueryContext(location, context);
+                if (addQueryContext(location, context)) {
+                    fireProjectChange(new POMChangeEventImpl(context, POMChangeEvent.POM_ADDED, project));
+                    return context;
+                }
             }
         }
+
+        return null;
     }
 
-    protected final void removeProject(IProject project) throws CoreException {
-        if (project != null && !MevenideNature.hasNature(project)) {
+    protected final IQueryContext removeProject(IProject project) {
+        if (project != null && project.isOpen()) {
             String location = project.getLocation().toOSString();
-            removeQueryContext(location);
+            IQueryContext context = removeQueryContext(location);
+            if (context != null) {
+                fireProjectChange(new POMChangeEventImpl(context, POMChangeEvent.POM_REMOVED, project));
+                return context;
+            }
+        }
+
+        return null;
+    }
+
+    protected final void updateProject(IProject project) {
+        if (project != null && project.isOpen()) {
+            IQueryContext context = this.getQueryContext(project);
+            if (context != null) {
+                context.getPOMContext().getFinalProject();
+                fireProjectChange(new POMChangeEventImpl(context, POMChangeEvent.POM_CHANGED, project));
+            }
         }
     }
 
@@ -101,8 +127,8 @@ public abstract class AbstractPOMManager implements POMManager {
      * @param location the absolute path to the folder that contains the POM.
      * @return a newly created query context.
      */
-    protected IQueryContext createQueryContext(String location) {
-        return new DefaultQueryContext(new File(location));
+    private IQueryContext createQueryContext(String location) {
+        return new DefaultQueryContext(new File(location), this.callbackHandler);
     }
 
     /**
@@ -110,19 +136,23 @@ public abstract class AbstractPOMManager implements POMManager {
      * @param location the absolute path to the Eclipse project that contains the POM.
      * @param context the context representing the Maven POM.
      */
-    protected void addQueryContext(String location, IQueryContext context) {
+    private boolean addQueryContext(String location, IQueryContext context) {
         if (!this.projectMap.containsKey(location)) {
             this.artifactMap.put(getProjectKey(context), context);
             this.projectMap.put(location, context);
+            return true;
         }
+        return false;
     }
 
-    protected void removeQueryContext(String location) {
+    private IQueryContext removeQueryContext(String location) {
         IQueryContext context = (IQueryContext)projectMap.get(location);
         if (context != null) {
             this.artifactMap.remove(getProjectKey(context));
             this.projectMap.remove(location);
         }
+
+        return context;
     }
 
     /**
@@ -141,5 +171,79 @@ public abstract class AbstractPOMManager implements POMManager {
 
     private static final String getProjectKey(final IQueryContext context) {
         return getProjectKey(context.getPOMContext().getFinalProject());
+    }
+
+    private IQueryErrorCallback callbackHandler = new IQueryErrorCallback() {
+
+        /* (non-Javadoc)
+         * @see org.mevenide.context.IQueryErrorCallback#handleError(int, java.lang.Exception)
+         */
+        public void handleError(int errorNumber, Exception exception) {
+            Mevenide.displayError(decode(errorNumber), exception);
+        }
+
+        /* (non-Javadoc)
+         * @see org.mevenide.context.IQueryErrorCallback#discardError(int)
+         */
+        public void discardError(int errorNumber) {
+        }
+
+        private final String decode(int errorNumber) {
+            switch (errorNumber) {
+            case IQueryErrorCallback.ERROR_UNPARSABLE_POM: return "Unable to parse Maven POM file.";
+            case IQueryErrorCallback.ERROR_UNREADABLE_PROP_FILE: return "Unable to read Maven POM file.";
+            case IQueryErrorCallback.ERROR_CANNOT_FIND_POM: return "Cannot find Maven POM file.";
+            case IQueryErrorCallback.ERROR_CANNOT_FIND_PARENT_POM: return "Cannot find Maven POM's parent file.";
+            default: return "Unknown error received from mevenide-config: " + errorNumber;
+            }
+        }
+    };
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#addListener(org.mevenide.ui.eclipse.pom.manager.POMChangeListener)
+     */
+    public void addListener(POMChangeListener listener) {
+        synchronized (listeners) {
+            if (!listeners.contains(listener)) {
+                listeners.add(listener);
+            }
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#removeListener(org.mevenide.ui.eclipse.pom.manager.POMChangeListener)
+     */
+    public void removeListener(POMChangeListener listener) {
+        synchronized (listeners) {
+            listeners.remove(listener);
+        }
+    }
+
+    /**
+     * Fires a POM change event to all registered listeners. Only
+     * listeners registered at the time this method is called are notified.
+     * Listener notification makes use of an ISafeRunnable to ensure that
+     * client exceptions do not effect the notification to other clients.
+     */
+    protected void fireProjectChange(final POMChangeEvent e) {
+        POMChangeListener[] listener;
+        // Copy the listener list so we're not calling client code while synchronized
+        synchronized (this.listeners) {
+            listener = (POMChangeListener[]) this.listeners.toArray(new POMChangeListener[this.listeners.size()]);
+        }
+        // Notify the listeners safely so all will receive notification
+        for (int i = 0; i < listener.length; ++i) {
+            final POMChangeListener l = listener[i];
+
+            Platform.run(new ISafeRunnable() {
+                public void handleException(Throwable exception) {
+                    // don't log the exception....it is already being logged in
+                    // Platform#run
+                }
+                public void run() throws Exception {
+                    l.pomChanged(e);
+                }
+            });
+        }
     }
 }

@@ -66,4 +66,23 @@ public interface POMManager {
      * @return Returns the defaultLocationFinder.
      */
     ILocationFinder getDefaultLocationFinder();
+
+    /**
+     * Adds a listener to this POM manager. Has no effect if an
+     * identical listener is already registered.
+     * <p>
+     * POM change listeners are informed about state changes
+     * that affect the POMs supervised by this manager.
+     * </p>
+     * @param listener a POM change listener
+     */
+    void addListener(POMChangeListener listener);
+
+    /**
+     * Removes a listener previously registered with this POM manager. Has
+     * no affect if an identical listener is not registered.
+     * 
+     * @param listener a POM change listener
+     */
+    void removeListener(POMChangeListener listener);
 }
