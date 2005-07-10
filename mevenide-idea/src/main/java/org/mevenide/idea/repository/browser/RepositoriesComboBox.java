@@ -11,7 +11,7 @@ import org.mevenide.repository.IRepositoryReader;
 
 /**
  * @author Arik
- * @todo refresh repository list when modules change query context
+ * @todo refresh repository list when user changes the 'maven.repo.remote' properties
  */
 public class RepositoriesComboBox extends ComboBox {
     public RepositoriesComboBox(final Project pProject, final String pPomUrl) {
