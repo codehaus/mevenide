@@ -5,7 +5,6 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.startup.StartupManager;
 import org.mevenide.idea.global.MavenPluginsManager;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
 import org.mevenide.idea.project.goals.Goal;
@@ -33,13 +32,14 @@ public class MavenActionsManager extends AbstractProjectComponent {
                     final Goal[] goals = plugin.getGoals();
                     for (Goal goal : goals) {
                         final AnAction action = new GoalAction(goal);
-                        actMgr.registerAction(goal.getName(), action, PLUGIN_ID);
+                        if(actMgr.getAction(goal.getName()) == null)
+                            actMgr.registerAction(goal.getName(), action, PLUGIN_ID);
                     }
                 }
             }
         };
 
-        StartupManager.getInstance(project).registerPostStartupActivity(actionRegistrar);
+//        StartupManager.getInstance(project).registerPostStartupActivity(actionRegistrar);
     }
 
     private class GoalAction extends ExecuteGoalAction {

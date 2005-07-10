@@ -57,7 +57,7 @@ public class MavenJavaParameters extends JavaParameters {
         //make sure the user has set the Maven home location
         //
         final VirtualFile mavenHome = mavenMgr.getMavenHome();
-        if (mavenHome == null)
+        if (mavenHome == null || !mavenHome.isValid())
             throw new MavenHomeUndefinedException();
 
         //
