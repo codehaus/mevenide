@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide Repository</name>
     <artifactId>mevenide-repository</artifactId>
-    <currentVersion>0.2</currentVersion>
+    <currentVersion>0.3-SNAPSHOT</currentVersion>
     <package>org.mevenide.repository</package>
     <shortDescription>Reading local and remote repositories</shortDescription>
     <description>Common codebase for reading local and remote repositories.</description>
