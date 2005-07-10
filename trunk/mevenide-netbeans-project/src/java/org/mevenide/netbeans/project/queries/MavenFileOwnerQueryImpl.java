@@ -152,8 +152,9 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                 org.apache.maven.project.Project proj = project.getOriginalMavenProject();
                 IPropertyResolver res = project.getPropertyResolver();
 //                logger.debug("project=" + project.getDisplayName() + "  artif=" + proj.getArtifactId() + "  group=" + proj.getGroupId() + "  version=" + proj.getCurrentVersion() +  "  id=" + proj.getId());
+				//#MEVENIDE-287 handle SNAPSHOT in a special way
                 if (version != null && 
-                    doCompare(version, res.resolveString(proj.getCurrentVersion())) &&
+                    ("SNAPSHOT".equals(version) || doCompare(version, res.resolveString(proj.getCurrentVersion()))) &&
                     artifactid != null && 
                     (doCompare(artifactid, res.resolveString(proj.getArtifactId())) || doCompare(artifactid, res.resolveString(proj.getId()))) &&
                     groupid != null && 
