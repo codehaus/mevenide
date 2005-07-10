@@ -9,6 +9,7 @@ import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
+import javax.swing.*;
 import org.mevenide.idea.repository.tree.model.FetchStatusListener;
 import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.idea.repository.tree.model.RepoTreeModel;
@@ -79,7 +80,7 @@ public class RepoTree extends Tree {
         }
 
         private void notifyChange(final RepoTreeNode pNode) {
-//            synchronized (RepoTree.this) {
+            synchronized (RepoTree.this) {
                 final TreeModel model = getModel();
                 if (!(model instanceof RepoTreeModel))
                     return;
@@ -90,17 +91,22 @@ public class RepoTree extends Tree {
                 //a fetch operation, this can happen)
                 //
                 TreeNode parent = pNode;
-                while(parent.getParent() != null)
+                while(parent != null && parent.getParent() != null)
                     parent = parent.getParent();
-                if(!parent.equals(model.getRoot()))
+                if(parent == null || !parent.equals(model.getRoot()))
                     return;
 
                 //
                 //notify that the structure of the given node has been changed
                 //
-                final RepoTreeModel repoModel = (RepoTreeModel) model;
-                repoModel.nodeStructureChanged(pNode);
-//            }
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        final RepoTreeModel repoModel = (RepoTreeModel) model;
+                        repoModel.nodeStructureChanged(pNode);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+            }
         }
 
         public void fetchStarted(final RepoTreeNode pNode) {
