@@ -42,6 +42,14 @@ import org.mevenide.ui.eclipse.util.Tracer;
 /**
  * The default implementation of a POMManager. This implementation scans all workspace projects
  * and registers any POMs it finds.
+ * 
+ * FIXME: A race condition exists when adding a project.
+ *      : This listener is called as soon as the project is created and it may
+ *      : attempt to create the query context before the Maven files are created.
+ *      : In that case, the DefaultQueryContext cannot find all of the files.
+ * FIXME: Discard a query context that had an error arrise during its creation.
+ * TODO : The query context does not provide all of the files used to create it.
+ * TODO : Cache change notifications until delta process is completed. 
  */
 public class DefaultPOMManager extends AbstractPOMManager implements IResourceChangeListener, IResourceDeltaVisitor {
     private Set fileToProjectMap;
@@ -52,7 +60,7 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
      * Initializes this manager.
      * @throws CoreException if anything goes wrong
      */
-    public void initialize() throws CoreException {
+    public void initialize() {
         this.fileToProjectMap = new HashSet();
 
         ResourcesPlugin.getWorkspace().addResourceChangeListener(this);
@@ -127,12 +135,6 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
                     if (((IProject)resource).isOpen()) {
                         projectOpened((IProject)resource);
                     }
-//                } else {
-//                    String name = (resource == null)? "UNKNOWN": resource.getName();
-//                    String flag = deltaFlag2String(delta.getFlags());
-//                    if (Tracer.isDebugging()) {
-//                        Tracer.trace("post change[CHANGED]: " + name + " {" + flag + "}");
-//                    }
                 }
                 break;
             }
@@ -151,32 +153,14 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
                 if (((IFile)resource).isAccessible()) {
                     fileContentChanged((IFile)resource);
                 }
-            } else {
-                String name = (resource == null)? "UNKNOWN": resource.getName();
-                String kind = deltaKind2String(delta.getKind());
-                String flag = deltaFlag2String(delta.getFlags());
-                if (Tracer.isDebugging()) {
-                    Tracer.trace("post change[" + kind + "]: " + name + " {" + flag + "}");
-                }
             }
 
             return false;
         }
 
-        String name = (resource == null)? "UNKNOWN": resource.getName();
-        String kind = deltaKind2String(delta.getKind());
-        String flag = deltaFlag2String(delta.getFlags());
-        if (Tracer.isDebugging()) {
-            Tracer.trace("post change[" + kind + "]: " + name + " {" + flag + "}");
-        }
-
         return false;
     }
 
-    /**
-     * TODO: Describe what fileContentChanged does.
-     * @param file
-     */
     private void fileContentChanged(IFile file) {
         if (file != null) {
             if (this.fileToProjectMap.contains(file.getLocation().toFile().getAbsolutePath())) {
@@ -261,35 +245,5 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
      */
     public ILocationFinder getDefaultLocationFinder() {
         return this.defaultLocationFinder;
-    }
-
-    private static final String deltaKind2String(final int kind) {
-        switch (kind) {
-            case IResourceDelta.NO_CHANGE:       return "NO_CHANGE";
-            case IResourceDelta.ADDED:           return "ADDED";
-            case IResourceDelta.ADDED_PHANTOM:   return "ADDED_PHANTOM";
-            case IResourceDelta.CHANGED:         return "CHANGED";
-            case IResourceDelta.REMOVED:         return "REMOVED";
-            case IResourceDelta.REMOVED_PHANTOM: return "REMOVED_PHANTOM";
-            default:                             return "UNKNOWN";
-        }
-    }
-
-    private static final String deltaFlag2String(final int flag) {
-        StringBuffer buffer = new StringBuffer();
-
-        if (flag == IResourceDelta.NO_CHANGE) buffer.append("|NO_CHANGE");
-        if ((flag & IResourceDelta.CONTENT) == IResourceDelta.CONTENT) buffer.append("|CONTENT");
-        if ((flag & IResourceDelta.DESCRIPTION) == IResourceDelta.DESCRIPTION) buffer.append("|DESCRIPTION");
-        if ((flag & IResourceDelta.ENCODING) == IResourceDelta.ENCODING) buffer.append("|ENCODING");
-        if ((flag & IResourceDelta.MARKERS) == IResourceDelta.MARKERS) buffer.append("|MARKERS");
-        if ((flag & IResourceDelta.MOVED_FROM) == IResourceDelta.MOVED_FROM) buffer.append("|MOVED_FROM");
-        if ((flag & IResourceDelta.MOVED_TO) == IResourceDelta.MOVED_TO) buffer.append("|MOVED_TO");
-        if ((flag & IResourceDelta.OPEN) == IResourceDelta.OPEN) buffer.append("|OPEN");
-        if ((flag & IResourceDelta.REPLACED) == IResourceDelta.REPLACED) buffer.append("|REPLACED");
-        if ((flag & IResourceDelta.SYNC) == IResourceDelta.SYNC) buffer.append("|SYNC");
-        if ((flag & IResourceDelta.TYPE) == IResourceDelta.TYPE) buffer.append("|TYPE");
-
-        return buffer.substring(1);
     }
 }
