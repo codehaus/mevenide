@@ -17,14 +17,25 @@
 
 package org.mevenide.netbeans.project.dependencies;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.apache.maven.project.Dependency;
+import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
+import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
+import org.openide.ErrorManager;
+import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
@@ -57,6 +68,15 @@ public class DependencyChildren extends Children.Keys {
         Node node = null;
         if (obj == KEY_VERSIONS) {
             node = createVersionsNode();
+        }
+        if (obj == KEY_SOURCES) {
+            node = createSourcesNode();
+        }
+        if (obj == KEY_CLASSES) {
+            node = createClassesNode();
+        }
+        if (obj == KEY_JAVADOC) {
+            node = createJavadocNode();
         }
         if (node == null) {
             return new Node[0];
@@ -113,21 +133,139 @@ public class DependencyChildren extends Children.Keys {
         }
         RepoPathGrouper gr = new RepoPathGrouper(els);
         MultiRepositoryNode nd = new MultiRepositoryNode(gr);
-        return new VersionsNode(nd);
+        AbstractNode ret = new AbstractNode(new VersionsChildren(nd));
+        ret.setName("versions");
+        ret.setDisplayName("Available Versions");
+        return ret;
     }
     
-    private class VersionsNode extends AbstractNode {
-        VersionsNode(Node node) {
-            super(new VersionsChildren(node));
-            setName("versions");
-            setDisplayName("Other Available Versions");
+    private Node createSourcesNode() {
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        dep.setType("src.jar");
+        URI uri = FileUtilities.getDependencyURI(dep,  project);
+        FileObject obj = FileUtilities.convertURItoFileObject(uri);
+        if (obj != null) {
+            try {
+                DataObject dobj = DataObject.find(obj);
+                Node original =  dobj.getNodeDelegate();
+                AbstractNode src = new AbstractNode(new FilterNode.Children(original));
+                src.setName("sources");
+                src.setDisplayName("Browse Sources");
+                return src;
+            } catch (DataObjectNotFoundException exc) {
+                ErrorManager.getDefault().notify(exc);
+                return null;
+            }
         }
+        return null;
+    }
+    
+    private Node createJavadocNode() {
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        dep.setType("javadoc.jar");
+        URI uri = FileUtilities.getDependencyURI(dep,  project);
+        FileObject obj = FileUtilities.convertURItoFileObject(uri);
+        if (obj == null) {
+            // let's try the old way of "javadoc" extension.
+            // kind of weird anyway because the javadoc extension is not recognized by jardataloader
+            dep.setType("javadoc");
+            uri = FileUtilities.getDependencyURI(dep,  project);
+            obj = FileUtilities.convertURItoFileObject(uri);
+        }
+        if (obj != null) {
+            try {
+                DataObject dobj = DataObject.find(obj);
+                Node original =  dobj.getNodeDelegate();
+                AbstractNode src = new AbstractNode(new FilterNode.Children(original));
+                src.setName("javadoc");
+                src.setDisplayName("Browse Javadoc");
+                return src;
+            } catch (DataObjectNotFoundException exc) {
+                ErrorManager.getDefault().notify(exc);
+                return null;
+            }
+        } 
+        return null;
+    }
+    
+    private Node createClassesNode() {
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        URI uri = FileUtilities.getDependencyURI(dep,  project);
+        FileObject obj = FileUtilities.convertURItoFileObject(uri);
+        if (obj != null) {
+            try {
+                DataObject dobj = DataObject.find(obj);
+                Node original =  dobj.getNodeDelegate();
+                AbstractNode src = new AbstractNode(new FilterNode.Children(original));
+                src.setName("content");
+                src.setDisplayName("Browse Content");
+                return src;
+            } catch (DataObjectNotFoundException exc) {
+                ErrorManager.getDefault().notify(exc);
+                return null;
+            }
+        }
+        return null;
     }
     
     private class VersionsChildren extends FilterNode.Children {
         VersionsChildren(Node original) {
             super(original);
         }
+
+        protected Node[] createNodes(Object key) {
+            if (key instanceof Node) {
+                return new Node[] { new OneVersionNode((Node)key) };
+            }
+            return super.createNodes(key);
+        }
+        
+        
+    }
+    
+    private class OneVersionNode extends FilterNode {
+        public OneVersionNode(Node original) {
+            super(original);
+        }
+
+        public Action[] getActions(boolean context) {
+            Action[] parent;
+            parent = super.getActions(context);
+            Action[] toRet = new Action[parent.length + 1];
+            toRet[0] = new SetAsDependencyAction(getLookup());
+            for (int i = 1; i < toRet.length; i++) {
+                toRet[i] = parent[i -1];
+            }
+            return toRet;
+        }
+
+    }
+    
+    private class SetAsDependencyAction extends AbstractAction {
+        private Lookup lookup;
+        public SetAsDependencyAction(Lookup look) {
+            super();
+            lookup = look;
+            putValue(Action.NAME, "Set as Dependency");
+        }
+
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            Lookup.Result res = lookup.lookup(new Lookup.Template(RepoPathElement.class));
+            Collection col = res.allInstances();
+            RepoPathElement element = (RepoPathElement)col.iterator().next();
+            HashMap newValues = change.getOldValues();
+            newValues.put("version", element.getVersion());
+            change.setNewValues(newValues, change.getOldProperties());
+            try {
+                NbProjectWriter writer = new NbProjectWriter(project);
+                List deps = (List)DependencyChildren.this.getNode().getLookup().lookup(List.class);
+                writer.applyChanges(deps);
+            } catch (Exception exc) {
+                ErrorManager.getDefault().notify(ErrorManager.USER, exc);
+            }
+            
+        }
+        
     }
 }
  

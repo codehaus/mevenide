@@ -273,7 +273,14 @@ public class DependencyNode extends AbstractNode {
         Dependency depSnap = createDependencySnapshot(dependency);
         depSnap.setType("javadoc.jar");
         URI uri = FileUtilities.getDependencyURI(depSnap, project);
-        return (uri != null && new File(uri).exists());
+        boolean has = (uri != null && new File(uri).exists());
+        if (!has) {
+            // support the old way as well..
+            depSnap.setType("javadoc");
+            uri = FileUtilities.getDependencyURI(depSnap, project);
+            has = (uri != null && new File(uri).exists());
+        }
+        return has;
     }
     
     public boolean hasSourceInRepository() {

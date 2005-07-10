@@ -215,6 +215,10 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
     public HashMap getOldValues() {
         return new HashMap(values);
     }
+    
+    public HashMap getOldProperties() {
+        return new HashMap(propValues);
+    }
 
     public IContentProvider getChangedContent() {
         return contentProvider;
