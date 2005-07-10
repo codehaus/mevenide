@@ -127,7 +127,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-repository</artifactId>
-            <version>0.2</version>
+            <version>0.3-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>

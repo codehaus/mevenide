@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.TreeModel;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.repository.tree.RepoTree;
 import org.mevenide.idea.repository.tree.model.RepoTreeNode;
@@ -227,7 +228,11 @@ public class RepositoryBrowser extends JPanel {
     }
 
     protected RepoTree createRepoTree(final IRepositoryReader pRepo) {
-        final RepoTree tree = new RepoTree();
+        final RepoTree tree;
+        if(pRepo != null)
+            tree = new RepoTree(new RepoTreeModel(pRepo));
+        else
+            tree = new RepoTree();
         final ActionManager actionMgr = ActionManager.getInstance();
         PopupHandler.installPopupHandler(tree, actionGroup, PLACE, actionMgr);
         return tree;
@@ -245,7 +250,6 @@ public class RepositoryBrowser extends JPanel {
         //
         //create new tree and model for the repo
         //
-        final RepoTreeModel repoModel = new RepoTreeModel(pRepo);
         final RepoTree repoTree = createRepoTree(pRepo);
 
         //
@@ -254,12 +258,16 @@ public class RepositoryBrowser extends JPanel {
         final JScrollPane scrollPane = ScrollPaneFactory.createScrollPane(repoTree);
         treesPanel.add(scrollPane, repoName);
         repos.put(pRepo, repoTree);
+        treesCardLayout.show(treesPanel, repoName);
 
         //
         //later on, start fetching the root node
         //
-        repoTree.fetchNode(repoModel.getRoot());
-        treesCardLayout.show(treesPanel, repoName);
+        final TreeModel model = repoTree.getModel();
+        if (model instanceof RepoTreeModel) {
+            final RepoTreeModel repoModel = (RepoTreeModel) model;
+            repoTree.fetchNode(repoModel.getRoot());
+        }
         return repoTree;
     }
 }

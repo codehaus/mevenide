@@ -23,6 +23,7 @@ import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.ProxySettings;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.ui.MultiLineLabel;
+import org.mevenide.idea.repository.browser.RepoToolWindow;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
@@ -183,7 +184,10 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
             //TODO: report URI errors on 'create' via errors pane
             final URI uri = URI.create(repoList[i]);
-            repos[i] = createRemoteRepositoryReader(uri, host, portStr);
+            if(host != null && portStr != null)
+                repos[i] = createRemoteRepositoryReader(uri, host, portStr);
+            else
+                repos[i] = createRemoteRepositoryReader(uri);
         }
 
         return repos;
@@ -383,6 +387,11 @@ public class PomRepoManager extends AbstractPomSettingsManager {
             indicator.setText("Finished downloading file.");
             indicator.setText2("");
         }
+    }
+
+    @Override
+    public void projectOpened() {
+        RepoToolWindow.register(project);
     }
 
     public static PomRepoManager getInstance(final Project pProject) {
