@@ -28,10 +28,12 @@ import com.intellij.openapi.vfs.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.log4j.Level;
 import org.jdom.Element;
-import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.UIUtils;
 
@@ -49,6 +51,12 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      * Jelly scripts extensions.
      */
     private static final String[] JELLY_EXTENSIONS = new String[]{"jelly"};
+
+    /**
+     * Used to synchronize calls to {@link #setMavenHome(String)} and
+     * {@link #setMavenHome(com.intellij.openapi.vfs.VirtualFile)}.
+     */
+    private final Lock LOCK = new ReentrantLock();
 
     /**
      * Runnable that resets the maven home to null.
@@ -71,9 +79,31 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     private LocalFileSystem.WatchRequest mavenHomeWatcher = null;
 
     /**
-     * Flag used to synchronize maven home set requests and the file refresher.
+     * Detects external removal of maven home, and refreshes listeners.
      */
-    private boolean inSetMavenHomeFlag = false;
+    private final VirtualFileAdapter FS_LISTENER = new VirtualFileAdapter() {
+        @Override
+        public void fileDeleted(VirtualFileEvent event) {
+            LOCK.lock();
+            try {
+                if(mavenHomeWatcher == null)
+                    return;
+
+                final VirtualFile mavenHome = getMavenHome();
+                if (mavenHome == null)
+                    return;
+
+                final String url = extractUrl(event);
+                if(url == null || url.trim().length() == 0)
+                    LOG.trace("Unknown file delete event - exiting.");
+                else if(url.equalsIgnoreCase(mavenHome.getUrl()))
+                    ApplicationManager.getApplication().invokeLater(HOME_RESETTER);
+            }
+            finally {
+                LOCK.unlock();
+            }
+        }
+    };
 
     /**
      * Returns the command line options to send to the Maven process when invoked.
@@ -142,20 +172,40 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      * @param pMavenHome the new Maven home - may be <code>null</code>
      */
     public void setMavenHome(final String pMavenHome) throws IllegalMavenHomeException {
-        final VirtualFile home;
-        if (pMavenHome == null)
-            home = null;
-        else if (pMavenHome.trim().length() == 0)
-            home = null;
-        else {
-            final String path = pMavenHome.replace(File.separatorChar, '/');
-            final LocalFileSystem fs = LocalFileSystem.getInstance();
-            home = fs.findFileByPath(path);
-            if (home == null)
-                throw new IllegalMavenHomeException(RES.get("file.must.be.dir", pMavenHome));
-        }
+        LOCK.lock();
+        try {
+            final VirtualFile home;
+            if (pMavenHome == null || pMavenHome.trim().length() == 0)
+                home = null;
+            else {
+                final String path = pMavenHome.replace(File.separatorChar, '/');
+                final String url = "file://" + path;
 
-        setMavenHome(home);
+                //
+                //find a virtual-file for the given path. We disable our file-
+                //system listener here, because the refreshAndFindFileByUrl
+                //method causes the listener to be invoked, which will call this
+                //method, hence causing an infinite loop.
+                //
+                LOG.trace("setMavenHome(String): validating existance of " + pMavenHome);
+                final VirtualFileManager vfm = VirtualFileManager.getInstance();
+                vfm.removeVirtualFileListener(FS_LISTENER);
+                home = FileUtils.find(url);
+                vfm.addVirtualFileListener(FS_LISTENER);
+
+                //
+                //if the file could not be found, throw an exception
+                //
+                LOG.trace("setMavenHome(String): found " + home);
+                if(home == null || !FileUtils.exists(home))
+                    throw new IllegalMavenHomeException(RES.get("illegal.maven.home", pMavenHome));
+            }
+
+            setMavenHome(home);
+        }
+        finally {
+            LOCK.unlock();
+        }
     }
 
     /**
@@ -167,16 +217,24 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
      * @param pMavenHome the new Maven home - may be <code>null</code>
      */
     public void setMavenHome(final VirtualFile pMavenHome) throws IllegalMavenHomeException {
-        validateMavenHome(pMavenHome);
+        LOCK.lock();
+        try {
+            LOG.trace("setMavenHome(VirtualFile): validating " + pMavenHome);
+            validateMavenHome(pMavenHome);
+            LOG.trace("setMavenHome(VirtualFile): validation passed for " + pMavenHome);
 
-        final VirtualFile oldMavenHome = getMavenHome();
-        if(mavenHomeWatcher != null)
-            LocalFileSystem.getInstance().removeWatchedRoot(mavenHomeWatcher);
-        if(pMavenHome != null)
-            mavenHomeWatcher = LocalFileSystem.getInstance().addRootToWatch(pMavenHome, false);
-        else
-            mavenHomeWatcher = null;
-        changeSupport.firePropertyChange("mavenHome", oldMavenHome, getMavenHome());
+            final VirtualFile oldMavenHome = getMavenHome();
+            if(mavenHomeWatcher != null)
+                LocalFileSystem.getInstance().removeWatchedRoot(mavenHomeWatcher);
+            if(pMavenHome != null)
+                mavenHomeWatcher = LocalFileSystem.getInstance().addRootToWatch(pMavenHome, false);
+            else
+                mavenHomeWatcher = null;
+            changeSupport.firePropertyChange("mavenHome", oldMavenHome, getMavenHome());
+        }
+        finally {
+            LOCK.unlock();
+        }
     }
 
     /**
@@ -193,7 +251,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
                 final String value = System.getenv(key);
                 final String path = value.replace(File.separatorChar, '/');
                 final VirtualFile dir = LocalFileSystem.getInstance().findFileByPath(path);
-                if (dir == null || !dir.isValid() || !dir.isDirectory())
+                if (dir == null || !dir.isValid() || !FileUtils.exists(dir) || !dir.isDirectory())
                     return null;
 
                 return dir;
@@ -204,23 +262,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     }
 
     public void initComponent() {
-        VirtualFileManager.getInstance().addVirtualFileListener(new VirtualFileAdapter() {
-            @Override
-            public void fileDeleted(VirtualFileEvent event) {
-                if(mavenHomeWatcher == null || inSetMavenHomeFlag)
-                    return;
-
-                final VirtualFile mavenHome = getMavenHome();
-                if (mavenHome == null)
-                    return;
-
-                final String url = extractUrl(event);
-                if(url == null || url.trim().length() == 0)
-                    LOG.trace("Unknown file delete event - exiting.");
-                else if(url.equalsIgnoreCase(mavenHome.getUrl()))
-                    ApplicationManager.getApplication().invokeLater(HOME_RESETTER);
-            }
-        });
+        VirtualFileManager.getInstance().addVirtualFileListener(FS_LISTENER);
 
         //
         //disable http-client logger as it is quite verbose
@@ -232,6 +274,11 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         //register the ".jelly" file extension as an XML file
         //
         FileTypeManager.getInstance().registerFileType(StdFileTypes.XML, JELLY_EXTENSIONS);
+    }
+
+    @Override
+    public void disposeComponent() {
+        VirtualFileManager.getInstance().removeVirtualFileListener(FS_LISTENER);
     }
 
     /**
@@ -305,29 +352,16 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         if (pMavenHome == null)
             return;
 
-        final String uiUrl = pMavenHome.getPresentableUrl();
-
-        final String url = pMavenHome.getUrl();
-        final FileRefresher finder = new FileRefresher(url);
-        inSetMavenHomeFlag = true;
-        try {
-            IDEUtils.runWriteAction(finder);
-        }
-        finally {
-            inSetMavenHomeFlag = false;
-        }
-
-        pMavenHome = finder.getFile();
-        if (pMavenHome == null || !pMavenHome.isValid())
-            throw new IllegalMavenHomeException(RES.get("illegal.maven.home", uiUrl));
+        final String url = pMavenHome.getPresentableUrl();
+        if (!pMavenHome.isValid() || !FileUtils.exists(pMavenHome))
+            throw new IllegalMavenHomeException(RES.get("illegal.maven.home", url));
 
         if (!pMavenHome.isDirectory())
-            throw new IllegalMavenHomeException(RES.get("file.must.be.dir", uiUrl));
+            throw new IllegalMavenHomeException(RES.get("file.must.be.dir", url));
 
         final VirtualFile mavenLib = pMavenHome.findFileByRelativePath("lib/maven.jar");
-        if (mavenLib == null || !mavenLib.isValid() || mavenLib.isDirectory())
-            throw new IllegalMavenHomeException(RES.get("illegal.maven.home",
-                                                        pMavenHome.getPresentableUrl()));
+        if (mavenLib == null || !mavenLib.isValid() || !FileUtils.exists(mavenLib) || mavenLib.isDirectory())
+            throw new IllegalMavenHomeException(RES.get("illegal.maven.home", url));
     }
 
     /**
@@ -356,27 +390,10 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         }
     }
 
-    private class FileRefresher implements Runnable {
-        private final String url;
-        private VirtualFile file;
-
-        public FileRefresher(final String pUrl) {
-            url = pUrl;
-        }
-
-        public void run() {
-            final VirtualFileManager vfm = VirtualFileManager.getInstance();
-            file = vfm.refreshAndFindFileByUrl(url);
-        }
-
-        public VirtualFile getFile() {
-            return file;
-        }
-    }
-
     private class HomeResetter implements Runnable {
         public void run() {
             try {
+                LOG.trace("Detected Maven home deletion - setting Maven home to null");
                 setMavenHome((VirtualFile) null);
             }
             catch (IllegalMavenHomeException e) {

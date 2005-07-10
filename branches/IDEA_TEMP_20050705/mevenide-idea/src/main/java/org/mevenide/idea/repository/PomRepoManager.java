@@ -233,6 +233,9 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     public IRepositoryReader[] getRepositoryReaders(final String pPomUrl) {
         final IRepositoryReader[] remote = getRemoteRepositoryReaders(pPomUrl);
         final IRepositoryReader local = getLocalRepositoryReader(pPomUrl);
+        if(local == null)
+            return remote;
+
         final IRepositoryReader[] all = new IRepositoryReader[remote.length + 1];
         System.arraycopy(remote, 0, all, 0, remote.length);
         all[all.length - 1] = local;

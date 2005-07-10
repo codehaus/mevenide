@@ -26,6 +26,7 @@ import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * @author Arik
@@ -168,7 +169,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
 
         int counter = 0;
         try {
-            if (pPluginsCacheFile == null || !pPluginsCacheFile.isValid() || pPluginsCacheFile.isDirectory()) {
+            if (pPluginsCacheFile == null || !pPluginsCacheFile.isValid() || !FileUtils.exists(pPluginsCacheFile) || pPluginsCacheFile.isDirectory()) {
                 if (prg != null) {
                     prg.setText("No available plugins found.");
                     prg.setFraction(1);
@@ -177,7 +178,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             }
 
             final VirtualFile pluginsDir = pPluginsCacheFile.getParent();
-            if (pluginsDir == null || !pluginsDir.isValid() || !pluginsDir.isDirectory()) {
+            if (pluginsDir == null || !pluginsDir.isValid() || !FileUtils.exists(pluginsDir) || !pluginsDir.isDirectory()) {
                 if (prg != null) {
                     prg.setText("No available plugins found.");
                     prg.setFraction(1);
@@ -212,7 +213,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
                 }
 
                 final VirtualFile pluginDir = pluginsDir.findChild(artifactId);
-                if (pluginDir == null || !pluginDir.isValid() || !pluginDir.isDirectory()) {
+                if (pluginDir == null || !pluginDir.isValid() || !FileUtils.exists(pluginDir) || !pluginDir.isDirectory()) {
                     if (prg != null)
                         prg.setText("Could not load plugin '" + pluginName + "'");
                     continue;
@@ -247,7 +248,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         //parse plugin POM
         //
         final VirtualFile pluginPom = pPluginDir.findChild("project.xml");
-        if (pluginPom != null && pluginPom.isValid())
+        if (pluginPom != null && pluginPom.isValid() && FileUtils.exists(pluginPom))
             plugin.setPomFile(pluginPom);
         else
             return null;
@@ -265,7 +266,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         //parse plugin Jelly script
         //
         final VirtualFile jellyFile = pPluginDir.findChild("plugin.jelly");
-        if (jellyFile != null && jellyFile.isValid())
+        if (jellyFile != null && jellyFile.isValid() && FileUtils.exists(jellyFile))
             plugin.setScriptFile(jellyFile);
         else
             return null;

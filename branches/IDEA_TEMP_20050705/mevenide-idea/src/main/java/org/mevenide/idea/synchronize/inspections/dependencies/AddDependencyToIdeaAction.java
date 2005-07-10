@@ -16,6 +16,7 @@ import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.synchronize.AbstractFixAction;
 import org.mevenide.idea.synchronize.ModuleArtifactProblemInfo;
 import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.ui.UIUtils;
 import org.mevenide.idea.util.ui.images.Icons;
 
@@ -68,7 +69,7 @@ public class AddDependencyToIdeaAction extends AbstractFixAction<ModuleArtifactP
             //
             final PomRepoManager repoMgr = PomRepoManager.getInstance(project);
             final VirtualFile file = repoMgr.findFile(problem.getPomUrl(), artifact);
-            if (file == null || !file.isValid()) {
+            if (file == null || !file.isValid() || !FileUtils.exists(file)) {
                 final String msg = RES.get("dep.missing.problem.desc", artifact);
                 UIUtils.showError(project, msg);
                 return;

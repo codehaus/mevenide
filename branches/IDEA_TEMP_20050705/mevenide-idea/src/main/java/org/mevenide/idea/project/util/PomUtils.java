@@ -15,6 +15,7 @@ import org.mevenide.idea.psi.project.PsiProject;
 import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.repository.Artifact;
 import org.mevenide.idea.util.ui.MultiLineLabel;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * @author Arik
@@ -112,7 +113,7 @@ public final class PomUtils {
 
         for (Artifact artifact : artifacts) {
             final VirtualFile file = repoMgr.findFile(pPomUrl, artifact);
-            if (file != null && file.isValid() && !file.isDirectory())
+            if (file != null && file.isValid() && !file.isDirectory() && FileUtils.exists(file))
                 files.add(file);
         }
 

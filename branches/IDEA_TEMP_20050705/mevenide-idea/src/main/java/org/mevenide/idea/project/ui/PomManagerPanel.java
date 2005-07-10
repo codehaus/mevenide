@@ -38,6 +38,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.actions.AddPluginGoalToPomAction;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
@@ -251,7 +252,7 @@ public class PomManagerPanel extends JPanel
         final PomManager pomMgr = PomManager.getInstance(project);
         final String url = pPomNode.getUserObject();
         final VirtualFile pomFile = pomMgr.getFile(url);
-        if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory())
+        if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory() || !FileUtils.exists(pomFile))
             return;
 
         final OpenFileDescriptor desc = new OpenFileDescriptor(project, pomFile);
@@ -261,7 +262,7 @@ public class PomManagerPanel extends JPanel
 
     public void navigateToSource(final PluginNode pNode) {
         final VirtualFile script = getGoalContainerFile(pNode);
-        if (script == null || !script.isValid())
+        if (script == null || !script.isValid() || !FileUtils.exists(script))
             return;
 
         final OpenFileDescriptor desc = new OpenFileDescriptor(project, script);
@@ -325,7 +326,7 @@ public class PomManagerPanel extends JPanel
             return null;
 
         final VirtualFile file = scriptFile.getFile();
-        if (file == null || !file.isValid())
+        if (file == null || !file.isValid() || !FileUtils.exists(file))
             return null;
 
         return file;

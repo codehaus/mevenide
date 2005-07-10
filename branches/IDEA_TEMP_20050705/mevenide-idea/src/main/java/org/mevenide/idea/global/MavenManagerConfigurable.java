@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.images.Icons;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * This component manages UI configuration for the {@link MavenManager} component. It displays a
@@ -137,7 +138,7 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
             guessMavenHomeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     final VirtualFile home = MavenManager.getInstance().guessMavenHome();
-                    if(home != null && home.isValid() && home.isDirectory())
+                    if(home != null && home.isValid() && home.isDirectory() && FileUtils.exists(home))
                         mavenHomeField.setText(home.getPresentableUrl());
                 }
             });

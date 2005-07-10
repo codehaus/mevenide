@@ -19,6 +19,7 @@ import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * @author Arik
@@ -64,7 +65,7 @@ public class MavenReportManager extends AbstractProjectComponent {
 
         for (final PluginGoalContainer plugin : plugins) {
             final VirtualFile script = plugin.getScriptFile().getFile();
-            if (script == null || !script.isValid())
+            if (script == null || !script.isValid() || !FileUtils.exists(script))
                 continue;
 
             final String id;
