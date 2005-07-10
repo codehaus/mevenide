@@ -57,6 +57,8 @@
           <ant:include name="**/modules/*.jar"/>
           <!-- MEVENIDE-221-->
           <ant:include name="platform*/core/*.jar"/>
+          <!-- MEVENIDE-221 in 4.2 sources we got openide-util in lib subfolder-->
+          <ant:include name="platform*/lib/*.jar"/>
           <ant:include name="**/modules/autoload/*.jar"/>
           <ant:include name="**/modules/eager/*.jar"/>
         </ant:fileset>
