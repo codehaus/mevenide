@@ -17,13 +17,13 @@ import java.util.Map;
 import java.util.Set;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
-import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.project.AbstractPomSettingsManager;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.ProxySettings;
+import org.mevenide.idea.project.properties.PropertiesManager;
+import org.mevenide.idea.repository.browser.RepoToolWindow;
 import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.ui.MultiLineLabel;
-import org.mevenide.idea.repository.browser.RepoToolWindow;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
@@ -264,12 +264,12 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         }
     }
 
-    public VirtualFile download(final String pPomUrl, final RepoPathElement pathElement)
+    public void download(final String pPomUrl, final RepoPathElement pathElement)
             throws ArtifactNotFoundException {
-        return download(pPomUrl, Artifact.fromRepoPathElement(pathElement));
+        download(pPomUrl, Artifact.fromRepoPathElement(pathElement));
     }
 
-    public VirtualFile download(final String pPomUrl, final Artifact pArtifact) throws ArtifactNotFoundException {
+    public void download(final String pPomUrl, final Artifact pArtifact) throws ArtifactNotFoundException {
         //
         //iterate over the POM's remote repositories, and try each one. The first one
         //that succeeds is returned.
@@ -278,7 +278,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         final Set<Throwable> errors = new HashSet<Throwable>(remoteRepos.length);
         for (final IRepositoryReader reader : remoteRepos) {
             try {
-                return download(pPomUrl, reader, pArtifact);
+                download(pPomUrl, reader, pArtifact);
             }
             catch (IOException e) {
                 errors.add(e);
@@ -292,13 +292,13 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         throw new ArtifactNotFoundException(pArtifact, errors.toArray(buffer));
     }
 
-    public VirtualFile download(final String pPomUrl,
+    public void download(final String pPomUrl,
                                 final IRepositoryReader pRemoteRepo,
                                 final Artifact pArtifact) throws IOException {
-        return download(pPomUrl, pRemoteRepo, pArtifact.getRelativePath());
+        download(pPomUrl, pRemoteRepo, pArtifact.getRelativePath());
     }
 
-    private VirtualFile download(final String pPomUrl,
+    private void download(final String pPomUrl,
                                  final IRepositoryReader pRemoteRepo,
                                  final String pPath) throws IOException {
         //
@@ -326,13 +326,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
                  proxy.getProxyPort(pPomUrl),
                  proxy.getProxyUsername(pPomUrl),
                  proxy.getProxyPassword(pPomUrl));
-
-        //
-        //find output file
-        //
-        final String path = destFile.getAbsolutePath().replace(File.separatorChar, '/');
-        final String ideaUrl = "file://" + path;
-        return VirtualFileManager.getInstance().refreshAndFindFileByUrl(ideaUrl);
     }
 
     private static void download(final String pUrl,
