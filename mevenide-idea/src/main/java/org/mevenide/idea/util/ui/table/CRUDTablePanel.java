@@ -12,7 +12,7 @@ import org.mevenide.idea.util.ui.AbstractDocumentCRUDPanel;
  * @author Arik
  */
 public class CRUDTablePanel<ModelType extends CRUDTableModel>
-    extends AbstractDocumentCRUDPanel<JTable> {
+        extends AbstractDocumentCRUDPanel<JTable> {
     /**
      * The action listener, invoked by the Add button, which adds a new row to the table.
      */
@@ -23,8 +23,8 @@ public class CRUDTablePanel<ModelType extends CRUDTableModel>
     };
 
     /**
-     * The action listener, invoked by the Remove button, which removes the selected
-     * row(s) from the table.
+     * The action listener, invoked by the Remove button, which removes the selected row(s) from the
+     * table.
      */
     private final ActionListener removeActionListener = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -56,7 +56,7 @@ public class CRUDTablePanel<ModelType extends CRUDTableModel>
               true,
               pPsiFile.getProject(),
               FileDocumentManager.getInstance().getDocument(
-                  pPsiFile.getVirtualFile()));
+                      pPsiFile.getVirtualFile()));
 
         if (pModel != null)
             component.setModel(pModel);
@@ -64,7 +64,7 @@ public class CRUDTablePanel<ModelType extends CRUDTableModel>
         component.setColumnSelectionAllowed(false);
         component.setRowSelectionAllowed(true);
         component.getSelectionModel().setSelectionMode(
-            ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+                ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         setAddAction(addActionListener);
         setRemoveAction(removeActionListener);

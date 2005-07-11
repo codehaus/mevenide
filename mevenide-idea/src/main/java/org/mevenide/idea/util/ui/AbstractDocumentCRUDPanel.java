@@ -10,7 +10,7 @@ import javax.swing.*;
  * @author Arik
  */
 public abstract class AbstractDocumentCRUDPanel<T extends JComponent>
-    extends CRUDPanel<T> {
+        extends CRUDPanel<T> {
     /**
      * The project this panel belongs to.
      */

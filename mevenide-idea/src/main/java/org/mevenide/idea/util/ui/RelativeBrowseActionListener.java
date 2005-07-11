@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
  * @author Arik
  */
 public class RelativeBrowseActionListener<T extends JComponent>
-    extends ComponentWithBrowseButton.BrowseFolderActionListener<T> {
+        extends ComponentWithBrowseButton.BrowseFolderActionListener<T> {
     private final VirtualFile referenceDir;
     private final ComponentWithBrowseButton<T> textField;
     private final TextComponentAccessor<T> accessor;

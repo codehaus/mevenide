@@ -85,8 +85,8 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Invoke this method after you've changed how the children identified by
-     * childIndicies are to be represented in the tree.
+     * Invoke this method after you've changed how the children identified by childIndicies are to
+     * be represented in the tree.
      */
     public void nodesChanged(TreeNode node, int[] childIndices) {
         if (node != null) {
@@ -98,7 +98,7 @@ public class RepoTreeModel implements TreeModel {
 
                     for (int counter = 0; counter < cCount; counter++)
                         cChildren[counter] = node.getChildAt
-                            (childIndices[counter]);
+                                (childIndices[counter]);
                     fireTreeNodesChanged(this, getPathToRoot(node),
                                          childIndices, cChildren);
                 }
@@ -120,9 +120,8 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on this event
-     * type.  The event instance is lazily created using the parameters passed into the
-     * fire method.
+     * Notifies all listeners that have registered interest for notification on this event type.
+     * The event instance is lazily created using the parameters passed into the fire method.
      *
      * @param source       the node being changed
      * @param path         the path to the root node
@@ -151,9 +150,8 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on this event
-     * type.  The event instance is lazily created using the parameters passed into the
-     * fire method.
+     * Notifies all listeners that have registered interest for notification on this event type.
+     * The event instance is lazily created using the parameters passed into the fire method.
      *
      * @param source       the node where new elements are being inserted
      * @param path         the path to the root node
@@ -182,9 +180,8 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on this event
-     * type.  The event instance is lazily created using the parameters passed into the
-     * fire method.
+     * Notifies all listeners that have registered interest for notification on this event type.
+     * The event instance is lazily created using the parameters passed into the fire method.
      *
      * @param source       the node where elements are being removed
      * @param path         the path to the root node
@@ -213,9 +210,8 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Notifies all listeners that have registered interest for notification on this event
-     * type.  The event instance is lazily created using the parameters passed into the
-     * fire method.
+     * Notifies all listeners that have registered interest for notification on this event type.
+     * The event instance is lazily created using the parameters passed into the fire method.
      *
      * @param source       the node where the tree model has changed
      * @param path         the path to the root node
@@ -244,9 +240,9 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Builds the parents of node up to and including the root node, where the original
-     * node is the last element in the returned array. The length of the returned array
-     * gives the node's depth in the tree.
+     * Builds the parents of node up to and including the root node, where the original node is the
+     * last element in the returned array. The length of the returned array gives the node's depth
+     * in the tree.
      *
      * @param aNode the node to get the path for
      */
@@ -255,16 +251,16 @@ public class RepoTreeModel implements TreeModel {
     }
 
     /**
-     * Builds the parents of node up to and including the root node, where the original
-     * node is the last element in the returned array. The length of the returned array
-     * gives the node's depth in the tree.
+     * Builds the parents of node up to and including the root node, where the original node is the
+     * last element in the returned array. The length of the returned array gives the node's depth
+     * in the tree.
      *
      * @param pNode  the node to get the path for
-     * @param pDepth an int giving the number of steps already taken towards the root (on
-     *               recursive calls), used to size the returned array
+     * @param pDepth an int giving the number of steps already taken towards the root (on recursive
+     *               calls), used to size the returned array
      *
-     * @return an array of {@code RepoPathElement} giving the path from the root to the
-     *         specified node
+     * @return an array of {@code RepoPathElement} giving the path from the root to the specified
+     *         node
      */
     protected TreeNode[] getPathToRoot(final TreeNode pNode, int pDepth) {
         TreeNode[] retNodes;

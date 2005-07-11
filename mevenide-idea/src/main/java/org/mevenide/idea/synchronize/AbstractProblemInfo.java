@@ -30,17 +30,17 @@ public abstract class AbstractProblemInfo implements ProblemInfo {
     protected final String pomUrl;
 
     /**
-     * Default description of the problem. If the description changes on state,
-     * you can override {@link #getDescription()}.
+     * Default description of the problem. If the description changes on state, you can override
+     * {@link #getDescription()}.
      */
     protected final String description;
 
     /**
-     * Default fix actions. If the available actions change on state,
-     * you can override {@link #getFixActions()}.
+     * Default fix actions. If the available actions change on state, you can override {@link
+     * #getFixActions()}.
      */
     private final AtomicReference<AnAction[]> fixActions = new AtomicReference<AnAction[]>(
-        new AnAction[0]);
+            new AnAction[0]);
 
     /**
      * Creates an instance with the default problem description.
@@ -56,7 +56,7 @@ public abstract class AbstractProblemInfo implements ProblemInfo {
     /**
      * Creates an instance with the given description.
      *
-     * @param pInspector inspector that discovered the problem.
+     * @param pInspector   inspector that discovered the problem.
      * @param pDescription problem description
      */
     protected AbstractProblemInfo(final ProblemInspector pInspector,

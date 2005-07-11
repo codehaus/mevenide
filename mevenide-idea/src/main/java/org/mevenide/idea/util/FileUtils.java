@@ -16,7 +16,7 @@ public abstract class FileUtils {
     }
 
     public static boolean exists(final VirtualFile pFile) {
-        if(pFile == null)
+        if (pFile == null)
             return false;
 
         final File file = VfsUtil.virtualToIoFile(pFile);

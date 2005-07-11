@@ -15,9 +15,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
@@ -37,7 +37,6 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
  * @author Arik
  */
 public class PomRepoManager extends AbstractPomSettingsManager {
-
     private static final IRepositoryReader[] EMPTY_REPO_ARRAY = new IRepositoryReader[0];
 
     private static final SelectFromListDialog.ToStringAspect SIMPLE_TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
@@ -123,14 +122,14 @@ public class PomRepoManager extends AbstractPomSettingsManager {
             repoUrls[i] = rootFile.getAbsolutePath();
         }
 
-         final String title;
-        if(pTitle == null || pTitle.trim().length() == 0)
+        final String title;
+        if (pTitle == null || pTitle.trim().length() == 0)
             title = "Local repository";
         else
             title = pTitle;
 
-         final String label;
-        if(pLabel == null || pLabel.trim().length() == 0)
+        final String label;
+        if (pLabel == null || pLabel.trim().length() == 0)
             label = "Please select the local repository to use:";
         else
             label = pLabel;
@@ -155,7 +154,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     public IRepositoryReader[] getRemoteRepositoryReaders() {
         final String[] urls = PomManager.getInstance(project).getFileUrls();
-        final Map<String,IRepositoryReader> repos = new HashMap<String, IRepositoryReader>();
+        final Map<String, IRepositoryReader> repos = new HashMap<String, IRepositoryReader>();
         for (String url : urls) {
             final IRepositoryReader[] readers = getRemoteRepositoryReaders(url);
             for (IRepositoryReader reader : readers)
@@ -168,7 +167,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     public IRepositoryReader[] getRemoteRepositoryReaders(final String pPomUrl) {
         final PropertiesManager mgr = PropertiesManager.getInstance(project);
         final String value = mgr.getProperty(pPomUrl, "maven.repo.remote");
-        if(value == null || value.trim().length() == 0)
+        if (value == null || value.trim().length() == 0)
             return EMPTY_REPO_ARRAY;
 
         final String[] repoList = value.split(",");
@@ -188,7 +187,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
             //TODO: report URI errors on 'create' via errors pane
             final URI uri = URI.create(repoList[i]);
-            if(host != null && portStr != null)
+            if (host != null && portStr != null)
                 repos[i] = createRemoteRepositoryReader(uri, host, portStr);
             else
                 repos[i] = createRemoteRepositoryReader(uri);
@@ -237,7 +236,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     public IRepositoryReader[] getRepositoryReaders(final String pPomUrl) {
         final IRepositoryReader[] remote = getRemoteRepositoryReaders(pPomUrl);
         final IRepositoryReader local = getLocalRepositoryReader(pPomUrl);
-        if(local == null)
+        if (local == null)
             return remote;
 
         final IRepositoryReader[] all = new IRepositoryReader[remote.length + 1];
@@ -273,7 +272,8 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         download(pPomUrl, Artifact.fromRepoPathElement(pathElement));
     }
 
-    public void download(final String pPomUrl, final Artifact pArtifact) throws ArtifactNotFoundException {
+    public void download(final String pPomUrl, final Artifact pArtifact)
+            throws ArtifactNotFoundException {
         boolean anySuccesses = false;
 
         //
@@ -295,7 +295,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         //
         //if we got here, errors occured - throw an exception specifying the error(s)
         //
-        if(!anySuccesses) {
+        if (!anySuccesses) {
             final Throwable[] buffer = new Throwable[errors.size()];
             throw new ArtifactNotFoundException(pArtifact, errors.toArray(buffer));
         }
@@ -312,7 +312,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
             final ProgressIndicator prg = IDEUtils.getProgressIndicator();
             if (prg != null) {
-                if(prg.isCanceled())
+                if (prg.isCanceled())
                     return;
                 prg.setText2("Searching for children of '" + elt.getRelativeURIPath() + "'...");
             }
@@ -320,7 +320,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
             try {
                 final RepoPathElement[] elements = result.get(30, TimeUnit.SECONDS);
-                if(prg != null)
+                if (prg != null)
                     prg.setText2("Found " + elements.length + " artifacts under '" + elt.getRelativeURIPath() + "', downloading...");
                 for (int i = 0; i < elements.length; i++) {
                     RepoPathElement element = elements[i];

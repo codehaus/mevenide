@@ -6,7 +6,6 @@ import java.util.concurrent.CancellationException;
  * @author Arik
  */
 public interface FetchStatusListener {
-
     void fetchStarted(final RepoTreeNode pNode);
 
     void fetchComplete(final RepoTreeNode pNode);

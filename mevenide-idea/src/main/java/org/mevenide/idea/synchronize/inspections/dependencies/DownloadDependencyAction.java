@@ -20,8 +20,7 @@ class DownloadDependencyAction extends AbstractFixAction<ArtifactProblemInfo> {
     private static final Res RES = Res.getInstance(DownloadDependencyAction.class);
 
     /**
-     * A runnable that performs the actual download, and displays a message if an
-     * error occurs.
+     * A runnable that performs the actual download, and displays a message if an error occurs.
      */
     private final Downloader downloader = new Downloader();
 

@@ -1,13 +1,12 @@
 package org.mevenide.idea.repository.tree.model;
 
-import javax.swing.tree.TreeNode;
 import java.util.Enumeration;
+import javax.swing.tree.TreeNode;
 
 /**
  * @author Arik
  */
 public class MessageNode implements TreeNode {
-
     private final TreeNode parent;
     private final String message;
 

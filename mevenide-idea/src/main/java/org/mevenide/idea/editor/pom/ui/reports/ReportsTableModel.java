@@ -8,7 +8,7 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class ReportsTableModel extends AbstractBeanRowsTableModel<PsiReports> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "Report Name"
+            "Report Name"
     };
 
     public ReportsTableModel(final PsiReports pModel) {

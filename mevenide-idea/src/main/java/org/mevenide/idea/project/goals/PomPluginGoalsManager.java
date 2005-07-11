@@ -28,7 +28,8 @@ import org.mevenide.idea.util.ui.UIUtils;
 
 /**
  * @author Arik
- * @todo currently, during startup, if loading goals/plugins and there are no available plugins, the settings for the poms are lost - we should save the strings too
+ * @todo currently, during startup, if loading goals/plugins and there are no available plugins, the
+ * settings for the poms are lost - we should save the strings too
  */
 public class PomPluginGoalsManager extends AbstractPomSettingsManager
         implements JDOMExternalizable {

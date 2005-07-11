@@ -11,8 +11,8 @@ import org.mevenide.idea.project.actions.ExecuteGoalAction;
 import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.project.goals.GoalContainer;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
-import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik Kfir
@@ -42,7 +42,7 @@ public class MavenActionsManager extends AbstractProjectComponent {
         final DefaultActionGroup cmndrPopup = findGroup("CommanderPopupMenu");
         cmndrPopup.addSeparator();
         cmndrPopup.add(action);
-        
+
         final Runnable actionRegistrar = new Runnable() {
             public void run() {
                 final ActionManager actMgr = ActionManager.getInstance();
@@ -52,13 +52,14 @@ public class MavenActionsManager extends AbstractProjectComponent {
                     final Goal[] goals = plugin.getGoals();
                     for (Goal goal : goals) {
                         final AnAction action = new GoalAction(goal);
-                        if(actMgr.getAction(goal.getName()) == null)
+                        if (actMgr.getAction(goal.getName()) == null)
                             actMgr.registerAction(goal.getName(), action, PLUGIN_ID);
                     }
                 }
             }
         };
 
+        //TODO: register actions here
 //        StartupManager.getInstance(project).registerPostStartupActivity(actionRegistrar);
     }
 

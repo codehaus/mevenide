@@ -25,7 +25,7 @@ public abstract class IDEUtils {
     public static void runWriteAction(final Runnable pRunnable) {
         ApplicationManager.getApplication().runWriteAction(pRunnable);
     }
-    
+
     public static void runCommand(final Module pModule,
                                   final Runnable pRunnable) {
         runCommand(pModule.getProject(), pRunnable);
@@ -37,10 +37,10 @@ public abstract class IDEUtils {
         ApplicationManager.getApplication().runWriteAction(new Runnable() {
             public void run() {
                 CommandProcessor.getInstance().executeCommand(
-                    pProject,
-                    pRunnable,
-                    "Maven Command",
-                    "POM");
+                        pProject,
+                        pRunnable,
+                        "Maven Command",
+                        "POM");
             }
         });
     }

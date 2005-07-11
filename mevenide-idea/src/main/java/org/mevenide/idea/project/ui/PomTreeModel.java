@@ -58,7 +58,7 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
 
     private final PropertyChangeListener MAVEN_PLUGINS_LISTENER = new PropertyChangeListener() {
         public void propertyChange(PropertyChangeEvent evt) {
-            if("plugins".equals(evt.getPropertyName()))
+            if ("plugins".equals(evt.getPropertyName()))
                 refreshPlugins();
         }
     };
@@ -100,7 +100,8 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
     public void dispose() {
         PomManager.getInstance(project).removePomManagerListener(this);
         PomPluginGoalsManager.getInstance(project).removePomPluginGoalsListener(this);
-        MavenPluginsManager.getInstance(project).removePropertyChangeListener("plugins", MAVEN_PLUGINS_LISTENER);
+        MavenPluginsManager.getInstance(project).removePropertyChangeListener("plugins",
+                                                                              MAVEN_PLUGINS_LISTENER);
     }
 
     public void refresh() {

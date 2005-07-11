@@ -23,8 +23,8 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
-import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.PopupHandler;
+import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.util.ui.Tree;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -39,8 +39,6 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
-import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.actions.AddPluginGoalToPomAction;
 import org.mevenide.idea.project.actions.ExecuteGoalAction;
@@ -48,6 +46,8 @@ import org.mevenide.idea.project.actions.RefreshPomToolWindowAction;
 import org.mevenide.idea.project.actions.RemovePluginGoalFromPomAction;
 import org.mevenide.idea.project.goals.*;
 import org.mevenide.idea.project.util.PomUtils;
+import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
+import org.mevenide.idea.util.FileUtils;
 
 /**
  * @author Arik
@@ -169,7 +169,7 @@ public class PomManagerPanel extends JPanel
     }
 
     public String getSelectedPomUrl() {
-       final TreePath path = tree.getLeadSelectionPath();
+        final TreePath path = tree.getLeadSelectionPath();
         if (path == null)
             return null;
 
@@ -267,7 +267,8 @@ public class PomManagerPanel extends JPanel
         final PomManager pomMgr = PomManager.getInstance(project);
         final String url = pPomNode.getUserObject();
         final VirtualFile pomFile = pomMgr.getFile(url);
-        if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory() || !FileUtils.exists(pomFile))
+        if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory() || !FileUtils.exists(
+                pomFile))
             return;
 
         final OpenFileDescriptor desc = new OpenFileDescriptor(project, pomFile);

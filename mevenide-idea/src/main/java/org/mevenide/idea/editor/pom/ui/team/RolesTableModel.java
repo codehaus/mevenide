@@ -8,7 +8,7 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class RolesTableModel extends AbstractBeanRowsTableModel<PsiTeamMemberRoles> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "Role"
+            "Role"
     };
 
 

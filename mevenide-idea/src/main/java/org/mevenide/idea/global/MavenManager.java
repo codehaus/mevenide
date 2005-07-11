@@ -53,8 +53,8 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
     private static final String[] JELLY_EXTENSIONS = new String[]{"jelly"};
 
     /**
-     * Used to synchronize calls to {@link #setMavenHome(String)} and
-     * {@link #setMavenHome(com.intellij.openapi.vfs.VirtualFile)}.
+     * Used to synchronize calls to {@link #setMavenHome(String)} and {@link
+     * #setMavenHome(com.intellij.openapi.vfs.VirtualFile)}.
      */
     private final Lock LOCK = new ReentrantLock();
 
@@ -86,7 +86,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
         public void fileDeleted(VirtualFileEvent event) {
             LOCK.lock();
             try {
-                if(mavenHomeWatcher == null)
+                if (mavenHomeWatcher == null)
                     return;
 
                 final VirtualFile mavenHome = getMavenHome();
@@ -94,9 +94,9 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
                     return;
 
                 final String url = extractUrl(event);
-                if(url == null || url.trim().length() == 0)
+                if (url == null || url.trim().length() == 0)
                     LOG.trace("Unknown file delete event - exiting.");
-                else if(url.equalsIgnoreCase(mavenHome.getUrl()))
+                else if (url.equalsIgnoreCase(mavenHome.getUrl()))
                     ApplicationManager.getApplication().invokeLater(HOME_RESETTER);
             }
             finally {
@@ -197,7 +197,7 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
                 //if the file could not be found, throw an exception
                 //
                 LOG.trace("setMavenHome(String): found " + home);
-                if(home == null || !FileUtils.exists(home))
+                if (home == null || !FileUtils.exists(home))
                     throw new IllegalMavenHomeException(RES.get("illegal.maven.home", pMavenHome));
             }
 
@@ -224,9 +224,9 @@ public class MavenManager extends AbstractApplicationComponent implements JDOMEx
             LOG.trace("setMavenHome(VirtualFile): validation passed for " + pMavenHome);
 
             final VirtualFile oldMavenHome = getMavenHome();
-            if(mavenHomeWatcher != null)
+            if (mavenHomeWatcher != null)
                 LocalFileSystem.getInstance().removeWatchedRoot(mavenHomeWatcher);
-            if(pMavenHome != null)
+            if (pMavenHome != null)
                 mavenHomeWatcher = LocalFileSystem.getInstance().addRootToWatch(pMavenHome, false);
             else
                 mavenHomeWatcher = null;

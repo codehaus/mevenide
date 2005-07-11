@@ -22,13 +22,12 @@ import org.apache.commons.logging.Log;
 /**
  * A base class for all POM editing panels.
  *
- * <p>Automatically keeps track of the current focusable component. This is a bug fix for
- * IDEA - when a FileEditor has a panel with multiple fields, switching to another editor
- * and returning returns the focus back to the first component. This class fixes
- * that.</p>
+ * <p>Automatically keeps track of the current focusable component. This is a bug fix for IDEA -
+ * when a FileEditor has a panel with multiple fields, switching to another editor and returning
+ * returns the focus back to the first component. This class fixes that.</p>
  *
- * <p>Also, this class provides a {@link Log} instance, the correct resource bundle and
- * the project and document this panel edits.</p>
+ * <p>Also, this class provides a {@link Log} instance, the correct resource bundle and the project
+ * and document this panel edits.</p>
  *
  * @author Arik
  */

@@ -1,25 +1,25 @@
 package org.mevenide.idea.project.reports;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.startup.StartupManager;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
-import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeEvent;
 import org.mevenide.idea.global.MavenPluginsManager;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
-import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik

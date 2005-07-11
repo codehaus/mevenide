@@ -8,8 +8,8 @@ import java.beans.PropertyChangeListener;
  */
 public interface PropertyObservable extends Observable {
     /**
-     * Adds a <code>PropertyChangeListener</code> to the listener list for the given
-     * property name. The listener is registered only for the specified property.
+     * Adds a <code>PropertyChangeListener</code> to the listener list for the given property name.
+     * The listener is registered only for the specified property.
      *
      * @param pListener the PropertyChangeListener to be added
      *
@@ -20,9 +20,9 @@ public interface PropertyObservable extends Observable {
 
 
     /**
-     * Removes a <code>PropertyChangeListener</code> from the listener list for the given
-     * property name. This method should be used to remove PropertyChangeListeners that
-     * were registered for the specific property name.
+     * Removes a <code>PropertyChangeListener</code> from the listener list for the given property
+     * name. This method should be used to remove PropertyChangeListeners that were registered for
+     * the specific property name.
      *
      * @param pListener the PropertyChangeListener to be removed
      *

@@ -7,13 +7,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.mevenide.idea.util.FileUtils;
 
 /**
  * @author Arik
  */
 public abstract class ModuleUtils {
-
     public static boolean isFileInClasspath(final Module pModule,
                                             final VirtualFile pFile) {
         final String depFilePath = pFile.getPath();

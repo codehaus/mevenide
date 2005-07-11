@@ -1,14 +1,13 @@
 package org.mevenide.idea.psi.project;
 
 import org.mevenide.idea.psi.support.XmlPsiObject;
-import org.mevenide.idea.util.event.BeanRowsObservable;
 import org.mevenide.idea.repository.Artifact;
+import org.mevenide.idea.util.event.BeanRowsObservable;
 
 /**
  * @author Arik
  */
 public interface PsiDependencies extends BeanRowsObservable, XmlPsiObject, PsiChild<PsiProject> {
-
     int findRow(Artifact pArtifact);
 
     Artifact getArtifact(int pRow);

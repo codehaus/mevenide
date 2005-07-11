@@ -1,14 +1,15 @@
 package org.mevenide.idea.psi.project;
 
-import com.intellij.util.IncorrectOperationException;
 import com.intellij.openapi.Disposable;
+import com.intellij.util.IncorrectOperationException;
 import org.mevenide.idea.psi.support.XmlPsiObject;
 import org.mevenide.idea.util.event.PropertyObservable;
 
 /**
  * @author Arik
  */
-public interface PsiProject extends PropertyObservable, XmlPsiObject, PsiChild<PsiProject>, Disposable {
+public interface PsiProject
+        extends PropertyObservable, XmlPsiObject, PsiChild<PsiProject>, Disposable {
     PsiProject getParent();
 
     String getPomVersion();

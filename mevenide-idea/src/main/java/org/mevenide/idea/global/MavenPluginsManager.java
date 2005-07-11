@@ -1,11 +1,11 @@
 package org.mevenide.idea.global;
 
+import com.intellij.openapi.application.Application;
+import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.application.Application;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import java.beans.PropertyChangeEvent;
@@ -24,9 +24,9 @@ import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.psi.util.PsiUtils;
 import org.mevenide.idea.psi.util.XmlTagPath;
-import org.mevenide.idea.util.components.AbstractProjectComponent;
-import org.mevenide.idea.util.IDEUtils;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.IDEUtils;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * @author Arik
@@ -107,9 +107,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
         synchronized (this) {
             boolean reload = true;
             final VirtualFile cacheFile = getPluginsCacheFile();
-            if(pluginsCacheFile == cacheFile)
+            if (pluginsCacheFile == cacheFile)
                 reload = false;
-            else if(pluginsCacheFile != null && pluginsCacheFile.equals(cacheFile))
+            else if (pluginsCacheFile != null && pluginsCacheFile.equals(cacheFile))
                 reload = false;
 
             if (reload)
@@ -159,7 +159,8 @@ public class MavenPluginsManager extends AbstractProjectComponent {
      * @return available plugins
      * @throws IOException if an error occurs
      */
-    private PluginGoalContainer[] loadPlugins(final VirtualFile pPluginsCacheFile) throws IOException {
+    private PluginGoalContainer[] loadPlugins(final VirtualFile pPluginsCacheFile)
+            throws IOException {
         final ProgressIndicator prg = IDEUtils.getProgressIndicator();
         if (prg != null) {
             prg.setIndeterminate(true);
@@ -169,7 +170,8 @@ public class MavenPluginsManager extends AbstractProjectComponent {
 
         int counter = 0;
         try {
-            if (pPluginsCacheFile == null || !pPluginsCacheFile.isValid() || !FileUtils.exists(pPluginsCacheFile) || pPluginsCacheFile.isDirectory()) {
+            if (pPluginsCacheFile == null || !pPluginsCacheFile.isValid() || !FileUtils.exists(
+                    pPluginsCacheFile) || pPluginsCacheFile.isDirectory()) {
                 if (prg != null) {
                     prg.setText("No available plugins found.");
                     prg.setFraction(1);
@@ -208,7 +210,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
 
                 if (prg != null) {
                     prg.setText("Loading plugin '" + pluginName + "'");
-                    prg.setFraction((double)counter / (double)pluginCount);
+                    prg.setFraction((double) counter / (double) pluginCount);
                     counter++;
                 }
 
@@ -254,7 +256,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             return null;
 
         final XmlFile pomPsi = PsiUtils.findXmlFile(project, pluginPom);
-        if(pomPsi == null)
+        if (pomPsi == null)
             return null;
 
         plugin.setId(new XmlTagPath(pomPsi, POM_ID_XPATH).getStringValue());
@@ -281,7 +283,7 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             XmlTag tag = goalTags[i];
             final String name = tag.getAttributeValue("name");
             final String lcName = name.toLowerCase();
-            if(lcName.equalsIgnoreCase("register") || lcName.equalsIgnoreCase("deregister"))
+            if (lcName.equalsIgnoreCase("register") || lcName.equalsIgnoreCase("deregister"))
                 continue;
 
             final String desc = tag.getAttributeValue("description");

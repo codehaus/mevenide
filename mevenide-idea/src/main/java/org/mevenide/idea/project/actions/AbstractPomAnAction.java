@@ -1,14 +1,14 @@
 package org.mevenide.idea.project.actions;
 
-import org.mevenide.idea.util.actions.AbstractAnAction;
-import org.mevenide.idea.util.FileUtils;
-import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.ui.PomManagerPanel;
-import javax.swing.*;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import java.awt.*;
+import javax.swing.*;
+import org.mevenide.idea.project.PomManager;
+import org.mevenide.idea.project.ui.PomManagerPanel;
+import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.actions.AbstractAnAction;
 
 /**
  * @author Arik Kfir

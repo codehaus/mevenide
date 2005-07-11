@@ -2,17 +2,17 @@ package org.mevenide.idea.repository.tree;
 
 import com.intellij.util.ui.Tree;
 import java.util.concurrent.CancellationException;
+import javax.swing.*;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeWillExpandListener;
 import javax.swing.tree.ExpandVetoException;
 import javax.swing.tree.TreeModel;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeNode;
-import javax.swing.*;
+import javax.swing.tree.TreePath;
 import org.mevenide.idea.repository.tree.model.FetchStatusListener;
-import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.idea.repository.tree.model.RepoTreeModel;
+import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 
 /**
  * @author Arik
@@ -54,7 +54,7 @@ public class RepoTree extends Tree {
     }
 
     public void fetchNode(final TreeNode pNode) {
-        if(pNode instanceof RepoTreeNode) {
+        if (pNode instanceof RepoTreeNode) {
             final RepoTreeNode node = (RepoTreeNode) pNode;
             node.fetchChildren(nodeExpander);
         }
@@ -62,7 +62,7 @@ public class RepoTree extends Tree {
 
     private class NodeExpander implements TreeWillExpandListener, FetchStatusListener {
         public void treeWillExpand(TreeExpansionEvent event) throws ExpandVetoException {
-            synchronized(RepoTree.this) {
+            synchronized (RepoTree.this) {
                 if (event.getSource() != RepoTree.this)
                     return;
 
@@ -91,9 +91,8 @@ public class RepoTree extends Tree {
                 //a fetch operation, this can happen)
                 //
                 TreeNode parent = pNode;
-                while(parent != null && parent.getParent() != null)
-                    parent = parent.getParent();
-                if(parent == null || !parent.equals(model.getRoot()))
+                while (parent != null && parent.getParent() != null) parent = parent.getParent();
+                if (parent == null || !parent.equals(model.getRoot()))
                     return;
 
                 //

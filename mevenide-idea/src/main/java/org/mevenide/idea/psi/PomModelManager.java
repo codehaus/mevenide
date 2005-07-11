@@ -39,7 +39,7 @@ public class PomModelManager extends AbstractPomSettingsManager {
 
         if (recreate) {
             final VirtualFile file = getFile(pPomUrl);
-            if(file == null)
+            if (file == null)
                 return null;
 
             final XmlFile xmlFile = PsiUtils.findXmlFile(project, file);

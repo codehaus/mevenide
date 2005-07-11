@@ -7,10 +7,10 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.mevenide.repository.IRepositoryReader;
-import org.mevenide.repository.RepoPathElement;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik

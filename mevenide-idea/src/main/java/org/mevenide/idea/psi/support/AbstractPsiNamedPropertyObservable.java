@@ -7,7 +7,7 @@ import org.mevenide.idea.psi.util.PsiNamedPropertyChangeListener;
  * @author Arik
  */
 public abstract class AbstractPsiNamedPropertyObservable
-    extends AbstractPsiPropertyObservable<PsiNamedPropertyChangeListener> {
+        extends AbstractPsiPropertyObservable<PsiNamedPropertyChangeListener> {
     public AbstractPsiNamedPropertyObservable(final XmlFile pXmlFile) {
         this(pXmlFile, null);
     }

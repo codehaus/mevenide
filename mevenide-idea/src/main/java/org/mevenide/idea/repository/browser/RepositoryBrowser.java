@@ -8,8 +8,8 @@ import com.intellij.openapi.project.Project;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.ScrollPaneFactory;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.tree.TreeModel;
@@ -48,7 +48,8 @@ public class RepositoryBrowser extends JPanel {
     /**
      * The repository model.
      */
-    protected final Map<IRepositoryReader, RepoTree> repos = new HashMap<IRepositoryReader, RepoTree>(10);
+    protected final Map<IRepositoryReader, RepoTree> repos = new HashMap<IRepositoryReader, RepoTree>(
+            10);
 
     /**
      * The card layout containing the trees. Used to display the selected repo.
@@ -72,6 +73,7 @@ public class RepositoryBrowser extends JPanel {
 
     /**
      * Creates
+     *
      * @param pProject
      */
     public RepositoryBrowser(final Project pProject) {
@@ -194,7 +196,7 @@ public class RepositoryBrowser extends JPanel {
 
     public RepoPathElement[] getSelectedItems() {
         final RepoTree tree = getSelectedRepoTree();
-        if(tree == null)
+        if (tree == null)
             return new RepoPathElement[0];
 
         final TreePath[] selections = tree.getSelectionPaths();
@@ -228,7 +230,7 @@ public class RepositoryBrowser extends JPanel {
 
     protected RepoTree createRepoTree(final IRepositoryReader pRepo) {
         final RepoTree tree;
-        if(pRepo != null)
+        if (pRepo != null)
             tree = new RepoTree(new RepoTreeModel(pRepo));
         else
             tree = new RepoTree();

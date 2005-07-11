@@ -11,11 +11,11 @@ import org.mevenide.repository.RepoPathElement;
  */
 public abstract class AbstractBrowserAction extends AbstractAnAction {
     private static final int[] ALL_LEVELS = new int[]{
-        RepoPathElement.LEVEL_ARTIFACT,
-        RepoPathElement.LEVEL_GROUP,
-        RepoPathElement.LEVEL_ROOT,
-        RepoPathElement.LEVEL_TYPE,
-        RepoPathElement.LEVEL_VERSION
+            RepoPathElement.LEVEL_ARTIFACT,
+            RepoPathElement.LEVEL_GROUP,
+            RepoPathElement.LEVEL_ROOT,
+            RepoPathElement.LEVEL_TYPE,
+            RepoPathElement.LEVEL_VERSION
     };
 
     protected final RepositoryBrowser browser;

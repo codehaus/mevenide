@@ -1,7 +1,7 @@
 package org.mevenide.idea.synchronize;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleManager;
 import com.intellij.openapi.project.ModuleListener;
@@ -46,11 +46,11 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
             public void moduleRemoved(Project project, Module module) {
                 final AnAction[] actions = getChildren(null);
                 for (AnAction action : actions) {
-                    if(!(action instanceof SynchronizeWithModuleAction))
+                    if (!(action instanceof SynchronizeWithModuleAction))
                         continue;
 
                     final SynchronizeWithModuleAction act = (SynchronizeWithModuleAction) action;
-                    if(act.module == module)
+                    if (act.module == module)
                         remove(act);
                 }
             }
@@ -78,16 +78,17 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
     @Override
     public void update(final AnActionEvent pEvent) {
         final boolean enabled = getSelectedPomUrl(pEvent) != null;
-        if(PomManagerPanel.PLACE.equalsIgnoreCase(pEvent.getPlace()))
+        if (PomManagerPanel.PLACE.equalsIgnoreCase(pEvent.getPlace()))
             pEvent.getPresentation().setEnabled(enabled);
         else
             pEvent.getPresentation().setVisible(enabled);
     }
 
     /**
-     * @todo this is already implemented in {@link org.mevenide.idea.project.actions.AbstractPomAnAction}
      * @param pEvent
+     *
      * @return selected pom url (only if it is a pom)
+     * @todo this is already implemented in {@link org.mevenide.idea.project.actions.AbstractPomAnAction}
      */
     private String getSelectedPomUrl(final AnActionEvent pEvent) {
         if (PomManagerPanel.PLACE.equals(pEvent.getPlace())) {
@@ -99,7 +100,7 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
         }
         else {
             final VirtualFile file = getVirtualFile(pEvent);
-            if(file == null || !file.isValid() || !FileUtils.exists(file))
+            if (file == null || !file.isValid() || !FileUtils.exists(file))
                 return null;
             else
                 return file.getUrl();
@@ -127,7 +128,7 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
                 return;
 
             final String url = getSelectedPomUrl(pEvent);
-            if(url == null)
+            if (url == null)
                 return;
 
             tw.setAvailable(true, null);

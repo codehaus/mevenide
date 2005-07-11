@@ -29,8 +29,8 @@ public interface ProblemInfo {
     String getDescription();
 
     /**
-     * Returns the inspector that discovered this problem. This is used mainly for
-     * categorization in the problems tree.
+     * Returns the inspector that discovered this problem. This is used mainly for categorization in
+     * the problems tree.
      *
      * @return the problem inspector (should never return {@code null)
      */
@@ -39,9 +39,9 @@ public interface ProblemInfo {
     /**
      * This method should check if the problem still exists.
      *
-     * <p>When displaying multiple problems to the user, and the user fixes some, other
-     * problems might not be relevant anymore. Therefor, after each fix, this method will
-     * be called to all other problems to check if they are still relevant.</p>
+     * <p>When displaying multiple problems to the user, and the user fixes some, other problems
+     * might not be relevant anymore. Therefor, after each fix, this method will be called to all
+     * other problems to check if they are still relevant.</p>
      *
      * @return {@code true} if this problem is still relevant, {@code false} otherwise
      */
@@ -50,8 +50,8 @@ public interface ProblemInfo {
     /**
      * Returns the list of actions that can be applied/executed to fix this problem.
      *
-     * <p>Returning an empty array, or {@code null} means that this problem cannot be
-     * automatically solved and the user needs to intervene.</p>
+     * <p>Returning an empty array, or {@code null} means that this problem cannot be automatically
+     * solved and the user needs to intervene.</p>
      *
      * @return can return an actions array, {@code null} or an empty array
      * @todo how about returning a list of a new Fixable interface?

@@ -9,10 +9,10 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class MailingListsTableModel extends AbstractBeanRowsTableModel<PsiMailingLists> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "Name",
-        "Subscribe",
-        "Unsubscribe",
-        "Archive"
+            "Name",
+            "Subscribe",
+            "Unsubscribe",
+            "Archive"
     };
 
     public MailingListsTableModel(final PsiProject pModel) {

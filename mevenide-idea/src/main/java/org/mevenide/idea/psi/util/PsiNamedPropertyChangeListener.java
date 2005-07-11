@@ -22,8 +22,8 @@ public class PsiNamedPropertyChangeListener extends PsiPropertyChangeListener {
     }
 
     /**
-     * Creates a new instance with the given tag prefix - all registered tag paths will
-     * start with that prefix (convenience).
+     * Creates a new instance with the given tag prefix - all registered tag paths will start with
+     * that prefix (convenience).
      *
      * @param pTagPrefix the prefix to use - may be {@code null} or empty string.
      */

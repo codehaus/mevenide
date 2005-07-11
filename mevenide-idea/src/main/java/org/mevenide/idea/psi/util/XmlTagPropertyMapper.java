@@ -47,11 +47,10 @@ public class XmlTagPropertyMapper {
     }
 
     /**
-     * Returns the property name of the tag path that is the ancestor of the given PSI
-     * element.
+     * Returns the property name of the tag path that is the ancestor of the given PSI element.
      *
-     * <p>If the given PSI element is not a child of any of the registered tag paths, this
-     * method will return {@code null}.</p>
+     * <p>If the given PSI element is not a child of any of the registered tag paths, this method
+     * will return {@code null}.</p>
      *
      * @param pTextElt the PSI element to test
      *

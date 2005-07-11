@@ -12,10 +12,10 @@ import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.psi.PomModelManager;
 import org.mevenide.idea.psi.project.PsiDependencies;
 import org.mevenide.idea.psi.project.PsiProject;
-import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.repository.Artifact;
-import org.mevenide.idea.util.ui.MultiLineLabel;
+import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.ui.MultiLineLabel;
 
 /**
  * @author Arik
@@ -45,7 +45,7 @@ public final class PomUtils {
             artifact.setType(deps.getType(row));
             artifact.setVersion(deps.getVersion(row));
             artifact.setExtension(deps.getExtension(row));
-            if(artifact.getCompleteArtifact().equals(fullArtifact))
+            if (artifact.getCompleteArtifact().equals(fullArtifact))
                 return true;
         }
 
@@ -62,12 +62,13 @@ public final class PomUtils {
         return false;
     }
 
-    public static Artifact[] getPomClassPathArtifacts(final Project pProject, final String pPomUrl) {
+    public static Artifact[] getPomClassPathArtifacts(final Project pProject,
+                                                      final String pPomUrl) {
         //
         //get the pom PSI model
         //
         final PsiProject psi = PomModelManager.getInstance(pProject).getPsiProject(pPomUrl);
-        if(psi == null)
+        if (psi == null)
             return new Artifact[0];
         final PsiDependencies deps = psi.getDependencies();
 

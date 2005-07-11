@@ -5,8 +5,8 @@ package org.mevenide.idea.synchronize;
  */
 public interface ProblemInspector {
     /**
-     * Returns the name of this inspector. Used in the user interface to diffrenciate
-     * various inspectors.
+     * Returns the name of this inspector. Used in the user interface to diffrenciate various
+     * inspectors.
      *
      * @return string
      */

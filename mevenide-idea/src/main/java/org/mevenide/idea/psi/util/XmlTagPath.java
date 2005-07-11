@@ -472,9 +472,9 @@ public class XmlTagPath {
 
     public void setValue(final Object pValue) throws IncorrectOperationException {
         final String value = pValue == null ? null : pValue.toString().trim();
-        if(value == null || value.length() == 0 ) {
+        if (value == null || value.length() == 0) {
             XmlTag tag = getTag();
-            if(tag != null)
+            if (tag != null)
                 tag.delete();
         }
         else

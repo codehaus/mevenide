@@ -32,7 +32,7 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction<ArtifactPro
         final PsiProject psi = modelMgr.getPsiProject(problem.getPomUrl());
         final PsiDependencies deps = psi.getDependencies();
         final int row = deps.findRow(problem.getArtifact());
-        if(row >= 0)
+        if (row >= 0)
             deps.deleteRows(row);
     }
 }

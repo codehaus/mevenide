@@ -24,15 +24,15 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
-import java.io.File;
-import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import javax.swing.*;
 import org.apache.commons.lang.StringUtils;
+import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.util.components.AbstractApplicationComponent;
 import org.mevenide.idea.util.ui.CustomFormsComponentFactory;
 import org.mevenide.idea.util.ui.images.Icons;
-import org.mevenide.idea.util.FileUtils;
 
 /**
  * This component manages UI configuration for the {@link MavenManager} component. It displays a
@@ -138,7 +138,8 @@ public class MavenManagerConfigurable extends AbstractApplicationComponent imple
             guessMavenHomeButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     final VirtualFile home = MavenManager.getInstance().guessMavenHome();
-                    if(home != null && home.isValid() && home.isDirectory() && FileUtils.exists(home))
+                    if (home != null && home.isValid() && home.isDirectory() && FileUtils.exists(
+                            home))
                         mavenHomeField.setText(home.getPresentableUrl());
                 }
             });

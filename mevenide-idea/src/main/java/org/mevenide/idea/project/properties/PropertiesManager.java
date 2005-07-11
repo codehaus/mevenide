@@ -11,8 +11,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.idea.global.MavenManager;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.util.components.AbstractProjectComponent;
 import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.components.AbstractProjectComponent;
 
 /**
  * Resolves Maven properties by looking in all possible places - POM property files, user files,
@@ -58,20 +58,20 @@ public class PropertiesManager extends AbstractProjectComponent {
     }
 
     /**
-         * Returns the value of the given property. The value is located the same way Maven resolves
-         * properties - in the following order:
-         *
-         * <p><ol> <li>system properties ({@code -Dx=y})</li> <li>user's properties ({@code
-         * build.properties} under the user's home)</li> <li>build properties ({@code build.properties}
-         * in the POM directory)</li> <li>project properties ({@code project.properties} in the POM
-         * directory</li> <li>maven properties (maven-provided defaults)</li> </ol></p>
-         *
-         * @param pPomUrl the POM file url for which we resolve the property. The POM is needed, since
-         *                each POM defines its own set of properties
-         * @param pName   name of the property to resolve
-         *
-         * @return property value, or {@code null} if it could not be found
-         */
+     * Returns the value of the given property. The value is located the same way Maven resolves
+     * properties - in the following order:
+     *
+     * <p><ol> <li>system properties ({@code -Dx=y})</li> <li>user's properties ({@code
+     * build.properties} under the user's home)</li> <li>build properties ({@code build.properties}
+     * in the POM directory)</li> <li>project properties ({@code project.properties} in the POM
+     * directory</li> <li>maven properties (maven-provided defaults)</li> </ol></p>
+     *
+     * @param pPomUrl the POM file url for which we resolve the property. The POM is needed, since
+     *                each POM defines its own set of properties
+     * @param pName   name of the property to resolve
+     *
+     * @return property value, or {@code null} if it could not be found
+     */
     public String getProperty(final String pPomUrl, final String pName) {
         final VirtualFile pPomFile = PomManager.getInstance(project).getFile(pPomUrl);
 
@@ -97,9 +97,10 @@ public class PropertiesManager extends AbstractProjectComponent {
         //
         try {
             final VirtualFile home = getUserHome();
-            if(home != null && home.isValid() && home.isDirectory() && FileUtils.exists(home)) {
+            if (home != null && home.isValid() && home.isDirectory() && FileUtils.exists(home)) {
                 final VirtualFile propsFile = home.findChild("build.properties");
-                if(propsFile != null && propsFile.isValid() && !propsFile.isDirectory() && FileUtils.exists(propsFile)) {
+                if (propsFile != null && propsFile.isValid() && !propsFile.isDirectory() && FileUtils.exists(
+                        propsFile)) {
                     value = getFilePropertyValue(propsFile, pName);
                     if (value != null)
                         return resolveProperty(pPomFile, value);
@@ -115,7 +116,7 @@ public class PropertiesManager extends AbstractProjectComponent {
         //
         if (pPomFile != null) {
             final VirtualFile dir = pPomFile.getParent();
-            if(dir != null) {
+            if (dir != null) {
                 //
                 //build properties
                 //
@@ -142,7 +143,7 @@ public class PropertiesManager extends AbstractProjectComponent {
             }
         }
 
-        if(mavenHome == null || !FileUtils.exists(mavenHome) || !mavenHome.isValid() || !mavenHome.isDirectory())
+        if (mavenHome == null || !FileUtils.exists(mavenHome) || !mavenHome.isValid() || !mavenHome.isDirectory())
             return null;
         final String baseJarUrl = "jar://" + mavenHome.getPath() + "/lib/maven.jar!/";
 
@@ -152,7 +153,7 @@ public class PropertiesManager extends AbstractProjectComponent {
         try {
             final String url = baseJarUrl + "defaults.properties";
             final VirtualFile propsFile = VirtualFileManager.getInstance().findFileByUrl(url);
-            if(propsFile != null) {
+            if (propsFile != null) {
                 value = getFilePropertyValue(propsFile, pName);
                 if (value != null)
                     return resolveProperty(pPomFile, value);
@@ -186,7 +187,7 @@ public class PropertiesManager extends AbstractProjectComponent {
      * are written in the familiar format of {@code ${propertyname}}.
      *
      * @param pPomUrl the POM by which property values will be fetched if needed
-     * @param pValue   the string containing expressions
+     * @param pValue  the string containing expressions
      *
      * @return expanded string with property values
      */
