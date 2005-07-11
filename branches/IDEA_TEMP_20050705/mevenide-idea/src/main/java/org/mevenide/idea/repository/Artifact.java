@@ -73,9 +73,9 @@ public class Artifact {
             artifact.setVersion(version);
 
         if(ext == null)
-            artifact.setVersion(artifact.getType());
+            artifact.setExtension(artifact.getType());
         else
-            artifact.setVersion(ext);
+            artifact.setExtension(ext);
 
         return artifact;
     }
