@@ -2,16 +2,14 @@ package org.mevenide.idea.project.actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.util.actions.AbstractAnAction;
 import org.mevenide.idea.util.ui.images.Icons;
 
 /**
  * @author Arik
  */
-public class RemovePomAction extends AbstractAnAction {
+public class RemovePomAction extends AbstractPomAnAction {
     /**
      * Resources
      */
@@ -23,33 +21,16 @@ public class RemovePomAction extends AbstractAnAction {
               Icons.REMOVE_DEPENDENCY);
     }
 
-    @Override
-    public void update(final AnActionEvent pEvent) {
-        final Project project = getProject(pEvent);
-        if (project == null) {
-            pEvent.getPresentation().setEnabled(false);
-            return;
-        }
-
-        final VirtualFile file = getVirtualFile(pEvent);
-        final PomManager pomMgr = PomManager.getInstance(project);
-        pEvent.getPresentation().setEnabled(
-                file != null && pomMgr.contains(file.getUrl()));
-    }
-
     public void actionPerformed(final AnActionEvent pEvent) {
         final Project project = getProject(pEvent);
         if (project == null)
             return;
 
-        final VirtualFile file = getVirtualFile(pEvent);
-        if (file == null)
-            return;
-
         final PomManager pomMgr = PomManager.getInstance(project);
-        if (!pomMgr.contains(file.getUrl()))
+        final String url = getSelectedPomUrl(pEvent);
+        if (!pomMgr.contains(url))
             return;
 
-        pomMgr.remove(file.getUrl());
+        pomMgr.remove(url);
     }
 }

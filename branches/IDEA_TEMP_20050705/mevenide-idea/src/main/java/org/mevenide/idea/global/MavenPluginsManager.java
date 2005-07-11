@@ -254,7 +254,9 @@ public class MavenPluginsManager extends AbstractProjectComponent {
             return null;
 
         final XmlFile pomPsi = PsiUtils.findXmlFile(project, pluginPom);
-        assert pomPsi != null;
+        if(pomPsi == null)
+            return null;
+
         plugin.setId(new XmlTagPath(pomPsi, POM_ID_XPATH).getStringValue());
         plugin.setGroupId(new XmlTagPath(pomPsi, POM_GROUP_ID_XPATH).getStringValue());
         plugin.setArtifactId(new XmlTagPath(pomPsi, POM_ARTIFACT_ID_XPATH).getStringValue());

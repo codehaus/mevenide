@@ -7,7 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 /**
  * @author Arik Kfir
  */
-public abstract class AbstractAnActionGroup extends ActionGroup {
+public abstract class AbstractAnActionGroup extends DefaultActionGroup {
     protected AbstractAnActionGroup() {
     }
 
@@ -28,6 +28,4 @@ public abstract class AbstractAnActionGroup extends ActionGroup {
         final DataContext dc = pEvent.getDataContext();
         return (VirtualFile) dc.getData(DataConstants.VIRTUAL_FILE);
     }
-
-    public abstract AnAction[] getChildren(final AnActionEvent pEvent);
 }

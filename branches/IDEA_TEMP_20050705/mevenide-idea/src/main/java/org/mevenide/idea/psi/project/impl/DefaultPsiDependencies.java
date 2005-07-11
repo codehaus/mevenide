@@ -29,6 +29,7 @@ public class DefaultPsiDependencies extends AbstractPsiBeanRowsObservable
         registerTag("version", "version");
         registerTag("type", "type");
         registerTag("url", "url");
+        registerTag("extension", "extension");
     }
 
     public PsiProject getParent() {

@@ -69,7 +69,7 @@ public class DependencyNotDownloadedInspector extends AbstractInspector implemen
         }
 
         public boolean isValid() {
-            return PomRepoManager.getInstance(project).isInstalled(pomUrl, artifact);
+            return !PomRepoManager.getInstance(project).isInstalled(pomUrl, artifact);
         }
     }
 }

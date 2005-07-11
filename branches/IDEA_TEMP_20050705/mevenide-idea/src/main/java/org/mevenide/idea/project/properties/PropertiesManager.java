@@ -115,30 +115,30 @@ public class PropertiesManager extends AbstractProjectComponent {
         //
         if (pPomFile != null) {
             final VirtualFile dir = pPomFile.getParent();
-            assert dir != null;
+            if(dir != null) {
+                //
+                //build properties
+                //
+                try {
+                    value = getFilePropertyValue(dir, "build.properties", pName);
+                    if (value != null)
+                        return resolveProperty(pPomFile, value);
+                }
+                catch (IOException e) {
+                    LOG.warn(e.getMessage(), e);
+                }
 
-            //
-            //build properties
-            //
-            try {
-                value = getFilePropertyValue(dir, "build.properties", pName);
-                if (value != null)
-                    return resolveProperty(pPomFile, value);
-            }
-            catch (IOException e) {
-                LOG.warn(e.getMessage(), e);
-            }
-
-            //
-            //project properties
-            //
-            try {
-                value = getFilePropertyValue(dir, "project.properties", pName);
-                if (value != null)
-                    return resolveProperty(pPomFile, value);
-            }
-            catch (IOException e) {
-                LOG.warn(e.getMessage(), e);
+                //
+                //project properties
+                //
+                try {
+                    value = getFilePropertyValue(dir, "project.properties", pName);
+                    if (value != null)
+                        return resolveProperty(pPomFile, value);
+                }
+                catch (IOException e) {
+                    LOG.warn(e.getMessage(), e);
+                }
             }
         }
 

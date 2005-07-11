@@ -57,8 +57,7 @@ public class Artifact {
         return groupId != null && groupId.trim().length() > 0 &&
                 artifactId != null && artifactId.trim().length() > 0 &&
                 type != null && type.trim().length() > 0 &&
-                version != null && version.trim().length() > 0 &&
-                ext != null && ext.trim().length() > 0;
+                version != null && version.trim().length() > 0;
     }
 
     public Artifact getCompleteArtifact() {
@@ -129,7 +128,7 @@ public class Artifact {
         final String artifactId = a.getArtifactId();
         final String type = a.getType();
         final String version = a.getVersion();
-        final String ext = a.getExtension();
+        final String ext = a.getExtension() == null ? type : a.getExtension();
 
         final StringBuilder buf = new StringBuilder(100);
         buf.append(groupId).append('/').
