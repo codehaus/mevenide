@@ -15,7 +15,7 @@ public class ArtifactNotFoundException extends Exception {
 
     public ArtifactNotFoundException(final Artifact pArtifact,
                                      final Throwable... pCauses) {
-        this(pArtifact.getRelativePath(), pCauses);
+        this(pArtifact.getRelativePath(false), pCauses);
     }
 
     public ArtifactNotFoundException(final String pRelativePath,
