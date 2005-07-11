@@ -24,6 +24,7 @@ import com.intellij.psi.xml.XmlDocument;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.psi.xml.XmlTag;
 import com.intellij.ui.ScrollPaneFactory;
+import com.intellij.ui.PopupHandler;
 import com.intellij.util.ui.Tree;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -128,6 +129,7 @@ public class PomManagerPanel extends JPanel
 
         final DefaultActionGroup actionGrp = new DefaultActionGroup("POM Manager", false);
         actionGrp.add(new ExecuteGoalAction());
+        actionGrp.addSeparator();
         actionGrp.add(new AddPluginGoalToPomAction());
         actionGrp.add(new RemovePluginGoalFromPomAction());
         actionGrp.addSeparator();
@@ -139,6 +141,16 @@ public class PomManagerPanel extends JPanel
 
         final ActionToolbar toolbar = actionMgr.createActionToolbar(PLACE, actionGrp, true);
         add(toolbar.getComponent(), BorderLayout.PAGE_START);
+
+        //
+        //install popup menu on tree
+        //
+        final DefaultActionGroup popupGrp = new DefaultActionGroup("POM Manager Popup", true);
+        popupGrp.add(new ExecuteGoalAction());
+        actionGrp.addSeparator();
+        popupGrp.add(new AddPluginGoalToPomAction());
+        popupGrp.add(new RemovePluginGoalFromPomAction());
+        PopupHandler.installPopupHandler(tree, popupGrp, PLACE, actionMgr);
     }
 
     public void refresh() {
