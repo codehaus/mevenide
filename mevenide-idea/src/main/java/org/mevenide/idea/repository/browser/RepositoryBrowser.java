@@ -1,23 +1,23 @@
 package org.mevenide.idea.repository.browser;
 
+import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.project.Project;
-import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.PopupHandler;
+import com.intellij.ui.ScrollPaneFactory;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.*;
 import javax.swing.*;
-import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreePath;
 import org.mevenide.idea.Res;
 import org.mevenide.idea.repository.tree.RepoTree;
-import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.idea.repository.tree.model.RepoTreeModel;
+import org.mevenide.idea.repository.tree.model.RepoTreeNode;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 
@@ -66,6 +66,11 @@ public class RepositoryBrowser extends JPanel {
     private final ActionGroup actionGroup;
 
     /**
+     * The repository selection combo box.
+     */
+    private JComboBox repoComboBox;
+
+    /**
      * Creates
      * @param pProject
      */
@@ -104,13 +109,20 @@ public class RepositoryBrowser extends JPanel {
         return actGroup;
     }
 
-    protected JComponent createToolBar(final ActionGroup pActions) {
+    protected final JComponent createToolBar(final ActionGroup pActions) {
         final JPanel toolbarPanel = new JPanel(new BorderLayout());
+
+        //
+        //create the action group toolbar and add it to the toolbar panel
+        //
+        final ActionManager actMgr = ActionManager.getInstance();
+        final ActionToolbar toolbar = actMgr.createActionToolbar(PLACE, pActions, true);
+        toolbarPanel.add(toolbar.getComponent(), BorderLayout.LINE_START);
 
         //
         //add repository selection combo box
         //
-        final JComboBox repoComboBox = new RepositoriesComboBox(project);
+        repoComboBox = new RepositoriesComboBox(project);
         toolbarPanel.add(repoComboBox, BorderLayout.CENTER);
         repoComboBox.setSelectedItem(null);
         repoComboBox.addActionListener(new ActionListener() {
@@ -126,13 +138,6 @@ public class RepositoryBrowser extends JPanel {
                 }
             }
         });
-
-        //
-        //create the action group toolbar and add it to the toolbar panel
-        //
-        final ActionManager actMgr = ActionManager.getInstance();
-        final ActionToolbar toolbar = actMgr.createActionToolbar(PLACE, pActions, true);
-        toolbarPanel.add(toolbar.getComponent(), BorderLayout.LINE_START);
 
         //
         //return the toolbar panel
@@ -169,49 +174,43 @@ public class RepositoryBrowser extends JPanel {
     }
 
     public int getSelectedItemsCount() {
-        final Collection<RepoTree> trees = repos.values();
-        for (RepoTree tree : trees) {
-            if (tree.isVisible()) {
-                final TreePath[] selections = tree.getSelectionPaths();
-                if (selections == null || selections.length == 0)
-                    return 0;
+        final RepoTree tree = getSelectedRepoTree();
+        if (tree == null)
+            return 0;
 
-                int count = 0;
-                for (TreePath path : selections) {
-                    final Object elt = path.getLastPathComponent();
-                    if (elt instanceof RepoTreeNode)
-                        count++;
-                }
+        final TreePath[] selections = tree.getSelectionPaths();
+        if (selections == null || selections.length == 0)
+            return 0;
 
-                return count;
-            }
+        int count = 0;
+        for (TreePath path : selections) {
+            final Object elt = path.getLastPathComponent();
+            if (elt instanceof RepoTreeNode)
+                count++;
         }
 
-        return 0;
+        return count;
     }
 
     public RepoPathElement[] getSelectedItems() {
-        final Collection<RepoTree> trees = repos.values();
-        for (RepoTree tree : trees) {
-            if (tree.isVisible()) {
-                final TreePath[] selections = tree.getSelectionPaths();
-                if (selections == null || selections.length == 0)
-                    return new RepoPathElement[0];
+        final RepoTree tree = getSelectedRepoTree();
+        if(tree == null)
+            return new RepoPathElement[0];
 
-                final Set<RepoPathElement> elements = new HashSet<RepoPathElement>(selections.length);
-                for (TreePath path : selections) {
-                    final Object elt = path.getLastPathComponent();
-                    if (elt instanceof RepoTreeNode) {
-                        final RepoTreeNode node = (RepoTreeNode) elt;
-                        elements.add(node.getPathElement());
-                    }
-                }
+        final TreePath[] selections = tree.getSelectionPaths();
+        if (selections == null || selections.length == 0)
+            return new RepoPathElement[0];
 
-                return elements.toArray(new RepoPathElement[elements.size()]);
+        final Set<RepoPathElement> elements = new HashSet<RepoPathElement>(selections.length);
+        for (TreePath path : selections) {
+            final Object elt = path.getLastPathComponent();
+            if (elt instanceof RepoTreeNode) {
+                final RepoTreeNode node = (RepoTreeNode) elt;
+                elements.add(node.getPathElement());
             }
         }
 
-        return new RepoPathElement[0];
+        return elements.toArray(new RepoPathElement[elements.size()]);
     }
 
     /**
@@ -269,5 +268,41 @@ public class RepositoryBrowser extends JPanel {
             repoTree.fetchNode(repoModel.getRoot());
         }
         return repoTree;
+    }
+
+    private IRepositoryReader getCurrentRepo() {
+        final Object selectedItem = repoComboBox.getSelectedItem();
+        if (selectedItem instanceof IRepositoryReader)
+            return (IRepositoryReader) selectedItem;
+        else
+            return null;
+    }
+
+    private RepoTree getSelectedRepoTree() {
+        final IRepositoryReader currentRepo = getCurrentRepo();
+        if (currentRepo == null)
+            return null;
+
+        final Collection<RepoTree> trees = repos.values();
+        for (RepoTree tree : trees) {
+            final TreeModel treeModel = tree.getModel();
+            if (!(treeModel instanceof RepoTreeModel))
+                continue;
+
+            final RepoTreeModel model = (RepoTreeModel) treeModel;
+            final RepoTreeNode root = model.getRoot();
+            if (root == null)
+                continue;
+
+            final RepoPathElement pathElement = root.getPathElement();
+            if (pathElement == null)
+                continue;
+
+            final IRepositoryReader repo = pathElement.getReader();
+            if (currentRepo.equals(repo))
+                return tree;
+        }
+
+        return null;
     }
 }
