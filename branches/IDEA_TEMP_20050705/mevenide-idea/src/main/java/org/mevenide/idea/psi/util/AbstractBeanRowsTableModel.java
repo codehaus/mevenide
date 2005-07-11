@@ -10,7 +10,7 @@ import org.mevenide.idea.util.ui.table.CRUDTableModel;
  * @author Arik
  */
 public abstract class AbstractBeanRowsTableModel<PsiModel extends BeanRowsObservable>
-    extends AbstractTableModel implements CRUDTableModel, BeanRowsListener {
+        extends AbstractTableModel implements CRUDTableModel, BeanRowsListener {
     protected final PsiModel model;
     protected final String[] columnTitles;
 

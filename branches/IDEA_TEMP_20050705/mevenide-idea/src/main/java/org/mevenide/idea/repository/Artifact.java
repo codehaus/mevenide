@@ -1,7 +1,7 @@
 package org.mevenide.idea.repository;
 
-import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.IRepositoryReader;
+import org.mevenide.repository.RepoPathElement;
 
 /**
  * @author Arik Kfir
@@ -70,17 +70,17 @@ public class Artifact {
         final Artifact artifact = new Artifact();
         artifact.setGroupId(groupId);
         artifact.setArtifactId(artifactId);
-        if(type == null)
+        if (type == null)
             artifact.setType("jar");
         else
             artifact.setType(type);
 
-        if(version == null)
+        if (version == null)
             artifact.setVersion("SNAPSHOT");
         else
             artifact.setVersion(version);
 
-        if(ext == null)
+        if (ext == null)
             artifact.setExtension(artifact.getType());
         else
             artifact.setExtension(ext);
@@ -119,7 +119,7 @@ public class Artifact {
     private static String convertToRelativePath(final Artifact pArtifact,
                                                 final boolean pGuessMissingItems) {
         final Artifact a;
-        if(pGuessMissingItems)
+        if (pGuessMissingItems)
             a = pArtifact.getCompleteArtifact();
         else
             a = pArtifact;

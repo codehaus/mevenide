@@ -19,7 +19,7 @@ import org.mevenide.idea.util.event.*;
  * @author Arik
  */
 public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener
-    implements BeanRowsObservable {
+        implements BeanRowsObservable {
     /**
      * Logging.
      */
@@ -44,7 +44,7 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener
      * Cache for lazily created tag paths, as property names are not known in advance.
      */
     private final Map<String, XmlTagPath> pathsCache = Collections.synchronizedMap(new HashMap<String, XmlTagPath>(
-        10));
+            10));
 
     /**
      * Property change listeners container.
@@ -277,10 +277,10 @@ public class PsiUnnamedPropertyChangeListener extends PsiPropertyChangeListener
                 final XmlTag containerTag = containerPath.ensureTag();
                 final String namespace = containerTag.getNamespace();
                 final XmlTag rowTag = (XmlTag) containerTag.add(
-                    containerTag.createChildTag(unknownPropertyName,
-                                                namespace,
-                                                null,
-                                                false));
+                        containerTag.createChildTag(unknownPropertyName,
+                                                    namespace,
+                                                    null,
+                                                    false));
 
                 final XmlTag[] childTags = containerTag.getSubTags();
                 for (int i = 0; i < childTags.length; i++) {

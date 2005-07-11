@@ -30,12 +30,12 @@ public class RelativeTextFieldWithBrowseButton extends TextFieldWithBrowseButton
                                         final FileChooserDescriptor fileChooserDescriptor,
                                         final TextComponentAccessor<JTextField> accessor) {
         addActionListener(new RelativeBrowseActionListener<JTextField>(
-            referenceDir,
-            title,
-            description,
-            this,
-            project,
-            fileChooserDescriptor,
-            accessor));
+                referenceDir,
+                title,
+                description,
+                this,
+                project,
+                fileChooserDescriptor,
+                accessor));
     }
 }

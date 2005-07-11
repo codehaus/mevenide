@@ -8,8 +8,8 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class ResourcesTableModel extends AbstractBeanRowsTableModel<PsiResources> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "Directory",
-        "Target Path"
+            "Directory",
+            "Target Path"
     };
 
     protected ResourcesTableModel(final PsiResources pModel) {

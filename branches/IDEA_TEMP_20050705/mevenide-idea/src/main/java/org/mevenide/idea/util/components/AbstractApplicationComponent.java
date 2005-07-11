@@ -22,5 +22,5 @@ import com.intellij.openapi.components.ApplicationComponent;
  * @author Arik
  */
 public abstract class AbstractApplicationComponent extends AbstractIdeaComponent
-    implements ApplicationComponent {
+        implements ApplicationComponent {
 }

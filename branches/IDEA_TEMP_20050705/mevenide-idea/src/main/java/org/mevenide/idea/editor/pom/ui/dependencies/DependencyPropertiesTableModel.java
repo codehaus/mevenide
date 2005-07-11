@@ -7,7 +7,7 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  * @author Arik
  */
 public class DependencyPropertiesTableModel
-    extends AbstractBeanRowsTableModel<PsiDependencyProperties> {
+        extends AbstractBeanRowsTableModel<PsiDependencyProperties> {
     public DependencyPropertiesTableModel(final PsiDependencyProperties pModel) {
         super(pModel, new String[]{"Name", "Value"});
     }
@@ -31,9 +31,9 @@ public class DependencyPropertiesTableModel
 
         if (pColumn == 0) {
             final String value =
-                pValue == null ?
-                    model.getUnknownPropertyName() :
-                    pValue.toString();
+                    pValue == null ?
+                            model.getUnknownPropertyName() :
+                            pValue.toString();
 
             model.renameProperty(propertyName, value);
         }

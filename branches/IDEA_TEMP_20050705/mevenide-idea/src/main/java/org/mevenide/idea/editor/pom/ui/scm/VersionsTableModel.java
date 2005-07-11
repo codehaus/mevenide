@@ -8,9 +8,9 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class VersionsTableModel extends AbstractBeanRowsTableModel<PsiVersions> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "ID",
-        "Name",
-        "Tag"
+            "ID",
+            "Name",
+            "Tag"
     };
 
     public VersionsTableModel(final PsiVersions pModel) {

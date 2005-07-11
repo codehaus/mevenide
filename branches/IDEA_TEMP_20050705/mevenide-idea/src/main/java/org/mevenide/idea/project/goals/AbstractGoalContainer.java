@@ -24,12 +24,12 @@ public abstract class AbstractGoalContainer<GoalType extends Goal>
         if (id != null && id.trim().length() > 0)
             return id;
 
-        if(groupId == null)
+        if (groupId == null)
             return artifactId;
 
-        if(artifactId == null)
+        if (artifactId == null)
             return groupId;
-        
+
         return groupId + ":" + artifactId;
     }
 

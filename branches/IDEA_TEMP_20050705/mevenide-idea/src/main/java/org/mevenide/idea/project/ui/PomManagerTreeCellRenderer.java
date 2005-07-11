@@ -70,11 +70,11 @@ public class PomManagerTreeCellRenderer extends DefaultTreeCellRenderer {
                 else {
                     label.setForeground(Color.RED);
                     final VirtualFile projectFile = project.getProjectFile();
-                    if(projectFile != null) {
+                    if (projectFile != null) {
                         final VirtualFile projectDir = projectFile.getParent();
-                        if(projectDir != null) {
+                        if (projectDir != null) {
                             final String projectPath = projectDir.getPresentableUrl();
-                            if(url.toLowerCase().startsWith(projectPath.toLowerCase()))
+                            if (url.toLowerCase().startsWith(projectPath.toLowerCase()))
                                 text = url.substring(projectPath.length());
                         }
                     }

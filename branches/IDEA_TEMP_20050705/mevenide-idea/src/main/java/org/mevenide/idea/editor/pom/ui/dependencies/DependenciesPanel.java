@@ -14,7 +14,7 @@ import org.mevenide.idea.util.ui.SplitPanel;
  * @author Arik
  */
 public class DependenciesPanel extends AbstractPomLayerPanel
-    implements ListSelectionListener {
+        implements ListSelectionListener {
     /**
      * The dependency list table panel.
      */

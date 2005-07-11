@@ -10,8 +10,8 @@ import org.mevenide.idea.util.event.BeanRowsObservable;
  * @author Arik
  */
 public abstract class AbstractPsiUnnamedPropertyObservable
-    extends AbstractPsiPropertyObservable<PsiUnnamedPropertyChangeListener>
-    implements BeanRowsObservable {
+        extends AbstractPsiPropertyObservable<PsiUnnamedPropertyChangeListener>
+        implements BeanRowsObservable {
     public AbstractPsiUnnamedPropertyObservable(final XmlFile pXmlFile,
                                                 final String pContainerPath) {
         this(new XmlTagPath(pXmlFile, pContainerPath));

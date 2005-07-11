@@ -7,13 +7,13 @@ import java.util.HashSet;
 import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.mevenide.idea.Res;
-import org.mevenide.idea.util.ModuleUtils;
-import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.project.util.PomUtils;
 import org.mevenide.idea.repository.Artifact;
 import org.mevenide.idea.repository.PomRepoManager;
 import org.mevenide.idea.synchronize.*;
 import org.mevenide.idea.synchronize.inspections.AbstractInspector;
+import org.mevenide.idea.util.FileUtils;
+import org.mevenide.idea.util.ModuleUtils;
 
 /**
  * @author Arik
@@ -59,17 +59,17 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
         final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(pModule);
 
         for (VirtualFile ideaFile : ideaLibs) {
-            if(!ideaFile.isValid() || !FileUtils.exists(ideaFile))
+            if (!ideaFile.isValid() || !FileUtils.exists(ideaFile))
                 continue;
 
             boolean found = false;
             for (VirtualFile pomFile : pomLibs)
-                if(pomFile.isValid() && pomFile.equals(ideaFile) && FileUtils.exists(pomFile)) {
+                if (pomFile.isValid() && pomFile.equals(ideaFile) && FileUtils.exists(pomFile)) {
                     found = true;
                     break;
                 }
 
-            if(!found)
+            if (!found)
                 pProblemBuffer.add(new LibraryMissingFromPomProblem(pPomUrl, pModule, ideaFile));
         }
     }
@@ -83,7 +83,7 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
         final PomRepoManager repoMgr = PomRepoManager.getInstance(pModule.getProject());
         for (Artifact artifact : pomLibs) {
             final VirtualFile file = repoMgr.findFile(pPomUrl, artifact);
-            if(file == null || !file.isValid() || !FileUtils.exists(file))
+            if (file == null || !file.isValid() || !FileUtils.exists(file))
                 continue;
 
             boolean found = false;
@@ -124,7 +124,7 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
 
             final PomRepoManager repoMgr = PomRepoManager.getInstance(getProject());
             final VirtualFile file = repoMgr.findFile(pomUrl, artifact);
-            if(file == null || !file.isValid() || !FileUtils.exists(file))
+            if (file == null || !file.isValid() || !FileUtils.exists(file))
                 return false;
 
             return !ModuleUtils.isFileInClasspath(module, file);
@@ -165,7 +165,7 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
 
         public boolean isValid() {
             final VirtualFile[] ideaLibs = ModuleUtils.getModuleClasspath(module);
-            if(!ArrayUtils.contains(ideaLibs, libraryFile))
+            if (!ArrayUtils.contains(ideaLibs, libraryFile))
                 return false;
 
             //

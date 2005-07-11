@@ -45,14 +45,12 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Returns the {@link XmlFile} associated with the specified document in the specified
-     * project.
+     * Returns the {@link XmlFile} associated with the specified document in the specified project.
      *
      * @param pProject  the project context
      * @param pDocument the document to find the file for
      *
-     * @return the XML project, or {@code null} if the file can't be found (shouldn't
-     *         happen)
+     * @return the XML project, or {@code null} if the file can't be found (shouldn't happen)
      */
     public static XmlFile findXmlFile(final Project pProject,
                                       final Document pDocument) {
@@ -67,7 +65,7 @@ public abstract class PsiUtils {
 
         final VirtualFile virtualFile = psiFile.getVirtualFile();
         final String path;
-        if(virtualFile != null)
+        if (virtualFile != null)
             path = virtualFile.getPath();
         else
             path = "No virtual file.";
@@ -75,14 +73,12 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Returns the {@link XmlFile} associated with the specified document in the specified
-     * module.
+     * Returns the {@link XmlFile} associated with the specified document in the specified module.
      *
      * @param pModule   the module context
      * @param pDocument the document to find the file for
      *
-     * @return the XML file, or {@code null} if the project can't be found (shouldn't
-     *         happen)
+     * @return the XML file, or {@code null} if the project can't be found (shouldn't happen)
      */
     public static XmlFile findXmlFile(final Module pModule,
                                       final Document pDocument) {
@@ -127,8 +123,8 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Convenience method for getting a value from a tag. If the given tag is {@code
-     * null}, this method will simply return {@code null} and not fail.
+     * Convenience method for getting a value from a tag. If the given tag is {@code null}, this
+     * method will simply return {@code null} and not fail.
      *
      * @param pTag the tag to retrieve the value from (can be {@code null}
      *
@@ -162,8 +158,7 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Sets the value of the first tag with the specified name under the given parent
-     * tag.
+     * Sets the value of the first tag with the specified name under the given parent tag.
      *
      * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
      *
@@ -183,8 +178,7 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Sets the value of the first tag with the specified name under the given parent
-     * tag.
+     * Sets the value of the first tag with the specified name under the given parent tag.
      *
      * <p>If the parent tag contains multiple tags with that name, the first is used.</p>
      *
@@ -205,10 +199,10 @@ public abstract class PsiUtils {
                 }
                 else {
                     final XmlTag newChild = pParentTag.createChildTag(
-                        pTagName,
-                        pParentTag.getNamespace(),
-                        pValue,
-                        false);
+                            pTagName,
+                            pParentTag.getNamespace(),
+                            pValue,
+                            false);
                     try {
                         pParentTag.add(newChild);
                     }
@@ -254,8 +248,8 @@ public abstract class PsiUtils {
     }
 
     /**
-     * Returns the tag path as string tokens, concatenating the given tag name to the end
-     * of the tag path.
+     * Returns the tag path as string tokens, concatenating the given tag name to the end of the tag
+     * path.
      *
      * @param pTagName the tag name to add at the end of the path
      *

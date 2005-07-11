@@ -10,8 +10,8 @@ import org.mevenide.idea.util.event.PropertyObservable;
  * @author Arik
  */
 public abstract class AbstractPsiPropertyObservable<Psi extends PsiPropertyChangeListener>
-    extends AbstractPsiObject
-    implements PropertyObservable {
+        extends AbstractPsiObject
+        implements PropertyObservable {
     /**
      * The PSI listener used to trigger property change events.
      */

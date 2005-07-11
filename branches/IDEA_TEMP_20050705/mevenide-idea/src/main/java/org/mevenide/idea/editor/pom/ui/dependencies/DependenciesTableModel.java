@@ -9,10 +9,10 @@ import org.mevenide.idea.psi.util.AbstractBeanRowsTableModel;
  */
 public class DependenciesTableModel extends AbstractBeanRowsTableModel<PsiDependencies> {
     private static final String[] COLUMN_TITLES = new String[]{
-        "Group ID",
-        "Artifact ID",
-        "Version",
-        "Type"
+            "Group ID",
+            "Artifact ID",
+            "Version",
+            "Type"
     };
 
     public DependenciesTableModel(final PsiProject pModel) {

@@ -23,8 +23,8 @@ public class RepoTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     /**
-     * If the given value is a {@link org.mevenide.idea.repository.tree.model.MessageTreeNode},
-     * show its message. Otherwise, if the node is a {@link org.mevenide.idea.repository.tree.model.RepoTreeNode},
+     * If the given value is a {@link org.mevenide.idea.repository.tree.model.MessageTreeNode}, show
+     * its message. Otherwise, if the node is a {@link org.mevenide.idea.repository.tree.model.RepoTreeNode},
      * render its {@link org.mevenide.idea.repository.tree.model.RepoTreeNode#getNodeDescriptor()
      * node descriptor}. Otherwise, renders the value's {@link Object#toString()}.
      */
@@ -189,7 +189,7 @@ public class RepoTreeCellRenderer extends DefaultTreeCellRenderer {
     }
 
     private String getTextForPathElement(final RepoPathElement pElt) {
-        switch(pElt.getLevel()) {
+        switch (pElt.getLevel()) {
             case RepoPathElement.LEVEL_ARTIFACT:
                 return pElt.getArtifactId();
             case RepoPathElement.LEVEL_GROUP:

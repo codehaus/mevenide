@@ -16,7 +16,8 @@ import org.mevenide.idea.synchronize.inspections.AbstractInspector;
 /**
  * @author Arik
  */
-public class DependencyNotDownloadedInspector extends AbstractInspector implements ProjectProblemInspector {
+public class DependencyNotDownloadedInspector extends AbstractInspector
+        implements ProjectProblemInspector {
     /**
      * Resources
      */
@@ -39,7 +40,7 @@ public class DependencyNotDownloadedInspector extends AbstractInspector implemen
         final PomRepoManager repoMgr = PomRepoManager.getInstance(pProject);
         final Artifact[] artifacts = PomUtils.getPomClassPathArtifacts(pProject, pPomUrl);
         for (Artifact artifact : artifacts) {
-            if(!repoMgr.isInstalled(pPomUrl, artifact))
+            if (!repoMgr.isInstalled(pPomUrl, artifact))
                 problems.add(new DependencyNotDownloadedProblemInfo(pProject,
                                                                     pPomUrl,
                                                                     artifact));
@@ -48,7 +49,8 @@ public class DependencyNotDownloadedInspector extends AbstractInspector implemen
         return problems.toArray(new ProblemInfo[problems.size()]);
     }
 
-    private class DependencyNotDownloadedProblemInfo extends AbstractProblemInfo implements ArtifactProblemInfo {
+    private class DependencyNotDownloadedProblemInfo extends AbstractProblemInfo
+            implements ArtifactProblemInfo {
         private final Artifact artifact;
 
         public DependencyNotDownloadedProblemInfo(final Project pProject,

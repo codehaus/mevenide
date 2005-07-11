@@ -33,7 +33,7 @@ public class DependenciesTablePanel extends CRUDTablePanel<DependenciesTableMode
             public void actionPerformed(ActionEvent e) {
                 final DependencyBrowseDialog dlg = new DependencyBrowseDialog();
                 final RepoPathElement[] selectedElements = dlg.show(project);
-                if(selectedElements == null || selectedElements.length == 0)
+                if (selectedElements == null || selectedElements.length == 0)
                     return;
 
                 for (RepoPathElement path : selectedElements) {

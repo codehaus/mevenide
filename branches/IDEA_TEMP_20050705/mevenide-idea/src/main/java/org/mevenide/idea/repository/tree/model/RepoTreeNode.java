@@ -203,7 +203,7 @@ public class RepoTreeNode implements TreeNode {
     public void fetchChildren(final FetchStatusListener pListener) {
         lock.lock();
         try {
-            if(status != SearchStatus.NOT_SEARCHED)
+            if (status != SearchStatus.NOT_SEARCHED)
                 return;
 
             THREAD_FACTORY.newThread(new ChildFetcher(pListener)).start();
@@ -220,7 +220,8 @@ public class RepoTreeNode implements TreeNode {
             listener = pListener;
         }
 
-        private RepoPathElement[] getPathElements() throws InterruptedException, ExecutionException {
+        private RepoPathElement[] getPathElements()
+                throws InterruptedException, ExecutionException {
             final ChildrenFetchService executor = ChildrenFetchService.getInstance();
             final Future<RepoPathElement[]> fetchResult = executor.fetch(pathElement);
             try {
@@ -244,7 +245,7 @@ public class RepoTreeNode implements TreeNode {
             try {
                 nodes = getPathElements();
             }
-            catch(Exception e) {
+            catch (Exception e) {
                 LOG.trace(e.getMessage(), e);
                 final RepoTreeNode parent = RepoTreeNode.this;
                 if (e instanceof CancellationException)

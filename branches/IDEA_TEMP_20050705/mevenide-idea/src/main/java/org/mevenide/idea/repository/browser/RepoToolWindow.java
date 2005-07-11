@@ -1,8 +1,8 @@
 package org.mevenide.idea.repository.browser;
 
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
@@ -31,7 +31,7 @@ public class RepoToolWindow extends RepositoryBrowser {
     protected DefaultActionGroup createToolBarActionGroup() {
         final ActionGroup group = super.createToolBarActionGroup();
         final DefaultActionGroup grp;
-        if(group instanceof DefaultActionGroup)
+        if (group instanceof DefaultActionGroup)
             grp = (DefaultActionGroup) group;
         else {
             grp = new DefaultActionGroup();
@@ -39,7 +39,7 @@ public class RepoToolWindow extends RepositoryBrowser {
             for (AnAction action : actions)
                 grp.add(action);
         }
-        
+
         grp.add(new AddAsDependencyAction(this));
         return grp;
     }

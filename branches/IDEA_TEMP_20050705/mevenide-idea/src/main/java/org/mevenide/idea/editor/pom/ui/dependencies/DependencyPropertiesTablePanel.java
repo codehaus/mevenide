@@ -7,7 +7,7 @@ import org.mevenide.idea.util.ui.table.CRUDTablePanel;
  * @author Arik
  */
 public class DependencyPropertiesTablePanel
-    extends CRUDTablePanel<DependencyPropertiesTableModel> {
+        extends CRUDTablePanel<DependencyPropertiesTableModel> {
     public DependencyPropertiesTablePanel(final PsiDependencyProperties pModel) {
         super(pModel.getXmlFile(), new DependencyPropertiesTableModel(pModel));
     }

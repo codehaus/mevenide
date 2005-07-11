@@ -31,8 +31,7 @@ public class AddLibraryToPomAction extends AbstractFixAction<FileProblemInfo> {
     }
 
     /**
-     * @todo would be nice to show a dialog to let the user verify the new dependency
-     * details
+     * @todo would be nice to show a dialog to let the user verify the new dependency details
      */
     public void actionPerformed(AnActionEvent e) {
         final VirtualFile typeDir = problem.getFile().getParent();

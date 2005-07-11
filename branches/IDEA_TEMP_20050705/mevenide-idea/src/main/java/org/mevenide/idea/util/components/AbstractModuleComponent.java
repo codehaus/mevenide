@@ -26,7 +26,7 @@ import com.intellij.openapi.roots.ProjectRootManager;
  * @author Arik
  */
 public abstract class AbstractModuleComponent extends AbstractIdeaComponent
-    implements ModuleComponent {
+        implements ModuleComponent {
     /**
      * The module this component belongs to.
      */
@@ -51,9 +51,8 @@ public abstract class AbstractModuleComponent extends AbstractIdeaComponent
     }
 
     /**
-     * Returns the JDK associated with this module. If the module uses the
-     * project-designated JDK, that JDK is returned. If the JDK is invalid,
-     * <code>null</code> is returned.
+     * Returns the JDK associated with this module. If the module uses the project-designated JDK,
+     * that JDK is returned. If the JDK is invalid, <code>null</code> is returned.
      *
      * @return the JDK, or <code>null</code> if not defined/invalid
      */

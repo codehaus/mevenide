@@ -11,7 +11,7 @@ import org.mevenide.idea.util.event.BeanRowsObservable;
  * @author Arik
  */
 public abstract class AbstractPsiBeanRowsObservable extends AbstractPsiObject
-    implements BeanRowsObservable {
+        implements BeanRowsObservable {
     /**
      * The PSI listener used to trigger property change events.
      */
