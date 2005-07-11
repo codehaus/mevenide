@@ -39,6 +39,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 import org.mevenide.idea.Res;
+import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
 import org.mevenide.idea.util.FileUtils;
 import org.mevenide.idea.project.PomManager;
 import org.mevenide.idea.project.actions.AddPluginGoalToPomAction;
@@ -150,6 +151,8 @@ public class PomManagerPanel extends JPanel
         actionGrp.addSeparator();
         popupGrp.add(new AddPluginGoalToPomAction());
         popupGrp.add(new RemovePluginGoalFromPomAction());
+        actionGrp.addSeparator();
+        popupGrp.add(new SynchronizeWithModuleActionGroup(project));
         PopupHandler.installPopupHandler(tree, popupGrp, PLACE, actionMgr);
     }
 

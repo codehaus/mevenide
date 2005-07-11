@@ -3,6 +3,7 @@ package org.mevenide.idea.actions;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.extensions.PluginId;
 import com.intellij.openapi.project.Project;
 import org.mevenide.idea.global.MavenPluginsManager;
@@ -11,6 +12,7 @@ import org.mevenide.idea.project.goals.Goal;
 import org.mevenide.idea.project.goals.GoalContainer;
 import org.mevenide.idea.project.goals.PluginGoalContainer;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
+import org.mevenide.idea.synchronize.SynchronizeWithModuleActionGroup;
 
 /**
  * @author Arik Kfir
@@ -23,6 +25,24 @@ public class MavenActionsManager extends AbstractProjectComponent {
     }
 
     public void projectOpened() {
+        final SynchronizeWithModuleActionGroup action = new SynchronizeWithModuleActionGroup(project);
+
+        final DefaultActionGroup editorPopup = findGroup("EditorPopupMenu");
+        editorPopup.addSeparator();
+        editorPopup.add(action);
+
+        final DefaultActionGroup editorTabPopup = findGroup("EditorTabPopupMenu");
+        editorTabPopup.addSeparator();
+        editorTabPopup.add(action);
+
+        final DefaultActionGroup projViewPopup = findGroup("ProjectViewPopupMenu");
+        projViewPopup.addSeparator();
+        projViewPopup.add(action);
+
+        final DefaultActionGroup cmndrPopup = findGroup("CommanderPopupMenu");
+        cmndrPopup.addSeparator();
+        cmndrPopup.add(action);
+        
         final Runnable actionRegistrar = new Runnable() {
             public void run() {
                 final ActionManager actMgr = ActionManager.getInstance();
@@ -40,6 +60,15 @@ public class MavenActionsManager extends AbstractProjectComponent {
         };
 
 //        StartupManager.getInstance(project).registerPostStartupActivity(actionRegistrar);
+    }
+
+    private DefaultActionGroup findGroup(final String pId) {
+        ActionManager mgr = ActionManager.getInstance();
+        final AnAction group = mgr.getAction(pId);
+        if (group instanceof DefaultActionGroup)
+            return (DefaultActionGroup) group;
+        else
+            return null;
     }
 
     private class GoalAction extends ExecuteGoalAction {
