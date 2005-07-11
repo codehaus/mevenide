@@ -40,6 +40,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.pom.manager.POMManager;
+import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
 import org.mevenide.util.ResolverUtils;
 
 /** 
@@ -125,7 +126,7 @@ public class MavenClasspathContainer implements IClasspathContainer {
     private void addDependency(Dependency dependency) {
         if (dependency != null) {
             final String type = dependency.getType();
-            if ("jar".equals(type) || "ejb".equals(type)) {
+            if (DependencyTypeRegistry.TYPE_JAR.equals(type) || DependencyTypeRegistry.TYPE_EJB.equals(type)) {
                 IClasspathEntry classpath = buildClasspath(dependency);
                 this.path2DependencyMap.put(classpath, dependency);
                 this.dependency2PathMap.put(dependency, classpath);
