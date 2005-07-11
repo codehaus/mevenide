@@ -1,4 +1,4 @@
-package org.mevenide.idea.repository.tree.model;
+package org.mevenide.idea.repository;
 
 import java.util.Collections;
 import java.util.HashMap;

@@ -15,6 +15,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.idea.project.AbstractPomSettingsManager;
@@ -243,7 +247,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     }
 
     public boolean isInstalled(final String pPomUrl, final RepoPathElement pElement) {
-        return isInstalled(pPomUrl, Artifact.fromRepoPathElement(pElement));
+        return isInstalled(pPomUrl, Artifact.fromRepoPathElement(pElement).getCompleteArtifact());
     }
 
     public boolean isInstalled(final String pPomUrl, final Artifact pArtifact) {
@@ -270,6 +274,8 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     }
 
     public void download(final String pPomUrl, final Artifact pArtifact) throws ArtifactNotFoundException {
+        boolean anySuccesses = false;
+
         //
         //iterate over the POM's remote repositories, and try each one. The first one
         //that succeeds is returned.
@@ -279,6 +285,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         for (final IRepositoryReader reader : remoteRepos) {
             try {
                 download(pPomUrl, reader, pArtifact);
+                anySuccesses = true;
             }
             catch (IOException e) {
                 errors.add(e);
@@ -288,19 +295,63 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         //
         //if we got here, errors occured - throw an exception specifying the error(s)
         //
-        final Throwable[] buffer = new Throwable[errors.size()];
-        throw new ArtifactNotFoundException(pArtifact, errors.toArray(buffer));
-    }
-
-    public void download(final String pPomUrl,
-                                final IRepositoryReader pRemoteRepo,
-                                final Artifact pArtifact) throws IOException {
-        download(pPomUrl, pRemoteRepo, pArtifact.getRelativePath());
+        if(!anySuccesses) {
+            final Throwable[] buffer = new Throwable[errors.size()];
+            throw new ArtifactNotFoundException(pArtifact, errors.toArray(buffer));
+        }
     }
 
     private void download(final String pPomUrl,
-                                 final IRepositoryReader pRemoteRepo,
-                                 final String pPath) throws IOException {
+                          final IRepositoryReader pRemoteRepo,
+                          final Artifact pArtifact) throws IOException {
+        if (pArtifact.isComplete())
+            download(pPomUrl, pRemoteRepo, pArtifact.getRelativePath(true));
+        else {
+            final ChildrenFetchService service = ChildrenFetchService.getInstance();
+            final RepoPathElement elt = pArtifact.toRepoPathElement(pRemoteRepo);
+
+            final ProgressIndicator prg = IDEUtils.getProgressIndicator();
+            if (prg != null) {
+                if(prg.isCanceled())
+                    return;
+                prg.setText2("Searching for children of '" + elt.getRelativeURIPath() + "'...");
+            }
+            final Future<RepoPathElement[]> result = service.fetch(elt);
+
+            try {
+                final RepoPathElement[] elements = result.get(30, TimeUnit.SECONDS);
+                if(prg != null)
+                    prg.setText2("Found " + elements.length + " artifacts under '" + elt.getRelativeURIPath() + "', downloading...");
+                for (int i = 0; i < elements.length; i++) {
+                    RepoPathElement element = elements[i];
+                    if (prg != null) {
+                        if (prg.isCanceled())
+                            return;
+                        prg.setText2("Download artifact " + (i + 1) + " out of " + elements.length + " for " + elt.getRelativeURIPath());
+                    }
+
+                    final Artifact artifact = Artifact.fromRepoPathElement(element);
+                    download(pPomUrl, pRemoteRepo, artifact);
+                }
+            }
+            catch (InterruptedException e) {
+                //TODO: report errors to the user
+                LOG.error(e, e);
+            }
+            catch (ExecutionException e) {
+                //TODO: report errors to the user
+                LOG.error(e, e);
+            }
+            catch (TimeoutException e) {
+                //TODO: report errors to the user
+                LOG.error(e, e);
+            }
+        }
+    }
+
+    private void download(final String pPomUrl,
+                          final IRepositoryReader pRemoteRepo,
+                          final String pPath) throws IOException {
         //
         //calculated destination file location
         //
@@ -348,7 +399,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         //
         if (indicator != null) {
             indicator.setText("Downloading from " + pUrl);
-            indicator.setText2("Saving to " + pDstFile.getAbsolutePath());
             indicator.startNonCancelableSection();
         }
 
@@ -381,7 +431,6 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         if (indicator != null) {
             indicator.finishNonCancelableSection();
             indicator.setText("Finished downloading file.");
-            indicator.setText2("");
         }
     }
 
@@ -421,11 +470,11 @@ public class PomRepoManager extends AbstractPomSettingsManager {
 
     private static class FileFinder extends PathSearcher {
         public FileFinder(final VirtualFile pLocalRepo, final RepoPathElement pElement) {
-            this(pLocalRepo, Artifact.fromRepoPathElement(pElement));
+            this(pLocalRepo, Artifact.fromRepoPathElement(pElement).getCompleteArtifact());
         }
 
         public FileFinder(final VirtualFile pLocalRepo, final Artifact pArtifact) {
-            super(pLocalRepo, pArtifact.getRelativePath());
+            super(pLocalRepo, pArtifact.getRelativePath(true));
         }
     }
 }

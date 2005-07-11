@@ -1,6 +1,7 @@
 package org.mevenide.idea.repository;
 
 import org.mevenide.repository.RepoPathElement;
+import org.mevenide.repository.IRepositoryReader;
 
 /**
  * @author Arik Kfir
@@ -52,6 +53,14 @@ public class Artifact {
         ext = neverNull(pExtension);
     }
 
+    public boolean isComplete() {
+        return groupId != null && groupId.trim().length() > 0 &&
+                artifactId != null && artifactId.trim().length() > 0 &&
+                type != null && type.trim().length() > 0 &&
+                version != null && version.trim().length() > 0 &&
+                ext != null && ext.trim().length() > 0;
+    }
+
     public Artifact getCompleteArtifact() {
         if (groupId == null || groupId.trim().length() == 0)
             throw new IllegalStateException("Artifact has no group ID");
@@ -81,7 +90,21 @@ public class Artifact {
     }
 
     public String getRelativePath() {
-        return convertToRelativePath(this);
+        return getRelativePath(true);
+    }
+
+    public String getRelativePath(final boolean pGuessMissingItems) {
+        return convertToRelativePath(this, pGuessMissingItems);
+    }
+
+    public RepoPathElement toRepoPathElement(final IRepositoryReader pRepo) {
+        return new RepoPathElement(pRepo,
+                                   null,
+                                   groupId,
+                                   type,
+                                   version,
+                                   artifactId,
+                                   ext);
     }
 
     public static Artifact fromRepoPathElement(final RepoPathElement pElt) {
@@ -91,11 +114,17 @@ public class Artifact {
         a.setType(pElt.getType());
         a.setVersion(pElt.getVersion());
         a.setExtension(pElt.getExtension());
-        return a.getCompleteArtifact();
+        return a;
     }
 
-    private static String convertToRelativePath(final Artifact pArtifact) {
-        final Artifact a = pArtifact.getCompleteArtifact();
+    private static String convertToRelativePath(final Artifact pArtifact,
+                                                final boolean pGuessMissingItems) {
+        final Artifact a;
+        if(pGuessMissingItems)
+            a = pArtifact.getCompleteArtifact();
+        else
+            a = pArtifact;
+
         final String groupId = a.getGroupId();
         final String artifactId = a.getArtifactId();
         final String type = a.getType();
