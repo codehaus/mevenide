@@ -91,7 +91,7 @@ public class MavenClasspathContainer implements IClasspathContainer {
     }
 
     private void initialize() {
-        if (this.project != null) {
+        if (this.project != null && this.project.getDependencies() != null) {
             Iterator iterator = this.project.getDependencies().iterator();
             while (iterator.hasNext()) {
                 addDependency((Dependency) iterator.next());
