@@ -45,7 +45,7 @@ import org.mevenide.ui.eclipse.util.Tracer;
 /**
  * Manages the classpaths for all Maven enabled projects.
  */
-public class MavenClasspathManager implements IPropertyChangeListener, POMChangeListener {
+public class MavenClasspathManager implements ClasspathManager {
     private static final IPath CONTAINER_PATH = new Path(MavenClasspathContainer.ID);
     private static final IPath MAVEN_REPO = JavaCore.getClasspathVariable("MAVEN_REPO");
     private static final IPath MAVEN_REPO_ROOT = new Path("MAVEN_REPO");
@@ -56,72 +56,55 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
 
     public void initialize() {
         IPreferenceStore preferenceStore = Mevenide.getInstance().getPreferenceStore();
-        preferenceStore.addPropertyChangeListener(this);
+        preferenceStore.addPropertyChangeListener(this.propertyChangeListener);
         this.autosyncEnabled = preferenceStore.getBoolean(AUTOSYNC_ENABLED);
-        Mevenide.getInstance().getPOMManager().addListener(this);
+        Mevenide.getInstance().getPOMManager().addListener(this.pomChangeListener);
     }
 
     public void dispose() {
-        Mevenide.getInstance().getPOMManager().removeListener(this);
+        Mevenide.getInstance().getPOMManager().removeListener(this.pomChangeListener);
         IPreferenceStore preferenceStore = Mevenide.getInstance().getPreferenceStore();
-        preferenceStore.removePropertyChangeListener(this);
+        preferenceStore.removePropertyChangeListener(this.propertyChangeListener);
     }
 
-    /* (non-Javadoc)
-     * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent event) {
-        if (event != null && AUTOSYNC_ENABLED.equals(event.getProperty())) {
-            boolean newValue = ((Boolean)event.getNewValue()).booleanValue();
-            if (this.autosyncEnabled != newValue) {
-                this.autosyncEnabled = newValue;
-
-                if (Tracer.isDebugging()) {
-                    boolean oldValue = ((Boolean)event.getOldValue()).booleanValue();
-                    final String msg = AUTOSYNC_ENABLED + ": old = " + oldValue + " new = " + newValue;
-                    Tracer.trace(msg);
-                }
+    private IPropertyChangeListener propertyChangeListener = new IPropertyChangeListener() {
+        
+        /* (non-Javadoc)
+         * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.PropertyChangeEvent)
+         */
+        public void propertyChange(PropertyChangeEvent event) {
+            if (event != null && AUTOSYNC_ENABLED.equals(event.getProperty())) {
+                boolean newValue = ((Boolean)event.getNewValue()).booleanValue();
+                if (MavenClasspathManager.this.autosyncEnabled != newValue) {
+                    MavenClasspathManager.this.autosyncEnabled = newValue;
     
-                if (newValue) {
-                    handleAutosyncEnable();
-                } else {
-                    handleAutosyncDisable();
+                    if (Tracer.isDebugging()) {
+                        boolean oldValue = ((Boolean)event.getOldValue()).booleanValue();
+                        final String msg = AUTOSYNC_ENABLED + ": old = " + oldValue + " new = " + newValue;
+                        Tracer.trace(msg);
+                    }
+        
+                    if (newValue) {
+                        handleAutosyncEnable();
+                    } else {
+                        handleAutosyncDisable();
+                    }
                 }
             }
         }
-    }
+    };
 
-    /* (non-Javadoc)
-     * @see org.mevenide.ui.eclipse.pom.manager.POMChangeListener#pomChanged(org.mevenide.ui.eclipse.pom.manager.POMChangeEvent)
-     */
-    public void pomChanged(POMChangeEvent e) {
-        if (this.autosyncEnabled && e != null && e.getProject() != null) {
-            final IProject eclipseProject = e.getProject();
-            final IQueryContext context = e.getQueryContext();
-
-            switch (e.getFlags()) {
-
-            case POMChangeEvent.POM_ADDED: {
-                pomAdded(eclipseProject, context);
-                break;
-            }
-
-            case POMChangeEvent.POM_REMOVED: {
-                pomRemoved(eclipseProject, context);
-                break;
-            }
-
-            case POMChangeEvent.POM_CHANGED: {
-                pomUpdated(eclipseProject, context);
-                break;
-            }
-
-            case POMChangeEvent.NO_CHANGE: {
-                break;
-            }
+    private POMChangeListener pomChangeListener = new POMChangeListener() {
+        public void pomChanged(POMChangeEvent e) {
+            if (MavenClasspathManager.this.autosyncEnabled && e != null && e.getProject() != null && e.getQueryContext() != null) {
+                switch (e.getFlags()) {
+                case POMChangeEvent.POM_ADDED:   pomAdded(e.getProject(), e.getQueryContext());   break;
+                case POMChangeEvent.POM_REMOVED: pomRemoved(e.getProject(), e.getQueryContext()); break;
+                case POMChangeEvent.POM_CHANGED: pomUpdated(e.getProject(), e.getQueryContext()); break;
+                }
             }
         }
-    }
+    };
 
     /**
      * TODO: Describe what pomAdded does.
@@ -142,6 +125,16 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
             for (int i = 0; i < referer.length; ++i) {
                 if (Tracer.isDebugging()) {
                     Tracer.trace("Added classpath entry to " + referer[i].getName() + ".");
+                }
+
+                IJavaProject javaProject = JavaCore.create(referer[i]);
+                if (javaProject != null) {
+                    try {
+                        initializeClasspathContainer(CONTAINER_PATH, javaProject);
+                    } catch (CoreException e) {
+                        final String msg = "Unable to redirect " + referer[i].getName() + " to workspace project.";
+                        Mevenide.displayError(msg, e);
+                    }
                 }
             }
         }
@@ -165,6 +158,16 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
             for (int i = 0; i < referer.length; ++i) {
                 if (Tracer.isDebugging()) {
                     Tracer.trace("Removed classpath entry from " + referer[i].getName() + ".");
+                }
+
+                IJavaProject javaProject = JavaCore.create(referer[i]);
+                if (javaProject != null) {
+                    try {
+                        initializeClasspathContainer(CONTAINER_PATH, javaProject);
+                    } catch (CoreException e) {
+                        final String msg = "Unable to redirect " + referer[i].getName() + " to local Maven repository.";
+                        Mevenide.displayError(msg, e);
+                    }
                 }
             }
         }
@@ -190,11 +193,21 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
                 if (Tracer.isDebugging()) {
                     Tracer.trace("Update classpath entry in " + referer[i].getName() + ".");
                 }
+
+                IJavaProject javaProject = JavaCore.create(eclipseProject);
+                if (javaProject != null) {
+                    try {
+                        initializeClasspathContainer(CONTAINER_PATH, javaProject);
+                    } catch (CoreException e) {
+                        final String msg = "Unable to update classpath for " + referer[i].getName() + ".";
+                        Mevenide.displayError(msg, e);
+                    }
+                }
             }
         }
     }
 
-    private static final void handleAutosyncEnable() {
+    private void handleAutosyncEnable() {
 
         IProject[] project = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < project.length; ++i) {
@@ -211,7 +224,7 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
 
     }
 
-    private static final void handleAutosyncDisable() {
+    private void handleAutosyncDisable() {
 
         IProject[] project = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < project.length; ++i) {
@@ -239,7 +252,7 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
      * @return <tt>true</tt> if the project's classpath was actually modified.
      * @throws CoreException if unable to overwrite the project's classpath. 
      */
-    public static final boolean addClasspathContainer(final IPath containerPath, final IJavaProject javaProject) throws CoreException {
+    private static final boolean addClasspathContainer(final IPath containerPath, final IJavaProject javaProject) throws CoreException {
         boolean dirty = false;
 
         if (javaProject != null) {
@@ -286,18 +299,10 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
         return dirty;
     }
 
-    /**
-     * Adds a Maven classpath container to the given Java project. If the
-     * project's classpath contains any entries that would be duplicated
-     * within the container then they are removed. If the project already
-     * has a Maven classpath container then this method does nothing.
-     * <p><strong>Do not call this method from within the container's initializer.</strong></p>
-     *  
-     * @param javaProject the project to receive the Maven classpath container.
-     * @return <tt>true</tt> if the project's classpath was actually modified.
-     * @throws CoreException if unable to overwrite the project's classpath. 
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.classpath.ClasspathManager#initializeClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
      */
-    public static final void initializeClasspathContainer(final IPath containerPath, final IJavaProject javaProject) throws CoreException {
+    public void initializeClasspathContainer(final IPath containerPath, final IJavaProject javaProject) throws CoreException {
 
         if (javaProject != null) {
             // remove entries that are in the container
@@ -311,16 +316,10 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
 
     }
 
-    /**
-     * Removes all Maven classpath containers from the given Java project. The
-     * classpath entries are converted to equivalent variable entries for each
-     * item in the local Maven repository.
-     *  
-     * @param javaProject the project that may or may not contain a Maven classpath container.
-     * @return <tt>true</tt> if the project's classpath was actually modified.
-     * @throws CoreException if unable to overwrite the project's classpath. 
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.classpath.ClasspathManager#removeClasspathContainer(org.eclipse.jdt.core.IJavaProject)
      */
-    public static final boolean removeClasspathContainer(final IJavaProject javaProject) throws CoreException {
+    public boolean removeClasspathContainer(final IJavaProject javaProject) throws CoreException {
         boolean dirty = false;
 
         IProject project = javaProject.getProject();
@@ -345,6 +344,24 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
         }
 
         return dirty;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.classpath.ClasspathManager#canUpdateClasspathContainer(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject)
+     */
+    public boolean canUpdateClasspathContainer(final IPath containerPath, final IJavaProject project) {
+        try {
+            IClasspathContainer container = JavaCore.getClasspathContainer(containerPath, project);
+            return container != null && container instanceof MavenClasspathContainer;
+        } catch (JavaModelException e) {
+            return false;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.classpath.ClasspathManager#requestClasspathContainerUpdate(org.eclipse.core.runtime.IPath, org.eclipse.jdt.core.IJavaProject, org.eclipse.jdt.core.IClasspathContainer)
+     */
+    public void requestClasspathContainerUpdate(IPath containerPath, IJavaProject project, IClasspathContainer containerSuggestion) throws CoreException {
     }
 
     /**
@@ -444,32 +461,5 @@ public class MavenClasspathManager implements IPropertyChangeListener, POMChange
         IJavaProject[] javaProjects = { javaProject };
         IClasspathContainer[] containers = { container };
         JavaCore.setClasspathContainer(containerPath, javaProjects, containers, null);
-    }
-    
-    private static class UpdatedClasspathContainer implements IClasspathContainer {
-
-        private IClasspathEntry[] newEntries;
-        private IClasspathContainer original;
-
-        public UpdatedClasspathContainer(IClasspathContainer original, IClasspathEntry[] newEntries) {
-            this.newEntries = newEntries;
-            this.original = original;
-        }
-
-        public IClasspathEntry[] getClasspathEntries() {
-            return this.newEntries;
-        }
-
-        public String getDescription() {
-            return this.original.getDescription();
-        }
-
-        public int getKind() {
-            return this.original.getKind();
-        }
-
-        public IPath getPath() {
-            return this.original.getPath();
-        }
     }
 }

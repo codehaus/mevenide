@@ -85,7 +85,7 @@ public abstract class AbstractPOMManager implements POMManager {
     }
 
     protected final IQueryContext addProject(IProject project) {
-        if (project != null && project.isOpen()) {
+        if (project != null && project.isAccessible()) {
             String location = project.getLocation().toOSString();
             if (!this.projectMap.containsKey(location)) {
                 IQueryContext context = createQueryContext(location);

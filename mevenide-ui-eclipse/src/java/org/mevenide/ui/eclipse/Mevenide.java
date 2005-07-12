@@ -35,6 +35,7 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.mevenide.ui.eclipse.classpath.ClasspathManager;
 import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
 import org.mevenide.ui.eclipse.pom.manager.DefaultPOMManager;
@@ -308,13 +309,18 @@ public class Mevenide extends AbstractUIPlugin {
         return this.actionDefinitionsManager;
     }
 
-////////////////////////////////////////////////////////////////////////////////
-
     /**
      * @return the POM manager
      */
     public POMManager getPOMManager() {
         return this.pomManager;
+    }
+
+    /**
+     * @return Returns the Maven classpath manager.
+     */
+    public ClasspathManager getClasspathManager() {
+        return this.mavenClasspathManager;
     }
 
 ////////////////////////////////////////////////////////////////////////////////
