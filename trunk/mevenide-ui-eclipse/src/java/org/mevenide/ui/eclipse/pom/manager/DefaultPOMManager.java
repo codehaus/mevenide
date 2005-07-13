@@ -246,4 +246,12 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
     public ILocationFinder getDefaultLocationFinder() {
         return this.defaultLocationFinder;
     }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.ui.eclipse.pom.manager.POMManager#forceUpdate(org.eclipse.core.resources.IProject)
+     */
+    public void forceUpdate(IProject project) {
+        super.updateProject(project);
+    }
+
 }

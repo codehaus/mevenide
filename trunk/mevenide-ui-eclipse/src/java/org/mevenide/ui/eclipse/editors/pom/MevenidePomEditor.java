@@ -22,8 +22,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -53,6 +51,7 @@ import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
 import org.mevenide.project.io.ProjectReader;
 import org.mevenide.properties.resolver.ProjectWalker;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.DependenciesPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.OrganizationPage;
@@ -61,6 +60,7 @@ import org.mevenide.ui.eclipse.editors.pom.pages.ReportsPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.RepositoryPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.TeamPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.UnitTestsPage;
+import org.mevenide.ui.eclipse.util.Tracer;
 import org.mevenide.util.ProjectUtils;
 import org.mevenide.util.StringUtils;
 
@@ -74,8 +74,6 @@ import org.mevenide.util.StringUtils;
  */
 public class MevenidePomEditor extends FormEditor implements IProjectChangeListener {
 
-    private static final Log log = LogFactory.getLog(MevenidePomEditor.class);
-	
     private static final String PROPERTY_SHEET_ID = "org.eclipse.ui.views.PropertySheet"; //$NON-NLS-1$
 
     private Project pom;
@@ -95,33 +93,33 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
     class ElementListener implements IElementStateListener {
         public void elementContentAboutToBeReplaced(Object element) {
-            if (log.isDebugEnabled()) {
-                log.debug("elementContentAboutToBeReplaced: " + element); //$NON-NLS-1$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("elementContentAboutToBeReplaced: " + element); //$NON-NLS-1$
             }
         }
 
         public void elementContentReplaced(Object element) {
-            if (log.isDebugEnabled()) {
-                log.debug("elementContentReplaced: " + element); //$NON-NLS-1$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("elementContentReplaced: " + element); //$NON-NLS-1$
             }
             updateModel();
         }
 
         public void elementDeleted(Object element) {
-            if (log.isDebugEnabled()) {
-                log.debug("elementDeleted: " + element); //$NON-NLS-1$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("elementDeleted: " + element); //$NON-NLS-1$
             }
         }
 
         public void elementDirtyStateChanged(Object element, boolean isDirty) {
-            if (log.isDebugEnabled()) {
-                log.debug("elementDirtyStateChanged to " + isDirty); //$NON-NLS-1$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("elementDirtyStateChanged to " + isDirty); //$NON-NLS-1$
             }
         }
 
         public void elementMoved(Object originalElement, Object movedElement) {
-            if (log.isDebugEnabled()) {
-                log.debug("elementMoved"); //$NON-NLS-1$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("elementMoved"); //$NON-NLS-1$
             }
             close(true);
         }
@@ -133,7 +131,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             marshaller = new CarefulProjectMarshaller();
             unmarshaller = new JDomProjectUnmarshaller();
         } catch (Exception e) {
-            log.error("Could not create a POM marshaller", e); //$NON-NLS-1$
+            final String msg = "Could not create a POM marshaller"; //$NON-NLS-1$
+            Mevenide.displayError(msg, e);
         }
     }
 
@@ -164,7 +163,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             createReportsPage();
             createSourcePage();
         } catch (PartInitException e) {
-            log.error("Unable to create source page", e); //$NON-NLS-1$
+            final String msg = "Unable to create source page"; //$NON-NLS-1$
+            Mevenide.displayError(msg, e);
         }
     }
 
@@ -267,8 +267,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     }
 
     protected void pageChange(int newPageIndex) {
-        if (log.isDebugEnabled()) {
-            log.debug("changing page: " + getActivePage() + " => " + newPageIndex); //$NON-NLS-1$ //$NON-NLS-2$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("changing page: " + getActivePage() + " => " + newPageIndex); //$NON-NLS-1$ //$NON-NLS-2$
         }
         IPomEditorPage oldPage = getCurrentPomEditorPage();
         IPomEditorPage newPage = getPomEditorPage(newPageIndex);
@@ -281,14 +281,14 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         }
 
         super.pageChange(newPageIndex);
-        log.debug("changed page"); //$NON-NLS-1$
+        Tracer.trace("changed page"); //$NON-NLS-1$
     }
 
     private void openPropertiesSheet() {
         try {
             getSite().getPage().showView(PROPERTY_SHEET_ID); 
         } catch (PartInitException e) {
-            log.error(e);
+            Mevenide.displayError(e.getLocalizedMessage(), e);
         }
     }
 
@@ -308,8 +308,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
      */
     public void doSave(IProgressMonitor monitor) {
 
-        if (log.isDebugEnabled()) {
-            log.debug("attempting save..."); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("attempting save..."); //$NON-NLS-1$
         }
         
         updateDocument();
@@ -319,8 +319,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
             public void execute(final IProgressMonitor mon) throws CoreException {
 
-                if (log.isDebugEnabled()) {
-                    log.debug("saving documentProvider"); //$NON-NLS-1$
+                if (Tracer.isDebugging()) {
+                    Tracer.trace("saving documentProvider"); //$NON-NLS-1$
                 }
                 documentProvider.saveDocument(mon, input, documentProvider.getDocument(input), true);
             }
@@ -330,6 +330,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             documentProvider.aboutToChange(input);
             op.run(monitor);
             documentProvider.changed(input);
+            Mevenide.getInstance().getPOMManager().forceUpdate(((IFileEditorInput) getEditorInput()).getFile().getProject());
             updateModel();
             updateTitleAndToolTip();
             setModelDirty(false);
@@ -337,10 +338,10 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         } catch (InterruptedException x) {
         } catch (InvocationTargetException x) {
         }
-        if (log.isDebugEnabled()) {
-            log.debug("saved!"); //$NON-NLS-1$
-            log.debug("dirty = " + isDirty()); //$NON-NLS-1$
-            log.debug("modeldirty = " + isModelDirty()); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("saved!"); //$NON-NLS-1$
+            Tracer.trace("dirty = " + isDirty()); //$NON-NLS-1$
+            Tracer.trace("modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
     }
 
@@ -373,8 +374,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     public boolean isDirty() {
         boolean dirtiness = isModelDirty() 
         					|| (documentProvider != null && documentProvider.canSaveDocument(getEditorInput()));
-        if (log.isDebugEnabled()) {
-            log.debug("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness); //$NON-NLS-1$ //$NON-NLS-2$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("modelDirty = " + isModelDirty() + " and editor dirty " + dirtiness); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return dirtiness;
     }
@@ -440,15 +441,15 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) { //$NON-NLS-1$
                 String resolvedExtend = new ProjectWalker(pom).resolve(pom.getExtend());
                 File extendFile = new File(resolvedExtend);
-                if (log.isDebugEnabled()) {
-                    log.debug("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists()); //$NON-NLS-1$ //$NON-NLS-2$
+                if (Tracer.isDebugging()) {
+                    Tracer.trace("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
 
                 if (!extendFile.exists()) {
                     // not an absolute path; must've been relative
                     extendFile = new File(new File(pomFile.getLocation().toOSString()).getParentFile(), resolvedExtend);
-                    if (log.isDebugEnabled()) {
-                        log.debug("parentPom path = " + extendFile.getAbsolutePath() + "; exists = " //$NON-NLS-1$ //$NON-NLS-2$
+                    if (Tracer.isDebugging()) {
+                        Tracer.trace("parentPom path = " + extendFile.getAbsolutePath() + "; exists = " //$NON-NLS-1$ //$NON-NLS-2$
                                 + extendFile.exists());
                     }
                 }
@@ -460,14 +461,15 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
             updateTitleAndToolTip();
         } catch (Exception e) {
-            log.error("could not read POM: ", e); //$NON-NLS-1$
-            throw new PartInitException("Could not obtain Project reader"); //$NON-NLS-1$
+            final String msg = "Could not obtain Project reader."; //$NON-NLS-1$
+            Mevenide.displayError(msg, e);
+            throw new PartInitException(msg, e);
         }
     }
 
     public boolean updateModel() {
-        if (log.isDebugEnabled()) {
-            log.debug("updateModel entered"); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("updateModel entered"); //$NON-NLS-1$
         }
         
         boolean clean = false;
@@ -477,8 +479,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
 
             
-            if (log.isDebugEnabled()) {
-                log.debug("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
+            if (Tracer.isDebugging()) {
+                Tracer.trace("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
             }
             
             comparator.compare(updatedPom);
@@ -489,19 +491,20 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             
             clean = true;
         } catch (Exception e) {
-            log.error("Unable to update model", e); //$NON-NLS-1$
+            final String msg = "Unable to update model"; //$NON-NLS-1$
+            Mevenide.displayError(msg, e);
             clean = false;
         }
-        if (log.isDebugEnabled()) {
-            log.debug("updateModel exiting"); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("updateModel exiting"); //$NON-NLS-1$
         }
         return clean;
     }
     
 
 	public void updateDocument() {
-        if (log.isDebugEnabled()) {
-            log.debug("updateDocument entered; modeldirty = " + isModelDirty()); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("updateDocument entered; modeldirty = " + isModelDirty()); //$NON-NLS-1$
         }
         if (isModelDirty()) {
             IDocument document = documentProvider.getDocument(getEditorInput());
@@ -514,21 +517,22 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
                 document.set(newDocument.toString());
                 
                 setModelDirty(false);
-                if (log.isDebugEnabled()) {
-                    log.debug("current project name = " + pom.getName() + " and extends = " + pom.getExtend()); //$NON-NLS-1$ //$NON-NLS-2$
+                if (Tracer.isDebugging()) {
+                    Tracer.trace("current project name = " + pom.getName() + " and extends = " + pom.getExtend()); //$NON-NLS-1$ //$NON-NLS-2$
                 }
             } catch (Exception e) {
-                log.error("Marshalling POM failed", e); //$NON-NLS-1$
+                final String msg = "Marshalling POM failed"; //$NON-NLS-1$
+                Mevenide.displayError(msg, e);
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug("updateDocument exiting"); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("updateDocument exiting"); //$NON-NLS-1$
         }
     }
 
     public Object getAdapter(Class adapter) {
-        if (log.isDebugEnabled()) {
-            log.debug("getting adapter for class: " + adapter); //$NON-NLS-1$
+        if (Tracer.isDebugging()) {
+            Tracer.trace("getting adapter for class: " + adapter); //$NON-NLS-1$
         }
 
         if (IContentOutlinePage.class.equals(adapter)) { return getContentOutline(); }
@@ -555,8 +559,8 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
     //    public void fireSaveNeeded() {
     //        firePropertyChange(PROP_DIRTY);
-    //        if (log.isDebugEnabled()) {
-    //            log.debug("fireSaveNeeded");
+    //        if (Tracer.isDebugging()) {
+    //            Tracer.trace("fireSaveNeeded");
     //        }
     //        // MevenidePomEditorContributor contributor = getContributor();
     //        // if (contributor != null) {

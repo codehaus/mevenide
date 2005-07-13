@@ -85,4 +85,11 @@ public interface POMManager {
      * @param listener a POM change listener
      */
     void removeListener(POMChangeListener listener);
+
+    /**
+     * FIXME: This is a temporary method used by the current POM
+     *      : editor until the POM editor changes are completed.
+     * @param project
+     */
+    void forceUpdate(IProject project);
 }
