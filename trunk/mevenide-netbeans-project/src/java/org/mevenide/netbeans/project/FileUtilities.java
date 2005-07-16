@@ -260,6 +260,19 @@ public final class FileUtilities {
         return null;
     }
     
+    /**
+     * find file instance for given maven property if such property exists and then the value of property exists.
+     */
+    public static File getFileForProperty(String prop, IPropertyResolver resolver) {
+        String val = resolver.getResolvedValue(prop);
+        if (val != null) {
+            File fil = new File(val);
+            fil = FileUtil.normalizeFile(fil);
+            return fil;
+        }
+        return null;
+    }
+    
     private static final Pattern RELATIVE_SLASH_SEPARATED_PATH = Pattern.compile("[^:/\\\\.][^:/\\\\]*(/[^:/\\\\.][^:/\\\\]*)*"); // NOI18N
      
     /**
