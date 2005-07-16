@@ -19,10 +19,14 @@ package org.mevenide.netbeans.j2ee;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
+import org.mevenide.netbeans.j2ee.J2eeModuleProviderImpl;
+import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
+import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -35,10 +39,18 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
     public J2eeLookupProvider() {
     }
 
-     public Lookup createMavenLookup(MavenProject context) {
-        // if there's more items later, just do a proxy..
-        InstanceContent ic = new InstanceContent ();
-        return new Provider(context, ic);
+     public Lookup createMavenLookup(MavenProject project) {
+         return Lookups.fixed(new Object[] {
+            new WebModuleImpl(project),
+            new WebModuleProviderImpl(project),
+            new MavenEarEjbProvider(),
+            new MavenEarImpl(project),
+            new MavenEjbJarImpl(project),
+            new J2eeModuleProviderImpl(project)
+         });
+//        // if there's more items later, just do a proxy..
+//        InstanceContent ic = new InstanceContent ();
+//        return new Provider(context, ic);
     }
     
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
@@ -57,6 +69,8 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
             isAdded = false;
             impl2 = new MavenEjbJarImpl(project);
             isAdded2 = false;
+            content.add(new J2eeModuleProviderImpl(project));
+            
             checkJ2ee();
         }
 
