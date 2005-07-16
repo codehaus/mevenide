@@ -42,8 +42,8 @@ public class MavenEarEjbProvider implements EarProvider, EjbJarProvider  {
     public Ear findEar(FileObject file) {
         Project project = FileOwnerQuery.getOwner (file);
         if (project != null && project instanceof MavenProject) {
-            EarImplementation impl = (EarImplementation)project.getLookup().lookup(EarImplementation.class);
-            if (impl != null) {
+            MavenEarImpl impl = (MavenEarImpl)project.getLookup().lookup(MavenEarImpl.class);
+            if (impl != null && impl.isValid()) {
                 return EjbJarFactory.createEar(impl);
             }
         }
@@ -53,8 +53,8 @@ public class MavenEarEjbProvider implements EarProvider, EjbJarProvider  {
     public EjbJar findEjbJar(FileObject file) {
         Project project = FileOwnerQuery.getOwner (file);
         if (project != null && project instanceof MavenProject) {
-            EjbJarImplementation impl = (EjbJarImplementation)project.getLookup().lookup(EjbJarImplementation.class);
-            if (impl != null) {
+            MavenEjbJarImpl impl = (MavenEjbJarImpl)project.getLookup().lookup(MavenEjbJarImpl.class);
+            if (impl != null && impl.isValid()) {
                 return EjbJarFactory.createEjbJar(impl);
             }
         }

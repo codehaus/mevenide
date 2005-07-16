@@ -24,6 +24,7 @@ import org.mevenide.netbeans.project.MavenProject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
+import org.openide.util.lookup.Lookups;
 
 
 /**
@@ -37,9 +38,10 @@ public class WebLookupProvider implements AdditionalMavenLookupProvider {
     }
 
     public Lookup createMavenLookup(MavenProject context) {
-        // if there's more items later, just do a proxy..
-        InstanceContent ic = new InstanceContent ();
-        return new Provider(context, ic);
+        return Lookups.fixed(new Object[0]);
+//        // if there's more items later, just do a proxy..
+//        InstanceContent ic = new InstanceContent ();
+//        return new Provider(context, ic);
     }
     
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
