@@ -22,18 +22,16 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.ProjectConstants;
 import org.mevenide.util.StringUtils;
-import org.mevenide.context.JDomProjectUnmarshaller;
-
 
 /**
  * 
@@ -43,8 +41,6 @@ import org.mevenide.context.JDomProjectUnmarshaller;
  * 
  */
 public class ProjectReader {
-	private static final Log log = LogFactory.getLog(ProjectReader.class);
-	
 	private JDomProjectUnmarshaller unmarshaller ; 
 	
 	private static ProjectReader projectReader = null;
@@ -129,6 +125,7 @@ public class ProjectReader {
 	 * @throws FileNotFoundException
 	 * @throws Exception
 	 * @throws IOException
+     * @deprecated use extractDependency(IQueryContext) instead
 	 */
 	public Dependency extractDependency(File referencedPom) throws Exception {
 		Project referencedProject = read(referencedPom);
@@ -140,6 +137,29 @@ public class ProjectReader {
 		//dependency.setJar(referencedPom.getParent());
 		return dependency;
 	}
+
+    /**
+     * Creates a Dependency that describes the Maven project contained in the given context.
+     * <p>No assumptions are made about its type.</p> 
+     * 
+     * @param context the context containing a Maven project
+     * @return a newly created Dependency or <tt>null</tt> if <tt>context</tt> is null
+     */
+    public Dependency extractDependency(IQueryContext context) {
+        Dependency dependency = null;
+
+        if (context != null) {
+            Project referencedProject = context.getPOMContext().getFinalProject();
+            dependency = new Dependency();
+            dependency.setGroupId(referencedProject.getGroupId());
+            dependency.setArtifactId(referencedProject.getArtifactId());
+            dependency.setVersion(referencedProject.getCurrentVersion());
+            //dependency.setArtifact(referencedPom.getParent());
+            //dependency.setJar(referencedPom.getParent());
+        }
+
+        return dependency;
+    }
 
 	/**
 	 * return all resources directories declared in pom. keys are resource directories while map values can be one of :
