@@ -47,6 +47,7 @@ public class J2eeActions implements AdditionalActionsProvider {
     }
 
     public Action[] createPopupActions(MavenProject project) {
+        System.out.println("create popup actions");
         J2eeModuleProvider provider = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
         if (provider.getJ2eeModule() == null) {
 //        if (war == null || !war.exists()) {
@@ -82,7 +83,9 @@ public class J2eeActions implements AdditionalActionsProvider {
             try {
                 J2eeModuleProvider jmp = null;
                 jmp = (J2eeModuleProvider) project.getLookup().lookup(J2eeModuleProvider.class);
-                String clientUrl = Deployment.getDefault().deploy(jmp, false, "", "", false, this);
+                String clientUrl = Deployment.getDefault().deploy(jmp, true, 
+                                            project.getOriginalMavenProject().getArtifactId(), 
+                                            project.getOriginalMavenProject().getArtifactId(), true, this);
             } catch (Exception e) {
                 ErrorManager.getDefault().log("e message=" + e.getMessage());
                 ErrorManager.getDefault().notify(e);
@@ -92,6 +95,9 @@ public class J2eeActions implements AdditionalActionsProvider {
 
         public void log(String str) {
             System.out.println("logged=" + str);
+            if (str.startsWith("FAIL")) {
+                Thread.dumpStack();
+            }
         }
             
     }

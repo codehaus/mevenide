@@ -38,8 +38,10 @@ public class WebModuleProviderImpl implements WebModuleProvider {
 
     public WebModule findWebModule(FileObject fileObject) {
         // assuming here that we get asked only if the 
-        WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
-        if (impl != null) {
+        WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+        System.out.println("WebModuleproviderImpl: finding.." + fileObject);
+        if (impl != null && impl.isValid()) {
+            System.out.println("... found");
             return WebModuleFactory.createWebModule(impl);
         }
         return null;
