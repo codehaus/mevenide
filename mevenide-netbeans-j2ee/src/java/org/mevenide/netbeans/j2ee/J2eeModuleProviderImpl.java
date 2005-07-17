@@ -14,6 +14,7 @@ import java.io.File;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
@@ -77,9 +78,24 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
         if (J2eeModule.EAR.equals(str)) {
             return MavenEarImpl.guessEarDescriptor(project);
         }
-        // mkleint: what do do here.. I don't get the concept of teh method at all.
+        String path = getConfigSupport().getContentRelativePath(str);
+        if ("context.xml".equals(str) && J2eeModule.WAR.equals(j2eeModule.getModuleType())) {
+            // mkleint: what do do here.. I don't get the concept of teh method at all.
+            WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+            FileObject obj = impl.getDocumentBase();
+            File builddir;
+            if (obj != null) {
+                builddir = FileUtil.toFile(obj);
+            } else {
+                //TODO delete here
+                builddir = FileUtilities.getFileForProperty("maven.war.webapp.dir", project.getPropertyResolver());
+            }
+            File fil = new File(builddir, "META-INF" + File.separator + str);
+            System.out.println("  yyy for unknown config file=" + str + " returning " + fil);
+            return fil;
+        }
+        throw new IllegalStateException("XXXXXXXXXXXXXXXXxx -" + str);
         
-        return null;
     }
 
     public J2eeModule getJ2eeModule() {
@@ -90,7 +106,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
     }
 
     public ModuleChangeReporter getModuleChangeReporter() {
-        return null;
+        return new ModuleChangeReporterImpl();
     }
 
     public void setServerInstanceID(String str) {
@@ -108,5 +124,25 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
         return new FileObject[0];
     }
     
+    /**
+     * Return name to be used in deployment of the module.
+     */
+    public String getDeploymentName() {
+        String ret = super.getDeploymentName();
+        System.out.println("getDeploymentName=" + ret);
+        return ret;
+    }    
+    
+    // TODO
+    private class ModuleChangeReporterImpl implements ModuleChangeReporter {
+        public EjbChangeDescriptor getEjbChanges(long param) {
+            return null;
+        }
+
+        public boolean isManifestChanged(long param) {
+            return false;
+        }
+        
+    }
     
 }
