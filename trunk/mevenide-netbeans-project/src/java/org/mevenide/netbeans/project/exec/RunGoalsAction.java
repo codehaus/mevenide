@@ -83,10 +83,10 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         SpecialSubMenu(Action action, ActSubMenuModel model, boolean popup) {
             super(action, model, popup);
             this.model = model;
+            model.addNotify();
         }
         
         public void addNotify() {
-            model.addNotify();
             super.addNotify();
         }
         
