@@ -52,7 +52,6 @@ public class MavenJ2eeModule implements J2eeModule {
                 return buildDir.getFileObject(project.getPropertyResolver().getResolvedValue("maven.war.final.name") + ".war");
             }
         }
-        System.out.println("archive returns NULL!!!!");
         //TODO ears/ejbs/rars
         return null;
     }
@@ -79,10 +78,8 @@ public class MavenJ2eeModule implements J2eeModule {
     public FileObject getContentDirectory() throws IOException {
 //        System.out.println("getContentDirectory()");
         if (J2eeModule.WAR.equals(getModuleType())) {
-//            System.out.println(" getContentDirectory() returning=" + FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver()));
             return FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver());        
         }
-        System.out.println("getCONTENTDIR is null");
         return null;
     }
 
@@ -101,7 +98,6 @@ public class MavenJ2eeModule implements J2eeModule {
         if (J2eeModule.WEB_XML.equals(location)){
             WebApp webApp = getWebApp();
             if (webApp != null) {
-                System.out.println("getDD returning..");
                 //TODO find a better way to get the BB from WApp and remove the HACK from DDProvider!!
                 return DDProvider.getDefault ().getBaseBean (webApp);
             }
@@ -112,7 +108,6 @@ public class MavenJ2eeModule implements J2eeModule {
 //                return org.netbeans.modules.j2ee.dd.api.webservices.DDProvider.getDefault().getBaseBean(webServices);
 //            }
 //        }
-        System.out.println("  NUL!!!!!! for " + location);
         return null;        
     }
     
@@ -130,33 +125,27 @@ public class MavenJ2eeModule implements J2eeModule {
     }    
 
     public Object getModuleType() {
-//        System.out.println("getModuleType()");
         WebModuleImpl wm = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
         if  (wm != null && wm.isValid()) {
-//            System.out.println("   is war");
             return J2eeModule.WAR;
         }
         MavenEjbJarImpl ejb = (MavenEjbJarImpl)project.getLookup().lookup(MavenEjbJarImpl.class);
         if (ejb != null && ejb.isValid()) {
-            System.out.println("   is ejb");
             return J2eeModule.EJB;
         }
         MavenEarImpl ear = (MavenEarImpl)project.getLookup().lookup(MavenEarImpl.class);
         if (ear != null && ear.isValid()) {
-            System.out.println("   is ear");
             return J2eeModule.EAR;
         }
         File connStr = FileUtilities.getFileForProperty("maven.rar.raxml", project.getPropertyResolver());
         if (connStr != null && connStr.exists()) {
-            System.out.println("   is rar");
             return J2eeModule.CONN;
         }
-        System.out.println("  ... is nothing");
         return null;
     }
 
     public String getModuleVersion() {
-        System.out.println("getModuleVersion()");
+//        System.out.println("getModuleVersion()");
         WebModuleImpl wm = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
         if  (wm != null && wm.isValid()) {
             System.out.println("  for webapp=" + wm.getJ2eePlatformVersion());
@@ -166,7 +155,6 @@ public class MavenJ2eeModule implements J2eeModule {
     }
 
     public String getUrl() {
-        System.out.println("MavenJ2eeModule=get url=" + url);
         return url;
     }
 
@@ -175,7 +163,6 @@ public class MavenJ2eeModule implements J2eeModule {
 
     private String url;
     public void setUrl(String url) {
-        System.out.println("setting url");
         this.url = url;
     }
     

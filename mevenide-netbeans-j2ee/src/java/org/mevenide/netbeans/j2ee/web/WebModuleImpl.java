@@ -44,7 +44,6 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public FileObject getWebInf() {
-        System.out.println("WebModuleImpl:getWebInf");
         FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
         if (fo != null) {
             return fo.getFileObject("WEB-INF"); //NOI18N
@@ -53,7 +52,6 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getJ2eePlatformVersion() {
-        System.out.println("WebModuleImpl:getJ2eePlatformVersion");
         DDProvider prov = DDProvider.getDefault();
         FileObject dd = getDeploymentDescriptor();
         if (dd != null) {
@@ -72,7 +70,6 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public FileObject getDocumentBase() {
-        System.out.println("WebModuleImpl:getDoc base");
         FileObject docbase = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
         return docbase;
     }
@@ -82,8 +79,7 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getContextPath() {
-        System.out.println("WebModuleImpl:context path=" + project.getName());
-        return project.getName();
+        return project.getPropertyResolver().getResolvedValue("maven.war.final.name");
     }
     
     public boolean isValid() {
