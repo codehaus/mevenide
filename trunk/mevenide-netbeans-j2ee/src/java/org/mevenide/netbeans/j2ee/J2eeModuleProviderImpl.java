@@ -1,25 +1,33 @@
-/*
- * J2eeModuleProviderImpl.java
+/* ==========================================================================
+ * Copyright 2003-2004 Mevenide Team
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Created on July 11, 2005, 10:30 PM
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * To change this template, choose Tools | Options and locate the template under
- * the Source Creation and Management node. Right-click the template and choose
- * Open. You can then make changes to the template in the Source Editor.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.mevenide.netbeans.j2ee;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Iterator;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
+import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
-import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
-import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -28,6 +36,12 @@ import org.openide.filesystems.FileUtil;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class J2eeModuleProviderImpl extends J2eeModuleProvider {
+    
+    /**
+     * property that stores the preferred server instanceid for deployment
+     */
+    public static final String SERVERID_PROPERTY = "maven.netbeans.deploy.serverid"; //NOI18N
+    
     private String serverId;
     private MavenProject project;
     private MavenJ2eeModule j2eeModule;
@@ -100,9 +114,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
         return new ModuleChangeReporterImpl();
     }
 
-    public void setServerInstanceID(String str) {
-        serverId = str;
-    }
+
     
     /**
      *  Returns list of root directories for source files including configuration files.
@@ -122,6 +134,47 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
         String ret = super.getDeploymentName();
         return ret;
     }    
+
+   
+    public void setServerInstanceID(String str) {
+        //TODO persist the new server instanceid to build.properties file.
+        serverId = str;
+    }
+    
+    /** If the module wants to specify a target server instance for deployment 
+     * it needs to override this method to return false. 
+     */
+    public boolean useDefaultServer () {
+        return (project.getPropertyResolver().getValue(SERVERID_PROPERTY) == null);
+    }    
+    
+    /** Id of server isntance for deployment. The default implementation returns
+     * the default server instance selected in Server Registry. 
+     * The return value may not be null.
+     * If modules override this method they also need to override {@link useDefaultServer}.
+     */
+    public String getServerInstanceID () {
+        String custom = project.getPropertyResolver().getResolvedValue(SERVERID_PROPERTY);
+        if (custom != null) {
+            return custom;
+        }
+        return super.getServerInstanceID();
+    }
+    
+    /** This method is used to determin type of target server.
+     * The return value must correspond to value returned from {@link getServerInstanceID}.
+     */
+    public String getServerID () {
+        String custom = project.getPropertyResolver().getResolvedValue(SERVERID_PROPERTY);
+        if (custom != null) {
+            String toRet = Deployment.getDefault().getServerID(custom);
+            if (toRet != null) {
+                return toRet;
+            }
+        }
+        return super.getServerID();
+    }    
+    
     
     // TODO
     private class ModuleChangeReporterImpl implements ModuleChangeReporter {
