@@ -79,19 +79,10 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
             return MavenEarImpl.guessEarDescriptor(project);
         }
         String path = getConfigSupport().getContentRelativePath(str);
-        if ("context.xml".equals(str) && J2eeModule.WAR.equals(j2eeModule.getModuleType())) {
+        if (J2eeModule.WAR.equals(j2eeModule.getModuleType())) {
             // mkleint: what do do here.. I don't get the concept of teh method at all.
-            WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
-            FileObject obj = impl.getDocumentBase();
-            File builddir;
-            if (obj != null) {
-                builddir = FileUtil.toFile(obj);
-            } else {
-                //TODO delete here
-                builddir = FileUtilities.getFileForProperty("maven.war.webapp.dir", project.getPropertyResolver());
-            }
-            File fil = new File(builddir, "META-INF" + File.separator + str);
-            System.out.println("  yyy for unknown config file=" + str + " returning " + fil);
+            File buildDir = FileUtilities.getFileForProperty("maven.war.webapp.dir", project.getPropertyResolver());
+            File fil = new File(buildDir, path);
             return fil;
         }
         throw new IllegalStateException("XXXXXXXXXXXXXXXXxx -" + str);
@@ -129,7 +120,6 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      */
     public String getDeploymentName() {
         String ret = super.getDeploymentName();
-        System.out.println("getDeploymentName=" + ret);
         return ret;
     }    
     
