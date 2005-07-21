@@ -294,7 +294,7 @@ public class DependencyNode extends AbstractNode {
         java.awt.Image retValue;
         retValue = super.getIcon(param);
         if (checkLocal()) {
-            if ("jar".equalsIgnoreCase(dependency.getValue("type"))) {
+            if ("jar".equalsIgnoreCase(dependency.getValue("type")) || dependency.getValue("type") == null) {
                 if (hasJavadocInRepository()) {
                     retValue = Utilities.mergeImages(retValue, 
                         Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
@@ -320,7 +320,7 @@ public class DependencyNode extends AbstractNode {
         java.awt.Image retValue;
         retValue = super.getOpenedIcon(type);
         if (checkLocal()) {
-            if ("jar".equalsIgnoreCase(dependency.getValue("type"))) {
+            if ("jar".equalsIgnoreCase(dependency.getValue("type")) || dependency.getValue("type") == null) {
                 if (hasJavadocInRepository()) {
                     retValue = Utilities.mergeImages(retValue, 
                         Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
