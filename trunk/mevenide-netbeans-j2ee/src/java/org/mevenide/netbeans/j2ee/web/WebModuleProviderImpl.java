@@ -19,7 +19,6 @@ package org.mevenide.netbeans.j2ee.web;
 
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
-import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.filesystems.FileObject;
 import org.mevenide.netbeans.project.*;

@@ -18,8 +18,6 @@
 package org.mevenide.netbeans.j2ee;
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Iterator;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
@@ -43,7 +41,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
     public static final String SERVERID_PROPERTY = "maven.netbeans.deploy.serverid"; //NOI18N
     
     
-    private String serverId;
+    private String serverId = null;
     private MavenProject project;
     private MavenJ2eeModule j2eeModule;
     /** Creates a new instance of J2eeModuleProviderImpl */
@@ -141,7 +139,6 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
 
    
     public void setServerInstanceID(String str) {
-        //TODO persist the new server instanceid to build.properties file.
         serverId = str;
     }
     
@@ -149,7 +146,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      * it needs to override this method to return false. 
      */
     public boolean useDefaultServer () {
-        return (project.getPropertyResolver().getValue(SERVERID_PROPERTY) == null);
+        return serverId == null && (project.getPropertyResolver().getValue(SERVERID_PROPERTY) == null);
     }    
     
     /** Id of server isntance for deployment. The default implementation returns
@@ -158,6 +155,9 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      * If modules override this method they also need to override {@link useDefaultServer}.
      */
     public String getServerInstanceID () {
+        if (serverId != null && Deployment.getDefault().getServerID(serverId) != null) {
+            return serverId;
+        }
         String custom = project.getPropertyResolver().getResolvedValue(SERVERID_PROPERTY);
         if (custom != null && Deployment.getDefault().getServerID(custom) != null) {
             return custom;
@@ -169,6 +169,12 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      * The return value must correspond to value returned from {@link getServerInstanceID}.
      */
     public String getServerID () {
+        if (serverId != null) {
+            String tr = Deployment.getDefault().getServerID(serverId);
+            if (tr != null) {
+                return tr;
+            }
+        }
         String custom = project.getPropertyResolver().getResolvedValue(SERVERID_PROPERTY);
         if (custom != null) {
             String toRet = Deployment.getDefault().getServerID(custom);
