@@ -4,7 +4,7 @@
   <pomVersion>3</pomVersion>
   <name>Mevenide Autoupdate Server</name>
   <artifactId>mevenide-netbeans-autoupdate</artifactId>
-  <currentVersion>1.0</currentVersion>
+  <currentVersion>1.0.2</currentVersion>
   <package>org.mevenide.netbeans.update</package>
   <description>Autoupdate server for Netbeans IDE at mevenide.codehaus.org</description>
   <shortDescription>Autoupdate server for Netbeans IDE at mevenide.codehaus.org</shortDescription>
