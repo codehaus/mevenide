@@ -42,6 +42,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      */
     public static final String SERVERID_PROPERTY = "maven.netbeans.deploy.serverid"; //NOI18N
     
+    
     private String serverId;
     private MavenProject project;
     private MavenJ2eeModule j2eeModule;
@@ -99,8 +100,11 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
             File fil = new File(buildDir, path);
             return fil;
         }
-        throw new IllegalStateException("XXXXXXXXXXXXXXXXxx -" + str);
-        
+        // a reasonable fallback??
+        File buildDir = FileUtilities.getFileForProperty("maven.build.dir", project.getPropertyResolver());
+        File fil = new File(buildDir, path);
+        System.out.println("Now how to lookup this file " + path + " for j2eeType=" + j2eeModule.getModuleType());
+        return fil;
     }
 
     public J2eeModule getJ2eeModule() {
@@ -155,7 +159,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      */
     public String getServerInstanceID () {
         String custom = project.getPropertyResolver().getResolvedValue(SERVERID_PROPERTY);
-        if (custom != null) {
+        if (custom != null && Deployment.getDefault().getServerID(custom) != null) {
             return custom;
         }
         return super.getServerInstanceID();
