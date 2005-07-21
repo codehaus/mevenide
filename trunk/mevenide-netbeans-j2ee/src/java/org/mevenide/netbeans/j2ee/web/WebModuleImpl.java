@@ -19,6 +19,9 @@ package org.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
 import java.io.IOException;
+import org.mevenide.netbeans.project.FileUtilities;
+import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSourcesImpl;
 import org.mevenide.properties.IPropertyLocator;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
@@ -26,7 +29,6 @@ import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
-import org.mevenide.netbeans.project.*;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
