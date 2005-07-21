@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Mevenide Team
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -37,6 +37,9 @@ import org.netbeans.modules.j2ee.deployment.plugins.api.ServerDebugInfo;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.ErrorManager;
 import org.openide.awt.HtmlBrowser;
+import org.openide.util.RequestProcessor;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
 
 /**
  *
@@ -49,9 +52,8 @@ public class J2eeActions implements AdditionalActionsProvider {
     /** Creates a new instance of J2EEActions */
     public J2eeActions() {
     }
-
+    
     public Action[] createPopupActions(MavenProject project) {
-        System.out.println("create popup actions");
         J2eeModuleProvider provider = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
         if (provider.getJ2eeModule() == null) {
 //        if (war == null || !war.exists()) {
@@ -75,42 +77,46 @@ public class J2eeActions implements AdditionalActionsProvider {
         return (Action[])toRet.toArray(new Action[toRet.size()]);
     }
     
-    private static class NbDeploy extends AbstractAction implements Logger {
+    private static class NbDeploy extends AbstractAction implements Logger, Runnable {
         private MavenProject project;
+        private InputOutput io;
         public NbDeploy(MavenProject prj) {
             putValue(Action.NAME, "Netbeans Deploy");
             project = prj;
         }
         
         public void actionPerformed(ActionEvent event) {
-            
+            RequestProcessor.getDefault().post(this);
+        }
+        public void run() {
+            io = IOProvider.getDefault().getIO(project.getName(), true);
+            io.select();
             try {
                 J2eeModuleProvider jmp = null;
                 jmp = (J2eeModuleProvider) project.getLookup().lookup(J2eeModuleProvider.class);
                 WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
                 jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
                 jmp.getConfigSupport().ensureConfigurationReady();
-                String clientUrl = Deployment.getDefault().deploy(jmp, true, 
-                                            "", 
-                                            "sample.jsp", true, this);
+                String clientUrl = Deployment.getDefault().deploy(jmp, true,
+                        "",
+                        "sample.jsp", true, this);
                 URL url = new URL(clientUrl);
                 HtmlBrowser.URLDisplayer.getDefault().showURL(url);
             } catch (Exception e) {
                 ErrorManager.getDefault().log("e message=" + e.getMessage());
                 ErrorManager.getDefault().notify(e);
+            } finally {
+                io.getOut().close();
             }
             
         }
-
+        
         public void log(String str) {
-            System.out.println("logged=" + str);
-            if (str.startsWith("FAIL")) {
-                Thread.dumpStack();
-            }
+            io.getOut().println(str);
         }
-            
+        
     }
-
+    
     
     private static class NbDeployDebug extends AbstractAction implements Logger {
         private MavenProject project;
@@ -127,47 +133,47 @@ public class J2eeActions implements AdditionalActionsProvider {
                 WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
                 jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
                 jmp.getConfigSupport().ensureConfigurationReady();
-                String clientUrl = Deployment.getDefault().deploy(jmp, true, 
-                                            "", 
-                                            "sample.jsp", true, this);
-               ServerDebugInfo sdi = jmp.getServerDebugInfo();
-            
-               if (sdi != null) { //fix for bug 57854, this can be null
-                   String h = sdi.getHost();
-                   String transport = sdi.getTransport();
-                   String address = "";   //NOI18N
-                   
-                   if (transport.equals(ServerDebugInfo.TRANSPORT_SHMEM)) {
-                       address = sdi.getShmemName();
-                   } else {
-                       address = Integer.toString(sdi.getPort());
-                   }
+                String clientUrl = Deployment.getDefault().deploy(jmp, true,
+                        "",
+                        "sample.jsp", true, this);
+                ServerDebugInfo sdi = jmp.getServerDebugInfo();
+                
+                if (sdi != null) { //fix for bug 57854, this can be null
+                    String h = sdi.getHost();
+                    String transport = sdi.getTransport();
+                    String address = "";   //NOI18N
+                    
+                    if (transport.equals(ServerDebugInfo.TRANSPORT_SHMEM)) {
+                        address = sdi.getShmemName();
+                    } else {
+                        address = Integer.toString(sdi.getPort());
+                    }
 //                    try {
 //                        JPDADebugger debug = JPDADebugger.attach(host, port, new Object[0]);
 //                    } catch (DebuggerStartException exc) {
 //                        DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message("Cannot attach debugger.", NotifyDescriptor.ERROR_MESSAGE));
 //                    }
-                   
-               }
-               URL url = new URL(clientUrl);
-               HtmlBrowser.URLDisplayer.getDefault().showURL(url);
+                    
+                }
+                URL url = new URL(clientUrl);
+                HtmlBrowser.URLDisplayer.getDefault().showURL(url);
             } catch (Exception e) {
                 ErrorManager.getDefault().log("e message=" + e.getMessage());
                 ErrorManager.getDefault().notify(e);
             }
             
         }
-
+        
         public void log(String str) {
             System.out.println("logged=" + str);
             if (str.startsWith("FAIL")) {
                 Thread.dumpStack();
             }
         }
-            
+        
     }
     
- 
-
-
+    
+    
+    
 }

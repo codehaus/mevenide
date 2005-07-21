@@ -24,10 +24,16 @@ import java.util.Iterator;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.modules.j2ee.api.ejbjar.Ear;
+import org.netbeans.modules.j2ee.dd.api.application.Application;
+import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
+import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
 import org.netbeans.modules.schema2beans.BaseBean;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -37,13 +43,28 @@ import org.openide.filesystems.FileUtil;
  */
 public class MavenJ2eeModule implements J2eeModule {
     private MavenProject project;
+    private String url;
+    private ArrayList listeners;
+    
     /** Creates a new instance of MavenJ2eeModule */
     public MavenJ2eeModule(MavenProject proj) {
         project = proj;
         url = project.getOriginalMavenProject().getArtifactId();
+        listeners = new ArrayList();
     }
 
+    /**
+     * TODO: what are the listeners for?
+     */
     public void addVersionListener(J2eeModule.VersionListener listener) {
+        listeners.add(listener);
+    }
+    
+    /**
+     * TODO: what are the listeners for?
+     */
+    public void removeVersionListener(J2eeModule.VersionListener listener) {
+        listeners.remove(listener);
     }
 
     /** Returns the archive file for the module of null if the archive file 
@@ -60,6 +81,28 @@ public class MavenJ2eeModule implements J2eeModule {
             }
         }
         //TODO ears/ejbs/rars
+        if (J2eeModule.EAR.equals(getModuleType())) {
+            String val = project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.ear.final.name}");
+            if (val != null) {
+                File fil = new File(val);
+                fil = FileUtil.normalizeFile(fil);
+                FileObject fo = FileUtil.toFileObject(fil);
+                if (fo != null) {
+                    return fo;
+                }
+            }
+        }
+        if (J2eeModule.EJB.equals((getModuleType()))) {
+            String val = project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.final.name}.jar");
+            if (val != null) {
+                File fil = new File(val);
+                fil = FileUtil.normalizeFile(fil);
+                FileObject fo = FileUtil.toFileObject(fil);
+                if (fo != null) {
+                    return fo;
+                }
+            }
+        }
         return null;
     }
     /** Returns the contents of the archive, in copyable form.
@@ -87,6 +130,7 @@ public class MavenJ2eeModule implements J2eeModule {
         if (J2eeModule.WAR.equals(getModuleType())) {
             return FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver());        
         }
+        // what to do for ejbs/ears.. maven doesn't have a build directory with complete content AFAIK.
         return null;
     }
 
@@ -109,6 +153,36 @@ public class MavenJ2eeModule implements J2eeModule {
                 return DDProvider.getDefault ().getBaseBean (webApp);
             }
         }
+        if (J2eeModule.APP_XML.equals(location)) {
+            EarProvider prov = (EarProvider)project.getLookup().lookup(EarProvider.class);
+            Ear ear = prov.findEar(project.getProjectDirectory());
+            FileObject fo = ear.getDeploymentDescriptor();
+            if (fo != null) {
+                try {
+                    Application app = org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getDDRoot(fo);
+                    if (app != null) {
+                        return org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getBaseBean(app);
+                    }
+                } catch (java.io.IOException e) {
+                    ErrorManager.getDefault ().log (e.getLocalizedMessage ());
+                }
+            }
+        }
+        if (J2eeModule.EJBJAR_XML.equals(location)) {
+            EjbJarProvider prov = (EjbJarProvider)project.getLookup().lookup(EjbJarProvider.class);
+            org.netbeans.modules.j2ee.api.ejbjar.EjbJar ejb = prov.findEjbJar(project.getProjectDirectory());
+            FileObject fo = ejb.getDeploymentDescriptor();
+            if (fo != null) {
+                try {
+                    EjbJar e = org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getDDRoot(fo);
+                    if (e != null) {
+                        return org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getBaseBean(e);
+                    }
+                } catch (java.io.IOException e) {
+                    ErrorManager.getDefault ().log (e.getLocalizedMessage ());
+                }
+            }
+        }
 //        else if(J2eeModule.WEBSERVICES_XML.equals(location)){
 //            Webservices webServices = getWebservices();
 //            if(webServices != null){
@@ -123,10 +197,10 @@ public class MavenJ2eeModule implements J2eeModule {
             WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
             FileObject deploymentDescriptor = impl.getDeploymentDescriptor();
             if(deploymentDescriptor != null) {
-                return DDProvider.getDefault ().getDDRoot (deploymentDescriptor);
+                return DDProvider.getDefault().getDDRoot(deploymentDescriptor);
             }
-        } catch (java.io.IOException e) {
-            org.openide.ErrorManager.getDefault ().log (e.getLocalizedMessage ());
+        } catch (IOException e) {
+            ErrorManager.getDefault ().log (e.getLocalizedMessage ());
         }
         return null;
     }    
@@ -157,17 +231,23 @@ public class MavenJ2eeModule implements J2eeModule {
         if  (wm != null && wm.isValid()) {
             return wm.getJ2eePlatformVersion();
         }
-        return "";
+        MavenEjbJarImpl ej = (MavenEjbJarImpl)project.getLookup().lookup(MavenEjbJarImpl.class);
+        if (ej != null && ej.isValid()) {
+            return ej.getJ2eePlatformVersion();
+        }
+        MavenEarImpl ea = (MavenEarImpl)project.getLookup().lookup(MavenEarImpl.class);
+        if (ea != null && ea.isValid()) {
+            return ea.getJ2eePlatformVersion();
+        }
+        // best fallback would be?
+        return J2eeModule.J2EE_14;
     }
 
     public String getUrl() {
         return url;
     }
 
-    public void removeVersionListener(J2eeModule.VersionListener listener) {
-    }
 
-    private String url;
     public void setUrl(String url) {
         this.url = url;
     }
