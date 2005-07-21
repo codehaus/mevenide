@@ -125,9 +125,9 @@ public class DeployPanel extends JPanel {
         String port = cont.getConfiguration().getPropertyValue(ServletPropertySet.PORT);
         boolean hasContext = txtContext.getText().trim().length() > 0;
         boolean hasPage = txtWebpage.getText().trim().length() > 0;
-        return "http://" + hostname + ":" + port + 
-                (hasContext ? "/" : "") + txtContext.getText() + 
-                (hasPage ? "/" : "") + txtWebpage.getText();
+        return "http://" + hostname + ":" + port 
+                + (hasContext ? "/" : "") + txtContext.getText() 
+                + (hasPage ? "/" : "") + txtWebpage.getText();
     }
     
     public boolean showInBrowser() {
@@ -330,7 +330,7 @@ public class DeployPanel extends JPanel {
                 update();
             }
             if (e.getSource() == btnUrl) {
-                
+                //TODO
             }
             if (e.getSource() == btnAddContainer) {
                 new AddContainerAction().actionPerformed(e);

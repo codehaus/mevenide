@@ -248,16 +248,16 @@ public class MavenJ2eeModule implements J2eeModule {
     }
 
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUrl(String newurl) {
+        url = newurl;
     }
     
     
     // inspired by netbeans' webmodule codebase, not really sure what is the point 
     // of the iterator..
-    private static class ContentIterator implements Iterator {
-        ArrayList ch;
-        FileObject root;
+    private final static class ContentIterator implements Iterator {
+        private ArrayList ch;
+        private FileObject root;
         
         private ContentIterator (FileObject f) {
             this.ch = new ArrayList ();

@@ -19,7 +19,6 @@ package org.mevenide.netbeans.j2ee;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
-import org.mevenide.netbeans.j2ee.J2eeModuleProviderImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
