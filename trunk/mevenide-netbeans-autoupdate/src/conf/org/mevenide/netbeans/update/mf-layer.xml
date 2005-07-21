@@ -10,6 +10,7 @@
         <attr name="url_key" stringvalue="MEVENIDE_URL"/>
         <attr name="enabled" boolvalue="true"/>
       </file>
+      <file name="maven.settings_hidden"/>      
     </folder>
   </folder> 
 
