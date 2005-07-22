@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 MevenIDE Project
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,26 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.ui.eclipse.editors.pom.entries;
 
-
 /**
- * Implemented to listen for changes to a page entry.
+ * Implement to listen for changes to a page entry.
  * 
  * @author Jeff Bonevich (jeff@bonevich.com)
  * @version $Id$
  */
 public interface IEntryChangeListener {
-	public void entryDirty(PageEntry entry);
-	public void entryChanged(PageEntry entry);
+
+    /**
+     * The user altered the entry (e.g., keystrokes, selections, etc.).
+     * @param entry the altered entry
+     */
+    void entryDirty(PageEntry entry);
+
+    /**
+     * The user committed the changes to the entry.
+     * @param entry the saved entry
+     */
+    void entryChanged(PageEntry entry);
 }
