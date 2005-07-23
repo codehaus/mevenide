@@ -54,7 +54,7 @@ public class DescriptionSection extends PageSection {
 	private OverridableTextEntry packageText;
 
     public DescriptionSection(
-		OverviewPage page, 
+        DescriptionPage page, 
 		Composite parent, 
 		FormToolkit toolkit) 
    	{

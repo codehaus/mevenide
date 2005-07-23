@@ -109,7 +109,10 @@ public abstract class AbstractPomEditorPage
 	    if ( getManagedForm() != null ) {
 		    IFormPart[] sections = getManagedForm().getParts();
 			for (int i = 0; i < sections.length; i++) {
-				((PageSection) sections[i]).updateSection(pom);
+                if (sections[i] instanceof PageSection) {
+                    PageSection section = (PageSection) sections[i];
+                    section.updateSection(pom);
+                }
 			}
 			setUpdateNeeded(false);
 	    }
