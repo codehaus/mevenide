@@ -34,11 +34,16 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceAdapter;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.part.ViewPart;
+import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -52,6 +57,8 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public class RepositoryBrowser extends ViewPart implements RepositoryEventListener {
+    
+    public static final String ID = "org.mevenide.repository.browser";
     
     private TreeViewer repositoryViewer;
     
@@ -283,6 +290,33 @@ public class RepositoryBrowser extends ViewPart implements RepositoryEventListen
 			    refreshAction.setEnabled(refreshableItems > 0);
             }
         });
+        
+        // Drag-n-Drop support
+        int operations = DND.DROP_MOVE;
+        Transfer[] transfers = new Transfer[] { LocalSelectionTransfer.getInstance() };
+        repositoryViewer.addDragSupport(
+            operations,
+            transfers,
+            new DragSourceAdapter() {
+                public void dragStart(DragSourceEvent event) {
+                    IStructuredSelection selection = (StructuredSelection) repositoryViewer.getSelection();
+                    Iterator itr = selection.iterator();
+                    while (itr.hasNext()) {
+                        Object item = itr.next();
+                        if (item instanceof RepoPathElement) {
+                            RepoPathElement element = (RepoPathElement) item;
+                            if (element.isLeaf()) {
+                                event.doit = true;
+                                LocalSelectionTransfer.getInstance().setSelection(selection);
+                                return;
+                            }
+                        }
+                    }
+                    event.doit = false;
+                }
+            }
+        );
+        
     }
 
     public void setFocus() {
