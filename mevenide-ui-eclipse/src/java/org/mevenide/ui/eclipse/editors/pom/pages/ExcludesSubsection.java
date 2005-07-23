@@ -58,7 +58,7 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 			}
 		}
 		TableViewer viewer = section.createTableViewer(container, factory, 1);
-		TableEntry excludesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ExcludesSubsection.TableEntry.Tooltip"), container, factory, section); //$NON-NLS-1$
+		TableEntry excludesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ExcludesSubsection.tableEntry.tooltip"), container, factory, section); //$NON-NLS-1$
 		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List excludes = (List) value;

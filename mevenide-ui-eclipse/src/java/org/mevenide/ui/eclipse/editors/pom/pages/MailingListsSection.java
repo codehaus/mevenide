@@ -62,7 +62,7 @@ public class MailingListsSection extends PageSection {
 		// POM mailingLists table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		mailingListTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("MailingListsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		mailingListTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("MailingListsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List mailingLists = (List) value;

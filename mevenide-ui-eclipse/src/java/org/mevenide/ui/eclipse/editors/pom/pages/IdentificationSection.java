@@ -45,6 +45,7 @@ import org.eclipse.ui.views.navigator.ResourceSorter;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TextEntry;
@@ -74,8 +75,8 @@ public class IdentificationSection extends PageSection {
    			FormToolkit toolkit) 
    	{
         super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("IdentificationSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("IdentificationSection.description")); //$NON-NLS-1$
+		setTitle(MevenideResources.IDENTIFIER_SECTION_HEADER);
+		setDescription(MevenideResources.IDENTIFIER_SECTION_DESC);
     }
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {

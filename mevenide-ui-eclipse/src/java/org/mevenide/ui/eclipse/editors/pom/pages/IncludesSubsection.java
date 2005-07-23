@@ -58,7 +58,7 @@ public class IncludesSubsection extends AbstractResourcePatternSubsection {
 			}
 		}
 		TableViewer viewer = section.createTableViewer(container, factory, 1);
-		TableEntry includesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("IncludesSubsection.TableEntry.Tooltip"), container, factory, section); //$NON-NLS-1$
+		TableEntry includesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("IncludesSubsection.tableEntry.tooltip"), container, factory, section); //$NON-NLS-1$
 		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List includes = (List) value;

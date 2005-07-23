@@ -21,7 +21,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
 
 /**
@@ -33,14 +33,10 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class DependenciesPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("DependenciesPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("DependenciesPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("DependenciesPage.heading"); //$NON-NLS-1$
-
 	private DependenciesSection depsSection;
     
     public DependenciesPage(MevenidePomEditor editor) {
-        super(editor, ID, TAB, HEADING);
+        super(editor, MevenideResources.DEPENDENCIES_PAGE_ID, MevenideResources.DEPENDENCIES_PAGE_TAB, MevenideResources.DEPENDENCIES_PAGE_HEADING);
     }
 	
     /**
@@ -48,7 +44,7 @@ public class DependenciesPage extends AbstractPomEditorPage {
      */
     protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
-		layout.numColumns = 2;
+		layout.numColumns = 1;
 		layout.marginWidth = 10;
 		layout.horizontalSpacing = 15;
 		parent.setLayout(layout);
@@ -58,7 +54,7 @@ public class DependenciesPage extends AbstractPomEditorPage {
 		depsSection = new DependenciesSection(this, parent, factory);
 		Control control = depsSection.getSection();
 		GridData gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
-		gd.horizontalSpan = 2;
+		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
 		addSection(depsSection);
 	}

@@ -28,7 +28,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
 
 /**
@@ -41,16 +41,12 @@ import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
  */
 public class BuildPage extends AbstractPomEditorPage {
 
-    private static final String ID = Mevenide.getResourceString("BuildPage.id"); //$NON-NLS-1$
-    private static final String TAB = Mevenide.getResourceString("BuildPage.tab.label"); //$NON-NLS-1$
-    private static final String HEADING = Mevenide.getResourceString("BuildPage.heading"); //$NON-NLS-1$
-    
 	private BuildDirectoriesSection directoriesSection;
 	private ResourcesSection resourcesSection;
 	private SourceModificationsSection sourceModificationsSection;
 	
 	public BuildPage(MevenidePomEditor editor) {
-        super(editor, ID, TAB, HEADING);
+        super(editor, MevenideResources.BUILD_PAGE_ID, MevenideResources.BUILD_PAGE_TAB, MevenideResources.BUILD_PAGE_HEADING);
     }
 
     /**

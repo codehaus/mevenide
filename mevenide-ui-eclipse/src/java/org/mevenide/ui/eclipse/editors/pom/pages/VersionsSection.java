@@ -62,7 +62,7 @@ public class VersionsSection extends PageSection {
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		versionTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("VersionsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		versionTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("VersionsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;

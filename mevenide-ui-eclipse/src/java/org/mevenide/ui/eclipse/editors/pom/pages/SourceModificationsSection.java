@@ -81,7 +81,7 @@ public class SourceModificationsSection extends PageSection {
 		// Build SourceModifications table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		sourceModificationsViewer = createTableViewer(container, factory, 1);
-		sourceModificationsTable = new TableEntry(sourceModificationsViewer, toggle, Mevenide.getResourceString("SourceModificationsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		sourceModificationsTable = new TableEntry(sourceModificationsViewer, toggle, Mevenide.getResourceString("BuildSourceModificationsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List sourceModifications = (List) value;

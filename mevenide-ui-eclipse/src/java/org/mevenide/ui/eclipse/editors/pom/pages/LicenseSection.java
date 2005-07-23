@@ -65,7 +65,7 @@ public class LicenseSection extends PageSection {
 		// POM license table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		licenseTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("LicenseSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		licenseTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("LicenseSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List licenses = (List) value;

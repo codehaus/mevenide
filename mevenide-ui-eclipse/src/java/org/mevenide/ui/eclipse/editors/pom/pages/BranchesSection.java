@@ -62,7 +62,7 @@ public class BranchesSection extends PageSection {
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		branchTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("BranchesSection.TableEntry.ToolTip"), container, factory, this);  //$NON-NLS-1$
+		branchTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("BranchesSection.tableEntry.tooltip"), container, factory, this);  //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;

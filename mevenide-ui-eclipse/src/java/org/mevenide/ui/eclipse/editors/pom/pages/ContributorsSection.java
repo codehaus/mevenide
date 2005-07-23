@@ -62,7 +62,7 @@ public class ContributorsSection extends PageSection {
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		contribTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ContributorsSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		contribTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ContributorsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;
