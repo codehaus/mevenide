@@ -99,16 +99,20 @@ public abstract class PageSection extends SectionPart {
     }
 
     public PageSection(IPomEditorPage containingPage, Composite parent, FormToolkit toolkit) {
-        super(
-                parent, 
-                toolkit, 
-                ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED | ExpandableComposite.FOCUS_TITLE
+        this(
+                containingPage, parent, toolkit, 
+                Section.DESCRIPTION | ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED | ExpandableComposite.FOCUS_TITLE | ExpandableComposite.TITLE_BAR
              );
+    }
+    
+    public PageSection(IPomEditorPage containingPage, Composite parent, FormToolkit toolkit, int style) {
+        super(parent, toolkit, style);
         this.page = containingPage;
 
         this.parentPom = page.getPomEditor().getParentPom();
-        if (parentPom != null) inherited = true;
-        
+        if (parentPom != null) {
+            inherited = true;
+        }
     }
     
     public void setTitle(String title) {
@@ -309,7 +313,7 @@ public abstract class PageSection extends SectionPart {
         super.initialize(form);
         FormToolkit toolkit = form.getToolkit();
         Section section = getSection();
-        toolkit.createCompositeSeparator(section);
+//        toolkit.createCompositeSeparator(section);
         
         Composite client = createSectionContent(section, toolkit);
 
