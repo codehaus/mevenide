@@ -20,6 +20,7 @@ import org.apache.maven.project.Project;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.entries.OverridableTextEntry;
@@ -33,7 +34,7 @@ public class FullDescriptionSection extends PageSection {
 	private OverridableTextEntry descriptionText;
 
     public FullDescriptionSection(
-    	OverviewPage page, 
+        DescriptionPage page, 
     	Composite parent, 
     	FormToolkit toolkit) 
     {
@@ -74,5 +75,10 @@ public class FullDescriptionSection extends PageSection {
 	public void update(Project pom) {
 		setIfDefined(descriptionText, pom.getDescription(), isInherited() ? getParentPom().getDescription() : null);
 	}
+    
+    public void initialize(IManagedForm form) {
+        super.initialize(form);
+        getSection().setExpanded(false);
+    }
 
 }
