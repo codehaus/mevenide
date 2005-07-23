@@ -557,7 +557,9 @@ public class MavenProjectWizardBasicSettingsPage extends WizardPage {
 		}
 		else
 		{
-			wizard.setProjectObjectModel(new Project());
+            Project project = new Project();
+            project.setPomVersion("3");
+			wizard.setProjectObjectModel(project);
 		}
 		wizard.getProjectObjectModel().setName(getProjectName());
 		
