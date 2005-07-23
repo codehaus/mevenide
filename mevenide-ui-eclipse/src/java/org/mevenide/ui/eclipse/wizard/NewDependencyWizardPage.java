@@ -22,10 +22,12 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.preferences.DependencyTypeRegistry;
 
 /**
  * @author <a href="mailto:jens@iostream.net">Jens Andersen </a>, Last updated by $Author$
@@ -35,13 +37,13 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 	private Text fGroupIdText;
 	private Text fIdText;
 	private Text fNameText;
-	private Text fTypeText;
+	private Combo fTypeCombo;
 	private Text fUrlText;
 	private Text fArtifactIdText;
 	private Text fJarText;
 	private Text fVersionText;
 
-	/* (non-Javadoc)
+	/**
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
@@ -49,9 +51,12 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.verticalSpacing = 9;
+        composite.setLayout(layout);
+        
 		GridData gd;
-		composite.setLayout(layout);
-		Label label = new Label(composite, SWT.NULL);
+        Label label;
+        
+		label = new Label(composite, SWT.NULL);
 		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.artifactid.label"));//$NON-NLS-1$
 		fArtifactIdText = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -73,17 +78,6 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 			}
 		});
 
-//		label = new Label(composite, SWT.NULL);
-//		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.id.label"));//$NON-NLS-1$
-//		fIdText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-//		gd = new GridData(GridData.FILL_HORIZONTAL);
-//		fIdText.setLayoutData(gd);
-//		fIdText.addModifyListener(new ModifyListener() {
-//			public void modifyText(ModifyEvent e) {
-//				dialogChanged();
-//			}
-//		});
-		
 		label = new Label(composite, SWT.NULL);
 		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.jar.label"));//$NON-NLS-1$
 		fJarText = new Text(composite, SWT.BORDER | SWT.SINGLE);
@@ -105,11 +99,13 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 				dialogChanged();
 			}
 		});
-		label = new Label(composite, SWT.NULL);
-		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.type.label"));//$NON-NLS-1$
-		fTypeText = new Text(composite, SWT.BORDER | SWT.SINGLE);
-		gd = new GridData(GridData.FILL_HORIZONTAL);
-		fTypeText.setLayoutData(gd);
+        
+        label = new Label(composite, SWT.NULL);
+        label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.type.label"));//$NON-NLS-1$
+        fTypeCombo = new Combo(composite, SWT.BORDER | SWT.SINGLE | SWT.READ_ONLY);
+        gd = new GridData(GridData.FILL_HORIZONTAL);
+        fTypeCombo.setLayoutData(gd);
+        fTypeCombo.setItems(DependencyTypeRegistry.getAllRegisteredTypes());
 
 		label = new Label(composite, SWT.NULL);
 		label.setText(Mevenide.getResourceString("NewDependencyWizardPage.page.url.label"));//$NON-NLS-1$
@@ -122,9 +118,9 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 		fVersionText = new Text(composite, SWT.BORDER | SWT.SINGLE);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		fVersionText.setLayoutData(gd);
-		
-		
+				
 		dialogChanged();
+        
 		setControl(composite);
 	}
 
@@ -132,12 +128,6 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 	 * Ensures that the fields are validated.
 	 */
 	private void dialogChanged() {
-/*		String artifactId = getArtifactId();
-
-		if (artifactId.length() == 0) {
-			updateStatus("The ArtifactId must be specified");//$NON-NLS-1$
-			return;
-		}*/
 		updateStatus(null);
 	}
 
@@ -171,7 +161,7 @@ public class NewDependencyWizardPage extends DependencyWizardPage {
 	 * @return the type
 	 */
 	public String getType() {
-		return fTypeText.getText();
+		return fTypeCombo.getText();
 	}
 
 	/**
