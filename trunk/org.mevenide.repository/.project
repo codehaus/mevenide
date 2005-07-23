@@ -3,6 +3,7 @@
 	<name>org.mevenide.repository</name>
 	<comment></comment>
 	<projects>
+		<project>mevenide-repository</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
