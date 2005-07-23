@@ -26,22 +26,40 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.repository.Artifact;
 import org.apache.maven.repository.DefaultArtifactFactory;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerDropAdapter;
 import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.dnd.TransferData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
+import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.TableWrapData;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
+import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
+import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
+import org.mevenide.ui.eclipse.repository.view.RepositoryBrowser;
 import org.mevenide.ui.eclipse.wizard.NewDependencyWizard;
 import org.mevenide.util.MevenideUtils;
+import org.mevenide.util.StringUtils;
 
 /**
  * @author Jeffrey Bonevich (jeff@bonevich.com)
@@ -51,17 +69,38 @@ public class DependenciesSection extends PageSection {
 
 	private static final Log log = LogFactory.getLog(DependenciesSection.class);
     
-	private TableEntry dependenciesTable;
-	private TableEntry propertiesTable;
+    private class LinkListener extends HyperlinkAdapter {
+        /**
+         * @see org.eclipse.ui.forms.events.IHyperlinkListener#linkActivated(org.eclipse.ui.forms.events.HyperlinkEvent)
+         */
+        public void linkActivated(HyperlinkEvent e) {
+            String href = (String) e.getHref();
+            if (!StringUtils.isNull(href) && "openBrowser".equals(href)) {
+                try {
+                    Mevenide.getInstance().getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(RepositoryBrowser.ID);
+                } catch (Exception ex) {
+                }
+            }
+        }
+        
+    }
+    
+    private final IHyperlinkListener listener;
+    
+	private TableEntry  dependenciesTable;
+    private TableViewer dependenciesViewer;
+	private TableEntry  propertiesTable;
 	
 	public DependenciesSection(
 		DependenciesPage page,
 	    Composite parent,
 	    FormToolkit toolkit)
 	{
-		super(page, parent, toolkit);
-		setTitle(Mevenide.getResourceString("DependenciesSection.header")); //$NON-NLS-1$
-		setDescription(Mevenide.getResourceString("DependenciesSection.description")); //$NON-NLS-1$
+		super(page, parent, toolkit, ExpandableComposite.TWISTIE | ExpandableComposite.EXPANDED | ExpandableComposite.FOCUS_TITLE | ExpandableComposite.TITLE_BAR);
+		setTitle(MevenideResources.DEPENDENCIES_SECTION_HEADER);
+//		setDescription(MevenideResources.DEPENDENCIES_SECTION_DESC);
+        
+        listener = new LinkListener();
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
@@ -75,10 +114,12 @@ public class DependenciesSection extends PageSection {
 		
 		final Project pom = getPage().getPomEditor().getPom();
 		
+        createDescriptionWithLink(container, factory, layout.numColumns);
+        
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
-		dependenciesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DependenciesSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+        dependenciesViewer = createTableViewer(container, factory, 1);
+		dependenciesTable = new TableEntry(dependenciesViewer, toggle, Mevenide.getResourceString("DependenciesSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List dependencies = (List) value;
@@ -136,6 +177,50 @@ public class DependenciesSection extends PageSection {
 				public List getDependents(Object parentObject) { return null; }
 			}
 		);
+        
+        // Drag-n-Drop support
+        int operations = DND.DROP_MOVE;
+        Transfer[] transfers = new Transfer[] { LocalSelectionTransfer.getInstance() };
+        dependenciesViewer.addDropSupport(
+            operations,
+            transfers,
+            new ViewerDropAdapter(dependenciesViewer) {
+                public boolean validateDrop(Object target, int operation, TransferData transferType) {
+                    return (operation == DND.DROP_MOVE && LocalSelectionTransfer.getInstance().isSupportedType(transferType));
+                }
+                public boolean performDrop(Object data) {
+                    if (data instanceof IStructuredSelection) {
+                        IStructuredSelection selection = (IStructuredSelection) data;
+                        List items = new ArrayList();
+                        for (Iterator i = selection.iterator(); i.hasNext(); ) {
+                            Object item = i.next();
+                            if (item instanceof RepoPathElement) {
+                                RepoPathElement element = (RepoPathElement) item;
+                                if (element.isLeaf()) {
+                                    Dependency dep = new Dependency();
+                                    dep.setArtifactId(element.getArtifactId());
+                                    dep.setGroupId(element.getGroupId());
+                                    dep.setType(element.getType());
+                                    dep.setVersion(element.getVersion());
+                                    
+                                    pom.addDependency(dep);
+                                    Artifact artifact = DefaultArtifactFactory.createArtifact(dep);
+                                    if ( pom.getArtifacts() == null ) {
+                                        pom.setArtifacts(new ArrayList());
+                                    }
+                                    pom.getArtifacts().add(artifact);
+                                    
+                                    items.add(dep);
+                                }
+                            }
+                            dependenciesTable.addEntries(items);
+                            getPage().getPomEditor().setModelDirty(true);
+                        }
+                    }
+                    return true;
+                }
+            }
+        );
 		
 		// whitespace
 		createSpacer(container, factory, isInherited() ? 3 : 2);
@@ -147,8 +232,8 @@ public class DependenciesSection extends PageSection {
 		
 		// POM dependency properties table
 		if (isInherited()) createSpacer(container, factory);
-		viewer = createTableViewer(container, factory, 1);
-		propertiesTable = new TableEntry(viewer, null, Mevenide.getResourceString("DependencySection.Dependency.Property"), container, factory, this); //$NON-NLS-1$
+		TableViewer viewer = createTableViewer(container, factory, 1);
+		propertiesTable = new TableEntry(viewer, null, Mevenide.getResourceString("DependenciesSection.properties.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		dependenciesTable.addDependentTableEntry(propertiesTable);
 		propertiesTable.addEntryChangeListener(
 			new EntryChangeListenerAdaptor() {
@@ -186,20 +271,16 @@ public class DependenciesSection extends PageSection {
 				public void moveObjectTo(int index, Object object, Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
 					List properties = dependency.getProperties();
-					PropertyProxy propertyToMove = (PropertyProxy) object;
-					String property = propertyToMove.toString();
 					if (properties != null) {
-						properties.remove(property);
-						properties.add(index, property);
+						properties.remove(object);
+						properties.add(index, object);
 					}
 				}
 				public void removeObject(Object object, Object parentObject) {
 					Dependency dependency = (Dependency) parentObject;
 					List properties = dependency.getProperties();
-					PropertyProxy propertyToMove = (PropertyProxy) object;
-					String property = propertyToMove.toString();
 					if (properties != null) {
-						properties.remove(property);
+						properties.remove(object);
 					}
 				}
 				public List getDependents(Object parentObject) {
@@ -218,6 +299,25 @@ public class DependenciesSection extends PageSection {
 		factory.paintBordersFor(container);
 		return container;
 	}
+    
+    private void createDescriptionWithLink(Composite parent, FormToolkit factory, int nColumns) {
+        Composite container = factory.createComposite(parent);
+        TableWrapLayout layout = new TableWrapLayout();
+        layout.numColumns = nColumns;
+        layout.verticalSpacing = 7;
+        layout.horizontalSpacing = 5;
+        layout.leftMargin = layout.rightMargin = layout.topMargin = layout.bottomMargin = 0;
+        container.setLayout(layout);
+        
+        GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
+        data.horizontalSpan = nColumns;
+        container.setLayoutData(data);
+        
+        FormText text = factory.createFormText(container, true);
+        text.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));
+        text.setText(MevenideResources.DEPENDENCIES_SECTION_REPOSITORY_LINK, true, false);
+        text.addHyperlinkListener(this.listener);
+    }
 
 	public void update(Project pom) {
 		dependenciesTable.removeAll();
