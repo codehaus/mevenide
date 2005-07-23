@@ -54,6 +54,7 @@ import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.DependenciesPage;
+import org.mevenide.ui.eclipse.editors.pom.pages.DescriptionPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.OrganizationPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.OverviewPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.ReportsPage;
@@ -154,6 +155,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     protected void addPages() {
         try {
             createOverviewPage();
+            createProjectInfoPage();
             createOrganizationPage();
             createRepositoryPage();
             createTeamPage();
@@ -177,6 +179,16 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         comparator.addProjectChangeListener(ProjectComparator.PROJECT, overviewPage);
         overviewPageIndex = addPage(overviewPage);
         addPropertyListener(overviewPage);
+    }
+
+    /**
+     * Creates the overview page of the Project Object Model editor, where
+     * basic information about the project is defined.
+     */
+    private void createProjectInfoPage() throws PartInitException {
+        DescriptionPage projectInfoPage = new DescriptionPage(this);
+        comparator.addProjectChangeListener(ProjectComparator.PROJECT, projectInfoPage);
+        addPage(projectInfoPage);
     }
 
     /**
@@ -464,6 +476,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             final String msg = "Could not obtain Project reader."; //$NON-NLS-1$
             Mevenide.displayError(msg, e);
             throw new PartInitException(msg, e);
+//            pom = new Project();
         }
     }
 

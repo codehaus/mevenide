@@ -40,6 +40,7 @@
       <import plugin="org.eclipse.ui.forms"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.ui.editors"/>
+      <import plugin="org.eclipse.pde.core"/>
    </requires>
 
    <!-- extension used by Maven plugin providers to declaratively add pages to Maven preference menu -->

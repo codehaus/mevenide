@@ -47,6 +47,8 @@ public interface IImageRegistry {
     public static final String POM_CHOICE_WIZ = "wizban/mfile_choose.gif"; //$NON-NLS-1$
     public static final String EXT_TOOLS_WIZ = "wizban/ext_tools_wiz.gif"; //$NON-NLS-1$
     
+    public static final String NEW_DEPENDENCY_WIZBAN = "wizban/adddep_wiz.gif"; //$NON-NLS-1$
+    
     public static final String XML_ATTR_OBJ = "obj16/xmlattr_obj.gif"; //$NON-NLS-1$
     public static final String XML_TAG_OBJ = "obj16/xmltag_obj.gif"; //$NON-NLS-1$
     public static final String XML_END_TAG_OBJ = "obj16/xmlendtag_obj.gif"; //$NON-NLS-1$
@@ -90,9 +92,10 @@ public interface IImageRegistry {
             OFFLINE,
             RUN_GOAL_ENABLED,
             RUN_GOAL_DISABLED,
-            ARGUMENTS_TAB_ICON,            
+            ARGUMENTS_TAB_ICON,
             MAVEN_PROJECT_WIZ,
             MAVEN_POM_WIZ,
+            NEW_DEPENDENCY_WIZBAN,
             POM_CHOICE_WIZ,
             XML_ATTR_OBJ,
             XML_TAG_OBJ,
