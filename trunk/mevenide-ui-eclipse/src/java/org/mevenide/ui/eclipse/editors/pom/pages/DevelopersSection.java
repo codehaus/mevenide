@@ -62,7 +62,7 @@ public class DevelopersSection extends PageSection {
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		TableViewer viewer = createTableViewer(container, factory, 1);
-		devTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DevelopersSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		devTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DevelopersSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;

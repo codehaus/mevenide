@@ -78,7 +78,7 @@ public class ResourcesSection extends PageSection {
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
 		resourcesViewer = createTableViewer(container, factory, 1);
-		resourcesTable = new TableEntry(resourcesViewer, toggle, Mevenide.getResourceString("ResourcesSection.TableEntry.Tooltip"), container, factory, this); //$NON-NLS-1$
+		resourcesTable = new TableEntry(resourcesViewer, toggle, Mevenide.getResourceString(sectionName + ".tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List resources = (List) value;
