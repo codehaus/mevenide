@@ -67,6 +67,14 @@ public class DependencyTypeRegistry {
         }
         return (String[]) prefTypes.toArray(new String[prefTypes.size()]);
     }
+    
+    public static String[] getAllRegisteredTypes() {
+        String[] userPrefTypes = getUserRegisteredTypes();
+        String[] allPrefTypes = new String[userPrefTypes.length + KNOWN_TYPES.length];
+        System.arraycopy(KNOWN_TYPES, 0, allPrefTypes, 0, KNOWN_TYPES.length);
+        System.arraycopy(userPrefTypes, 0, allPrefTypes, KNOWN_TYPES.length, userPrefTypes.length);
+        return allPrefTypes;
+    }
 
     public static boolean storeTypes(List types) {
         final List knownTypes = Arrays.asList(KNOWN_TYPES);

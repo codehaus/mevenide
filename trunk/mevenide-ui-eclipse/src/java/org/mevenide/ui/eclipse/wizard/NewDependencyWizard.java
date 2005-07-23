@@ -18,11 +18,12 @@
 package org.mevenide.ui.eclipse.wizard;
 
 import org.apache.maven.project.Dependency;
-import org.eclipse.jdt.internal.ui.JavaPluginImages;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
+import org.mevenide.ui.eclipse.IImageRegistry;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.util.StringUtils;
 
@@ -36,13 +37,12 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 	
 	public NewDependencyWizard() {
         super();
-		setDefaultPageImageDescriptor(JavaPluginImages.DESC_WIZBAN_ADD_LIBRARY);
+        ImageDescriptor banner = Mevenide.getInstance().getImageRegistry().getDescriptor(IImageRegistry.NEW_DEPENDENCY_WIZBAN);
+		setDefaultPageImageDescriptor(banner);
 		setWindowTitle(Mevenide.getResourceString("NewDependencyWizard.title")); //$NON-NLS-1$
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.jface.wizard.IWizard#addPages()
 	 */
 	public void addPages() {
@@ -50,16 +50,11 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 		addPage(fPage);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/**
 	 * @see org.eclipse.jface.wizard.IWizard#performFinish()
 	 */
 	public boolean performFinish() {
-		//if(!fPage.getName().equalsIgnoreCase(""))
-		//{
 		fDependency = new Dependency();
-		//fDependency.setId(fPage.getId());
 		fDependency.setArtifactId(fPage.getArtifactId());
 		fDependency.setGroupId(fPage.getGroupId());
 		fDependency.setJar(fPage.getJar());
@@ -68,19 +63,16 @@ public class NewDependencyWizard extends Wizard implements INewWizard {
 		fDependency.setUrl(fPage.getUrl());
 		fDependency.setVersion(fPage.getVersion());
 		return true;
-		//}
-		//not sure why name shouldnot be empty ?  
-		//return false;
 	}
-
 	
+    /**
+     * @see org.eclipse.jface.wizard.IWizard#canFinish()
+     */
     public boolean canFinish() {
         return !StringUtils.isNull(fPage.getArtifactId()) && !StringUtils.isNull(fPage.getGroupId());
     }
 	
-	/*
-	 * (non-Javadoc)
-	 * 
+	/** 
 	 * @see org.eclipse.ui.IWorkbenchWizard#init(org.eclipse.ui.IWorkbench,
 	 *      org.eclipse.jface.viewers.IStructuredSelection)
 	 */
