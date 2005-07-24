@@ -81,12 +81,14 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public String getContextPath() {
-        return project.getPropertyResolver().getResolvedValue("maven.war.final.name");
+        return "/" + project.getPropertyResolver().resolveString("${pom.artifactId}");
     }
     
     public boolean isValid() {
-        boolean hasWarSrc =  null != FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N        
-        boolean redefinedDescLocation = project.getPropertyLocator().getPropertyLocation("maven.war.webxml") != IPropertyLocator.LOCATION_DEFAULTS;
+        boolean hasWarSrc =  null != FileUtilities.getFileObjectForProperty("maven.war.src", //NOI18N
+                                            project.getPropertyResolver());         
+        boolean redefinedDescLocation = project.getPropertyLocator().getPropertyLocation("maven.war.webxml") //NOI18N
+                                          != IPropertyLocator.LOCATION_DEFAULTS;
         boolean hasDescriptor = getDeploymentDescriptor() != null;
         // more or less heuristics to support generated web.xml files.
         return hasDescriptor || redefinedDescLocation || hasWarSrc;

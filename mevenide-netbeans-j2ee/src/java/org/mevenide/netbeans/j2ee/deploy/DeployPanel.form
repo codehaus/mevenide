@@ -130,7 +130,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblInfo">
       <Properties>
-        <Property name="text" type="java.lang.String" value="&lt;html&gt;Maven projects use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo&apos;s website for detailed information about supported J2EE containers and features supported for given container. &lt;/html&gt;"/>
+        <Property name="text" type="java.lang.String" value="&lt;html&gt;Maven projects can use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo&apos;s website for detailed information about supported J2EE containers and features supported for given container. &lt;/html&gt;"/>
         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[300, 50]"/>
         </Property>

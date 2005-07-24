@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.DefaultComboBoxModel;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
+import org.openide.ErrorManager;
 
 /**
  *
@@ -36,6 +37,7 @@ public class NbDeployPanel extends javax.swing.JPanel {
     }
     
     private void loadModel(String selectedId) {
+        ErrorManager.getDefault().log(ErrorManager.USER, "selected id=" + selectedId);
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
         Collection col = new ArrayList();
         Wrapper selected = null;
@@ -49,11 +51,22 @@ public class NbDeployPanel extends javax.swing.JPanel {
             
         }
         comServer.setModel(new DefaultComboBoxModel(col.toArray()));
-        comServer.setSelectedItem(selected);
+        if (selected != null) {
+            ErrorManager.getDefault().log(ErrorManager.USER, " -> setting selected id=" + selectedId);
+            comServer.setSelectedItem(selected);
+        }
     }
     
     public String getSelectedServer() {
         return ((Wrapper)comServer.getSelectedItem()).getId();
+    }
+    
+    public String getPath() {
+        return txtPage.getText();
+    }
+    
+    public boolean isDebugging() {
+        return cbDebug.isSelected();
     }
     
     /** This method is called from within the constructor to
@@ -70,10 +83,11 @@ public class NbDeployPanel extends javax.swing.JPanel {
         lblPage = new javax.swing.JLabel();
         txtPage = new javax.swing.JTextField();
         btnPage = new javax.swing.JButton();
+        cbDebug = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.GridBagLayout());
 
-        lblServer.setText("Server Instance :");
+        lblServer.setText("Server to Deploy :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
@@ -111,12 +125,24 @@ public class NbDeployPanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         add(btnPage, gridBagConstraints);
 
+        cbDebug.setText("Debug");
+        cbDebug.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(0, 0, 0, 0)));
+        cbDebug.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
+        add(cbDebug, gridBagConstraints);
+
     }
     // </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPage;
+    private javax.swing.JCheckBox cbDebug;
     private javax.swing.JComboBox comServer;
     private javax.swing.JLabel lblPage;
     private javax.swing.JLabel lblServer;

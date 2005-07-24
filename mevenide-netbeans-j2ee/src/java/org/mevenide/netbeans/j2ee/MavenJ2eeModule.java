@@ -77,7 +77,11 @@ public class MavenJ2eeModule implements J2eeModule {
             if (buildDir != null) {
 //                System.out.println("final name=" + project.getPropertyResolver().getResolvedValue("maven.war.final.name") );
 //                System.out.println("  returning " + buildDir.getFileObject(project.getPropertyResolver().getResolvedValue("maven.war.final.name") + ".war"));
-                return buildDir.getFileObject(project.getPropertyResolver().getResolvedValue("maven.war.final.name") + ".war");
+                String name = project.getPropertyResolver().getResolvedValue("maven.war.final.name");
+                if (!name.endsWith(".war")) {
+                    name = name + ".war";
+                }
+                return buildDir.getFileObject(name);
             }
         }
         //TODO ears/ejbs/rars
@@ -255,7 +259,7 @@ public class MavenJ2eeModule implements J2eeModule {
     
     // inspired by netbeans' webmodule codebase, not really sure what is the point 
     // of the iterator..
-    private final static class ContentIterator implements Iterator {
+    private static final class ContentIterator implements Iterator {
         private ArrayList ch;
         private FileObject root;
         
@@ -274,7 +278,7 @@ public class MavenJ2eeModule implements J2eeModule {
             ch.remove(0);
             if (f.isFolder()) {
                 f.refresh();
-                FileObject chArr[] = f.getChildren ();
+                FileObject[] chArr = f.getChildren ();
                 for (int i = 0; i < chArr.length; i++) {
                     ch.add(chArr [i]);
                 }
@@ -289,12 +293,12 @@ public class MavenJ2eeModule implements J2eeModule {
     }
 
     private static final class FSRootRE implements J2eeModule.RootedEntry {
-        FileObject f;
-        FileObject root;
+        private FileObject f;
+        private FileObject root;
         
-        FSRootRE (FileObject root, FileObject f) {
-            this.f = f;
-            this.root = root;
+        FSRootRE (FileObject rt, FileObject fo) {
+            f = fo;
+            root = rt;
         }
         
         public FileObject getFileObject () {
