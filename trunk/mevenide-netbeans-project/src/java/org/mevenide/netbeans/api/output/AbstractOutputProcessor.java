@@ -41,8 +41,8 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
      * helps the subclass to focus on processing just the important section of output.
      */
     public final boolean isInWatchedGoals(String line) {
-        if (pattern1.matcher(line).matches() ||
-            pattern2.matcher(line).matches()) 
+        if (   pattern1.matcher(line).matches() 
+            || pattern2.matcher(line).matches()) 
         {
             String[] goals = getWatchedGoals();
             boolean changed = false;
@@ -65,8 +65,8 @@ public abstract class AbstractOutputProcessor implements OutputProcessor {
      * by the getWatchedGoals() method.
      */
     public final boolean isWatchedGoalLine(String line) {
-        if (pattern1.matcher(line).matches() ||
-            pattern2.matcher(line).matches()) 
+        if (   pattern1.matcher(line).matches() 
+            || pattern2.matcher(line).matches()) 
         {
             String[] goals = getWatchedGoals();
             for (int i = 0; i < goals.length; i++) {

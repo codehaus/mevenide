@@ -170,7 +170,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             return TYPE_CLASS;
         }
 //        dir = getBuildJar();
-//        if (dir != null && (dir.equals(file))) {     //TODO: When MasterFs check also isParentOf
+//        if (dir != null && (dir.equals(file))) {     //TODO When MasterFs check also isParentOf
 //            return TYPE_ARTIFACT;
 //        }
         dir = FileUtilities.convertURItoFileObject(project.getTestBuildClassesDir());

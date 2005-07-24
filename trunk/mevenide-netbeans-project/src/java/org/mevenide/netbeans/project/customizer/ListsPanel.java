@@ -86,7 +86,8 @@ public class ListsPanel extends JPanel implements ProjectPanel {
                         URL link = new URL(url);
                         HtmlBrowser.URLDisplayer.getDefault().showURL(link);
                     } catch (MalformedURLException exc) {
-                        NotifyDescriptor error = new NotifyDescriptor.Message("Is not a valid URL.", NotifyDescriptor.WARNING_MESSAGE);
+                        NotifyDescriptor error = new NotifyDescriptor.Message("Is not a valid URL.", 
+                                                                              NotifyDescriptor.WARNING_MESSAGE);
                         DialogDisplayer.getDefault().notify(error);
                     }
                     
@@ -309,12 +310,12 @@ public class ListsPanel extends JPanel implements ProjectPanel {
                 vals.put("archive", mlist.getArchive());
                 vals.put("subscribe", mlist.getSubscribe());
                 vals.put("unsubscribe", mlist.getUnsubscribe());
-                MultiTextComponentPOMChange change = new MultiTextComponentPOMChange(
+                MultiTextComponentPOMChange chng = new MultiTextComponentPOMChange(
                                                            "pom.mailingLists.mailingList", 
                                                            vals, location, createFieldMap(), 
                                                            ocDummyMailingList, false);
                 
-                oldValues.add(change);
+                oldValues.add(chng);
             }
         }
         model = new DefaultListModel();
@@ -496,8 +497,8 @@ public class ListsPanel extends JPanel implements ProjectPanel {
                     boolean isSelected,
                     boolean cellHasFocus) 
         {
-            MultiTextComponentPOMChange change = (MultiTextComponentPOMChange)value;
-            String name = change.getValueFor("name");
+            MultiTextComponentPOMChange chng = (MultiTextComponentPOMChange)value;
+            String name = chng.getValueFor("name");
             if (name == null || name.trim().length() == 0) {
                 name = "<Mailing list with no name>";
             } else {

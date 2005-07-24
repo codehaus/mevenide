@@ -33,7 +33,7 @@ import org.openide.util.lookup.Lookups;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MultiRepositoryNode extends AbstractNode implements LocalRepoRefresher {
-    private final static Object LOADING = new Object();
+    private static final Object LOADING = new Object();
     
     private RepoPathGrouper element;
     private String label;

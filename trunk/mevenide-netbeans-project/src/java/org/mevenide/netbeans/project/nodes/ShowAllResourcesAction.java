@@ -26,7 +26,7 @@ import javax.swing.Action;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 
-public class ShowAllResourcesAction extends AbstractAction {
+public final class ShowAllResourcesAction extends AbstractAction {
     
     private static ShowAllResourcesAction instance;
 

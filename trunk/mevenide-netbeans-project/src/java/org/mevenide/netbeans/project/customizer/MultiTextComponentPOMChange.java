@@ -149,8 +149,8 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
     }
     
     private boolean valuesEqual() {
-        boolean equal = values.keySet().containsAll(newValues.keySet()) &&
-                           newValues.keySet().containsAll(values.keySet());
+        boolean equal = values.keySet().containsAll(newValues.keySet()) 
+                     && newValues.keySet().containsAll(values.keySet());
         if (equal) {
             Iterator it = values.entrySet().iterator();
             while (it.hasNext()) {
@@ -200,12 +200,12 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
     /**
      * helper methods for cell renderers inlists. (eg MailingLists' list)
      */
-    public String getValueFor(String key) {
-        return (String)newValues.get(key);
+    public String getValueFor(String keyx) {
+        return (String)newValues.get(keyx);
     }
     
     
-  private class DocListener implements DocumentListener {
+  private final class DocListener implements DocumentListener {
         private String id;
         private JTextComponent textField;
         private DocListener(String keyid, JTextComponent component) {
@@ -217,8 +217,8 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
                 return;
             }
             newValues.put(id, textField.getText());
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+             || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // maybe have configurable or smartish later..
                 origin.setAction(OriginChange.LOCATION_POM);
             }
@@ -237,7 +237,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
         }
     }    
   
-  private class OrigListener implements  OriginChange.ChangeObserver {
+  private final class OrigListener implements  OriginChange.ChangeObserver {
       
         private OrigListener() {
         }
@@ -265,8 +265,8 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
   
     private static class SimpleContentProvider implements IContentProvider {
         private Map vals;
-        public SimpleContentProvider(Map values) {
-            vals = values;
+        public SimpleContentProvider(Map vls) {
+            vals = vls;
         }
         
         
@@ -274,7 +274,7 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
             return Collections.EMPTY_LIST;
         }
 
-        public IContentProvider getSubContentProvider(String key) {
+        public IContentProvider getSubContentProvider(String keyx) {
             return null;
         }
 
@@ -282,8 +282,8 @@ public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
             return null;
         }
 
-        public String getValue(String key) {
-            return (String)vals.get(key);
+        public String getValue(String keyx) {
+            return (String)vals.get(keyx);
         }
 
         public java.util.List getValueList(String parentKey, String childKey) {

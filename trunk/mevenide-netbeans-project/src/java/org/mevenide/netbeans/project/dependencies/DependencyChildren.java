@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2005 Mevenide Team
+ * Copyright 2003-2004 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,9 +126,9 @@ public class DependencyChildren extends Children.Keys {
         String type = dep.getType() == null ? "jar" : dep.getType();
         String ext = dep.getExtension();
         for (int i = 0; i < els.length; i++) {
-            IRepositoryReader read = (i == 0 ? 
-                    RepositoryUtilities.createLocalReader(project.getLocFinder()) : 
-                    readers[i - 1]);
+            IRepositoryReader read = (i == 0  
+                    ? RepositoryUtilities.createLocalReader(project.getLocFinder())  
+                    : readers[i - 1]);
             els[i] = new RepoPathElement(read, null, grId, type, null, artId, ext);
         }
         RepoPathGrouper gr = new RepoPathGrouper(els);
@@ -268,4 +268,3 @@ public class DependencyChildren extends Children.Keys {
         
     }
 }
- 

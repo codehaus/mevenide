@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.customizer.ui.OriginChange;
@@ -32,7 +31,7 @@ import org.mevenide.project.io.IContentProvider;
  * pom change instance for dependencies
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class DependencyPOMChange implements MavenPOMTreeChange {
+public final class DependencyPOMChange implements MavenPOMTreeChange {
     
     private String key;
     private Map values;
@@ -162,8 +161,8 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
     }
     
     private boolean valuesEqual() {
-        boolean equal = values.keySet().containsAll(newValues.keySet()) &&
-                           newValues.keySet().containsAll(values.keySet());
+        boolean equal = values.keySet().containsAll(newValues.keySet()) 
+                     && newValues.keySet().containsAll(values.keySet());
         if (equal) {
             Iterator it = values.entrySet().iterator();
             while (it.hasNext()) {
@@ -225,7 +224,7 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
     }
     
   
-  private class OrigListener implements  OriginChange.ChangeObserver {
+  private final class OrigListener implements  OriginChange.ChangeObserver {
       
         private OrigListener() {
         }
@@ -266,7 +265,7 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
             return toReturn;
         }
 
-        public IContentProvider getSubContentProvider(String key) {
+        public IContentProvider getSubContentProvider(String keyx) {
             return null;
         }
 
@@ -274,8 +273,8 @@ public class DependencyPOMChange implements MavenPOMTreeChange {
             return null;
         }
 
-        public String getValue(String key) {
-            return (String)newValues.get(key);
+        public String getValue(String keyx) {
+            return (String)newValues.get(keyx);
         }
 
         public java.util.List getValueList(String parentKey, String childKey) {

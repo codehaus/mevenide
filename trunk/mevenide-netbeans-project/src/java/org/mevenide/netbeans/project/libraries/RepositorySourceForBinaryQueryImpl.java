@@ -26,6 +26,7 @@ import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.SourceForBinaryQueryImplementation;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
@@ -78,7 +79,7 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
                         }
                     }
                 } catch (Exception exc) {
-                    
+                    ErrorManager.getDefault().notify(exc);
                 }
             }
         }

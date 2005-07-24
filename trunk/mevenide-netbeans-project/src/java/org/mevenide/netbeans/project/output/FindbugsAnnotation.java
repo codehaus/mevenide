@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.mevenide.reports.FindbugsResult;
+import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -104,7 +105,7 @@ public final class FindbugsAnnotation extends Annotation implements PropertyChan
                 }
             }
         } catch (DataObjectNotFoundException exc) {
-            
+            ErrorManager.getDefault().notify(exc);
         }
     }
     
@@ -178,11 +179,13 @@ public final class FindbugsAnnotation extends Annotation implements PropertyChan
     }
     
     public void propertyChange(PropertyChangeEvent ev) {
-        if (dead) return;
+        if (dead) {
+            return;
+        }
         String prop = ev.getPropertyName();
-        if (    prop == null ||
-                prop.equals(Annotatable.PROP_TEXT) ||
-                prop.equals(Annotatable.PROP_DELETED)) {
+        if (    prop == null 
+             || prop.equals(Annotatable.PROP_TEXT) 
+             || prop.equals(Annotatable.PROP_DELETED)) {
             doDetach();
         }
     }

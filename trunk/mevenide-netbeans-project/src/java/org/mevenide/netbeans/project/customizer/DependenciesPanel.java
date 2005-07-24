@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -778,7 +777,7 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
             btnRemove.setEnabled(!isResolvingValues);
             btnAdd.setEnabled(!isResolvingValues);
             btnEdit.setEnabled(!isResolvingValues);
-            btnCheck.setEnabled(javadoc == false || source == false);
+            btnCheck.setEnabled(! (javadoc && source));
         } else {
             currentDep = null;
         }

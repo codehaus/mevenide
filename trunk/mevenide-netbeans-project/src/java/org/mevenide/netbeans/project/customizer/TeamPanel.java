@@ -641,8 +641,8 @@ public class TeamPanel extends JPanel implements ProjectPanel {
      }    
     
     private class ComboWrapper {
-        String title;
-        DefaultListModel model;
+        private String title;
+        private DefaultListModel model;
         public ComboWrapper(String tit, DefaultListModel mod) {
             title = tit;
             model = mod;

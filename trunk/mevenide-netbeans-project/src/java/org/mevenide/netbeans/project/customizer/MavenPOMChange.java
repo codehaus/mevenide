@@ -20,7 +20,7 @@ package org.mevenide.netbeans.project.customizer;
 /**
  *
  * Holder and resolver of changes of a POM field
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface MavenPOMChange extends MavenChange {
     /**
@@ -28,14 +28,6 @@ public interface MavenPOMChange extends MavenChange {
      * eg. pom.artifactId or pom.organization.name
      */
     String getPath();
-    /**
-     * original value
-     */
-    String getOldValue();
-    /**
-     * current, maybe changed value
-     */
-    String getNewValue();
     /**
      * original location of the the property definition.
      */

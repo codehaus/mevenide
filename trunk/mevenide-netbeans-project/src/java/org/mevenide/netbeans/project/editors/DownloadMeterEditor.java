@@ -51,7 +51,7 @@ public class DownloadMeterEditor extends PropertyEditorSupport {
         return "silent"; // NOI18N
     }
     
-    public void setAsText(String text) throws IllegalArgumentException {
+    public void setAsText(String text) {
         for (int i = 0; i < tags.length; i++) {
             if (tags[i].equals(text)) {
                 setValue(meters[i]);

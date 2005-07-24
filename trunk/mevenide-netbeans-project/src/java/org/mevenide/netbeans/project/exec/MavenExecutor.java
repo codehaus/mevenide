@@ -34,6 +34,7 @@ import org.mevenide.netbeans.api.output.OutputVisitor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Cancellable;
 
 import org.openide.util.MapFormat;
 import org.openide.util.RequestProcessor;
@@ -47,10 +48,10 @@ import org.openide.windows.OutputWriter;
 
 
 /**
- *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * support for executing maven, from the ide but in different VM.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenExecutor implements Runnable {
+public class MavenExecutor implements Runnable, Cancellable {
     private static final Log logger = LogFactory.getLog(MavenExecutor.class);
     
     public static final String FORMAT_MAVEN_HOME = "MAVEN_HOME"; //NOI18N
@@ -79,7 +80,7 @@ public class MavenExecutor implements Runnable {
     private Set processors;
     private RunConfig config;
     
-    private static RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
     public MavenExecutor(RunContext proj, String gl, Set procs, RunConfig conf) {
         context = proj;
@@ -132,7 +133,11 @@ public class MavenExecutor implements Runnable {
         String[] additionals = context.getAdditionalParams();
         HashMap formats = new HashMap(5);
         Process proc;
-        formats.put(FORMAT_MAVEN_HOME, context.getMavenHome());
+        if (config.getMavenHome() != null && new File(config.getMavenHome()).exists()) {
+            formats.put(FORMAT_MAVEN_HOME, config.getMavenHome());
+        } else {
+            formats.put(FORMAT_MAVEN_HOME, context.getMavenHome());
+        }
         if (additionals.length > 0) {
             formats.put(FORMAT_GOAL, "");
             formats.put(FORMAT_OFFLINE, ""); //NOI18N
@@ -265,11 +270,18 @@ public class MavenExecutor implements Runnable {
             }
             
             
-        } catch (IOException io) {
-            ErrorManager.getDefault().notify(io);
+        } catch (IOException ioexc) {
+            ErrorManager.getDefault().notify(ioexc);
         } catch (InterruptedException exc) {
-            ErrorManager.getDefault().notify(exc);
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, exc);
         }
+    }
+
+    public boolean cancel() {
+        if (proces != null) {
+            proces.destroy();
+        }
+        return true;
     }
     
     private static class Output implements Runnable {
@@ -334,8 +346,8 @@ public class MavenExecutor implements Runnable {
                     writer.flush();
                 }
                 read.close();
-            } catch (IOException io) {
-                    logger.error(io);
+            } catch (IOException ioexc) {
+                    logger.error(ioexc);
             } finally {
                 try {
                     read.close();

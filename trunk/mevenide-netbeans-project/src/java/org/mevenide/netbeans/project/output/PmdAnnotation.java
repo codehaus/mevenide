@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -54,8 +55,8 @@ public final class PmdAnnotation extends Annotation implements PropertyChangeLis
 
     private final PmdResult.Violation violation;
     
-    public PmdAnnotation(PmdResult.Violation violation) {
-        this.violation= violation;
+    public PmdAnnotation(PmdResult.Violation viol) {
+        this.violation= viol;
         synchronized (hyperlinks) {
             hyperlinks.add(this);
         }
@@ -86,7 +87,7 @@ public final class PmdAnnotation extends Annotation implements PropertyChangeLis
                 }
             }
         } catch (DataObjectNotFoundException exc) {
-            
+            ErrorManager.getDefault().notify(exc);
         }
     }
     
@@ -160,11 +161,13 @@ public final class PmdAnnotation extends Annotation implements PropertyChangeLis
     }
     
     public void propertyChange(PropertyChangeEvent ev) {
-        if (dead) return;
+        if (dead) {
+            return;
+        }
         String prop = ev.getPropertyName();
-        if (    prop == null ||
-                prop.equals(Annotatable.PROP_TEXT) ||
-                prop.equals(Annotatable.PROP_DELETED)) {
+        if (    prop == null 
+             || prop.equals(Annotatable.PROP_TEXT) 
+             || prop.equals(Annotatable.PROP_DELETED)) {
             doDetach();
         }
     }

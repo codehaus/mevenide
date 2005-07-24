@@ -54,8 +54,8 @@ final class BootClassPathImpl implements ClassPathImplementation {
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 String customCompile = project.getPropertyResolver().getResolvedValue("maven.compile.executable");
-                if (customCompile != null && !customCompile.equals(lastNonDefault) ||
-                    customCompile == null && lastNonDefault != null) {
+                if (customCompile != null && !customCompile.equals(lastNonDefault) 
+                 || customCompile == null && lastNonDefault != null) {
                     List oldValue = resourcesCache;
                     resourcesCache = null;
                     List newValue = getResources();
@@ -80,7 +80,7 @@ final class BootClassPathImpl implements ClassPathImplementation {
         if (this.resourcesCache == null) {
             JavaPlatform jp = findActivePlatform ();
             if (jp != null) {
-                //TODO: May also listen on CP, but from Platform it should be fixed.
+                //TODO May also listen on CP, but from Platform it should be fixed.
                 ClassPath cp = jp.getBootstrapLibraries();
                 List entries = cp.entries();
                 ArrayList result = new ArrayList (entries.size());

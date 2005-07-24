@@ -42,8 +42,8 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
     private boolean ignore = false;
     
     public CheckBoxPropertyChange(String keyParam, String oldValue, int oldLocation, 
-                                   JCheckBox box, OriginChange oc, boolean defVal, boolean opposite) {
-        this.opposite = opposite;
+                                   JCheckBox box, OriginChange oc, boolean defVal, boolean opp) {
+        opposite = opp;
         key = keyParam;
         check = box;
         location = oldLocation;
@@ -89,9 +89,9 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
         return newLocation != location || checkResolvedBoolean(getOldValue()) != checkResolvedBoolean(getNewValue());
     }
     
-    private void setCheckBoxValue(boolean boolValue, boolean opposite) {
+    private void setCheckBoxValue(boolean boolValue, boolean opp) {
         newValue = boolValue ? "true" : "false";
-        if (opposite) {
+        if (opp) {
             check.setSelected(!boolValue);
         } else {
             check.setSelected(boolValue);
@@ -99,7 +99,7 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
     }
     
     
-  private class DocListener implements ActionListener, OriginChange.ChangeObserver {
+  private final class DocListener implements ActionListener, OriginChange.ChangeObserver {
         private DocListener() {
         }
         
@@ -114,8 +114,8 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
                 newValue = check.isSelected() ? "true" : "false";
             }
             
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+             || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
                 origin.setAction(IPropertyLocator.LOCATION_PROJECT_BUILD);
@@ -142,10 +142,9 @@ public class CheckBoxPropertyChange implements MavenPropertyChange {
           return false;
       }
       String tr = value.trim();
-      if ("on".equalsIgnoreCase(tr) || 
-          "true".equalsIgnoreCase(tr) ||
-          "yes".equalsIgnoreCase(tr)) 
-      {
+      if (   "on".equalsIgnoreCase(tr)
+          || "true".equalsIgnoreCase(tr) 
+          || "yes".equalsIgnoreCase(tr)) {
           return true;
       }
       return false;

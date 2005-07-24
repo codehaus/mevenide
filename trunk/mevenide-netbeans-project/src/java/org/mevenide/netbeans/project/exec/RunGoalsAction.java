@@ -80,9 +80,9 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         
         private final ActSubMenuModel model;
         
-        SpecialSubMenu(Action action, ActSubMenuModel model, boolean popup) {
-            super(action, model, popup);
-            this.model = model;
+        SpecialSubMenu(Action action, ActSubMenuModel mdl, boolean popup) {
+            super(action, mdl, popup);
+            model = mdl;
             model.addNotify();
         }
         
@@ -105,7 +105,9 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         }
         
         public int getCount() {
-            if (targets == null) return 0;
+            if (targets == null) {
+                return 0;
+            }
             return targets.size();
         }
         
@@ -120,14 +122,18 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         
         public void performActionAt(final int index) {
             final ItemWrapper item = (ItemWrapper) targets.get(index);
-            if (item == null) return;
+            if (item == null) {
+                return;
+            }
             String mgoal = item.getGoals();
             RunConfig config = null;
             log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG) {
-                GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), project.getLocFinder());
+                GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), 
+                        project.getLocFinder());
                 GPanel panel = new GPanel(project, goalProvider);
-                DialogDescriptor desc = new DialogDescriptor(panel, NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
+                DialogDescriptor desc = new DialogDescriptor(panel, 
+                        NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.dialog.title"));
                 Object[] options = new Object[] {
                     new JButton(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.executeButton")),
                     NotifyDescriptor.CANCEL_OPTION
@@ -196,7 +202,9 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
         
         void addNotify() {
             targets = Collections.EMPTY_LIST;
-            if (project.getOriginalMavenProject() == null) return;
+            if (project.getOriginalMavenProject() == null) {
+                return;
+            }
             targets = new ArrayList(15);
             File[] fls = project.getContext().getPOMContext().getProjectFiles();
             for (int x = 0; x < fls.length; x++) {
@@ -232,11 +240,15 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                 for (int i = 0; i < str.length; i++) {
                     if (targets.size() < MAX_ITEMS_IN_POPUP) {
                         targets.add(new ItemWrapper(
-                               str[i].length() > MAX_LENGTH_OF_ITEM ? str[i].substring(0, MAX_LENGTH_OF_ITEM - 3) + "..." : str[i]));
+                               str[i].length() > MAX_LENGTH_OF_ITEM 
+                             ? str[i].substring(0, MAX_LENGTH_OF_ITEM - 3) + "..."
+                             : str[i]));
                     }
                 }
             }
-            targets.add(new ItemWrapper(NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.moreGoals"), ACTION_SHOW_CUSTOM_DIALOG));
+            targets.add(new ItemWrapper(
+                    NbBundle.getMessage(RunGoalsAction.class, "RunGoalsAction.moreGoals"), 
+                    ACTION_SHOW_CUSTOM_DIALOG));
             // In fact we should ensure there are >1 items (workaround for
             // undesired behavior of Actions.SubMenu):
             if (targets.size() == 1) {
@@ -259,14 +271,14 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
     private static class ItemWrapper {
         private String goals;
         private int actionType;
-        public ItemWrapper(String goals) {
-            this.goals = goals;
+        public ItemWrapper(String gls) {
+            goals = gls;
             actionType = ACTION_RUN;
             
         }
-        public ItemWrapper(String goals, int actionType) {
-            this(goals);
-            this.actionType = actionType;
+        public ItemWrapper(String gls, int actionTp) {
+            this(gls);
+            actionType = actionTp;
         }
         
         public String getGoals() {

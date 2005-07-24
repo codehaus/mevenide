@@ -62,7 +62,8 @@ public class ActionProviderImpl implements ActionProvider {
     public static final String COMMAND_MULTIPROJECTCLEAN = "multiprojectclean"; //NOI18N
     static {
         defaultIDEGoals = new Properties();
-        InputStream str = Thread.currentThread().getContextClassLoader().getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
+        InputStream str = Thread.currentThread().getContextClassLoader()
+                  .getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
         if (str != null) {
             try {
                 defaultIDEGoals.load(str);
@@ -137,7 +138,7 @@ public class ActionProviderImpl implements ActionProvider {
         return defaultIDEGoals.getProperty(key);
     }
     
-    public void invokeAction(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
+    public void invokeAction(String str, Lookup lookup) {
         String goal = getGoalDefForAction(str, lookup);
         if (goal != null) {
             int index = goal.indexOf("%TESTCLASS%");
@@ -211,17 +212,17 @@ public class ActionProviderImpl implements ActionProvider {
         }
     }
 
-    public void runGoal(String goal, Lookup lookup) throws java.lang.IllegalArgumentException {
+    public void runGoal(String goal, Lookup lookup) {
         runGoal(goal, lookup, new DefaultRunConfig());
     }
     
-    public void runGoal(String goal, Lookup lookup, RunConfig config) throws java.lang.IllegalArgumentException {
+    public void runGoal(String goal, Lookup lookup, RunConfig config) {
         runGoal(goal, lookup, DefaultOutputProcessorFactory.getAllProcessors(project), null, config);
     }
     
     private void runGoal(String goal, Lookup lookup, 
                          Set processors, 
-                         InputOutput io, RunConfig config) throws java.lang.IllegalArgumentException {
+                         InputOutput io, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();                             
         // setup executor first..                     
@@ -245,7 +246,7 @@ public class ActionProviderImpl implements ActionProvider {
         });
     }
     
-    public boolean isActionEnabled(String str, Lookup lookup) throws java.lang.IllegalArgumentException {
+    public boolean isActionEnabled(String str, Lookup lookup) {
         if (COMMAND_TEST_SINGLE.equals(str)) {
             FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
             boolean found = fos != null && fos.length == 1;

@@ -23,25 +23,25 @@ import org.openide.nodes.Node;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class GoalNode extends AbstractNode implements GoalNameCookie {
     private IGoalsGrabber grabber;
     private String goal;
     private String plugin;
     /** Creates a new instance of GoalNode */
-    public GoalNode(String plugin, IGoalsGrabber grabber, String goal) {
+    public GoalNode(String plug, IGoalsGrabber grab, String gol) {
         super(Children.LEAF);
+        goal = gol;
+        plugin = plug;
+        grabber = grab;
         setName(plugin + ":" + goal); //NOI18N
-        this.goal = goal;
-        this.plugin = plugin;
         setDisplayName(goal);
         String desc = grabber.getDescription(getName());
         if (desc == null || "null".equals(desc)) {
             desc = "<No description>";
         }
         setShortDescription(desc);
-        this.grabber = grabber;
         setIconBase("org/mevenide/netbeans/project/goals/GoalIcon"); //NOI18N
     }
     

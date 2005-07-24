@@ -9,13 +9,16 @@
     <release version="0.8" date="in cvs" description="Work in progress">
       <action dev="mkleint" type="add">
           Dependencies now visible and editable in Project View. Add/Edit/Remove dependency actions
-          accessible from project explorer.
+          easily accessible from project explorer.
           One can download the missing dependencies, download/view it's javadoc etc.
       </action>
       <action dev="mkleint" type="add">
           MEVENIDE-165 - allow user to check the remote repositories for javadocs and sources of project's dependencies.
       </action>
-
+      <action dev="mkleint" type="add">
+          Added the default Netbeans IDE webapp deployment. Allows deploying and debugging on
+          IDE-supported servers.
+      </action>
     </release>
       
     <release version="0.7" date="22/05/2005" description="Works with 4.0 and 4.1.">
@@ -29,8 +32,8 @@
       <action dev="mkleint" type="fix">
       Multiple bugs fixed.
       </action>
-      
     </release>
+    
     <release version="0.6" date="20/03/2005" description="Works with 4.0 and 4.1 beta.">
       <action dev="mkleint" type="add">
       Add remote and local repository browser. Allow to download artifacts from
@@ -46,6 +49,7 @@
       All editor annotations show up on errorstripe as well. (4.1 only)
       </action>
     </release>
+    
     <release version="0.5" date="23/01/2005" description="">
       <action dev="mkleint" type="add">
       In project customizer show list of available maven plugins and their
@@ -150,7 +154,8 @@
       <action dev="mkleint" type="add">
       Added project view support for web apps.
       </action>
-    </release>  
+    </release>
+  
     <release version="0.1" date="17/07/2004">
       <action dev="mkleint" type="add">
         Initial release, allows to open maven projects within Netbeans IDE 4.0.

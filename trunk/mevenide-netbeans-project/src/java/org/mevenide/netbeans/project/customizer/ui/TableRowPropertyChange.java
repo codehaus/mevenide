@@ -105,10 +105,10 @@ public class TableRowPropertyChange implements MavenPropertyChange {
 //        field.setText(newValue);
     }
     
-    public void setNewValue(String value) {
-        newValue = value;
-        if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+    public void setNewValue(String val) {
+        newValue = val;
+        if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+         || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
             // assume the default placement is build..
             // maybe have configurable or smartish later..
             newLocation = IPropertyLocator.LOCATION_PROJECT_BUILD;
@@ -118,12 +118,11 @@ public class TableRowPropertyChange implements MavenPropertyChange {
     
     public void setNewLocation(int loc) {
         newLocation = loc;
-        if (newLocation == IPropertyLocator.LOCATION_DEFAULTS || 
-            newLocation == IPropertyLocator.LOCATION_NOT_DEFINED) 
+        if ( newLocation == IPropertyLocator.LOCATION_DEFAULTS  
+          || newLocation == IPropertyLocator.LOCATION_NOT_DEFINED) 
         {
             newValue = defaultValue;
         }
         origin.setSelectedLocationID(loc);
     }
-
 }

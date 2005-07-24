@@ -41,7 +41,6 @@ import org.apache.tools.ant.DirectoryScanner;
 /**
  * finds subprojects (projects this one depends on) that are locally available
  * and can be build as one unit. Uses maven multiproject infrastructure. (maven.multiproject.includes)
- * TODO: maybe could also need non-maven style of dependency linking.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SubprojectProviderImpl implements SubprojectProvider {

@@ -24,7 +24,7 @@ import org.openide.util.SharedClassObject;
  * utilities for proxy settings and artifact downloads.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class ProxyUtilities {
+public final class ProxyUtilities {
     
     private static final String PROXY_HOST = "http.proxyHost"; //NOI18N
     private static final String PROXY_PORT = "http.proxyPort"; //NOI18N

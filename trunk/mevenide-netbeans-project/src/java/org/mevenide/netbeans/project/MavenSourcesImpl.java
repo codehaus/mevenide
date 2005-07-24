@@ -81,7 +81,7 @@ public class MavenSourcesImpl implements Sources {
     private SourceGroup genSrcGroup;
     private SourceGroup webDocSrcGroup;
     
-    private Object LOCK = new Object();
+    private Object lock = new Object();
     
     
     /** Creates a new instance of MavenSourcesImpl */
@@ -99,7 +99,7 @@ public class MavenSourcesImpl implements Sources {
     
     private void checkChanges(boolean synchronous) {
         boolean changed = false;
-        synchronized (LOCK) {
+        synchronized (lock) {
             try {
                 FileObject folder = URLMapper.findFileObject(project.getSrcDirectory().toURL());
                 changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
@@ -164,7 +164,7 @@ public class MavenSourcesImpl implements Sources {
         }
         if (JavaProjectConstants.SOURCES_TYPE_JAVA.equals(str)) {
             List toReturn = new ArrayList();
-            synchronized (LOCK) {
+            synchronized (lock) {
                 // don't fire event synchronously..
                 checkChanges(false);
                 toReturn.addAll(javaGroup.values());
@@ -180,7 +180,7 @@ public class MavenSourcesImpl implements Sources {
             try {
                 FileObject folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
                 SourceGroup grp = null;
-                synchronized (LOCK) {
+                synchronized (lock) {
                     checkGeneratedGroupCache(folder);
                     grp = genSrcGroup;
                 }
@@ -268,7 +268,7 @@ public class MavenSourcesImpl implements Sources {
         try {
             FileObject folder = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
             SourceGroup grp = null;
-            synchronized (LOCK) {
+            synchronized (lock) {
                 checkWebDocGroupCache(folder);
                 grp = webDocSrcGroup;
             }
@@ -357,16 +357,16 @@ public class MavenSourcesImpl implements Sources {
         private MavenProject project;
         private Resource resource;
         
-        ResourceGroup(MavenProject p, FileObject rootFolder, Resource res, String name, String displayName,
-        Icon icon, Icon openedIcon) {
+        ResourceGroup(MavenProject p, FileObject rootFold, Resource res, String nm, String displayNm,
+        Icon icn, Icon opened) {
             project = p;
             resource = res;
-            this.rootFolder = rootFolder;
+            rootFolder = rootFold;
             rootFile = FileUtil.toFile(rootFolder);
-            this.name = name;
-            this.displayName = displayName;
-            this.icon = icon;
-            this.openedIcon = openedIcon;
+            name = nm;
+            displayName = displayNm;
+            icon = icn;
+            openedIcon = opened;
         }
         
         public FileObject getRootFolder() {
@@ -393,7 +393,7 @@ public class MavenSourcesImpl implements Sources {
             return opened ? icon : openedIcon;
         }
         
-        public boolean contains(FileObject file) throws IllegalArgumentException {
+        public boolean contains(FileObject file)  {
             logger.debug("Resourcegroup.contains()=" + file);
             if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
                 throw new IllegalArgumentException();
@@ -404,8 +404,8 @@ public class MavenSourcesImpl implements Sources {
             File f = FileUtil.toFile(file);
             if (f != null) {
                 // MIXED, UNKNOWN, and SHARABLE -> include it
-                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE && 
-                        DirScannerSubClass.checkIncluded(file, rootFolder, resource));
+                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE 
+                     && DirScannerSubClass.checkIncluded(file, rootFolder, resource));
             } else {
                 // Not on disk, include it.
                 return true;

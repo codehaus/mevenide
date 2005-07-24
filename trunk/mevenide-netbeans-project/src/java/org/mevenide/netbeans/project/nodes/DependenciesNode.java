@@ -98,7 +98,7 @@ class DependenciesNode extends AbstractNode {
     
     private static class DependenciesChildren extends Children.Keys implements PropertyChangeListener {
         private MavenProject project;
-        List deps;
+        private List deps;
         public DependenciesChildren(MavenProject proj) {
             super();
             project = proj;
@@ -165,7 +165,9 @@ class DependenciesNode extends AbstractNode {
             putValue(Action.NAME, "Add Dependency...");
         }
         public void actionPerformed(ActionEvent event) {
-            DependencyPOMChange change = DependencyPOMChange.createChangeInstance(null, OriginChange.LOCATION_POM, new HashMap(), LocationComboFactory.createPOMChange(project, false), false);
+            DependencyPOMChange change = DependencyPOMChange.createChangeInstance(null, 
+                    OriginChange.LOCATION_POM, new HashMap(), 
+                    LocationComboFactory.createPOMChange(project, false), false);
             DependencyEditor ed = new DependencyEditor(project, change);
             DialogDescriptor dd = new DialogDescriptor(ed, "Add Dependency");
             Object ret = DialogDisplayer.getDefault().notify(dd);
@@ -188,10 +190,10 @@ class DependenciesNode extends AbstractNode {
                     String depGroupId = prov.getValue("groupId");
                     String depId = prov.getValue("id");
                     String depType = prov.getValue("type");
-                    if (((artifactId.equals(depArtifactId) && 
-                          groupId.equals(depGroupId))
-                       || (artifactId.equals(groupId) && 
-                           artifactId.equals(depId))
+                    if (((   artifactId.equals(depArtifactId)  
+                          && groupId.equals(depGroupId))
+                       || (   artifactId.equals(groupId)  
+                           && artifactId.equals(depId))
                         ) && (type.equals(depType) || (type.equals("jar") && depType == null))) 
                     {
                         NotifyDescriptor d2 = new NotifyDescriptor.Confirmation(
@@ -242,9 +244,11 @@ class DependenciesNode extends AbstractNode {
                                 atLeastOneDownloaded = true;
                             }
                         } catch (FileNotFoundException e) {
-                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
+                            + " is not available in repote repositories.");
                         } catch (Exception exc) {
-                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                            StatusDisplayer.getDefault().setStatusText("Error downloading " 
+                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
                         }
                     }
                     if (atLeastOneDownloaded) {
@@ -278,9 +282,11 @@ class DependenciesNode extends AbstractNode {
                                 atLeastOneDownloaded = true;
                             }
                         } catch (FileNotFoundException e) {
-                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
+                                    + " is not available in repote repositories.");
                         } catch (Exception exc) {
-                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                            StatusDisplayer.getDefault().setStatusText("Error downloading " 
+                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
                         }
                         try {
                             dep.setType("src.jar");
@@ -289,9 +295,11 @@ class DependenciesNode extends AbstractNode {
                                 atLeastOneDownloaded = true;
                             }
                         } catch (FileNotFoundException e) {
-                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact()
+                                    + " is not available in repote repositories.");
                         } catch (Exception exc) {
-                            StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                            StatusDisplayer.getDefault().setStatusText("Error downloading "
+                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
                         }
                     }
                     if (atLeastOneDownloaded) {

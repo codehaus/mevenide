@@ -16,18 +16,19 @@
  */
 package org.mevenide.netbeans.project.customizer;
 
-import org.mevenide.project.io.IContentProvider;
-
 
 /**
  *
- * Holder and resolver of changes of a POM trees, eg. <repository> or <organization> objects
+ * Holder and resolver of changes of a POM field
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public interface MavenPOMTreeChange extends MavenPOMChange {
+public interface MavenPOMSingleChange extends MavenPOMChange {
     /**
-     * the changed subtree content.
+     * original value
      */
-    IContentProvider getChangedContent();
-    
+    String getOldValue();
+    /**
+     * current, maybe changed value
+     */
+    String getNewValue();
 }

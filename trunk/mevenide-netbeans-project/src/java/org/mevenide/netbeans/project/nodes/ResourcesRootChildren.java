@@ -80,8 +80,8 @@ class ResourcesRootChildren extends Children.Keys {
         if (srcs == null) {
             throw new IllegalStateException("need Sources instance in lookup");
         }
-        SourceGroup[] resgroup = srcs.getSourceGroups(test ? MavenSourcesImpl.TYPE_TEST_RESOURCES : 
-                                                             MavenSourcesImpl.TYPE_RESOURCES);
+        SourceGroup[] resgroup = srcs.getSourceGroups(test ? MavenSourcesImpl.TYPE_TEST_RESOURCES  
+                                                           : MavenSourcesImpl.TYPE_RESOURCES);
         for (int i = 0; i < resgroup.length; i++) {
             list.add(resgroup[i]);
         }

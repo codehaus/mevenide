@@ -27,7 +27,7 @@ import org.openide.windows.WindowManager;
 
 /**
  *
- * @author cenda
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class RepoBrowserWindow extends TopComponent {
     static RepoBrowserWindow DEFAULT = null;

@@ -21,13 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
@@ -133,7 +131,8 @@ public final class DependencyUpdater {
                     Document originalDoc = builder.build(reader);
                     reader.close();
                     lock = fo.lock();
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(NbProjectWriter.figureOutFormat(roots[i], reader));
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(
+                            NbProjectWriter.figureOutFormat(roots[i], reader));
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
                 }
@@ -163,7 +162,8 @@ public final class DependencyUpdater {
 
         toReturn.setLayout(new java.awt.GridBagLayout());
 
-        jLabel1.setText("<html><p>These projects contain the edited project as dependency.</p><p>\nYou can update their dependency definitions automatically.</p></html>");
+        jLabel1.setText("<html><p>These projects contain the edited project as dependency.</p>"
+                 + "<p>\nYou can update their dependency definitions automatically.</p></html>");
         jLabel1.setPreferredSize(new java.awt.Dimension(500, 35));
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -188,7 +188,11 @@ public final class DependencyUpdater {
     
     private static class ProjRenderer extends DefaultListCellRenderer {
         
-        public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+        public Component getListCellRendererComponent(JList list, 
+                Object value, 
+                int index, 
+                boolean isSelected,
+                boolean cellHasFocus) {
 
             JLabel retValue;
             retValue = (JLabel)super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);

@@ -57,7 +57,7 @@ public class MavenLibraryImpl implements LibraryImplementation {
         support.removePropertyChangeListener(propertyChangeListener);
     }
     
-    public List getContent(String str) throws java.lang.IllegalArgumentException {
+    public List getContent(String str) {
         if ("classpath".equals(str)) {
             return content;
         }
@@ -88,7 +88,7 @@ public class MavenLibraryImpl implements LibraryImplementation {
     }
     
     
-    public void setContent(String str, List list) throws java.lang.IllegalArgumentException {
+    public void setContent(String str, List list) {
         if ("classpath".equals(str)) {
             content = list;
         } else if ("src".equals(str)) {

@@ -63,16 +63,16 @@ public final class OutputVisitor {
      * add output line highlight and hyperlink via 
      * <code>org.openide.windows.OutputListener</code> instance.
      */
-    public void setOutputListener(OutputListener outputListener) {
-        this.outputListener = outputListener;
+    public void setOutputListener(OutputListener listener) {
+        outputListener = listener;
     }
     /**
      * add output line highlight and hyperlink via 
      * <code>org.openide.windows.OutputListener</code> instance.
      * @param isImportant mark the line as important (useful in Nb 4.1 only)
      */
-    public void setOutputListener(OutputListener outputListener, boolean isImportant) {
-        setOutputListener(outputListener);
+    public void setOutputListener(OutputListener listener, boolean isImportant) {
+        setOutputListener(listener);
         important = isImportant;
     }
     

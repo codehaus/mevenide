@@ -26,7 +26,7 @@ import org.mevenide.properties.IPropertyLocator;
  * changes tracker for textfields with an originchange instance attached.
  * @author  Milos Kleint (ca206216@tiscali.cz)
 df */
-public class TextComponentPOMChange implements MavenPOMChange {
+public class TextComponentPOMChange implements MavenPOMSingleChange {
     private String key;
     private String value;
     private int location;
@@ -113,7 +113,7 @@ public class TextComponentPOMChange implements MavenPOMChange {
     }
     
     
-  private class DocListener implements DocumentListener, OriginChange.ChangeObserver {
+  private final class DocListener implements DocumentListener, OriginChange.ChangeObserver {
         private DocListener() {
         }
         private void update() {
@@ -121,8 +121,8 @@ public class TextComponentPOMChange implements MavenPOMChange {
                 return;
             }
             newValue = field.getText();
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (   origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+                || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
                 origin.setAction(OriginChange.LOCATION_POM);
@@ -156,5 +156,4 @@ public class TextComponentPOMChange implements MavenPOMChange {
         }
         
     }    
-    
 }

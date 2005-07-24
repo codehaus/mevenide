@@ -149,7 +149,7 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
     }
     
     
-  private class DocListener implements ListDataListener, OriginChange.ChangeObserver {
+  private final class DocListener implements ListDataListener, OriginChange.ChangeObserver {
         private DocListener() {
         }
         private void update() {
@@ -161,8 +161,8 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
             while (en.hasMoreElements()) {
                 newValues.add(en.nextElement());
             }
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+             || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is pom file..
                 // maybe have configurable or smartish later..
                 origin.setAction(OriginChange.LOCATION_POM);
@@ -200,8 +200,8 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
     //TODO needs refactoring maybe
     protected static class ValueListContentProvider extends AbstractContentProvider {
         private List vals;
-        public ValueListContentProvider(List values) {
-            vals = values;
+        public ValueListContentProvider(List vls) {
+            vals = vls;
         }
         public List getValueList(String parentKey, String childKey) {
             return vals;
@@ -210,8 +210,8 @@ public class ListModelPOMChange implements MavenPOMTreeChange {
     //TODO needs refactoring maybe
     protected static class SubProviderContainerProvider extends AbstractContentProvider {
         private List vals;
-        public SubProviderContainerProvider(List values) {
-            vals = values;
+        public SubProviderContainerProvider(List vls) {
+            vals = vls;
         }
         public List getSubContentProviderList(String parentKey, String childKey) {
             List toReturn = new ArrayList();

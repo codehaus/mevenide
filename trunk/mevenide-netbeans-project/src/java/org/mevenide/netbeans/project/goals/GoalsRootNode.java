@@ -24,45 +24,37 @@ import org.openide.nodes.Node;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class GoalsRootNode extends AbstractNode {
     /** Creates a new instance of PluginNode */
-    public GoalsRootNode(IGoalsGrabber grabber)
-    {
+    public GoalsRootNode(IGoalsGrabber grabber) {
         super(new GoalsChildren(grabber));
         setName("availableGoals");
         setDisplayName("Available Goals");
         setShortDescription("Available Maven Plugins/Goals");
     }
     
-    
-    private static class GoalsChildren extends Children.Keys
-    {
+    private static class GoalsChildren extends Children.Keys {
         private IGoalsGrabber grabber;
-        public GoalsChildren(IGoalsGrabber grabber)
-        {
-            this.grabber = grabber;
+        public GoalsChildren(IGoalsGrabber grab) {
+            grabber = grab;
         }
         
-        public void addNotify()
-        {
+        public void addNotify() {
             super.addNotify();
             setKeys(grabber.getPlugins());
         }
         
-        protected Node[] createNodes(Object obj)
-        {
+        protected Node[] createNodes(Object obj) {
             String plugin = (String)obj;
             return new Node[] { new PluginNode(plugin, grabber) 
             };
         }
 
-        public void removeNotify()
-        {
+        public void removeNotify() {
             setKeys(Collections.EMPTY_LIST);
             super.removeNotify();
         }
-        
     }
 }
