@@ -33,6 +33,7 @@ import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.netbeans.project.NbSysEnvProvider;
 import org.netbeans.spi.project.libraries.LibraryImplementation;
 import org.netbeans.spi.project.libraries.LibraryProvider;
+import org.netbeans.spi.project.libraries.support.LibrariesSupport;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -142,7 +143,8 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                     try {
 //                        IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
 //                                                          FileUtil.toFile(artifacts[i]).getAbsolutePath());
-                        LibraryImplementation library = org.netbeans.spi.project.libraries.support.LibrariesSupport.createLibraryImplementation("j2se", new String[] {"classpath", "javadoc", "src"});
+                        LibraryImplementation library = LibrariesSupport.createLibraryImplementation("j2se", 
+                                                              new String[] {"classpath", "javadoc", "src"});
 //                        MavenLibraryImpl library = new MavenLibraryImpl(res.guessArtifactId(),
 //                                                                        res.guessGroupId(),
 //                                                                        res.guessVersion(),

@@ -50,7 +50,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
      private static final Log logger = LogFactory.getLog(MavenFileOwnerQueryImpl.class);
     
      private Set set;
-     private Object LOCK = new Object();
+     private Object lock = new Object();
      private List listeners;
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
@@ -73,13 +73,13 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     public void addMavenProject(MavenProject project) {
-        synchronized (LOCK) {
+        synchronized (lock) {
             set.add(project);
         }
         fireChange();
     }
     public void removeMavenProject(MavenProject project) {
-        synchronized (LOCK) {
+        synchronized (lock) {
             set.remove(project);
         }
         fireChange();
@@ -114,7 +114,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
      * get the list of currently opened maven projects.. kind of hack, but well..
      */
     public Set getOpenedProjects() {
-        synchronized (LOCK) {
+        synchronized (lock) {
             return new HashSet(set);
         }
     }
@@ -137,7 +137,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     private Project getOwner(File file) {
         Set currentProjects;
-        synchronized (LOCK) {
+        synchronized (lock) {
             currentProjects = new HashSet(set);
         }
         try {
@@ -151,14 +151,14 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                 MavenProject project = (MavenProject)it.next();
                 org.apache.maven.project.Project proj = project.getOriginalMavenProject();
                 IPropertyResolver res = project.getPropertyResolver();
-//                logger.debug("project=" + project.getDisplayName() + "  artif=" + proj.getArtifactId() + "  group=" + proj.getGroupId() + "  version=" + proj.getCurrentVersion() +  "  id=" + proj.getId());
 				//#MEVENIDE-287 handle SNAPSHOT in a special way
-                if (version != null && 
-                    ("SNAPSHOT".equals(version) || doCompare(version, res.resolveString(proj.getCurrentVersion()))) &&
-                    artifactid != null && 
-                    (doCompare(artifactid, res.resolveString(proj.getArtifactId())) || doCompare(artifactid, res.resolveString(proj.getId()))) &&
-                    groupid != null && 
-                    (doCompare(groupid, res.resolveString(proj.getGroupId())) || groupid.equals(artifactid))) {
+                if   (version != null 
+                  && ("SNAPSHOT".equals(version) || doCompare(version, res.resolveString(proj.getCurrentVersion()))) 
+                  && artifactid != null 
+                  && (  doCompare(artifactid, res.resolveString(proj.getArtifactId())) 
+                     || doCompare(artifactid, res.resolveString(proj.getId()))) 
+                  && groupid != null 
+                  && (doCompare(groupid, res.resolveString(proj.getGroupId())) || groupid.equals(artifactid))) {
                         logger.debug("found project=" + project.getDisplayName());
                         return project;
                 }

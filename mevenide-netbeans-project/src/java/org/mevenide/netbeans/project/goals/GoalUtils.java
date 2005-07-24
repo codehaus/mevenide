@@ -23,9 +23,9 @@ import org.mevenide.goals.manager.GoalsGrabbersManager;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class GoalUtils {
+public final class GoalUtils {
     
     /** Creates a new instance of Utils */
     private GoalUtils() {

@@ -150,7 +150,8 @@ public final class FileUtilities {
         int offset = location % 10;
         File[] fls = context.getPOMContext().getProjectFiles();
         if (fls.length >= loc) {
-            return new File(fls[loc - 1].getParentFile(), offset == IQueryContext.BUILD_PROPS_OFFSET ? "build.properties" : "project.properties");
+            return new File(fls[loc - 1].getParentFile(), 
+                    offset == IQueryContext.BUILD_PROPS_OFFSET ? "build.properties" : "project.properties");
         }
         throw new IllegalArgumentException("Wrong argument. is=" + location);
     }
@@ -273,12 +274,13 @@ public final class FileUtilities {
         return null;
     }
     
-    private static final Pattern RELATIVE_SLASH_SEPARATED_PATH = Pattern.compile("[^:/\\\\.][^:/\\\\]*(/[^:/\\\\.][^:/\\\\]*)*"); // NOI18N
+    private static final Pattern RELATIVE_SLASH_SEPARATED_PATH = 
+            Pattern.compile("[^:/\\\\.][^:/\\\\]*(/[^:/\\\\.][^:/\\\\]*)*"); // NOI18N
      
     /**
      * copied from netbeans.org's ant/project sources. will find out if path is relative or absolute
      */
-    public static File resolveFilePath(File basedir, String filename) throws IllegalArgumentException {
+    public static File resolveFilePath(File basedir, String filename) {
         if (basedir == null) {
             throw new NullPointerException("null basedir passed to resolveFile"); // NOI18N
         }

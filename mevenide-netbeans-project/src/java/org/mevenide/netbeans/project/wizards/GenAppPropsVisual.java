@@ -28,7 +28,6 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
-import org.mevenide.genapp.GenAppTemplateFinder;
 import org.mevenide.genapp.TemplateInfo;
 import org.openide.WizardDescriptor;
 

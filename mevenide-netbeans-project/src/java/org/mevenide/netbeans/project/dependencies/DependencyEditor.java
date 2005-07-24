@@ -540,16 +540,16 @@ public class DependencyEditor extends javax.swing.JPanel {
             return key;
         }
 
-        public void setKey(String key) {
-            this.key = key;
+        public void setKey(String newkey) {
+            key = newkey;
         }
 
         public String getValue() {
             return value;
         }
 
-        public void setValue(String value) {
-            this.value = value;
+        public void setValue(String newvalue) {
+            value = newvalue;
         }
         
     }

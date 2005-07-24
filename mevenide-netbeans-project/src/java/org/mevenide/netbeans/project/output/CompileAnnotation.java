@@ -188,11 +188,13 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
     }
     
     public void propertyChange(PropertyChangeEvent ev) {
-        if (dead) return;
+        if (dead) {
+            return;
+        }
         String prop = ev.getPropertyName();
-        if (    prop == null ||
-                prop.equals(Annotatable.PROP_TEXT) ||
-                prop.equals(Annotatable.PROP_DELETED)) {
+        if (    prop == null 
+             || prop.equals(Annotatable.PROP_TEXT) 
+             || prop.equals(Annotatable.PROP_DELETED)) {
             doDetach();
         }
     }

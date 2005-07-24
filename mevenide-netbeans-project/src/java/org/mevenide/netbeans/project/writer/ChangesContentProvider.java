@@ -23,7 +23,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
-import org.mevenide.netbeans.project.customizer.MavenPOMChange;
+import org.mevenide.netbeans.project.customizer.MavenPOMSingleChange;
 import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
 import org.mevenide.project.io.IContentProvider;
 
@@ -41,15 +41,15 @@ public class ChangesContentProvider implements IContentProvider {
     private String path;
     private int location;
     /** Creates a new instance of ElementContentProvider */
-    public ChangesContentProvider(IContentProvider origin, List chngs, String path, int location) {
+    public ChangesContentProvider(IContentProvider origin, List chngs, String pth, int loc) {
         provider = origin;
         changes = chngs;
-        this.path = path;
-        this.location = location;
+        path = pth;
+        location = loc;
     }
 
-    protected IContentProvider createChildContentProvider(IContentProvider origin, String path) {
-        return new ChangesContentProvider(origin, changes, path, location);
+    protected IContentProvider createChildContentProvider(IContentProvider origin, String pth) {
+        return new ChangesContentProvider(origin, changes, pth, location);
     }
     
     public IContentProvider getSubContentProvider(String key) {
@@ -68,7 +68,7 @@ public class ChangesContentProvider implements IContentProvider {
     }
 
     public String getValue(String key) {
-        MavenPOMChange change = findChange(path + "." + key);
+        MavenPOMSingleChange change = findChange(path + "." + key);
         if (change != null) {
             if (change.getOldLocation() == location && change.getNewLocation() != location) {
                 return null;
@@ -124,13 +124,13 @@ public class ChangesContentProvider implements IContentProvider {
         return provider.getProperties();
     }
     
-    private MavenPOMChange findChange(String path) {
+    private MavenPOMSingleChange findChange(String pth) {
         Iterator it = changes.iterator();
         while (it.hasNext()) {
             Object obj = it.next();
-            if (obj instanceof MavenPOMChange) {
-                MavenPOMChange pom = (MavenPOMChange)obj;
-                if (pom.getPath().equals(path)) {
+            if (obj instanceof MavenPOMSingleChange) {
+                MavenPOMSingleChange pom = (MavenPOMSingleChange)obj;
+                if (pom.getPath().equals(pth)) {
                     return pom;
                 }
             }
@@ -138,13 +138,13 @@ public class ChangesContentProvider implements IContentProvider {
         return null;
     }
     
-    private MavenPOMTreeChange findSubTreeChange(String path) {
+    private MavenPOMTreeChange findSubTreeChange(String pth) {
         Iterator it = changes.iterator();
         while (it.hasNext()) {
             Object obj = it.next();
             if (obj instanceof MavenPOMTreeChange) {
                 MavenPOMTreeChange pom = (MavenPOMTreeChange)obj;
-                if (pom.getPath().equals(path)) {
+                if (pom.getPath().equals(pth)) {
                     return pom;
                 }
             }

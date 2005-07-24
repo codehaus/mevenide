@@ -132,8 +132,8 @@ class ResourceFilterNode extends FilterNode {
                 if (dobj != null) {
                     File file = FileUtil.toFile(dobj.getPrimaryFile());
                     if (file != null) {
-                        boolean isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
-                        if (!isIncluded) {
+                        boolean isIncl = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
+                        if (!isIncl) {
                             refreshKey(nds[i]);
                         }
                     }
@@ -150,12 +150,12 @@ class ResourceFilterNode extends FilterNode {
                         !DirScannerSubClass.checkVisible(file, root)) {
                         return new Node[0];
                     }
-                    boolean isIncluded = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
+                    boolean isIncl = DirScannerSubClass.checkIncluded(dobj.getPrimaryFile(), rootFO, resource);
                     if (ShowAllResourcesAction.getInstance().isShowingAll()) {
-                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncluded);
+                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncl);
                         return new Node[] {n};
-                    } else if (isIncluded) {
-                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncluded);
+                    } else if (isIncl) {
+                        Node n = new ResourceFilterNode((Node)obj, root, resource, isIncl);
                         return new Node[] {n};
                     }
                     return new Node[0];

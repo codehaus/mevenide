@@ -74,9 +74,9 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         setName("Java and Jar");
         initialized = false;
-        comPlatform.setToolTipText("In order to have code completion and other IDE features" +
-                " for the project, the user should define a Java Platform corresponding to the " +
-                " compilate executable.");
+        comPlatform.setToolTipText("In order to have code completion and other IDE features" 
+                + " for the project, the user should define a Java Platform corresponding to the "
+                + " compilate executable.");
     }
     
     /** This method is called from within the constructor to
@@ -465,7 +465,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     // End of variables declaration//GEN-END:variables
     
 
-    private static class NoCorrectPlatform {
+    private static final class NoCorrectPlatform {
         private NoCorrectPlatform() {
             
         }

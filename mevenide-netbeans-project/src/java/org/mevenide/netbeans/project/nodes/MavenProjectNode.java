@@ -36,12 +36,11 @@ import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
-import org.openide.util.Utilities;
 
 
 /** A node to represent this object.
  *
- * @author Milos Kleint (ca206216@tiscali.cz)
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenProjectNode extends AbstractNode {
      private static Log log = LogFactory.getLog(MavenProjectNode.class);

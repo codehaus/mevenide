@@ -17,8 +17,8 @@
 
 package org.mevenide.netbeans.api.project;
 
+import org.mevenide.netbeans.project.MavenProject;
 import org.openide.util.Lookup;
-import org.mevenide.netbeans.project.*;
 
 /**
  * Interface that allows to put additional items into project's lookup.

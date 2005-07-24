@@ -115,7 +115,7 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
     }
     
     
-  private class DocListener implements DocumentListener, OriginChange.ChangeObserver {
+  private final class DocListener implements DocumentListener, OriginChange.ChangeObserver {
         private DocListener() {
         }
         private void update() {
@@ -123,8 +123,8 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
                 return;
             }
             newValue = field.getText();
-            if (origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED ||
-                origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
+            if (   origin.getSelectedLocationID() == IPropertyLocator.LOCATION_NOT_DEFINED 
+                || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
                 origin.setAction(IPropertyLocator.LOCATION_PROJECT_BUILD);
@@ -158,5 +158,4 @@ public class TextFieldPropertyChange implements MavenPropertyChange {
         }
         
     }    
-    
 }

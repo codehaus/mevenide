@@ -23,7 +23,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -145,12 +144,12 @@ class LocationComboBox extends JButton {
         private String moveName;
         private Icon moveIcon;
         
-        public LocationWrapper(String name, Icon icon,
+        public LocationWrapper(String nm, Icon icn,
                                String mvName, Icon mvIcon,
-                               File file, int id) {
-            this.name = name;
-            this.icon = icon;
-            this.file = file;
+                               File fil, int id) {
+            name = nm;
+            icon = icn;
+            file = fil;
             loc = id;
             moveName = mvName;
             moveIcon = mvIcon;

@@ -26,7 +26,7 @@ import org.mevenide.netbeans.api.output.OutputProcessor;
 
 /**
  * Custom line based filter for maven executor output when running the application.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class AttachDebuggerOutputHook implements OutputProcessor {
     private int timeout;
@@ -46,7 +46,8 @@ public class AttachDebuggerOutputHook implements OutputProcessor {
                     try {
                         JPDADebugger debug = JPDADebugger.attach(host, port, new Object[0]);
                     } catch (DebuggerStartException exc) {
-                        DialogDisplayer.getDefault().notify(new NotifyDescriptor.Message("Cannot attach debugger.", NotifyDescriptor.ERROR_MESSAGE));
+                        DialogDisplayer.getDefault().notify(
+                                new NotifyDescriptor.Message("Cannot attach debugger.", NotifyDescriptor.ERROR_MESSAGE));
                     }
                 }
             }, timeout);

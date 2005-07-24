@@ -54,10 +54,12 @@ class CountNewLinesReader extends Reader {
     }
     
     CountNewLinesReader(InputStream is, String encoding) throws IOException {
-        if (encoding == null)
+        if (encoding == null) {
             reader = new InputStreamReader(is);
-        else
+        }
+        else {
             reader = new InputStreamReader(is, encoding);
+        }
         position = 0;
         newLinesCounts = new int[] { 0, 0, 0 };
     }
@@ -207,8 +209,8 @@ class CountNewLinesReader extends Reader {
     }
     
     public String getNewLineString() {
-        if (newLinesCounts[0] == newLinesCounts[1] &&
-                newLinesCounts[1] == newLinesCounts[2]) {
+        if      (newLinesCounts[0] == newLinesCounts[1] 
+              && newLinesCounts[1] == newLinesCounts[2]) {
             String s = System.getProperty("line.separator"); //NOI18N
             return s;
         }

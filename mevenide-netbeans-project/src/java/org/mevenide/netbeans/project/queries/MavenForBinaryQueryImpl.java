@@ -170,9 +170,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                             newInstance(file.getAbsolutePath());
                     IPropertyResolver res = project.getPropertyResolver();
 					// #MEVENIDE-287 SNAPSHOT handled in a special way
-                    boolean found =  (doCompare(depRes.guessArtifactId(), res.resolveString(mavproj.getArtifactId())) &&
-                            doCompare(depRes.guessGroupId(), res.resolveString(mavproj.getGroupId())) &&
-                            ("SNAPSHOT".equals(depRes.guessVersion()) || doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion()))));
+                    boolean found =  (doCompare(depRes.guessArtifactId(), res.resolveString(mavproj.getArtifactId())) 
+                                   && doCompare(depRes.guessGroupId(), res.resolveString(mavproj.getGroupId())) 
+                                   && ("SNAPSHOT".equals(depRes.guessVersion()) 
+                                      || doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion()))));
                     return found ? 0 : -1;
                 } catch (Exception exc) {
                     logger.error("exception", exc);

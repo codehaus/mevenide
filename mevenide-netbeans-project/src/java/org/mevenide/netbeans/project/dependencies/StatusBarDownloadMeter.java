@@ -27,8 +27,8 @@ import org.openide.awt.StatusDisplayer;
  */
 class StatusBarDownloadMeter implements DownloadMeter {
         private String path;
-        public StatusBarDownloadMeter(String path) {
-            this.path = path;
+        public StatusBarDownloadMeter(String downloadpath) {
+            path = downloadpath;
         }
         public void finish(final int total) {
             StatusDisplayer.getDefault().setStatusText(path + " downloaded.");

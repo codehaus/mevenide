@@ -62,12 +62,12 @@ public class MavenModule extends ModuleInstall {
         FindbugsAnnotation.detachAllAnnotations();
     }
    
-    public void validate() throws java.lang.IllegalStateException {
-        String maven_home = System.getProperty("Env-MAVEN_HOME");//NOI18N
-        if (maven_home == null) {
+    public void validate() {
+        String mavenhome = System.getProperty("Env-MAVEN_HOME");//NOI18N
+        if (mavenhome == null) {
             throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
         }
-        copyMevenidePlugin(new File(maven_home));
+        copyMevenidePlugin(new File(mavenhome));
     }
     
     private void copyMevenidePlugin(File home) {

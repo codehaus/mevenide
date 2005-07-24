@@ -174,11 +174,15 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
         return index > 0;
     }
     public void nextPanel() {
-        if (!hasNext()) throw new NoSuchElementException();
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
         index++;
     }
     public void previousPanel() {
-        if (!hasPrevious()) throw new NoSuchElementException();
+        if (!hasPrevious()) {
+            throw new NoSuchElementException();
+        }
         index--;
     }
     public WizardDescriptor.Panel current () {

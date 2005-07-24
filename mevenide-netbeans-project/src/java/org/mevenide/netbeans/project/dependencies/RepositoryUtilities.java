@@ -33,16 +33,15 @@ import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.repository.RepositoryReaderFactory;
-import org.openide.awt.StatusDisplayer;
 
 /**
  * remote repository related utilities 
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class RepositoryUtilities {
+public final class RepositoryUtilities {
     
     /** Creates a new instance of RepositoryUtilities */
-    public RepositoryUtilities() {
+    private RepositoryUtilities() {
     }
     
     public static IRepositoryReader createLocalReader(ILocationFinder finder) {

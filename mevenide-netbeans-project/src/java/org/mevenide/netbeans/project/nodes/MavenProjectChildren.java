@@ -68,8 +68,8 @@ class MavenProjectChildren extends Children.Keys {
     private String currentEarKey;
     private String currentEjbKey;
     
-    public MavenProjectChildren(MavenProject project) {
-        this.project = project;
+    public MavenProjectChildren(MavenProject proj) {
+        project = proj;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {

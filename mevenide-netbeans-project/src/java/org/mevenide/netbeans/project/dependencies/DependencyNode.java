@@ -439,19 +439,21 @@ public class DependencyNode extends AbstractNode {
                 for (int i = 0; i < node.length; i++) {
                     Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
                     if (obj != null) {
-                        DependencyPOMChange change = (DependencyPOMChange)obj;
-                        MavenProject project = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
-                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-                        Dependency dep = createDependencySnapshot(change.getChangedContent());
+                        DependencyPOMChange chng = (DependencyPOMChange)obj;
+                        MavenProject prj = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
+                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(prj.getPropertyResolver());
+                        Dependency dep = createDependencySnapshot(chng.getChangedContent());
                         try {
-                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, prj, dep);
                             if (downloaded) {
-                                projectsToFire.add(project);
+                                projectsToFire.add(prj);
                             }
                         } catch (FileNotFoundException e) {
-                           StatusDisplayer.getDefault().setStatusText(dep.getArtifact() + " is not available in repote repositories.");
+                           StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
+                                   + " is not available in repote repositories.");
                         } catch (Exception exc) {
-                           StatusDisplayer.getDefault().setStatusText("Error downloading " + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                           StatusDisplayer.getDefault().setStatusText("Error downloading " 
+                                   + dep.getArtifact() + " : " + exc.getLocalizedMessage());
                         }
                     }
                 }

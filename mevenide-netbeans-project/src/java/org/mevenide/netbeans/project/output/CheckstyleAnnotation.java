@@ -33,6 +33,7 @@ import org.openide.util.WeakSet;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 import org.mevenide.reports.CheckstyleResult;
+import org.openide.ErrorManager;
 
 
 /**
@@ -54,8 +55,8 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
 
     private final CheckstyleResult.Violation violation;
     
-    public CheckstyleAnnotation(CheckstyleResult.Violation violation) {
-        this.violation = violation;
+    public CheckstyleAnnotation(CheckstyleResult.Violation viol) {
+        violation = viol;
         synchronized (hyperlinks) {
             hyperlinks.add(this);
         }
@@ -86,7 +87,7 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
                 }
             }
         } catch (DataObjectNotFoundException exc) {
-            
+            ErrorManager.getDefault().notify(exc);
         }
     }
     
@@ -106,7 +107,7 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
             if (violation.getFile().equals(annot.getViolation().getFile())) {
                 int lineInt = Integer.parseInt(violation.getLine());
                 if (lineInt != -1) {
-                    Line l = cook.getLineSet().getOriginal(lineInt - 1);
+                    Line l = cook.getLineSet().getOriginal(Math.max(0, lineInt - 1));
                     if (! l.isDeleted()) {
                         ann.attachAsNeeded(l);
                     }
@@ -161,11 +162,13 @@ public final class CheckstyleAnnotation extends Annotation implements PropertyCh
     }
     
     public void propertyChange(PropertyChangeEvent ev) {
-        if (dead) return;
+        if (dead) {
+            return;
+        }
         String prop = ev.getPropertyName();
-        if (    prop == null ||
-                prop.equals(Annotatable.PROP_TEXT) ||
-                prop.equals(Annotatable.PROP_DELETED)) {
+        if (    prop == null 
+             || prop.equals(Annotatable.PROP_TEXT) 
+             || prop.equals(Annotatable.PROP_DELETED)) {
             doDetach();
         }
     }

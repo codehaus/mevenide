@@ -24,26 +24,21 @@ import java.util.StringTokenizer;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class GoalsListPropEditor extends PropertyEditorSupport
-{
-    private final static String GOAL_SEPARATOR = "/"; //NOI18N
+public class GoalsListPropEditor extends PropertyEditorSupport {
+    private static final String GOAL_SEPARATOR = "/"; //NOI18N
     /** Creates new Goal */
-    public GoalsListPropEditor()
-    {
+    public GoalsListPropEditor() {
     }
     
-    public Component getCustomEditor()
-    {
+    public Component getCustomEditor() {
         return new GoalCustomEditor(this);
     }
     
-    public boolean supportsCustomEditor()
-    {
+    public boolean supportsCustomEditor() {
         return true;
     }
     
-    public void setAsText(String text) throws java.lang.IllegalArgumentException
-    {
+    public void setAsText(String text) {
         StringTokenizer tok = new StringTokenizer(text, GOAL_SEPARATOR, false);
         String[] set = new String[tok.countTokens()];
         int index = 0;
@@ -55,8 +50,7 @@ public class GoalsListPropEditor extends PropertyEditorSupport
         setValue(set);
     }
     
-    public String getAsText()
-    {
+    public String getAsText() {
         String[] str = (String[])getValue();
         StringBuffer buf = new StringBuffer(100);
         for (int i =0; i < str.length; i++)
@@ -69,6 +63,4 @@ public class GoalsListPropEditor extends PropertyEditorSupport
         }
         return buf.toString();
     }
-
-    
 }

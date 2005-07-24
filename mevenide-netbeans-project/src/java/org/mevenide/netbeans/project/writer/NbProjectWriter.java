@@ -34,7 +34,7 @@ import org.mevenide.context.IProjectContext;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.MavenPOMChange;
-import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
+import org.mevenide.netbeans.project.customizer.MavenPOMSingleChange;
 import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.ElementContentProvider;
@@ -65,9 +65,9 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         project = proj;
     }
 
-    public void applyChanges(List changes) throws Exception {
+    public void applyChanges(List chngs) throws Exception {
         FileSystem fs = project.getProjectDirectory().getFileSystem();
-        this.changes = changes;
+        changes = chngs;
         fs.runAtomicAction(this);
     }
     
@@ -90,24 +90,24 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                     MavenPropertyChange change = (MavenPropertyChange)obj;
                     processPropertyChange(change, locFileToLockMap, locFileToModelMap);
                 }
-                if (obj instanceof MavenPOMChange || obj instanceof MavenPOMTreeChange) {
+                if (obj instanceof MavenPOMChange) {
                     pomChanges.add(obj);
-                    if (obj instanceof MavenPOMChange) {
-                        MavenPOMChange chan = (MavenPOMChange)obj;
-                        if ("pom.artifactId".equals(chan.getPath()) &&
-                            !chan.getOldValue().equals(chan.getNewValue())) 
+                    if (obj instanceof MavenPOMSingleChange) {
+                        MavenPOMSingleChange chan = (MavenPOMSingleChange)obj;
+                        if ("pom.artifactId".equals(chan.getPath()) 
+                           && !chan.getOldValue().equals(chan.getNewValue())) 
                         {
                             newArtifact = chan.getNewValue();
                             checkDependencies = true;
                         } 
-                        if ("pom.groupId".equals(chan.getPath()) &&
-                            !chan.getOldValue().equals(chan.getNewValue())) 
+                        if ("pom.groupId".equals(chan.getPath()) 
+                           && !chan.getOldValue().equals(chan.getNewValue())) 
                         {
                             newGroup = chan.getNewValue();
                             checkDependencies = true;
                         } 
-                        if ("pom.currentVersion".equals(chan.getPath()) &&
-                            !chan.getOldValue().equals(chan.getNewValue())) 
+                        if ("pom.currentVersion".equals(chan.getPath())
+                           && !chan.getOldValue().equals(chan.getNewValue())) 
                         {
                             newVersion = chan.getNewValue();
                             checkDependencies = true;
@@ -213,9 +213,11 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         return -1;
     }
     
-    private void processPropertyChange(MavenPropertyChange change, HashMap locFileToLockMap, HashMap locFileToModelMap) throws IOException {
-        if      (change.getOldLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
-                 change.getOldLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
+    private void processPropertyChange(MavenPropertyChange change, 
+                                       HashMap locFileToLockMap, 
+                                       HashMap locFileToModelMap) throws IOException {
+        if      (change.getOldLocation() != IPropertyLocator.LOCATION_DEFAULTS 
+              && change.getOldLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
             File oldLoc = FileUtilities.locationToFile(change.getOldLocation(), project);
             PropertyModel model = (PropertyModel)locFileToModelMap.get(oldLoc);
             if (model == null) {
@@ -229,8 +231,8 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                 }
             }
         }
-        if      (change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS &&
-                 change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
+        if      (change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS 
+              && change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED) {
             File newLoc = FileUtilities.locationToFile(change.getNewLocation(), project);
             PropertyModel model = (PropertyModel)locFileToModelMap.get(newLoc);
             if (model == null) {
@@ -264,8 +266,8 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         }
     }
     
-    private void writePOMs(List changes, HashMap fileLockMap) throws Exception {
-        if (changes.size() > 0) {
+    private void writePOMs(List pomchanges, HashMap fileLockMap) throws Exception {
+        if (pomchanges.size() > 0) {
             IProjectContext context = project.getContext().getPOMContext();
             org.jdom.Element[] roots = context.getRootElementLayers();
             File[] files = context.getProjectFiles();
@@ -274,8 +276,11 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
             CountNewLinesReader reader = null;
             try {
                 for (int i = 0; i < files.length; i++) {
+                    if (!anyChangesInPomFile(i, pomchanges)) {
+                        continue;
+                    }
                     IContentProvider provider = new ChangesContentProvider(new ElementContentProvider(roots[i]),
-                                                                           changes, "pom", i);
+                                                                           pomchanges, "pom", i);
                     FileObject fo = FileUtil.toFileObject(files[i]);
                     // read the current stream first..
                     reader = new CountNewLinesReader(fo.getInputStream());
@@ -300,6 +305,17 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                 }
             }
         }
+    }
+    
+    private boolean anyChangesInPomFile(int location, List pomchanges) {
+        Iterator it = pomchanges.iterator();
+        while (it.hasNext()) {
+            MavenPOMChange chng = (MavenPOMChange)it.next();
+            if (chng.hasChanged() && (chng.getOldLocation() == location || chng.getNewLocation() == location)) {
+                return true;
+            }
+        }
+        return false;
     }
     
     static Format figureOutFormat(org.jdom.Element root, CountNewLinesReader reader) {
