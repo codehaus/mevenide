@@ -36,7 +36,8 @@ import org.mevenide.properties.IPropertyResolver;
 
 
 /**
- * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
+ * default implementation of IProjectContext
+ * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  *
  */
 class DefaultProjectContext implements IProjectContext {
