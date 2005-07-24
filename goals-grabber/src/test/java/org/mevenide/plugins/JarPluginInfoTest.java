@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.mevenide.plugins;
 
 import java.io.FileInputStream;
@@ -25,9 +24,9 @@ import java.io.File;
  *
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
-public class DefaultPluginInfoTest extends TestCase {
+public class JarPluginInfoTest extends TestCase {
     
-    public DefaultPluginInfoTest(String testName) {
+    public JarPluginInfoTest(String testName) {
         super(testName);
     }
 
@@ -42,12 +41,12 @@ public class DefaultPluginInfoTest extends TestCase {
      * Test of readProjectValues method, of class org.mevenide.plugins.DefaultPluginInfo.
      */
     public void testReadProjectValues() throws Exception {
-        File fil = new File(this.getClass().getResource("/project.xml").getFile());
+        File fil = new File(this.getClass().getResource("/maven-nbm-plugin-1.3.jar").getFile());
         
-        DefaultPluginInfo info = new DefaultPluginInfo(new File("cachefilewhatever"));
-        info.readProjectValues(new FileInputStream(fil));
-        assertEquals("Goals Grabber", info.getLongName());
-        assertEquals("Gets all the available goals", info.getDescription());
+        JarPluginInfo info = new JarPluginInfo(fil);
+        assertEquals("Maven NBM Plugin", info.getName());
+        assertEquals("Maven NBM Plugin", info.getLongName());
+        assertEquals("Creates ready to use Netbeans module distribution", info.getDescription());
         
     }
     

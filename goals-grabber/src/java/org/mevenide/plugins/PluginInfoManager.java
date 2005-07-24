@@ -18,9 +18,12 @@
 package org.mevenide.plugins;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.LocationFinderAggregator;
 
@@ -50,7 +53,55 @@ public final class PluginInfoManager {
     
     public IPluginInfo[] getCurrentPlugins() {
         findParser();
-        return parser.getInfos();
+        IPluginInfo[] cachedInfos = parser.getInfos();
+        List projectInfos = loadProjectDependentPlugins();
+        if (projectInfos.size() > 0) {
+            // take the plugins defined as dependency into account.
+            // these have precedence over the cached ones..
+            Iterator it = projectInfos.iterator();
+            String list = "";
+            List toRet = new ArrayList();
+            while (it.hasNext()) {
+                IPluginInfo projectInfo = (IPluginInfo)it.next();
+                list = list + projectInfo.getArtifactId() + ",";
+                toRet.add(projectInfo);
+            }
+            for (int i = 0; i < cachedInfos.length; i++) {
+                String toMatch = cachedInfos[i].getArtifactId() + ",";
+                if (list.indexOf(toMatch) == -1) {
+                    toRet.add(cachedInfos[i]);
+                }
+            }
+            return (IPluginInfo[])toRet.toArray(new IPluginInfo[toRet.size()]);
+        } else {
+            return cachedInfos;
+        }
+    }
+    
+    private List loadProjectDependentPlugins() {
+        List prjPlugins = new ArrayList();
+        List deps = context.getPOMContext().getFinalProject().getDependencies();
+        if (deps != null) {
+            Iterator it = deps.iterator();
+            while (it.hasNext()) {
+                Dependency dep = (Dependency)it.next();
+                if (dep.isPlugin()) {
+                    File repoLocal =  new File(finder.getMavenLocalRepository());
+                    String grId = dep.getGroupId() != null ? dep.getGroupId() : dep.getId();
+                    String artId = dep.getArtifactId() != null ? dep.getArtifactId() : dep.getId();
+                    String relPath = grId + File.separator + "plugins" + File.separator + artId + "-" + dep.getVersion() + ".jar";
+                    File depLocal = new File(repoLocal,  relPath);
+                    if (depLocal.exists()) {
+                        JarPluginInfo info = new JarPluginInfo(depLocal);
+                        info.setArtifactId(artId);
+                        info.setVersion(dep.getVersion());
+                        // we are not setting name here because it's not easily available, do it lazily in DefaultPluginInfo's getName() method
+                        prjPlugins.add(info);
+                    }
+                }
+            }
+        }
+        return prjPlugins;
     }
     
     /**
