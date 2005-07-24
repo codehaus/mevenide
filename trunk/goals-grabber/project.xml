@@ -51,6 +51,9 @@
             <artifactId>maven</artifactId>
             <version>1.0.2</version>
             <type>jar</type>
+            <properties>
+               <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>

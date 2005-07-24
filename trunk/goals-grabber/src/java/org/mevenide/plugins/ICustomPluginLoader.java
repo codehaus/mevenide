@@ -19,7 +19,8 @@
 package org.mevenide.plugins;
 
 /**
- *
+ * an IDE dependant loader of enhanced property loader. Each implementaion
+ * reads the information registered by the IDE's APIs..
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 public interface ICustomPluginLoader {
