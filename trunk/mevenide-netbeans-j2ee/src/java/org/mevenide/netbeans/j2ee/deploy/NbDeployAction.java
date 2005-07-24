@@ -21,11 +21,11 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment.Logger;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
-import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -43,6 +43,8 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
     private MavenProject project;
     private InputOutput io;
     private String serverInstanceid;
+    private String path;
+    private boolean debug;
     public NbDeployAction(MavenProject prj) {
         putValue(Action.NAME, "Netbeans Deploy");
         project = prj;
@@ -55,25 +57,32 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             serverInstanceid = panel.getSelectedServer();
+            path = panel.getPath();
+            debug = panel.isDebugging();
             System.out.println("server id=" + serverInstanceid);
             prov.setServerInstanceID(serverInstanceid);
             RequestProcessor.getDefault().post(this);
         }
         
     }
+    
     public void run() {
         io = IOProvider.getDefault().getIO(project.getName(), true);
         io.select();
         try {
             J2eeModuleProvider jmp = null;
             jmp = (J2eeModuleProvider) project.getLookup().lookup(J2eeModuleProvider.class);
-            WebModuleImplementation impl = (WebModuleImplementation)project.getLookup().lookup(WebModuleImplementation.class);
-            jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
+            WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+            if (impl.isValid()) {
+                jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
+            }
             jmp.getConfigSupport().ensureConfigurationReady();
-            String clientUrl = Deployment.getDefault().deploy(jmp, false,
-                    "",
-                    "sample.jsp", true, this);
+            ErrorManager.getDefault().log(ErrorManager.USER, "contextpath=" + impl.getContextPath());
+            String clientUrl = Deployment.getDefault().deploy(jmp, debug,
+                    impl.getContextPath(),
+                    path, true, this);
             URL url = new URL(clientUrl);
+            System.out.println("url=" + clientUrl);
             HtmlBrowser.URLDisplayer.getDefault().showURL(url);
         } catch (Exception e) {
             ErrorManager.getDefault().log("e message=" + e.getMessage());
@@ -87,5 +96,4 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
     public void log(String str) {
         io.getOut().println(str);
     }
-    
 }

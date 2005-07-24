@@ -17,6 +17,8 @@
 
 package org.mevenide.netbeans.j2ee;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModuleContainer;
@@ -28,13 +30,16 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
  */
 public class MavenJ2eeModuleContainer extends MavenJ2eeModule implements J2eeModuleContainer {
     private MavenProject project;
+    private List listeners;
     /** Creates a new instance of MavenJ2eeModuleContainer */
     public MavenJ2eeModuleContainer(MavenProject proj) {
         super(proj);
         project = proj;
+        listeners = new ArrayList();
     }
 
     public void addModuleListener(ModuleListener ml) {
+        listeners.add(ml);
     }
 
     public J2eeModule[] getModules(ModuleListener ml) {
@@ -42,6 +47,7 @@ public class MavenJ2eeModuleContainer extends MavenJ2eeModule implements J2eeMod
     }
 
     public void removeModuleListener(ModuleListener ml) {
+        listeners.remove(ml);
     }
     
 }

@@ -50,11 +50,11 @@ public class DeployerRunner implements Runnable {
     private String baseurl;
     private WAR war;
     /** Creates a new instance of Deployer */
-    public DeployerRunner(Container cont, String depl, String url, String context) {
+    public DeployerRunner(Container cont, String depl, String url, String ctx) {
         container = cont;
         deployable = depl;
         baseurl = url;
-        this.context = context;
+        context = ctx;
     }
     
     public DeployerRunner(Container cont, WAR existingWar) {

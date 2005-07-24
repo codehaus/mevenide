@@ -18,9 +18,18 @@
 package org.mevenide.netbeans.j2ee;
 
 import java.io.File;
+import java.net.URI;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.project.MavenSourcesImpl;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -30,7 +39,8 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
- *
+ * implementatiomn of J2eeMoudleProvider that is used by the IDE for deployment of j2ee applications.
+ * the implementation is provided in the project's lookup.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class J2eeModuleProviderImpl extends J2eeModuleProvider {
@@ -44,10 +54,13 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
     private String serverId = null;
     private MavenProject project;
     private MavenJ2eeModule j2eeModule;
+    private ModuleChangeReporter moduleChangeReporter;
+    
     /** Creates a new instance of J2eeModuleProviderImpl */
     public J2eeModuleProviderImpl(MavenProject proj) {
         project = proj;
         j2eeModule = new MavenJ2eeModule(project);
+        moduleChangeReporter = new ModuleChangeReporterImpl();
     }
 
     /**
@@ -113,7 +126,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
     }
 
     public ModuleChangeReporter getModuleChangeReporter() {
-        return new ModuleChangeReporterImpl();
+        return moduleChangeReporter;
     }
 
 
@@ -126,7 +139,36 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
      *  the returned list.
      */
     public FileObject[] getSourceRoots() {
-        return new FileObject[0];
+        Set fos = new HashSet();
+        //TODO j2ee type specific roots first
+        
+        Sources sources = project.getSources();
+        SourceGroup[] grps = sources.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
+        for (int i = 0; i < grps.length; i++) {
+            fos.add(grps[i].getRootFolder());
+        }
+        grps = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        for (int i = 0; i < grps.length; i++) {
+            fos.add(grps[i].getRootFolder());
+        }
+        URI generated = project.getGeneratedSourcesDir();
+        if (generated != null) {
+            FileObject fo = FileUtilities.convertURItoFileObject(generated);
+            if (fo != null) {
+                fos.add(fo);
+            }
+        }
+        Collection additional = project.getAdditionalGeneratedSourceDirs();
+        if (additional != null) {
+            Iterator it = additional.iterator();
+            while (it.hasNext()) {
+                FileObject fo = FileUtilities.convertURItoFileObject((URI)it.next());
+                if (fo != null) {
+                    fos.add(fo);
+                }
+            }
+        }
+        return (FileObject[])fos.toArray(new FileObject[fos.size()]);
     }
     
     /**

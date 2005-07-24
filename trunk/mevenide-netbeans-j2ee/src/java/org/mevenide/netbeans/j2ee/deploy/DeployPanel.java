@@ -276,7 +276,7 @@ public class DeployPanel extends JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
         add(lblWebpage, gridBagConstraints);
 
-        lblInfo.setText("<html>Maven projects use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo's website for detailed information about supported J2EE containers and features supported for given container. </html>");
+        lblInfo.setText("<html>Maven projects can use Cargo APIs (http://cargo.codehaus.org) for deployment. Please refer to Cargo's website for detailed information about supported J2EE containers and features supported for given container. </html>");
         lblInfo.setMinimumSize(new java.awt.Dimension(300, 50));
         lblInfo.setPreferredSize(new java.awt.Dimension(400, 75));
         gridBagConstraints = new java.awt.GridBagConstraints();
