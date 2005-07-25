@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" xmlns:j="jelly:core" xmlns:u="jelly:util">
+
+    <goal name="idea:init">
+
+        <!-- Make sure the 'idea.sandbox.dir' and 'idea.home' proeprties are defined. -->
+        <ant:fail
+                message="Please define the 'idea.sandbox.dir' property first."
+                unless="idea.sandbox.dir"/>
+        <ant:fail
+                message="Please define the 'idea.sandbox.dir' property first."
+                unless="idea.home"/>
+
+        <ant:property environment="env"/>
+
+        <ant:path id="idea.classpath">
+            <ant:pathelement location="${idea.home}\lib\idea.jar"/>
+            <ant:pathelement location="${idea.home}\lib\openapi.jar"/>
+            <ant:pathelement location="${idea.home}\lib\jdom.jar"/>
+            <ant:pathelement location="${idea.home}\lib\log4j.jar"/>
+            <ant:pathelement location="${idea.home}\lib\extensions.jar"/>
+            <ant:pathelement location="${env.JAVA_HOME}/lib/tools.jar"/>
+        </ant:path>
+    </goal>
+
+    <goal name="idea:clean" prereqs="idea:init" description="Cleans the IDEA sandbox directory.">
+        <ant:delete dir="${idea.sandbox.dir}"/>
+    </goal>
+
+    <goal name="idea:copy-license" prereqs="idea:init" description="Copies your existing IDEA license to your sandbox directory.">
+        <ant:mkdir dir="${idea.sandbox.config.dir}"/>
+        <ant:copy file="${idea.license.file}"
+                  todir="${idea.sandbox.config.dir}"/>
+    </goal>
+
+    <goal name="idea:run" prereqs="idea:install"
+          description="Builds and installs the plugin in the IDEA sandbox, and runs IDEA.">
+
+        <ant:java classname="com.intellij.idea.Main"
+                  classpathref="idea.classpath"
+                  fork="true"
+                  spawn="false"
+                  failonerror="true"
+                  jvm="${env.JAVA_HOME}/bin/java"
+                  dir="${idea.home.bin.dir}">
+
+            <ant:jvmarg value="-Xbootclasspath/p:${idea.home.lib.dir}\boot.jar"/>
+            <ant:jvmarg value="-ea"/>
+            <!--<ant:jvmarg value="-Xrunyjpagent:port=10100"/>-->
+
+            <ant:sysproperty key="file.encoding" value="UTF-8"/>
+            <ant:sysproperty key="idea.config.path" value="${idea.sandbox.config.dir}"/>
+            <ant:sysproperty key="idea.system.path" value="${idea.sandbox.system.dir}"/>
+            <ant:sysproperty key="idea.plugins.path" value="${idea.sandbox.plugins.dir}"/>
+            <ant:sysproperty key="idea.launcher.port" value="7532"/>
+            <ant:sysproperty key="idea.launcher.bin.path" value="${idea.home.bin.dir}"/>
+
+        </ant:java>
+    </goal>
+
+    <goal name="idea:debug" prereqs="idea:install"
+          description="Builds and installs the plugin in the IDEA sandbox, and runs IDEA.">
+
+        <ant:java classname="com.intellij.idea.Main"
+                  classpathref="idea.classpath"
+                  fork="true"
+                  spawn="false"
+                  failonerror="true"
+                  jvm="${env.JAVA_HOME}/bin/java"
+                  dir="${idea.home.bin.dir}">
+
+            <ant:jvmarg value="-Xbootclasspath/p:${idea.home.lib.dir}\boot.jar"/>
+            <ant:jvmarg value="-ea"/>
+            <ant:jvmarg value="-Xdebug"/>
+            <ant:jvmarg value="-Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=4795"/>
+            <ant:jvmarg value="-Xnoagent"/>
+
+            <ant:sysproperty key="java.compiler" value="NONE"/>
+            <ant:sysproperty key="file.encoding" value="UTF-8"/>
+            <ant:sysproperty key="idea.config.path" value="${idea.sandbox.config.dir}"/>
+            <ant:sysproperty key="idea.system.path" value="${idea.sandbox.system.dir}"/>
+            <ant:sysproperty key="idea.plugins.path" value="${idea.sandbox.plugins.dir}"/>
+            <ant:sysproperty key="idea.launcher.port" value="7532"/>
+            <ant:sysproperty key="idea.launcher.bin.path" value="${idea.home.bin.dir}"/>
+
+        </ant:java>
+    </goal>
+
+    <goal name="idea:install"
+          prereqs="jar:install,idea:copy-license"
+          description="Installs the plugin in the IDEA sandbox directory.">
+
+        <!-- make sure target path exists -->
+        <ant:mkdir dir="${idea.sandbox.plugin.lib.dir}"/>
+
+        <!-- copy project dependencies to sandbox -->
+        <j:forEach var="artifact" items="${pom.artifacts}">
+            <j:set var="dep" value="${artifact.dependency}"/>
+            <j:if test="${dep.getProperty('idea.plugin.bundle')=='true'}">
+
+                <!-- find the dependency file -->
+                <u:file var="f" name="${artifact.file.parent}/${artifact.file.name}"/>
+                <ant:copy file="${f}" todir="${idea.sandbox.plugin.lib.dir}"/>
+
+            </j:if>
+        </j:forEach>
+
+        <!-- copy project artifact to sandbox -->
+        <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${idea.sandbox.plugin.lib.dir}"/>
+
+        <!-- copy plugin descriptor to sandbox -->
+        <ant:mkdir dir="${idea.sandbox.plugin.metainf.dir}"/>
+        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${idea.sandbox.plugin.metainf.dir}"/>
+
+    </goal>
+
+    <postGoal name="dist:prepare-bin-filesystem">
+
+        <!-- plugin directory structure -->
+        <j:set var="plugin.lib" value="${maven.dist.bin.assembly.dir}/lib"/>
+        <j:set var="plugin.metainf" value="${maven.dist.bin.assembly.dir}/META-INF"/>
+
+        <!-- ensure dirs exist -->
+        <ant:mkdir dir="${plugin.lib}"/>
+        <ant:mkdir dir="${plugin.metainf}"/>
+
+        <!-- copy project artifact -->
+        <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${plugin.lib}"/>
+        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${plugin.metainf}"/>
+
+        <!-- copy project dependencies -->
+        <j:forEach var="artifact" items="${pom.artifacts}">
+            <j:set var="dep" value="${artifact.dependency}"/>
+            <j:if test="${dep.getProperty('idea.plugin.bundle')=='true'}">
+
+                <!-- find the dependency file -->
+                <u:file var="f" name="${artifact.file.parent}/${artifact.file.name}"/>
+                <ant:copy file="${f}" todir="${plugin.lib}"/>
+
+            </j:if>
+        </j:forEach>
+
+        <!-- delete documentation and jar not needed in plugin dist -->
+        <ant:delete dir="${maven.dist.bin.assembly.dir}/docs"/>
+        <ant:delete file="${maven.dist.bin.assembly.dir}/${maven.final.name}.jar"/>
+
+    </postGoal>
+
+</project>
