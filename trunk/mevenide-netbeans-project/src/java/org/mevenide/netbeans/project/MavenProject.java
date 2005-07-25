@@ -193,7 +193,7 @@ public final class MavenProject implements Project {
     }
     
     public String getName() {
-        String toReturn = getOriginalMavenProject().getId();
+        String toReturn = getPropertyResolver().resolveString(getOriginalMavenProject().getId());
         if (toReturn == null) {
             toReturn = getProjectDirectory().getName() + " <No Project ID>";
         }
@@ -464,7 +464,8 @@ public final class MavenProject implements Project {
             if (errorName != null) {
                 return errorName;
             }
-            String toReturn = MavenProject.this.getOriginalMavenProject().getName();
+            String toReturn = MavenProject.this.getPropertyResolver().resolveString(
+                        MavenProject.this.getOriginalMavenProject().getName());
             if (toReturn == null) {
                 toReturn = "<No name defined>";
             }
