@@ -9,7 +9,7 @@
                 message="Please define the 'idea.sandbox.dir' property first."
                 unless="idea.sandbox.dir"/>
         <ant:fail
-                message="Please define the 'idea.sandbox.dir' property first."
+                message="Please define the 'idea.home' property first."
                 unless="idea.home"/>
 
         <ant:property environment="env"/>
