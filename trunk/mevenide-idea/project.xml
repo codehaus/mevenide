@@ -128,7 +128,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.9</version>
+            <version>0.10-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <idea.plugin.bundle>true</idea.plugin.bundle>
