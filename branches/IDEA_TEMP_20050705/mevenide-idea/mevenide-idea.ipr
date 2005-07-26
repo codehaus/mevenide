@@ -210,10 +210,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/mevenide-idea.iml" filepath="$PROJECT_DIR$/mevenide-idea.iml" />
-      <module fileurl="file://$PROJECT_DIR$/run-config/run-config.iml" filepath="$PROJECT_DIR$/run-config/run-config.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="1.5" />
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA 3424" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
@@ -222,179 +221,100 @@
     <option name="ADDITIONAL_OPTIONS_STRING" value="" />
   </component>
   <component name="libraryTable">
-    <library name="com.intellij-3397">
+    <library name="commons-beanutils-core">
       <CLASSES>
-        <root url="jar://$maven.repo$/com.intellij/jars/extensions-3397.jar!/" />
-        <root url="jar://$maven.repo$/com.intellij/jars/openapi-3397.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://$idea.home$/help/openapi" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />
-      </SOURCES>
-    </library>
-    <library name="commons-beanutils-core-1.7.0">
-      <CLASSES>
-        <root url="jar://$maven.repo$/commons-beanutils/jars/commons-beanutils-core-1.7.0.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-beanutils/jars/commons-beanutils-core-1.7.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="commons-codec-1.3">
+    <library name="commons-codec">
       <CLASSES>
-        <root url="jar://$maven.repo$/commons-codec/jars/commons-codec-1.3.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-codec/jars/commons-codec-1.3.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="commons-collections-2.1">
+    <library name="commons-collections">
       <CLASSES>
-        <root url="jar://$maven.repo$/commons-collections/jars/commons-collections-2.1.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-collections/jars/commons-collections-2.1.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="commons-lang-2.0">
+    <library name="commons-lang">
       <CLASSES>
-        <root url="jar://$maven.repo$/commons-lang/jars/commons-lang-2.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/docs/api" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/java" />
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-lang-2.0/src/conf" />
-      </SOURCES>
-    </library>
-    <library name="commons-logging-1.0.3">
-      <CLASSES>
-        <root url="jar://$maven.repo$/commons-logging/jars/commons-logging-1.0.3.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-lang/jars/commons-lang-2.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="forms-1.0.5">
+    <library name="commons-logging">
       <CLASSES>
-        <root url="jar://$maven.repo$/jgoodies/jars/forms-1.0.5.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/Devl/lib/com/jgoodies/forms-1.0.5/docs/api" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://C:/Devl/lib/com/jgoodies/forms-1.0.5/forms-1.0.5-src.zip!/" />
-      </SOURCES>
-    </library>
-    <library name="commons-io-1.0">
-      <CLASSES>
-        <root url="jar://$maven.repo$/commons-io/jars/commons-io-1.0.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-logging/jars/commons-logging-1.0.3.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
-    <library name="jdom-1.0">
+    <library name="forms">
       <CLASSES>
-        <root url="jar://$maven.repo$/jdom/jars/jdom-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/Devl/lib/org/jdom-1.0/build/apidocs" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://C:/Devl/lib/org/jdom-1.0/src/java" />
-      </SOURCES>
-    </library>
-    <library name="goals-grabber-0.9">
-      <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/goals-grabber-0.9.jar!/" />
+        <root url="jar://$maven.repo$/repository/jgoodies/jars/forms-1.0.5.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/mevenide/goals-grabber/src/java" />
-        <root url="file://C:/Devl/work/mevenide/goals-grabber/src/conf" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="mevenide-config-0.8">
+    <library name="commons-io">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-config-0.8.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-io/jars/commons-io-1.0.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/java" />
-        <root url="file://C:/Devl/work/mevenide/mevenide-config/src/conf" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="mevenide-repository-0.3-SNAPSHOT">
+    <library name="goals-grabber">
       <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-repository-0.3-SNAPSHOT.jar!/" />
+        <root url="jar://$maven.repo$/repository/mevenide/jars/goals-grabber-0.10-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/conf" />
-        <root url="file://C:/Devl/work/mevenide/mevenide-repository/src/java" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="maven-1.0.2">
+    <library name="mevenide-config">
       <CLASSES>
-        <root url="jar://$maven.repo$/maven/jars/maven-1.0.2.jar!/" />
+        <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-config-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/maven/maven-1.0.2/src/java" />
-        <root url="file://C:/Devl/work/maven/maven-1.0.2/src/conf" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="idea-run-config-eap">
+    <library name="mevenide-repository">
       <CLASSES>
-        <root url="jar://$idea.home$/lib/idea.jar!/" />
-        <root url="jar://$idea.home$/lib/openapi.jar!/" />
-        <root url="jar://$idea.home$/lib/jdom.jar!/" />
-        <root url="jar://$idea.home$/lib/log4j.jar!/" />
-        <root url="jar://$idea.home$/lib/extensions.jar!/" />
-        <root url="jar://C:/Program Files/Java/jdk1.5.0_03/lib/tools.jar!/" />
+        <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-repository-0.3-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="jar://$idea.home$/lib/src/trove4j_src.jar!/" />
-        <root url="jar://$idea.home$/lib/src/src_forms_rt.zip!/" />
-        <root url="jar://$idea.home$/lib/src/src_openapi.zip!/" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="commons-httpclient-3.0-rc2">
+    <library name="maven">
       <CLASSES>
-        <root url="jar://$maven.repo$/commons-httpclient/jars/commons-httpclient-3.0-rc2.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/docs/apidocs" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/src/conf" />
-        <root url="file://C:/Devl/lib/org/apache/commons/commons-httpclient-3.0-rc2/src/java" />
-      </SOURCES>
-    </library>
-    <library name="binding-1.0">
-      <CLASSES>
-        <root url="jar://$maven.repo$/jgoodies/jars/binding-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC>
-        <root url="file://C:/Devl/lib/com/jgoodies/binding-1.0/docs/api" />
-      </JAVADOC>
-      <SOURCES>
-        <root url="jar://C:/Devl/lib/com/jgoodies/binding-1.0/binding-1.0-src.zip!/" />
-      </SOURCES>
-    </library>
-    <library name="mevenide-core-0.10-SNAPSHOT">
-      <CLASSES>
-        <root url="jar://$maven.repo$/mevenide/jars/mevenide-core-0.10-SNAPSHOT.jar!/" />
+        <root url="jar://$maven.repo$/repository/maven/jars/maven-1.0.2.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES>
-        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/java" />
-        <root url="file://C:/Devl/work/mevenide/mevenide-core/src/conf" />
-      </SOURCES>
+      <SOURCES />
     </library>
-    <library name="log4j-1.2.8">
+    <library name="commons-httpclient">
       <CLASSES>
-        <root url="jar://$maven.repo$/log4j/jars/log4j-1.2.8.jar!/" />
+        <root url="jar://$maven.repo$/repository/commons-httpclient/jars/commons-httpclient-3.0-rc2.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="binding">
+      <CLASSES>
+        <root url="jar://$maven.repo$/repository/jgoodies/jars/binding-1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="mevenide-core">
+      <CLASSES>
+        <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-core-0.10-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -405,7 +325,6 @@
     <option name="COPY_FORMS_RUNTIME_TO_OUTPUT" value="true" />
   </component>
   <UsedPathMacros>
-    <macro name="idea.home" />
     <macro name="maven.repo" />
   </UsedPathMacros>
 </project>

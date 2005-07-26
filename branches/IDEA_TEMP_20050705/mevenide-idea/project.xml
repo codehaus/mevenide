@@ -20,12 +20,12 @@
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>openapi</artifactId>
-            <version>3397</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.intellij</groupId>
             <artifactId>extensions</artifactId>
-            <version>3397</version>
+            <version>SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
