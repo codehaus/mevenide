@@ -331,4 +331,10 @@ public abstract class PageSection extends SectionPart {
          return new File(((FileEditorInput) getPage().getPomEditor().getEditorInput()).getFile().getLocation().toOSString());
     }
     
+    public void ensureExpanded() {
+        if (! getSection().isExpanded()) {
+            getSection().setExpanded(true);
+        }
+    }
+    
 }

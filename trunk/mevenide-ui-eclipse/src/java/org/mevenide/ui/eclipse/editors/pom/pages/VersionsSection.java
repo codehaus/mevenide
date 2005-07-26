@@ -25,8 +25,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.adapters.properties.VersionPropertySource;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 
@@ -37,6 +39,7 @@ import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 public class VersionsSection extends PageSection {
 
 	private TableEntry versionTable;
+    private TableViewer versionViewer;
 	
 	public VersionsSection(
 		RepositoryPage page,
@@ -61,8 +64,8 @@ public class VersionsSection extends PageSection {
 		
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
-		versionTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("VersionsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
+        versionViewer = createTableViewer(container, factory, 1);
+		versionTable = new TableEntry(versionViewer, toggle, Mevenide.getResourceString("VersionsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List versions = (List) value;
@@ -122,4 +125,23 @@ public class VersionsSection extends PageSection {
 		}
 	}
 
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Version) {
+            Version version = (Version) input;
+            TableItem[] items = versionViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                VersionPropertySource src = (VersionPropertySource) items[i].getData();
+                if (src.getSource().equals(version)) {
+                    ensureExpanded();
+                    versionViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
+    
 }

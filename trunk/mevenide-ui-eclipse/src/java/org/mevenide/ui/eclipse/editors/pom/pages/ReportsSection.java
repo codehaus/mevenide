@@ -19,6 +19,7 @@ package org.mevenide.ui.eclipse.editors.pom.pages;
 import java.util.Arrays;
 import java.util.List;
 import java.util.TreeSet;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
@@ -31,8 +32,10 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.model.WorkbenchContentProvider;
+import org.mevenide.project.Report;
 import org.mevenide.reports.IReportsFinder;
 import org.mevenide.reports.JDomReportsFinder;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -180,5 +183,24 @@ public class ReportsSection extends PageSection {
 		availableReportsViewer.add(availableReports.toArray());
 		includedReportsViewer.getTable().removeAll();
 	}
+    
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Report) {
+            Report report = (Report) input;
+            TableItem[] items = includedReportsViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                String src = (String) items[i].getData();
+                if (src.equals(report.getName())) {
+                    ensureExpanded();
+                    includedReportsViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
 
 }
