@@ -58,6 +58,11 @@ public interface IImageRegistry {
     public static final String PROPERTY_OBJ = "obj16/mprop_attr.gif"; //$NON-NLS-1$
     public static final String MAVEN_PROJECT_OBJ = "obj16/mprj_obj.gif"; //$NON-NLS-1$
     public static final String MAVEN_POM_OBJ = "obj16/mfile_obj.gif"; //$NON-NLS-1$
+    public static final String VERSION_OBJ = "obj16/mversion_obj.gif"; //$NON-NLS-1$
+    public static final String BRANCH_OBJ = "obj16/mbranch_obj.gif"; //$NON-NLS-1$
+    public static final String DEVELOPER_OBJ = "obj16/mdeveloper_obj.gif"; //$NON-NLS-1$
+    public static final String CONTRIBUTOR_OBJ = "obj16/mcontributor_obj.gif"; //$NON-NLS-1$
+    public static final String REPORT_OBJ = "obj16/mreport_obj.gif"; //$NON-NLS-1$
     public static final String FOLDER_UNDEF_OBJ = "obj16/mundefined_obj.gif"; //$NON-NLS-1$
     public static final String FOLDER_SRC_OBJ = "obj16/msources_obj.gif"; //$NON-NLS-1$
     public static final String FOLDER_TEST_OBJ = "obj16/mutests_obj.gif"; //$NON-NLS-1$
@@ -125,5 +130,10 @@ public interface IImageRegistry {
             MAVEN_REPO_TYPE,
             FILE_OBJ,
             NEW_MAVEN_REPO_WIZ,
+            DEVELOPER_OBJ,
+            CONTRIBUTOR_OBJ,
+            VERSION_OBJ,
+            BRANCH_OBJ,
+            REPORT_OBJ
     };
 }

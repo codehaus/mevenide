@@ -39,6 +39,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkAdapter;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -52,6 +53,7 @@ import org.eclipse.ui.views.navigator.LocalSelectionTransfer;
 import org.mevenide.repository.RepoPathElement;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.MevenideResources;
+import org.mevenide.ui.eclipse.adapters.properties.DependencyPropertySource;
 import org.mevenide.ui.eclipse.adapters.properties.PropertyProxy;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.PageEntry;
@@ -341,5 +343,24 @@ public class DependenciesSection extends PageSection {
 			dependenciesTable.setInherited(false);
 		}
 	}
+    
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Dependency) {
+            Dependency dep = (Dependency) input;
+            TableItem[] items = dependenciesViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                DependencyPropertySource src = (DependencyPropertySource) items[i].getData();
+                if (src.getSource().equals(dep)) {
+                    ensureExpanded();
+                    dependenciesViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
 
 }

@@ -25,8 +25,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.adapters.properties.BranchPropertySource;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 
@@ -37,6 +39,7 @@ import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 public class BranchesSection extends PageSection {
 
 	private TableEntry branchTable;
+    private TableViewer branchViewer;
 	
 	public BranchesSection(
 		RepositoryPage page,
@@ -61,8 +64,8 @@ public class BranchesSection extends PageSection {
 		
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
-		branchTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("BranchesSection.tableEntry.tooltip"), container, factory, this);  //$NON-NLS-1$
+        branchViewer = createTableViewer(container, factory, 1);
+		branchTable = new TableEntry(branchViewer, toggle, Mevenide.getResourceString("BranchesSection.tableEntry.tooltip"), container, factory, this);  //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List branches = (List) value;
@@ -122,4 +125,23 @@ public class BranchesSection extends PageSection {
 		}
 	}
 
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Branch) {
+            Branch branch = (Branch) input;
+            TableItem[] items = branchViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                BranchPropertySource src = (BranchPropertySource) items[i].getData();
+                if (src.getSource().equals(branch)) {
+                    ensureExpanded();
+                    branchViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
+    
 }

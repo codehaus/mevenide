@@ -25,8 +25,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.adapters.properties.ContributorPropertySource;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 
@@ -37,6 +39,7 @@ import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 public class ContributorsSection extends PageSection {
 
 	private TableEntry contribTable;
+    private TableViewer contribViewer;
 	
 	public ContributorsSection(
 		TeamPage page,
@@ -61,8 +64,8 @@ public class ContributorsSection extends PageSection {
 		
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
-		contribTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ContributorsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
+        contribViewer = createTableViewer(container, factory, 1);
+		contribTable = new TableEntry(contribViewer, toggle, Mevenide.getResourceString("ContributorsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List contributors = (List) value;
@@ -121,5 +124,24 @@ public class ContributorsSection extends PageSection {
 			contribTable.setInherited(false);
 		}
 	}
+
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Contributor) {
+            Contributor contributor = (Contributor) input;
+            TableItem[] items = contribViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                ContributorPropertySource src = (ContributorPropertySource) items[i].getData();
+                if (src.getSource().equals(contributor)) {
+                    ensureExpanded();
+                    contribViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
 
 }

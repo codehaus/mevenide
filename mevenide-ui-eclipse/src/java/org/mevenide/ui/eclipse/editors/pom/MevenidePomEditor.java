@@ -155,7 +155,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     protected void addPages() {
         try {
             createOverviewPage();
-            createProjectInfoPage();
+            createDescriptionPage();
             createOrganizationPage();
             createRepositoryPage();
             createTeamPage();
@@ -185,7 +185,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
      * Creates the overview page of the Project Object Model editor, where
      * basic information about the project is defined.
      */
-    private void createProjectInfoPage() throws PartInitException {
+    private void createDescriptionPage() throws PartInitException {
         DescriptionPage projectInfoPage = new DescriptionPage(this);
         comparator.addProjectChangeListener(ProjectComparator.PROJECT, projectInfoPage);
         addPage(projectInfoPage);
@@ -554,9 +554,9 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
     private Object getContentOutline() {
         if (outline == null) {
-            outline = new PomContentOutlinePage(getDocumentProvider(), this);
+            outline = new PomContentOutlinePage(this); //getDocumentProvider(), this);
             if (getEditorInput() != null) {
-                outline.setInput(getEditorInput());
+                outline.setModel(getPom());
             }
         }
         return outline;

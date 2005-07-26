@@ -25,8 +25,10 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.mevenide.ui.eclipse.Mevenide;
+import org.mevenide.ui.eclipse.adapters.properties.DeveloperPropertySource;
 import org.mevenide.ui.eclipse.editors.pom.entries.IPomCollectionAdaptor;
 import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 
@@ -37,6 +39,7 @@ import org.mevenide.ui.eclipse.editors.pom.entries.TableEntry;
 public class DevelopersSection extends PageSection {
 
 	private TableEntry devTable;
+    private TableViewer devViewer;
 	
 	public DevelopersSection(
 		TeamPage page,
@@ -61,8 +64,8 @@ public class DevelopersSection extends PageSection {
 		
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
-		devTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("DevelopersSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
+        devViewer = createTableViewer(container, factory, 1);
+		devTable = new TableEntry(devViewer, toggle, Mevenide.getResourceString("DevelopersSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
 				List developers = (List) value;
@@ -121,5 +124,24 @@ public class DevelopersSection extends PageSection {
 			devTable.setInherited(false);
 		}
 	}
+
+    /**
+     * @see org.eclipse.ui.forms.IFormPart#setFormInput(java.lang.Object)
+     */
+    public boolean setFormInput(Object input) {
+        if (input != null && input instanceof Developer) {
+            Developer developer = (Developer) input;
+            TableItem[] items = devViewer.getTable().getItems();
+            for (int i = 0; i < items.length; i++) {
+                DeveloperPropertySource src = (DeveloperPropertySource) items[i].getData();
+                if (src.getSource().equals(developer)) {
+                    ensureExpanded();
+                    devViewer.getTable().select(i);
+                    return true;
+                }
+            }
+        }
+        return super.setFormInput(input);
+    }
 
 }
