@@ -21,9 +21,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javax.swing.*;
 import org.apache.maven.util.HttpUtils;
-import org.mevenide.idea.project.AbstractPomSettingsManager;
-import org.mevenide.idea.project.PomManager;
-import org.mevenide.idea.project.ProxySettings;
+import org.mevenide.idea.project.*;
 import org.mevenide.idea.project.properties.PropertiesManager;
 import org.mevenide.idea.repository.browser.RepoToolWindow;
 import org.mevenide.idea.util.IDEUtils;
@@ -36,7 +34,7 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
 /**
  * @author Arik
  */
-public class PomRepoManager extends AbstractPomSettingsManager {
+public class PomRepoManager extends AbstractPomSettingsManager implements PomManagerListener {
     private static final IRepositoryReader[] EMPTY_REPO_ARRAY = new IRepositoryReader[0];
 
     private static final SelectFromListDialog.ToStringAspect SIMPLE_TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
@@ -437,6 +435,17 @@ public class PomRepoManager extends AbstractPomSettingsManager {
     @Override
     public void projectOpened() {
         RepoToolWindow.register(project);
+        PomManager.getInstance(project).addPomManagerListener(this);
+    }
+
+    public void pomAdded(PomManagerEvent pEvent) {
+        
+    }
+
+    public void pomRemoved(PomManagerEvent pEvent) {
+    }
+
+    public void pomValidityChanged(PomManagerEvent pEvent) {
     }
 
     public static PomRepoManager getInstance(final Project pProject) {
@@ -451,7 +460,7 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         public PathSearcher(final VirtualFile pLocalRepo,
                             final String pPath) {
             localRepo = pLocalRepo;
-            path = pPath;
+            path = pPath.replace(File.separatorChar, '/');
         }
 
         public boolean isFound() {
@@ -463,7 +472,14 @@ public class PomRepoManager extends AbstractPomSettingsManager {
         }
 
         public void run() {
-            final String url = "file://" + path.replace(File.separatorChar, '/');
+            final StringBuilder buf =
+                    new StringBuilder(100)
+                            .append("file://")
+                            .append(localRepo.getPath())
+                            .append('/')
+                            .append(path);
+
+            final String url = buf.toString();
             file = VirtualFileManager.getInstance().refreshAndFindFileByUrl(url);
         }
     }

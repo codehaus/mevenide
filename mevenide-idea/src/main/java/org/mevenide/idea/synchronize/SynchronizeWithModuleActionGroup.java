@@ -29,7 +29,7 @@ public class SynchronizeWithModuleActionGroup extends AbstractAnActionGroup {
     private static final Res RES = Res.getInstance(SynchronizeWithModuleActionGroup.class);
 
     public SynchronizeWithModuleActionGroup(final Project pProject) {
-        super("Synchronize", true);
+        super("Synchronize POM with module", true);
         final ModuleManager moduleMgr = ModuleManager.getInstance(pProject);
         final Module[] modules = moduleMgr.getModules();
         for (Module module : modules)

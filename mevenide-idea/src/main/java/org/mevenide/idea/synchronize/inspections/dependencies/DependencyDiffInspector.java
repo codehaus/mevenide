@@ -102,6 +102,11 @@ public class DependencyDiffInspector extends AbstractInspector implements Module
                                                                                    ModuleArtifactProblemInfo {
         private final Artifact artifact;
 
+        /**
+         * @todo should receive the pomUrl to pass to the super ctor
+         * @param pModule
+         * @param pArtifact
+         */
         public DependencyMissingInIdeaProblem(final Module pModule, final Artifact pArtifact) {
             super(DependencyDiffInspector.this,
                   pModule,

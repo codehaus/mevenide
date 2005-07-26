@@ -71,6 +71,9 @@ public class AddLibraryToPomAction extends AbstractFixAction<FileProblemInfo> {
 
         final PomModelManager modelMgr = PomModelManager.getInstance(problem.getProject());
         final PsiProject psi = modelMgr.getPsiProject(problem.getPomUrl());
+        if(psi == null)
+            return;
+        
         final PsiDependencies deps = psi.getDependencies();
         final int row = deps.appendRow();
         deps.setGroupId(row, groupId);

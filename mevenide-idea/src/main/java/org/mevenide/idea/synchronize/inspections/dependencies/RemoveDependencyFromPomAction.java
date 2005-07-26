@@ -30,6 +30,9 @@ public class RemoveDependencyFromPomAction extends AbstractFixAction<ArtifactPro
         final Project project = problem.getProject();
         final PomModelManager modelMgr = PomModelManager.getInstance(project);
         final PsiProject psi = modelMgr.getPsiProject(problem.getPomUrl());
+        if(psi == null)
+            return;
+        
         final PsiDependencies deps = psi.getDependencies();
         final int row = deps.findRow(problem.getArtifact());
         if (row >= 0)

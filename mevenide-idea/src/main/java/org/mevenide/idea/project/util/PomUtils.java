@@ -30,6 +30,9 @@ public final class PomUtils {
         //get the pom PSI model
         //
         final PsiProject psi = PomModelManager.getInstance(pProject).getPsiProject(pPomUrl);
+        if(psi == null)
+            return false;
+
         final PsiDependencies deps = psi.getDependencies();
 
         //
