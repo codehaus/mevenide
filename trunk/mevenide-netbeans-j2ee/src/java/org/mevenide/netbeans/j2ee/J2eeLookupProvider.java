@@ -39,17 +39,17 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
     }
 
      public Lookup createMavenLookup(MavenProject project) {
-         return Lookups.fixed(new Object[] {
-            new WebModuleImpl(project),
-            new WebModuleProviderImpl(project),
-            new MavenEarEjbProvider(),
-            new MavenEarImpl(project),
-            new MavenEjbJarImpl(project),
-            new J2eeModuleProviderImpl(project)
-         });
+//         return Lookups.fixed(new Object[] {
+//            new WebModuleImpl(project),
+//            new WebModuleProviderImpl(project),
+//            new MavenEarEjbProvider(),
+//            new MavenEarImpl(project),
+//            new MavenEjbJarImpl(project),
+//            new J2eeModuleProviderImpl(project)
+//         });
 //        // if there's more items later, just do a proxy..
-//        InstanceContent ic = new InstanceContent ();
-//        return new Provider(context, ic);
+        InstanceContent ic = new InstanceContent ();
+        return new Provider(project, ic);
     }
     
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
@@ -57,19 +57,23 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
         private InstanceContent content;
         private MavenEarImpl impl;
         private MavenEjbJarImpl impl2;
+        private WebModuleImpl impl3;
         private boolean isAdded;
         private boolean isAdded2;
+        private boolean isAdded3;
         public Provider(MavenProject proj, InstanceContent cont) {
             super(cont);
             project = proj;
             content = cont;
-            content.add(new MavenEarEjbProvider());
             impl = new MavenEarImpl(project);
             isAdded = false;
             impl2 = new MavenEjbJarImpl(project);
             isAdded2 = false;
+            content.add(new MavenEarEjbProvider(proj, impl2, impl));
+            impl3 = new WebModuleImpl(project);
+            isAdded3 = false;
             content.add(new J2eeModuleProviderImpl(project));
-            
+            content.add(new WebModuleProviderImpl(project));
             checkJ2ee();
         }
 
@@ -100,6 +104,17 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
                 if (isAdded2) {
                     content.remove(impl2);
                     isAdded2 = false;
+                }
+            }
+            if (impl3.isValid()) {
+                if (!isAdded3) {
+                    content.add(impl3);
+                    isAdded3 = true;
+                }
+            } else {
+                if (isAdded3) {
+                    content.remove(impl3);
+                    isAdded3 = false;
                 }
             }
         }

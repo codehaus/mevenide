@@ -21,6 +21,7 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
+import org.netbeans.modules.j2ee.ejbjar.EarAccessor;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
@@ -33,27 +34,39 @@ import org.openide.filesystems.FileObject;
 
 public class MavenEarEjbProvider implements EarProvider, EjbJarProvider  {
     
+    private MavenEjbJarImpl ejbimpl;
+    private MavenEarImpl earimpl;
+    private MavenProject project;
     /** Creates a new instance of MavenEarProvider */
-    public MavenEarEjbProvider() {
+    public MavenEarEjbProvider(MavenProject proj, MavenEjbJarImpl ejb, MavenEarImpl ear) {
+        ejbimpl = ejb;
+        earimpl = ear;
+        project = proj;
+    }
+    
+    MavenEjbJarImpl getEjbImplementation() {
+        return ejbimpl;
+    }
+    
+    MavenEarImpl getEarImplementation() {
+        return earimpl;
     }
 
     public Ear findEar(FileObject file) {
-        Project project = FileOwnerQuery.getOwner (file);
-        if (project != null && project instanceof MavenProject) {
-            MavenEarImpl impl = (MavenEarImpl)project.getLookup().lookup(MavenEarImpl.class);
-            if (impl != null && impl.isValid()) {
-                return EjbJarFactory.createEar(impl);
+        Project proj = FileOwnerQuery.getOwner (file);
+        if (proj != null && proj instanceof MavenProject && project == proj) {
+            if (earimpl != null && earimpl.isValid()) {
+                return EjbJarFactory.createEar(earimpl);
             }
         }
         return null;
     }
 
     public EjbJar findEjbJar(FileObject file) {
-        Project project = FileOwnerQuery.getOwner (file);
-        if (project != null && project instanceof MavenProject) {
-            MavenEjbJarImpl impl = (MavenEjbJarImpl)project.getLookup().lookup(MavenEjbJarImpl.class);
-            if (impl != null && impl.isValid()) {
-                return EjbJarFactory.createEjbJar(impl);
+        Project proj = FileOwnerQuery.getOwner (file);
+        if (proj != null && proj instanceof MavenProject && project == proj) {
+            if (ejbimpl != null && ejbimpl.isValid()) {
+                return EjbJarFactory.createEjbJar(ejbimpl);
             }
         }
         return null;
