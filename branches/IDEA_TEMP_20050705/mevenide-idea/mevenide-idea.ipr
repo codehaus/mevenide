@@ -212,7 +212,7 @@
       <module fileurl="file://$PROJECT_DIR$/mevenide-idea.iml" filepath="$PROJECT_DIR$/mevenide-idea.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA 3424" />
+  <component name="ProjectRootManager" version="2" assert-keyword="true" jdk-15="true" project-jdk-name="IDEA 3425" />
   <component name="RmicSettings">
     <option name="IS_EANABLED" value="false" />
     <option name="DEBUGGING_INFO" value="true" />
@@ -266,20 +266,6 @@
     <library name="commons-io">
       <CLASSES>
         <root url="jar://$maven.repo$/repository/commons-io/jars/commons-io-1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="goals-grabber">
-      <CLASSES>
-        <root url="jar://$maven.repo$/repository/mevenide/jars/goals-grabber-0.10-SNAPSHOT.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="mevenide-config">
-      <CLASSES>
-        <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-config-0.8.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />

@@ -7,7 +7,7 @@ public class PluginInfo {
 
     private final String name;
     private final String version;
-    private final GoalInfo[] goals;
+    private GoalInfo[] goals;
 
     public PluginInfo(final String pName, final String pVersion) {
         name = pName;
