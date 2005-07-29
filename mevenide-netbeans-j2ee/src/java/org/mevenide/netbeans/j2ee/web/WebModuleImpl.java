@@ -91,7 +91,7 @@ public class WebModuleImpl implements WebModuleImplementation {
                                           != IPropertyLocator.LOCATION_DEFAULTS;
         boolean hasDescriptor = getDeploymentDescriptor() != null;
         // more or less heuristics to support generated web.xml files.
-        return hasDescriptor || redefinedDescLocation || hasWarSrc;
+        return hasDescriptor; // || redefinedDescLocation || hasWarSrc;
     }
     
     /**
