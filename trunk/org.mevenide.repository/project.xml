@@ -4,8 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>org.mevenide.repository</artifactId>
     <name>Maven Repository Plugin for Eclipse</name>
-    <groupId>org.mevenide.repository</groupId>
-    <currentVersion>0.2.0</currentVersion>
+    <currentVersion>0.3-SNAPSHOT</currentVersion>
     <description>Eclipse plugin for reading local and remote repositories.</description>
     <shortDescription>Eclipse plugin for navigating repositories.</shortDescription>
     <versions>
