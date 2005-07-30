@@ -212,9 +212,11 @@ public class MavenClasspathManager implements ClasspathManager {
         IProject[] project = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < project.length; ++i) {
             try {
-                IJavaProject javaProject = JavaCore.create(project[i]);
-                if (javaProject != null && MevenideNature.hasNature(project[i])) {
-                    addClasspathContainer(CONTAINER_PATH, javaProject);
+                if (project[i].hasNature(JavaCore.NATURE_ID)) {
+                    IJavaProject javaProject = JavaCore.create(project[i]);
+                    if (javaProject != null && MevenideNature.hasNature(project[i])) {
+                        addClasspathContainer(CONTAINER_PATH, javaProject);
+                    }
                 }
             } catch (CoreException e) {
                 final String msg = "Unable to initialize the Maven classpath container " + CONTAINER_PATH + ".";
@@ -229,9 +231,11 @@ public class MavenClasspathManager implements ClasspathManager {
         IProject[] project = ResourcesPlugin.getWorkspace().getRoot().getProjects();
         for (int i = 0; i < project.length; ++i) {
             try {
-                IJavaProject javaProject = JavaCore.create(project[i]);
-                if (javaProject != null) {
-                    removeClasspathContainer(javaProject);
+                if (project[i].hasNature(JavaCore.NATURE_ID)) {
+                    IJavaProject javaProject = JavaCore.create(project[i]);
+                    if (javaProject != null) {
+                        removeClasspathContainer(javaProject);
+                    }
                 }
             } catch (CoreException e) {
                 final String msg = "Unable to remove the Maven classpath container " + CONTAINER_PATH + ".";
