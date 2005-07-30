@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<document>
+
+    <properties>
+        <author email="arikkfir@gmail.com">Arik Kfir</author>
+        <title>Mevenide IDEA integration</title>
+    </properties>
+
+    <body>
+
+        <section name="Overview">
+            <p>
+                Welcome to the MevenIDE IDEA Integration project! This project
+                aims to integrate <a href="http://maven.apache.org">Maven</a> in every possible way
+                into <a href="http://www.jetbrains.com">JetBrain</a>'s IntelliJ IDEA.
+            </p>
+            <p>
+                Current integration features include:
+                <ul>
+                    <li>
+                        A graphical Project Object Model (POM) editor. The editor includes a
+                        standard text editor, as well as an intuitive user interface for
+                        editing the various aspects of a project.
+                    </li>
+                    <li>
+                        Full synchronization between the POM text editor and the graphical
+                        POM editor, as well as with POM modifications outside the IntelliJ
+                        IDE.
+                    </li>
+                    <li>
+                        Automatic discovery of POM files (<i>project.xml</i> and
+                        <i>maven.xml</i>) for each IntelliJ module. The plugin will detect if you
+                        create one of these files either from inside the IDE or from outside, and
+                        will respond appropriately.
+                    </li>
+                    <li>
+                        A special Maven tool window displaying the available Maven goals for the
+                        project. The pane shows goals defined in the module's
+                        <i>maven.xml</i> file, and common goals, marked as "favorites" in
+                        the module settings dialog.
+                    </li>
+                    <li>
+                        Execution of selected goal(s) in a dedicated execution console which
+                        supports stop, pause, and re-run. The console supports copying the Maven
+                        output into the clipboard or into a text file.
+                    </li>
+                    <li>
+                        Compilation errors reported by Maven in the execution console are displayed
+                        as links, which open the appropriate source code file at the appropriate
+                        location.
+                    </li>
+                    <li>
+                        Auto-detection of your Maven home (via the <i>MAVEN_HOME</i> environment
+                        variable), and support for specifying a different Maven home (does not
+                        modify the environment variable).
+                    </li>
+                    <li>
+                        Easy installation via the IntelliJ IDEA plugins manager.
+                    </li>
+                    <li>
+                        Support for assigning shortcut keys (hot-keys) for specific goals for a
+                        specific module in the IDE (no need to find the goal in the Goals tool
+                        window).
+                    </li>
+                </ul>
+            </p>
+            <subsection name="News">
+                <p style="font-size: larger; font-weight: bold">
+                    30 May 2005 - MevenIDE for IDEA 0.1 has been released!
+                </p>
+                <p>
+                    This is the first release of the Mevenide for IDEA - and
+                    brings Maven support for the popular IntelliJ IDEA, including
+                    the ability to execute goals, a graphical POM editor,
+                    automatic jumping from Maven errors to source code, and much more.
+                </p>
+                <p>
+                    See
+                    <a href="installation.html">installation instructions</a>for
+                    information on how to download and install.
+                </p>
+            </subsection>
+
+            <subsection name="Help Wanted!">
+                <p>
+                    The Mevenide IDEA integration project is quite new and we are looking for
+                    volunteers - you can help! If you like the IntelliJ IDEA, and you like Maven -
+                    come and help us write the best IDEA plugin yet!
+                </p>
+                <p>
+                    To participate - please contact us via our
+                    <a href="mail-lists.html">mailing lists</a>.
+                </p>
+            </subsection>
+        </section>
+
+        <section name="Downloading and Installing">
+            <p>
+                Mevenide for IDEA releases can be found <a href="downloads.html">here</a>. If,
+                however, you wish to use the latest snapshot version, you may find it
+                <a href="http://dist.codehaus.org/mevenide/distributions">here</a> - search
+                for files named <i>mevenide-idea-X.Y-SNAPSHOT.zip</i> (or ".tar.gz").
+                Snapshot versions must be installed manually - see the
+                <a href="installation.html">installation manual</a>for details.
+            </p>
+
+            <subsection name="Compatibility">
+                <p>
+                    Currently the plugin is only supported on the IntelliJ IDEA Early Access Program
+                    (EAP) dubbed "Irida". It cannot be run on the 4.5 version.
+                </p>
+                <p>
+                    There is, however, a port of the plugin for the 4.5 version with provides the basic
+                    features such as per-module POM attachment, favorite goals, running goals and
+                    jumping to source code from Maven error messages. It is available
+                    <a href="http://www.codehaus.org/~arik/dist/mevenide-idea-4.5.4.zip">here</a>.
+                    <br/>
+                    NOTE: This is a source code distribution, and you will have to build it from
+                    source code. If you do, make sure you compile the classes using IDEA, since
+                    the plugin utilizes the IDEA UI designer, which injects bytecode into the
+                    classes. There is an Ant script inside, but it does not perform the code
+                    injection, and you will get exceptions. The Ant script DOES, however, provide
+                    an Ant task for it, but does not activate it.
+                </p>
+            </subsection>
+        </section>
+    </body>
+</document>
