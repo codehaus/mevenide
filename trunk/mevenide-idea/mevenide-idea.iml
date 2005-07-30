@@ -22,6 +22,7 @@
     <orderEntry type="library" name="maven" level="project" />
     <orderEntry type="library" name="commons-httpclient" level="project" />
     <orderEntry type="library" name="mevenide-core" level="project" />
+    <orderEntry type="library" name="commons-codec" level="project" />
     <orderEntryProperties />
   </component>
 </module>
