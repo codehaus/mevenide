@@ -275,7 +275,10 @@
         <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-repository-0.3-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file:///home/arik/work/mevenide-repository/src/java" />
+        <root url="file:///home/arik/work/mevenide-repository/src/conf" />
+      </SOURCES>
     </library>
     <library name="maven">
       <CLASSES>
@@ -303,7 +306,10 @@
         <root url="jar://$maven.repo$/repository/mevenide/jars/mevenide-core-0.10-SNAPSHOT.jar!/" />
       </CLASSES>
       <JAVADOC />
-      <SOURCES />
+      <SOURCES>
+        <root url="file:///home/arik/work/mevenide-core/src/conf" />
+        <root url="file:///home/arik/work/mevenide-core/src/java" />
+      </SOURCES>
     </library>
   </component>
   <component name="uidesigner-configuration">
