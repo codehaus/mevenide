@@ -73,16 +73,14 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
             J2eeModuleProvider jmp = null;
             jmp = (J2eeModuleProvider) project.getLookup().lookup(J2eeModuleProvider.class);
             WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
-            if (impl.isValid()) {
+            if (impl != null && impl.isValid()) {
                 jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
             }
             jmp.getConfigSupport().ensureConfigurationReady();
-            ErrorManager.getDefault().log(ErrorManager.USER, "contextpath=" + impl.getContextPath());
             String clientUrl = Deployment.getDefault().deploy(jmp, debug,
-                    impl.getContextPath(),
+                    impl == null ? "" : impl.getContextPath(),
                     path, true, this);
             URL url = new URL(clientUrl);
-            System.out.println("url=" + clientUrl);
             HtmlBrowser.URLDisplayer.getDefault().showURL(url);
         } catch (Exception e) {
             ErrorManager.getDefault().log("e message=" + e.getMessage());
