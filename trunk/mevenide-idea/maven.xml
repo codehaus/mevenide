@@ -2,6 +2,17 @@
 
 <project xmlns:maven="jelly:maven" xmlns:ant="jelly:ant" xmlns:j="jelly:core" xmlns:u="jelly:util">
 
+    <postGoal name="xdoc:register-reports">
+
+        <!-- No unit tests currently. -->
+        <attainGoal name="maven-jcoverage-plugin:deregister"/>
+        <attainGoal name="maven-junit-report-plugin:deregister"/>
+        <attainGoal name="maven-clover-plugin:deregister"/>
+
+        <!-- Deregister checkstyle until it supports Java 5.0 -->
+        <attainGoal name="maven-checkstyle-plugin:deregister"/>
+    </postGoal>
+
     <goal name="idea:init">
 
         <!-- Make sure the 'idea.sandbox.dir' and 'idea.home' proeprties are defined. -->
@@ -111,7 +122,7 @@
 
         <!-- copy plugin descriptor to sandbox -->
         <ant:mkdir dir="${idea.sandbox.plugin.metainf.dir}"/>
-        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${idea.sandbox.plugin.metainf.dir}"/>
+        <ant:copy file="${basedir}/src/main/etc/META-INF/plugin.xml" todir="${idea.sandbox.plugin.metainf.dir}"/>
 
     </goal>
 
@@ -127,7 +138,7 @@
 
         <!-- copy project artifact -->
         <ant:copy file="${maven.build.dir}/${maven.final.name}.jar" todir="${plugin.lib}"/>
-        <ant:copy file="${basedir}/src/main/etc/plugin.xml" todir="${plugin.metainf}"/>
+        <ant:copy file="${basedir}/src/main/etc/META-INF/plugin.xml" todir="${plugin.metainf}"/>
 
         <!-- copy project dependencies -->
         <j:forEach var="artifact" items="${pom.artifacts}">
