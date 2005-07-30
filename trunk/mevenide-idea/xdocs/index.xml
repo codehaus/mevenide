@@ -111,7 +111,8 @@
             <subsection name="Compatibility">
                 <p>
                     Currently the plugin is only supported on the IntelliJ IDEA Early Access Program
-                    (EAP) dubbed "Irida". It cannot be run on the 4.5 version.
+                    (EAP) dubbed "Irida". It cannot be run on the 4.5 version. Latest snapshots
+                    were tested against build 3430 (RC4) on Windows XP and Linux (Fedora and Debian).
                 </p>
                 <p>
                     There is, however, a port of the plugin for the 4.5 version with provides the basic
