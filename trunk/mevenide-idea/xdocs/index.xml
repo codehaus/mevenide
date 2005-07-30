@@ -19,26 +19,25 @@
                 Current integration features include:
                 <ul>
                     <li>
-                        A graphical Project Object Model (POM) editor. The editor includes a
-                        standard text editor, as well as an intuitive user interface for
-                        editing the various aspects of a project.
+                        An intuitive POM editor featuring both a graphical user interface and
+                        a text-based editor. Both editors are completely synchronized. Moreover,
+                        typos and syntax errors in the POM xml are absurbed by the user
+                        interface which allow you to "write now, fix later". All Maven 1.0.*
+                        POM elements are supported, and Maven 1.1/2.0 support is in the works.
                     </li>
                     <li>
-                        Full synchronization between the POM text editor and the graphical
-                        POM editor, as well as with POM modifications outside the IntelliJ
-                        IDE.
+                        Your Maven home is automatically detected via the <i>MAVEN_HOME</i>
+                        environment variable. Custom Maven homes are supported, however.
                     </li>
                     <li>
-                        Automatic discovery of POM files (<i>project.xml</i> and
-                        <i>maven.xml</i>) for each IntelliJ module. The plugin will detect if you
-                        create one of these files either from inside the IDE or from outside, and
-                        will respond appropriately.
+                        POM files are managed in a custom tool window, much like the known
+                        Ant tool window. You may define as many POM files as you wish. The
+                        tool window will also list the available plugins and goals, detected
+                        from your Maven home.
                     </li>
                     <li>
-                        A special Maven tool window displaying the available Maven goals for the
-                        project. The pane shows goals defined in the module's
-                        <i>maven.xml</i> file, and common goals, marked as "favorites" in
-                        the module settings dialog.
+                        Due to the enormous amount of plugins in Maven, you may associate selected
+                        goals or plugins with a specific POM file, for easy access.
                     </li>
                     <li>
                         Execution of selected goal(s) in a dedicated execution console which
@@ -51,17 +50,21 @@
                         location.
                     </li>
                     <li>
-                        Auto-detection of your Maven home (via the <i>MAVEN_HOME</i> environment
-                        variable), and support for specifying a different Maven home (does not
-                        modify the environment variable).
-                    </li>
-                    <li>
-                        Easy installation via the IntelliJ IDEA plugins manager.
+                        Easy installation via the IntelliJ IDEA plugins manager (snapshot releases
+                        are available <a href="http://dist.codehaus.org/mevenide/distributions">here</a>
                     </li>
                     <li>
                         Support for assigning shortcut keys (hot-keys) for specific goals for a
                         specific module in the IDE (no need to find the goal in the Goals tool
                         window).
+                    </li>
+                    <li>
+                        Synchronization between the POMs and IDEA modules. This helps to make
+                        sure that projects that work in Maven will work in IntelliJ, and
+                        vice-versa. For example, you may synchronize the dependencies in your
+                        POM to be defined in your IntelliJ module(s), or the other way around!
+                        Other checks such as source directories, test directories, etc, are
+                        coming too.
                     </li>
                 </ul>
             </p>
