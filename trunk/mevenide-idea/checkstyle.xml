@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC
+        "-//Puppy Crawl//DTD Check Configuration 1.1//EN"
+        "http://www.puppycrawl.com/dtds/configuration_1_1.dtd">
+
+<module name="Checker">
+
+    <module name="TreeWalker">
+
+        <!-- ======================================================== -->
+        <!--  General properties configuration                        -->
+        <!-- ======================================================== -->
+        <property name="cacheFile" value="${checkstyle.cache.file}"/>
+        <property name="tabWidth" value="4"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Javadoc validations                                     -->
+        <!-- ======================================================== -->
+        <module name="JavadocMethod"/>
+        <module name="JavadocStyle"/>
+        <module name="JavadocType"/>
+        <module name="JavadocVariable"/>
+        <module name="UncommentedMain"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Naming conventions                                      -->
+        <!-- ======================================================== -->
+        <module name="AbstractClassName"/>
+        <module name="ConstantName"/>
+        <module name="LocalFinalVariableName"/>
+        <module name="LocalVariableName"/>
+        <module name="LocalVariableName">
+            <property name="format" value="^e[a-zA-Z0-9]*$"/>
+            <property name="tokens" value="PARAMETER_DEF"/>
+        </module>
+        <module name="MemberName"/>
+        <module name="MethodName"/>
+        <module name="PackageName"/>
+        <module name="ParameterName">
+            <property name="format" value="^p[A-Z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="StaticVariableName"/>
+        <module name="TypeName"/>
+
+
+        <!-- ======================================================== -->
+        <!--  File header                                             -->
+        <!-- ======================================================== -->
+        <module name="Header">
+            <property name="headerFile"
+                      value="${basedir}/../mevenide-parent/checkstyle-license.txt"/>
+            <property name="ignoreLines" value="3"/>
+        </module>
+
+
+        <!-- ======================================================== -->
+        <!--  Size and coherency limitations                          -->
+        <!-- ======================================================== -->
+        <module name="AnonInnerLength"/>
+        <module name="BooleanExpressionComplexity"/>
+        <module name="ExecutableStatementCount"/>
+        <module name="FileLength"/>
+        <module name="LineLength"/>
+        <module name="MethodLength"/>
+        <module name="ParameterNumber"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Whitespace handling                                     -->
+        <!-- ======================================================== -->
+        <module name="TabCharacter"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Modifiers                                               -->
+        <!-- ======================================================== -->
+        <module name="ModifierOrder"/>
+        <module name="RedundantModifier"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Syntax                                                  -->
+        <!-- ======================================================== -->
+        <module name="ArrayTrailingComma"/>
+        <module name="ArrayTypeStyle"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="CovariantEquals"/>
+        <module name="DeclarationOrder"/>
+        <module name="DefaultComesLast"/>
+        <module name="DoubleCheckedLocking"/>
+        <module name="EmptyBlock"/>
+        <module name="EmptyStatement"/>
+        <module name="EqualsHashCode"/>
+        <module name="FinalLocalVariable">
+            <property name="tokens" value="VARIABLE_DEF"/>
+            <property name="tokens" value="PARAMETER_DEF"/>
+        </module>
+        <module name="FinalParameters"/>
+        <module name="ExplicitInitialization"/>
+        <module name="FallThrough"/>
+        <module name="HiddenField"/>
+        <module name="Indentation"/>
+        <module name="InnerAssignment"/>
+        <module name="JUnitTestCase"/>
+        <module name="LeftCurly"/>
+        <module name="MagicNumber"/>
+        <module name="MissingSwitchDefault"/>
+        <!--<module name="ModifiedControlVariable"/>-->
+        <!--<module name="MultipleStringLiterals"/>-->
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NestedIfDepth"/>
+        <module name="NestedTryDepth"/>
+        <module name="PackageDeclaration"/>
+        <module name="ParameterAssignment"/>
+        <module name="RedundantThrows"/>
+        <module name="RightCurly">
+            <property name="option" value="alone"/>
+            <property name="tokens" value="LITERAL_CATCH,LITERAL_ELSE,LITERAL_TRY"/>
+        </module>
+        <module name="SimplifyBooleanExpression"/>
+        <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality"/>
+        <module name="SuperClone"/>
+        <module name="SuperFinalize"/>
+        <module name="TodoComment"/>
+        <module name="TrailingComment"/>
+        <module name="UnnecessaryParentheses"/>
+        <module name="UpperEll"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Design                                                  -->
+        <!-- ======================================================== -->
+        <module name="DesignForExtension"/>
+        <module name="FinalClass"/>
+        <module name="HideUtilityClassConstructor"/>
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+        <module name="ThrowsCount">
+            <property name="max" value="3"/>
+        </module>
+        <module name="VisibilityModifier"/>
+
+
+        <!-- ======================================================== -->
+        <!--  Duplication                                             -->
+        <!-- ======================================================== -->
+<!--
+        <module name="StrictDuplicateCode">
+            <property name="charset" value="UTF-8"/>
+        </module>
+-->
+
+
+        <!-- ======================================================== -->
+        <!--  Imports                                                 -->
+        <!-- ======================================================== -->
+        <module name="IllegalImport"/>
+        <module name="RedundantImport"/>
+        <module name="UnusedImports"/>
+
+
+    </module>
+
+</module>
