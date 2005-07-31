@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.DefaultComboBoxModel;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
+import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.openide.ErrorManager;
 
 /**
@@ -30,10 +32,18 @@ import org.openide.ErrorManager;
  */
 public class NbDeployPanel extends javax.swing.JPanel {
     
+    private J2eeModuleProvider provider;
     /** Creates new form NbDeployPanel */
-    public NbDeployPanel(String selected) {
+    public NbDeployPanel(J2eeModuleProvider prov) {
         initComponents();
-        loadModel(selected);
+        provider = prov;
+        loadModel(provider.getServerInstanceID());
+        J2eeModule module = provider.getJ2eeModule();
+        if (! J2eeModule.WAR.equals(module.getModuleType())) {
+            txtPage.setVisible(false);
+            lblPage.setVisible(false);
+            btnPage.setVisible(false);
+        }
     }
     
     private void loadModel(String selectedId) {

@@ -31,15 +31,20 @@ import org.openide.filesystems.FileObject;
 public class WebModuleProviderImpl implements WebModuleProvider {
     
     private MavenProject project;
-    public WebModuleProviderImpl(MavenProject proj) {
+    private WebModuleImpl implementation;
+    public WebModuleProviderImpl(MavenProject proj, WebModuleImpl impl) {
         project = proj;
+        implementation = impl;
+    }
+    
+    public WebModuleImpl getWebImpl() {
+        return implementation;
     }
 
     public WebModule findWebModule(FileObject fileObject) {
         // assuming here that we get asked only if the 
-        WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
-        if (impl != null && impl.isValid()) {
-            return WebModuleFactory.createWebModule(impl);
+        if (implementation != null && implementation.isValid()) {
+            return WebModuleFactory.createWebModule(implementation);
         }
         return null;
     }
