@@ -136,6 +136,8 @@ public class DependencyChildren extends Children.Keys {
         AbstractNode ret = new AbstractNode(new VersionsChildren(nd));
         ret.setName("versions");
         ret.setDisplayName("Available Versions");
+        ret.setIconBase("org/mevenide/netbeans/project/resources/Versions");
+
         return ret;
     }
     

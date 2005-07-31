@@ -55,12 +55,12 @@ public class MultiRepositoryNode extends AbstractNode implements LocalRepoRefres
             setIconBase("org/mevenide/netbeans/project/resources/DependencyIcon"); //NOI18N
         }
         if (element.isRemote() && element.isLocal()) {
-            setShortDescription("Defined in both remote and local repositories.");
+            setShortDescription("Available in both remote and local repositories.");
         }
         else if (element.isLocal()) {
-            setShortDescription("Defined in local repository.");
+            setShortDescription("Available in local repository.");
         } else if (element.isRemote()) {
-            setShortDescription("Defined in remote repository only.");
+            setShortDescription("Available in remote repository only.");
         }
         
     }

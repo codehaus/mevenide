@@ -82,13 +82,7 @@ public class DependencyNode extends AbstractNode {
     private PropertyChangeListener listener;
     private ChangeListener listener2;
     
-//    public DependencyNode(Dependency dep, MavenProject proj) {
-//        this(dep, 0, proj, false);
-//    }
-//    
-//    public DependencyNode(Dependency dep, int location, MavenProject proj, boolean isLongLiving) {
-//        this(createContentProvider(dep), location, proj, Lookups.singleton(dep), isLongLiving);
-//    }
+
     
     /**
      *@param lookup - expects instance of MavenProject, DependencyPOMChange
