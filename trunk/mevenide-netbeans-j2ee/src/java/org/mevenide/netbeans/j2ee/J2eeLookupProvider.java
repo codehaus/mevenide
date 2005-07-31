@@ -73,7 +73,7 @@ public class J2eeLookupProvider implements AdditionalMavenLookupProvider {
             impl3 = new WebModuleImpl(project);
             isAdded3 = false;
             content.add(new J2eeModuleProviderImpl(project));
-            content.add(new WebModuleProviderImpl(project));
+            content.add(new WebModuleProviderImpl(project, impl3));
             checkJ2ee();
         }
 

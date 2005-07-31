@@ -22,8 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
+import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.properties.IPropertyLocator;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
@@ -71,11 +73,12 @@ public class MavenJ2eeModule implements J2eeModule {
      * does not exist (for example, has not been compiled yet). 
      */
     public FileObject getArchive() throws IOException {
-        System.out.println("getArchive()");
-        System.out.println("getarchive- get type=" + getModuleType());
         //TODO ears/ejbs/rars
         if (J2eeModule.EAR.equals(getModuleType())) {
-            String val = project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.ear.final.name}");
+            // property maven.ear.final.name was added in 1.7 version of the plugin
+            boolean postEar17 = project.getPropertyLocator().getPropertyLocation("maven.ear.final.name") != IPropertyLocator.LOCATION_NOT_DEFINED;
+            String val = postEar17 ? project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.ear.final.name}") 
+                                   : project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.final.name}.ear");
             if (val != null) {
                 File fil = new File(val);
                 fil = FileUtil.normalizeFile(fil);
@@ -86,14 +89,14 @@ public class MavenJ2eeModule implements J2eeModule {
             }
         }
         if (J2eeModule.EJB.equals(getModuleType())) {
-            System.out.println("get archive for ejb");
-            String val = project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.final.name}.jar");
+            boolean postEjb16 = project.getPropertyLocator().getPropertyLocation("maven.ejb.build.dir") != IPropertyLocator.LOCATION_NOT_DEFINED;
+            String val = postEjb16 ? project.getPropertyResolver().resolveString("${maven.ejb.build.dir}/${maven.ejb.final.name}")
+                                   : project.getPropertyResolver().resolveString("${maven.build.dir}/${maven.final.name}.jar");
             if (val != null) {
                 File fil = new File(val);
                 fil = FileUtil.normalizeFile(fil);
                 FileObject fo = FileUtil.toFileObject(fil);
                 if (fo != null) {
-                    System.out.println("getarchive returning=" + fo);
                     return fo;
                 }
             }
@@ -125,12 +128,11 @@ public class MavenJ2eeModule implements J2eeModule {
      */
 
     public Iterator getArchiveContents() throws IOException {
-        System.out.println("getArchiveContents()");
-        if (J2eeModule.EJB.equals(getModuleType())) {
+        if (     J2eeModule.EJB.equals(getModuleType()) 
+              || J2eeModule.EAR.equals((getModuleType()))) {
             FileObject fo = getArchive();
             if (FileUtil.isArchiveFile(fo)) {
                 FileObject root = FileUtil.getArchiveRoot(fo);
-                System.out.println("for ejb returning the archive content..");
                 return new ContentIterator(root);
             }
         }
@@ -216,7 +218,7 @@ public class MavenJ2eeModule implements J2eeModule {
     
    private WebApp getWebApp () {
         try {
-            WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+            WebModuleImpl impl = ((WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class)).getWebImpl();
             FileObject deploymentDescriptor = impl.getDeploymentDescriptor();
             if(deploymentDescriptor != null) {
                 return DDProvider.getDefault().getDDRoot(deploymentDescriptor);
@@ -231,7 +233,6 @@ public class MavenJ2eeModule implements J2eeModule {
         MavenEjbJarImpl ejb = ((MavenEarEjbProvider)project.getLookup().
                                     lookup(MavenEarEjbProvider.class)).getEjbImplementation();
         if (ejb != null && ejb.isValid()) {
-            System.out.println(".... is ejb module type");
             return J2eeModule.EJB;
         }
         MavenEarImpl ear = ((MavenEarEjbProvider)project.getLookup().
@@ -243,7 +244,7 @@ public class MavenJ2eeModule implements J2eeModule {
         if (connStr != null && connStr.exists()) {
             return J2eeModule.CONN;
         }
-        WebModuleImpl wm = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+        WebModuleImpl wm = ((WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class)).getWebImpl();
         if  (wm != null && wm.isValid()) {
             return J2eeModule.WAR;
         }
@@ -252,7 +253,7 @@ public class MavenJ2eeModule implements J2eeModule {
 
     public String getModuleVersion() {
 //        System.out.println("getModuleVersion()");
-        WebModuleImpl wm = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+        WebModuleImpl wm = ((WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class)).getWebImpl();
         if  (wm != null && wm.isValid()) {
             return wm.getJ2eePlatformVersion();
         }

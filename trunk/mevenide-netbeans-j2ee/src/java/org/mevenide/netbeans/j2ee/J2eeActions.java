@@ -17,6 +17,7 @@
 
 package org.mevenide.netbeans.j2ee;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.WeakHashMap;
@@ -28,6 +29,7 @@ import org.mevenide.netbeans.j2ee.deploy.DeployAction;
 import org.mevenide.netbeans.j2ee.deploy.NbDeployAction;
 import org.mevenide.netbeans.j2ee.deploy.RedeployAction;
 import org.mevenide.netbeans.project.MavenProject;
+import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 
 
@@ -45,11 +47,16 @@ public class J2eeActions implements AdditionalActionsProvider {
     
     public Action[] createPopupActions(MavenProject project) {
         J2eeModuleProvider provider = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
-        if (provider.getJ2eeModule() == null) {
-//        if (war == null || !war.exists()) {
+        J2eeModule module = provider.getJ2eeModule();
+        try {
+            if (module == null || module.getModuleType() == null || module.getArchive() == null) {
+                return new Action[0];
+            }
+        } catch (IOException exc) {
             return new Action[0];
         }
         Collection toRet = new ArrayList();
+        toRet.add(new NbDeployAction(project));
         Action deploy = (Action)cache.get(project);
         if (deploy == null) {
             deploy = new DeployAction(project);
@@ -63,7 +70,6 @@ public class J2eeActions implements AdditionalActionsProvider {
                 toRet.add(new RedeployAction(project));
             }
         }
-        toRet.add(new NbDeployAction(project));
         return (Action[])toRet.toArray(new Action[toRet.size()]);
     }
     

@@ -22,6 +22,7 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
+import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment.Logger;
@@ -52,14 +53,13 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
     
     public void actionPerformed(ActionEvent event) {
         J2eeModuleProvider prov = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
-        NbDeployPanel panel = new NbDeployPanel(prov.getServerInstanceID());
+        NbDeployPanel panel = new NbDeployPanel(prov);
         DialogDescriptor dd = new DialogDescriptor(panel, "Deploy Web Application.");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             serverInstanceid = panel.getSelectedServer();
             path = panel.getPath();
             debug = panel.isDebugging();
-            System.out.println("server id=" + serverInstanceid);
             prov.setServerInstanceID(serverInstanceid);
             RequestProcessor.getDefault().post(this);
         }
@@ -72,7 +72,7 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
         try {
             J2eeModuleProvider jmp = null;
             jmp = (J2eeModuleProvider) project.getLookup().lookup(J2eeModuleProvider.class);
-            WebModuleImpl impl = (WebModuleImpl)project.getLookup().lookup(WebModuleImpl.class);
+            WebModuleImpl impl = ((WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class)).getWebImpl();
             if (impl != null && impl.isValid()) {
                 jmp.getConfigSupport().setWebContextRoot(impl.getContextPath());
             }
@@ -82,13 +82,16 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
                     path, true, this);
             URL url = new URL(clientUrl);
             HtmlBrowser.URLDisplayer.getDefault().showURL(url);
+            if (debug) {
+                
+            }
         } catch (Exception e) {
             ErrorManager.getDefault().log("e message=" + e.getMessage());
             ErrorManager.getDefault().notify(e);
         } finally {
             io.getOut().close();
         }
-        
+            
     }
     
     public void log(String str) {
