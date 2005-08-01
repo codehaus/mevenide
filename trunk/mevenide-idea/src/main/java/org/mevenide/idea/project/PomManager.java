@@ -242,7 +242,7 @@ public class PomManager extends AbstractProjectComponent
 
     public void readExternal(final Element pElt) throws InvalidDataException {
 
-        //noinspection UNCHECKED_WARNING
+        //noinspection unchecked
         final List<Element> pomElts = pElt.getChildren("pom");
         for (Element pomElt : pomElts) {
             final String url = pomElt.getAttributeValue("url");
