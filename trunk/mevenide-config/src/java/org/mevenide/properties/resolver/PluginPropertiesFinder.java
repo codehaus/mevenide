@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.properties.IPropertyFinder;
@@ -40,14 +42,16 @@ import org.mevenide.properties.IPropertyFinder;
 public final class PluginPropertiesFinder implements IPropertyFinder {
     private static final Log logger = LogFactory.getLog(PluginPropertiesFinder.class);
     
+    private File unpackedPluginDir;
     private File pluginDir;
     private File valid;
     private Properties props;
     private long lastModified = -1;
     private Object LOCK = new Object();
     /** Creates a new instance of DefaultsResolver */
-    PluginPropertiesFinder(File pluginDir) {
-        this.pluginDir = pluginDir;
+    PluginPropertiesFinder(File unPlugDir, File packedDir) {
+        unpackedPluginDir = unPlugDir;
+        pluginDir = packedDir;
         valid = new File(pluginDir, "valid.cache");
     }
     
@@ -70,11 +74,10 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
             checkReload();
         }
     }
-
+    
     private void checkReload() {
         long validStamp = valid.exists() ? valid.lastModified() : 0;
         if (validStamp != lastModified) {
-            props = null;
             loadAllProperties();
         }
         lastModified = validStamp;
@@ -82,13 +85,21 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
     
     private void loadAllProperties() {
         props = new Properties();
-        if (pluginDir.exists()) {
-            File[] plugins = pluginDir.listFiles();
-            for (int i = 0; i < plugins.length; i++) {
-                if (plugins[i].isDirectory()) {
-                    loadDefaults(props, plugins[i]);
+        if (valid.exists() && unpackedPluginDir.exists()) {
+            File[] plugins = unpackedPluginDir.listFiles();
+                for (int i = 0; i < plugins.length; i++) {
+                    if (plugins[i].isDirectory()) {
+                        loadDefaults(props, plugins[i]);
+                    }
                 }
-            }
+        } else if (pluginDir.exists()) {
+            // try loading from the jars in maven/lib
+            File[] plugins = pluginDir.listFiles();
+                for (int i = 0; i < plugins.length; i++) {
+                    if (plugins[i].isFile() && plugins[i].getName().endsWith("jar")) {
+                        loadJarDefaults(props, plugins[i]);
+                    }
+                }
         }
     }
     
@@ -103,5 +114,24 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
         }
     }
     
-    
+    private void loadJarDefaults(Properties pros, File jarFile) {
+        JarFile jf = null;
+        try {
+            jf = new JarFile(jarFile);
+            JarEntry je = jf.getJarEntry("plugin.properties");
+            if (je != null) {
+                pros.load(new BufferedInputStream(jf.getInputStream(je)));
+            }
+        } catch (IOException exc) {
+            logger.warn("Cannot read defaults from file:" + jarFile, exc); //NOI18N
+        } finally {
+            if (jf != null) {
+                try {
+                    jf.close();
+                } catch (IOException e) {
+                    
+                }
+            }
+        }
+    }
 }
