@@ -10,5 +10,10 @@ public interface PomManagerListener extends EventListener {
 
     void pomRemoved(PomManagerEvent pEvent);
 
-    void pomValidityChanged(PomManagerEvent pEvent);
+    void pomFileDeleted(PomManagerEvent pEvent);
+
+    void pomFileCreated(PomManagerEvent pEvent);
+
+    void pomFileChanged(PomManagerEvent pEvent);
+
 }

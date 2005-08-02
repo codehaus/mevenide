@@ -145,6 +145,31 @@ public class PomTreeModel extends DefaultTreeModel implements Disposable,
         }
     }
 
+    public void pomFileDeleted(PomManagerEvent pEvent) {
+        final String url = pEvent.getUrl();
+        final PomNode node = findPomNode(url);
+        if (node != null) {
+            node.removeAllChildren();
+            nodeStructureChanged(node);
+        }
+    }
+
+    public void pomFileCreated(PomManagerEvent pEvent) {
+        final String url = pEvent.getUrl();
+        final PomNode node = findPomNode(url);
+        if (node != null) {
+            final int index = projectsNode.getIndex(node);
+
+            node.removeFromParent();
+            projectsNode.insert(createPomNode(url), index);
+
+            nodeStructureChanged(projectsNode);
+        }
+    }
+
+    public void pomFileChanged(PomManagerEvent pEvent) {
+    }
+
     public void pomValidityChanged(final PomManagerEvent pEvent) {
         final PomManager pomMgr = PomManager.getInstance(project);
         final String url = pEvent.getUrl();

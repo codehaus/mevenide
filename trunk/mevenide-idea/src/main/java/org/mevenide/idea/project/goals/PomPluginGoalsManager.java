@@ -16,7 +16,6 @@ import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.util.*;
 import org.jdom.Element;
 import org.mevenide.idea.global.MavenHomeUndefinedException;
@@ -209,13 +208,13 @@ public class PomPluginGoalsManager extends AbstractPomSettingsManager
 
     public void writeExternal(final Element pElt) throws WriteExternalException {
         final PomManager pomMgr = PomManager.getInstance(project);
-        final VirtualFilePointer[] filePointers = pomMgr.getFilePointers();
+        final String[] urls = pomMgr.getFileUrls();
 
-        for (VirtualFilePointer pointer : filePointers) {
+        for (String url : urls) {
             final Element pomElt = new Element("pom");
-            pomElt.setAttribute("url", pointer.getUrl());
+            pomElt.setAttribute("url", url);
 
-            final PluginGoal[] goals = getPluginGoals(pointer.getUrl());
+            final PluginGoal[] goals = getPluginGoals(url);
             for (PluginGoal goal : goals) {
                 final Element goalElt = new Element("goal");
                 goalElt.setAttribute("plugin", goal.getContainer().getId());

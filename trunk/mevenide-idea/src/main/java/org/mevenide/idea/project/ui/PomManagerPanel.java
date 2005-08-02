@@ -266,7 +266,7 @@ public class PomManagerPanel extends JPanel
     private void navigateToSource(final PomNode pPomNode) {
         final PomManager pomMgr = PomManager.getInstance(project);
         final String url = pPomNode.getUserObject();
-        final VirtualFile pomFile = pomMgr.getFile(url);
+        final VirtualFile pomFile = pomMgr.getVirtualFile(url);
         if (pomFile == null || !pomFile.isValid() || pomFile.isDirectory() || !FileUtils.exists(
                 pomFile))
             return;
@@ -372,9 +372,9 @@ public class PomManagerPanel extends JPanel
             final PomNode pomNode = model.getPomNode(node);
 
             if (pomNode != null)
-                pomFile = pomMgr.getFile(pomNode.getUserObject());
+                pomFile = pomMgr.getVirtualFile(pomNode.getUserObject());
             else
-                pomFile = pomMgr.getFile(PomUtils.selectPom(project));
+                pomFile = pomMgr.getVirtualFile(PomUtils.selectPom(project));
 
             if (pomFile == null)
                 return;
