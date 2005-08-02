@@ -25,7 +25,7 @@ import junit.framework.TestCase;
 /**  
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: MevenideUtilTest.java 30 août 2003 Exp gdodinet 
+ * @version $Id: MevenideUtilTest.java 30 2003 Exp gdodinet 
  * 
  */
 public class ProjectWalkerTest extends TestCase {
