@@ -38,7 +38,6 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
     private IPropertyFinder projectWalker;
     
     private IQueryContext context;
-
     
     /**
      * IQueryContext based constructor. not public, use PropertyResolverfactory
@@ -46,18 +45,9 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
     PropertyFilesAggregator(IQueryContext querycontext, DefaultsResolver defs) {
         context = querycontext;
         defaults = defs;
-        initializeContext();
-        // cannot use the ILocationFinder here, since Loc finders use resolvers -> cyclic dependency
-        String val = getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
-        if (val != null) {
-            defs.initPluginPropsFinder(PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val)));
-        }
-    }
-    
-    
-    private void initializeContext() {
         projectWalker = new ProjectWalker2(context);
     }
+    
     
     public String getResolvedValue(String key) {
         return getValue(key, true);

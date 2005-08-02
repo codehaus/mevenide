@@ -43,6 +43,9 @@ public final class DefaultsResolver implements IPropertyFinder {
     private File projectDir;
     private File userDir;
     private IQueryContext context;
+    private String lastUnpackedDir;
+    private String lastPackedDir;
+    private boolean reloading = false;
     //TODO lazy initialization
     static {
         try {
@@ -92,6 +95,7 @@ public final class DefaultsResolver implements IPropertyFinder {
             }
             return userDir.getAbsolutePath();
         }
+        checkReload();
         String toReturn = defaults.getProperty(key);
         if (toReturn == null && pluginDefaults != null) {
             toReturn = pluginDefaults.getValue(key);
@@ -100,6 +104,7 @@ public final class DefaultsResolver implements IPropertyFinder {
     }   
     
     public Set getDefaultKeys() {
+        checkReload();
         HashSet set = new HashSet(defaults.keySet());
         if (pluginDefaults != null) {
             set.addAll(pluginDefaults.getDefaultPluginKeys());
@@ -107,4 +112,19 @@ public final class DefaultsResolver implements IPropertyFinder {
         return set;
     }
     
+    private synchronized void checkReload() {
+        if (reloading) {
+            return;
+        }
+        reloading = true;
+        String val = context.getResolver().getResolvedValue("maven.plugin.unpacked.dir"); //NOI18N
+        String val2 = context.getResolver().getResolvedValue("maven.plugin.dir"); //NOI18N
+        if (   (val != null && !val.equals(lastUnpackedDir)) 
+            || (val2 != null && !val2.equals(lastPackedDir))) {
+            pluginDefaults = PropertyResolverFactory.getFactory().getPluginDefaultsPropertyFinder(new File(val), new File(val2));
+            lastUnpackedDir = val;
+            lastPackedDir = val2;
+        }
+        reloading = false;
+    }
 }
