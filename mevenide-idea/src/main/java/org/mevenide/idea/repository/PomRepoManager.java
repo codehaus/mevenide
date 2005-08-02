@@ -34,7 +34,7 @@ import static org.mevenide.repository.RepositoryReaderFactory.createRemoteReposi
 /**
  * @author Arik
  */
-public class PomRepoManager extends AbstractPomSettingsManager implements PomManagerListener {
+public class PomRepoManager extends AbstractPomSettingsManager {
     private static final IRepositoryReader[] EMPTY_REPO_ARRAY = new IRepositoryReader[0];
 
     private static final SelectFromListDialog.ToStringAspect SIMPLE_TO_STRING_ASPECT = new SelectFromListDialog.ToStringAspect() {
@@ -435,17 +435,6 @@ public class PomRepoManager extends AbstractPomSettingsManager implements PomMan
     @Override
     public void projectOpened() {
         RepoToolWindow.register(project);
-        PomManager.getInstance(project).addPomManagerListener(this);
-    }
-
-    public void pomAdded(PomManagerEvent pEvent) {
-        
-    }
-
-    public void pomRemoved(PomManagerEvent pEvent) {
-    }
-
-    public void pomValidityChanged(PomManagerEvent pEvent) {
     }
 
     public static PomRepoManager getInstance(final Project pProject) {

@@ -90,7 +90,7 @@ public class ExecuteGoalAction extends AbstractAnAction {
             poms = pomMgr.getFileUrls();
 
         final String pomUrl = PomUtils.selectPom(project, poms, DLG_TITLE, DLG_LABEL);
-        return pomMgr.getFile(pomUrl);
+        return pomMgr.getVirtualFile(pomUrl);
     }
 
     protected Goal[] getGoals(final AnActionEvent pEvent) {

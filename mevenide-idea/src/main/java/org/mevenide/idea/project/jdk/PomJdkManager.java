@@ -8,7 +8,6 @@ import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.util.List;
 import org.jdom.Element;
 import org.mevenide.idea.project.AbstractPomSettingsManager;
@@ -53,7 +52,7 @@ public class PomJdkManager extends AbstractPomSettingsManager implements JDOMExt
     }
 
     public void readExternal(final Element pElt) throws InvalidDataException {
-        //noinspection UNCHECKED_WARNING
+        //noinspection unchecked
         final List<Element> pomElts = pElt.getChildren("pom");
         for (Element pomElt : pomElts) {
             final String url = pomElt.getAttributeValue("url");
@@ -70,11 +69,11 @@ public class PomJdkManager extends AbstractPomSettingsManager implements JDOMExt
 
     public void writeExternal(final Element pElt) throws WriteExternalException {
         final PomManager pomMgr = PomManager.getInstance(project);
-        final VirtualFilePointer[] filePointers = pomMgr.getFilePointers();
-        for (VirtualFilePointer pointer : filePointers) {
+        final String[] urls = pomMgr.getFileUrls();
+        for (String url : urls) {
             final Element pomElt = new Element("pom");
-            pomElt.setAttribute("url", pointer.getUrl());
-            final ProjectJdk jdk = getJdk(pointer.getUrl());
+            pomElt.setAttribute("url", url);
+            final ProjectJdk jdk = getJdk(url);
             if (jdk != null)
                 pomElt.setAttribute("jdk", jdk.getName());
 

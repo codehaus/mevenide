@@ -73,7 +73,7 @@ public class PropertiesManager extends AbstractProjectComponent {
      * @return property value, or {@code null} if it could not be found
      */
     public String getProperty(final String pPomUrl, final String pName) {
-        final VirtualFile pPomFile = PomManager.getInstance(project).getFile(pPomUrl);
+        final VirtualFile pPomFile = PomManager.getInstance(project).getVirtualFile(pPomUrl);
 
         //
         //check some preconfigured properties that are not present in
@@ -192,7 +192,7 @@ public class PropertiesManager extends AbstractProjectComponent {
      * @return expanded string with property values
      */
     public String resolveProperty(final String pPomUrl, final String pValue) {
-        final VirtualFile pomFile = PomManager.getInstance(project).getFile(pPomUrl);
+        final VirtualFile pomFile = PomManager.getInstance(project).getVirtualFile(pPomUrl);
         return resolveProperty(pomFile, pValue);
     }
 

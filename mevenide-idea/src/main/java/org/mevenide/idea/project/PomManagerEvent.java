@@ -11,7 +11,7 @@ public class PomManagerEvent extends EventObject {
     /**
      * A pointer to the POM file (might not be valid).
      */
-    private final String url;
+    private final CharSequence url;
 
     /**
      * Creates an instance for the given POM manager and file.
@@ -20,7 +20,7 @@ public class PomManagerEvent extends EventObject {
      * @param pPomUrl the POM file that has changed
      */
     public PomManagerEvent(final PomManager pSource,
-                           final String pPomUrl) {
+                           final CharSequence pPomUrl) {
         super(pSource);
         url = pPomUrl;
     }
@@ -42,6 +42,6 @@ public class PomManagerEvent extends EventObject {
      * @return pointer
      */
     public String getUrl() {
-        return url;
+        return url.toString();
     }
 }

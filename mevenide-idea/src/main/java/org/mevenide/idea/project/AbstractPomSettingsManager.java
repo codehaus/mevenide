@@ -3,7 +3,6 @@ package org.mevenide.idea.project;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.pointers.VirtualFilePointer;
 import java.beans.PropertyChangeEvent;
 import javax.swing.event.EventListenerList;
 import org.mevenide.idea.util.components.AbstractProjectComponent;
@@ -30,27 +29,15 @@ public abstract class AbstractPomSettingsManager extends AbstractProjectComponen
     }
 
     protected final <T> T get(final Key<T> pKey, final String pPomUrl) {
-        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pPomUrl);
-        if (file == null)
-            return null;
-
-        return file.getUserData(pKey);
+        return PomManager.getInstance(project).getData(pPomUrl, pKey);
     }
 
     protected final <T> void put(final Key<T> pKey, final String pPomUrl, final T pValue) {
-        final VirtualFilePointer file = PomManager.getInstance(project).getPointer(pPomUrl);
-        if (file == null)
-            return;
-
-        file.putUserData(pKey, pValue);
+        PomManager.getInstance(project).putData(pPomUrl, pKey, pValue);
     }
 
     protected final VirtualFile getFile(final String pPomUrl) {
-        final VirtualFilePointer filePointer = PomManager.getInstance(project).getPointer(pPomUrl);
-        if (filePointer == null)
-            return null;
-
-        return filePointer.getFile();
+        return PomManager.getInstance(project).getVirtualFile(pPomUrl);
     }
 
     protected static class PomPropertyChangeEvent<SourceType,ValueType>
@@ -68,13 +55,13 @@ public abstract class AbstractPomSettingsManager extends AbstractProjectComponen
 
         @Override
         public ValueType getNewValue() {
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             return (ValueType) super.getNewValue();
         }
 
         @Override
         public ValueType getOldValue() {
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             return (ValueType) super.getOldValue();
         }
 
@@ -84,7 +71,7 @@ public abstract class AbstractPomSettingsManager extends AbstractProjectComponen
 
         @Override
         public SourceType getSource() {
-            //noinspection UNCHECKED_WARNING
+            //noinspection unchecked
             return (SourceType) super.getSource();
         }
     }
