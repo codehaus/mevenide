@@ -50,8 +50,29 @@ public final class RepositoryUtilities {
     }
     
     public static IRepositoryReader[] createRemoteReaders(IPropertyResolver resolver) {
-        String proxyhost = ProxyUtilities.getProxyHost();
-        String proxyport = ProxyUtilities.getProxyPort();
+        String host = resolver.getResolvedValue("maven.proxy.host");
+        String port = resolver.getResolvedValue("maven.proxy.port");
+        String user = resolver.getResolvedValue("maven.proxy.username");
+        String passwd = resolver.getResolvedValue("maven.proxy.password");
+        if (host == null) {
+            host = ProxyUtilities.getProxyHost();
+        }
+        if (port == null) {
+            port = ProxyUtilities.getProxyPort();
+        }
+        if (host != null && host.length() == 0) {
+            host = null;
+        } 
+        if (port != null && port.length() == 0) {
+            port = null;
+        } 
+        if (user != null && user.length() == 0) {
+            user = null;
+        } 
+        if (passwd != null && passwd.length() == 0) {
+            passwd = null;
+        } 
+
         String repos = resolver.getResolvedValue("maven.repo.remote"); //NOI18N
         Collection cols = new ArrayList();
         IRepositoryReader reader;
@@ -59,10 +80,12 @@ public final class RepositoryUtilities {
             StringTokenizer tokens = new StringTokenizer(repos, ",");
             while (tokens.hasMoreTokens()) {
                 URI uri = URI.create(tokens.nextToken());
-                if (proxyport != null && proxyhost != null 
-                        && proxyhost.trim().length() > 0 
-                        && proxyport.trim().length() > 0 ) {
-                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, proxyhost, proxyport);
+                if (port != null && host != null) {
+                    if (user != null && passwd != null) {
+                        reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, host, port, user, passwd);
+                    } else {
+                        reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, host, port);
+                    }
                 } else {
                     reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri);
                 }
@@ -73,8 +96,6 @@ public final class RepositoryUtilities {
     }
     
     public static URI[] createRemoteRepositoryURIs(IPropertyResolver resolver) {
-        String proxyhost = ProxyUtilities.getProxyHost();
-        String proxyport = ProxyUtilities.getProxyPort();
         String repos = resolver.getResolvedValue("maven.repo.remote"); //NOI18N
         Collection cols = new ArrayList();
         IRepositoryReader reader;
