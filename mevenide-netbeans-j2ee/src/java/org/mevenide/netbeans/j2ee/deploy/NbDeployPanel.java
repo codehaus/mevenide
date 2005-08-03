@@ -36,6 +36,7 @@ public class NbDeployPanel extends javax.swing.JPanel {
     /** Creates new form NbDeployPanel */
     public NbDeployPanel(J2eeModuleProvider prov) {
         initComponents();
+        cbDebug.setVisible(false);
         provider = prov;
         loadModel(provider.getServerInstanceID());
         J2eeModule module = provider.getJ2eeModule();
