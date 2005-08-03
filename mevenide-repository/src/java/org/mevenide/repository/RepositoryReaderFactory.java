@@ -45,7 +45,7 @@ public final class RepositoryReaderFactory {
             return new HttpRepositoryReader(uri);
         }
         if (uri.toString().startsWith("file://")) {
-            return new LocalRepositoryReader(new File(uri));
+            return createLocalRepositoryReader(new File(uri));
         }
         return null;
     }
@@ -57,6 +57,18 @@ public final class RepositoryReaderFactory {
                                     String proxyHost, String proxyPort) {
         if (uri.toString().startsWith("http://")) {
             return new HttpRepositoryReader(uri, proxyHost, proxyPort);
+        }
+        return null;
+    }
+    
+    /**
+     * Creates a IRepositoryReader for the remote repository.
+     */
+    public static IRepositoryReader createRemoteRepositoryReader(URI uri, 
+                                    String proxyHost, String proxyPort,
+                                    String proxyUser, String proxyPasswd) {
+        if (uri.toString().startsWith("http://")) {
+            return new HttpRepositoryReader(uri, proxyHost, proxyPort, proxyUser, proxyPasswd);
         }
         return null;
     }

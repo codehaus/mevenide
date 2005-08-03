@@ -28,6 +28,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.mevenide.project.dependency.URIDependencyResolver;
 
@@ -37,17 +38,46 @@ import org.mevenide.project.dependency.URIDependencyResolver;
  */
 class HttpRepositoryReader extends AbstractRepositoryReader {
     /** Creates a new instance of HttpRepositoryReader */
-    private HttpClient client;
+    private String proxyhost;
+    private String proxyport;
+    private String proxyuser;
+    private String proxypasswd;
+    
     public HttpRepositoryReader(URI rootUri) {
         super(rootUri);
-        client = new HttpClient();
     }
+    
     
     public HttpRepositoryReader(URI rootUri, String host, String port) {
         this(rootUri);
-        HostConfiguration config = new HostConfiguration();
-        config.setProxy(host, Integer.parseInt(port));
-        client.setHostConfiguration(config);
+        proxyhost = host;
+        proxyport = port;
+    }
+    
+    public HttpRepositoryReader(URI rootUri, String host, String port, 
+                                String user, String passwd) {
+        this(rootUri, host, port);
+        proxyuser = user;
+        proxypasswd = passwd;
+    }
+    
+    private HttpClient getClient() {
+        // MEVENIDE-300
+        // no caching now, just create a new client each time.
+        // to get a stateless reader.
+        HttpClient client = new HttpClient();
+        if (proxyhost != null) {
+            HostConfiguration config = new HostConfiguration();
+            config.setProxy(proxyhost, Integer.parseInt(proxyport));
+            client.setHostConfiguration(config);
+        }
+        if (proxyuser != null) {
+            client.getState().setProxyCredentials(
+                null, /* default realm? */
+                proxyhost,
+                new UsernamePasswordCredentials(proxyuser, proxypasswd));
+        }
+        return client;
     }
 
     public RepoPathElement[] readElements(RepoPathElement element) throws Exception {
@@ -67,7 +97,7 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
         // TODO code application logic here
         HttpMethod method = new GetMethod(uri.toString());
         try {
-            client.executeMethod(method);
+            getClient().executeMethod(method);
             String response = method.getResponseBodyAsString();
             return createChildren(element, getNames(response), uri);
         } catch (Exception exc) {
