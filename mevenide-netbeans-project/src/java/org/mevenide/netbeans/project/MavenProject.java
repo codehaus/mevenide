@@ -43,6 +43,7 @@ import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
 import org.mevenide.netbeans.project.queries.MavenSharabilityQueryImpl;
+import org.mevenide.netbeans.project.queries.MavenSourceLevelImpl;
 import org.mevenide.netbeans.project.queries.MavenTestForSourceImpl;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
@@ -411,7 +412,9 @@ public final class MavenProject implements Project {
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             getSources(), 
-            new RecommendedTemplatesImpl()
+            new RecommendedTemplatesImpl(),
+            new MavenSourceLevelImpl(this)
+                    
         });
         toReturn.add(staticLookup);
         
