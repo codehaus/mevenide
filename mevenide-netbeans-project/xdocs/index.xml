@@ -7,16 +7,16 @@
     <body>
        <section name="Netbeans Module page">
         <div id="documentContent">
-            <p>This project allows to open and work with Maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 4.0 and 4.1.</p>
+            <p>This project allows to open and work with Maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 4.0, 4.1 and 4.2 dev.</p>
 	</div>
         </section>
         
-       <section name="Netbeans 4.0 and 4.1">
+       <section name="Netbeans 4.0, 4.1 and 4.2dev">
         <div id="documentContent">
             <p>Mevenide for the 4.0 version and 4.1 version contains these <a href="features.html" class="documentLink"> features </a>.</p>
-            <p> You can download the <a href="../download/mevenide-netbeans-0.7.zip"> 0.7 release</a>. It was tested with Maven 1.0.2 and Netbeans IDE 4.0 and 4.1 final.</p>
+            <p> You can download the <a href="../download/mevenide-netbeans-0.8.zip"> 0.8 release</a>. It was tested with Maven 1.0.2 and Netbeans IDE 4.1 final.</p>
             <p>Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.2. Please note that the grammar module 
-            (editor completion for maven xml files) in 0.7 release zip will work
+            (editor completion for maven xml files) in 0.8 release zip will work
             with the 4.1 but to get it working with 4.0 you need the <a href="../download/mevenide-netbeans-grammar-0.6.nbm">old 4.0 nbm </a>.
             </p>
             <p>
