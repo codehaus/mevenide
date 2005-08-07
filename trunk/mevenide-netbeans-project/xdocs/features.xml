@@ -18,7 +18,7 @@
 			<li><p><a href="#Browsing">Browsing remote repositories</a></p></li>
 		  </ul>
           <p>
-          For a detailed walkthrough describing the feautures accompanied with picures, see the <a href="user-guide/index.html">User Guide</a>
+          For a detailed walkthrough describing the feautures accompanied with pictures, see the <a href="user-guide/index.html">User Guide</a>
           
 		</p>
 	  </div>
@@ -83,7 +83,8 @@
 		  <li><p>Able to run the project or single classes.</p></li>
            <li><p>Able to run test suite or single test from IDE.</p></li>
            <li><p>Can debug the application, a single class or single test.</p></li>
-           <li><p>For web applications, it's possible to deploy to a web server using Cargo.</p></li>
+           <li><p>J2ee applications can be deployed on Netbeans defined servers.</p></li>
+           <li><p>For web applications, it's possible to deploy to a web server using <a href="http://cargo.codehaus.org">Cargo</a>. It currently supports Resin, Orion, Tomcat etc.</p></li>
 		</ul>
 	  </p>
 	  <p>
@@ -106,7 +107,6 @@
 	  <p>
 		<u>Known limitations</u><br/>
 		<ul>
-    <li><p>Refreshing of the views not implemented yet.</p></li>
     <li><p>Searching also not implemented.</p></li>
 		</ul>
 	  </p>
