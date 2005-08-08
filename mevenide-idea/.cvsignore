@@ -4,3 +4,5 @@ target
 build.properties
 sandbox
 .project
+*.ser
+*.log
