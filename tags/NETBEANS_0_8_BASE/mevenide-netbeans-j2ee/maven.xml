@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core"
+         xmlns:util="jelly:util">
+
+  <preGoal name="test:test">
+  	<!-- do something before test goal -->
+  </preGoal>
+	
+   <preGoal name="nbm:prepare-nbm-resources">
+     <!-- copy additional resources for the nbm  to the right location  -->
+<!--      <ant:mkdir dir="${maven.nbm.build.dir}/netbeans/${maven.nbm.cluster}/maven-plugins"/>
+      <ant:copy toDir="${maven.nbm.build.dir}/netbeans/${maven.nbm.cluster}/maven-plugins" 
+                 file="${pom.getDependencyPath('mevenide:maven-mevenide-plugin')}"/>
+                 -->
+  </preGoal>   
+  
+  	  
+</project>
+

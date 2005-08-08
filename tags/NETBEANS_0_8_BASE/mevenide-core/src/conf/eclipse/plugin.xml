@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin
+   id="@maven.eclipse.plugin.artifact.id@"
+   name="Mevenide Core"
+   version="@maven.eclipse.plugin.artifact.version@"
+   provider-name="The Codehaus">
+
+   <runtime>
+      <library name="@maven.eclipse.plugin.artifact.internal.id@-@maven.eclipse.plugin.artifact.internal.version@.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+   	  <import plugin="@org.mevenide.grabber.id@"/>
+   	  <import plugin="@org.mevenide.config.id@"/>
+   	  <import plugin="org.apache.maven"/>
+   </requires>
+</plugin>

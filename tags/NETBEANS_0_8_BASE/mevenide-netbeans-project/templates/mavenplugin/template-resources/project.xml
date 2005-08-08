@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+<project>
+  <pomVersion>3</pomVersion>
+  <artifactId>@ARTIFACTID@</artifactId>
+  <groupId>@GROUPID@</groupId>
+  <currentVersion>@VERSION@</currentVersion>
+  <name>@NAME@</name>
+  <package>@PACKAGE@</package>
+  <logo>/images/logo.gif</logo>
+  <inceptionYear>2005</inceptionYear>
+  
+  <shortDescription>This is a maven plugin.</shortDescription>
+  
+<!--  <licenses>
+    <license>
+        <name>Apache Public License 2.0 - for the plugin itself</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+    </license> 
+  </licenses>-->
+  
+  <build> 
+    <resources> 
+       <resource> 
+         <directory>${basedir}</directory> 
+         <includes> 
+           <include>plugin.jelly</include> 
+           <include>plugin.properties</include> 
+           <include>project.properties</include> 
+           <include>project.xml</include> 
+         </includes> 
+       </resource> 
+<!--       <resource> 
+         <directory>${basedir}/src/plugin-resources</directory> 
+         <targetPath>plugin-resources</targetPath> 
+       </resource> 
+       -->
+     </resources> 
+   </build>   
+  
+   <reports>
+        <report>maven-changes-plugin</report> 
+        <report>maven-faq-plugin</report> 
+<!--	<report>maven-jellydoc-plugin</report> -->
+<!--        <report>maven-javadoc-plugin</report> -->
+        <report>maven-changelog-plugin</report>
+	<report>maven-file-activity-plugin</report>
+	<report>maven-developer-activity-plugin</report>        
+    </reports>
+</project>

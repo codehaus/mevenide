@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+	<author email="mkleint@codehaus.org">Milos Kleint</author>
+	<title>Code Completion</title>
+	</properties>
+	<body>
+		<section name="Completion">
+			<div id="documentContent">
+            <p>When editing the project files (project.xml and maven.xml) Mevenide tries to help 
+            you by providing code completion. This helps to prevent typos and lets you concentrate on your task without looking up the exact syntax.
+				<br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/completion-apple.png"/><br/>
+							<font size="-1"><b>Screenshot 1</b> Completion</font> 
+							<br/> 
+						</center>             
+            </p>
+				<p> 
+                For full description of features that help with writing project.xml, maven.xml and
+                plugin.jelly files in the XML editor, please see the pages of the <a href="../../mevenide-netbeans-grammar/index.html">completion module. </a>
+				</p>
+            </div>
+        </section>
+		<section>
+			<p>
+				<navbar prev="customizer.html" toc="index.html" />
+			</p>
+		</section>
+	</body>
+</document>

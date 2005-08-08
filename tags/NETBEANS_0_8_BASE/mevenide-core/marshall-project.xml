@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <!--id>mevenide:master</id -->
+  <name>Mevenide Master</name>
+  <groupId>mevenide</groupId>
+  <artifactId>master</artifactId>
+  <currentVersion>0.1</currentVersion>
+  <logo>/images/mevenide-logo.jpg</logo>
+  <organization>
+    <name>Sourceforge</name>
+    <url>http://sf.net/</url>
+    <logo>http://sourceforge.net/sflogo.php?group_id=54263&amp;type=5</logo>
+  </organization>
+
+  <inceptionYear>2003</inceptionYear>
+  <package>org.mevenide</package>
+  <url>http://mevenide.sf.net/${pom.artifactId}/</url>
+  <issueTrackingUrl/>
+  <siteAddress>shell.sourceforge.net</siteAddress>
+  <siteDirectory>${mevenide.local.siteDirectory}/${pom.artifactId}</siteDirectory>
+  <distributionDirectory>/www/jakarta.apache.org/builds/jakarta-turbine-maven/</distributionDirectory>
+  
+  
+  <repository>
+    <connection>scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/mevenide/${pom.artifactId}</connection>
+    <developerConnection>scm:cvs:ext:${maven.username}@cvs.sourceforge.net:/cvsroot/mevenide/${pom.artifactId}</developerConnection>
+    <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/mevenide/${pom.artifactId}/</url>
+  </repository>
+ 
+  <mailingLists>
+    <mailingList>
+      <name>Mevenide User List</name>
+      <subscribe>mevenide-user-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-user-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=9925</archive>
+    </mailingList>
+    <mailingList>
+      <name>Mevenide Developer List</name>
+      <subscribe>mevenide-general-dev-request@lists.sourceforge.net?body=subscribe</subscribe>
+      <unsubscribe>mevenide-general-dev-request@lists.sourceforge.net?body=unsubscribe</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=10398</archive>
+    </mailingList>
+  </mailingLists>
+  
+  <developers>
+    <developer>
+      <name>Gilles Dodinet</name>
+      <id>gdodinet</id>
+      <email>rhill@wanadoo.fr</email>
+      <organization>Cross-Systems Integration</organization>
+      <roles>
+      	<role>Java Developer</role>
+      </roles>
+    </developer>
+  </developers>
+  
+  <build>
+    <sourceDirectory>${basedir}/src/java</sourceDirectory>
+    <unitTestSourceDirectory>${basedir}/src/test/java</unitTestSourceDirectory>
+    <aspectSourceDirectory>${basedir}/src/aspects</aspectSourceDirectory>
+    	
+    
+    <unitTest>
+     
+      <includes>
+        <include>*/*Test.java</include>
+      </includes>
+
+      <resources>
+        <resource>
+          <directory>${basedir}/src/test/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+        <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+        </resource>
+      </resources>
+    </unitTest>
+    
+    <resources>
+      <resource>
+          <directory>${basedir}/etc</directory>
+          <includes>
+            <include>**/*.*</include>
+          </includes>
+      </resource>
+    </resources>
+    
+  </build>
+
+  <reports>
+    <report>maven-jdepend-plugin</report>
+    <!-- report>maven-checkstyle-plugin</report -->
+    <!-- report>maven-changelog-plugin</report -->
+    <!-- report>maven-file-activity-plugin</report -->
+    <!-- report>maven-developer-activity-plugin</report -->
+    <report>maven-javadoc-plugin</report>
+    <report>maven-jxr-plugin</report>
+    <report>maven-junit-report-plugin</report>
+    <report>maven-tasklist-plugin</report>
+    <!-- report>maven-jellydoc-plugin</report -->
+  </reports>
+
+
+
+</project>

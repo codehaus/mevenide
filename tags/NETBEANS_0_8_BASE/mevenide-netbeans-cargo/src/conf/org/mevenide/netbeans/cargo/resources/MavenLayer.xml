@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+
+  <folder name="UI">
+     <folder name="Runtime">
+        <file name="org-mevenide-netbeans-cargo-ServersNode.instance">
+            <attr name="instanceClass" stringvalue="org.mevenide.netbeans.cargo.ServersNode"/>
+            <attr name="instanceCreate" methodvalue="org.mevenide.netbeans.cargo.ServersNode.getRootNode"/>
+        </file>
+     </folder>
+  </folder>
+  
+  <folder name="Cargo">
+     <folder name="Containers"/>
+  </folder>
+  
+</filesystem>

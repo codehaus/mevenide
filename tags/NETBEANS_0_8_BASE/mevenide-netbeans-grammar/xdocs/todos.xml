@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="ca206216@tiscali.cz">Milos Kleint</author>
+    <title>Jelly/Maven Netbeans grammar module</title>
+  </properties>
+
+  <body>
+  	<section name="Netbeans plugin Task List">
+	    <p>
+            <ul>
+                <li>Attempt to integrate with the ant-grammar Netbeans module to get ant elements and attributes in cc.</li>
+                <li>Add completion for xdoc based documents. Like changes.xml, faq.fml etc. </li>
+            </ul>
+        </p>
+	</section>
+  </body>
+</document>
