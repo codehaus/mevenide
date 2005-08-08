@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="0.8" date="in cvs" description="Work in progress">
+    <release version="0.8" date="08/08/2005" description="4.1 release, should work with 4.0 and also 4.2 dev">
       <action dev="mkleint" type="add">
           Dependencies now visible and editable in Project View. Add/Edit/Remove dependency actions
           easily accessible from project explorer.
@@ -18,6 +18,9 @@
       <action dev="mkleint" type="add">
           Added the default Netbeans IDE webapp deployment. Allows deploying and debugging on
           IDE-supported servers.
+      </action>
+      <action dev="mkleint" type="add">
+          Access pom and property files from the project view.
       </action>
     </release>
       
