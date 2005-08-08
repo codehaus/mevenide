@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>goals-grabber</artifactId>
     <name>Mevenide Goals Grabber</name>
-    <currentVersion>0.10-SNAPSHOT</currentVersion>
+    <currentVersion>0.10</currentVersion>
     <package>org.mevenide.goals</package>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
     <shortDescription>Gets all the available goals and reports</shortDescription>
@@ -39,7 +39,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
+            <version>0.9</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -52,7 +52,7 @@
             <version>1.0.2</version>
             <type>jar</type>
             <properties>
-               <netbeans.module.dep>spec</netbeans.module.dep>
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>

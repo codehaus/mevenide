@@ -159,7 +159,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-core</artifactId>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.10</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -171,19 +171,19 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.8</version>
+            <version>0.9</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.10</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-repository</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
             <type>jar</type>
         </dependency>
         <dependency>
