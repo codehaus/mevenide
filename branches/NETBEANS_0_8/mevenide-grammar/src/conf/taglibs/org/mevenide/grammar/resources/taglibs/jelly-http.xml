@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:http">
+    <tag name="session">
+        <attr name="host"/>
+        <attr name="httpClient"/>
+        <attr name="port"/>
+        <attr name="proxy"/>
+        <attr name="proxyPort"/>
+        <attr name="proxyHost"/>
+        <attr name="secure"/>
+        <attr name="strictMode"/>
+        <attr name="userAgent"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="get">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="post">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="delete">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="head">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>    
+    </tag>
+    <tag name="options">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>    
+    </tag>
+    <tag name="put">
+        <attr name="followRedirects"/>
+        <attr name="parameters"/>
+        <attr name="path"/>
+        <attr name="requestHeaders"/>
+        <attr name="uri"/>
+        <attr name="var"/>
+        <attr name="trim"/>
+    </tag>
+    <tag name="parameter" within="put,get,post,delete">
+        <attr name="name"/>
+        <attr name="value"/>
+        <attr name="trim"/>    
+    </tag>
+    <tag name="header">
+        <attr name="name"/>
+        <attr name="value"/>
+        <attr name="trim"/>    
+    </tag>
+    <tag name="body" within="post,put">
+        <attr name="trim"/>
+    </tag>
+</taglib>

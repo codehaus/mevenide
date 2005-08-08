@@ -1,0 +1,18 @@
+  <!-- 
+  register a maven project template.
+  the mytemplaname.zip file is created
+  -->
+   <folder name="Templates">
+        <folder name="Project">
+            <folder name="Maven">
+                <file name="@ARTIFACTID@template.zip" url="@ARTIFACTID@template.zip">
+                    <attr name="template" boolvalue="true"/>
+                    <attr name="templatename" stringvalue="@ARTIFACTID@template"/>
+                    <attr name="instantiatingIterator" newvalue="org.mevenide.netbeans.project.wizards.MavenNewWizardIterator"/>
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="@PACKAGE@.resources.Bundle"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/@PACKAGEPATH@/resources/emptyProject.html"/>
+                </file>
+            </folder>
+        </folder>
+   </folder>

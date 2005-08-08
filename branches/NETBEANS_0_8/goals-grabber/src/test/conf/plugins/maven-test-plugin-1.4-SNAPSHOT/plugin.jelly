@@ -1,0 +1,334 @@
+<?xml version="1.0"?>
+
+<project xmlns:j="jelly:core"
+         xmlns:maven="jelly:maven"
+         xmlns:u="jelly:util" 
+         xmlns:resources="resources"
+         xmlns:define="jelly:define">
+  
+  <goal name="test" 
+        description="Test the application"
+        prereqs="test:test"/>
+
+  <goal name="test:prepare-filesystem"
+        description="Create the needed directory structure">
+    <mkdir dir="${maven.test.dest}"/>
+    <mkdir dir="${maven.test.reportsDirectory}"/>
+  </goal>
+ 
+  <goal name="test:compile"
+        description="Compile the TestCases and TestSuites"
+        prereqs="java:compile,java:jar-resources,test:prepare-filesystem,test:test-resources">
+
+    <j:if test="${unitTestSourcesPresent == 'true'}">
+      
+      <javac 
+        destdir="${maven.test.dest}"
+        excludes="**/package.html"
+        debug="${maven.compile.debug}"
+        deprecation="${maven.compile.deprecation}"
+        optimize="${maven.compile.optimize}">
+        <j:if test="${context.getVariable('maven.test.source') != null}">
+          <setProperty name="source" value="${maven.test.source}" />
+        </j:if>
+        <classpath>
+          <pathelement path="${maven.build.dest}"/>
+          <path refid="maven.dependency.classpath"/>
+          <pathelement path="${plugin.getDependencyPath('junit')}"/>
+        </classpath>
+        <src>
+          <path refid="maven.test.compile.src.set"/>
+        </src>
+        <j:if test="${context.getVariable('maven.compile.compilerargs') != null}">
+          <compilerarg line="${maven.compile.compilerargs}" />
+        </j:if>
+           
+        <j:if test="${context.getVariable('maven.compile.encoding') != null}">
+          <setProperty name="encoding" value="${maven.compile.encoding}" />
+        </j:if>
+             
+        <j:if test="${context.getVariable('maven.compile.executable') != null}">
+          <setProperty name="executable" value="${maven.compile.executable}" />
+        </j:if>
+            
+        <j:if test="${context.getVariable('maven.compile.fork') != null}">
+          <setProperty name="fork" value="${maven.compile.fork}" />
+        </j:if>
+
+        <j:if test="${context.getVariable('maven.compile.source') != null}">
+          <setProperty name="source" value="${maven.compile.source}" />
+        </j:if>
+            
+        <j:if test="${context.getVariable('maven.compile.verbose') != null}">
+          <setProperty name="verbose" value="${maven.compile.verbose}" />
+        </j:if>
+      </javac>
+    </j:if>
+
+    <j:if test="${!unitTestSourcesPresent}">
+      <echo>No test source files to compile.</echo>
+    </j:if>
+      
+  </goal>
+
+  <goal name="test:test"
+        description="Test the application"
+        prereqs="test:compile">
+      
+    <j:if test="${unitTestSourcesPresent == 'true' and context.getVariable('maven.test.skip') != 'true'}">
+      
+      <taskdef
+        name="junit"
+        classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+      />
+      
+      <junit printSummary="yes" 
+             failureProperty="maven.test.failure"
+             fork="${maven.junit.fork}"
+             dir="${maven.junit.dir}">
+        <sysproperty key="basedir" value="${basedir}"/>
+        <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+        <j:forEach var="someProperty" items="${listOfProperties}">
+          <sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+        </j:forEach>
+        <u:tokenize var="listOfJvmArgs" delim=" ">${maven.junit.jvmargs}</u:tokenize>
+        <j:forEach var="somejvmarg" items="${listOfJvmArgs}">
+          <jvmarg value="${somejvmarg}"/>
+        </j:forEach>
+        <formatter type="xml"/>
+        <formatter type="plain" usefile="${maven.junit.usefile}"/>
+        <classpath>
+          <path refid="maven.dependency.classpath"/>
+          <pathelement location="${maven.build.dest}"/>
+          <pathelement location="${maven.test.dest}"/>
+          <pathelement path="${plugin.getDependencyPath('junit')}"/>
+        </classpath>
+        <batchtest todir="${maven.test.reportsDirectory}">
+          <fileset dir="${pom.build.unitTestSourceDirectory}">
+            <j:forEach var="pat" items="${pom.build.unitTest.includes}">
+              <include name="${pat}"/>
+            </j:forEach>
+            <j:forEach var="pat" items="${pom.build.unitTest.excludes}">
+              <exclude name="${pat}"/>
+            </j:forEach>
+              <!-- KEEP ALL ABSTRACT TESTS FROM BEING RUN! -->
+              <exclude name="**/*AbstractTestCase.java"/>
+          </fileset>
+        </batchtest>
+      </junit>
+
+      <j:if test="${maven.test.failure}">
+        <j:set var="ignore__" value="${maven.test.failure.ignore}X"/>
+        <j:if test="${ignore__ == 'X'}">
+          <fail message="There were test failures."/>
+        </j:if>
+      </j:if>
+
+    </j:if>
+    
+    <j:if test="${!unitTestSourcesPresent}">
+      <echo>No tests to run.</echo>
+    </j:if>
+
+  </goal>
+
+  <goal name="test:ui"
+        description="Starts the Swing TestRunner front end"
+        prereqs="test:compile">
+
+    <java classname="junit.swingui.TestRunner" fork="yes">
+      <sysproperty key="basedir" value="${basedir}"/>
+      <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+      <j:forEach var="someProperty" items="${listOfProperties}">
+        <sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+      </j:forEach>
+      <u:tokenize var="listOfJvmArgs" delim=" ">${maven.junit.jvmargs}</u:tokenize>
+      <j:forEach var="somejvmarg" items="${listOfJvmArgs}">
+        <jvmarg value="${somejvmarg}"/>
+      </j:forEach>
+      <classpath>
+        <path refid="maven.dependency.classpath"/>
+        <pathelement location="${maven.build.dest}"/>
+        <pathelement location="${maven.test.dest}"/>
+        <pathelement path="${plugin.getDependencyPath('junit')}"/>
+      </classpath>
+      <arg value="-noloading"/>
+    </java>
+
+  </goal>
+
+
+  <goal name="test:single"
+        description="Execute a single test defined using the 'testcase' variable"
+        prereqs="test:compile">
+
+    <j:if test="${unitTestSourcesPresent == 'true'}">
+    
+      <j:choose>
+        <j:when test="${empty(testcase)}">
+        <echo>
+          You must define the test case to run via -Dtestcase=classname
+          Example: maven -Dtestcase=MyTest test:single
+        </echo>
+        </j:when>
+
+        <j:otherwise>
+
+          <taskdef
+            name="junit"
+            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+          />
+
+          <junit printSummary="yes"
+                 haltonfailure="yes"
+                 haltonerror="yes"
+                 fork="${maven.junit.fork}"
+                 dir="${maven.junit.dir}">
+
+            <sysproperty key="basedir" value="${basedir}"/>
+            <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+            <j:forEach var="someProperty" items="${listOfProperties}">
+              <sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+            </j:forEach>
+            <u:tokenize var="listOfJvmArgs" delim=" ">${maven.junit.jvmargs}</u:tokenize>
+            <j:forEach var="somejvmarg" items="${listOfJvmArgs}">
+              <jvmarg value="${somejvmarg}"/>
+            </j:forEach>
+            <formatter type="xml"/>
+            <formatter type="plain" usefile="false"/>
+            <formatter type="plain" usefile="true"/>
+
+            <classpath>
+              <path refid="maven.dependency.classpath"/>
+              <pathelement location="${maven.build.dest}"/>
+              <pathelement location="${maven.test.dest}"/>
+              <pathelement path="${plugin.getDependencyPath('junit')}"/>
+            </classpath>
+
+            <test name="${testcase}" todir="${maven.test.reportsDirectory}"/>
+
+          </junit>
+
+        </j:otherwise>
+      </j:choose>
+    </j:if>
+
+    <j:if test="${!unitTestSourcesPresent}">
+      <echo>No tests to run.</echo>
+    </j:if>
+
+  </goal>
+
+
+  <goal name="test:match"
+        description="Execute all the tests matching the given 'testmatch' variable"
+        prereqs="test:compile">
+
+    <j:if test="${unitTestSourcesPresent == 'true'}">
+    
+      <j:choose>
+        <j:when test="${empty(testmatch)}">
+        <echo>
+          You must define the test case to run via -Dtestmatch=pattern
+          Example: maven -Dtestmatch=*Foo* test:match
+        </echo>
+        </j:when>
+
+        <j:otherwise>
+
+          <taskdef
+            name="junit"
+            classname="org.apache.tools.ant.taskdefs.optional.junit.JUnitTask"
+          />
+
+          <junit printSummary="yes"
+                 haltonfailure="yes"
+                 haltonerror="yes"
+                 fork="${maven.junit.fork}"
+                 dir="${maven.junit.dir}">
+
+            <sysproperty key="basedir" value="${basedir}"/>
+            <u:tokenize var="listOfProperties" delim=" ">${maven.junit.sysproperties}</u:tokenize>
+            <j:forEach var="someProperty" items="${listOfProperties}">
+              <sysproperty key="${someProperty}" value="${context.getVariable(someProperty)}"/>
+            </j:forEach>
+            <j:set var="jvmargs"
+               value="${pom.getPluginContext('maven-test-plugin').getVariable('maven.junit.jvmargs')}"/>
+            <j:if test="$">
+                <jvmarg line="${jvmargs}"/>
+            </j:if>
+            <formatter type="xml"/>
+            <formatter type="plain" usefile="false"/>
+            <formatter type="plain" usefile="true"/>
+
+            <classpath>
+              <path refid="maven.dependency.classpath"/>
+              <pathelement location="${maven.build.dest}"/>
+              <pathelement location="${maven.test.dest}"/>
+              <pathelement path="${plugin.getDependencyPath('junit')}"/>
+            </classpath>
+
+            <batchtest todir="${maven.test.reportsDirectory}">
+              <fileset dir="${pom.build.unitTestSourceDirectory}">
+                <include name="**/${testmatch}.java"/>
+              </fileset>
+            </batchtest>
+
+          </junit>
+
+        </j:otherwise>
+      </j:choose>
+    </j:if>
+
+    <j:if test="${!unitTestSourcesPresent}">
+      <echo>No tests to run.</echo>
+    </j:if>
+
+  </goal>
+
+  <goal name="test:single-test"
+        description="[deprecated] please use the test:single goal instead">
+
+    <echo>[deprecated] please use the test:single goal instead</echo>
+
+    <attainGoal name="test:single"/>
+  </goal>
+
+  <goal name="test:match-test"
+        description="[deprecated] please use the test:match goal instead">
+
+    <echo>[deprecated] please use the test:match goal instead</echo>
+
+    <attainGoal name="test:match"/>
+  </goal>
+
+  <goal name="test:eclipse">
+      <echo>Used by eclipse to drag in test plugin context</echo>
+  </goal>
+
+  <!-- ================================================================== -->
+  <!-- T E S T  R E S O U R C E S                                         -->
+  <!-- ================================================================== -->
+
+  <goal name="test:test-resources"
+        description="Copy any resources that must be present for run tests"
+        prereqs="test:prepare-filesystem">
+
+    <j:if test="${unitTestSourcesPresent}">
+      <j:if test="${pom.build.unitTest != null}">
+        <j:if test="${!pom.build.unitTest.resources.isEmpty()}">
+          <maven:copy-resources
+            resources="${pom.build.unitTest.resources}"
+            todir="${maven.test.dest}"
+          />
+        </j:if>
+      </j:if>
+    </j:if>
+  </goal>
+
+  <define:taglib uri="test">
+    <define:tag name="dependency-handle">
+      <!-- XXX Use this tag to allow this plugin to be loaded into another -->
+    </define:tag>
+  </define:taglib>
+</project>

@@ -1,0 +1,15 @@
+org.mevenide.goals.grabber 
+  IGoalsGrabber :
+    o grabs plugins and goals (with prereqs) from either maven.xml (inheritance not managed yet) or plugin cache
+    o implementation are :
+        + DefaultGoalsGrabber (plugin cache)
+        + ProjectGoalsGrabber (maven.xml)
+        + GoalsGrabberAggregator 
+
+org.mevenide.goals.manager 
+  GoalsGrabberManager 
+  	o Factory + Cache of Grabbers
+  	
+org.mevenide.reports
+  Report Finder :
+    o Collects the reports found under MAVEN_PLUGIN_DIR (by grepping)

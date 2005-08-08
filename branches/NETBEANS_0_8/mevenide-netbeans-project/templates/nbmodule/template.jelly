@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core"
+         xmlns:util="jelly:util"
+         xmlns:ant="jelly:ant">
+   
+        <!-- Turn the specified package into a path -->
+   <util:replace var="packagepath" oldChar="." newChar="/" value="${maven.genapp.template.package}"/>
+   <ant:filter token="PACKAGEPATH" value="${packagepath}"/>
+   <ant:copy todir="${basedir}/src/conf"
+             file="${basedir}/etc/manifest.mf" 
+             filtering="true"/>
+   <ant:delete dir="${basedir}/etc"/>
+   <ant:delete>
+      <ant:fileset dir="${basedir}" includes="**/empty.txt"/>
+   </ant:delete>
+</project>

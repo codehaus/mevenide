@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- code completion definition for the jelly-tag library -->
+
+<taglib name="jelly:bean">
+    <tag name="bean">
+        <attr name="trim"/>
+    </tag>
+    <tag name="beanProperty" within="bean,beandef">
+        <attr name="trim"/>
+    </tag>
+    <tag name="beandef">
+        <attr name="classLoader"/>
+        <attr name="methodName"/>
+        <attr name="name"/>
+        <attr name="className"/>
+        <attr name="trim"/>
+    </tag>
+    <!-- the rest is dynamic?? -->
+</taglib>

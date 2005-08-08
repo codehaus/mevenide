@@ -1,0 +1,20 @@
+<div>
+  <p>
+    After having checked out the various modules, you can build Mevenide 
+    trhough the master project. The maven.xml master script defines, amongst other, 
+    the following goals :
+  </p>
+    <ul>
+      <li><code>mevenide:build-all</code> builds all modules and attains the <code>mevenide:create-update-dist</code> which in turns uses the maven-eclipse-plugin-plugin to generate the eclipse artifacts. Please refer to the <a href="maven-eclipse-plugin-plugin/index.html">MEP Plugin</a> documentation for more informations about this plugin.</li>	
+      <li><code>mevenide:build-site</code> builds the aggregated documentation site for Mevenide.</li>
+      <li><code>mevenide:install-maven-eclipse-plugin-plugin</code> installs and deploys maven-eclipse-plugin-plugin.</li>
+    </ul>
+  
+  <p>
+    So, after running 
+    <source>$ maven mevenide:install-maven-eclipse-plugin-plugin mevenide:build-all</source><br/>
+  </p>
+  <p>
+    The various plugins and features can be found under <code>eclipse-update/target/eclipse/dist/</code>
+  </p>
+</div>
