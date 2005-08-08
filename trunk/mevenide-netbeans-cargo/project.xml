@@ -3,7 +3,7 @@
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <artifactId>mevenide-netbeans-cargo</artifactId>
     <!-- make the version equal the cargo's version to have a clear link -->
-    <currentVersion>0.5</currentVersion>
+    <currentVersion>0.5.1</currentVersion>
     <inceptionYear>2005</inceptionYear>
     <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
     <name>Netbeans Cargo integration</name>
