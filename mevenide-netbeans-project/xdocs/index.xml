@@ -17,7 +17,8 @@
             <p> You can download the <a href="../download/mevenide-netbeans-0.8.zip"> 0.8 release</a>. It was tested with Maven 1.0.2 and Netbeans IDE 4.1 final.</p>
             <p>Reasonable effort is made to have it always working with the latest development builds of Netbeans 4.2. Please note that the grammar module 
             (editor completion for maven xml files) in 0.8 release zip will work
-            with the 4.1 but to get it working with 4.0 you need the <a href="../download/mevenide-netbeans-grammar-0.6.nbm">old 4.0 nbm </a>.
+            with the 4.1 but to get it working with 4.0 you need the <a href="../download/mevenide-netbeans-grammar-0.6.nbm">old 4.0 nbm </a>. 
+        In case you are using 4.2 development builds or 4.2 q-builds, get the <a href="../download/mevenide-netbeans-grammar-0.6.2.nbm">the 4.2 nbm </a>. 
             </p>
             <p>
             To get the latest Netbeans builds, go to the  download page <a href="http://www.netbeans.info/downloads/download.php?a=b&amp;p=1"><img src="images/download-nb-4.gif" border="0" alt="Download NetBeans!"/></a> </p>
