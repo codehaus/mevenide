@@ -15,7 +15,7 @@
             <groupId>netbeans</groupId>
             <artifactId>openide</artifactId>
             <!-- include nb module specification version..-->
-            <version>4.41</version>
+            <version>5.9.1</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>

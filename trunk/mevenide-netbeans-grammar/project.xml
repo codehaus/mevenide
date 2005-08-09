@@ -29,7 +29,7 @@
             <artifactId>openide</artifactId>
             <type>jar</type>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>3.42.2</version>
+            <version>5.9.1</version>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
