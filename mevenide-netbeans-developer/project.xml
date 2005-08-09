@@ -13,7 +13,7 @@
         <dependency>
             <groupId>netbeans</groupId>
             <artifactId>openide</artifactId>
-            <version>4.41</version>
+            <version>5.9.1</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>
@@ -21,7 +21,7 @@
             <groupId>netbeans</groupId>
             <artifactId>openide-loaders</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>4.16</version>
+            <version>5.2.1</version>
             <url>http://www.netbeans.org</url>
             <type>jar</type>
             <properties>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-netbeans-project</artifactId>
-            <version>0.8</version>
+            <version>0.9-SNAPSHOT</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
