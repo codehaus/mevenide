@@ -56,16 +56,17 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private MavenProject project;
     
     private OriginChange ocDebug;
-    private OriginChange ocDeprecated;    
+    private OriginChange ocDeprecated;
     private OriginChange ocAdditional;
     private OriginChange ocMainClass;
     private OriginChange ocManifest;
     private OriginChange ocCompress;
     private OriginChange ocExecutable;
     
+    private NonUiPropertyChange fork;
     private HashMap changes;
     private boolean initialized;
-
+    
     /** Creates new form BuildPanel */
     public JavaPanel(MavenProject proj) {
         project = proj;
@@ -74,7 +75,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         valObserver = null;
         setName("Java and Jar");
         initialized = false;
-        comPlatform.setToolTipText("In order to have code completion and other IDE features" 
+        comPlatform.setToolTipText("In order to have code completion and other IDE features"
                 + " for the project, the user should define a Java Platform corresponding to the "
                 + " compilate executable.");
     }
@@ -305,10 +306,12 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         add(btnEdit, gridBagConstraints);
 
     }//GEN-END:initComponents
-
+    
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
         // TODO add your handling code here:
         PlatformsCustomizer.showCustomizer(null);
+        populatePlatformCombo(project.getPropertyResolver().resolveString(txtExecutable.getText()));
+        
     }//GEN-LAST:event_btnEditActionPerformed
     
     public void addNotify() {
@@ -321,9 +324,9 @@ public class JavaPanel extends JPanel implements ProjectPanel {
             comPlatform.addActionListener(lst);
             txtExecutable.getDocument().addDocumentListener(lst);
         }
-    }        
+    }
     
-  private void populateChangeInstances() {
+    private void populateChangeInstances() {
         createToggleChangeInstance("maven.compile.debug", cbDebug, ocDebug, true);
         createToggleChangeInstance("maven.compile.deprecation", cbDeprecated, ocDeprecated, false);
         createToggleChangeInstance("maven.jar.compress", cbCompress, ocCompress, true);
@@ -332,54 +335,75 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         createChangeInstance("maven.jar.manifest", txtManifest, ocManifest);
         createChangeInstance("maven.compile.executable", txtExecutable, ocExecutable);
         
-   }
-   
-   private void createToggleChangeInstance(String key, JCheckBox field, OriginChange oc, boolean defaultValue) {
-       String value = project.getPropertyResolver().getResolvedValue(key);
-       int location = project.getPropertyLocator().getPropertyLocation(key);
-       if (value == null) {
-           value = Boolean.toString(defaultValue);
-           location = IPropertyLocator.LOCATION_NOT_DEFINED;
-       }
-       changes.put(key, new CheckBoxPropertyChange(key, value, location, field, oc, defaultValue, false));
-   }    
-   
-   private void createChangeInstance(String key, JTextField field, OriginChange oc) {
-       String value = project.getPropertyResolver().getValue(key);
-       int location = project.getPropertyLocator().getPropertyLocation(key);
-       if (value == null) {
-           value = "";
-           location = IPropertyLocator.LOCATION_NOT_DEFINED;
-       }
-       String defaultValue = project.getPropertyLocator().getValueAtLocation(key, IPropertyLocator.LOCATION_DEFAULTS);
-       changes.put(key, new TextFieldPropertyChange(key, value, location, field, oc, defaultValue));
-   }
-
+        String value = project.getPropertyResolver().getResolvedValue("maven.compile.fork");
+        int location = project.getPropertyLocator().getPropertyLocation("maven.compile.fork");
+        if (value == null) {
+            value = Boolean.FALSE.toString();
+            location = IPropertyLocator.LOCATION_NOT_DEFINED;
+        }
+        fork = new NonUiPropertyChange("maven.compile.fork", value, location);
+    }
+    
+    private void createToggleChangeInstance(String key, JCheckBox field, OriginChange oc, boolean defaultValue) {
+        String value = project.getPropertyResolver().getResolvedValue(key);
+        int location = project.getPropertyLocator().getPropertyLocation(key);
+        if (value == null) {
+            value = Boolean.toString(defaultValue);
+            location = IPropertyLocator.LOCATION_NOT_DEFINED;
+        }
+        changes.put(key, new CheckBoxPropertyChange(key, value, location, field, oc, defaultValue, false));
+    }
+    
+    private void createChangeInstance(String key, JTextField field, OriginChange oc) {
+        String value = project.getPropertyResolver().getValue(key);
+        int location = project.getPropertyLocator().getPropertyLocation(key);
+        if (value == null) {
+            value = "";
+            location = IPropertyLocator.LOCATION_NOT_DEFINED;
+        }
+        String defaultValue = project.getPropertyLocator().getValueAtLocation(key, IPropertyLocator.LOCATION_DEFAULTS);
+        changes.put(key, new TextFieldPropertyChange(key, value, location, field, oc, defaultValue));
+    }
+    
     public void setResolveValues(boolean resolve) {
         assignValue("maven.compile.compilerargs", resolve);
         assignValue("maven.jar.mainclass", resolve);
         assignValue("maven.jar.manifest", resolve);
         assignValue("maven.compile.executable", resolve);
-   }
-   
-   
-   private void assignValue(String key, boolean resolve) {
-       TextFieldPropertyChange change = (TextFieldPropertyChange)changes.get(key);
-       if (resolve) {
-           String value = project.getPropertyResolver().resolveString(change.getNewValue());
-           change.setResolvedValue(value);
-       } else {
-           change.resetToNonResolvedValue();
-       }
-   }   
-   
+    }
+    
+    
+    private void assignValue(String key, boolean resolve) {
+        TextFieldPropertyChange change = (TextFieldPropertyChange)changes.get(key);
+        if (resolve) {
+            String value = project.getPropertyResolver().resolveString(change.getNewValue());
+            change.setResolvedValue(value);
+        } else {
+            change.resetToNonResolvedValue();
+        }
+    }
+    
     
     public List getChanges() {
         List toReturn = new ArrayList();
         Iterator it = changes.values().iterator();
         while (it.hasNext()) {
-            MavenChange change = (MavenChange)it.next();
+            MavenPropertyChange change = (MavenPropertyChange)it.next();
             if (change.hasChanged()) {
+                if ("maven.compile.executable".equals(change.getKey())) { //NOI18N
+                    if (  change.getNewLocation() != change.getOldLocation()
+                    && (  change.getNewLocation() != IPropertyLocator.LOCATION_NOT_DEFINED
+                            || change.getNewLocation() != IPropertyLocator.LOCATION_DEFAULTS)) {
+                        fork.setNewValue("true"); //NOI18N
+                        if (    fork.getOldLocation() == IPropertyLocator.LOCATION_NOT_DEFINED 
+                             || fork.getOldLocation() == IPropertyLocator.LOCATION_DEFAULTS) {
+                            fork.setNewLocation(IPropertyLocator.LOCATION_PROJECT_BUILD);
+                        } else {
+                            
+                        }
+                        toReturn.add(fork);
+                    }
+                }
                 toReturn.add(change);
             }
         }
@@ -438,7 +462,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
         comPlatform.setModel(new DefaultComboBoxModel(col.toArray()));
         comPlatform.setSelectedItem(selected);
     }
-
+    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdditional;
@@ -464,7 +488,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private javax.swing.JTextField txtManifest;
     // End of variables declaration//GEN-END:variables
     
-
+    
     private static final class NoCorrectPlatform {
         private NoCorrectPlatform() {
             
@@ -495,19 +519,21 @@ public class JavaPanel extends JPanel implements ProjectPanel {
                             txtExecutable.setText(fil.getAbsolutePath());
                         }
                     }
+                } else {
+                    ocExecutable.setAction(IPropertyLocator.LOCATION_DEFAULTS);
                 }
                 skip = false;
             }
         }
-
+        
         public void changedUpdate(DocumentEvent documentEvent) {
             change();
         }
-
+        
         public void insertUpdate(DocumentEvent documentEvent) {
             change();
         }
-
+        
         public void removeUpdate(DocumentEvent documentEvent) {
             change();
         }
@@ -520,6 +546,6 @@ public class JavaPanel extends JPanel implements ProjectPanel {
             }
         }
         
-    } 
+    }
     
 }
