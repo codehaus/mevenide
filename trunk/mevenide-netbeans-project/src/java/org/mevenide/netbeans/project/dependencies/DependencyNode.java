@@ -107,7 +107,10 @@ public class DependencyNode extends AbstractNode {
                     refreshNode();
                 }
             };
-            MavenFileOwnerQueryImpl.getInstance().addChangeListener(WeakListeners.change(listener2, this));
+            //TODO check if this one is a performance bottleneck.
+            MavenFileOwnerQueryImpl.getInstance().addChangeListener(
+                        WeakListeners.change(listener2, 
+                                             MavenFileOwnerQueryImpl.getInstance()));
         }
         setDisplayName(createName());
         setIconBase();
