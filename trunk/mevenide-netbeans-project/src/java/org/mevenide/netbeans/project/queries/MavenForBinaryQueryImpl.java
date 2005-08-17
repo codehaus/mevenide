@@ -32,7 +32,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.properties.IPropertyResolver;
@@ -280,6 +280,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             } else {
                 results = new FileObject[0];
             }
+//            System.out.println("src bin result for =" + url + " length=" + results.length);
             return results;
        }
        

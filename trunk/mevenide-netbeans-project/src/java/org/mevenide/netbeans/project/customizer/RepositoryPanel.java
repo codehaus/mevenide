@@ -30,9 +30,14 @@ import javax.swing.JButton;
 
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.ProjectPanel;
+import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
+import org.mevenide.netbeans.api.customizer.changes.MavenChange;
+import org.mevenide.netbeans.api.customizer.changes.MultiTextComponentPOMChange;
+import org.mevenide.netbeans.api.customizer.changes.TextComponentPOMChange;
+import org.mevenide.netbeans.api.project.MavenProject;
+import org.mevenide.netbeans.api.customizer.LocationComboFactory;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.project.io.IContentProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;

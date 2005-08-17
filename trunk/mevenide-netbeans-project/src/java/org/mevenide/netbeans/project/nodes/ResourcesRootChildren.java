@@ -25,7 +25,7 @@ import java.util.List;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 
 import org.netbeans.api.project.SourceGroup;

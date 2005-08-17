@@ -32,13 +32,14 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
-import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.LocationComboFactory;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.repository.RepoPathElement;
+import org.netbeans.api.project.ProjectInformation;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
@@ -387,9 +388,10 @@ public class RepositoryNode extends AbstractNode implements LocalRepoRefresher {
                     Iterator it = projs.iterator();
                     while (it.hasNext()) {
                         MavenProject prj = (MavenProject)it.next();
+                        ProjectInformation info = (ProjectInformation)prj.getLookup().lookup(ProjectInformation.class);
                         JMenuItem item = new JMenuItem(new AddAsDependencyAction(prj));
-                        item.setText(prj.getProjectInfo().getDisplayName());
-                        item.setIcon(prj.getProjectInfo().getIcon());
+                        item.setText(info.getDisplayName());
+                        item.setIcon(info.getIcon());
                         menu.add(item);
                     }
                 }

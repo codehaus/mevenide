@@ -19,7 +19,7 @@ package org.mevenide.netbeans.j2ee;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModuleContainer;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;

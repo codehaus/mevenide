@@ -20,7 +20,7 @@ package org.mevenide.netbeans.j2ee.deploy;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import org.codehaus.cargo.container.Container;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;

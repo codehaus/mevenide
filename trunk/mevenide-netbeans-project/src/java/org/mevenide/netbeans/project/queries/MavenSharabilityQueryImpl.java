@@ -17,7 +17,7 @@
 package org.mevenide.netbeans.project.queries;
 
 import java.io.File;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
 import org.openide.filesystems.FileObject;

@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.filesystems.FileUtil;
 
 /**

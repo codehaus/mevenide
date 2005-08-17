@@ -27,9 +27,13 @@ import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ui.LocationComboFactory;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.ProjectPanel;
+import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
+import org.mevenide.netbeans.api.customizer.changes.MavenChange;
+import org.mevenide.netbeans.api.customizer.changes.TextComponentPOMChange;
+import org.mevenide.netbeans.api.project.MavenProject;
+import org.mevenide.netbeans.api.customizer.LocationComboFactory;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.openide.util.NbBundle;
 
 

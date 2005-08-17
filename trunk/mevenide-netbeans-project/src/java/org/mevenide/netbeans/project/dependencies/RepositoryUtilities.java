@@ -27,7 +27,7 @@ import org.apache.maven.project.Dependency;
 import org.apache.maven.util.DownloadMeter;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.environment.ILocationFinder;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.ProxyUtilities;
 import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;

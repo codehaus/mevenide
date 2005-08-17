@@ -14,13 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 
 /**
  *
- * Holder and resolver of changes of a POM field
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * Holder  of changes of single POM field
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface MavenPOMSingleChange extends MavenPOMChange {
     /**

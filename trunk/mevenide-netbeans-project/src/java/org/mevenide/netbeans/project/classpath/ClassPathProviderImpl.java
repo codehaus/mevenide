@@ -24,7 +24,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.spi.java.classpath.ClassPathFactory;
@@ -56,7 +56,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     
     private MavenProject project;
-    private Reference[] cache = new SoftReference[7];
+    private ClassPath[] cache = new ClassPath[7];
      
     public ClassPathProviderImpl(MavenProject proj) {
         project = proj;
@@ -209,17 +209,17 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC ) {
             return null;
         }
-        ClassPath cp = null;
-        if (cache[type] == null || (cp = (ClassPath)cache[type].get()) == null) {
+        ClassPath cp = cache[type];
+        if (cp == null) {
             if (type == TYPE_SRC) {
-                logger.debug("create Sourcepath src");
+                logger.fatal("create Sourcepath src for " + file);
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             }
             else {
                 logger.debug("create Sourcepath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
             }
-            cache[type] = new SoftReference(cp);
+            cache[type] = cp;
         }
         return cp;
     }
@@ -230,8 +230,8 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
             return null;
         }
-        ClassPath cp = null;
-        if (cache[2+type] == null || (cp = (ClassPath)cache[2+type].get()) == null) {
+        ClassPath cp = cache[2+type];
+        if (cp == null) {
             if (type == TYPE_SRC) {
                 logger.debug("create CompileTimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
@@ -240,7 +240,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
                 logger.debug("create CompileTimeClasspath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcBuildClassPathImpl(project));
             }
-            cache[2+type] = new SoftReference(cp);
+            cache[2+type] = cp;
         }
         return cp;
     }
@@ -251,8 +251,8 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
             return null;
         }
-        ClassPath cp = null;
-        if (cache[4+type] == null || (cp = (ClassPath)cache[4+type].get()) == null) {
+        ClassPath cp = cache[4+type];
+        if (cp == null) {
             if (type == TYPE_SRC) {
                 logger.debug("create RumtimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcRuntimeClassPathImpl(project));
@@ -261,16 +261,16 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
                 logger.debug("create RumtimeClasspath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcRuntimeClassPathImpl(project));
             }
-            cache[4+type] = new SoftReference(cp);
+            cache[4+type] = cp;
         }
         return cp;
     }
     
     private ClassPath getBootClassPath() {
-        ClassPath cp = null;
-        if (cache[6] == null || (cp = (ClassPath)cache[6].get()) == null) {
+        ClassPath cp = cache[6];
+        if (cp == null) {
             cp = ClassPathFactory.createClassPath(new BootClassPathImpl(project));
-            cache[6] = new SoftReference(cp);
+            cache[6] = cp;
         }
         return cp;
     }

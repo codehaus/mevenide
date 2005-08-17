@@ -14,15 +14,16 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer.ui;
+package org.mevenide.netbeans.api.customizer;
 
 import java.io.File;
 import javax.swing.JComponent;
 import org.mevenide.properties.IPropertyLocator;
 
 /**
- *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * a wrapper dealing with changes in the location of property/pom element
+ * value definitions.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class OriginChange {
     private LocationComboBox comboBox;
@@ -39,6 +40,10 @@ public class OriginChange {
      */
     public static final int LOCATION_POM_PARENT = 1;
     
+    /**
+     * The item is located in the POM file parent's parent. 
+     * similar to constants in IPropertyLocator, but not belonging there.
+     */
     public static final int LOCATION_POM_PARENT_PARENT = 2;
     
     
@@ -46,10 +51,18 @@ public class OriginChange {
         comboBox = combo;
     }
 
+    /**
+     * UI component handling the change of origin. Can be safely casted to
+     * JButton if required.
+     */
     public JComponent getComponent() {
         return comboBox;
     }
-    
+    /**
+     * @param location - new location to be set, 
+     *  for property values, check IpropertyLocator constants
+     *  for pom values, use constants in this class.
+     */
     public void setAction(int location) {
         comboBox.invokePopupAction(location);
     }
@@ -66,19 +79,20 @@ public class OriginChange {
         comboBox.setInitialItem(location);
     }
     
-    public void setSelectedLocationID(int location) {
-        comboBox.invokePopupAction(location);
-    }
     public File getSelectedFile() {
         LocationComboBox.LocationWrapper wrapper = (LocationComboBox.LocationWrapper)comboBox.getSelectedItem();
         return wrapper.getFile();
     }
     
+    /**
+     * setter for use by MavenChange implemetations.
+     */
     public void setChangeObserver(ChangeObserver obs) {
         observer = obs;
         comboBox.setChangeObserver(observer);
     }
     /** callback to get notified when user selects an action from the popup.
+     * Generally useful just for MavenChange implementations.
      */
     public interface ChangeObserver {
         void locationChanged();

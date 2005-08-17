@@ -15,10 +15,10 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 /**
- * a maven property change implementation that is not tied to any UI component
+ * a MavenPropertyChange implementation that is not tied to any UI component
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class NonUiPropertyChange implements MavenPropertyChange {

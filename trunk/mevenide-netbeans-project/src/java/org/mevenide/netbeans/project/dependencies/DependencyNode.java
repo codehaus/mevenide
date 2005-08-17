@@ -39,7 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;

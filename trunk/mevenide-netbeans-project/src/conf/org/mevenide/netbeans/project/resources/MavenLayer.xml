@@ -92,6 +92,7 @@
                 <file name="maven-java-plugin-1.5.xml" url="plugins/maven-java-plugin-1.5.xml"/>
                 <file name="maven-pde-plugin-0.3.xml" url="plugins/maven-pde-plugin-0.3.xml"/>
             </folder>
+            <folder name="PluginCustomizers"/>
         </folder>
     </folder>
  

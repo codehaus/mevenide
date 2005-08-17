@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project;
 
 import java.util.List;
 import javax.swing.JButton;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.MavenCustomizer;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.netbeans.spi.project.ui.CustomizerProvider;

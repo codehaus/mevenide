@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide Netbeans project support</name>
     <artifactId>mevenide-netbeans-project</artifactId>
-    <currentVersion>0.9-SNAPSHOT</currentVersion>
+    <currentVersion>0.8.1</currentVersion>
     <package>org.mevenide.netbeans</package>
     <shortDescription>Netbeans Maven project type support module</shortDescription>
     <description>The project's aim to to provide Maven project type support for the Netbeans IDE 4.0. 

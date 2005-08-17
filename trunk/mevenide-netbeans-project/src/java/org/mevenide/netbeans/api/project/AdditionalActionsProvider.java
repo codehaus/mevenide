@@ -18,7 +18,7 @@
 package org.mevenide.netbeans.api.project;
 
 import javax.swing.Action;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 /**
  * Interface that allows to put additional items to project node's popup.

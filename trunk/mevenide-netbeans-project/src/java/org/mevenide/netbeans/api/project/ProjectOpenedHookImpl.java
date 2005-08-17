@@ -14,12 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.api.project;
 
 import java.io.File;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
+import org.mevenide.netbeans.project.*;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.project.io.JarOverrideReader2;
@@ -33,7 +34,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
-public class ProjectOpenedHookImpl extends ProjectOpenedHook {
+class ProjectOpenedHookImpl extends ProjectOpenedHook {
     private static final Log logger = LogFactory.getLog(ProjectOpenedHookImpl.class);
    
     private MavenProject project;
@@ -77,6 +78,9 @@ public class ProjectOpenedHookImpl extends ProjectOpenedHook {
     }
    
     private void attachUpdater() {
+        //TODO the updating bussiness is somewhat more complex.
+        // inheritance currently not taken into account
+        
         FileObject fo = FileUtil.toFileObject(project.getContext().getProjectDirectory());
         FileObject userFo = FileUtil.toFileObject(project.getContext().getUserDirectory());
         fo.addFileChangeListener(project.getProjectFolderUpdater());

@@ -14,34 +14,20 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
+
+import org.mevenide.project.io.IContentProvider;
 
 
 /**
  *
- * Holder and resolver of changes of a property field.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * Holder of changes of a POM trees, eg. <pom.repository> or <pom.organization> objects
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface MavenPropertyChange extends MavenChange {
+public interface MavenPOMTreeChange extends MavenPOMChange {
     /**
-     * property's key
+     * the changed subtree content.
      */
-    String getKey();
-    /**
-     * original value
-     */
-    String getOldValue();
-    /**
-     * current, maybe changed value
-     */
-    String getNewValue();
-    /**
-     * original location of the the property definition.
-     */
-    int getOldLocation();
-    /**
-     * new location of the the property definition.
-     */
-    int getNewLocation();
- 
+    IContentProvider getChangedContent();
+    
 }

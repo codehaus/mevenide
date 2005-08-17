@@ -35,9 +35,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.UnitTest;
+import org.mevenide.netbeans.api.customizer.ProjectPanel;
+import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
+import org.mevenide.netbeans.api.customizer.changes.CheckBoxPropertyChange;
+import org.mevenide.netbeans.api.customizer.changes.MavenChange;
+import org.mevenide.netbeans.api.customizer.changes.TextFieldPropertyChange;
 
-import org.mevenide.netbeans.project.MavenProject;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.project.MavenProject;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;

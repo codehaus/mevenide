@@ -25,7 +25,7 @@ import java.util.Iterator;
 import java.util.Set;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
@@ -142,7 +142,7 @@ public class J2eeModuleProviderImpl extends J2eeModuleProvider {
         Set fos = new HashSet();
         //TODO j2ee type specific roots first
         
-        Sources sources = project.getSources();
+        Sources sources = (Sources)project.getLookup().lookup(Sources.class);
         SourceGroup[] grps = sources.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
         for (int i = 0; i < grps.length; i++) {
             fos.add(grps[i].getRootFolder());

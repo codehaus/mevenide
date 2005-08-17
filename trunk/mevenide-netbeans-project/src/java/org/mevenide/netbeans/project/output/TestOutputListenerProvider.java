@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.openide.awt.StatusDisplayer;

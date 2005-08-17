@@ -27,7 +27,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.netbeans.project.writer.NbProjectWriter;
 import org.mevenide.repository.IRepositoryReader;

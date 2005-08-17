@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectFactory;
 import org.netbeans.spi.project.ProjectState;

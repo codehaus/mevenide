@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.mevenide.netbeans.api.output.OutputProcessorFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.util.Lookup;
 
 /**

@@ -19,7 +19,7 @@ package org.mevenide.netbeans.project.nodes;
 import java.awt.Image;
 import java.io.File;
 import javax.swing.Action;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;

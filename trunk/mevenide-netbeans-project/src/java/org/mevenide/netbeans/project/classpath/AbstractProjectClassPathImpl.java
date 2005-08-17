@@ -38,7 +38,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.project.io.JarOverrideReader2;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
 

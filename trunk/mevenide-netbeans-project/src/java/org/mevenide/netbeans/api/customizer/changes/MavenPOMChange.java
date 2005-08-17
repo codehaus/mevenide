@@ -14,18 +14,27 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 
 /**
- * Object implementing this interface will be notified of changes in the valid state of the ProjectPanel
- * once it's set as it's Observer in ProjectPanel.setValidateObserver()
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ *
+ * Holder and resolver of changes of a POM field
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface ProjectValidateObserver
-{
+public interface MavenPOMChange extends MavenChange {
     /**
-     * parameter hold the new value of validity for the ProjectPanel
+     * getPath in pom file, serves as ID.
+     * eg. pom.artifactId or pom.organization.name
      */
-    void resetValidState(boolean valid, String errorMessage);
+    String getPath();
+    /**
+     * original location of the the property definition.
+     */
+    int getOldLocation();
+    /**
+     * new location of the the property definition.
+     */
+    int getNewLocation();
+ 
 }

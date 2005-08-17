@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 import org.apache.maven.project.Dependency;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
 import org.openide.filesystems.FileObject;

@@ -30,8 +30,9 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.AdditionalActionsProvider;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.netbeans.project.ActionProviderImpl;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.exec.RunGoalsAction;
+import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.nodes.AbstractNode;
@@ -47,10 +48,12 @@ public class MavenProjectNode extends AbstractNode {
      
      
      private MavenProject project;
+     private ProjectInformation info;
      private Image icon;
      public MavenProjectNode( Lookup lookup, MavenProject proj) {
         super(new MavenProjectChildren(proj), lookup);
         this.project = proj;
+        info = (ProjectInformation)project.getLookup().lookup(ProjectInformation.class);
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 fireDisplayNameChange(null, getDisplayName());
@@ -67,12 +70,12 @@ public class MavenProjectNode extends AbstractNode {
     
     public Image getIcon(int param) {
         //HACK
-        return ((ImageIcon)project.getProjectInfo().getIcon()).getImage();
+        return ((ImageIcon)info.getIcon()).getImage();
     }
     
     public Image getOpenedIcon(int param) {
         //HACK
-        return ((ImageIcon)project.getProjectInfo().getIcon()).getImage();
+        return ((ImageIcon)info.getIcon()).getImage();
     }
     
     public javax.swing.Action[] getActions(boolean param) {

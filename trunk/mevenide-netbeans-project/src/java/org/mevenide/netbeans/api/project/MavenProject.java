@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.mevenide.netbeans.project;
+package org.mevenide.netbeans.api.project;
 
 import java.awt.Image;
 import java.beans.PropertyChangeEvent;
@@ -39,6 +39,7 @@ import org.mevenide.context.IQueryContext;
 import org.mevenide.context.IQueryErrorCallback;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
+import org.mevenide.netbeans.project.*;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
 import org.mevenide.netbeans.project.queries.MavenForBinaryQueryImpl;
 
@@ -59,11 +60,11 @@ import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
-import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
+
 
 
 /**
- *
+ * the ultimate source for all maven project like.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class MavenProject implements Project {
@@ -87,8 +88,11 @@ public final class MavenProject implements Project {
 
     private Info projectInfo;
     
-    /** Creates a new instance of MavenProject */
-    MavenProject(FileObject projectFO, File projectFile) throws Exception {
+    /** 
+     * Creates a new instance of MavenProject, should never be called by user code.
+     * but only by MavenProjectFactory!!!
+     */
+    public MavenProject(FileObject projectFO, File projectFile) throws Exception {
         support = new PropertyChangeSupport(this);
         fileObject = projectFO;
         projectInfo = new Info();
@@ -179,20 +183,13 @@ public final class MavenProject implements Project {
         return updater3;
     }
     
-    public Image getIcon() {
+    private Image getIcon() {
         if (icon == null) {
             icon = Utilities.loadImage("org/mevenide/netbeans/project/resources/MavenIcon.gif");
         }
         return icon;
     }
-    
-    public Lookup getLookup() {
-        if (lookup == null) {
-            lookup = createLookup();
-        }
-        return lookup;
-    }
-    
+        
     public String getName() {
         String toReturn = getPropertyResolver().resolveString(getOriginalMavenProject().getId());
         if (toReturn == null) {
@@ -390,15 +387,18 @@ public final class MavenProject implements Project {
         return null;
     }
     
-    public synchronized Sources getSources() {
-        if (sources == null) {
-            sources = new MavenSourcesImpl(this);
+    public synchronized Lookup getLookup() {
+        if (lookup == null) {
+            lookup = createBasicLookup();
+            // now in the creation of extended lookup by MavenLookupProvider
+            // it can happen that someone is using the project's lookup to find some 
+            // basic stuff. That would create a cycle..
+            // obviously one cannot call getlookup() in the basic lookup setup..
+            lookup = createCompleteLookups();
         }
-        return sources;
-    }
-    
-    private Lookup createLookup() {
-        Collection toReturn = new ArrayList();
+        return lookup;
+    }   
+    private Lookup createBasicLookup() {
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
             new MavenForBinaryQueryImpl(this),
@@ -411,12 +411,18 @@ public final class MavenProject implements Project {
             new MavenTestForSourceImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
-            getSources(), 
+            new MavenSourcesImpl(this), 
             new RecommendedTemplatesImpl(),
             new MavenSourceLevelImpl(this)
                     
         });
-        toReturn.add(staticLookup);
+        return staticLookup;
+    }
+    
+    private Lookup createCompleteLookups() {
+        Collection toReturn = new ArrayList();
+        // add the static lookup that acts as complete instance as of now..
+        toReturn.add(lookup);
         
         Lookup.Template template = new Lookup.Template(AdditionalMavenLookupProvider.class);
         Lookup.Result result = Lookup.getDefault().lookup(template);
@@ -430,11 +436,6 @@ public final class MavenProject implements Project {
         lookups = (Lookup[])toReturn.toArray(lookups);
         ProxyLookup look = new ProxyLookup(lookups);
         return look;
-    }
-    
-    
-    public ProjectInformation getProjectInfo() {
-        return projectInfo;
     }
     
    // Private innerclasses ----------------------------------------------------

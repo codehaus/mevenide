@@ -14,19 +14,34 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 
 /**
  *
- * Holder and resolver of changes
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * Holder of changes of a maven property field.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface MavenChange {
-    
+public interface MavenPropertyChange extends MavenChange {
     /**
-     * check weather the item changed or not. either value or location.
+     * property's key
      */
-    boolean hasChanged();
+    String getKey();
+    /**
+     * original value
+     */
+    String getOldValue();
+    /**
+     * current, maybe changed value
+     */
+    String getNewValue();
+    /**
+     * original location of the the property definition.
+     */
+    int getOldLocation();
+    /**
+     * new location of the the property definition.
+     */
+    int getNewLocation();
  
 }

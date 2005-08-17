@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,14 +22,15 @@ import java.util.Iterator;
 import java.util.Map;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.IPropertyLocator;
 
 
 /**
- * changes tracker for textfields with an originchange instance attached.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * POM values changes tracker for multiple textfields with an originchange instance attached.
+ * Useful for stuff line pom.organization values, pom.repository etc.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MultiTextComponentPOMChange implements MavenPOMTreeChange {
     private String key;

@@ -25,7 +25,9 @@ import javax.swing.JSeparator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.customizer.ProjectPanel;
+import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.util.Utilities;
 
 

@@ -30,7 +30,7 @@ import org.codehaus.cargo.container.property.GeneralPropertySet;
 import org.codehaus.cargo.container.property.ServletPropertySet;
 import org.mevenide.netbeans.cargo.AddContainerAction;
 import org.mevenide.netbeans.cargo.CargoServerRegistry;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 /**
  *

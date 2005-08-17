@@ -17,7 +17,8 @@
 package org.mevenide.netbeans.project.customizer.ui;
 
 import java.awt.Component;
-import org.mevenide.netbeans.project.customizer.MavenPropertyChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
+import org.mevenide.netbeans.api.customizer.changes.MavenPropertyChange;
 import org.mevenide.properties.IPropertyLocator;
 
 
@@ -112,7 +113,7 @@ public class TableRowPropertyChange implements MavenPropertyChange {
             // assume the default placement is build..
             // maybe have configurable or smartish later..
             newLocation = IPropertyLocator.LOCATION_PROJECT_BUILD;
-            origin.setSelectedLocationID(IPropertyLocator.LOCATION_PROJECT_BUILD);
+            origin.setAction(IPropertyLocator.LOCATION_PROJECT_BUILD);
         }
     }
     
@@ -123,6 +124,6 @@ public class TableRowPropertyChange implements MavenPropertyChange {
         {
             newValue = defaultValue;
         }
-        origin.setSelectedLocationID(loc);
+        origin.setAction(loc);
     }
 }
