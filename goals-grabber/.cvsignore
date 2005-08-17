@@ -7,3 +7,4 @@ plugin.xml
 .clover
 *.jar
 META-INF
+*.properties
