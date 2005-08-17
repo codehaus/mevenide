@@ -5,3 +5,4 @@ target
 META-INF
 lib
 *.ser
+*.properties
