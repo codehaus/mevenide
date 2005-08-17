@@ -20,7 +20,7 @@ package org.mevenide.netbeans.j2ee;
 import java.io.File;
 import java.io.IOException;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
@@ -80,7 +80,7 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
                 return toRet;
             }
         }
-        Sources srcs = project.getSources();
+        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
         SourceGroup[] grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {
@@ -105,7 +105,7 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
                 return toRet;
             }
         }
-        Sources srcs = project.getSources();
+        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
         SourceGroup[] grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {

@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.spi.java.queries.UnitTestForSourceQueryImplementation;
 import org.openide.filesystems.FileObject;
 

@@ -14,18 +14,19 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JCheckBox;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 
 
 /**
- * changes tracker for checkboxes with an originchange instance attached.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * maven property changes tracker for checkboxes with an originchange instance attached.
+ * useful for properties that hold boolean values
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class CheckBoxPropertyChange implements MavenPropertyChange {
     private String key;

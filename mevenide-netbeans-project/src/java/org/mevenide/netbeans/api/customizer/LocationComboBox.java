@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer.ui;
+package org.mevenide.netbeans.api.customizer;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -36,7 +36,7 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class LocationComboBox extends JButton {
     private LocationWrapper current;

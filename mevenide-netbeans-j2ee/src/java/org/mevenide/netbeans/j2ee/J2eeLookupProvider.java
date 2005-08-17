@@ -21,7 +21,7 @@ import java.beans.PropertyChangeListener;
 import org.mevenide.netbeans.api.project.AdditionalMavenLookupProvider;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;

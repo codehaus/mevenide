@@ -23,7 +23,8 @@ import java.util.List;
 import java.util.Map;
 import javax.swing.text.JTextComponent;
 import org.apache.maven.project.Dependency;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.changes.MavenPOMTreeChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.project.io.IContentProvider;
 
 

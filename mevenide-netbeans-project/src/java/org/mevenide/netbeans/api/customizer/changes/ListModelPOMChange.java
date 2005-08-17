@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -23,7 +23,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.netbeans.project.writer.AbstractContentProvider;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.IPropertyLocator;
@@ -31,7 +31,8 @@ import org.mevenide.properties.IPropertyLocator;
 
 /**
  * changes tracker for lists with an originchange instance attached.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * useful for pom.mailingLists etc.
+ * @author  Milos Kleint (mkleint@codehaus.org)
 df */
 public class ListModelPOMChange implements MavenPOMTreeChange {
     

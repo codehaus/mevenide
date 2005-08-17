@@ -23,8 +23,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
-import org.mevenide.netbeans.project.customizer.MavenPOMSingleChange;
-import org.mevenide.netbeans.project.customizer.MavenPOMTreeChange;
+import org.mevenide.netbeans.api.customizer.changes.MavenPOMSingleChange;
+import org.mevenide.netbeans.api.customizer.changes.MavenPOMTreeChange;
 import org.mevenide.project.io.IContentProvider;
 
 /**

@@ -18,6 +18,7 @@
 
 package org.mevenide.netbeans.project;
 
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.nodes.MavenProjectNode;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;

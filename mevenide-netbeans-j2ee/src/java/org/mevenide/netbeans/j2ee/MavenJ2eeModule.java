@@ -24,7 +24,7 @@ import java.util.Iterator;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.properties.IPropertyLocator;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.dd.api.application.Application;

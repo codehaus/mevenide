@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 

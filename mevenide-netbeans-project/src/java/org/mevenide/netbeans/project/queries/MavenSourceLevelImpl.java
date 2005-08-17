@@ -19,7 +19,7 @@ package org.mevenide.netbeans.project.queries;
 
 import java.net.MalformedURLException;
 import java.net.URI;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.spi.java.queries.SourceLevelQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;

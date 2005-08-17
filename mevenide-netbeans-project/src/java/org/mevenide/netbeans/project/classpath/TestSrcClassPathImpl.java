@@ -18,7 +18,7 @@
 package org.mevenide.netbeans.project.classpath;
 
 import java.net.URI;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 /**
  *

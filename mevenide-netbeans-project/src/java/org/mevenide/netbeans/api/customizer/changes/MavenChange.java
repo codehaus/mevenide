@@ -14,20 +14,19 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
-
-import org.mevenide.project.io.IContentProvider;
+package org.mevenide.netbeans.api.customizer.changes;
 
 
 /**
  *
- * Holder and resolver of changes of a POM trees, eg. <repository> or <organization> objects
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * a superintefac for all holders of changes originating in the customizer UI.
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface MavenPOMTreeChange extends MavenPOMChange {
-    /**
-     * the changed subtree content.
-     */
-    IContentProvider getChangedContent();
+public interface MavenChange {
     
+    /**
+     * check if the item changed or not (a change can happen in either value or location)
+     */
+    boolean hasChanged();
+ 
 }

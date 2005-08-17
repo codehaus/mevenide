@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer.ui;
+package org.mevenide.netbeans.api.customizer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,21 +23,23 @@ import javax.swing.ImageIcon;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.netbeans.project.FileUtilities;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.properties.IPropertyLocator;
 import org.openide.util.Utilities;
 
 
 /**
  * Factory for creating and configuring the OriginChange instances.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class LocationComboFactory {
     
     private LocationComboFactory() {
         
     }
-    
+    /**
+     * create an instance of OriginChange preconfigured to be used with maven property values.
+     */
     public static OriginChange createPropertiesChange(MavenProject project) {
         LocationComboBox box = new LocationComboBox(false);
         boolean justSingle = true;
@@ -137,6 +139,7 @@ public final class LocationComboFactory {
     }
     
     /**
+     * create an instance of OriginChange preconfigured to be used with POM file values.
      * @param project - the project instance
      * @param showText - will show both text and icon if true, otherwise just icon.
      */
@@ -168,7 +171,6 @@ public final class LocationComboFactory {
         }
         if (poms > 2) {
             for (int i = 3; i <= poms; i++) {
-                System.err.println("creating pom wrapper for" + (i-1));
                 icon = new ImageIcon(Utilities.loadImage("org/mevenide/netbeans/project/resources/LocParParPOM.png"));
                 col.add(new LocationComboBox.LocationWrapper(
                             "Defined in POM's " + (i - 1) + ". parent definition", icon,

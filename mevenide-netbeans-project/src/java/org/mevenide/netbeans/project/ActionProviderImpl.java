@@ -29,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
 import org.mevenide.netbeans.project.exec.ProjectRunContext;
 import org.mevenide.netbeans.project.exec.RunConfig;

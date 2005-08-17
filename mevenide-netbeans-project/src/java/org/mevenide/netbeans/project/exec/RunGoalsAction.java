@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.netbeans.project.ActionProviderImpl;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.goals.GoalUtils;
 import org.mevenide.netbeans.project.goals.GoalsGrabberProvider;

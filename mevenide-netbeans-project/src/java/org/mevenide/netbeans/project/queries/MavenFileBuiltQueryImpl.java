@@ -19,7 +19,7 @@ package org.mevenide.netbeans.project.queries;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.queries.FileBuiltQuery;
 import org.netbeans.spi.queries.FileBuiltQueryImplementation;
 import org.openide.filesystems.FileObject;

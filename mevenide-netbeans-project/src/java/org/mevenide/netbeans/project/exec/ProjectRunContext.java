@@ -18,7 +18,7 @@
 package org.mevenide.netbeans.project.exec;
 
 import java.io.File;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.filesystems.FileUtil;
 
 /**

@@ -38,7 +38,7 @@ import org.jdom.input.SAXBuilder;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.project.dependency.DependencyMatcher;
 import org.mevenide.project.dependency.ExactDependencyReplacer;

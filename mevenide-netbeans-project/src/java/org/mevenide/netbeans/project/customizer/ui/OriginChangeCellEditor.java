@@ -19,6 +19,7 @@ package org.mevenide.netbeans.project.customizer.ui;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JTextField;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 
 /**
@@ -38,7 +39,7 @@ public class OriginChangeCellEditor extends DefaultCellEditor {
 		if (value instanceof Integer) {
 		    integer = ((Integer)value).intValue();
 		}
-		change.setSelectedLocationID(integer);
+		change.setAction(integer);
             }
 
 	    public Object getCellEditorValue() {

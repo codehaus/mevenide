@@ -23,7 +23,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment.Logger;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;

@@ -21,7 +21,7 @@ import javax.swing.JPanel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 
 /**

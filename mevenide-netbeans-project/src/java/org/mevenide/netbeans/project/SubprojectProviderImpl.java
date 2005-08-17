@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.Dependency;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.properties.IPropertyLocator;
 import org.apache.commons.logging.Log;

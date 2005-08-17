@@ -17,7 +17,7 @@
 
 package org.mevenide.netbeans.j2ee.web;
 
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;

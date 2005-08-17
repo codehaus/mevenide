@@ -18,7 +18,7 @@
 package org.mevenide.netbeans.api.output;
 
 import java.util.Set;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 /**
  * Factory of the OutputProcessors for given project, each build

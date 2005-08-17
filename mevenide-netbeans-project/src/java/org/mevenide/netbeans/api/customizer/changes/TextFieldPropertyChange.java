@@ -14,32 +14,33 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer.changes;
 
+import javax.swing.JTextField;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.JTextComponent;
-import org.mevenide.netbeans.project.customizer.ui.OriginChange;
+import org.mevenide.netbeans.api.customizer.OriginChange;
 import org.mevenide.properties.IPropertyLocator;
 
 
 /**
- * changes tracker for textfields with an originchange instance attached.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * maven property changes tracker for textfields with an originchange instance attached.
+ * @author  Milos Kleint (mkleint@codehaus.org)
 df */
-public class TextComponentPOMChange implements MavenPOMSingleChange {
+public class TextFieldPropertyChange implements MavenPropertyChange {
     private String key;
     private String value;
     private int location;
     private String newValue;
     private int newLocation;
-    private JTextComponent field;
+    private String defaultValue;
+    private JTextField field;
     private OriginChange origin;
     private DocListener listener;
     
     private boolean ignore = false;
     
-    public TextComponentPOMChange(String keyParam, String oldValue, int oldLocation, 
-                                   JTextComponent textfield, OriginChange oc) {
+    public TextFieldPropertyChange(String keyParam, String oldValue, int oldLocation, 
+                                   JTextField textfield, OriginChange oc, String defVal) {
         key = keyParam;
         value = oldValue != null ? oldValue : "";
         location = oldLocation;
@@ -47,6 +48,7 @@ public class TextComponentPOMChange implements MavenPOMSingleChange {
         newLocation = oldLocation;
         field = textfield;
         origin = oc;
+        defaultValue = defVal;
         origin.setInitialLocationID(oldLocation);
         field.setText(value);
         listener = new DocListener();
@@ -71,6 +73,10 @@ public class TextComponentPOMChange implements MavenPOMSingleChange {
         ignore = false;
     }
     
+    public String getKey() {
+        return key;
+    }
+
     public int getNewLocation() {
         return newLocation;
     }
@@ -107,10 +113,6 @@ public class TextComponentPOMChange implements MavenPOMSingleChange {
         field.setText(newValue);
         ignore = false;
     }
-
-    public String getPath() {
-        return key;
-    }
     
     
   private final class DocListener implements DocumentListener, OriginChange.ChangeObserver {
@@ -125,7 +127,7 @@ public class TextComponentPOMChange implements MavenPOMSingleChange {
                 || origin.getSelectedLocationID() == IPropertyLocator.LOCATION_DEFAULTS) {
                 // assume the default placement is build..
                 // maybe have configurable or smartish later..
-                origin.setAction(OriginChange.LOCATION_POM);
+                origin.setAction(IPropertyLocator.LOCATION_PROJECT_BUILD);
             }
         }
         
@@ -149,7 +151,7 @@ public class TextComponentPOMChange implements MavenPOMSingleChange {
             if (newLocation < 0) {
                 // assuming the correct default value is not-override..
                 ignore = true;
-                newValue = "";
+                newValue = (defaultValue == null ? "" : defaultValue);
                 field.setText(newValue);
                 ignore = false;
             }

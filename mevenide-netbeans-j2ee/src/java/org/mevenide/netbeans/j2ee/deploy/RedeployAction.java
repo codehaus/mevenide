@@ -24,7 +24,7 @@ import org.codehaus.cargo.container.Container;
 import org.codehaus.cargo.container.deployable.Deployable;
 import org.codehaus.cargo.container.deployable.WAR;
 import org.mevenide.netbeans.cargo.CargoServerRegistry;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.RequestProcessor;

@@ -31,7 +31,7 @@ import javax.swing.tree.TreeSelectionModel;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.goals.GoalsGrabberProvider;
 import org.mevenide.netbeans.project.goals.GoalNameCookie;

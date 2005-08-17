@@ -23,7 +23,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;

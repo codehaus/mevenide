@@ -17,7 +17,7 @@
 
 package org.mevenide.netbeans.api.project;
 
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.util.Lookup;
 
 /**

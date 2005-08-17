@@ -18,7 +18,7 @@ package org.mevenide.netbeans.project.nodes;
 
 import javax.swing.Action;
 import org.mevenide.netbeans.project.ActionProviderImpl;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.loaders.DataFolder;

@@ -37,6 +37,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Resource;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.nodes.DirScannerSubClass;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;

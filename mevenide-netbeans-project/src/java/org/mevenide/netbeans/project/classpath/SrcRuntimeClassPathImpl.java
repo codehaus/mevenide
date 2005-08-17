@@ -28,7 +28,7 @@ import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 
 
 /**

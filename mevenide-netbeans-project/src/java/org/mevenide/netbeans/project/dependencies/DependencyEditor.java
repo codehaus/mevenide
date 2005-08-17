@@ -34,7 +34,7 @@ import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableModel;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.project.io.IContentProvider;

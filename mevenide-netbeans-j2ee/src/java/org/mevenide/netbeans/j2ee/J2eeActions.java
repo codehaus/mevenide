@@ -28,7 +28,7 @@ import org.mevenide.netbeans.cargo.CargoServerRegistry;
 import org.mevenide.netbeans.j2ee.deploy.DeployAction;
 import org.mevenide.netbeans.j2ee.deploy.NbDeployAction;
 import org.mevenide.netbeans.j2ee.deploy.RedeployAction;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 

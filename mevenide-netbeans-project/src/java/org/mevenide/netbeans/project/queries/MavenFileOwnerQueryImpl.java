@@ -30,7 +30,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.mevenide.properties.IPropertyResolver;

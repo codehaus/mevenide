@@ -16,7 +16,7 @@
  */
 package org.mevenide.netbeans.j2ee;
 
-import org.mevenide.netbeans.project.MavenProject;
+import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;

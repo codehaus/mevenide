@@ -14,13 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.mevenide.netbeans.project.customizer;
+package org.mevenide.netbeans.api.customizer;
 
 import java.util.List;
 
 /**
- *
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * a panel in the customizer, ought to be an instance of JComponent
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface ProjectPanel
 {
