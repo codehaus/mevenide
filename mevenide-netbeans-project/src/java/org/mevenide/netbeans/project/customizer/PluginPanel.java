@@ -28,6 +28,7 @@ import javax.swing.table.TableColumn;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.netbeans.api.customizer.CustomPluginPanelProvider;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.MavenChange;
@@ -39,6 +40,7 @@ import org.mevenide.netbeans.project.customizer.ui.PropertyTableModel;
 import org.mevenide.netbeans.project.customizer.ui.TableRowPropertyChange;
 import org.mevenide.plugins.IPluginInfo;
 import org.mevenide.properties.IPropertyLocator;
+import org.openide.util.Lookup;
 
 
 /**
@@ -217,8 +219,15 @@ public class PluginPanel extends JPanel implements ProjectPanel {
      * is expected to be instance of Component and ProjectPanel
      */
     public static Component createPluginPanel(MavenProject proj, IPluginInfo info) {
-        //TODO have the pluggable visual components
-        IQueryContext context = proj.getContext();
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(CustomPluginPanelProvider.class));
+        Iterator it = res.allInstances().iterator();
+        while (it.hasNext()) {
+            CustomPluginPanelProvider prov = (CustomPluginPanelProvider)it.next();
+            Component panel = prov.createPanel(proj, info);
+            if (panel != null) {
+                return panel;
+            }
+        }
         Set used = new HashSet();
         used.addAll(info.getPropertyKeys());
         return new PluginPanel(proj, used, info);
