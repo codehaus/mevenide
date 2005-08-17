@@ -212,7 +212,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         ClassPath cp = cache[type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                logger.fatal("create Sourcepath src for " + file);
+                logger.debug("create Sourcepath src for " + file);
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             }
             else {
