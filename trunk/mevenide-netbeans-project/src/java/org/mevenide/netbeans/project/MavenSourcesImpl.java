@@ -216,7 +216,9 @@ public class MavenSourcesImpl implements Sources {
                     while (it.hasNext()) {
                         count = count + 1;
                         Resource res = (Resource)it.next();
-                        String path = project.getPropertyResolver().resolveString(res.getDirectory());
+                        String dir = res.getDirectory();
+                        // if dir is not found, just use basedir as fallback? MEVENIDE-306
+                        String path = project.getPropertyResolver().resolveString(dir != null ? dir : "${basedir}");
                         FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(),
                                                                      path);
                         if (folder == null) {
@@ -365,7 +367,7 @@ public class MavenSourcesImpl implements Sources {
             rootFolder = rootFold;
             rootFile = FileUtil.toFile(rootFolder);
             name = nm;
-            displayName = displayNm;
+            displayName = displayNm != null ? displayNm : "<Root not defined>";
             icon = icn;
             openedIcon = opened;
         }
