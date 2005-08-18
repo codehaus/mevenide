@@ -188,7 +188,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     protected URI checkOneResource(Resource res) {
         String dir = res.getDirectory();
-        File file = new File(dir);
+        File file = new File(getMavenProject().getPropertyResolver().resolveString(dir != null ? dir : "${basedir}"));
         // is the relative path check necessary?
         if (!file.exists()) {
             File basedir = FileUtil.toFile(getMavenProject().getProjectDirectory());

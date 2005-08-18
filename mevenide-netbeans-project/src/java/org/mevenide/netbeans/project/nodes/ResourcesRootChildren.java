@@ -115,6 +115,9 @@ class ResourcesRootChildren extends Children.Keys {
         
         public String getDisplayName() {
             String toReturn = group.getResource().getDirectory();
+            if (toReturn == null) {
+                toReturn = "<Root undefined>";
+            }
             return toReturn;
         }
         
