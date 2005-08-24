@@ -1,7 +1,0 @@
-.project
-maven.log
-*.log
-.classpath
-.mvnignore
-build.properties
-target
