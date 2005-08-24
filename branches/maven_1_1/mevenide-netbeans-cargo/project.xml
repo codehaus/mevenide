@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
+    <artifactId>mevenide-netbeans-cargo</artifactId>
+    <!-- make the version equal the cargo's version to have a clear link -->
+    <currentVersion>0.5.1</currentVersion>
+    <inceptionYear>2005</inceptionYear>
+    <url>http://mevenide.codehaus.org/mevenide-netbeans-project</url>
+    <name>Netbeans Cargo integration</name>
+    <shortDescription>Integrating Cargo (http://cargo.codehaus.org) into IDE.</shortDescription>
+    <description>This module integrates Cargo into the IDE. Cargo is a thin wrapper around existing J2EE containers. It provides different APIs to easily manipulate containers.</description>
+    <package>org.mevenide.netbeans.cargo</package>
+    <dependencies>
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>openide</artifactId>
+            <!-- include nb module specification version..-->
+            <version>5.9.1</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>1.6.1</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+            <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
+         property in order for the maven0nbm-plugin to generate the correct Module's manifest entries.
+         see maven-nbm-plugin's help for more. -->
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>cargo</groupId>
+            <artifactId>cargo-netbeans</artifactId>
+            <version>0.5</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.5.3-1</version>
+        </dependency>
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+        <!-- For unit tests -->
+        <dependency>
+            <groupId>jetty</groupId>
+            <artifactId>org.mortbay.jetty</artifactId>
+            <version>4.2.20</version>
+        </dependency>
+        <!--dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-execution</artifactId>
+            <version>1.6</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency-->
+        <dependency>
+            <groupId>cargo</groupId>
+            <artifactId>cargo</artifactId>
+            <version>0.5</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+    <build>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+        <!-- Unit test classes -->
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+        </unitTest>
+        <resources>
+            <resource>
+                <directory>src/conf</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>manifest.mf</exclude>
+                </excludes>
+            </resource>
+        </resources>
+    </build>
+</project>
+

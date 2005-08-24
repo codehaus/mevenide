@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<!DOCTYPE document [
+	<!ENTITY building SYSTEM "developer/building.xml">
+	<!ENTITY cvs-layout SYSTEM "developer/cvs-layout.xml">
+]>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+	<body>
+	<section name="Building Mevenide">
+		<p>
+  	    See <a href="http://docs.codehaus.org/display/MEVENIDE/HowToBuildMevenide">Wiki</a> for build instructions.
+  	    </p>
+	</section>
+	
+	</body>
+</document>
