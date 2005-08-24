@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<welcomePage title="Maven Plugin">
+
+  <intro>
+    The Maven Plugin is an Eclipse plugin for accessing Maven functionality.
+  </intro>
+
+  <item>
+    <b>Learn More</b>
+	  This is the official site of MevenIDE:
+    <topic href="http://mevenide.codehaus.org/">http://mevenide.codehaus.org/</topic>
+  </item>
+
+</welcomePage>

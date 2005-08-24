@@ -1,0 +1,37 @@
+<project default="build-all" 
+		 xmlns:maven="jelly:maven" 
+		 xmlns:j="jelly:core"
+		 xmlns:velocity="jelly:org.apache.commons.jelly.tags.velocity.VelocityTagLibrary"
+		 xmlns:multiproject="multiproject">
+
+
+  
+  <goal name="build-all"
+    	description="Build all Mevenide modules"
+    	prereqs="prereqs:prereq1,prereqs:prereq2,prereq3">
+    <attainGoal name="build"/>
+  </goal>
+  
+  
+  <!-- i didnt alter it since it works as it is now -->
+  <goal name="build" description="Build each Mevenide module">
+	
+    <!-- maven:reactor basedir="${basedir}/.."
+      			   includes="goals-grabber/project.xml,mevenide-core/project.xml,mevenide-ui-eclipse/project.xml"
+      			   excludes="mevenide-master/project.xml"
+      			   goals="clean,jar:install"
+      			   banner="Building"
+      			   ignoreFailures="false"/ -->
+    <attainGoal name="multiproject:goal"/>
+  </goal>
+  
+  
+  
+  <!-- build the aggregated site -->
+  <goal name="build-site" description="Build Mevenide Site">
+  	
+  	<multiproject/>
+    
+  </goal>
+ 
+</project>

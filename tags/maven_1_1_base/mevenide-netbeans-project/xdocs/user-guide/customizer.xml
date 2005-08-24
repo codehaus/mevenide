@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+        <author email="mkleint@codehaus.org">Milos Kleint</author>
+    	<title>Customizing Maven project</title>
+  </properties>
+  <body>
+	<section name="Customizing Maven Project">
+	  <subsection name="Basic">
+	    <div id="documentContent">
+		  <p>
+          The Project customizer is accessible from the popup menu of the project node. It's the last item in the popup, "Properties..."<br/>
+          It categorizes the content of the POM file and the project's properties into
+          multiple subsections which should be self-descripting. The current implementation is able to edit
+          properties and view POM file content.
+          			<br/>
+          The Resolve Values checkbox allows one to switch between 2 modes.
+          <ul>
+            <li><p>When the checkbox is unselected, all editable fields are editable and are displayed exactly as defined in the project files.</p></li>
+            <li><p>When resolving values, the fields are not editable but one can see to what values the properties definitions resolve in the 
+            current context of the project. If a value cannot be resolved, it still displayed in the unresolved state.</p> 
+            </li>
+          </ul>
+          <p>
+          This feature can be used to examine and debug the project definitions.
+          </p>
+          
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/projectproperties.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 1</b> Maven project customizer</font>
+				<br/>
+			</center>
+		  </p>
+          <p>
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/projectprops2.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 2</b> Maven project customizer - Dependencies</font>
+				<br/>
+			</center>
+		  </p>          
+            <p>
+            The UI also shows what plugins are installed within the project's context. 
+            It tries to guess which plugins are used (based on used properties within the project scope)
+            and allows one to view and change the plugin's setup.
+            </p>
+          <p>
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/projectplugins.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 3</b> Maven project customizer - Plugins</font>
+				<br/>
+			</center>
+		  </p>          
+	    </div>
+	  </subsection>
+	  <subsection name="Definition layers">
+	  	<div id="documentContent">
+		  <p>
+          The properties can be defined in multiple files in maven.
+          </p>
+          <ul>
+          <li> <p>There are the project.properties and build.properties files in the project folder.</p></li>
+          <li> <p> There is the build.properties file in the user directory, which is capable of influencing behaviour of all projects.</p></li>
+          <li> <p> Then there's project and build property files in the parent's project directory. (If the POM file defines the "extends" tag.)</p></li>
+          </ul>
+          <p>
+          To let the user know where the givem property is defined, the customizer places a coloured triangle icon
+          next to all property definitions. By clicking the icon, one can move the property definition.
+          <br/>
+          Note: By moving to the build property file in the user dir, one doesn't influence only the current project but all projects.
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/redefinelocation.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 4</b> Changing location of property definition</font>
+				<br/>
+			</center>
+            
+		  </p>
+	    </div>
+	  </subsection>
+      <subsection name="Global execution options">
+	  	<div id="documentContent">
+		  <p>
+          To influence the execution of maven, you can define what command line switches are used when
+          executing Maven. These are not project based, but global for use in the IDE, don't influence
+          maven when used on the command-line.
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/options.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 5</b> Global Options</font>
+				<br/>
+			</center>
+          
+          </p>
+      </div>
+      </subsection>
+      <subsection name="Maven Goals to IDE Mappings">
+	  	<div id="documentContent">
+		  <p>
+          Apart from changing standard maven properties, one can also redefine what 
+          common IDE building actions mean in the maven sense. So for your webapp you can
+          make the IDE's Build action to deploy the built app to the server for testing.
+          <br/>
+          These values are like common Maven project properties, which means you can put the definitions into cvs
+          and let everyone build the project the same way.
+          For detailed description of the properties, see <a href="../properties.html"> page </a> describing the properties definition in detail.
+          <br/>
+			<center>
+				<img border="1px" src="../images/screenshots/projectgoals.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 6</b> Changing goals definition</font>
+				<br/>
+			</center>
+          
+          </p>
+      </div>
+      </subsection>
+	</section>
+	<section>
+		<p>
+			<navbar prev="reports.html" toc="index.html" next="completion.html"/>
+		</p>
+	</section>
+  </body>
+</document>

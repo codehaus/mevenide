@@ -1,0 +1,8 @@
+*.iws
+classes
+target
+build.properties
+sandbox
+.project
+*.ser
+*.log

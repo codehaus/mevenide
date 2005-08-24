@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="rhill@wanadoo.fr">Gilles Dodinet</author>
+    <author email="mkleint@codehaus.org">Milos Kleint</author>
+    <author email="shuber2@jahia.com">Serge Huber</author>
+    <title>Mevenide - Integrating Maven into IDEs</title>
+  </properties>
+<body>
+
+
+	<section name="Eclipse Support">
+  	  <div id="documentContent">
+        <p>
+    	  <b>Mevenide for Eclipse</b> distribution is composed of five different plugins : Core, Config, Grammar, Grabber and UI.
+    	  They can be found <a href="http://mevenide.codehaus.org/release">here</a>. Plugin Features are described in
+    	  <a href="mevenide-ui-eclipse/features.html">this document</a>
+        </p>
+        <p>
+          Mevenide for Eclipse now supports Eclipse Update feature. To learn how to install Mevenide thanks the EclipseUpdate Manager,
+    	  please refer to <a href="mevenide-ui-eclipse/update/index.html">this document</a>.
+        </p>
+        <p>
+        	Requirements :
+        	<ul>
+        		<li>Eclipse 3.0</li>
+        		<li>JDK 1.4+</li>
+        		<li>Maven 1.0</li>
+        	</ul>
+        </p>
+        <p>
+        	Older releases can still be found on <a href="http://sourceforge.net/project/showfiles.php?group_id=54263">Sourceforge download page</a>.
+		</p>
+		<p>
+			The <b>Maven PDE Plugin</b> allows Maven users to generate Eclipse plugin artifacts easily and keep trace of artifact inter-dependency.
+			To install the plugin, follow instructions on the plugin's <a href="maven-eclipse-plugin-plugin/index.html">page </a>.
+		</p>
+      </div>
+    </section>
+  	<section name="NetBeans Support">
+      <div id="projects">
+      <p>
+        The <b>Mevenide support for the Netbeans 4.x IDE</b> recognizes the Maven project type in the IDE,
+        tightly integrating Maven into the IDE, allows to run arbitrary goals, edit project properties etc.
+        The complete list of features can be found <a href="mevenide-netbeans-project/features.html">here</a> and
+        You might also want to check the <a href="mevenide-netbeans-project/user-guide/index.html">User guide</a>
+        which describes the features in more details and is accompanied with screenshots. 
+        </p>
+        <p>
+        The <b>latest release 0.8</b> can be downloaded in <a href="download/mevenide-netbeans-0.8.zip">zip format</a>.
+        </p>
+        <p>Or it can be downloaded using the Netbeans
+        Autoupdate feature. In latest 4.2 development builds, the Mevenide autoupdate server is part of the "Infrastructure/Extra Update Centers" module on the default Netbeans autoupdate server.
+If you are using 4.1 or 4.0, download and install this small <a href="download/mevenide-netbeans-autoupdate-1.0.nbm">autoupdate module</a> or create a new Autoupdate server in the Tools/Options dialog with the following URL:
+        <b>http://mevenide.codehaus.org/nbm_release/NBM_AutoUpdate.xml</b>
+        </p>
+        <p>If you already installed some of the previous releases, updating through Autoupdate is a better option because only the updated modules get downloaded. </p>
+        <p>
+        	Requirements : </p>
+        	<ul>
+        		<li>Netbeans 4.0 or 4.1 . <b>For 4.0 installation see note below.</b></li>
+        		<li>JDK 1.4+</li>
+        		<li>Maven 1.0.2</li>
+        	</ul>
+
+        <p>
+        <b>Note: </b>
+        The grammar module
+        (editor completion for maven xml files) in 0.8 release zip will work
+            with Netbeans 4.1. To get it working with 4.0 you need the <a href="../nbm_release/mevenide-netbeans-grammar-0.6.nbm">old 4.0 nbm </a>.
+        </p>
+      </div>
+      <div id="plugin">
+        <p>
+    	The <b>Maven NBM plugin</b> allows maven users to generate Netbeans modules from their projects. To install the plugin, follow instructions on the plugin's <a href="maven-nbm-plugin/index.html">page </a>.
+        </p>
+      </div>
+    </section>
+    <section name="JBuilder Support">
+  	  <div id="documentContent">
+        <p>
+    	  <b>Mevenide for JBuilder</b> distribution can be found
+    	  <a href="http://mevenide.codehaus.org/release">here</a>. Plugin
+    	  Features are described in
+    	  <a href="mevenide-ui-jbuilder/features.html">this document</a>
+        </p>
+        <p>
+        	Requirements :
+        	<ul>
+        		<li>JBuilderX</li>
+        		<li>JDK 1.4+</li>
+        		<li>Maven 1.0</li>
+        	</ul>
+        </p>
+        <p>
+			    The <b>Maven JBuilder OpenTool Plugin</b> allows Maven users to
+			    generate JBuilder OpenTool artifacts easily.
+			    To install the plugin, follow instructions on the plugin's
+			    <a href="maven-jbuilder-opentool-plugin/index.html">page </a>.
+		    </p>
+      </div>
+    </section>
+    <section name="IntelliJ IDEA Support">
+        <div id="documentContext">
+            <p>
+                <a href="mevenide-idea/index.html">Mevenide IDEA plugin</a> downloads are
+                available in the <a href="mevenide-idea/downloads.html">Mevenide IDEA plugin downloads page.</a>
+                You might also want to view the <a href="mevenide-idea/installation.html">installation guide</a>.
+            </p>
+        </div>
+    </section>
+</body>
+</document>
