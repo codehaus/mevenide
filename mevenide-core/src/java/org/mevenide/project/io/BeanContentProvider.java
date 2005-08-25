@@ -20,8 +20,10 @@ package org.mevenide.project.io;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -98,8 +100,14 @@ public final class BeanContentProvider implements IContentProvider {
 
     public List getProperties() {
         Object toReturn = retrieveValue("properties");
-        if (toReturn instanceof List) {
-            return (List)toReturn;
+        if (toReturn instanceof Properties) {
+            List lst = new ArrayList();
+            Enumeration en = ((Properties)toReturn).propertyNames();
+            while (en.hasMoreElements()) {
+                String key = (String)en.nextElement();
+                lst.add(key + ":" + ((Properties)toReturn).getProperty(key));
+            }
+            return lst;
         } else {
             if (toReturn != null) {
                 log.error("Called getProperties on " + bean.getClass().getName() + " and failed returning " + toReturn.getClass());

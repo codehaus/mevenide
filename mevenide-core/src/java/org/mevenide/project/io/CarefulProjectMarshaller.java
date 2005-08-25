@@ -533,7 +533,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         findAndReplaceSimpleElement(innerCount, resElem, "targetPath", resource.getValue("targetPath"));
         doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("includes", "include"), "includes", "include");
         doUpdateSimpleChildren(innerCount, resElem, resource.getValueList("excludes", "exclude"), "excludes", "exclude");
-        findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
+//TODO filtering is gone?        findAndReplaceSimpleElement(innerCount, resElem, "filtering", resource.getValue("filtering"));
     }
     
     private void doUpdateSingleSourceModification(Element resElem, IContentProvider resource) throws Exception {

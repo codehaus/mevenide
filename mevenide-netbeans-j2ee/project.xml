@@ -126,7 +126,7 @@
       <dependency>
          <groupId>mevenide</groupId>
          <artifactId>maven-nb-module</artifactId>
-         <version>1.0.2</version>
+         <version>1.1-beta-1</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>

@@ -20,6 +20,7 @@ package org.mevenide.project.dependency;
 import junit.framework.*;
 import org.apache.maven.project.Dependency;
 import org.mevenide.TestQueryContext;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
 /**
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -50,22 +51,27 @@ public class ExactDependencyPatternTest extends TestCase {
         dep.setArtifactId("artId");
         dep.setGroupId("grId");
         dep.setVersion("0.1");
+// whenever there's a new Dependency(), one has to perform the resolving of id
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertTrue(pattern.matches(dep, context));
         
         dep = new Dependency();
         dep.setArtifactId("artId");
         dep.setGroupId("grId");
         dep.setVersion("0.1.1");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertFalse(pattern.matches(dep, context));
         
         dep = new Dependency();
         dep.setArtifactId("artId");
         dep.setGroupId("grId");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertFalse(pattern.matches(dep, context));
         
         dep = new Dependency();
         dep.setId("grId:artId");
         dep.setVersion("0.1");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertTrue(pattern.matches(dep, context));
         
         dep = new Dependency();
@@ -76,6 +82,7 @@ public class ExactDependencyPatternTest extends TestCase {
         dep = new Dependency();
         dep.setId("myid");
         dep.setVersion("0.1");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertTrue(pattern.matches(dep, context));
         
         
@@ -88,11 +95,13 @@ public class ExactDependencyPatternTest extends TestCase {
         dep.setArtifactId("artId");
         dep.setGroupId("grId");
         dep.setVersion("${project.version}");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertTrue(pattern.matches(dep, context));
         
         dep = new Dependency();
         dep.setArtifactId("artId");
         dep.setGroupId("10.1");
+        JDomProjectUnmarshaller.resolveDependency(dep);
         assertFalse(pattern.matches(dep, context));
         
         

@@ -1,6 +1,6 @@
 /* ==========================================================================
  * Copyright 2003-2004 Mevenide Team
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,10 +22,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import org.apache.maven.project.BaseObject;
+import org.apache.maven.project.ModelBase;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
@@ -34,6 +35,7 @@ import org.apache.maven.project.Developer;
 import org.apache.maven.project.License;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Organization;
+import org.apache.maven.project.Model;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Repository;
 import org.apache.maven.project.Resource;
@@ -64,21 +66,21 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         Document document = builder.build(reader);
         return generateProject(document.getRootElement());
     }
-/**
- * get the Maven's project instance from the file. Please not that it will not include the 
- * values from any parent files defined in <extend>
- */
+    /**
+     * get the Maven's project instance from the file. Please not that it will not include the
+     * values from any parent files defined in <extend>
+     */
     public Project parse(File file) throws Exception {
         return generateProject(parseRootElement(file));
     }
-
+    
     /**
      * parse the doc of the file passed in. External enitities are expanded.
      */
     public Element parseRootElement(File file) throws Exception {
         SAXBuilder builder = new SAXBuilder();
         builder.setExpandEntities(true);
-// TODO mkleint - I wonder if the directory in resolver is based on 
+// TODO mkleint - I wonder if the directory in resolver is based on
 //        the current file being parsed or rather the initial project.xml file
 //        (extend files inherit the directory from the origin..)
         
@@ -86,7 +88,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         Document document = builder.build(file);
         return document.getRootElement();
     }
-
+    
     /**
      * parse the doc from the reader. Please note that expanding entities is not possible this way.
      * Use only if you don't have a physical file. (eg. for project.xmls in jars..)
@@ -108,9 +110,14 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         String id = projectElement.getChildText("id");
         String groupId = projectElement.getChildText("groupId");
         String artifactId = projectElement.getChildText("artifactId");
-        mavenProject.setId(id);
         mavenProject.setGroupId(groupId);
         mavenProject.setArtifactId(artifactId);
+        if (id != null) {
+            mavenProject.setId(id);
+        } else {
+            //TODO valid ??
+            mavenProject.setId(groupId + ":" + artifactId);
+        }
         mavenProject.setCurrentVersion(projectElement.getChildText("currentVersion"));
         mavenProject.setInceptionYear(projectElement.getChildText("inceptionYear"));
         mavenProject.setPackage(projectElement.getChildText("package"));
@@ -128,7 +135,8 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         //complex child elements
         mavenProject.setOrganization(parseOrganization(projectElement));
         mavenProject.setRepository(parseRepository(projectElement));
-        mavenProject.setVersions(parseVersions(projectElement));
+        //TODO a bug is filed, should be fixed for 1.1
+        //mavenProject.setVersions(parseVersions(projectElement));
         mavenProject.setBranches(parseBranches(projectElement));
         mavenProject.setMailingLists(parseMailingLists(projectElement));
         mavenProject.setDevelopers(parseDevelopers(projectElement));
@@ -137,24 +145,24 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         mavenProject.setDependencies(parseDependencies(projectElement));
         mavenProject.setBuild(parseBuild(projectElement));
         mavenProject.setReports(parseReports(projectElement));
-        List properties = parseProperties(projectElement);
+        Properties properties = parseProperties(projectElement);
         if ( properties != null && properties.size() > 0 )  {
-	        mavenProject.setProperties(properties);
-	        populateResolvedProperties(mavenProject, properties);
-	    }
-	    
+            mavenProject.setProperties(properties);
+            //TODO populateResolvedProperties(mavenProject, properties);
+        }
+        
         return mavenProject;
     }
-
-    private void populateResolvedProperties(BaseObject obj, List properties) {
-        if ( properties != null && properties.size() > 0 ) {
-            for (int i = 0; i < properties.size(); i++) {
-                String[] prop = resolveProperty((String) properties.get(i));
-                obj.resolvedProperties().put(prop[0], prop[1]);
-            }
-        }
-    }
-
+    
+//    private void populateResolvedProperties(ModelBase obj, Properties properties) {
+//        if ( properties != null && properties.size() > 0 ) {
+//            for (int i = 0; i < properties.size(); i++) {
+//                String[] prop = resolveProperty((String) properties.get(i));
+//                obj.resolvedProperties().put(prop[0], prop[1]);
+//            }
+//        }
+//    }
+    
     private Organization parseOrganization(Element projectElement) {
         Organization organization = null;
         Element elem = projectElement.getChild("organization");
@@ -203,10 +211,10 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     developer.setOrganization(developerElement.getChildText("organization"));
                     List roles = parseRoles(developerElement);
                     if ( roles != null && roles.size() > 0 ) {
-	                    for (int j = 0; j < roles.size(); j++) {
-	                        developer.addRole((String) roles.get(j));
-	                    }
-	                 }
+                        for (int j = 0; j < roles.size(); j++) {
+                            developer.addRole((String) roles.get(j));
+                        }
+                    }
                     developer.setUrl(developerElement.getChildText("url"));
                     developer.setTimezone(developerElement.getChildText("timezone"));
                     developers.add(developer);
@@ -232,10 +240,10 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     //do contributors really have roles ?
                     List roles = parseRoles(contributorElement);
                     if ( roles != null && roles.size() > 0 ) {
-	                    for (int j = 0; j < roles.size(); j++) {
-	                        contributor.addRole((String) roles.get(j));
-	                    }
-	                }
+                        for (int j = 0; j < roles.size(); j++) {
+                            contributor.addRole((String) roles.get(j));
+                        }
+                    }
                     contributor.setUrl(contributorElement.getChildText("url"));
                     contributor.setTimezone(contributorElement.getChildText("timezone"));
                     contributors.add(contributor);
@@ -284,23 +292,46 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     if (id != null) {
                         dependency.setArtifactId(id);
                     }
+                    resolveDependency(dependency);
                     dependency.setVersion(dependencyElement.getChildText("version"));
                     String jar = dependencyElement.getChildText("jar");
                     if ( jar != null ) {
-                    	dependency.setJar(dependencyElement.getChildText("jar"));
-					}                    
+                        dependency.setJar(dependencyElement.getChildText("jar"));
+                    }
                     dependency.setType(dependencyElement.getChildText("type"));
                     dependency.setUrl(dependencyElement.getChildText("url"));
-                    List properties = parseProperties(dependencyElement);
+                    Properties properties = parseProperties(dependencyElement);
                     if ( properties != null && properties.size() > 0 ) {
-	                    dependency.setProperties(properties);
-	                    populateResolvedProperties(dependency, properties);
-	                } 	
+                        dependency.setProperties(properties);
+//TODO	                    populateResolvedProperties(dependency, properties);
+                    }
                     dependencies.add(dependency);
                 }
             }
         }
         return dependencies;
+    }
+    
+    public static void resolveDependency(Dependency dependency) {
+        if ( dependency.getId() != null ) {
+            if ( dependency.getGroupId() == null ) {
+                String id = dependency.getId();
+                int j = id.indexOf( ":" );
+                
+                if ( j > 0 ) {
+                    dependency.setGroupId( id.substring( 0, j ) );
+                    dependency.setArtifactId( id.substring( j + 1 ) );
+                } else {
+                    dependency.setGroupId( id );
+                    dependency.setArtifactId( id );
+                }
+            } else if ( dependency.getArtifactId() == null ) {
+                dependency.setArtifactId( dependency.getId() );
+            }
+        } else if ( dependency.getGroupId() == null ) {
+            dependency.setGroupId( dependency.getArtifactId() );
+        }
+        dependency.setId( dependency.getGroupId() + ":" + dependency.getArtifactId() );
     }
     
     private List parseLicenses(Element projectElement) {
@@ -379,21 +410,23 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         return mailingLists;
     }
     
-    private List parseProperties(Element element) {
-        List properties = null;
+    private Properties parseProperties(Element element) {
+        Properties properties = null;
         Element propertiesElement = element.getChild("properties");
         if ( propertiesElement != null ) {
             List propertiesElements = propertiesElement.getChildren();
             if ( propertiesElements != null && propertiesElements.size() > 0 ) {
-                properties = new ArrayList();
+                properties = new Properties();
                 for (int i = 0; i < propertiesElements.size(); i++) {
                     Element propertyElement = (Element) propertiesElements.get(i);
-                    String property = propertyElement.getName() + ":" +
-                            (propertyElement.getText() == null || propertyElement.getText().length() == 0 
-                                  ? " " //HACK it seems empty string won't do..mkleint 
-                                  : propertyElement.getText());
-                    properties.add(property);
-                }                
+//                    String property = propertyElement.getName() + ":" +
+//                            (propertyElement.getText() == null || propertyElement.getText().length() == 0
+//                                  ? " " //HACK it seems empty string won't do..mkleint
+//                                  : propertyElement.getText());
+                    properties.setProperty(propertyElement.getName(), propertyElement.getText() == null || propertyElement.getText().length() == 0
+                            ? " " //HACK it seems empty string won't do..mkleint
+                            : propertyElement.getText());;
+                }
             }
         }
         return properties;
@@ -418,7 +451,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
             build = new Build();
             build.setNagEmailAddress(buildElement.getChildText("nagEmailAddress"));
             build.setSourceDirectory(buildElement.getChildText("sourceDirectory"));
-            build.setSourceModification(parseSourceModifications(buildElement));
+            build.setSourceModifications(parseSourceModifications(buildElement));
             build.setUnitTestSourceDirectory(buildElement.getChildText("unitTestSourceDirectory"));
             build.setAspectSourceDirectory(buildElement.getChildText("aspectSourceDirectory"));
             build.setUnitTest(parseUnitTest(buildElement));
@@ -431,27 +464,27 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         UnitTest unitTest = null;
         Element unitTestElement = buildElement.getChild("unitTest");
         if ( unitTestElement != null ) {
-			unitTest = new UnitTest();
-			List includes = parseIncludes(unitTestElement);
-			if ( includes != null && includes.size() > 0 ) {
-	            for (int j = 0; j < includes.size(); j++) {
-	                unitTest.addInclude((String) includes.get(j));
-	            }
-	        }
+            unitTest = new UnitTest();
+            List includes = parseIncludes(unitTestElement);
+            if ( includes != null && includes.size() > 0 ) {
+                for (int j = 0; j < includes.size(); j++) {
+                    unitTest.addInclude((String) includes.get(j));
+                }
+            }
             List excludes = parseExcludes(unitTestElement);
-	        if ( excludes != null && excludes.size() > 0 ) {
-	            for (int j = 0; j < excludes.size(); j++) {
-	                unitTest.addExclude((String) excludes.get(j));
-	            }     
-	        }
+            if ( excludes != null && excludes.size() > 0 ) {
+                for (int j = 0; j < excludes.size(); j++) {
+                    unitTest.addExclude((String) excludes.get(j));
+                }
+            }
             unitTest.setResources(parseResources(unitTestElement));
         }
         return unitTest;
     }
     
     private List parseResources(Element element) {
-    	List resources = null;
-    	Element resourcesElement = element.getChild("resources");
+        List resources = null;
+        Element resourcesElement = element.getChild("resources");
         if ( resourcesElement != null ) {
             List resourceElements = resourcesElement.getChildren("resource");
             if ( resourceElements != null && resourceElements.size() > 0 ) {
@@ -465,21 +498,21 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     resource.setFiltering("true".equals(filtering) ? true : false);
                     List includes = parseIncludes(resourceElement);
                     if ( includes != null && includes.size() > 0 ) {
-			            for (int j = 0; j < includes.size(); j++) {
-			                resource.addInclude((String) includes.get(j));
-			            }
-			        }
-			        List excludes = parseExcludes(resourceElement);
-		            if ( excludes != null && excludes.size() > 0 ) {
-			            for (int j = 0; j < excludes.size(); j++) {
-			                resource.addExclude((String) excludes.get(j));
-			            }
-			        }    
+                        for (int j = 0; j < includes.size(); j++) {
+                            resource.addInclude((String) includes.get(j));
+                        }
+                    }
+                    List excludes = parseExcludes(resourceElement);
+                    if ( excludes != null && excludes.size() > 0 ) {
+                        for (int j = 0; j < excludes.size(); j++) {
+                            resource.addExclude((String) excludes.get(j));
+                        }
+                    }
                     resources.add(resource);
                 }
             }
         }
-    	return resources;
+        return resources;
     }
     
     private List parseSourceModifications(Element buildElement) {
@@ -495,16 +528,16 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     sourceModification.setClassName(sourceModificationElement.getChildText("className"));
                     List includes = parseIncludes(sourceModificationElement);
                     if ( includes != null && includes.size() > 0 ) {
-	                    for (int j = 0; j < includes.size(); j++) {
-	                        sourceModification.addInclude((String) includes.get(j));
-	                    }
-	                }
+                        for (int j = 0; j < includes.size(); j++) {
+                            sourceModification.addInclude((String) includes.get(j));
+                        }
+                    }
                     List excludes = parseExcludes(sourceModificationElement);
                     if ( excludes != null && excludes.size() > 0 ) {
-	                    for (int j = 0; j < excludes.size(); j++) {
-	                        sourceModification.addExclude((String) excludes.get(j));
-	                    }
-	                }
+                        for (int j = 0; j < excludes.size(); j++) {
+                            sourceModification.addExclude((String) excludes.get(j));
+                        }
+                    }
                     sourceModifications.add(sourceModification);
                 }
             }
@@ -559,7 +592,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
             if (systemId.startsWith("file:")) {
                 String path = systemId.substring("file:".length()); //NOI18N
                 File file = new File(directory, path);
-                // kind of bug in jdom.. for file:dependency.ent one gets wrong systemId 
+                // kind of bug in jdom.. for file:dependency.ent one gets wrong systemId
                 //MEVENIDE-110
                 int index = path.indexOf("file:"); //NOI18N
                 if (index > -1) {
@@ -582,51 +615,51 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
 //-------------------------------------------------------------------------------
 // copied from mevenideutils because I was lazy to move part of the class.
     /**
-	 * Resolves a string in the Maven kludgy name:value format to an array
-	 * of strings, guaranteed to be exactly two items in length: [name, value].
-	 * @param property
-	 * @return
-	 */
-	private static final String PROPERTY_SEPARATOR = ":";
-    	private static final String EMPTY_STR = "";
-	private static String[] resolveProperty(String property) {
-		String[] parts = property.split(PROPERTY_SEPARATOR);
-		String name = parts[0];
-		String value;
-		if (parts.length > 1) {
-			value = parts[1];
-		} else {
-			value = EMPTY_STR;
-		}
-		return new String[] {name, value};
-	}    
-        
-/**
- * change relative files to absolute, (especially important for the <path>/../..<path> style of file path descriptions.
- * On windows normalized case, on unix don't follow symlinks..
- */         
-        static File normalizeFile(File file) {
-            String osName = System.getProperty ("os.name");
-            boolean isWindows = osName.startsWith("Wind");
-            if (isWindows) {
-                // On Windows, best to canonicalize.
-                if (file.getParent() != null) {
-                    try {
-                        file = file.getCanonicalFile();
-                    } catch (IOException e) {
-                        logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
-                        // OK, so at least try to absolutize the path
-                        file = file.getAbsoluteFile();
-                    }
-                } else {
-                    // this is for the drive File.
+     * Resolves a string in the Maven kludgy name:value format to an array
+     * of strings, guaranteed to be exactly two items in length: [name, value].
+     * @param property
+     * @return
+     */
+    private static final String PROPERTY_SEPARATOR = ":";
+    private static final String EMPTY_STR = "";
+    private static String[] resolveProperty(String property) {
+        String[] parts = property.split(PROPERTY_SEPARATOR);
+        String name = parts[0];
+        String value;
+        if (parts.length > 1) {
+            value = parts[1];
+        } else {
+            value = EMPTY_STR;
+        }
+        return new String[] {name, value};
+    }
+    
+    /**
+     * change relative files to absolute, (especially important for the <path>/../..<path> style of file path descriptions.
+     * On windows normalized case, on unix don't follow symlinks..
+     */
+    static File normalizeFile(File file) {
+        String osName = System.getProperty("os.name");
+        boolean isWindows = osName.startsWith("Wind");
+        if (isWindows) {
+            // On Windows, best to canonicalize.
+            if (file.getParent() != null) {
+                try {
+                    file = file.getCanonicalFile();
+                } catch (IOException e) {
+                    logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
+                    // OK, so at least try to absolutize the path
                     file = file.getAbsoluteFile();
                 }
             } else {
-                // On Unix, do not want to traverse symlinks.
-                // what about Mac?
-                file = new File(file.toURI().normalize()).getAbsoluteFile();
+                // this is for the drive File.
+                file = file.getAbsoluteFile();
             }
-            return file;
-        }        
+        } else {
+            // On Unix, do not want to traverse symlinks.
+            // what about Mac?
+            file = new File(file.toURI().normalize()).getAbsoluteFile();
+        }
+        return file;
+    }
 }

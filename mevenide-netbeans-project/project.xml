@@ -67,7 +67,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1-beta-1</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -260,7 +260,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>ant-nb-module</artifactId>
-            <version>1.5.3-1</version>
+            <version>1.6.5</version>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
@@ -268,7 +268,7 @@
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
+            <version>1.6.5</version>
             <type>jar</type>
             <url>http://ant.apache.org/</url>
         </dependency>
@@ -282,12 +282,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-            <version>20030902.160215</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-            <version>1.0-beta-1.20030111.103454</version>
+            <version>1.0</version>
         </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
@@ -303,6 +298,12 @@
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
             <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.0.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

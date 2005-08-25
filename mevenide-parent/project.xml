@@ -134,11 +134,6 @@
     <dependencies>
         <!-- required for maven-jcoverage-plugin to work -->
         <dependency>
-            <groupId>xml-apis</groupId>
-            <artifactId>xml-apis</artifactId>
-            <version>1.0.b2</version>
-        </dependency>
-        <dependency>
             <groupId>maven-plugins</groupId>
             <artifactId>maven-findbugs-plugin</artifactId>
             <version>0.8.4</version>

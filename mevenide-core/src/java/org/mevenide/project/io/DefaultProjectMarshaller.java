@@ -18,9 +18,11 @@ package org.mevenide.project.io;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.SortedSet;
 
 import org.apache.commons.logging.Log;
@@ -124,7 +126,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		
 // 		properties element not managed by DefaultProjectUnmarshaller
 //		should we do it here ?
-		marshallProperties(project.resolvedProperties());
+		marshallProperties(project.getProperties());
 		
 		serializer.endTag(NAMESPACE, "project");
 		serializer.endDocument();
@@ -268,7 +270,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	}
 	
 	private  void marshallRoles(Contributor contributor) throws IOException {
-		SortedSet roles = contributor.getRoles();
+		List roles = contributor.getRoles();
 		if ( roles != null ) {
 			serializer.startTag(NAMESPACE, "roles");
 			
@@ -338,19 +340,19 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	
 	private void marshallProperties(Dependency dependency) throws Exception {
-		marshallProperties(dependency.resolvedProperties());
+		marshallProperties(dependency.getProperties());
 	}
 	
-	private void marshallProperties(Map properties) throws Exception {
+	private void marshallProperties(Properties properties) throws Exception {
 		//commented lines will work under maven-new
 		if ( properties != null ) {
-			Iterator it = properties.keySet().iterator();
+			Enumeration it = properties.propertyNames();
 			serializer.startTag(NAMESPACE, "properties");
 				
-			while ( it.hasNext() ) {
+			while ( it.hasMoreElements() ) {
 				
-				String key = (String) it.next();
-				String value = (String) properties.get(key);  
+				String key = (String) it.nextElement();
+				String value = (String) properties.getProperty(key);  
 				
 				marshallString(value, key);
 				
@@ -429,7 +431,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallIncludes(resource.getIncludes());
 					marshallExcludes(resource.getExcludes());
 
-					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
+//TODO filtering is gone 					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
 
 					serializer.endTag(NAMESPACE, "resource");
 				}

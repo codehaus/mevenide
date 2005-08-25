@@ -16,6 +16,14 @@
  */
 package org.mevenide.project.io;
 
+import java.io.File;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import org.mevenide.context.JDomProjectUnmarshaller;
+import org.mevenide.util.DefaultProjectUnmarshaller;
+
 /**
  * 
  * @author <a href="mailto:gdodinet@wanadoo.fr">Gilles Dodinet</a>
@@ -27,7 +35,19 @@ public class CarefulProjectMarshallerTest extends AbstractMarshallerTestCase {
     protected IProjectMarshaller getMarshaller() throws Exception {
         return new CarefulProjectMarshaller();
     }
-	
+    
+    public void testMarshall() throws Exception {
+        Writer writer = new StringWriter();
+        String pomFile = DefaultProjectMarshallerTest.class.getResource("/project.xml").getFile();
+        File fil = new File(pomFile);
+        JDomProjectUnmarshaller unmars = new JDomProjectUnmarshaller();
+        //TODO it seems the BeanContentProvider has problems??
+        // this works with the ElementContentProvider
+    	((CarefulProjectMarshaller)marshaller).marshall(writer, new ElementContentProvider(unmars.parseRootElement(fil)));
+    	Reader reader = new StringReader(writer.toString());
+    	assertEquals(testProject, new DefaultProjectUnmarshaller().parse(reader));
+    	//System.out.print(writer.toString());
+    }	
     
 }
  

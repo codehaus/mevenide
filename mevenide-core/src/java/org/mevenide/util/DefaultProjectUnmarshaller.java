@@ -66,6 +66,7 @@ import org.apache.maven.project.SourceModification;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.project.Version;
 import org.mevenide.context.IProjectUnmarshaller;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -380,22 +381,14 @@ public class DefaultProjectUnmarshaller implements IProjectUnmarshaller {
                                     while (parser.nextTag() == XmlPullParser.START_TAG) {
                                         String pname = parser.getName();
                                         String pvalue = parser.nextText();
-                                        String combinedProperty = pname + ":" + pvalue;
-                                        d.addProperty(combinedProperty);
-                                        //crappy trick to initialize properly
-                                        // the map..
-                                        //shouldnot be necessary. however if i
-                                        // dont do
-                                        //that it doesnot seem to work
-                                        //anyway this is only a temp solution
-                                        // (see above)
-                                        d.resolvedProperties().put(pname, pvalue);
+                                        d.addProperty(pname, pvalue);
                                     }
                                 }
                                 else {
                                     parser.nextText();
                                 }
                             }
+                            JDomProjectUnmarshaller.resolveDependency(d);
                             project.addDependency(d);
                         }
                         else {
