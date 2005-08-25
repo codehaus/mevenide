@@ -53,7 +53,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1-beta-1</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-            <version>20030902.160215</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>1.0.1</version>
+            <version>2.0</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -87,6 +87,12 @@
                 <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec=jdom &gt; 1.0.1</netbeans.module.dep>
             </properties>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.0.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

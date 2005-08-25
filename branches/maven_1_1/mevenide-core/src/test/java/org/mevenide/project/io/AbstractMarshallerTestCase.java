@@ -23,6 +23,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 
 import junit.framework.TestCase;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
 import org.mevenide.util.DefaultProjectUnmarshaller;
 import org.apache.maven.project.Project;
@@ -40,7 +41,8 @@ public abstract class AbstractMarshallerTestCase extends TestCase {
     protected void setUp() throws Exception {
         String pomFile = DefaultProjectMarshallerTest.class.getResource("/project.xml").getFile();
         Reader reader = new FileReader(pomFile);
-        testProject = new DefaultProjectUnmarshaller().parse(reader);
+//TODO was DefaultProjectUnmarshaller, but didn't seem to work.
+        testProject = new JDomProjectUnmarshaller().parse(reader);
 		marshaller = getMarshaller();
     }
 

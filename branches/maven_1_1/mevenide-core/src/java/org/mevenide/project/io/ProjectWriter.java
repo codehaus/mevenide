@@ -31,6 +31,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.apache.maven.project.UnitTest;
 import org.apache.maven.repository.Artifact;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.project.ProjectConstants;
@@ -194,7 +195,7 @@ public class ProjectWriter {
 		ProjectReader reader = ProjectReader.getReader();
 		
 		Dependency dependency = reader.extractDependency(referencedPom);
-		
+		JDomProjectUnmarshaller.resolveDependency(dependency);
 		Project project = reader.read(pom);
 		project.addDependency(dependency);
 		

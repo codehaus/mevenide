@@ -63,7 +63,9 @@ public final class DependencyFactory {
 		Dependency dependency = new Dependency();
 		
         if (groupId == null) {
-            dependency.setId(artifactId);
+            dependency.setArtifactId(artifactId);
+            dependency.setGroupId(artifactId);
+//            dependency.setId(artifactId);
         } else {
     		dependency.setGroupId(groupId); 
         	dependency.setArtifactId(artifactId);

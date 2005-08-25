@@ -109,7 +109,7 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1-beta-1</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -124,7 +124,7 @@
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
+            <version>1.6.5</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -146,7 +146,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly</artifactId>
-            <version>20030902.160215</version>
+            <version>1.0</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -155,21 +155,13 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>1.0.1</version>
+            <version>2.0</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <!-- needed at runtime for MavenUtils -->
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-            <version>1.0-beta-1</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
         <dependency>
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
@@ -178,12 +170,6 @@
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <!-- 
-        	note GD : i needed those to make ArtifactListBuilder work correctly. 
-        	i cannot include them in mevenide-ui-eclipse because maven library is 
-        	exported by mevenide-core so if those libs are declared in ui-eclipse
-        	they are not visible (different classloader hierarchy).
-        -->
         <dependency>
             <groupId>forehead</groupId>
             <artifactId>forehead</artifactId>
@@ -209,14 +195,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>werkz</groupId>
-            <artifactId>werkz</artifactId>
-            <version>1.0-beta-10</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.4</version>
@@ -227,12 +205,11 @@
         <dependency>
             <groupId>commons-jexl</groupId>
             <artifactId>commons-jexl</artifactId>
-            <version>1.0-beta-1</version>
+            <version>1.0</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
-        <!-- end note -->
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
@@ -273,18 +250,23 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-ant</artifactId>
-            <version>20030625.032346</version>
+            <version>1.0</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
+        <!-- 
+        	note GD : i needed those to make ArtifactListBuilder work correctly. 
+        	i cannot include them in mevenide-ui-eclipse because maven library is 
+        	exported by mevenide-core so if those libs are declared in ui-eclipse
+        	they are not visible (different classloader hierarchy).
+        -->
+        <!-- end note -->
         <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-optional</artifactId>
-            <version>1.5.3-1</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.0.0</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
 </project>
