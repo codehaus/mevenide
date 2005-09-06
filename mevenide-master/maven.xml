@@ -130,18 +130,9 @@
       <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
   </goal>
 
-  <goal name="mevenide-site:install-css" description="Iterate each subprojects and copy master project.css to ${subproject.location}/xdocs/style">
-      <util:tokenize var="projects" delim=",">${maven.multiproject.site.includes}</util:tokenize>
-      <j:forEach var="project" items="${projects}">
-          <util:file var="projectFile" name="${project}"/>
-          <ant:copy file="${mevenide.master.project.location}/xdocs/style/project.css"
-                    todir="${basedir}/../${projectFile.getParent()}/xdocs/style" overwrite="true"/>
-      </j:forEach>
-  </goal>
-
   <goal name="mevenide-site:quick-init"
-        description="Similar to main initialization goal but doesnot clean anything"
-        prereqs="mevenide-site:set-clover-jar,mevenide-site:install-css" />
+        description="Similar to main initialization goal but does not clean anything"
+        prereqs="mevenide-site:set-clover-jar" />
 
   <goal name="mevenide-site:init"
         description="Main initialization goal"
