@@ -31,31 +31,31 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-log</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-util</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.1.1</version>
         </dependency>	
             
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-xml</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>	
             
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-junit</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>	
         
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-jsl</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         
         <dependency>
@@ -67,7 +67,7 @@
         <dependency>
             <groupId>commons-jelly</groupId>
             <artifactId>commons-jelly-tags-html</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
         
         <dependency>
