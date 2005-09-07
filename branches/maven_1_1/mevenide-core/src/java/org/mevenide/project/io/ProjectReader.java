@@ -133,6 +133,8 @@ public class ProjectReader {
 		dependency.setGroupId(referencedProject.getGroupId());
 		dependency.setArtifactId(referencedProject.getArtifactId());
 		dependency.setVersion(referencedProject.getCurrentVersion());
+                //TODO resolve the dependency identification
+                JDomProjectUnmarshaller.resolveDependency(dependency);
 		//dependency.setArtifact(referencedPom.getParent());
 		//dependency.setJar(referencedPom.getParent());
 		return dependency;
@@ -154,6 +156,8 @@ public class ProjectReader {
             dependency.setGroupId(referencedProject.getGroupId());
             dependency.setArtifactId(referencedProject.getArtifactId());
             dependency.setVersion(referencedProject.getCurrentVersion());
+            //TODO resolve the dependency identification
+            JDomProjectUnmarshaller.resolveDependency(dependency);
             //dependency.setArtifact(referencedPom.getParent());
             //dependency.setJar(referencedPom.getParent());
         }

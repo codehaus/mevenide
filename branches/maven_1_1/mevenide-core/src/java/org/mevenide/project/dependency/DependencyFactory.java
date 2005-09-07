@@ -20,6 +20,7 @@ package org.mevenide.project.dependency;
 import java.io.File;
 
 import org.apache.maven.project.Dependency;
+import org.mevenide.context.JDomProjectUnmarshaller;
 
 /**
  * 
@@ -77,6 +78,8 @@ public final class DependencyFactory {
         if (!dependency.getArtifact().equals(filename)) {
             dependency.setJar(filename);
         }
+                //TODO resolve the dependency identification
+                JDomProjectUnmarshaller.resolveDependency(dependency);
 		
 		return dependency;
 	}
