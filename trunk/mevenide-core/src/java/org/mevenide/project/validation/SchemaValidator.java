@@ -86,8 +86,10 @@ public class SchemaValidator implements IProjectValidator {
 	        new CarefulProjectMarshaller().marshall(stringWriter, pom);
 	        System.out.println(stringWriter);
 	        driver.validate(new InputSource(new StringInputStream(stringWriter.toString())));
-        }
-        catch (Exception e) {
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            throw e;
+        } catch (Exception e) {
             warnings.add("Unable to validate pom against schema due to : " + e);
             throw new ValidationException(errors, warnings);
         }
