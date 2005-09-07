@@ -46,6 +46,14 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         siteGoals.add("site:war");
         //Maven RC2 added..
         siteGoals.add("site:ftpdeploy");
+        //maven 1.1beta1
+        //TODO -actually one should pass some special test originated querycontext to the GoalsAttributeCompletionImpl class.
+        // so that we are not dependent on current environment.
+        siteGoals.add("site:local-deploy-init");
+        siteGoals.add("site:publish");
+        siteGoals.add("site:remote-deploy-init");
+        siteGoals.add("site:rsyncdeploy");
+        siteGoals.add("site:site");
     }
 
     protected void tearDown() throws Exception {
@@ -96,7 +104,7 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
            list = list + " " + goal;
         }
         // only site:sshdeploy should be returned.
-        assertEquals("wrong number of items (" + list + ")", col.size(), 1);
+        assertEquals("wrong number of items (" + list + ")", col.size(), 2);
     }
     
 }
