@@ -38,6 +38,7 @@ import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.Dependency;
+import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSettings;
@@ -156,7 +157,8 @@ public class DependencyNode extends AbstractNode {
             snap.setGroupId(dependency.getValue("groupId"));
         }
         if (dependency.getValue("id") != null) {
-            snap.setId(dependency.getValue("groupId"));
+            // TODO was getValue("groupId"); probably a bug..
+            snap.setId(dependency.getValue("id"));
         }
         if (dependency.getValue("version") != null) {
             snap.setVersion(dependency.getValue("version"));
@@ -173,7 +175,7 @@ public class DependencyNode extends AbstractNode {
         if (dependency.getValue("url") != null) {
             snap.setUrl(dependency.getValue("url"));
         }
-        
+        JDomProjectUnmarshaller.resolveDependency(snap);
         return snap;
     }
     

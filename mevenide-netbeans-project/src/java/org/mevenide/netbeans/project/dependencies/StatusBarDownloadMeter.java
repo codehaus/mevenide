@@ -17,7 +17,6 @@
 
 package org.mevenide.netbeans.project.dependencies;
 
-import org.apache.maven.util.DownloadMeter;
 import org.openide.awt.StatusDisplayer;
 
 /**
@@ -25,7 +24,9 @@ import org.openide.awt.StatusDisplayer;
  * gets a proper progress bar.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class StatusBarDownloadMeter implements DownloadMeter {
+
+//TODO implemtn wagon listeners instead
+class StatusBarDownloadMeter { //implements DownloadMeter {
         private String path;
         public StatusBarDownloadMeter(String downloadpath) {
             path = downloadpath;

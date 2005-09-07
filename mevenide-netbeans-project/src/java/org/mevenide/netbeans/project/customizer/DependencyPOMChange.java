@@ -17,10 +17,12 @@
 
 package org.mevenide.netbeans.project.customizer;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import javax.swing.text.JTextComponent;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.api.customizer.changes.MavenPOMTreeChange;
@@ -95,15 +97,16 @@ public final class DependencyPOMChange implements MavenPOMTreeChange {
             vals.put("type", dep.getType());
             vals.put("jar", dep.getJar());
             vals.put("url", dep.getUrl());  
-            Map map = dep.resolvedProperties();
-            if (map != null) {
-                Iterator it2 = map.entrySet().iterator();
-            while (it2.hasNext()) {
-                Map.Entry ent = (Map.Entry)it2.next();
-                if (ent.getValue() != null && ent.getValue().toString().trim().length() > 0) {
-                    props.put(ent.getKey(), ent.getValue());
+            Properties properties = dep.getProperties();
+            if (properties != null) {
+                Enumeration en = properties.propertyNames();
+                while (en.hasMoreElements()) {
+                    String key = (String)en.nextElement();
+                    String value = properties.getProperty(key);
+                    if (value != null && value.trim().length() > 0) {
+                        props.put(key, value);
+                    }
                 }
-            }
             }
         }
         DependencyPOMChange change = new DependencyPOMChange(

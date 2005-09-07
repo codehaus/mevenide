@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
 import org.apache.maven.project.Dependency;
-import org.apache.maven.util.DownloadMeter;
 import org.apache.maven.util.HttpUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.api.project.MavenProject;
@@ -182,10 +181,11 @@ public final class RepositoryUtilities {
         } 
         if (passwd != null && passwd.length() == 0) {
             passwd = null;
-        } 
-        DownloadMeter meter = new StatusBarDownloadMeter(repoElement.getRelativeURIPath());
+        }
+        //TODO - ignore HttpUtils and use wagon directly.
+//        DownloadMeter meter = new StatusBarDownloadMeter(repoElement.getRelativeURIPath());
         HttpUtils.getFile(uri.toURL().toString(), destinationFile, 
-                          false, true, host, port, user, passwd, null, null, meter);
+                          false, true, host, port, user, passwd, null, null);
         return true;
     }        
 }
