@@ -16,14 +16,23 @@
  */
 package org.mevenide.netbeans.project.nodes;
 
+import java.awt.Image;
+import java.util.Collections;
 import javax.swing.Action;
 import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.openide.ErrorManager;
+import org.openide.actions.FileSystemAction;
+import org.openide.actions.FindAction;
+import org.openide.actions.ToolsAction;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.Lookups;
 
 
@@ -57,12 +66,32 @@ class DocsRootNode extends AbstractNode {
         }
         //TODO listening on project changes and change root when docs move??
         
-        
-        
+    }
+    
+    public Image getOpenedIcon(int param) {
+        Image img = super.getOpenedIcon(param);
+        FileObject fo = group.getRootFolder();
+        try {
+            img = fo.getFileSystem().getStatus().annotateIcon(img, param, Collections.singleton(fo));
+        } catch (FileStateInvalidException e) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+        return img;
+    }
+    
+    public Image getIcon(int param) {
+        Image img = super.getOpenedIcon(param);
+        FileObject fo = group.getRootFolder();
+        try {
+            img = fo.getFileSystem().getStatus().annotateIcon(img, param, Collections.singleton(fo));
+        } catch (FileStateInvalidException e) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+        return img;
     }
     
     public javax.swing.Action[] getActions(boolean param) {
-        Action[] toReturn = new Action[4];
+        Action[] toReturn = new Action[10];
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         toReturn[0] = CommonProjectActions.newFileAction();
         toReturn[1] = null;
@@ -75,6 +104,13 @@ class DocsRootNode extends AbstractNode {
             deployName = deployName + "ssh";
         }
         toReturn[3] = provider.createCustomMavenAction(deployName, "site:deploy"); //NOI18N
+        toReturn[4] = null;
+        toReturn[5] = SystemAction.get(FindAction.class);
+        toReturn[6] = null;
+        toReturn[7] = SystemAction.get(FileSystemAction.class);
+        toReturn[8] = null;
+        toReturn[9] = SystemAction.get(ToolsAction.class);
+        
         return toReturn;
     }    
 }

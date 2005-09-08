@@ -21,9 +21,11 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JSeparator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,8 +37,19 @@ import org.mevenide.netbeans.project.exec.RunGoalsAction;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.openide.ErrorManager;
+import org.openide.actions.FindAction;
+import org.openide.actions.ToolsAction;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.Repository;
+import org.openide.loaders.DataFolder;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.loaders.FolderLookup;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
+import org.openide.util.actions.SystemAction;
 
 
 /** A node to represent this object.
@@ -69,13 +82,29 @@ public class MavenProjectNode extends AbstractNode {
     }
     
     public Image getIcon(int param) {
-        //HACK
-        return ((ImageIcon)info.getIcon()).getImage();
+        //HACK - 1. getImage call
+        // 2. assume project root folder, should be Generic Sources root (but is the same)
+        Image img = ((ImageIcon)info.getIcon()).getImage();
+        FileObject fo = project.getProjectDirectory();
+        try {
+            img = fo.getFileSystem().getStatus().annotateIcon(img, param, Collections.singleton(fo));
+        } catch (FileStateInvalidException e) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+        return img;
     }
     
     public Image getOpenedIcon(int param) {
-        //HACK
-        return ((ImageIcon)info.getIcon()).getImage();
+        //HACK - 1. getImage call
+        // 2. assume project root folder, should be Generic Sources root (but is the same)
+        Image img = ((ImageIcon)info.getIcon()).getImage();
+        FileObject fo = project.getProjectDirectory();
+        try {
+            img = fo.getFileSystem().getStatus().annotateIcon(img, param, Collections.singleton(fo));
+        } catch (FileStateInvalidException e) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+        return img;
     }
     
     public javax.swing.Action[] getActions(boolean param) {
@@ -110,6 +139,36 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(CommonProjectActions.openSubprojectsAction());
         lst.add(CommonProjectActions.closeProjectAction());
         lst.add(null);
+        lst.add(SystemAction.get(FindAction.class));
+            
+        try {
+            FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("Projects/Actions"); // NOI18N
+            if (fo != null) {
+                DataObject dobj = DataObject.find(fo);
+                FolderLookup actionRegistry = new FolderLookup((DataFolder)dobj);
+                Lookup.Template query = new Lookup.Template(Object.class);
+                Lookup lookup = actionRegistry.getLookup();
+                Iterator it2 = lookup.lookup(query).allInstances().iterator();
+                if (it2.hasNext()) {
+                    lst.add(null);
+                }
+                while (it2.hasNext()) {
+                    Object next = it2.next();
+                    if (next instanceof Action) {
+                        lst.add(next);
+                    } else if (next instanceof JSeparator) {
+                        lst.add(null);
+                    }
+                }
+            }
+        } catch (DataObjectNotFoundException ex) {
+            // data folder for existing fileobject expected
+            ErrorManager.getDefault().notify(ex);
+        }
+        lst.add(null);
+        lst.add(SystemAction.get(ToolsAction.class));
+        lst.add(null);
+        
         lst.add(CommonProjectActions.customizeProjectAction());
         
         return (Action[])lst.toArray(new Action[lst.size()]);
