@@ -119,7 +119,7 @@ public class DependencyChildren extends Children.Keys {
     
     private Node createVersionsNode() {
         IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
         RepoPathElement[] els = new RepoPathElement[readers.length + 1];
         String grId = dep.getGroupId() != null ? dep.getGroupId() : dep.getId();
         String artId = dep.getArtifactId() != null ? dep.getArtifactId() : dep.getId();
@@ -142,7 +142,7 @@ public class DependencyChildren extends Children.Keys {
     }
     
     private Node createSourcesNode() {
-        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
         dep.setType("src.jar");
         URI uri = FileUtilities.getDependencyURI(dep,  project);
         FileObject obj = FileUtilities.convertURItoFileObject(uri);
@@ -163,7 +163,7 @@ public class DependencyChildren extends Children.Keys {
     }
     
     private Node createJavadocNode() {
-        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
         dep.setType("javadoc.jar");
         URI uri = FileUtilities.getDependencyURI(dep,  project);
         FileObject obj = FileUtilities.convertURItoFileObject(uri);
@@ -191,7 +191,7 @@ public class DependencyChildren extends Children.Keys {
     }
     
     private Node createClassesNode() {
-        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
         URI uri = FileUtilities.getDependencyURI(dep,  project);
         FileObject obj = FileUtilities.convertURItoFileObject(uri);
         if (obj != null) {

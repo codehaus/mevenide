@@ -237,7 +237,7 @@ class DependenciesNode extends AbstractNode {
                     while (it.hasNext()) {
                         DependencyPOMChange change = (DependencyPOMChange)it.next();
                         IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
                         try {
                             boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
                             if (downloaded) {
@@ -274,7 +274,7 @@ class DependenciesNode extends AbstractNode {
                     while (it.hasNext()) {
                         DependencyPOMChange change = (DependencyPOMChange)it.next();
                         IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent());
+                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
                         try {
                             dep.setType("javadoc.jar");
                             boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
