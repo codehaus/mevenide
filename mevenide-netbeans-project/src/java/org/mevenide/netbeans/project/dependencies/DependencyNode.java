@@ -142,36 +142,36 @@ public class DependencyNode extends AbstractNode {
     }
     
     boolean isDependencyProjectOpen() {
-        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency), project);
+        URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency, project.getPropertyResolver()), project);
         Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
         return depPrj != null;
     }
     
-    public static Dependency createDependencySnapshot(IContentProvider dependency) {
+    public static Dependency createDependencySnapshot(IContentProvider dependency, IPropertyResolver res) {
         Dependency snap = new Dependency();
         if (dependency.getValue("artifactId") != null) {
-            snap.setArtifactId(dependency.getValue("artifactId"));
+            snap.setArtifactId(res.resolveString(dependency.getValue("artifactId")));
         }
         if (dependency.getValue("groupId") != null) { 
-            snap.setGroupId(dependency.getValue("groupId"));
+            snap.setGroupId(res.resolveString(dependency.getValue("groupId")));
         }
         if (dependency.getValue("id") != null) {
-            snap.setId(dependency.getValue("groupId"));
+            snap.setId(res.resolveString(dependency.getValue("groupId")));
         }
         if (dependency.getValue("version") != null) {
-            snap.setVersion(dependency.getValue("version"));
+            snap.setVersion(res.resolveString(dependency.getValue("version")));
         }
         if (dependency.getValue("type") != null) {
-            snap.setType(dependency.getValue("type"));
+            snap.setType(res.resolveString(dependency.getValue("type")));
         } else {
             // we need *some* type
             snap.setType("jar");
         }
         if (dependency.getValue("jar") != null) {
-            snap.setJar(dependency.getValue("jar"));
+            snap.setJar(res.resolveString(dependency.getValue("jar")));
         } 
         if (dependency.getValue("url") != null) {
-            snap.setUrl(dependency.getValue("url"));
+            snap.setUrl(res.resolveString(dependency.getValue("url")));
         }
         
         return snap;
@@ -251,13 +251,13 @@ public class DependencyNode extends AbstractNode {
     
     private boolean checkLocal() {
         if (!isOverriden) {
-            URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency), project);
+            URI uri = FileUtilities.getDependencyURI(createDependencySnapshot(dependency, project.getPropertyResolver()), project);
             if (uri != null) {
                 File file = new File(uri);
                 return file.exists();
             }
         } else {
-            String path = JarOverrideReader2.getInstance().processOverride(createDependencySnapshot(dependency), project.getContext());
+            String path = JarOverrideReader2.getInstance().processOverride(createDependencySnapshot(dependency, project.getPropertyResolver()), project.getContext());
             if (path != null) {
                 File file = new File(path);
                 return file.exists();
@@ -267,7 +267,7 @@ public class DependencyNode extends AbstractNode {
     }
     
     public boolean hasJavadocInRepository() {
-        Dependency depSnap = createDependencySnapshot(dependency);
+        Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
         depSnap.setType("javadoc.jar");
         URI uri = FileUtilities.getDependencyURI(depSnap, project);
         boolean has = (uri != null && new File(uri).exists());
@@ -281,7 +281,7 @@ public class DependencyNode extends AbstractNode {
     }
     
     public boolean hasSourceInRepository() {
-        Dependency depSnap = createDependencySnapshot(dependency);
+        Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
         depSnap.setType("src.jar");
         URI uri = FileUtilities.getDependencyURI(depSnap, project);
         return (uri != null && new File(uri).exists());
@@ -390,7 +390,7 @@ public class DependencyNode extends AbstractNode {
             setEnabled(hasJavadocInRepository());
         }
         public void actionPerformed(ActionEvent event) {
-            Dependency depSnap = createDependencySnapshot(dependency);
+            Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
             depSnap.setType("javadoc.jar");
             URI uri = FileUtilities.getDependencyURI(depSnap, project);
             try {
@@ -439,7 +439,7 @@ public class DependencyNode extends AbstractNode {
                         DependencyPOMChange chng = (DependencyPOMChange)obj;
                         MavenProject prj = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
                         IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(prj.getPropertyResolver());
-                        Dependency dep = createDependencySnapshot(chng.getChangedContent());
+                        Dependency dep = createDependencySnapshot(chng.getChangedContent(), prj.getPropertyResolver());
                         try {
                             boolean downloaded = RepositoryUtilities.downloadArtifact(readers, prj, dep);
                             if (downloaded) {
