@@ -13,7 +13,6 @@
     #
    -->
   <postGoal name="java:jar-resources">
-    <ant:echo>lib.path = ${lib.path}</ant:echo>
     <!-- Copy each dep to our working dir -->
     <j:forEach var="lib" items="${pom.artifacts}">
       <j:set var="dep" value="${lib.dependency}"/>     
@@ -31,7 +30,7 @@
     # 
    -->
   <goal name="eclipse-plugin:create-artifact-dist">
-    <ant:echo>Artifact (org.mevenide.repository) has already been constructed.</ant:echo>
+    <ant:echo>Artifact (${pom.artifactId}) has already been constructed.</ant:echo>
   </goal>
 
 </project>
