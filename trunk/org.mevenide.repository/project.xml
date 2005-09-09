@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>org.mevenide.repository</artifactId>
     <name>Maven Repository Plugin for Eclipse</name>
-    <currentVersion>0.3-SNAPSHOT</currentVersion>
+    <currentVersion>0.3</currentVersion>
     <description>Eclipse plugin for reading local and remote repositories.</description>
     <shortDescription>Eclipse plugin for navigating repositories.</shortDescription>
     <versions>
@@ -25,7 +25,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-repository</artifactId>
-            <version>0.3-SNAPSHOT</version>
+            <version>0.3</version>
             <type>jar</type>
             <url>http://mevenide.codehaus.org/</url>
         </dependency>
