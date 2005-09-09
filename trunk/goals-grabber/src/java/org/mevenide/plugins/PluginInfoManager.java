@@ -73,9 +73,9 @@ public final class PluginInfoManager {
                 }
             }
             return (IPluginInfo[])toRet.toArray(new IPluginInfo[toRet.size()]);
-        } else {
-            return cachedInfos;
         }
+
+        return cachedInfos;
     }
     
     private List loadProjectDependentPlugins() {
