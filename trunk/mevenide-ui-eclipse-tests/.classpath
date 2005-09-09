@@ -48,5 +48,5 @@
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-core-0.09.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-jdk1.4-0.09.jar"/>
 	<classpathentry kind="var" path="SWT_LIB"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/test-classes"/>
 </classpath>

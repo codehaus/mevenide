@@ -16,5 +16,5 @@
 	<classpathentry kind="var" path="MAVEN_REPO/plexus/jars/plexus-0.6.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-api-1.0-alpha-1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/maven/jars/wagon-http-lightweight-20040714.210443.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
