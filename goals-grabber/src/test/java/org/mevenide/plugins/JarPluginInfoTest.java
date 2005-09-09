@@ -16,9 +16,9 @@
  */
 package org.mevenide.plugins;
 
-import java.io.FileInputStream;
-import junit.framework.*;
 import java.io.File;
+
+import junit.framework.TestCase;
 
 /**
  *
