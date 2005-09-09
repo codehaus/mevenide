@@ -77,7 +77,6 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
     private static final String TRUE = "true";
     private static final String FS_SEPARATOR = "/";
     private static final String STAR_PATTERN = "*";
-	private static final String XML_INDENT = "    ";
 	private static final String SHOULD_BUNDLE = "bundle";
 	
 	
@@ -135,8 +134,6 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	 * update $plugin/requires with artifact if needed
      */    
 	void updateRequires(Artifact artifact) {
-	    Element pluginElem = descriptor.getRootElement();
-	    
 	    assertRequiresPresent();
 	    
 	    if ( !isRequiredPluginDeclared(artifact) ) {
@@ -148,7 +145,6 @@ public class UpdatePluginLibsTag extends AbstractMevenideTag {
 	 * update $plugin/runtime with artifact if needed
      */    
 	void updateRuntime(Artifact artifact) throws InvalidDirectoryException {
-		Element pluginElem = descriptor.getRootElement();
 		if ( new File(bundledLibraryDir).isAbsolute() ) {
         	throw new InvalidDirectoryException(bundledLibraryDir, true, BUNDLE_LIB_DIR); 
         }
