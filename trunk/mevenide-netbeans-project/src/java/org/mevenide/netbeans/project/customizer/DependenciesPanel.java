@@ -50,6 +50,7 @@ import org.mevenide.netbeans.project.dependencies.DependencyNode;
 import org.mevenide.netbeans.project.dependencies.RepositoryUtilities;
 import org.mevenide.project.io.IContentProvider;
 import org.mevenide.properties.IPropertyLocator;
+import org.mevenide.properties.IPropertyResolver;
 import org.mevenide.repository.IRepositoryReader;
 import org.mevenide.repository.RepoPathElement;
 import org.openide.DialogDescriptor;
@@ -460,7 +461,6 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
         gridBagConstraints.insets = new java.awt.Insets(3, 3, 6, 3);
         pnlSingleDep.add(jScrollPane1, gridBagConstraints);
 
-        lblJavadocSrc.setText("jLabel1");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.gridy = 0;
@@ -488,19 +488,20 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
             final IContentProvider prov = currentDep.getChangedContent();
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
-                    IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
+                    IPropertyResolver res = project.getPropertyResolver();
+                    IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(res);
                     for (int i = 0; i < readers.length; i++) {
                         final RepoPathElement docEl = new RepoPathElement(readers[i], null,
-                                prov.getValue("groupId"),
+                                res.resolveString(prov.getValue("groupId")),
                                 "javadoc.jar",
-                                prov.getValue("version"),
-                                prov.getValue("artifactId"),
+                                res.resolveString(prov.getValue("version")),
+                                res.resolveString(prov.getValue("artifactId")),
                                 "javadoc.jar");
                         final RepoPathElement srcEl = new RepoPathElement(readers[i], null, 
-                                prov.getValue("groupId"),
+                                res.resolveString(prov.getValue("groupId")),
                                 "src.jar",
-                                prov.getValue("version"),
-                                prov.getValue("artifactId"),
+                                res.resolveString(prov.getValue("version")),
+                                res.resolveString(prov.getValue("artifactId")),
                                 "src.jar");
                         File localRepo = new File(project.getLocFinder().getMavenLocalRepository());
                         File destinationFile = new File(URI.create(localRepo.toURI().toString() + srcEl.getRelativeURIPath()));
