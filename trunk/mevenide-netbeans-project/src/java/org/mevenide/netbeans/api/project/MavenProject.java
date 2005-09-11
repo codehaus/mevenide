@@ -324,7 +324,10 @@ public final class MavenProject implements Project {
    
    
    private URI getDirURI(String path) {
-       File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), path);
+       String pth = path.trim();
+       pth = pth.replaceFirst("^\\./", "");
+       pth = pth.replaceFirst("^\\.\\\\", "");
+       File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), pth);
        return FileUtil.normalizeFile(src).toURI();
    }
 
