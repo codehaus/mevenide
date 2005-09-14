@@ -31,9 +31,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.output.OutputProcessor;
 import org.mevenide.netbeans.api.output.OutputVisitor;
+import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.platform.JavaPlatform;
+import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Cancellable;
 
 import org.openide.util.MapFormat;
@@ -51,7 +56,7 @@ import org.openide.windows.OutputWriter;
  * support for executing maven, from the ide but in different VM.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenExecutor implements Runnable, Cancellable {
+public class MavenJavaExecutor implements Runnable, Cancellable {
     private static final Log logger = LogFactory.getLog(MavenExecutor.class);
     
     public static final String FORMAT_MAVEN_HOME = "MAVEN_HOME"; //NOI18N
@@ -64,7 +69,7 @@ public class MavenExecutor implements Runnable, Cancellable {
     public static final String FORMAT_DOWNLOADMETER = "downloadmeter"; //NOI18N
     
     // -- default value
-    private String goal = "dist"; //NOI18N 
+    private String goal = "dist"; //NOI18N
 //    private boolean offline = false;
 //    private boolean nobanner = false;
 //    private boolean debug = false;
@@ -82,45 +87,11 @@ public class MavenExecutor implements Runnable, Cancellable {
     
     private static final RequestProcessor PROCESSOR = new RequestProcessor("maven execution", 3);
     
-    public MavenExecutor(RunContext proj, String gl, Set procs, RunConfig conf) {
+    public MavenJavaExecutor(RunContext proj, String gl, Set procs, RunConfig conf) {
         context = proj;
         goal = gl;
         processors = procs;
         config = conf;
-        StringBuffer mavenExeFmt = new StringBuffer();
-        if (Utilities.isWindows()) {
-            mavenExeFmt.append("\"{");
-        } else {
-            mavenExeFmt.append("{");
-        }
-        mavenExeFmt.append(FORMAT_MAVEN_HOME);
-        mavenExeFmt.append("}/bin/");
-        if (Utilities.isWindows()) {
-            mavenExeFmt.append("maven.bat\"");
-        } else {
-            mavenExeFmt.append("maven");
-        }
-        mavenExeFmt.append(" {");
-        mavenExeFmt.append(FORMAT_NOBANNER);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_OFFLINE);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_DEBUG);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_EXCEPTIONS);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_NONVERBOSE);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_DOWNLOADMETER);
-        mavenExeFmt.append("} {");
-        mavenExeFmt.append(FORMAT_GOAL);
-        mavenExeFmt.append("}");
-//        String mavenExeFmt = "{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven"; //NOI18N
-//        if (Utilities.isWindows()) {
-//            mavenExeFmt = "\"{" + FORMAT_MAVEN_HOME + "}/" + "bin/maven.bat\""; //NOI18N
-//        }
-//        format = mavenExeFmt + " {" + FORMAT_NOBANNER + "} {" + FORMAT_OFFLINE + "} {" + FORMAT_GOAL + "}"; //NOI18N
-        format = mavenExeFmt.toString();
     }
     
     
@@ -133,59 +104,91 @@ public class MavenExecutor implements Runnable, Cancellable {
         String[] additionals = context.getAdditionalParams();
         HashMap formats = new HashMap(5);
         Process proc;
+        File mavenHome;
         if (config.getMavenHome() != null && new File(config.getMavenHome()).exists()) {
-            formats.put(FORMAT_MAVEN_HOME, config.getMavenHome());
+            mavenHome = new File(config.getMavenHome());
         } else {
-            formats.put(FORMAT_MAVEN_HOME, context.getMavenHome());
+            mavenHome = new File(context.getMavenHome());
+        }
+        
+        JavaPlatform platform = JavaPlatformManager.getDefault().getDefaultPlatform();
+        FileObject fo = platform.findTool("java");
+        if (fo == null) {
+            throw new IOException("Cannot find platform");
+        }
+        
+        List lst = new ArrayList();
+        lst.add(FileUtil.toFile(fo).getAbsolutePath());
+        
+        
+//        lst.add(MAVEN_OPTS);
+//        if (defined) {
+//            lst.add(MAVENHOMELOCAL);
+//        }
+        File lib = new File(mavenHome, "lib");
+        String forehead = null;
+        File[] lbs = lib.listFiles();
+        for (int i = 0; i < lbs.length; i++) {
+            if (lbs[i].getName().startsWith("forehead")) {
+                forehead = lbs[i].getAbsolutePath();
+                break;
+            }
+        }
+        if (forehead == null) {
+            throw new IOException("Cannot find forehead");
+        }
+        lst.add("-classpath");
+        lst.add(forehead);
+        lst.add("-Dforehead.conf.file=" + new File(mavenHome, "bin" + File.separator + "forehead.conf").getAbsolutePath());
+        File toolJar = null;
+        ClassPath path = platform.getStandardLibraries();
+        FileObject[] roots = path.getRoots();
+        for (int i = 0; i < roots.length; i++) {
+            FileObject rfo = FileUtil.getArchiveFile(roots[i]);
+            if (rfo == null) {
+                rfo = roots[i];
+            }
+            if (rfo.getNameExt().equals("tools.jar")) {
+                toolJar = FileUtil.toFile(rfo);
+                break;
+            }
+            if (Utilities.getOperatingSystem() == Utilities.OS_MAC && rfo.getNameExt().equals("classes.jar")) {
+                toolJar = FileUtil.toFile(rfo);
+                break;
+            }
+        }
+        if (toolJar == null) {
+            throw new IOException("Cannot find tools.jar");
+        }
+        lst.add("-Dtools.jar=" + toolJar.getAbsolutePath());
+        lst.add("-Dmaven.home=" + mavenHome.getAbsolutePath());
+        lst.add("com.werken.forehead.Forehead"); //mainclass
+        if (config.isOffline()) {
+            lst.add("--offline");
+        }
+        if (config.isNoBanner()) {
+            lst.add("--nobanner");
+        }
+        if (config.isDebug()) {
+            lst.add("-X");
+        }
+        if (config.isExceptions()) {
+            lst.add("--exception");
+        }
+        if (config.isNonverbose()) {
+            lst.add("--quiet");
+        }
+        if (!config.isOffline() && !"default".equals(meter)) {
+            lst.add("-Dmaven.download.meter=" + meter);
         }
         if (additionals.length > 0) {
-            formats.put(FORMAT_GOAL, "");
-            formats.put(FORMAT_OFFLINE, ""); //NOI18N
-            formats.put(FORMAT_NOBANNER, ""); //NOI18N
-            formats.put(FORMAT_DEBUG, ""); //NOI18N
-            formats.put(FORMAT_EXCEPTIONS, ""); //NOI18N
-            formats.put(FORMAT_NONVERBOSE, ""); //NOI18N
-            formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N
-            List lst = new ArrayList();
-            lst.add(MapFormat.format(format, formats).trim());
-            if (config.isOffline()) {
-                lst.add("--offline");
-            }
-            if (config.isNoBanner()) {
-                lst.add("--nobanner");
-            }
-            if (config.isDebug()) {
-                lst.add("-X");
-            }
-            if (config.isExceptions()) {
-                lst.add("--exception");
-            }
-            if (config.isNonverbose()) {
-                lst.add("--quiet");
-            }
-            if (!config.isOffline() && !"default".equals(meter)) {
-                lst.add("-Dmaven.download.meter=" + meter);
-            }
             lst.addAll(Arrays.asList(additionals));
-            String[] prcs = new String[lst.size()];
-            prcs = (String[])lst.toArray(prcs);
-            proc = Runtime.getRuntime().exec(prcs, null, execDir);
-            
         } else {
-            formats.put(FORMAT_GOAL, goal);
-            formats.put(FORMAT_OFFLINE, config.isOffline() ? "--offline" : ""); //NOI18N
-            formats.put(FORMAT_NOBANNER, config.isNoBanner() ? "--nobanner" : ""); //NOI18N
-            formats.put(FORMAT_DEBUG, config.isDebug() ? "-X" : ""); //NOI18N
-            formats.put(FORMAT_EXCEPTIONS, config.isExceptions() ? "--exception" : ""); //NOI18N
-            formats.put(FORMAT_NONVERBOSE, config.isNonverbose() ? "--quiet" : ""); //NOI18N
-            if (!config.isOffline()) {
-                formats.put(FORMAT_DOWNLOADMETER, "default".equals(meter) ? "" : "-Dmaven.download.meter=" + meter); //NOI18N
-            } else {
-                formats.put(FORMAT_DOWNLOADMETER, ""); //NOI18N
-            }
-            String prc = MapFormat.format(format, formats).trim();
-            proc = Runtime.getRuntime().exec(prc, null, execDir);
+            lst.add(goal);
         }
+        String[] prcs = new String[lst.size()];
+        prcs = (String[])lst.toArray(prcs);
+        proc = Runtime.getRuntime().exec(prcs, null, execDir);
         return proc;
     }
     
@@ -198,7 +201,7 @@ public class MavenExecutor implements Runnable, Cancellable {
             logger.error("Cannot reset InputOutput", exc);
         }
         return newio;
-    }    
+    }
     
     public InputOutput getInputOutput() {
         if (io == null) {
@@ -252,17 +255,17 @@ public class MavenExecutor implements Runnable, Cancellable {
                     String title = (String)action.getValue(Action.SHORT_DESCRIPTION);
                     if (question != null) {
                         NotifyDescriptor desc = new NotifyDescriptor.Confirmation(question,
-                        title == null ? "" : title,
-                        NotifyDescriptor.OK_CANCEL_OPTION,
-                        NotifyDescriptor.QUESTION_MESSAGE);
+                                title == null ? "" : title,
+                                NotifyDescriptor.OK_CANCEL_OPTION,
+                                NotifyDescriptor.QUESTION_MESSAGE);
                         Object returned = DialogDisplayer.getDefault().notify(desc);
                         if (NotifyDescriptor.OK_OPTION.equals(returned)) {
-                            action.actionPerformed(new ActionEvent(MavenExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
+                            action.actionPerformed(new ActionEvent(MavenJavaExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
                         }
                         
                     } else {
                         // no question, just process.
-                        action.actionPerformed(new ActionEvent(MavenExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
+                        action.actionPerformed(new ActionEvent(MavenJavaExecutor.this, ActionEvent.ACTION_PERFORMED, "Performed"));
                     }
                 } else {
                     
@@ -277,10 +280,10 @@ public class MavenExecutor implements Runnable, Cancellable {
             cancel();
         } catch (ThreadDeath death) {
             cancel();
-            throw death;        
+            throw death;
         }
     }
-
+    
     public boolean cancel() {
         if (proces != null) {
             // this system out prints to output window..
@@ -306,7 +309,7 @@ public class MavenExecutor implements Runnable, Cancellable {
         
         public void run() {
             BufferedReader read = new BufferedReader(new InputStreamReader(str), 50);
-            String line; 
+            String line;
             OutputVisitor visitor = new OutputVisitor();
             // check if we use 4.1 version
             Method method = null;
@@ -314,7 +317,7 @@ public class MavenExecutor implements Runnable, Cancellable {
                 Class[] params = new Class[] {String.class, OutputListener.class, Boolean.TYPE};
                 method = OutputWriter.class.getMethod("println", params);
             } catch (Exception exc) {
-                // just ignore, we are in Netbeans 4.0   
+                // just ignore, we are in Netbeans 4.0
             }
             try {
                 while ((line = read.readLine()) != null) {
@@ -335,10 +338,10 @@ public class MavenExecutor implements Runnable, Cancellable {
                     } else {
                         if (method != null) {
                             try {
-                                Object[] objs = new Object[] 
-                                    {line, visitor.getOutputListener(), 
-                                     Boolean.valueOf(visitor.isImportant())};
-                                method.invoke(writer, objs);
+                                Object[] objs = new Object[]
+                                {line, visitor.getOutputListener(),
+                                         Boolean.valueOf(visitor.isImportant())};
+                                         method.invoke(writer, objs);
                             } catch (Exception exc) {
                                 logger.error("Error while doing reflection", exc);
                             }
@@ -353,7 +356,7 @@ public class MavenExecutor implements Runnable, Cancellable {
                 }
                 read.close();
             } catch (IOException ioexc) {
-                    logger.error(ioexc);
+                logger.error(ioexc);
             } finally {
                 try {
                     read.close();
