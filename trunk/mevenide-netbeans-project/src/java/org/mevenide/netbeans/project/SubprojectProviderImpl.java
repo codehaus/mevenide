@@ -57,6 +57,16 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     private static final String MULTIPROJECT_EXCLUDES = "maven.multiproject.excludes"; //NOI18N
     private static final String MULTIPROJECT_BASEDIR = "maven.multiproject.basedir"; //NOI18N
     
+    /**
+     * these are to override the new default behaviour. does not take the project's
+     * dependencies into account -> for regular projects can have weird sideeffects for
+     * refactoring etc.
+     * useful for umbrella projects for example, to ease the opening of multiple (possibly independant) projects at once.
+     */
+    private static final String NBPROJECT_INCLUDES = "maven.netbeans.multiproject.includes"; //NOI18N
+    private static final String NBPROJECT_EXCLUDES = "maven.netbeans.multiproject.excludes"; //NOI18N
+    private static final String NBPROJECT_BASEDIR = "maven.netbeans.multiproject.basedir"; //NOI18N
+    
     private MavenProject project;
     private List listeners;
     private ChangeListener listener2;
@@ -79,33 +89,49 @@ public class SubprojectProviderImpl implements SubprojectProvider {
                                      MavenFileOwnerQueryImpl.getInstance()));
     }
     
+    private Set getProjectCandidates(String basedir, String includes, String excludes) {
+        Set projects = new HashSet();
+        File basefile = FileUtil.normalizeFile(new File(basedir));
+        if (basefile.exists()) {
+            DirectoryScanner scanner = new DirectoryScanner();
+            scanner.setBasedir(basefile);
+            if (excludes != null) {
+                String[] exc = StringUtils.split(excludes, ",");
+                scanner.setExcludes(exc);
+            }
+            String[] inc = StringUtils.split(includes, ",");
+            scanner.setIncludes(inc);
+            scanner.scan();
+            String[] results = scanner.getIncludedFiles();
+            for (int i = 0; i < results.length; i++) {
+                Project proj = processOneSubproject(basefile, results[i]);
+                if (proj != null && proj instanceof MavenProject) {
+                    projects.add(proj);
+                }
+            }
+        }
+        return projects;
+    }
+    
     public Set getSubprojects() {
         logger.debug("getSubProjects()");
-        String includes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_INCLUDES);
-        String excludes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_EXCLUDES);
-        String basedir = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_BASEDIR);
+        String includes = project.getPropertyResolver().getResolvedValue(NBPROJECT_INCLUDES);
+        String excludes = project.getPropertyResolver().getResolvedValue(NBPROJECT_EXCLUDES);
+        String basedir = project.getPropertyResolver().getResolvedValue(NBPROJECT_BASEDIR);
+        if (includes != null && basedir != null) {
+            // if the project defines special netbeans properties, do not
+            // match the props against the project's dependencies
+            // is probably an umbrella project anyway
+            return getProjectCandidates(basedir, includes, excludes);
+        }
+        
+        includes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_INCLUDES);
+        excludes = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_EXCLUDES);
+        basedir = project.getPropertyResolver().getResolvedValue(MULTIPROJECT_BASEDIR);
         int includesLocation = project.getPropertyLocator().getPropertyLocation(MULTIPROJECT_INCLUDES);
         Set projects = new HashSet();
         if (includes != null && includesLocation > IPropertyLocator.LOCATION_DEFAULTS) {
-            File basefile = FileUtil.normalizeFile(new File(basedir));
-            if (basefile.exists()) {
-                DirectoryScanner scanner = new DirectoryScanner();
-                scanner.setBasedir(basefile);
-                if (excludes != null) {
-                    String[] exc = StringUtils.split(excludes, ",");
-                    scanner.setExcludes(exc);
-                }
-                String[] inc = StringUtils.split(includes, ",");
-                scanner.setIncludes(inc);
-                scanner.scan();
-                String[] results = scanner.getIncludedFiles();
-                for (int i = 0; i < results.length; i++) {
-                    Project proj = processOneSubproject(basefile, results[i]);
-                    if (proj != null && proj instanceof MavenProject) {
-                        projects.add(proj);
-                    }
-                }
-            }
+            projects = getProjectCandidates(basedir, includes, excludes);
         }
         Set opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
         projects.addAll(opened);
