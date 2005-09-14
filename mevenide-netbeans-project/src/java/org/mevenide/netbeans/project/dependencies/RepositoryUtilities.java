@@ -72,25 +72,20 @@ public final class RepositoryUtilities {
         if (passwd != null && passwd.length() == 0) {
             passwd = null;
         } 
-
-        String repos = resolver.getResolvedValue("maven.repo.remote"); //NOI18N
         Collection cols = new ArrayList();
-        IRepositoryReader reader;
-        if (repos != null) {
-            StringTokenizer tokens = new StringTokenizer(repos, ",");
-            while (tokens.hasMoreTokens()) {
-                URI uri = URI.create(tokens.nextToken());
-                if (port != null && host != null) {
-                    if (user != null && passwd != null) {
-                        reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, host, port, user, passwd);
-                    } else {
-                        reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri, host, port);
-                    }
+        URI[] remotes = createRemoteRepositoryURIs(resolver);
+        for (int i = 0; i < remotes.length; i++) {
+            IRepositoryReader reader = null;
+            if (port != null && host != null) {
+                if (user != null && passwd != null) {
+                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(remotes[i], host, port, user, passwd);
                 } else {
-                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(uri);
+                    reader = RepositoryReaderFactory.createRemoteRepositoryReader(remotes[i], host, port);
                 }
-                cols.add(reader);
+            } else {
+                reader = RepositoryReaderFactory.createRemoteRepositoryReader(remotes[i]);
             }
+            cols.add(reader);
         }
         return (IRepositoryReader[])cols.toArray(new IRepositoryReader[cols.size()]);
     }
@@ -102,7 +97,11 @@ public final class RepositoryUtilities {
         if (repos != null) {
             StringTokenizer tokens = new StringTokenizer(repos, ",");
             while (tokens.hasMoreTokens()) {
-                URI uri = URI.create(tokens.nextToken());
+                String token = tokens.nextToken().trim();
+                if (token.endsWith("/")) {
+                    token = token.substring(0, token.length() - 1);
+                }
+                URI uri = URI.create(token);
                 cols.add(uri);
             }
         }
