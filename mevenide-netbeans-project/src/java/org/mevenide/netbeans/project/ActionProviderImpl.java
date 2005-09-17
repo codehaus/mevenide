@@ -125,6 +125,16 @@ public class ActionProviderImpl implements ActionProvider {
                 // debugging non-test..
                 key = key + COMMAND_DEBUG_SINGLE;
             }
+        } else if (COMMAND_RUN_SINGLE.equals(actionName)) {
+            FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
+            FileObject fo =  FileUtilities.findTestForFile(project, fos[0]);
+            if (fo == fos[0]) {
+                // running test..
+                key = key + COMMAND_TEST_SINGLE;
+            } else {
+                // running non-test..
+                key = key + COMMAND_RUN_SINGLE;
+            }
         } else {
             key = key + actionName;
         }
@@ -248,17 +258,23 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public boolean isActionEnabled(String str, Lookup lookup) {
-        if (COMMAND_TEST_SINGLE.equals(str)) {
+        if (COMMAND_TEST_SINGLE.equals(str) || COMMAND_DEBUG_TEST_SINGLE.equals(str)) {
             FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
             boolean found = fos != null && fos.length == 1;
             if (found) {
-                found = FileUtilities.findTestForFile(project, fos[0]) != null;
+                FileObject test = FileUtilities.findTestForFile(project, fos[0]);
+                found =  test != fos[0] && test != null;
             }
             return found;
         } 
         if (COMMAND_RUN_SINGLE.equals(str) || COMMAND_COMPILE_SINGLE.equals(str)) {
             FileObject[] fos = findSources(lookup);
-            return  fos != null && fos.length == 1;
+            boolean found = fos != null && fos.length == 1;
+            if (!found && COMMAND_RUN_SINGLE.equals(str)) {
+                fos = findTestSources(lookup);
+                found = fos != null && fos.length == 1;
+            }
+            return found;
         }
         if (COMMAND_DEBUG_SINGLE.equals(str)) {
             FileObject[] fos = findSources(lookup);
@@ -267,14 +283,6 @@ public class ActionProviderImpl implements ActionProvider {
                 fos = findTestSources(lookup);
                 found = fos != null && fos.length == 1;
             } 
-            return found;
-        }
-        if (COMMAND_DEBUG_TEST_SINGLE.equals(str)) {
-            FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
-            boolean found = fos != null && fos.length == 1;
-            if (found) {
-                found = FileUtilities.findTestForFile(project, fos[0]) != null;
-            }
             return found;
         }
         return true;
