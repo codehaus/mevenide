@@ -60,7 +60,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
     
     /** Creates a new instance of TestOutputListenerProvider */
     public TestOutputListenerProvider(MavenProject proj) {
-        failPattern = Pattern.compile("\\s*\\[junit\\] \\[ERROR\\] TEST (.*) FAILED.*"); //NOI18N
+        failPattern = Pattern.compile("\\s*\\[junit\\](?: \\[ERROR\\])? (?:TEST|Test) (.*) FAILED.*"); //NOI18N
         project = proj;
     }
     

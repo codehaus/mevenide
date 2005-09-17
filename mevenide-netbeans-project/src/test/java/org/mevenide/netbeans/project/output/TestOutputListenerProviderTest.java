@@ -75,6 +75,12 @@ public class TestOutputListenerProviderTest extends TestCase {
         visitor.resetVisitor();
         provider.processLine("    [junit] [ERROR] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
         assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("    [junit] [ERROR] Test org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
+        assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("    [junit] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
+        assertNotNull(visitor.getOutputListener());        
     }
     
 }
