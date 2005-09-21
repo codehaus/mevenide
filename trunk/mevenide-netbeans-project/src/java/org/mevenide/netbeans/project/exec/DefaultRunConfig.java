@@ -30,11 +30,11 @@ public class DefaultRunConfig implements RunConfig {
     }
 
     public String getMavenHome() {
-        return "";
+        return null;
     }
 
     public String getMavenLocalHome() {
-        return "";
+        return null;
     }
 
     public boolean isDebug() {

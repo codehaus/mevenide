@@ -55,11 +55,14 @@ public class MavenSettingsBeanInfo extends SimpleBeanInfo {
             downloader.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_downloader")); //NOI18N
             downloader.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_downloader")); //NOI18N
             downloader.setPropertyEditorClass(DownloadMeterEditor.class);
+            PropertyDescriptor home = new PropertyDescriptor ("mavenHome", MavenSettings.class); //NOI18N
+            home.setDisplayName (NbBundle.getMessage (MavenSettingsBeanInfo.class, "PROP_home")); //NOI18N
+            home.setShortDescription (NbBundle.getMessage (MavenSettingsBeanInfo.class, "HINT_home")); //NOI18N
             
             PropertyDescriptor hint = new PropertyDescriptor ("showAddFavouriteHint", MavenSettings.class); //NOI18N
             hint.setHidden(true);
             
-            return new PropertyDescriptor[] { topGoals, hint, noBanner, offline, debug, exceptions, nonverbose, downloader};
+            return new PropertyDescriptor[] { home, topGoals, hint, noBanner, offline, debug, exceptions, nonverbose, downloader};
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

@@ -21,17 +21,18 @@ import org.mevenide.environment.sysenv.SysEnvProvider;
 /**
  * Netbeans implementation of SysEnvProvider, just prepends "Env-" to the variable name and 
  * delegates to the default System.getProperties() property list.
- * @author  Milos Kleint (ca206216@tiscali.cz)
+ * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class NbSysEnvProvider implements SysEnvProvider
-{
+public class NbSysEnvProvider implements SysEnvProvider {
     
     /** Creates a new instance of NbSysEnvProvider */
     public NbSysEnvProvider() {
     }
     
-    public String getProperty(String name)
-    {
+    public String getProperty(String name) {
+        if ("MAVEN_HOME".equals(name) && MavenSettings.getDefault().getMavenHome() != null) {
+            return MavenSettings.getDefault().getMavenHome();
+        }
         return System.getProperty("Env-" + name);
     }
     

@@ -44,6 +44,10 @@ public class ProjectRunContext implements RunContext {
         return project.getLocFinder().getMavenHome();
     }
     
+    public String getMavenLocalHome() {
+        return project.getLocFinder().getMavenLocalHome();
+    }
+    
     public String[] getAdditionalParams() {
         return new String[0];
     }

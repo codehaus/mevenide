@@ -27,5 +27,6 @@ public interface RunContext {
     String getExecutionName();
     File getExecutionDirectory();
     String getMavenHome();
+    String getMavenLocalHome();
     String[] getAdditionalParams();
 }

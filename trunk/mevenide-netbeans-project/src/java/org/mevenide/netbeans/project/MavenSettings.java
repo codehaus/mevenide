@@ -38,6 +38,7 @@ public class MavenSettings extends SystemOption {
     public static final String PROP_EXCEPTIONS = "exceptions"; //NOI18N
     public static final String PROP_NONVERBOSE = "nonverbose"; //NOI18N
     public static final String PROP_DOWNLOADER = "downloader"; //NOI18N
+    public static final String PROP_MAVEN_HOME = "mavenhome"; //NOI18N
     
     private static final long serialVersionUID = -4857548488373547L;
     
@@ -55,6 +56,7 @@ public class MavenSettings extends SystemOption {
         setNonverbose(false);
         setExceptions(false);
         setDebug(false);
+        setMavenHome(null);
         setDownloader("silent");
         setRepositories(new String[] {
             "http://www.ibiblio.org/maven/",
@@ -215,6 +217,18 @@ public class MavenSettings extends SystemOption {
         if (updated) {
             setDependencyProperties((String[])lst.toArray(new String[lst.size()]));
         }
+    }
+    
+    public void setMavenHome(String home) {
+        putProperty(PROP_MAVEN_HOME, home, true);
+    }
+    
+    public String getMavenHome() {
+        String str = (String)getProperty(PROP_MAVEN_HOME);
+        if (str == null || str.trim().length() == 0) {
+            return null;
+        }
+        return str;
     }
     
 }
