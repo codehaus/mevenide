@@ -21,10 +21,14 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
@@ -120,11 +124,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         List lst = new ArrayList();
         lst.add(FileUtil.toFile(fo).getAbsolutePath());
         
+        //TODO make settable from UI as well.
+        String opts = System.getProperty("Env-MAVEN_OPTS");
+        if (opts == null) {
+            opts = "-Xmx256m";
+        }
+        lst.add(opts);
         
-//        lst.add(MAVEN_OPTS);
-//        if (defined) {
-//            lst.add(MAVENHOMELOCAL);
-//        }
         File lib = new File(mavenHome, "lib");
         String forehead = null;
         File[] lbs = lib.listFiles();
@@ -153,6 +159,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 break;
             }
             if (Utilities.getOperatingSystem() == Utilities.OS_MAC && rfo.getNameExt().equals("classes.jar")) {
+//                /System/Library/Frameworks/JavaVM.framework/Versions/${JAVA_VERSION}/Classes/classes.jar"
                 toolJar = FileUtil.toFile(rfo);
                 break;
             }
@@ -162,6 +169,15 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         lst.add("-Dtools.jar=" + toolJar.getAbsolutePath());
         lst.add("-Dmaven.home=" + mavenHome.getAbsolutePath());
+        
+        String homelocal = config.getMavenLocalHome();
+        if (homelocal == null) {
+            homelocal = System.getProperty("Env-MAVEN_HOME_LOCAL");
+        }
+        if (homelocal != null) {
+            lst.add("-Dmaven.home.local=" + homelocal);
+        }
+        
         lst.add("com.werken.forehead.Forehead"); //mainclass
         if (config.isOffline()) {
             lst.add("--offline");
@@ -188,8 +204,34 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         String[] prcs = new String[lst.size()];
         prcs = (String[])lst.toArray(prcs);
-        proc = Runtime.getRuntime().exec(prcs, null, execDir);
+        
+        proc = Runtime.getRuntime().exec(prcs, null, /*createEnvironment(),*/ execDir);
         return proc;
+    }
+    
+    private String[] createEnvironment() {
+        // 1.5 only ;(
+//        Map envMap = System.getenv();
+        //1.4 workaround..
+        Map envMap = new HashMap();
+        Properties props = System.getProperties();
+        Enumeration en = props.propertyNames();
+        while (en.hasMoreElements()) {
+            String key = (String)en.nextElement();
+            if (key.startsWith("Env-")) {
+                envMap.put(key.substring("Env-".length()), props.getProperty(key));
+            }
+        }
+        
+        Collection toRet = new ArrayList();
+        Iterator it = envMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry entry = (Map.Entry)it.next();
+            String val = "" + entry.getKey() + "=" + entry.getValue();
+            System.out.println("  " + val);
+            toRet.add(val);
+        }
+        return (String[])toRet.toArray(new String[toRet.size()]);
     }
     
     private InputOutput createInputOutput() {

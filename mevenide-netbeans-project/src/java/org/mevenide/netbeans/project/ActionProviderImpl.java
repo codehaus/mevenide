@@ -31,6 +31,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
+import org.mevenide.netbeans.project.exec.MavenJavaExecutor;
 import org.mevenide.netbeans.project.exec.ProjectRunContext;
 import org.mevenide.netbeans.project.exec.RunConfig;
 import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
@@ -235,9 +236,14 @@ public class ActionProviderImpl implements ActionProvider {
                          Set processors, 
                          InputOutput io, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
-        LifecycleManager.getDefault().saveAll();                             
+        LifecycleManager.getDefault().saveAll();
+        boolean ok = MavenModule.checkMavenHome(project.getLocFinder());
+        if (!ok) {
+            return;
+        }
+        MavenModule.copyMevenidePlugin(project.getLocFinder());
         // setup executor first..                     
-        MavenExecutor exec = new MavenExecutor(new ProjectRunContext(project), goal, processors, config);
+        MavenJavaExecutor exec = new MavenJavaExecutor(new ProjectRunContext(project), goal, processors, config);
         int meterLoc = project.getPropertyLocator().getPropertyLocation("maven.download.meter"); //NOI18N
         if (    meterLoc == IPropertyLocator.LOCATION_NOT_DEFINED 
             ||  meterLoc == IPropertyLocator.LOCATION_DEFAULTS) {

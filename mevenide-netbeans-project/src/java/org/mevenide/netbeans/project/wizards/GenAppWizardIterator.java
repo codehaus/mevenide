@@ -30,9 +30,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.genapp.TemplateInfo;
+import org.mevenide.netbeans.project.MavenModule;
 import org.mevenide.netbeans.project.exec.BeanRunContext;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
 import org.mevenide.netbeans.project.exec.MavenExecutor;
+import org.mevenide.netbeans.project.exec.MavenJavaExecutor;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutionEngine;
@@ -94,6 +96,12 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
 //        }
         FileObject projectDir = dirFo.createFolder(name);
         
+        boolean ok = MavenModule.checkMavenHome(ConfigUtils.getDefaultLocationFinder());
+        if (!ok) {
+            return Collections.EMPTY_SET;
+        }
+        MavenModule.copyMevenidePlugin(ConfigUtils.getDefaultLocationFinder());
+        
         // now let's construct what gets executed.
         TemplateInfo info = (TemplateInfo)wiz.getProperty(TEMPLATE);
         String[] params = info.getParameters();
@@ -112,9 +120,10 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
             add[add.length - 1] = "-Dmaven.genapp.template.dir=" + getCustomTemplateLocation().getAbsolutePath();
         }
         BeanRunContext context = new BeanRunContext("GenApp", 
-                    ConfigUtils.getDefaultLocationFinder().getMavenHome(), 
+                    ConfigUtils.getDefaultLocationFinder().getMavenHome(),
+                    ConfigUtils.getDefaultLocationFinder().getMavenLocalHome(),
                     FileUtil.toFile(projectDir), add);
-        MavenExecutor exec = new MavenExecutor(context, "", Collections.EMPTY_SET, new DefaultRunConfig());
+        MavenJavaExecutor exec = new MavenJavaExecutor(context, "", Collections.EMPTY_SET, new DefaultRunConfig());
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
         // wait finished kind of ugly, but what can we do here?
         task.waitFinished();

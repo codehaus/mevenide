@@ -32,6 +32,9 @@ import org.mevenide.netbeans.project.output.CompileAnnotation;
 import org.mevenide.netbeans.project.output.FindbugsAnnotation;
 import org.mevenide.netbeans.project.output.PmdAnnotation;
 import org.mevenide.plugins.PluginInfoFactory;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
 
@@ -46,7 +49,6 @@ public class MavenModule extends ModuleInstall {
     
     private static final long serialVersionUID = -485754848837354747L;
     
-    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.3.jar"; //NOI18N
     
     public void restored() {
         // kind of duplicates the same call in mevenide-netbeans-grammar but these
@@ -62,15 +64,41 @@ public class MavenModule extends ModuleInstall {
         FindbugsAnnotation.detachAllAnnotations();
     }
    
-    public void validate() {
-        String mavenhome = System.getProperty("Env-MAVEN_HOME");//NOI18N
-        if (mavenhome == null) {
-            throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
+//    public void validate() {
+//        String mavenhome = System.getProperty("Env-MAVEN_HOME");//NOI18N
+//        if (mavenhome == null) {
+//            throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set.");
+//        }
+//        copyMevenidePlugin(new File(mavenhome));
+//    }
+   
+    public static boolean checkMavenHome(ILocationFinder finder) {
+        if (finder.getMavenHome() == null) {
+            NoMavenHomePanel pnl = new NoMavenHomePanel();
+            DialogDescriptor dd = new DialogDescriptor(pnl, "Enter Maven Home");
+            Object retVal = DialogDisplayer.getDefault().notify(dd);
+            if (retVal == NotifyDescriptor.OK_OPTION) {
+                String hm = pnl.getMavenHome();
+                if (hm == null) {
+                    hm = "";
+                }
+                File fil = new File(hm);
+                if (fil.exists() && new File(fil, "bin" + File.separator + "forehead.conf").exists()) {
+                    MavenSettings.getDefault().setMavenHome(fil.getAbsolutePath());
+                    return true;
+                } else {
+                    //TODO notify that
+                }
+            }
+            return false;
         }
-        copyMevenidePlugin(new File(mavenhome));
+        return true;
     }
     
-    private void copyMevenidePlugin(File home) {
+    public static final String CURRENT_VERSION = "maven-mevenide-plugin-0.3.jar"; //NOI18N
+    
+    public static void copyMevenidePlugin(ILocationFinder finder) {
+        File home = new File(finder.getMavenHome());
         if (home.exists()) {
             File plugins = new File(home, "plugins"); //NOI18N
             File[] files = plugins.listFiles(new FilenameFilter() {
@@ -86,8 +114,6 @@ public class MavenModule extends ModuleInstall {
                 log.error("cannot copy maven-mevenide-plugin - the assumed version is not present -" + CURRENT_VERSION);
                 return;
             }
-            // TODO refine here, to not overwrite everytime but only when changed.
-            ILocationFinder finder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
             File cache = new File(finder.getMavenPluginsDir());
             boolean deleteCache = false;
             if (files != null && files.length > 0) {

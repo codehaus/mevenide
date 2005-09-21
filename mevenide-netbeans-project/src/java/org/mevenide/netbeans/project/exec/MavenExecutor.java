@@ -134,7 +134,7 @@ public class MavenExecutor implements Runnable, Cancellable {
         HashMap formats = new HashMap(5);
         Process proc;
         if (config.getMavenHome() != null && new File(config.getMavenHome()).exists()) {
-            formats.put(FORMAT_MAVEN_HOME, config.getMavenHome());
+            formats.put(FORMAT_MAVEN_HOME, config.getMavenHome() == null ? "" : config.getMavenHome());
         } else {
             formats.put(FORMAT_MAVEN_HOME, context.getMavenHome());
         }
