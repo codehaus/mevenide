@@ -29,6 +29,8 @@ public class CustomLocationFinder implements ILocationFinder {
     private String mavenLocalRepository;
     private String mavenPluginsDir;
     private String userHome;
+    private String userPluginsDir;
+    private String pluginJarsDir;
 
     public String getConfigurationFileLocation() {
         return null;
@@ -80,6 +82,28 @@ public class CustomLocationFinder implements ILocationFinder {
 
     public void setUserHome(String userHome) {
         this.userHome = userHome;
+    }
+
+    /**
+     * directory with user's custom plugins, denoted by maven.plugin.user.dir property
+     */
+    public String getUserPluginsDir() {
+        return userPluginsDir;
+    }
+
+    /**
+     * the directory containing maven plugin jars, denoted by maven.plugin.dir propertu
+     */
+    public String getPluginJarsDir() {
+        return pluginJarsDir;
+    }
+
+    public void setUserPluginsDir(String userPluginsDir) {
+        this.userPluginsDir = userPluginsDir;
+    }
+
+    public void setPluginJarsDir(String pluginJarsDir) {
+        this.pluginJarsDir = pluginJarsDir;
     }
 
 }

@@ -94,10 +94,21 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
     }
     
     public String getMavenPluginsDir() {
+        // makes no sense
         return null;
     }
     
     public String getUserHome() {
         return System.getProperty("user.home");
+    }
+
+    public String getUserPluginsDir() {
+        // makes no sense
+        return null;
+    }
+
+    public String getPluginJarsDir() {
+        // makes no sense
+        return null;
     }
 }

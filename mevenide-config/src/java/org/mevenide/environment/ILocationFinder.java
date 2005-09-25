@@ -32,7 +32,19 @@ public interface ILocationFinder {
     
     String getMavenLocalRepository();
     
+    /**
+     * directory with the expanded plugin cache, basically value of 
+     * maven.plugin.unpacked.dir property
+     */
 	String getMavenPluginsDir();
+    /**
+     * directory with user's custom plugins, denoted by maven.plugin.user.dir property
+     */    
+        String getUserPluginsDir();
+    /**
+     * the directory containing maven plugin jars, denoted by maven.plugin.dir propertu
+     */   
+        String getPluginJarsDir();
     
     String getConfigurationFileLocation();
         
