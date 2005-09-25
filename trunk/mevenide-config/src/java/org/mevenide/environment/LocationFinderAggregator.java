@@ -139,6 +139,32 @@ public class LocationFinderAggregator implements ILocationFinder {
         return mavenPluginsDir;
     }
     
+    public String getUserPluginsDir() {
+        String pluginsDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath();
+        if ( customLocationFinder !=  null
+          && customLocationFinder.getUserPluginsDir() != null ) {
+            pluginsDir = customLocationFinder.getUserPluginsDir();
+        }
+        String resValue = resolver.getResolvedValue("maven.plugin.user.dir");
+        if (resValue != null) {
+            pluginsDir = resValue;
+        }
+        return pluginsDir;
+    }  
+    
+    public String getPluginJarsDir() {
+        String pluginsDir = new File(getMavenHome(), "plugins").getAbsolutePath();
+        if ( customLocationFinder !=  null
+          && customLocationFinder.getPluginJarsDir() != null ) {
+            pluginsDir = customLocationFinder.getPluginJarsDir();
+        }
+        String resValue = resolver.getResolvedValue("maven.plugin.dir");
+        if (resValue != null) {
+            pluginsDir = resValue;
+        }
+        return pluginsDir;
+    }        
+    
     public String getUserHome() {
         String userHome = System.getProperty("user.home");
         if ( sysEnvLocationFinder !=  null
