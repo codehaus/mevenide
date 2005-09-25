@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.StringTokenizer;
 import javax.swing.Action;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -200,7 +201,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         if (additionals.length > 0) {
             lst.addAll(Arrays.asList(additionals));
         } else {
-            lst.add(goal);
+            // MEVENIDE-330 - If goal contains space this is a list of goals
+            StringTokenizer st = new StringTokenizer(goal, " ");
+            while (st.hasMoreElements()) {
+                lst.add(st.nextElement());
+            }
         }
         String[] prcs = new String[lst.size()];
         prcs = (String[])lst.toArray(prcs);
