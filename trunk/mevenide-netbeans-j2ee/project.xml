@@ -168,7 +168,7 @@
          <version>1.6.1</version>
          <type>jar</type>
          <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
+            <netbeans.module.dep>spec=org.netbeans.modules.j2eeserver/3-4 &gt; 1.6.1</netbeans.module.dep>
          </properties>
       </dependency>
       <dependency>
