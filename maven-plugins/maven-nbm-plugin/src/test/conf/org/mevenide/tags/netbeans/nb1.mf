@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-IDE-Dependencies: IDE/1 > 3.18
-OpenIDE-Module-Specification-Version: 1.0.1
-OpenIDE-Module-Module-Dependencies: org.openide.io > 1.0
-OpenIDE-Module-Localizing-Bundle: org/openide/execution/Bundle.propert
- ies
-OpenIDE-Module: org.openide.execution
-OpenIDE-Module-Implementation-Version: 200307302351
-
