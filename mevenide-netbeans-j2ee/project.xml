@@ -45,7 +45,7 @@
       <dependency>
          <groupId>mevenide</groupId>
          <artifactId>mevenide-netbeans-project</artifactId>
-         <version>0.9-SNAPSHOT</version>
+         <version>0.9</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -90,7 +90,7 @@
       <dependency>
          <groupId>mevenide</groupId>
          <artifactId>mevenide-config</artifactId>
-         <version>0.10-SNAPSHOT</version>
+         <version>0.10</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
