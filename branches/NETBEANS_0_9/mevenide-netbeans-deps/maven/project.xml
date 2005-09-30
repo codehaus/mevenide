@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <pomVersion>3</pomVersion>
+  <id>maven-nb-module</id>
+  <artifactId>maven-nb-module</artifactId>
+  <groupId>mevenide</groupId>
+  <currentVersion>1.0.2</currentVersion>
+  <package>org.apache.maven</package>
+  <name>Maven 1.0.2 library for Mevenide</name>
+  <shortDescription>Library for project mevenide,</shortDescription>
+  <description>Library for project mevenide, contains most of the jars needed for maven to run.</description>
+  <url>http://mevenide.codehaus.org</url>
+  
+  <!-- dependencies copied from maven project.. -->
+  <dependencies>
+    
+    <!-- leave dom4j as the first entry or the tests fail -->
+
+    <dependency>
+      <id>dom4j</id>
+      <version>1.4-dev-8</version>
+      <url>http://www.dom4j.org/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <!-- should be included with netbeans, but it's hard to get on the classpath??
+    <dependency>
+      <id>ant</id>
+      <version>1.5.3-1</version>
+      <url>http://ant.apache.org/</url>
+    </dependency>
+    <dependency>
+      <groupId>ant</groupId>
+      <artifactId>ant-optional</artifactId>
+      <version>1.5.3-1</version>
+      <url>http://jakarta.apache.org/ant/</url>
+    </dependency>
+-->    
+    <dependency>
+      <id>ant-nb-module</id>
+      <groupId>mevenide</groupId>
+      <version>1.5.3-1</version>
+      <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+      </properties>
+    </dependency>
+    
+    <dependency>
+      <id>commons-betwixt</id>
+      <version>1.0-beta-1.20030111.103454</version>
+      <url>http://jakarta.apache.org/commons/betwixt/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-digester</id>
+      <version>1.4.1</version>
+      <url>http://jakarta.apache.org/commons/digester.html</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+
+    <dependency>
+      <id>commons-jelly</id>
+      <version>20030902.160215</version>
+      <url>http://jakarta.apache.org/commons/jelly/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-ant</artifactId>
+      <version>1.0</version>
+      <url>http://jakarta.apache.org/commons/jelly/tags/ant/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-define</artifactId>
+      <version>20030211.142932</version>
+      <url>http://jakarta.apache.org/commons/jelly/tags/define/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-util</artifactId>
+      <version>20030211.141939</version>
+      <url>http://jakarta.apache.org/commons/jelly/tags/util/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-graph</id>
+      <version>0.8.1</version>
+      <url>http://jakarta.apache.org/commons/sandbox/graph/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-jexl</id>
+      <version>1.0-beta-1</version>
+      <url>http://jakarta.apache.org/commons/jexl/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-logging</id>
+      <version>1.0.3</version>
+      <url>http://jakarta.apache.org/commons/logging.html</url>
+      <properties>
+          <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>      
+      </properties>
+    </dependency>
+
+   <!-- replacer for commons-logging+log4j -->
+<!--    <dependency>
+      <id>commons-logging-nb-module</id>
+      <groupId>mevenide</groupId>
+      <version>1.0.3</version>
+      <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+      </properties>
+    </dependency>
+    -->
+    <dependency>
+      <id>werkz</id>
+      <version>20040426.222000</version>
+      <url>http://werkz.codehaus.org/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    
+    <!-- Runtime dependencies -->
+
+    <dependency>
+      <id>commons-beanutils</id>
+      <version>1.6.1</version>
+      <url>http://jakarta.apache.org/commons/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-httpclient</id>
+      <version>2.0</version>
+      <url>http://jakarta.apache.org/commons/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-cli</id>
+      <version>1.0-beta-2</version>
+      <url>http://jakarta.apache.org/commons/cli/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-collections</id>
+      <version>2.1</version>
+      <url>http://jakarta.apache.org/commons/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-grant</id>
+      <version>1.0-beta-4</version>
+      <url>http://jakarta.apache.org/commons/sandbox/grant/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-io</id>
+      <version>20030203.000550</version>
+      <url>http://jakarta.apache.org/commons/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>commons-lang</id>
+      <version>2.0</version>
+      <url>http://jakarta.apache.org/commons/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+      <id>forehead</id>
+      <version>1.0-beta-5</version>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+<!--   part of commons-logging-nb-module
+ <dependency>
+      <id>log4j</id>
+      <version>1.2.8</version>
+      <url>http://jakarta.apache.org/log4j/</url>
+    </dependency>
+    -->
+    <dependency>
+      <id>which</id>
+      <version>1.0</version>
+      <url>http://cvs.apache.org/viewcvs.cgi/xml-commons/java/src/org/apache/env/</url>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <!-- this is a dependency, but as the classes ship with ant, bootstrap will
+     fail with linkage errors if it's included and the junit tests are not
+     forked
+-->
+
+    <dependency>
+      <id>xml-apis</id>
+      <version>1.0.b2</version>
+      <url>http://xml.apache.org/xerces2-j/</url>
+      <properties>
+            <!-- don't include with netbeans, ant ships with netbeans already.. -->
+      </properties>
+    </dependency>
+    <dependency>
+      <id>xerces</id>
+      <version>2.4.0</version>
+      <url>http://xml.apache.org/xerces2-j/</url>
+      <properties>
+            <!-- don't include with netbeans, ant ships with netbeans already.. -->
+      </properties>
+        </dependency>
+
+<!--    <dependency>
+      <groupId>xpp3</groupId>
+      <artifactId>xpp3</artifactId>
+      <version>1.1.2a</version>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+ -->   
+    <dependency>
+      <groupId>plexus</groupId>
+      <artifactId>plexus</artifactId>
+      <version>0.6</version>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+    <dependency>
+        <groupId>maven</groupId>
+        <artifactId>maven-jelly-tags</artifactId>
+        <version>1.0.1</version>
+        <type>jar</type>
+        <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+        </properties>
+    </dependency>
+
+    
+    <dependency>
+      <groupId>maven</groupId>
+      <artifactId>maven</artifactId>
+      <version>1.0.2</version>
+      <properties>
+            <netbeans.module.ext>true</netbeans.module.ext>
+      </properties>
+    </dependency>
+        
+  </dependencies>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>src/conf</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.nbattrs</exclude>
+          <exclude>manifest.mf</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>  
+</project>

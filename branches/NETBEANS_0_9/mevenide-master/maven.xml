@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  # =========================================================================
+  # Copyright 2003-2005 Mevenide Team
+  # 
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #      http://www.apache.org/licenses/LICENSE-2.0
+  #
+  #  Unless required by applicable law or agreed to in writing, software
+  #  distributed under the License is distributed on an "AS IS" BASIS,
+  #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  #  See the License for the specific language governing permissions and
+  #  limitations under the License.
+  # =========================================================================
+  -->
+
+<project xmlns:maven="jelly:maven"
+		 xmlns:j="jelly:core"
+		 xmlns:util="jelly:util"
+		 xmlns:ant="jelly:ant"
+		 default="mevenide:help">
+
+
+  <!-- ==================================== -->
+  <!--             build section            -->
+  <!-- ==================================== -->
+  <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
+    <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
+    <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+    <attainGoal name="multiproject:goal"/>
+    <attainGoal name="mevenide-eclipse:create-update-dist"/>
+  </goal>
+
+  <goal name="mevenide-netbeans:build" description="Build all Mevenide modules">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+      <j:set var="maven.nbm.cluster.name" value="mevenide"/>
+      <j:set var="goal" value="nbm:install"/>
+      <attainGoal name="multiproject:goal"/>
+  </goal>
+
+  <goal name="mevenide-jbuilder:build" description="Build all Mevenide JBuilder modules" prereqs="mevenide-jbuilder:clean,mevenide-jbuilder:init">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.jbuilder.includes}"/>
+      <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
+      <attainGoal name="multiproject:goal"/>
+      <maven:reactor
+               basedir="${basedir}/.."
+               includes="${mevenide.ui.jbuilder.project.name}/project.xml"
+               goals="clean,opentool:opentool"
+               postProcessing="false"
+               ignoreFailures="false"/>
+  </goal>
+
+  <goal name="mevenide-netbeans:autoupdate">
+      <j:set var="maven.nbm.build.release.dir" value="${basedir}/../mevenide-master/target/nbm_release"/>
+      <j:set var="maven.nbm.build.dir" value="${basedir}/.."/>
+      <attainGoal name="nbm:collect-nbms"/>
+      <!-- j:set var="maven.nbm.autoupdate.distbase" value="nb_autoupdate"/ -->
+      <attainGoal name="nbm:autoupdate"/>
+  </goal>
+
+  <goal name="mevenide-idea:build" description="Build Mevenide IDEA plugin">
+      <maven:reactor
+               basedir="${basedir}/.."
+               includes="${mevenide.idea.project.name}/project.xml"
+               goals="dist"
+               postProcessing="false"
+               ignoreFailures="false"/>
+  </goal>
+
+  <!-- ==================================== -->
+  <!--            site generation           -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:build" description="Build Mevenide Site" prereqs="mevenide-site:init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.site.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  	<!-- <attainGoal name="mevenide-site:generate-wiki-templates"/> -->
+  </goal>
+
+
+  <!-- ==================================== -->
+  <!--  ide modules initialization section  -->
+  <!-- ==================================== -->
+ <goal name="mevenide-eclipse:clean" prereqs="clean:clean">
+  	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide/eclipse-update-sites" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide/zips" quiet="true"/>
+  </goal>
+
+  <goal name="mevenide:clean-lib">
+     <ant:delete>
+        <ant:fileset dir="${basedir}" includes="lib/*.jar"/>
+     </ant:delete>
+  </goal>
+
+  <goal name="mevenide-eclipse:init" description="Copy Eclipse plug-ins to maven.repo.local if necessary">
+
+    <!-- test ECLIPSE_HOME property -->
+    <ant:property environment="env"/>
+    <j:set var="eclipseDir" value="${env.ECLIPSE_HOME}"/>
+
+    <j:if test="${empty eclipseDir}">
+      <ant:fail>
+        The environment variable ECLIPSE_HOME must be set to the directory
+        of the Eclipse installation you plan to use. For example:
+          Unix -- /usr/local/eclipse
+          Windows -- &quot;C:\Program Files\eclipse&quot;
+      </ant:fail>
+    </j:if>
+
+    <j:if test="${!(empty eclipseDir)}">
+      <ant:copy todir="${maven.repo.local}/eclipse/jars">
+        <ant:fileset dir="${eclipseDir}/plugins"/>
+      </ant:copy>
+    </j:if>
+
+  </goal>
+
+  <goal name="mevenide-jbuilder:clean" prereqs="mevenide:clean-lib,clean:clean">
+    <ant:delete dir="${maven.repo.local}/jbuilder" quiet="true"/>
+  	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
+  </goal>
+
+  <goal name="mevenide-jbuilder:init" description="Copy JBuilder dependencies to maven.repo.local if necessary">
+    <util:file var="installScript" name="${basedir}/../${mevenide.master.project.name}/scripts/init/install-jbuilder-dependencies.xml"/>
+    <j:include file="${installScript}"/>
+  </goal>
+
+
+  <!-- ==================================== -->
+  <!--      site initialization section     -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:set-clover-jar" description="Set clover overriden jar">
+      <j:set var="maven.jar.override" value="on"/>
+      <j:set var="maven.clover.jar" value="${mevenide.master.project.location}/lib/clover/jars/clover-1.2.4.jar"/>
+  </goal>
+
+  <goal name="mevenide-site:quick-init"
+        description="Similar to main initialization goal but does not clean anything"
+        prereqs="mevenide-site:set-clover-jar" />
+
+  <goal name="mevenide-site:init"
+        description="Main initialization goal"
+        prereqs="mevenide-eclipse:init,mevenide-site:quick-init" />
+
+
+  <!-- ==================================== -->
+  <!--   eclipse plugins creation section   -->
+  <!-- ==================================== -->
+  <goal name="mevenide-eclipse:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
+   	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
+    <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
+  </goal>
+
+  <preGoal name="eclipse-plugin:install-artifact">
+  	<util:file var="filters" name="${mevenide.master.project.location}/scripts/init/init-filtersets.xml"/>
+  	<j:include file="${filters}"/>
+  </preGoal>
+
+
+  <!-- ==================================== -->
+  <!--      netbeans section                -->
+  <!-- ==================================== -->
+  <goal name="mevenide-netbeans:clean" description="clean all Mevenide modules" prereqs="">
+      <j:set var="maven.multiproject.includes" value="${maven.multiproject.netbeans.includes}"/>
+      <j:set var="goal" value="clean"/>
+      <attainGoal name="multiproject:goal"/>
+      <ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
+      <ant:delete dir="${maven.repo.local}/mevenide/nbms" quiet="true"/>
+  </goal>
+
+  <!-- ==================================== -->
+  <!--     individual sites generation      -->
+  <!-- ==================================== -->
+  <goal name="mevenide-site:common" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.common.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="mevenide-site:eclipse" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.eclipse.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="mevenide-site:plugins" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${maven.multiproject.plugins.includes}"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="mevenide-site:netbeans" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.netbeans.grammar.project.name}/project.xml,${mevenide.netbeans.projects.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="mevenide-site:jbuilder" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.ui.jbuilder.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+  <goal name="mevenide-site:idea" prereqs="mevenide-site:quick-init">
+  	<j:set var="maven.multiproject.includes" value="${mevenide.idea.project.name}/project.xml"/>
+  	<attainGoal name="multiproject:site"/>
+  </goal>
+
+
+  <!-- ==================================== -->
+  <!--              help section            -->
+  <!-- ==================================== -->
+  <goal name="mevenide:help">
+  	<ant:echo>
+
+Below are listed relevant goals in the context of the Mevenide project.
+
+[Building IDE plugins]
+----------------------
+
+    o mevenide-eclipse:build
+        Builds Eclipse plugin. It assumes that you have ECLIPSE_HOME environment variable set.
+        Also it requires that maven-eclipse-eclipse-plugin is installed. You can grab it here :
+        http://dist.codehaus.org/mevenide/dist/repository/mevenide/plugins/
+        Generated artifacts are dropped to mevenide-update/target/eclipse/dist
+        Make sure the IDE is installed before running maven because the build process will
+        grab libraries from the install directory.
+
+    o mevenide-netbeans:build
+        Builds Netbeans modules (NBMs).
+        Also it requires that maven-nbm-plugin is installed. You can grab it here :
+        http://mevenide.codehaus.org/repository/mevenide/plugins/
+        Or by running "maven -DartifactId=maven-nbm-plugin -DgroupId=mevenide -Dversion=[CURRENT_VERSION] plugin:download"
+        All required dependencies should be retrieved from the remote repository.
+        For a complete build, run maven "mevenide-netbeans:build mevenide-netbeans:autoupdate"
+        All built NBMs will be then placed under mevenide-master/target/nbm_release directory.
+
+    o mevenide-jbuilder:build
+        Builds JBuilder OpenTool.
+        In order to build the project successfully, you must define a jbuilder.home variable in
+        ${user.home}/build.properties file that points to your JBuilder installation.
+        Also it requires that maven-jbuilder-opentool-plugin is installed. You can grab it here :
+        http://mevenide.codehaus.org/repository/mevenide/plugins/
+        Or by running "maven -DartifactId=maven-jbuilder-opentool-plugin -DgroupId=mevenide -Dversion=[CURRENT_VERSION] plugin:download"
+        All required dependencies should be retrieved from the remote repository.
+        Make sure the IDE is installed before running maven because the build process will
+        grab libraries from the install directory.
+
+    o mevenide-idea:build
+        Builds IDEA plugin.
+        This will build the IDEA Maven Integration plugin. There are no requirements to
+        prepare - you needn't install any Maven plugins, or define environment variables.
+
+        This goal will build the IDEA Maven integration plugin and place it in
+        mevenide-idea/target/distributions (there will be both tar.gz and zip flavours
+        to choose from). See the documentation inside the distribution on how to install
+        it in your IDEA installation, or in the Mevenide IDEA site at
+        http://mevenide.codehaus.org/mevenide-idea/ - have fun!
+
+[Building Mevenide site]
+------------------------
+
+    o mevenide-site:build
+        Builds whole Mevenide site.
+
+    o mevenide-site:eclipse
+        Builds Mevenide Eclipse site part
+
+    o mevenide-site:idea
+        Builds Mevenide IDEA site part
+
+  	</ant:echo>
+  </goal>
+
+</project>
