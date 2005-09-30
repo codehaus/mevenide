@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+	<properties>
+        <author email="mkleint@codehaus.org">Milos Kleint</author>
+    	<title>Running Maven goals</title>
+	</properties>
+	<body>
+		<section name="Running Maven">
+			<subsection name="Contextual Menu">
+				<div id="documentContent">
+					<p>
+                    Maven goals are accesible from the context menu of the project's main node. 
+                    <br/>
+                    It contains
+                    predefined items like Build, Clean, Create Javadoc etc. These items are also accessible from
+                    the main menu of the application or using keyboard shortcuts. (Eg. to build the project, press F11)
+                    See the <a href="customizer.html"><i>Project properties page</i></a> to find out how to redefine what goals these actions run.
+                    <br/>
+                    The "Execute Custom Goal" item let's you access the project's custom goals defined in maven.xml file
+                    plus you can add the most commonly used items there. The last item in the popup ("More Goals") shows a dialog where you can 
+                    select any goals.
+						<br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/popup.png"/><br/>
+							<font size="-1"><b>Screenshot 1</b> Project contextual menu</font> 
+							<br/> 
+						</center> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Custom Goals Dialog">
+				<div id="documentContent">
+					<p> 
+                    In the custom goals dialog, one can either enter the goals by hand 
+                    or select them in the tree of available goals. You can also enter any properties required.
+						<br/> 
+						<center> 
+							<img border="1px" src="../images/screenshots/goals-apple.png"/><br/>
+							<font size="-1"><b>Screenshot 2</b> Run Custom Goals</font> 
+							<br/> 
+						</center> 
+					</p>
+				</div>
+			</subsection>
+			<subsection name="Output">
+				<div id="documentContent">
+					<p> 
+          While Maven is running, the output is printed to the console. Regular output is printed in black, errors in red.
+          For compilation errors and for test failures, the important lines are marked as hyperlinks (in blue). 
+          </p>
+          <ul>
+          <li>
+          <p>Clicking on compilation error link, shows the affected line in editor. </p></li>
+          <li><p>Clicking on test failure opens the Test source and prints the test results to the output console tab.</p></li>
+          </ul>
+          
+                    <br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/output-fail.png"/> 
+							<br/> 
+							<font size="-1"><b>Screenshot 3</b>Output goes to the console -compile fails</font> 
+						</center> 
+						<br/> 
+                    <br/>
+						<center> 
+							<img border="1px" src="../images/screenshots/output-fail-test.png"/> 
+							<br/> 
+							<font size="-1"><b>Screenshot 4</b>Output goes to the console - test fails</font> 
+						</center> 
+						<br/> 
+                                                
+                                                
+				</div>
+			</subsection>
+		</section>
+		<section>
+			<p>
+				<navbar prev="navigate.html" toc="index.html" next="reports.html"/>
+			</p>
+		</section>
+	</body>
+</document>

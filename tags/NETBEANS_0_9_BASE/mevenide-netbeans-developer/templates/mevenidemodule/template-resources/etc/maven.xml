@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core"
+         xmlns:util="jelly:util"
+         xmlns:ant="jelly:ant">
+
+  <preGoal name="test:test">
+  	<!-- do something before test goal -->
+  </preGoal>
+	
+@GENPROJECTMAVENXML@  
+  	  
+</project>
+
