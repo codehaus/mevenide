@@ -2,7 +2,7 @@
 <project>
    <extend>${basedir}/../mevenide-parent/project.xml</extend>
    <artifactId>mevenide-netbeans-j2ee</artifactId>
-   <currentVersion>1.1.1</currentVersion>
+   <currentVersion>1.1.2</currentVersion>
    <inceptionYear>2005</inceptionYear>
    <name>Mevenide J2EE support</name>
    <shortDescription>J2EE support for Maven project type.</shortDescription>
