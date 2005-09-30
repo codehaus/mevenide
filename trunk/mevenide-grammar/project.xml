@@ -68,7 +68,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.10-SNAPSHOT</version>
+            <version>0.10</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -78,17 +78,15 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.11-SNAPSHOT</version>
+            <version>0.11</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
-
         <!-- just needed as dependency of goals-grabber, tests fail otherwise
         -->
-        
         <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
@@ -97,7 +95,7 @@
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
-        </dependency>        
+        </dependency>
     </dependencies>
     <build>
         <resources>
