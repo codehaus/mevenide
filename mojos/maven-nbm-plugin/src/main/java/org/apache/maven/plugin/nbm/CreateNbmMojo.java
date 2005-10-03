@@ -24,13 +24,15 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.nbm.model.NbmResource;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -40,6 +42,8 @@ import org.apache.tools.ant.taskdefs.LoadProperties;
 import org.apache.tools.ant.taskdefs.Manifest;
 import org.apache.tools.ant.taskdefs.Move;
 import org.apache.tools.ant.types.FileSet;
+import org.apache.tools.ant.types.FilterSet;
+import org.apache.tools.ant.types.Mapper;
 import org.apache.tools.ant.types.PatternSet;
 import org.apache.tools.ant.types.Reference;
 import org.apache.tools.ant.util.FileUtils;
@@ -49,41 +53,43 @@ import org.netbeans.nbbuild.MakeNBM;
 import org.netbeans.nbbuild.MakeNBM.Blurb;
 import org.netbeans.nbbuild.MakeNBM.Signature;
 
+import org.apache.maven.plugin.nbm.model.Dependency;
+import org.apache.maven.plugin.nbm.model.NetbeansModule;
+import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
+
 /**
  *
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
- *   execute XXXlifecycle="nbm"
  * @goal nbm
  * @phase package
- * @description build a nbm file
- * @execute phase="package" 
- * *
+ * execute phase="package" lifecycle="nbm"
+ * @requiresDependencyResolution runtime
+ *
  */
 public class CreateNbmMojo
-    extends AbstractNbmMojo
-{
+        extends AbstractNbmMojo {
     /**
      * @parameter expression="${project.build.directory}/nbm"
      * @required
      */
     protected String nbmBuildDir;
-
+    
     /**
      * @todo Change type to File
-     * 
+     *
      * @parameter expression="${project.build.directory}"
      * @required
      * @readonly
      */
     private String buildDir;
-
+    
     /**
-     * 
+     *
      * @parameter alias="jarName" expression="${project.build.finalName}"
      * @required
      */
     private String finalName;
-
+    
     /**
      * a module name, used for module name in jar and the actual jar name in nbm
      * @parameter alias="moduleName" expression="${project.groupId}"
@@ -144,7 +150,7 @@ public class CreateNbmMojo
     /**
      * a file with content of the license
      * //TODO have some basic value??
-     * @parameter 
+     * @parameter
      */
     private String licenseFile;
     
@@ -167,18 +173,25 @@ public class CreateNbmMojo
     private String keystorealias;
     
     /**
+     * a netbeans module descriptor containing dependency information and more
+     *
+     * @parameter
+     */
+    protected File descriptor;
+    
+    /**
      * @parameter expression="${project}"
      * @required
      * @readonly
      */
     private MavenProject project;
-
-
+    
+    
     public void execute()
-        throws MojoExecutionException
-    {
+    throws MojoExecutionException {
         getLog().info("CreateNbmMojo");
         Project antProject = registerNbmAntTasks();
+        NetbeansModule module = readModuleDescriptor(descriptor);
         
         // 1. initialization
         if (autoload && eager) {
@@ -187,12 +200,12 @@ public class CreateNbmMojo
         }
         
         String moduleJarName = moduleName.replace('.', '-');
-
+        
         // it can happen the moduleName is in format org.milos/1
-            int index = moduleJarName.indexOf('/');
-            if (index > -1) {
-                moduleJarName = moduleJarName.substring(0, index).trim();
-            } 
+        int index = moduleJarName.indexOf('/');
+        if (index > -1) {
+            moduleJarName = moduleJarName.substring(0, index).trim();
+        }
         
         File jarFile = new File( nbmBuildDir, finalName + ".jar");
         File nbmFile = new File( nbmBuildDir, finalName + ".nbm");
@@ -215,7 +228,65 @@ public class CreateNbmMojo
             getLog().error("Cannot copy module jar");
             throw new MojoExecutionException("Cannot copy module jar", ex);
         }
-
+        if(module != null) {
+            // copy libraries to the designated place..            
+            List librList = new ArrayList();
+            if (module.getLibraries() != null) {
+                librList.addAll(module.getLibraries());
+            };
+            Set artifacts = project.getArtifacts();
+            for ( Iterator iter = artifacts.iterator(); iter.hasNext();) {
+                Artifact artifact = (Artifact) iter.next();
+                if (matchesLibrary(artifact, librList)) {
+                    File source = artifact.getFile();
+                    File targetDir = new File(moduleJarLocation, "ext");
+                    targetDir.mkdirs();
+                    File target = new File(targetDir, source.getName());
+                    
+                    try {
+                        FileUtils.newFileUtils().copyFile(source, target);
+                    } catch (IOException ex) {
+                        getLog().error("Cannot copy library jar");
+                        throw new MojoExecutionException("Cannot copy library jar", ex);
+                    }
+                }
+            }
+            // copy additional resources..
+            List nbmResources = module.getNbmResources();
+            if (nbmResources.size() > 0) {
+                Copy cp = (Copy)antProject.createTask("copy");
+                cp.setTodir(clusterDir);
+                Iterator it = nbmResources.iterator();
+                while (it.hasNext()) {
+                    NbmResource res = (NbmResource)it.next();
+                    if (res.getBaseDirectory() != null) {
+                        File base = new File(res.getBaseDirectory());
+                        FileSet set = new FileSet();
+                        set.setDir(base);
+                        if (res.getIncludes().size() > 0){
+                            Iterator it2 = res.getIncludes().iterator();
+                            while (it2.hasNext()) {
+                                set.createInclude().setName((String)it2.next());
+                            }
+                        }
+                        if (res.getExcludes().size() > 0) {
+                            Iterator it2 = res.getExcludes().iterator();
+                            while (it2.hasNext()) {
+                                set.createExclude().setName((String)it2.next());
+                            }
+                        }
+                        cp.addFileset(set);
+                    }
+                }
+                try {
+                    cp.execute();
+                } catch (BuildException e) {
+                    getLog().error( "Cannot copy additional resources into the nbm file" );
+                    throw new MojoExecutionException( e.getMessage(), e );
+                }
+            }
+        }
+        
         File configDir = new File(clusterDir, "config" + File.separator + "Modules");
         configDir.mkdirs();
         CreateModuleXML moduleXmlTask = (CreateModuleXML)antProject.createTask("createmodulexml");
@@ -225,16 +296,14 @@ public class CreateNbmMojo
         fs.setIncludes(moduleJarName + ".jar");
         if (autoload) {
             moduleXmlTask.addAutoload(fs);
-        } 
-        else if (eager) {
+        } else if (eager) {
             moduleXmlTask.addEager(fs);
         } else {
             moduleXmlTask.addEnabled(fs);
         }
         try {
             moduleXmlTask.execute();
-        } catch (BuildException e)
-        {
+        } catch (BuildException e) {
             getLog().error( "Cannot generate config file." );
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -242,8 +311,7 @@ public class CreateNbmMojo
         loadTask.setResource("directories.properties");
         try {
             loadTask.execute();
-        } catch (BuildException e)
-        {
+        } catch (BuildException e) {
             getLog().error( "Cannot load properties." );
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -258,8 +326,7 @@ public class CreateNbmMojo
         makeTask.setOutputfiledir(clusterDir);
         try {
             makeTask.execute();
-        } catch (BuildException e)
-        {
+        } catch (BuildException e) {
             getLog().error( "Cannot Generate nbm list" );
             throw new MojoExecutionException( e.getMessage(), e );
         }
@@ -305,14 +372,22 @@ public class CreateNbmMojo
         }
         if (distributionUrl != null) {
             nbmTask.setDistribution(distributionUrl);
-        } 
+        }
         try {
             nbmTask.execute();
-        } catch (BuildException e)
-        {
+        } catch (BuildException e) {
             getLog().error( "Cannot Generate nbm file" );
             throw new MojoExecutionException( e.getMessage(), e );
         }
+        try {
+            FileUtils.newFileUtils().copyFile(nbmFile, new File(buildDir, nbmFile.getName()));
+        } catch (IOException ex) {
+            getLog().error("Cannot copy nbm to build directory");
+            throw new MojoExecutionException("Cannot copy nbm to build directory", ex);
+        }
+        
+        ;
+        
         
         
         

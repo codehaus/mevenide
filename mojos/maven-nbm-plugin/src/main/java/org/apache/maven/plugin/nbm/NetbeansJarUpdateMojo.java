@@ -52,6 +52,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * @goal jar
  * @phase package
  * @requiresDependencyResolution runtime
+ * execute phase="package" lifecycle="nbm"
  */
 public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
     /**
@@ -127,7 +128,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
             getLog().error("Cannot copy module jar");
             throw new MojoExecutionException("Cannot copy module jar", ex);
         }
-        NetbeansModule module = readModuleDescriptor();
+        NetbeansModule module = readModuleDescriptor(descriptor);
         
         
 //<!-- if a netbeans specific manifest is defined, examine this one, otherwise the already included one.
@@ -200,11 +201,8 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
             };
             List deps = module.getDependencies();
             Set artifacts = project.getArtifacts();
-            getLog().debug("artifacts=" + artifacts.size());
             for ( Iterator iter = artifacts.iterator(); iter.hasNext();) {
                 Artifact artifact = (Artifact) iter.next();
-                getLog().debug("artifact=" + artifact);
-                // TODO include just compilation dependencies
                 if (matchesLibrary(artifact, librList)) {
                     classPath = classPath + " " + artifact.getFile().getName();
                 }
@@ -282,30 +280,5 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
             }
         }
     }
-    
-    private NetbeansModule readModuleDescriptor() throws MojoExecutionException {
-        if (descriptor == null ||  !descriptor.exists()) {
-            return null;
-        }
-        Reader r = null;
-        try {
-            r = new FileReader( descriptor );
-            NetbeansModuleXpp3Reader reader = new NetbeansModuleXpp3Reader();
-            NetbeansModule module = reader.read(r);
-            return module;
-        } catch (IOException exc) {
-            getLog().error(exc);
-        } catch (XmlPullParserException xml) {
-            getLog().error(xml);
-        } finally {
-            if (r != null) {
-                try {
-                    r.close();
-                } catch (IOException e) {
-                    getLog().error(e);
-                }
-            }
-        }
-        return null;
-    }
+
 }
