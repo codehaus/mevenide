@@ -16,13 +16,21 @@
  */
 package org.apache.maven.plugin.nbm;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Taskdef;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.apache.maven.plugin.nbm.model.Dependency;
+import org.apache.maven.plugin.nbm.model.NetbeansModule;
+import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
 
 public abstract class AbstractNbmMojo extends AbstractMojo {
 
@@ -78,6 +86,32 @@ public abstract class AbstractNbmMojo extends AbstractMojo {
             Dependency dep = (Dependency)it.next();
             if (id.equals(dep.getId())) {
                 return dep;
+            }
+        }
+        return null;
+    }
+    
+    protected NetbeansModule readModuleDescriptor(File descriptor) throws MojoExecutionException {
+        if (descriptor == null ||  !descriptor.exists()) {
+            return null;
+        }
+        Reader r = null;
+        try {
+            r = new FileReader( descriptor );
+            NetbeansModuleXpp3Reader reader = new NetbeansModuleXpp3Reader();
+            NetbeansModule module = reader.read(r);
+            return module;
+        } catch (IOException exc) {
+            getLog().error(exc);
+        } catch (XmlPullParserException xml) {
+            getLog().error(xml);
+        } finally {
+            if (r != null) {
+                try {
+                    r.close();
+                } catch (IOException e) {
+                    getLog().error(e);
+                }
             }
         }
         return null;

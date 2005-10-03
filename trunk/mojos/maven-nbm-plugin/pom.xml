@@ -22,7 +22,6 @@
           <execution>
             <goals>
               <goal>xpp3-reader</goal>
-              <goal>xpp3-writer</goal>
               <goal>java</goal>
             </goals>
           </execution>
