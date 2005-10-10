@@ -46,7 +46,7 @@ import org.apache.tools.ant.util.FileUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
- *
+ * goal for updating the artifact jar with netbeans specific entries.
  *
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal jar
@@ -102,6 +102,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
     protected File descriptor;
     
     /**
+     * maven project
      * @parameter expression="${project}"
      * @required
      * @readonly
@@ -111,7 +112,6 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
     
     public void execute()
     throws MojoExecutionException {
-        getLog().info("NbmUpdateMojo");
         Project antProject = registerNbmAntTasks();
         
         

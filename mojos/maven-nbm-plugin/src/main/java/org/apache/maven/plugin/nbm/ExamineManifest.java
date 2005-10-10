@@ -42,6 +42,7 @@ public class ExamineManifest  {
     private String module;
     private String moduleDeps;
     private String locBundle;
+    private boolean publicPackages;
     
     
     public void checkFile() throws MojoExecutionException {
@@ -97,6 +98,7 @@ public class ExamineManifest  {
         setModule(null);
         setModuleDeps(null);
         setLocBundle(null);
+        setPublicPackages(false);
     }
     
     void processManifest(Manifest mf) {
@@ -109,11 +111,19 @@ public class ExamineManifest  {
             setSpecVersion(attrs.getValue("OpenIDE-Module-Specification-Version"));
             setImplVersion(attrs.getValue("OpenIDE-Module-Implementation-Version"));
             setModuleDeps(attrs.getValue("OpenIDE-Module-Module-Dependencies"));
+            String value = attrs.getValue("OpenIDE-Module-Public-Packages");
+            if (value == null || value.trim().equals("-")) {
+                setPublicPackages(false);
+            } else {
+                setPublicPackages(true);
+            }
+            
         } else {
             // for non-netbeans jars.
             setSpecVersion(attrs.getValue("Specification-Version"));
             setImplVersion(attrs.getValue("Implementation-Version"));
             setModule(attrs.getValue("Package"));
+            setPublicPackages(false);
         /*    if (module != null) {
                 // now we have the package to make it a module definition, add the version there..
                 module = module + "/1"; 
@@ -214,6 +224,14 @@ public class ExamineManifest  {
 
     public void setLocBundle(String locBundle) {
         this.locBundle = locBundle;
+    }
+
+    public boolean hasPublicPackages() {
+        return publicPackages;
+    }
+
+    public void setPublicPackages(boolean publicPackages) {
+        this.publicPackages = publicPackages;
     }
     
 }
