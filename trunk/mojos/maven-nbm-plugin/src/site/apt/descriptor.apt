@@ -1,0 +1,39 @@
+ ------
+ Maven 2 NBM Plugin 
+ ------
+ Milos Kleint
+ <mkleint@codehaus.org>
+ ------
+ October 10, 2005
+
+Example nbm descriptors
+
+*example.xml
+
+------
+
+<NetbeansModule>
+   <libraries>
+       <library>junit:junit</library>
+   </libraries>
+   <dependencies>
+      <dependency>
+          <id>netbeans:nbantext</id>
+	  <type>spec</type>
+	  <explicitValue>antext/1 &gt; 10.1</explicitValue>
+      </dependency>
+   </dependencies> 
+</NetbeansModule>
+------
+
+ libraries - groupId:artifactId of a dependency that is to be shipped as part of the module.
+
+ dependencies - items in this list will be used to define the OpenIDE-Module-Module-Dependencies module's manifest entry.
+
+   possibly types - "loose", "spec", "impl"
+
+   if explicitValue not specified, the plugin tries to guess based on the dependency's content. 
+
+
+ 
+

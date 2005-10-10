@@ -17,6 +17,7 @@
 
 
 package org.apache.maven.plugin.nbm;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -58,7 +59,7 @@ import org.apache.maven.plugin.nbm.model.NetbeansModule;
 import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
 
 /**
- *
+ * Create the Netbeans module artifact (nbm file)
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal nbm
  * @phase package
@@ -69,6 +70,7 @@ import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
 public class CreateNbmMojo
         extends AbstractNbmMojo {
     /**
+     * directory where the the netbeans jar and nbm file will be constructed
      * @parameter expression="${project.build.directory}/nbm"
      * @required
      */
@@ -76,7 +78,7 @@ public class CreateNbmMojo
     
     /**
      * @todo Change type to File
-     *
+     * Build directory
      * @parameter expression="${project.build.directory}"
      * @required
      * @readonly
@@ -84,7 +86,7 @@ public class CreateNbmMojo
     private String buildDir;
     
     /**
-     *
+     * Name of the jar packaged by the jar:jar plugin
      * @parameter alias="jarName" expression="${project.build.finalName}"
      * @required
      */
@@ -98,13 +100,15 @@ public class CreateNbmMojo
     private String moduleName;
     
     /**
-     * the module is autoload - cannot be both eager and autoload
+     * the module is autoload meaning it's automatically enabled when some other module depends on it.
+     * a module cannot be both eager and autoload.
      * @parameter defaultvalue="false"
      */
     private boolean autoload;
     
     /**
-     * the module is eager - cannot be both eager and autoload
+     * the module is eager, it will automatically enable itself when all dependencies are satisfied.
+     *  a module cannot be both eager and autoload
      * @parameter defaultvalue="false"
      */
     private boolean eager;
@@ -189,7 +193,6 @@ public class CreateNbmMojo
     
     public void execute()
     throws MojoExecutionException {
-        getLog().info("CreateNbmMojo");
         Project antProject = registerNbmAntTasks();
         NetbeansModule module = readModuleDescriptor(descriptor);
         
@@ -385,11 +388,5 @@ public class CreateNbmMojo
             getLog().error("Cannot copy nbm to build directory");
             throw new MojoExecutionException("Cannot copy nbm to build directory", ex);
         }
-        
-        ;
-        
-        
-        
-        
     }
 }
