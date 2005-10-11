@@ -89,7 +89,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
     /**
      * a module name, used for module name in jar and the actual jar name in nbm
      * need pakagename like org.netbeans.modules.milos
-     * @parameter expression="${project.groupId}"
+     * @parameter expression="${project.groupId}.${project.artifactId}"
      * @required
      */
     protected String moduleName;

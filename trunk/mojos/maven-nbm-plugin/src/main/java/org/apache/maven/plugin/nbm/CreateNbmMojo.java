@@ -94,7 +94,7 @@ public class CreateNbmMojo
     
     /**
      * a module name, used for module name in jar and the actual jar name in nbm
-     * @parameter alias="moduleName" expression="${project.groupId}"
+     * @parameter expression="${project.groupId}.${project.artifactId}"
      * @required
      */
     private String moduleName;
