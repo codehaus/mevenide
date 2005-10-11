@@ -165,6 +165,20 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 break;
             }
         }
+//MEVENIDE-338 on macosx the class.jar seems to be on bootclasspath??
+        path = platform.getBootstrapLibraries();
+        roots = path.getRoots();
+        for (int i = 0; i < roots.length; i++) {
+            FileObject rfo = FileUtil.getArchiveFile(roots[i]);
+            if (rfo == null) {
+                rfo = roots[i];
+            }
+            if (Utilities.getOperatingSystem() == Utilities.OS_MAC && rfo.getNameExt().equals("classes.jar")) {
+//                /System/Library/Frameworks/JavaVM.framework/Versions/${JAVA_VERSION}/Classes/classes.jar"
+                toolJar = FileUtil.toFile(rfo);
+                break;
+            }
+        }
         if (toolJar == null) {
             throw new IOException("Cannot find tools.jar");
         }
