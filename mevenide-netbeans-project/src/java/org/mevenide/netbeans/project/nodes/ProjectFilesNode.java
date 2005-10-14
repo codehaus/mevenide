@@ -113,9 +113,15 @@ public class ProjectFilesNode extends AbstractNode {
                 keys.add(new FileWrapper(prefix + " POM file", normalized));
                 File parent = normalized.getParentFile();
                 keys.add(new FileWrapper(prefix + " properties", new File(parent, "project.properties")));
-                keys.add(new FileWrapper(prefix + " build properties", new File(parent, "build.properties")));
+                keys.add(new FileWrapper(prefix + " build propvierties", new File(parent, "build.properties")));
             }
             keys.add(new FileWrapper("User build properties", new File(project.getContext().getUserDirectory(), "build.properties")));
+	    File mavenScript = new File(project.getContext().getProjectDirectory(), "maven.xml");
+	    // As the best pratices recommands not to have a maven.xml file
+	    // The link appear only if the file exist
+	    if (mavenScript.exists()) {	    
+		keys.add(new FileWrapper("Maven script file", new File(project.getContext().getProjectDirectory(), "maven.xml")));
+	    }
             setKeys(keys);
         }
     }    
