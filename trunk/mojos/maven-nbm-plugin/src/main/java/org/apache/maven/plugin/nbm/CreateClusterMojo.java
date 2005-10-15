@@ -34,7 +34,7 @@ import org.apache.tools.ant.util.FileUtils;
  * Create the Netbeans module clusters from reactor
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal cluster
- * 
+ * @aggregator
  * @requiresDependencyResolution runtime
  *
  */
