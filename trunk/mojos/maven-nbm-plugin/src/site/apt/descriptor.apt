@@ -26,14 +26,4 @@ Example nbm descriptors
 </NetbeansModule>
 ------
 
- libraries - groupId:artifactId of a dependency that is to be shipped as part of the module.
-
- dependencies - items in this list will be used to define the OpenIDE-Module-Module-Dependencies module's manifest entry.
-
-   possibly types - "loose", "spec", "impl"
-
-   if explicitValue not specified, the plugin tries to guess based on the dependency's content. 
-
-
- 
 
