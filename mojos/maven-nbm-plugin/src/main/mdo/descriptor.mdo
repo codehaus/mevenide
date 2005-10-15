@@ -20,7 +20,7 @@
           <name>libraries</name>
           <version>1.0.0</version>
           <description>groupId:artifactId of artifacts that shall become part of the module and be added on the classpath 
-                       (ClassPath: manifest entry get created and the jar is included in the nbm file)</description>
+                       (ClassPath: manifest entry gets created and the jar is included in the nbm file)</description>
           <association>
             <type>String</type>
             <multiplicity>*</multiplicity>
@@ -28,6 +28,7 @@
         </field>
         <field>
           <name>dependencies</name>
+          <description>List of module dependencies. The plugin will use it to Generate the OpenIDE-Module-Module-Dependencies manifest entry.</description>
           <version>1.0.0</version>
           <association>
             <type>Dependency</type>
@@ -47,22 +48,38 @@
     </class>
     <class>
       <name>Dependency</name>
+      <description></description>
       <version>1.0.0</version>
       <fields>
         <field>
           <name>id</name>
+          <description>groupId:artifactId of the dependency defined in the POM (or a transitive dependency)</description>
           <version>1.0.0</version>
           <type>String</type>
           <required>true</required>
         </field>
         <field>
           <name>type</name>
+          <description><![CDATA[
+Type of module dependency. 3 possible values allowed.
+<p><b>spec</b> - specification dependency, module can only use public APIs in public packages. Works with the version defined and any later version.</p>
+<p><b>impl</b> - implementation dependency, module can use any class in the dependency module, but works with just the one version of the module.</p>
+<p><b>loose</b> - similar to spec, but isa very loose connection, no version is required, just the module presence.</p>
+]]>
+          </description>
           <version>1.0.0</version>
           <type>String</type>
           <defaultValue>spec</defaultValue>
         </field>
         <field>
           <name>explicitValue</name>
+          <description><![CDATA[
+The plugin tries to resolve the correct module name and module specification/implementation version by examining the
+dependency jar's manifest.
+You can override this behaviour by explicitly defining the value here. For example org.openide.io/1 &gt; 10.1 for a "spec" type of dependency.
+          
+]]>              
+          </description>
           <version>1.0.0</version>
           <type>String</type>
         </field>
@@ -74,12 +91,14 @@
       <fields>
         <field>
           <name>baseDirectory</name>
+          <description>The base directory, all paths within the nbm file will be the same as paths within the base directory.</description>
           <version>1.0.0</version>
           <type>String</type>
           <required>true</required>
         </field>
         <field>
           <name>includes</name>
+          <description>Include pattern, what shall be included in the nbm. </description>
           <version>1.0.0</version>
           <association>
             <type>String</type>
@@ -88,6 +107,7 @@
         </field>
         <field>
           <name>excludes</name>
+          <description>Exclude pattern, what files within the basedir shall not be included. </description>
           <version>1.0.0</version>
           <association>
             <type>String</type>

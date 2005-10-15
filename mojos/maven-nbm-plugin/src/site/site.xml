@@ -19,7 +19,8 @@
 
     <menu name="Overview">
       <item name="Introduction" href="introduction.html"/>
-      <item name="Descriptor Format" href="descriptor.html"/>
+      <item name="Descriptor Format" href="nbm.html"/>
+      <item name="Example Descriptor" href="descriptor.html"/>
     </menu>
     ${reports}
   </body>
