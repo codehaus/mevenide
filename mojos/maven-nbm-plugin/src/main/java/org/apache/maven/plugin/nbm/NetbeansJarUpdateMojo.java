@@ -264,6 +264,12 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
             getLog().error( "Cannot update jar" );
             throw new MojoExecutionException( e.getMessage(), e );
         }
+        try {
+            FileUtils.newFileUtils().copyFile(jarFile, original);
+        } catch (IOException ex) {
+            getLog().error("Cannot copy module jar to original location");
+            throw new MojoExecutionException("Cannot copy module jar to original location", ex);
+        }
     }
     
     private void conditionallyAddAttribute(Manifest.Section section, String key, String value) {
