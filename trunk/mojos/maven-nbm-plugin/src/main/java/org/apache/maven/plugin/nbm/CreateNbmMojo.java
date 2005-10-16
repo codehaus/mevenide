@@ -93,72 +93,6 @@ public class CreateNbmMojo
     private String finalName;
     
     /**
-     * a module name, used for module name in jar and the actual jar name in nbm
-     * @parameter expression="${project.groupId}.${project.artifactId}"
-     * @required
-     */
-    private String moduleName;
-    
-    /**
-     * the module is autoload meaning it's automatically enabled when some other module depends on it.
-     * a module cannot be both eager and autoload.
-     * @parameter defaultvalue="false"
-     */
-    private boolean autoload;
-    
-    /**
-     * the module is eager, it will automatically enable itself when all dependencies are satisfied.
-     *  a module cannot be both eager and autoload
-     * @parameter defaultvalue="false"
-     */
-    private boolean eager;
-    
-    /**
-     * the cluster the module belongs to
-     * @parameter expression="${project.groupId}"
-     */
-    
-    private String cluster;
-    
-    /**
-     * true if module requires restart of Netbeans when installing.
-     * @parameter defaultvalue="false"
-     */
-    private boolean needsRestart;
-    
-    /**
-     * author of the netbeans module
-     * @parameter expression="${project.organization.name}"
-     */
-    private String moduleAuthor;
-    
-    /**
-     * homepage of the netbeans module
-     * @parameter expression="${project.url}
-     */
-    private String homepageUrl;
-    
-    /**
-     * distribution url for nbm file. That's where the autoupdate file will link to and where
-     * users download the module from.
-     * @parameter expression="${project.url}
-     */
-    private String distributionUrl;
-    
-    /**
-     * name for the license.
-     * @parameter
-     */
-    private String licenseName;
-    
-    /**
-     * a file with content of the license
-     * //TODO have some basic value??
-     * @parameter
-     */
-    private String licenseFile;
-    
-    /**
      * keystore location for signing the nbm file
      * @parameter
      */
@@ -195,15 +129,21 @@ public class CreateNbmMojo
     throws MojoExecutionException {
         Project antProject = registerNbmAntTasks();
         NetbeansModule module = readModuleDescriptor(descriptor);
-        
+
+        String type = module.getModuleType();
+        boolean autoload = "autoload".equals(type);
+        boolean eager = "eager".equals(type);
         // 1. initialization
         if (autoload && eager) {
             getLog().error("Module cannot be both eager and autoload");
             throw new MojoExecutionException("Module cannot be both eager and autoload");
         }
-        
+        String moduleName = module.getCodeNameBase();
+        if (moduleName == null) {
+            moduleName = project.getGroupId() + "." + project.getArtifactId();
+        }
         String moduleJarName = moduleName.replace('.', '-');
-        
+        String cluster = module.getCluster();
         // it can happen the moduleName is in format org.milos/1
         int index = moduleJarName.indexOf('/');
         if (index > -1) {
@@ -339,7 +279,11 @@ public class CreateNbmMojo
         nbmTask.setFile(nbmFile);
         nbmTask.setProductDir(clusterDir);
         nbmTask.setModule(moduleLocation + File.separator + moduleJarName + ".jar");
-        nbmTask.setNeedsrestart(Boolean.toString(needsRestart));
+        nbmTask.setNeedsrestart(Boolean.toString(module.isRequiresRestart()));
+        String moduleAuthor = module.getAuthor();
+        if (moduleAuthor == null) {
+            moduleAuthor = project.getOrganization() != null ? project.getOrganization().getName() : null;
+        }
         nbmTask.setModuleauthor(moduleAuthor);
         if (keystore != null && keystorealias != null && keystorepassword != null) {
             File ks = new File(keystore);
@@ -354,8 +298,10 @@ public class CreateNbmMojo
         } else if (keystore != null || keystorepassword != null || keystorealias != null) {
             getLog().warn("If you want to sign the nbm file, you need to define all three keystore related parameters.");
         }
+        String licenseName = module.getLicenseName();
+        String licenseFile = module.getLicenseFile();
         if (licenseName != null && licenseFile != null) {
-            File lf = new File(licenseFile);
+            File lf = new File(project.getBasedir(), licenseFile);
             if (!lf.exists()) {
                 getLog().warn("Cannot find license file at " + lf.getAbsolutePath());
             } else {
@@ -370,11 +316,17 @@ public class CreateNbmMojo
             lb.addText("<Here comes the license>");
             lb.setName("Unknown license agreement");
         }
-        if (homepageUrl != null) {
-            nbmTask.setHomepage(homepageUrl);
+        String homePageUrl = module.getHomepageUrl();
+        if (homePageUrl == null) {
+            homePageUrl = project.getUrl();
         }
-        if (distributionUrl != null) {
-            nbmTask.setDistribution(distributionUrl);
+        if (homePageUrl != null) {
+            nbmTask.setHomepage(homePageUrl);
+        }
+        if (module.getDistributionUrl() != null) {
+            nbmTask.setDistribution(module.getDistributionUrl());
+        } else {
+            getLog().warn("You don't define distribution URL in the netbeans module descriptor. That's ok for local installation but f you want to create an autoupdate site, you have to define this property.");
         }
         try {
             nbmTask.execute();

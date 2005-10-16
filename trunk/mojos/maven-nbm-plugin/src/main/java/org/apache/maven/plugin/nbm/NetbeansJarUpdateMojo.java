@@ -76,24 +76,6 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
      */
     private String finalName;
     
-    
-    /**
-     * Location of the netbeans related manifest entries
-     * TODO just test
-     * @parameter expression="${project.build.directory}"
-     *
-     */
-    protected File nbmManifest;
-    
-    
-    /**
-     * a module name, used for module name in jar and the actual jar name in nbm
-     * need pakagename like org.netbeans.modules.milos
-     * @parameter expression="${project.groupId}.${project.artifactId}"
-     * @required
-     */
-    protected String moduleName;
-    
     /**
      * a netbeans module descriptor containing dependency information and more
      *
@@ -130,10 +112,14 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
         }
         NetbeansModule module = readModuleDescriptor(descriptor);
         
-        
+        String moduleName = module.getCodeNameBase();
+        if (moduleName == null) {
+            moduleName = project.getGroupId() + "." + project.getArtifactId();
+        }
 //<!-- if a netbeans specific manifest is defined, examine this one, otherwise the already included one.
 // ignoring the case when some of the netbeans attributes are already defined in the jar and more is included.
         File specialManifest = null;
+        File nbmManifest = (module.getManifest() != null ? new File(project.getBasedir(), module.getManifest()) : null);
         if (nbmManifest != null && nbmManifest.exists()) {
             specialManifest = nbmManifest;
         }
