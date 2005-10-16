@@ -1,36 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>${groupId}</groupId>
-  <artifactId>${artifactId}</artifactId>
-  <packaging>nbm</packaging>
-  <version>${version}</version>
-  <name>Maven Nbm Archetype</name>
-  <url>http://mevenide.codehaus.org</url>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>${groupId}</groupId>
+    <artifactId>${artifactId}</artifactId>
+    <packaging>nbm</packaging>
+    <version>${version}</version>
+    <name>Maven Nbm Archetype</name>
+    <url>http://mevenide.codehaus.org</url>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-    </dependency>
-    <dependency>
-      <groupId>netbeans</groupId>
-      <artifactId>nbantext</artifactId>
-      <version>4.0</version>
-    </dependency>
-  </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mevenide.plugins</groupId>
-        <artifactId>maven-nbm-plugin</artifactId>
-        <version>2.0</version>
-	<extensions>true</extensions>
-        <configuration>
-          <descriptor>src/main/nbm/module.xml</descriptor>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+    <dependencies>
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>openide</artifactId>
+            <version>5.9.1</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>
+        
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>1.6.1</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mevenide.plugins</groupId>
+                <artifactId>maven-nbm-plugin</artifactId>
+                <version>2.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <descriptor>src/main/nbm/module.xml</descriptor>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
