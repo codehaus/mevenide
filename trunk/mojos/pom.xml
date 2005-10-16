@@ -64,16 +64,27 @@
     <url>http://www.codehaus.org/</url>
   </organization>
   <distributionManagement>
-    <repository>
+    <site>
+      <id>site</id>
+      <name>Mevenide Website</name>
+      <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-site</url>
+    </site>
+      
+    <!--repository>
       <id>repo1</id>
       <name>Maven Central Repository</name>
       <url>scp://repo1.maven.org/home/projects/maven/repository-staging/to-ibiblio/maven2</url>
+    </repository-->
+    <repository>
+        <id>mevenide</id>
+        <name>Mevenide's private repository</name>
+        <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-repository</url>
     </repository>
-    <snapshotRepository>
+    <!--snapshotRepository>
       <id>snapshots</id>
       <name>Maven Snapshot Central Repository</name>
       <url>scp://repo1.maven.org/home/projects/maven/repository-staging/snapshots/maven2</url>
-    </snapshotRepository>
+    </snapshotRepository-->
   </distributionManagement>
   <repositories>
     <repository>
@@ -97,5 +108,6 @@
   </pluginRepositories>
   <modules>
     <module>maven-nbm-plugin</module>
+    <module>maven-archetype-nbm</module>
   </modules>
 </project>
