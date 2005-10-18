@@ -114,6 +114,7 @@ public class CreateNbmMojo
      * a netbeans module descriptor containing dependency information and more
      *
      * @parameter
+     * @required
      */
     protected File descriptor;
     

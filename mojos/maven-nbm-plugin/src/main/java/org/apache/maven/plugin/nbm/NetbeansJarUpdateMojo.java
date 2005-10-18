@@ -80,6 +80,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
      * a netbeans module descriptor containing dependency information and more
      *
      * @parameter
+     * @required
      */
     protected File descriptor;
     
