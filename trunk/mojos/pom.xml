@@ -53,11 +53,6 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-plugin-api</artifactId>
-      <version>2.0-beta-3-SNAPSHOT</version>
-    </dependency>
   </dependencies>
   <organization>
     <name>The Codehaus</name>
@@ -86,26 +81,6 @@
       <url>scp://repo1.maven.org/home/projects/maven/repository-staging/snapshots/maven2</url>
     </snapshotRepository-->
   </distributionManagement>
-  <repositories>
-    <repository>
-      <id>snapshots</id>
-      <name>Maven Central Development Repository</name>
-      <url>http://snapshots.maven.codehaus.org/maven2</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>snapshots</id>
-      <name>Maven Central Plugins Development Repository</name>
-      <url>http://snapshots.maven.codehaus.org/maven2</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-    </pluginRepository>
-  </pluginRepositories>
   <modules>
     <module>maven-nbm-plugin</module>
     <module>maven-archetype-nbm</module>
