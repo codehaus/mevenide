@@ -14,7 +14,6 @@
             <artifactId>openide</artifactId>
             <version>5.9.1</version>
             <type>jar</type>
-            <url>http://www.netbeans.org</url>
         </dependency>
         
         <dependency>
@@ -22,7 +21,6 @@
             <artifactId>org-openide-io</artifactId>
             <version>1.6.1</version>
             <type>jar</type>
-            <url>http://www.netbeans.org</url>
         </dependency>
     </dependencies>
     <build>
