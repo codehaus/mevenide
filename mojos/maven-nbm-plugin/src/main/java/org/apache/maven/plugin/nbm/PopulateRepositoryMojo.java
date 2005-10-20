@@ -174,6 +174,7 @@ public class PopulateRepositoryMojo
         mavenModel.setArtifactId(artifact);
         mavenModel.setVersion(version);
         mavenModel.setPackaging("jar");
+        mavenModel.setModelVersion("4.0.0");
         FileWriter writer = null;
         File fil = null;
             try {
