@@ -5,19 +5,22 @@
     <artifactId>${artifactId}</artifactId>
     <packaging>nbm</packaging>
     <version>${version}</version>
-    <name>Maven Nbm Archetype</name>
+    <name>Maven Netbeans Module Archetype</name>
     <url>http://mevenide.codehaus.org</url>
 
     <dependencies>
+        <!-- local repository can be populated by the nbm:populate-repository goal from an existing 
+             netbeans installation. The included dependencies originate in Netbeans 4.1.
+         -->
         <dependency>
-            <groupId>netbeans</groupId>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>openide</artifactId>
             <version>5.9.1</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
-            <groupId>netbeans</groupId>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-io</artifactId>
             <version>1.6.1</version>
             <type>jar</type>

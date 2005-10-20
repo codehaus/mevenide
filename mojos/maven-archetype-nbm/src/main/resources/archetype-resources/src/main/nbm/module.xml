@@ -1,8 +1,9 @@
 <NetbeansModule>
-   <dependencies>
-      <dependency>
+    <manifest>src/main/nbm/manifest.mf</manifest>
+    <dependencies>
+       <dependency>
           <id>netbeans:org-openide-io</id>
 	  <type>spec</type>
-      </dependency>
-   </dependencies> 
+       </dependency>
+    </dependencies> 
 </NetbeansModule>
