@@ -63,8 +63,8 @@ import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal nbm
  * @phase package
- * execute phase="package" lifecycle="nbm"
  * @requiresDependencyResolution runtime
+ * @requiresProject
  *
  */
 public class CreateNbmMojo
@@ -328,6 +328,8 @@ public class CreateNbmMojo
             nbmTask.setDistribution(module.getDistributionUrl());
         } else {
             getLog().warn("You don't define distribution URL in the netbeans module descriptor. That's ok for local installation but f you want to create an autoupdate site, you have to define this property.");
+            nbmTask.setDistribution(project.getUrl() + "/" + nbmFile.getName());
+            getLog().warn("  Using default value for distribution URL: " + nbmTask.getDescription());
         }
         try {
             nbmTask.execute();

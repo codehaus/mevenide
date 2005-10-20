@@ -104,7 +104,7 @@ public class ExamineManifest  {
     void processManifest(Manifest mf) {
         Attributes attrs = mf.getMainAttributes();
         setModule(attrs.getValue("OpenIDE-Module"));
-        setNetbeansModule((getModule() == null ? false : true));
+        setNetbeansModule(getModule() != null);
         if (isNetbeansModule()) {
             setLocBundle(attrs.getValue("OpenIDE-Module-Localizing-Bundle"));
             setLocalized((getLocBundle() == null ? false : true));
