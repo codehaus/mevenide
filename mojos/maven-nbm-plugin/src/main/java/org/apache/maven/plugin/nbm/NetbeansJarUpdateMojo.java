@@ -52,7 +52,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
  * @goal jar
  * @phase package
  * @requiresDependencyResolution runtime
- * execute phase="package" lifecycle="nbm"
+ * @requiresProject
  */
 public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
     /**
@@ -130,6 +130,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
         } else {
             examinator.setJarFile(jarFile);
         }
+        examinator.checkFile();
         
         getLog().info("NBM Plugin updates jar.");
         
@@ -200,6 +201,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
                     if (depToken == null) {
                         ExamineManifest depExaminator = new ExamineManifest();
                         depExaminator.setJarFile(artifact.getFile());
+                        depExaminator.checkFile();
                         if ("loose".equals(type)) {
                             depToken = depExaminator.getModule();
                         } else if ("spec".equals(type)) {
