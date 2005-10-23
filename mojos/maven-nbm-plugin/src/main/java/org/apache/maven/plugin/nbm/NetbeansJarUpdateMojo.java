@@ -192,7 +192,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
             for ( Iterator iter = artifacts.iterator(); iter.hasNext();) {
                 Artifact artifact = (Artifact) iter.next();
                 if (matchesLibrary(artifact, librList)) {
-                    classPath = classPath + " " + artifact.getFile().getName();
+                    classPath = classPath + " ext/" + artifact.getFile().getName();
                 }
                 Dependency dep = resolveNetbeansDependency(artifact, deps);
                 if (dep != null) {
@@ -228,7 +228,7 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
                 }
             }
             if (classPath.length() > 0) {
-                conditionallyAddAttribute(mainSection, "ClassPath", classPath);
+                conditionallyAddAttribute(mainSection, "Class-Path", classPath);
             }
             if (dependencies.length() > 0) {
                 conditionallyAddAttribute(mainSection, "OpenIDE-Module-Module-Dependencies", dependencies);
