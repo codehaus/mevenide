@@ -236,8 +236,8 @@ public class CreateNbmMojo
         CreateModuleXML moduleXmlTask = (CreateModuleXML)antProject.createTask("createmodulexml");
         moduleXmlTask.setXmldir(configDir);
         FileSet fs = new FileSet();
-        fs.setDir(moduleJarLocation);
-        fs.setIncludes(moduleJarName + ".jar");
+        fs.setDir(clusterDir);
+        fs.setIncludes(moduleLocation + File.separator + moduleJarName + ".jar");
         if (autoload) {
             moduleXmlTask.addAutoload(fs);
         } else if (eager) {
@@ -260,8 +260,8 @@ public class CreateNbmMojo
             throw new MojoExecutionException( e.getMessage(), e );
         }
         MakeListOfNBM makeTask = (MakeListOfNBM)antProject.createTask("genlist");
-        antProject.setNewProperty("module.name", moduleJarName);
-        antProject.setProperty("cluster.dir", "netbeans" + File.separator + cluster);
+        antProject.setNewProperty("module.name", finalName);
+        antProject.setProperty("cluster.dir", cluster);
         FileSet set = makeTask.createFileSet();
         set.setDir(clusterDir);
         PatternSet pattern = set.createPatternSet();
@@ -279,6 +279,7 @@ public class CreateNbmMojo
         MakeNBM nbmTask = (MakeNBM)antProject.createTask("makenbm");
         nbmTask.setFile(nbmFile);
         nbmTask.setProductDir(clusterDir);
+        
         nbmTask.setModule(moduleLocation + File.separator + moduleJarName + ".jar");
         nbmTask.setNeedsrestart(Boolean.toString(module.isRequiresRestart()));
         String moduleAuthor = module.getAuthor();
