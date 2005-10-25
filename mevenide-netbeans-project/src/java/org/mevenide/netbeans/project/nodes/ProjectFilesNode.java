@@ -113,7 +113,7 @@ public class ProjectFilesNode extends AbstractNode {
                 keys.add(new FileWrapper(prefix + " POM file", normalized));
                 File parent = normalized.getParentFile();
                 keys.add(new FileWrapper(prefix + " properties", new File(parent, "project.properties")));
-                keys.add(new FileWrapper(prefix + " build propvierties", new File(parent, "build.properties")));
+                keys.add(new FileWrapper(prefix + " build properties", new File(parent, "build.properties")));
             }
             keys.add(new FileWrapper("User build properties", new File(project.getContext().getUserDirectory(), "build.properties")));
 	    File mavenScript = new File(project.getContext().getProjectDirectory(), "maven.xml");
