@@ -183,7 +183,7 @@ class DefaultProjectContext implements IProjectContext {
                 jdomRootElements.add(proj);
                 projectFiles.add(file);
                 projectTimestamps.add(new Long(file.lastModified()));
-                String extend = proj.getChildText("extend");
+                String extend = proj.getChildTextTrim("extend");
                 callback.discardError(IQueryErrorCallback.ERROR_UNPARSABLE_POM);
                 if (extend != null) {
                     extend = doReplaceExtend(file.getParentFile(), propResolver, extend);
