@@ -1,0 +1,9 @@
+<NetbeansModule>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.nbmvnembedder/1</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <libraries>
+      <library>org.apache.maven:maven-embedder</library>
+   </libraries> 
+</NetbeansModule>
