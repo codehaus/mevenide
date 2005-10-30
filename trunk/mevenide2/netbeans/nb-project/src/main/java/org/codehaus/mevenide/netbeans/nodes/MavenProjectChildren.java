@@ -134,7 +134,7 @@ class MavenProjectChildren extends Children.Keys {
 //            list.add(xdocsgroup[i]);
 //        }
 //        list.add(KEY_DEPENDENCIES);
-//        list.add(KEY_PROJECT_FILES);
+        list.add(KEY_PROJECT_FILES);
         setKeys(list);
     }
     
@@ -148,7 +148,7 @@ class MavenProjectChildren extends Children.Keys {
 //            } else {
                 n = PackageView.createPackageView(grp);
 //            }
-        }
+//        }
 //        else if (key == KEY_RESOURCES) {
 //            n = new ResourcesRootNode(project, false);
 //        } else if (key == KEY_TEST_RESOURCES) {
@@ -161,9 +161,9 @@ class MavenProjectChildren extends Children.Keys {
 //            n = createEjbNode();
 //        } else if (key == KEY_DEPENDENCIES) {
 //            n = new DependenciesNode(project);
-//        } else if (key == KEY_PROJECT_FILES) {
-//            n = new ProjectFilesNode(project);
-//        }
+        } else if (key == KEY_PROJECT_FILES) {
+            n = new ProjectFilesNode(project);
+        }
         return n == null ? new Node[0] : new Node[] {n};
     }
     
