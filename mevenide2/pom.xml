@@ -84,4 +84,18 @@
   <modules>
     <module>netbeans</module>
   </modules>
+    <repositories>
+        <repository>
+            <id>mevenide1</id>
+            <name>Mevenide's M2 repo</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mevenide2</id>
+            <name>Mevenide's M2 plugins</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
