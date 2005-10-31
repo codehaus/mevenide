@@ -41,6 +41,7 @@ import org.apache.maven.project.DefaultMavenProjectBuilder;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -216,121 +217,12 @@ public final class NbMavenProject implements Project {
     
     public String getArtifactRelativeRepositoryPath(Artifact artifact) {
         embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
-        return embedder.getLocalRepository().pathOf(artifact);
+        String toRet = embedder.getLocalRepository().pathOf(artifact);
+        //TODO this is more or less a hack..
+        // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
+        return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar";
     }
     
-//    public URI getSrcDirectory() {
-//        String path = null;
-//        if (getOriginalMavenProject().getBuild() != null) {
-//            path = getOriginalMavenProject().getBuild().getSourceDirectory();
-//            if (path == null) {
-//            }
-//        }
-//        if (path == null) {
-//            path = "src/main/java";
-//        }
-//        return getDirURI(path);
-//    }
-//    
-//    public URI getTestSrcDirectory() {
-//        if (getOriginalMavenProject().getBuild() != null) {
-//            String path = getOriginalMavenProject().getBuild().getTestSourceDirectory();
-//            if (path != null) {
-//                return getDirURI(getPropertyResolver().resolveString(path));
-//            }
-//        }
-//        // this one should not fail
-//        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
-//        if (path == null) {
-//            logger.warn("Strange thing here. testsrc dir not found.");
-//            return null;
-//        }
-//        File fl = new File(path, "test/java"); //NOI18N
-//        return FileUtil.normalizeFile(fl).toURI();
-//    }
-    
-//   public URI getAspectsDirectory() {
-//        if (getOriginalMavenProject().getBuild() != null) {
-//            String path = getOriginalMavenProject().getBuild().getAspectSourceDirectory();
-//            if (path != null) {
-//                return getDirURI(getPropertyResolver().resolveString(path));
-//            }
-//        }
-//        // this one should not fail
-//        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
-//        if (path == null) {
-//            logger.warn("Strange thing here. src dir not found.");
-//            return null;
-//        }
-//        // TODO - huh? what is the default location of the aspects? is there any?
-//        File fl = new File(path, "aspects"); //NOI18N
-//        return  FileUtil.normalizeFile(fl).toURI();
-//   }
-//   
-//   public URI getIntegrationTestsDirectory() {
-//       if (getOriginalMavenProject().getBuild() != null) {
-//           String path = getOriginalMavenProject().getBuild().getIntegrationUnitTestSourceDirectory();
-//           if (path != null) {
-//               return getDirURI(getPropertyResolver().resolveString(path));
-//           }
-//       }
-//       // this one should not fail
-//       String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
-//       if (path == null) {
-//           logger.warn("Strange thing here. src dir not found.");
-//           return null;
-//       }
-//       // TODO - huh? what is the default location of the integration tests? is there any?
-//       File fl = new File(path, "test/integration"); //NOI18N
-//       return  FileUtil.normalizeFile(fl).toURI();
-//   }
-//   
-//   /**
-//    * URI denoted by the maven.war.src property in the project context.
-//    */
-//   public URI getWebAppDirectory() {
-//       String path = getPropertyResolver().getResolvedValue("maven.war.src"); //NOI18N
-//       return path == null ? null : getDirURI(path);
-//   }
-//   
-//   /**
-//    * returns the location of the war file. can return null or a file instance that doesn't exist.
-//    */
-//   public File getWar() {
-//        String buildDir = getPropertyResolver().getResolvedValue("maven.war.build.dir");
-//        String name = getPropertyResolver().getResolvedValue("maven.war.final.name");
-//        if (name != null && buildDir != null) {
-//            File fil = new File(buildDir, name + ".war");
-//            return fil;
-//        }
-//        return null;
-//   }
-//   
-//   /**
-//    * URI denoted by the maven.ear.src property in the project context.
-//    */
-//   public URI getEarDirectory() {
-//       String path = getPropertyResolver().getResolvedValue("maven.ear.src"); //NOI18N
-//       return path == null ? null : getDirURI(path);
-//   }
-//   
-//   /**
-//    * URI denoted by the maven.ejb.src property in the project context.
-//    */
-//   public URI getEjbDirectory() {
-//       String path = getPropertyResolver().getResolvedValue("maven.ejb.src"); //NOI18N
-//       return path == null ? null : getDirURI(path);
-//   }   
-//
-//   /**
-//    * URI denoted by the cactus.src.dir property in the project context. Relates to the maven-cactus-plugin.
-//    */
-//   public URI getCactusDirectory() {
-//       String path = getPropertyResolver().getResolvedValue("cactus.src.dir"); //NOI18N
-//       return path == null ? null : getDirURI(path);
-//   }
-//   
-   
    
    private URI getDirURI(String path) {
        String pth = path.trim();
@@ -340,59 +232,6 @@ public final class NbMavenProject implements Project {
        return FileUtil.normalizeFile(src).toURI();
    }
 
-//    /**
-//     * returns URI pointing to maven.build.dest property value
-//     */
-//    public URI getBuildClassesDir() {
-//        String path = getOriginalMavenProject().getBuild().getOutputDirectory();
-//        return getDirURI(path);
-//    }
-//    
-//    /**
-//     * returns URI pointing to maven.build.src property value
-//     */
-//   public URI getGeneratedSourcesDir() {
-//        String path = properties.getResolvedValue("maven.build.src");
-//        if (path != null) {
-//            File fl = new File(path);
-//            return FileUtil.normalizeFile(fl).toURI();
-//        }
-//        logger.warn("maven.build.src not defined.");
-//        return null;
-//    }    
-   
-//   /**
-//    * source dir URIs designated by the maven.gen.src (from maven-eclipse-plugin)
-//    * all it's subdirs ought to be added to classpath I guess.
-//    * @return Collection of URIs
-//    */
-//    public Collection getAdditionalGeneratedSourceDirs() {
-//        String path = properties.getResolvedValue("maven.gen.src");
-//        if (path != null) {
-//            File fl = new File(path);
-//            if (fl.exists() && fl.isDirectory()) {
-//                Collection col = new ArrayList();
-//                File[] fls = fl.listFiles();
-//                for (int i = 0; i < fls.length; i++) {
-//                    if (fls[i].isDirectory()) {
-//                        col.add(FileUtil.normalizeFile(fl).toURI());
-//                    }
-//                }
-//                return col;
-//            }
-//        }
-//        return Collections.EMPTY_LIST;
-//    }
-    
-//    public URI getTestBuildClassesDir() {
-//        String path = properties.getResolvedValue("maven.test.dest");
-//        if (path != null) {
-//            File fl = new File(path);
-//            return FileUtil.normalizeFile(fl).toURI();
-//        }
-//        logger.warn("maven.test.dest not defined.");
-//        return null;
-//    }
     
     public synchronized Lookup getLookup() {
         if (lookup == null) {
@@ -408,7 +247,7 @@ public final class NbMavenProject implements Project {
     private Lookup createBasicLookup() {
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
-//            new MavenForBinaryQueryImpl(this),
+            new MavenForBinaryQueryImpl(this),
 //            new ActionProviderImpl(this),
 //            new CustomizerProviderImpl(this),
             new LogicalViewProviderImpl(this),
