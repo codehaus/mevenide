@@ -130,6 +130,7 @@ public final class NbMavenProject implements Project {
     
     public void firePropertyChange(String property) {
         synchronized (support) {
+            project = null;
             projectInfo.reset();
             support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));
         }
@@ -311,6 +312,7 @@ public final class NbMavenProject implements Project {
             if (toReturn == null) {
                 toReturn = "<No name defined>";
             }
+            toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")";
             return toReturn;
         }
         
