@@ -47,20 +47,6 @@ import org.openide.util.WeakListeners;
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
     
-    private static final String MULTIPROJECT_INCLUDES = "maven.multiproject.includes"; //NOI18N
-    private static final String MULTIPROJECT_EXCLUDES = "maven.multiproject.excludes"; //NOI18N
-    private static final String MULTIPROJECT_BASEDIR = "maven.multiproject.basedir"; //NOI18N
-    
-    /**
-     * these are to override the new default behaviour. does not take the project's
-     * dependencies into account -> for regular projects can have weird sideeffects for
-     * refactoring etc.
-     * useful for umbrella projects for example, to ease the opening of multiple (possibly independant) projects at once.
-     */
-    private static final String NBPROJECT_INCLUDES = "maven.netbeans.multiproject.includes"; //NOI18N
-    private static final String NBPROJECT_EXCLUDES = "maven.netbeans.multiproject.excludes"; //NOI18N
-    private static final String NBPROJECT_BASEDIR = "maven.netbeans.multiproject.basedir"; //NOI18N
-    
     private NbMavenProject project;
     private List listeners;
     private ChangeListener listener2;
