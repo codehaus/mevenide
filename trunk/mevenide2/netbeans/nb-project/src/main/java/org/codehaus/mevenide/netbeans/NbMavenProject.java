@@ -53,6 +53,7 @@ import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 
 
@@ -91,14 +92,8 @@ public final class NbMavenProject implements Project {
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
-        embedder = new MavenEmbedder();
-        embedder.setClassLoader(getClass().getClassLoader());
-        embedder.start();
+        embedder = EmbedderFactory.createEmbedder();
         //TODO maybe just be offline when reading project?
-        embedder.setOffline(true);
-        embedder.setInteractiveMode(false);
-        embedder.setCheckLatestPluginVersion(false);
-        embedder.setUpdateSnapshots(false);
         
     }
     
