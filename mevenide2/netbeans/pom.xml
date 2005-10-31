@@ -14,6 +14,6 @@
   <inceptionYear>2005</inceptionYear>
   <modules>
      <module>nb-project</module>
-     <!--module>libs</module-->
+     <module>libs</module>
   </modules>
 </project>

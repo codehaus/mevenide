@@ -3,9 +3,9 @@
    <codeNameBase>org.codehaus.mevenide.netbeans/2</codeNameBase>
    <cluster>mevenide</cluster>
    <manifest>src/main/nbm/manifest.mf</manifest>
-   <libraries>
+   <!--libraries>
        <library>org.apache.maven:maven-embedder</library>
-   </libraries>
+   </libraries-->
    <dependencies>
       <dependency>
           <id>org.netbeans.api:org-openide-io</id>
@@ -39,9 +39,9 @@
           <id>org.netbeans.api:org-netbeans-modules-java-platform</id>
 	  <type>spec</type>
       </dependency>
-      <!--dependency>
+      <dependency>
           <id>org.codehaus.mevenide:nb-mvn-embedder</id>
 	  <type>spec</type>
-      </dependency-->
+      </dependency>
    </dependencies> 
 </NetbeansModule>
