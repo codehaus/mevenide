@@ -1,6 +1,6 @@
 <component-set>
   <components>
-    <component>
+    <!--component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
       <role-hint>jar</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
@@ -8,14 +8,14 @@
         <type>jar</type>
         <extension>jar</extension>
       </configuration>
-    </component>
+    </component-->
     <component>
       <role>org.apache.maven.artifact.handler.ArtifactHandler</role>
       <role-hint>nbm</role-hint>
       <implementation>org.apache.maven.artifact.handler.DefaultArtifactHandler</implementation>
       <configuration>
         <type>nbm</type>
-        <extension>nbm</extension>
+        <extension>jar</extension>
       </configuration>
     </component>
     <component>
