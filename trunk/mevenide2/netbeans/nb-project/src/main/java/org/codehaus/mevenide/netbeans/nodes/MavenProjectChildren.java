@@ -49,6 +49,8 @@ class MavenProjectChildren extends Children.Keys {
 //    private static final String KEY_EAR = "ear"; //NOI18N
 //    private static final String KEY_EJB = "ejb"; //NOI18N
     private static final String KEY_DEPENDENCIES = "dependencies"; //NOI18N
+    private static final String KEY_TEST_DEPENDENCIES = "dependencies2"; //NOI18N
+    private static final String KEY_RUNTIME_DEPENDENCIES = "dependencies3"; //NOI18N
     private static final String KEY_PROJECT_FILES = "projectfiles"; //NOI18N
     
     
@@ -133,7 +135,9 @@ class MavenProjectChildren extends Children.Keys {
 //        for (int i = 0; i < xdocsgroup.length; i++) {
 //            list.add(xdocsgroup[i]);
 //        }
-//        list.add(KEY_DEPENDENCIES);
+        list.add(KEY_DEPENDENCIES);
+        list.add(KEY_TEST_DEPENDENCIES);
+        list.add(KEY_RUNTIME_DEPENDENCIES);
         list.add(KEY_PROJECT_FILES);
         setKeys(list);
     }
@@ -159,8 +163,12 @@ class MavenProjectChildren extends Children.Keys {
 //            n = createEarNode();
 //        } else if (key == currentEjbKey) {
 //            n = createEjbNode();
-//        } else if (key == KEY_DEPENDENCIES) {
-//            n = new DependenciesNode(project);
+        } else if (key == KEY_DEPENDENCIES) {
+            n = new DependenciesNode(project, DependenciesNode.TYPE_COMPILE);
+        } else if (key == KEY_TEST_DEPENDENCIES) {
+            n = new DependenciesNode(project, DependenciesNode.TYPE_TEST);
+        } else if (key == KEY_RUNTIME_DEPENDENCIES) {
+            n = new DependenciesNode(project, DependenciesNode.TYPE_RUNTIME);
         } else if (key == KEY_PROJECT_FILES) {
             n = new ProjectFilesNode(project);
         }
