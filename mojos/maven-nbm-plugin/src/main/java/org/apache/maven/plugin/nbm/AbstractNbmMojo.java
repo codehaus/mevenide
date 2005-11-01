@@ -63,10 +63,12 @@ public abstract class AbstractNbmMojo extends AbstractMojo {
     }
     
     protected boolean matchesLibrary(Artifact artifact, List libraries) {
-        if (!"jar".equals(artifact.getType())) {
-            // just jars make sense.
-            return false;
-        }
+// when we have classifier like jar-assembly this condition is not true..
+// just take everything that is a dependecy, no matter of what type..        
+//        if (!"jar".equals(artifact.getType())) {
+//            // just jars make sense.
+//            return false;
+//        }
         String artId = artifact.getArtifactId();
         String grId = artifact.getGroupId();
         String id = grId + ":" + artId;
@@ -74,10 +76,12 @@ public abstract class AbstractNbmMojo extends AbstractMojo {
     }
     
     protected Dependency resolveNetbeansDependency(Artifact artifact, List deps) {
-        if (!"jar".equals(artifact.getType())) {
-            // just jars make sense.
-            return null;
-        }
+// when we have classifier like jar-assembly this condition is not true..
+// just take everything that is a dependecy, no matter of what type..        
+//        if (!"jar".equals(artifact.getType())) {
+//            // just jars make sense.
+//            return null;
+//        }
         String artId = artifact.getArtifactId();
         String grId = artifact.getGroupId();
         String id = grId + ":" + artId;
