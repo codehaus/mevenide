@@ -23,40 +23,39 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.Project;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
-import org.openide.NotifyDescriptor;
 import org.openide.actions.PropertiesAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.util.HelpCtx;
+import org.openide.nodes.Node;
+import org.openide.nodes.PropertySupport;
+import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
-import org.openide.util.actions.NodeAction;
-
 
 /**
  * node representing a dependency
@@ -77,7 +76,7 @@ public class DependencyNode extends AbstractNode {
      *@param lookup - expects instance of MavenProject, DependencyPOMChange
      */
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
-        super(Children.LEAF);
+        super(Children.LEAF, lookup);
 //        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
         project = (NbMavenProject)lookup.lookup(NbMavenProject.class);
         art = (Artifact)lookup.lookup(Artifact.class);
@@ -105,7 +104,10 @@ public class DependencyNode extends AbstractNode {
         setIconBase();
     }
     
-    private boolean isTransitive() {
+    /**
+     * public because of the property sheet
+     */
+    public boolean isTransitive() {
         List trail = art.getDependencyTrail();
         return (trail != null && trail.size() > 2);
     }
@@ -126,10 +128,6 @@ public class DependencyNode extends AbstractNode {
     
     private boolean isJarDependency() {
         return "jar".equalsIgnoreCase(art.getType());
-    }
-    
-    private boolean isEjbDependency() {
-        return "ejb".equalsIgnoreCase(art.getType());
     }
     
     boolean isDependencyProjectOpen() {
@@ -161,14 +159,15 @@ public class DependencyNode extends AbstractNode {
     
     public Action[] getActions( boolean context ) {
         Collection acts = new ArrayList();
-//        acts.add(new ViewJavadocAction());
+        acts.add(new ViewJavadocAction());
 //        if (!checkLocal()) {
 //            acts.add(DownloadAction.get(DownloadAction.class));
 //        }
 //        acts.add(new EditAction());                
 //        acts.add(RemoveDepAction.get(RemoveDepAction.class));
-//        acts.add(null);
-//        acts.add(PropertiesAction.get(PropertiesAction.class));
+        acts.add(new DownloadJavadocAndSourcesAction());
+        acts.add(null);
+        acts.add(PropertiesAction.get(PropertiesAction.class));
         return (Action[])acts.toArray(new Action[acts.size()]);
     }
     
@@ -197,50 +196,73 @@ public class DependencyNode extends AbstractNode {
         return art.getFile().exists();
     }
     
-//    public boolean hasJavadocInRepository() {
-//        Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
-//        depSnap.setType("javadoc.jar");
-//        URI uri = FileUtilities.getDependencyURI(depSnap, project);
-//        boolean has = (uri != null && new File(uri).exists());
-//        if (!has) {
-//            // support the old way as well..
-//            depSnap.setType("javadoc");
-//            uri = FileUtilities.getDependencyURI(depSnap, project);
-//            has = (uri != null && new File(uri).exists());
-//        }
-//        return has;
-//    }
-//    
-//    public boolean hasSourceInRepository() {
-//        Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
-//        depSnap.setType("src.jar");
-//        URI uri = FileUtilities.getDependencyURI(depSnap, project);
-//        return (uri != null && new File(uri).exists());
-//    }
+    public boolean hasJavadocInRepository() {
+        return getJavadocFile().exists();
+    }
+    
+    private File getJavadocFile() {
+        File artifact = art.getFile();
+        String version = artifact.getParentFile().getName();
+        String artifactId = artifact.getParentFile().getParentFile().getName();
+        return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");
+    }
+    
+    public boolean hasSourceInRepository() {
+        File artifact = art.getFile();
+        String version = artifact.getParentFile().getName();
+        String artifactId = artifact.getParentFile().getParentFile().getName();
+        File src = new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar");
+        return src.exists();
+    }
+    
+    void downloadJavadocSources(MavenEmbedder online) {
+        Artifact javadoc = project.getEmbedder().createArtifactWithClassifier(
+                art.getGroupId(),
+                art.getArtifactId(),
+                art.getVersion(),
+                art.getType(),
+                "javadoc");
+        Artifact sources = project.getEmbedder().createArtifactWithClassifier(
+                art.getGroupId(),
+                art.getArtifactId(),
+                art.getVersion(),
+                art.getType(),
+                "sources");
+        try {
+            StatusDisplayer.getDefault().setStatusText("Checking Javadoc for " + art.getId());
+            online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+            StatusDisplayer.getDefault().setStatusText("Checking Sources for " + art.getId());
+            online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+        } catch (ArtifactNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (ArtifactResolutionException ex) {
+            ex.printStackTrace();
+        } finally {
+            StatusDisplayer.getDefault().setStatusText("");
+        }
+        refreshNode();
+    }
+    
     
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue;
         retValue = super.getIcon(param);
         if (checkLocal()) {
-//            if ("jar".equalsIgnoreCase(dependency.getValue("type")) || dependency.getValue("type") == null) {
-//                if (hasJavadocInRepository()) {
-//                    retValue = Utilities.mergeImages(retValue, 
-//                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
-//                        12, 12);
-//                }
-//                if (hasSourceInRepository()) {
-//                    retValue = Utilities.mergeImages(retValue, 
-//                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencySrcIncluded.png"),
-//                        12, 8);
-//                }
-//                return retValue;
-//                
-//            } 
+            if (hasJavadocInRepository()) {
+                retValue = Utilities.mergeImages(retValue,
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
+                        12, 12);
+            }
+            if (hasSourceInRepository()) {
+                retValue = Utilities.mergeImages(retValue,
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"),
+                        12, 8);
+            }
             return retValue;
         } else {
-            return Utilities.mergeImages(retValue, 
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
-                        0, 0);
+            return Utilities.mergeImages(retValue,
+                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
+                    0, 0);
         }
     }
     
@@ -248,18 +270,16 @@ public class DependencyNode extends AbstractNode {
         java.awt.Image retValue;
         retValue = super.getOpenedIcon(type);
         if (checkLocal()) {
-//            if ("jar".equalsIgnoreCase(dependency.getValue("type")) || dependency.getValue("type") == null) {
-//                if (hasJavadocInRepository()) {
-//                    retValue = Utilities.mergeImages(retValue, 
-//                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencyJavadocIncluded.png"),
-//                        12, 12);
-//                }
-//                if (hasSourceInRepository()) {
-//                    retValue = Utilities.mergeImages(retValue, 
-//                        Utilities.loadImage("org/mevenide/netbeans/project/resources/DependencySrcIncluded.png"),
-//                        12, 8);
-//                }
-//            } 
+            if (hasJavadocInRepository()) {
+                retValue = Utilities.mergeImages(retValue,
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
+                        12, 12);
+            }
+            if (hasSourceInRepository()) {
+                retValue = Utilities.mergeImages(retValue,
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"),
+                        12, 8);
+            }
             return retValue;
         } else {
             return Utilities.mergeImages(retValue, 
@@ -272,11 +292,65 @@ public class DependencyNode extends AbstractNode {
         return null;
     }
     
-
-    public void destroy() throws java.io.IOException {
-        super.destroy();
+    protected Sheet createSheet() {
+        Sheet sheet = Sheet.createDefault();
+        Sheet.Set basicProps = sheet.get(Sheet.PROPERTIES);
+        try {
+            PropertySupport.Reflection artifactId = new PropertySupport.Reflection(art, String.class, "getArtifactId", null);
+            artifactId.setName("artifactId");
+            artifactId.setDisplayName("Artifact Id");
+            artifactId.setShortDescription("");
+            PropertySupport.Reflection groupId = new PropertySupport.Reflection(art, String.class, "getGroupId", null);
+            groupId.setName("groupId");
+            groupId.setDisplayName("Group Id");
+            groupId.setShortDescription("");
+            PropertySupport.Reflection version = new PropertySupport.Reflection(art, String.class, "getVersion", null);
+            version.setName("version");
+            version.setDisplayName("Version");
+            version.setShortDescription("Version of the current artifact");
+            PropertySupport.Reflection type = new PropertySupport.Reflection(art, String.class, "getType", null);
+            type.setName("type");
+            type.setDisplayName("Type");
+            PropertySupport.Reflection scope = new PropertySupport.Reflection(art, String.class, "getScope", null);
+            scope.setName("scope");
+            scope.setDisplayName("Scope");
+            PropertySupport.Reflection classifier = new PropertySupport.Reflection(art, String.class, "getClassifier", null);
+            classifier.setName("classifier");
+            classifier.setDisplayName("Classifier");
+            PropertySupport.Reflection hasJavadoc = new PropertySupport.Reflection(this, Boolean.TYPE, "hasJavadocInRepository", null);
+            hasJavadoc.setName("javadoc");
+            hasJavadoc.setDisplayName("Javadoc Locally");
+            PropertySupport.Reflection hasSources = new PropertySupport.Reflection(this, Boolean.TYPE, "hasSourceInRepository", null);
+            hasSources.setName("sources");
+            hasSources.setDisplayName("Sources Locally");
+            PropertySupport.Reflection transitive = new PropertySupport.Reflection(this, Boolean.TYPE, "isTransitive", null);
+            transitive.setName("transitive");
+            transitive.setDisplayName("Transitive Dependency");
+            
+            basicProps.put(new Node.Property[] {
+                artifactId, groupId, version, type, scope, classifier, transitive, hasJavadoc, hasSources
+            });
+        } catch (NoSuchMethodException exc) {
+            exc.printStackTrace();
+        }
+        return sheet;
     }
     
+    
+    private class DownloadJavadocAndSourcesAction extends AbstractAction implements Runnable {
+        public DownloadJavadocAndSourcesAction() {
+            putValue(Action.NAME, "Download Javadoc & Source");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            RequestProcessor.getDefault().post(this);
+        }
+        
+        public void run() {
+            downloadJavadocSources(EmbedderFactory.getOnlineEmbedder());
+        }
+
+    }
     
 //    private class EditAction extends AbstractAction {
 //        public EditAction() {
@@ -303,28 +377,28 @@ public class DependencyNode extends AbstractNode {
 //        }
 //    }
 //    
-//    private class ViewJavadocAction extends AbstractAction {
-//        public ViewJavadocAction() {
-//            putValue(Action.NAME, "View Javadoc");
-//            setEnabled(hasJavadocInRepository());
-//        }
-//        public void actionPerformed(ActionEvent event) {
-//            Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
-//            depSnap.setType("javadoc.jar");
-//            URI uri = FileUtilities.getDependencyURI(depSnap, project);
-//            try {
-//                URL url = uri.toURL();
-//                if (FileUtil.isArchiveFile(url)) {
-//                    URL archUrl = FileUtil.getArchiveRoot(url);
-//                    String path = archUrl.toString() + "index.html";
-//                    URL link = new URL(path);
-//                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
-//                }
-//            } catch (MalformedURLException e) {
-//                ErrorManager.getDefault().notify(e);
-//            }
-//        }
-//    }
+    private class ViewJavadocAction extends AbstractAction {
+        public ViewJavadocAction() {
+            putValue(Action.NAME, "View Javadoc");
+            setEnabled(hasJavadocInRepository());
+        }
+        public void actionPerformed(ActionEvent event) {
+            File javadoc = getJavadocFile();
+            if (javadoc.exists()) {
+            try {
+                URL url = javadoc.toURI().toURL();
+                if (FileUtil.isArchiveFile(url)) {
+                    URL archUrl = FileUtil.getArchiveRoot(url);
+                    String path = archUrl.toString() + "apidocs/index.html";
+                    URL link = new URL(path);
+                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+                }
+            } catch (MalformedURLException e) {
+                ErrorManager.getDefault().notify(e);
+            }
+            }
+        }
+    }
 //    
 //    
 //    private static class DownloadAction extends NodeAction {

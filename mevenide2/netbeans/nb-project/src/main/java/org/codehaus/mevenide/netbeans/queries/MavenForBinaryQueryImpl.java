@@ -170,7 +170,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         Iterator it = srcRoots.iterator();
         while (it.hasNext()) {
             String item = (String)it.next();
-            toReturn.add(FileUtil.toFileObject(new File(item)));
+            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(item)));
+            if (fo != null) {
+                toReturn.add(fo);
+            }
         }
         return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
     }
@@ -181,7 +184,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         Iterator it = srcRoots.iterator();
         while (it.hasNext()) {
             String item = (String)it.next();
-            toReturn.add(FileUtil.toFileObject(new File(item)));
+            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(item)));
+            if (fo != null) {
+                toReturn.add(fo);
+            }
         }
         return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
     }
