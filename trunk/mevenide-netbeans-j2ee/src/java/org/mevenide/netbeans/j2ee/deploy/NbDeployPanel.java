@@ -18,32 +18,55 @@
 
 package org.mevenide.netbeans.j2ee.deploy;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import org.mevenide.netbeans.api.project.MavenProject;
+import org.mevenide.netbeans.project.FileUtilities;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.openide.ErrorManager;
 
 /**
- *
+ * visual panel for j2ee deployment.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class NbDeployPanel extends javax.swing.JPanel {
     
     private J2eeModuleProvider provider;
+    private J2eeModule module;
+    private MavenProject project;
     /** Creates new form NbDeployPanel */
-    public NbDeployPanel(J2eeModuleProvider prov) {
+    public NbDeployPanel(J2eeModuleProvider prov, MavenProject proj) {
         initComponents();
+        ButtonGroup grp = new ButtonGroup();
+        grp.add(rbWar);
+        grp.add(rbExpanded);
+        grp.add(rbInplace);
+        
+        project = proj;
+        
+        //DEbug not implemented, hide
         cbDebug.setVisible(false);
         provider = prov;
         loadModel(provider.getServerInstanceID());
-        J2eeModule module = provider.getJ2eeModule();
+        module = provider.getJ2eeModule();
         if (! J2eeModule.WAR.equals(module.getModuleType())) {
             txtPage.setVisible(false);
             lblPage.setVisible(false);
             btnPage.setVisible(false);
+            lblDeployMethod.setVisible(false);
+            rbExpanded.setVisible(false);
+            rbInplace.setVisible(false);
+            rbWar.setVisible(false);
+            lblWarning.setVisible(false);
+        } else {
+            rbWar.setSelected(true);
+            radioButonsActionPerformed(null);
         }
     }
     
@@ -80,6 +103,17 @@ public class NbDeployPanel extends javax.swing.JPanel {
         return cbDebug.isSelected();
     }
     
+    boolean isInplace() {
+        return rbInplace.isSelected();
+    }
+    
+    String getGoalToRun() {
+        if (cbGoal.isSelected()) {
+            return txtGoal.getText();
+        }
+        return null;
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -89,74 +123,222 @@ public class NbDeployPanel extends javax.swing.JPanel {
     private void initComponents() {
         java.awt.GridBagConstraints gridBagConstraints;
 
+        lblDeployMethod = new javax.swing.JLabel();
+        rbWar = new javax.swing.JRadioButton();
+        rbExpanded = new javax.swing.JRadioButton();
+        rbInplace = new javax.swing.JRadioButton();
+        cbGoal = new javax.swing.JCheckBox();
+        txtGoal = new javax.swing.JTextField();
         lblServer = new javax.swing.JLabel();
         comServer = new javax.swing.JComboBox();
         lblPage = new javax.swing.JLabel();
         txtPage = new javax.swing.JTextField();
         btnPage = new javax.swing.JButton();
         cbDebug = new javax.swing.JCheckBox();
+        lblWarning = new javax.swing.JLabel();
 
         setLayout(new java.awt.GridBagLayout());
 
-        lblServer.setText("Server to Deploy :");
+        lblDeployMethod.setText("Deploy As:");
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 0;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblDeployMethod, gridBagConstraints);
+
+        rbWar.setText("War");
+        rbWar.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbWar.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        rbWar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButonsActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 0;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(rbWar, gridBagConstraints);
+
+        rbExpanded.setText("Expanded webapp directory");
+        rbExpanded.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbExpanded.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        rbExpanded.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButonsActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(rbExpanded, gridBagConstraints);
+
+        rbInplace.setText("In-place expanded webapp directory");
+        rbInplace.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        rbInplace.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        rbInplace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                radioButonsActionPerformed(evt);
+            }
+        });
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(rbInplace, gridBagConstraints);
+
+        cbGoal.setText("Run Maven Goal");
+        cbGoal.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbGoal.setMargin(new java.awt.Insets(0, 0, 0, 0));
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(cbGoal, gridBagConstraints);
+
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(txtGoal, gridBagConstraints);
+
+        lblServer.setText("Deploy to Server:");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 5;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(12, 6, 0, 0);
         add(lblServer, gridBagConstraints);
 
         comServer.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 6, 0, 0);
         add(comServer, gridBagConstraints);
 
         lblPage.setText("Page :");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 6, 6, 0);
         add(lblPage, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 0);
+        gridBagConstraints.insets = new java.awt.Insets(12, 6, 6, 0);
         add(txtPage, gridBagConstraints);
 
         btnPage.setText("Select...");
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
-        gridBagConstraints.gridy = 1;
+        gridBagConstraints.gridy = 6;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
+        gridBagConstraints.insets = new java.awt.Insets(12, 6, 6, 6);
         add(btnPage, gridBagConstraints);
 
         cbDebug.setText("Debug");
-        cbDebug.setBorder(new javax.swing.border.EmptyBorder(new java.awt.Insets(0, 0, 0, 0)));
+        cbDebug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbDebug.setMargin(new java.awt.Insets(0, 0, 0, 0));
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 2;
+        gridBagConstraints.gridy = 7;
         gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         gridBagConstraints.insets = new java.awt.Insets(0, 6, 6, 0);
         add(cbDebug, gridBagConstraints);
 
+        lblWarning.setText("<html>For more details on each option, please refer to the Maven War plugin webpages.</html>");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 3;
+        gridBagConstraints.gridwidth = 2;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
+        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
+        gridBagConstraints.insets = new java.awt.Insets(6, 6, 0, 0);
+        add(lblWarning, gridBagConstraints);
+
     }
     // </editor-fold>//GEN-END:initComponents
+
+    private static String[] defaultGoals = new String[] { "war:war", "war:webapp", "war:inplace" };
+    
+    private void radioButonsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_radioButonsActionPerformed
+        boolean doEnable = true;
+        try {
+            if (rbWar.isSelected() && module.getArchive() == null) {
+                // need to run war goal
+                cbGoal.setSelected(true);
+                cbGoal.setEnabled(false);
+                doEnable = false;
+            } 
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if (rbExpanded.isSelected() &&  null == FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver())) {
+            // need to run war goal
+            cbGoal.setSelected(true);
+            cbGoal.setEnabled(false);
+            doEnable = false;
+        } 
+        if (doEnable) {
+            cbGoal.setEnabled(true);
+        }
+        
+        if (txtGoal.getText().trim().length() == 0 ||
+                Arrays.asList(defaultGoals).contains(txtGoal.getText().trim())) {
+            // if default goals are enetered, it's safe to assign the different one..
+            String newText = "";
+            if (rbWar.isSelected()) {
+                newText = "war:war";
+            }
+            if (rbExpanded.isSelected()) {
+                newText = "war:webapp";
+            }
+            if (rbInplace.isSelected()) {
+                newText = "war:inplace";
+            }
+            txtGoal.setText(newText);
+        }
+        
+        
+    }//GEN-LAST:event_radioButonsActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPage;
     private javax.swing.JCheckBox cbDebug;
+    private javax.swing.JCheckBox cbGoal;
     private javax.swing.JComboBox comServer;
+    private javax.swing.JLabel lblDeployMethod;
     private javax.swing.JLabel lblPage;
     private javax.swing.JLabel lblServer;
+    private javax.swing.JLabel lblWarning;
+    private javax.swing.JRadioButton rbExpanded;
+    private javax.swing.JRadioButton rbInplace;
+    private javax.swing.JRadioButton rbWar;
+    private javax.swing.JTextField txtGoal;
     private javax.swing.JTextField txtPage;
     // End of variables declaration//GEN-END:variables
     

@@ -84,7 +84,18 @@ public class WebModuleImpl implements WebModuleImplementation {
         return "/" + project.getPropertyResolver().resolveString("${pom.artifactId}");
     }
     
+    private boolean checkMultiProjectType() {
+        String type = project.getPropertyResolver().getResolvedValue("maven.multiproject.type");
+        if (type != null) {
+            return "war".equalsIgnoreCase(type.trim());
+        }
+        return false;
+    }
+    
     public boolean isValid() {
+        if (checkMultiProjectType()) {
+            return true;
+        }
         boolean hasWarSrc =  null != FileUtilities.getFileObjectForProperty("maven.war.src", //NOI18N
                                             project.getPropertyResolver());         
         boolean redefinedDescLocation = project.getPropertyLocator().getPropertyLocation("maven.war.webxml") //NOI18N
