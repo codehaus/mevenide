@@ -132,9 +132,17 @@ public class MavenEarImpl implements EarImplementation {
         // a fall back.. nothing exists, just try the default.
         return  FileUtilities.getFileForProperty("maven.ear.appxml", project.getPropertyResolver()); //NOI18N
     }
-    
+
+     private boolean checkMultiProjectType() {
+        String type = project.getPropertyResolver().getResolvedValue("maven.multiproject.type");
+        if (type != null) {
+            return "ear".equalsIgnoreCase(type.trim());
+        }
+        return false;
+    }
+   
     public boolean isValid() {
-        return getDeploymentDescriptor() != null || generatingAppDescriptor(project);
+        return checkMultiProjectType() || getDeploymentDescriptor() != null || generatingAppDescriptor(project);
     }
     
     private static boolean generatingAppDescriptor(MavenProject project) {

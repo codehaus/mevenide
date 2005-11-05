@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.mevenide.netbeans.j2ee.MavenJ2eeModule;
 import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.api.project.MavenProject;
@@ -53,7 +54,7 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
     
     public void actionPerformed(ActionEvent event) {
         J2eeModuleProvider prov = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
-        NbDeployPanel panel = new NbDeployPanel(prov);
+        NbDeployPanel panel = ((MavenJ2eeModule)prov.getJ2eeModule()).getPanel();
         DialogDescriptor dd = new DialogDescriptor(panel, "Deploy Web Application.");
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
@@ -61,6 +62,9 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
             path = panel.getPath();
             debug = panel.isDebugging();
             prov.setServerInstanceID(serverInstanceid);
+            MavenJ2eeModule mod = (MavenJ2eeModule)prov.getJ2eeModule();
+            mod.setInplace(panel.isInplace());
+            
             RequestProcessor.getDefault().post(this);
         }
         
@@ -83,7 +87,7 @@ public class NbDeployAction extends AbstractAction implements Logger, Runnable {
             URL url = new URL(clientUrl);
             HtmlBrowser.URLDisplayer.getDefault().showURL(url);
             if (debug) {
-                
+                //TODO
             }
         } catch (Exception e) {
             ErrorManager.getDefault().log("e message=" + e.getMessage());

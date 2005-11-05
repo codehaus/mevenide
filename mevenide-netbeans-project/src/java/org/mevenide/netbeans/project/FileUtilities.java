@@ -252,7 +252,7 @@ public final class FileUtilities {
     public static FileObject getFileObjectForProperty(String prop, IPropertyResolver resolver) {
         String val = resolver.getResolvedValue(prop);
         if (val != null) {
-            File fil = new File(val);
+            File fil = new File(val.trim());
             fil = FileUtil.normalizeFile(fil);
             FileObject fo = FileUtil.toFileObject(fil);
             if (fo != null) {

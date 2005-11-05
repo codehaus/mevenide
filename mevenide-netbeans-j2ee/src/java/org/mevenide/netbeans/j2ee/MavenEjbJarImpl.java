@@ -134,8 +134,16 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
         return toRet;
     }
     
+    private boolean checkMultiProjectType() {
+        String type = project.getPropertyResolver().getResolvedValue("maven.multiproject.type");
+        if (type != null) {
+            return "ejb".equalsIgnoreCase(type.trim());
+        }
+        return false;
+    }
+    
     public boolean isValid() {
-        return getDeploymentDescriptor() != null;
+        return checkMultiProjectType() || getDeploymentDescriptor() != null;
     }
     
 }

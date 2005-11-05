@@ -48,21 +48,23 @@ public class J2eeActions implements AdditionalActionsProvider {
     public Action[] createPopupActions(MavenProject project) {
         J2eeModuleProvider provider = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
         J2eeModule module = provider.getJ2eeModule();
-        try {
-            if (module == null || module.getModuleType() == null || module.getArchive() == null) {
+            if (module == null || module.getModuleType() == null /*|| module.getArchive() == null*/) {
                 return new Action[0];
             }
+        Collection toRet = new ArrayList();
+        toRet.add(new NbDeployAction(project));
+        try {
+        if (module.getArchive() != null) {
+            Action deploy = (Action)cache.get(project);
+            if (deploy == null) {
+                deploy = new DeployAction(project);
+                cache.put(project, deploy);
+            }
+            toRet.add(deploy);
+        }
         } catch (IOException exc) {
             return new Action[0];
         }
-        Collection toRet = new ArrayList();
-        toRet.add(new NbDeployAction(project));
-        Action deploy = (Action)cache.get(project);
-        if (deploy == null) {
-            deploy = new DeployAction(project);
-            cache.put(project, deploy);
-        }
-        toRet.add(deploy);
         File war = project.getWar();
         if (war != null && war.exists()) {
             Deployable[] depls = CargoServerRegistry.getInstance().findDeployables(war.toString());

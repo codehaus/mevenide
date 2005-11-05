@@ -25,6 +25,7 @@ import org.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.api.project.MavenProject;
+import org.mevenide.netbeans.j2ee.deploy.NbDeployPanel;
 import org.mevenide.properties.IPropertyLocator;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
@@ -32,6 +33,7 @@ import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
 import org.netbeans.modules.schema2beans.BaseBean;
@@ -40,19 +42,37 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
- *
+ * the main source of j2ee functionality in a netbeans project
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenJ2eeModule implements J2eeModule {
     private MavenProject project;
     private String url;
     private ArrayList listeners;
+    private NbDeployPanel deployPanel;
+    private boolean inplaceDeployment = false;
     
     /** Creates a new instance of MavenJ2eeModule */
     public MavenJ2eeModule(MavenProject proj) {
         project = proj;
         url = project.getOriginalMavenProject().getArtifactId();
         listeners = new ArrayList();
+    }
+    
+    public NbDeployPanel getPanel() {
+        if (deployPanel == null) {
+            J2eeModuleProvider prov = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
+            deployPanel = new NbDeployPanel(prov, project);
+        }
+        return deployPanel;
+    }
+    
+    public void setInplace(boolean inplace) {
+        inplaceDeployment = inplace;
+    }
+    
+    public boolean isInplace() {
+        return inplaceDeployment;
     }
 
     /**
@@ -129,16 +149,13 @@ public class MavenJ2eeModule implements J2eeModule {
 
     public Iterator getArchiveContents() throws IOException {
         if (     J2eeModule.EJB.equals(getModuleType()) 
+              || J2eeModule.WAR.equals(getModuleType())
               || J2eeModule.EAR.equals((getModuleType()))) {
             FileObject fo = getArchive();
             if (FileUtil.isArchiveFile(fo)) {
                 FileObject root = FileUtil.getArchiveRoot(fo);
                 return new ContentIterator(root);
             }
-        }
-        //TODO probably just solution for wars, not ears.
-        if (J2eeModule.WAR.equals(getModuleType())) {
-            return new ContentIterator(getContentDirectory());
         }
         return null;
     }
@@ -152,7 +169,14 @@ public class MavenJ2eeModule implements J2eeModule {
     public FileObject getContentDirectory() throws IOException {
 //        System.out.println("getContentDirectory()");
         if (J2eeModule.WAR.equals(getModuleType())) {
-            return FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver());        
+            if (inplaceDeployment) {
+                FileObject fo =  FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver());        
+                return fo;
+            }
+            FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.webapp.dir", project.getPropertyResolver());        
+            if (fo != null) {
+                return fo;
+            }
         }
         // what to do for ejbs/ears.. maven doesn't have a build directory with complete content AFAIK.
         return null;
