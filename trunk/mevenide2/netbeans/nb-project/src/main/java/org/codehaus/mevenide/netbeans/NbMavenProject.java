@@ -93,7 +93,7 @@ public final class NbMavenProject implements Project {
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
-        embedder = EmbedderFactory.createEmbedder();
+        embedder = EmbedderFactory.getProjectEmbedder();
         //TODO maybe just be offline when reading project?
         
     }
@@ -118,6 +118,8 @@ public final class NbMavenProject implements Project {
                 try {
                     project = embedder.readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
+                    project = embedder.readProject(projectFile);
+                } catch (ArtifactNotFoundException ex) {
                     project = embedder.readProject(projectFile);
                 }
             } catch (ProjectBuildingException ex) {
@@ -222,6 +224,10 @@ public final class NbMavenProject implements Project {
         //TODO this is more or less a hack..
         // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
         return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar";
+    }
+    
+    public MavenEmbedder getEmbedder() {
+        return embedder;
     }
     
    

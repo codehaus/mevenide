@@ -31,7 +31,10 @@ import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -84,13 +87,14 @@ class DependenciesNode extends AbstractNode {
         return retValue;
     }
     
-//    public Action[] getActions(boolean context) {
-//        return new Action[] { new AddDependencyAction(),
+    public Action[] getActions(boolean context) {
+        return new Action[] { 
+//                              new AddDependencyAction(),
 //                              null,
 //                              new DownloadAction(),
-//                              new DownloadJavadocSrcAction()
-//        };
-//    }
+                              new DownloadJavadocSrcAction()
+        };
+    }
     
     private NbMavenProject getProject() {
         return project;
@@ -251,56 +255,29 @@ class DependenciesNode extends AbstractNode {
 //        
 //    }
 //    
-//    private class DownloadJavadocSrcAction extends AbstractAction {
-//        public DownloadJavadocSrcAction() {
-//            putValue(Action.NAME, "Check repository(ies) for javadoc and sources");
-//        }
-//        
-//        public void actionPerformed(ActionEvent evnt) {
-//            RequestProcessor.getDefault().post(new Runnable() {
-//                public void run() {
-//                    List lst = new ArrayList(((DependenciesChildren)getChildren()).deps);
-//                    Iterator it = lst.iterator();
-//                    boolean atLeastOneDownloaded = false;
-//                    while (it.hasNext()) {
-//                        DependencyPOMChange change = (DependencyPOMChange)it.next();
-//                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-//                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
-//                        try {
-//                            dep.setType("javadoc.jar");
-//                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
-//                            if (downloaded) {
-//                                atLeastOneDownloaded = true;
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
-//                                    + " is not available in repote repositories.");
-//                        } catch (Exception exc) {
-//                            StatusDisplayer.getDefault().setStatusText("Error downloading " 
-//                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
-//                        }
-//                        try {
-//                            dep.setType("src.jar");
-//                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
-//                            if (downloaded) {
-//                                atLeastOneDownloaded = true;
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact()
-//                                    + " is not available in repote repositories.");
-//                        } catch (Exception exc) {
-//                            StatusDisplayer.getDefault().setStatusText("Error downloading "
-//                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
-//                        }
-//                    }
-//                    if (atLeastOneDownloaded) {
-//                        project.firePropertyChange(MavenProject.PROP_PROJECT);
-//                    }
-//                }
-//            });
-//        }
-//        
-//    }  
+    private class DownloadJavadocSrcAction extends AbstractAction {
+        public DownloadJavadocSrcAction() {
+            putValue(Action.NAME, "Check repository(ies) for javadoc and sources");
+        }
+        
+        public void actionPerformed(ActionEvent evnt) {
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+                    Node[] nds = getChildren().getNodes();
+                    for (int i = 0; i < nds.length; i++) {
+                        if (nds[i] instanceof DependencyNode) {
+                            DependencyNode nd = (DependencyNode)nds[i];
+                            if (!nd.hasJavadocInRepository() || !nd.hasSourceInRepository()) {
+                                nd.downloadJavadocSources(online);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+    }  
     
     private static class DependenciesComparator implements Comparator {
         public int compare(Object o1, Object o2) {

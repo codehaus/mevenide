@@ -25,18 +25,44 @@ import org.apache.maven.embedder.MavenEmbedderException;
  */
 public class EmbedderFactory {
     
+    private static MavenEmbedder project;
+    private static MavenEmbedder online;
     /** Creates a new instance of EmbedderFactory */
     public EmbedderFactory() {
     }
     
-    public static MavenEmbedder createEmbedder() throws MavenEmbedderException {
-        MavenEmbedder embedder = new MavenEmbedder();
-        embedder.setOffline(true);
-        embedder.setInteractiveMode(false);
-        embedder.setCheckLatestPluginVersion(false);
-        embedder.setUpdateSnapshots(false);
-        embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
-        embedder.start();
-        return embedder;
+    public static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
+        if (project == null) {
+            MavenEmbedder embedder = new MavenEmbedder();
+            embedder.setOffline(true);
+            embedder.setInteractiveMode(false);
+            embedder.setCheckLatestPluginVersion(false);
+            embedder.setUpdateSnapshots(false);
+            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            try {
+                embedder.start();
+            } catch (MavenEmbedderException e) {
+                e.printStackTrace();
+            }
+            project = embedder;
+        }
+        return project;
+    }
+    
+    public static MavenEmbedder getOnlineEmbedder() {
+        if (online == null) {
+            MavenEmbedder embedder = new MavenEmbedder();
+            embedder.setOffline(false);
+            embedder.setInteractiveMode(false);
+            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            try {
+                embedder.start();
+            } catch (MavenEmbedderException e) {
+                e.printStackTrace();
+            }
+            online = embedder;
+        }
+        return online;
+        
     }
 }
