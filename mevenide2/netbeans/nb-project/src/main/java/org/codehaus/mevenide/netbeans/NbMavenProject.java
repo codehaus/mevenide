@@ -255,7 +255,7 @@ public final class NbMavenProject implements Project {
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
             new MavenForBinaryQueryImpl(this),
-//            new ActionProviderImpl(this),
+            new ActionProviderImpl(this),
 //            new CustomizerProviderImpl(this),
             new LogicalViewProviderImpl(this),
             new ProjectOpenedHookImpl(this),
