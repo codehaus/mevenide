@@ -26,10 +26,9 @@ import java.util.Iterator;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
+import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-//import org.mevenide.netbeans.project.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ActionProvider;
@@ -106,13 +105,13 @@ public class MavenProjectNode extends AbstractNode {
     public javax.swing.Action[] getActions(boolean param) {
 //       javax.swing.Action[] spr = super.getActions(param);
         ArrayList lst = new ArrayList();
-//        ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
+        ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         lst.add(CommonProjectActions.newFileAction());
         lst.add(null);
-//        lst.add(provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD));
-//        lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
-//        lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
-//        lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
+        lst.add(provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD));
+        lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
+        lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
+        lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
 //        if (isMultiproject) {
 //            lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
 //            lst.add(provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN));

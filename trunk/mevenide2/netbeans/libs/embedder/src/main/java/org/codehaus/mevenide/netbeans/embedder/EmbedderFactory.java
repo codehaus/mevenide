@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.embedder;
 
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.embedder.MavenEmbedderLogger;
 
 /**
  *
@@ -64,5 +65,12 @@ public class EmbedderFactory {
         }
         return online;
         
+    }
+    
+    public static MavenEmbedder createExecuteEmbedder() throws MavenEmbedderException {
+            MavenEmbedder embedder = new MavenEmbedder();
+            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.start();
+            return embedder;
     }
 }

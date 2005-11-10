@@ -12,6 +12,10 @@
 	  <type>spec</type>
       </dependency>
       <dependency>
+          <id>org.netbeans.api:org-openide-execution</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:openide-loaders</id>
 	  <type>spec</type>
       </dependency>
