@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2005 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,6 +29,7 @@ import javax.swing.JSeparator;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.spi.project.ActionProvider;
@@ -48,7 +49,7 @@ import org.openide.util.Lookup;
 import org.openide.util.actions.SystemAction;
 
 
-/** A node to represent this object.
+/** A node to represent project root.
  *
  * @author Milos Kleint (mkleint@codehaus.org)
  */
@@ -124,6 +125,7 @@ public class MavenProjectNode extends AbstractNode {
             lst.addAll(Arrays.asList(acts));
         }
 //        lst.add(new RunGoalsAction(project));
+        lst.add(new LifecyclePopupAction(project));
         // separator
         lst.add(null);
         lst.add(project.createRefreshAction());

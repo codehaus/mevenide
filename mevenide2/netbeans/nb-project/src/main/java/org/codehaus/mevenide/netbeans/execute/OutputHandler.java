@@ -51,20 +51,34 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     
     private OutputWriter stdErr;
     
-    private int threshold;
+    private int threshold = MavenEmbedderLogger.LEVEL_INFO;
     
     private HashMap processors;
     private OutputVisitor visitor;
     private Set currentProcessors;
     
+    OutputHandler() {
+        processors = new HashMap();
+        currentProcessors = new HashSet();
+        visitor = new OutputVisitor();
+    }
+    
+    /**
+     * @deprecated for tests only..
+     */
+    void setup(HashMap procs, OutputWriter std, OutputWriter err) {
+        processors = procs;
+        stdErr = err;
+        stdOut = std;
+    }
+    
     public OutputHandler(InputOutput io, NbMavenProject proj)    {
+        this();
         inputOutput = io;
         stdOut = inputOutput.getOut();
         stdErr = inputOutput.getErr();
         
         // get the registered processors.
-        processors = new HashMap();
-        currentProcessors = new HashSet();
         Lookup.Result result  = Lookup.getDefault().lookup(new Lookup.Template(OutputProcessorFactory.class));
         Iterator it = result.allInstances().iterator();
         while (it.hasNext()) {
@@ -85,7 +99,6 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
                 }
             }
         }
-        visitor = new OutputVisitor();
     }
     
     public void errorEvent(String eventName, String target, long l, Throwable throwable) {
@@ -138,20 +151,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         processEnd(getEventId(eventName, target), stdOut);
         Set set = (Set) processors.get(getEventId(eventName, target));
         if (set != null) {
-            Set retain = new HashSet();
-            retain.addAll(set);
-            retain.retainAll(currentProcessors);
-            Set remove = new HashSet();
-            remove.addAll(set);
-            remove.removeAll(retain);
-            currentProcessors.removeAll(remove);
+            //TODO a bulletproof way would be to keep a list of currently started
+            // sections and compare to the list of getRegisteredOutputSequences fo each of the
+            // processors in set..
+            currentProcessors.removeAll(set);
         }
-//        if ("project-execute".equals(eventName)) {
-//            stdOut.println("");
-//            stdOut.println("BUILD SUCCESSFUL.");
-//            stdOut.println("");
-//        }
-        //            stdOut.println(string + "------------------- ENDS");
     }
     
     public void transferStarted(TransferEvent transferEvent)    {
@@ -170,11 +174,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void debug(String string) {
-        processMultiLine(string, stdOut);
+//        processMultiLine(string, stdOut);
     }
     
     public void debug(String string, Throwable throwable) {
-        processMultiLine(string, stdOut);
+//        processMultiLine(string, stdOut);
     }
     
     public boolean isDebugEnabled()    {
@@ -182,11 +186,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void info(String string)    {
-        processMultiLine(string, stdOut);
+        processMultiLine("[INFO]" + string, stdOut);
     }
     
     public void info(String string, Throwable throwable)    {
-        processMultiLine(string, stdOut);
+        processMultiLine("[INFO]" + string, stdOut);
     }
     
     public boolean isInfoEnabled()    {
@@ -194,11 +198,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void warn(String string)    {
-        processMultiLine(string, stdOut);
+        processMultiLine("[WARN]" + string, stdOut);
     }
     
     public void warn(String string, Throwable throwable)    {
-        processMultiLine(string, stdOut);
+        processMultiLine("[WARN]" + string, stdOut);
     }
     
     public boolean isWarnEnabled()    {
@@ -206,11 +210,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void error(String string)    {
-        processMultiLine(string, stdErr);
+        processMultiLine("[ERROR]" + string, stdErr);
     }
     
     public void error(String string, Throwable throwable)    {
-        processMultiLine(string, stdErr);
+        processMultiLine("[ERROR]" + string, stdErr);
     }
     
     public boolean isErrorEnabled()    {

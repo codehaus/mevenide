@@ -63,7 +63,8 @@ public class ActionProviderImpl implements ActionProvider {
 //        ActionProvider.COMMAND_DEBUG_SINGLE,
 //        ActionProvider.COMMAND_DEBUG_TEST_SINGLE
     };
-    
+
+    //TODO need some customizable 
     private static Properties mappedGoals;
     static {
         mappedGoals = new Properties();
@@ -163,9 +164,9 @@ public class ActionProviderImpl implements ActionProvider {
         return new BasicAction(name, action);
     }
     
-//    public Action createCustomMavenAction(String name, String goal) {
-//        return new CustomAction(name, goal);
-//    }
+    public Action createCustomMavenAction(String name, String[] goals) {
+        return new CustomAction(name, goals);
+    }
     
     
     //    public Action createMultiProjectAction(String name, String goals) {
@@ -186,18 +187,18 @@ public class ActionProviderImpl implements ActionProvider {
         }
     }
     
-//    private final class CustomAction extends AbstractAction {
-//        private String gls;
-//        
-//        
-//        private CustomAction(String name, String goals) {
-//            gls = goals;
-//            putValue(Action.NAME, name);
-//        }
-//        
-//        public void actionPerformed(java.awt.event.ActionEvent e) {
-//            ActionProviderImpl.this.runGoal(gls, ActionProviderImpl.this.project.getLookup());
-//        }
-//    }
+    private final class CustomAction extends AbstractAction {
+        private String[] gls;
+        
+        
+        private CustomAction(String name, String[] goals) {
+            gls = goals;
+            putValue(Action.NAME, name);
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+            ActionProviderImpl.this.runGoal(Arrays.asList(gls), ActionProviderImpl.this.project.getLookup());
+        }
+    }
  
 }
