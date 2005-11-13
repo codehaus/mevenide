@@ -71,9 +71,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         InputOutput ioput = getInputOutput();
         try {
             MavenEmbedder embedder;
-            embedder = EmbedderFactory.createExecuteEmbedder();
             OutputHandler out = new OutputHandler(ioput, config.getProject());
-            embedder.setLogger(out);
+            embedder = EmbedderFactory.createExecuteEmbedder(out);
             embedder.execute(config.getProject().getOriginalMavenProject(), config.getGoals(), out, out, null, config.getExecutionDirectory());
         } catch (CycleDetectedException ex) {
             ex.printStackTrace();

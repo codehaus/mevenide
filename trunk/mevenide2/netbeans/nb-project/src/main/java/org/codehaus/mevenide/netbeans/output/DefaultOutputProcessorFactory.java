@@ -36,6 +36,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
         Set toReturn = new HashSet();
         toReturn.add(new GlobalOutputProcessor());
         toReturn.add(new JavaOutputListenerProvider(project));
+        toReturn.add(new TestOutputListenerProvider(project));
         return toReturn;
     }
     

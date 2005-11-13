@@ -67,9 +67,10 @@ public class EmbedderFactory {
         
     }
     
-    public static MavenEmbedder createExecuteEmbedder() throws MavenEmbedderException {
+    public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) throws MavenEmbedderException {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setLogger(logger);
             embedder.start();
             return embedder;
     }

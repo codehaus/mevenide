@@ -43,6 +43,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
+import org.codehaus.mevenide.netbeans.queries.MavenTestForSourceImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.Sources;
@@ -261,7 +262,7 @@ public final class NbMavenProject implements Project {
             new ProjectOpenedHookImpl(this),
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
-//            new MavenTestForSourceImpl(this),
+            new MavenTestForSourceImpl(this),
 ////            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
