@@ -69,8 +69,8 @@ public class ActionProviderImpl implements ActionProvider {
     static {
         mappedGoals = new Properties();
         mappedGoals.put(ActionProvider.COMMAND_BUILD, "install");
-        mappedGoals.put(ActionProvider.COMMAND_CLEAN, "clean:clean");
-        mappedGoals.put(ActionProvider.COMMAND_REBUILD, "clean:clean install");
+        mappedGoals.put(ActionProvider.COMMAND_CLEAN, "clean");
+        mappedGoals.put(ActionProvider.COMMAND_REBUILD, "clean install");
         mappedGoals.put("javadoc", "javadoc:javadoc");
     }
     
