@@ -1,0 +1,19 @@
+<NetbeansModule>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.continuum/1</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <libraries>
+       <library>xmlrpc:xmlrpc</library>
+       <library>commons-httpclient:commons-httpclient</library>
+       <library>commons-codec:commons-codec</library>
+       <library>org.apache.maven.continuum:continuum-model</library>
+   </libraries>
+   <dependencies>
+      <dependency>
+          <id>commons-logging:commons-logging</id>
+	  <type>spec</type>
+          <explicitValue>org.netbeans.libs.commons_logging/1 &gt; 1.0</explicitValue>
+      </dependency>
+   </dependencies> 
+</NetbeansModule>
