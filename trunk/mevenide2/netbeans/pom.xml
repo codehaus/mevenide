@@ -15,5 +15,6 @@
   <modules>
      <module>nb-project</module>
      <module>libs</module>
+     <module>continuum</module>
   </modules>
 </project>
