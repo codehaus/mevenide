@@ -45,20 +45,18 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Implementation of Sources interface for maven projects.
+ * generic and java are necessary for proper workings of the project, the rest is custom thing.. 
+ * IMHO at least..
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenSourcesImpl implements Sources {
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
     public static final String TYPE_TEST_RESOURCES = "TestResources"; //NOI18N
-    public static final String TYPE_XDOCS = "XDocs"; //NOI18N
     public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
     public static final String NAME_XDOCS = "XDocs"; //NOI18N
     public static final String NAME_SOURCE = "1SourceRoot"; //NOI18N
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
-    public static final String NAME_INTEGRATIONSOURCE = "5IntegrationSourceRoot"; //NOI18N
-    public static final String NAME_CACTUS_SOURCE = "3CactusSourceRoot"; //NOI18N
-    public static final String NAME_ASPECTSOURCE = "4AspectSourceRoot"; //NOI18N
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
     public static final String TYPE_DOC_ROOT="doc_root"; //NOI18N
@@ -103,14 +101,24 @@ public class MavenSourcesImpl implements Sources {
 //                URI cactus = project.getCactusDirectory();
 //                folder = cactus == null ? null : URLMapper.findFileObject(cactus.toURL());
 //                changed = changed | checkJavaGroupCache(folder, NAME_CACTUS_SOURCE, "Cactus Test Sources");
-//                folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
-//                changed = changed | checkGeneratedGroupCache(folder);
+                URI[] uris = project.getGeneratedSourceRoots();
+                if (uris.length > 0) {
+                    try {
+                        folder = URLMapper.findFileObject(uris[0].toURL());
+                    } catch (MalformedURLException ex) {
+                        ex.printStackTrace();
+                        folder = null;
+                    }
+                } else {
+                    folder = null;
+                }
+                changed = changed | checkGeneratedGroupCache(folder);
         }
         if (changed) {
             if (synchronous) {
                 fireChange();
             } else {
-                RequestProcessor.getDefault().postRequest(new Runnable() {
+                RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
                         fireChange();
                     }
@@ -162,24 +170,27 @@ public class MavenSourcesImpl implements Sources {
 //        if (TYPE_XDOCS.equals(str)) {
 //            return createXDocs();
 //        }
-//        if (TYPE_GEN_SOURCES.equals(str)) {
-//            try {
-//                FileObject folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
-//                SourceGroup grp = null;
-//                synchronized (lock) {
-//                    checkGeneratedGroupCache(folder);
-//                    grp = genSrcGroup;
-//                }
-//                if (grp != null) {
-//                    return new SourceGroup[] {grp};
-//                } else {
-//                    return new SourceGroup[0];
-//                }
-//            } catch (MalformedURLException exc) {
-//                logger.error("Malformed URL", exc);
-//                return new SourceGroup[0];
-//            }
-//        }
+        if (TYPE_GEN_SOURCES.equals(str)) {
+            try {
+                URI[] uris = project.getGeneratedSourceRoots();
+                if (uris.length > 0) {
+                    //TODO just assuming 1 generated source root is BAD... should be more like the java source roots..
+                    FileObject folder = URLMapper.findFileObject(uris[0].toURL());
+                    SourceGroup grp = null;
+                    synchronized (lock) {
+                        checkGeneratedGroupCache(folder);
+                        grp = genSrcGroup;
+                    }
+                    if (grp != null) {
+                        return new SourceGroup[] {grp};
+                    } else {
+                        return new SourceGroup[0];
+                    }
+                }
+            } catch (MalformedURLException exc) {
+                return new SourceGroup[0];
+            }
+        }
 //        if (TYPE_DOC_ROOT.equals(str)) {
 //            return createWebDocRoot();
 //        }

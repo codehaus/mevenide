@@ -60,11 +60,16 @@ import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 
 /**
- * the ultimate source for all maven project like.
+ * the ultimate source for all maven project like. Most code in mevenide takes this
+ * class as parameter, there's always just one instance per projects.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class NbMavenProject implements Project {
     
+    /**
+     * the only property change fired by the class, means that the pom file
+     * has changed.
+     */
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
     
     private FileObject fileObject;
@@ -113,6 +118,10 @@ public final class NbMavenProject implements Project {
         }
     }
     
+    /**
+     * getter for the maven's own project representation.. this instance is cached but gets reloaded
+     * when one the pom files have changed.
+     */
     public MavenProject getOriginalMavenProject() {
         if (project == null) {
             try {
@@ -184,11 +193,17 @@ public final class NbMavenProject implements Project {
         }
         return toReturn;
     }
-    
+
+    /**
+     * TODO move elsewhere?
+     */
     public Action createRefreshAction() {
         return new RefreshAction();
     }
     
+    /**
+     * the root dirtectory of the project.. that;s where the pom resides.
+     */
     public FileObject getProjectDirectory() {
         return fileObject.getParent();
     }
@@ -240,7 +255,16 @@ public final class NbMavenProject implements Project {
        return FileUtil.normalizeFile(src).toURI();
    }
 
-    
+   public URI[] getGeneratedSourceRoots() {
+       //TODO more or less a hack.. should be better supported by embedder itself.
+       URI uri = getDirURI("target/generated-sources");
+       File fil = new File(uri);
+       if (fil.exists()) {
+           return new URI[] { uri };
+       }
+       return new URI[0];
+   }
+   
     public synchronized Lookup getLookup() {
         if (lookup == null) {
             lookup = createBasicLookup();
@@ -420,7 +444,6 @@ public final class NbMavenProject implements Project {
             "web-types",         // NOI18N
             "junit",                // NOI18N
             "MIDP",              // NOI18N
-            "maven-docs",
             "simple-files"          // NOI18N
         };
         
