@@ -29,7 +29,7 @@ import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
 /**
- *
+ * provider of logical view, meaning the top node in the projects tab.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class LogicalViewProviderImpl implements LogicalViewProvider
@@ -40,6 +40,9 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
         project = proj;
     }
     
+    /**
+     * create the root node for maven projects..
+     */
     public Node createLogicalView()
     {
         return new MavenProjectNode(createLookup(project), project);
@@ -51,6 +54,9 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
         return Lookups.fixed( new Object[] { project, rootFolder } );
     }
     
+    /**
+     * TODO this is probably good for the Select in Project view action..
+     */
     public Node findPath(Node node, Object target) {
         NbMavenProject proj = (NbMavenProject)node.getLookup().lookup(NbMavenProject.class );
         if ( proj == null ) {

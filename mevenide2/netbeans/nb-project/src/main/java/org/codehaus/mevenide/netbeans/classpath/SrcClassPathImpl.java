@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,8 @@ public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
             File fil = new File(str);
             col.add(fil.toURI());
         }
+        //TODO temporary solution
+        col.addAll(Arrays.asList(getMavenProject().getGeneratedSourceRoots()));
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        

@@ -23,9 +23,9 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 /**
  * Interface that allows to put additional items to project node's popup.
  * Implementations should be registered in default lookup.
- * (Using META-INF/services/AdditionalActionsProvider file in the module's jar.)
- * It's purpose is to get additional implementations of APIs that are related to 4.1 only, 
- * or some other custom aspect of the project. 
+ * (Using META-INF/services/AdditionalM2ActionsProvider file in the module's jar.)
+ * It's purpose is to get additional implementations of APIs that are related to 5.0 only, 
+ * or some other custom aspect of the project from dependant modules..
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface AdditionalM2ActionsProvider {

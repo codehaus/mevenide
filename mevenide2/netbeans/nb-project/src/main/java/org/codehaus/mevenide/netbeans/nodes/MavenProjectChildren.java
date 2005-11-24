@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
@@ -48,6 +49,7 @@ class MavenProjectChildren extends Children.Keys {
 //    private static final String KEY_WEBAPP = "webapp"; //NOI18N
 //    private static final String KEY_EAR = "ear"; //NOI18N
 //    private static final String KEY_EJB = "ejb"; //NOI18N
+    private static final String KEY_OTHER = "otherRoots"; //NOI18N
     private static final String KEY_DEPENDENCIES = "dependencies"; //NOI18N
     private static final String KEY_TEST_DEPENDENCIES = "dependencies2"; //NOI18N
     private static final String KEY_RUNTIME_DEPENDENCIES = "dependencies3"; //NOI18N
@@ -95,10 +97,10 @@ class MavenProjectChildren extends Children.Keys {
         for (int i = 0; i < javagroup.length; i++) {
             list.add(javagroup[i]);
         }
-//        SourceGroup[] gengroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
-//        for (int i = 0; i < gengroup.length; i++) {
-//            list.add(gengroup[i]);
-//        }
+        SourceGroup[] gengroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
+        for (int i = 0; i < gengroup.length; i++) {
+            list.add(gengroup[i]);
+        }
 //        URI webapp = project.getWebAppDirectory();
 //        if (webapp != null) {
 //            currentWebAppKey = KEY_WEBAPP + webapp;
@@ -163,6 +165,8 @@ class MavenProjectChildren extends Children.Keys {
 //            n = createEarNode();
 //        } else if (key == currentEjbKey) {
 //            n = createEjbNode();
+//        } else if (key == KEY_OTHER) {
+//            n = new ResourcesRootNode(project);
         } else if (key == KEY_DEPENDENCIES) {
             n = new DependenciesNode(project, DependenciesNode.TYPE_COMPILE);
         } else if (key == KEY_TEST_DEPENDENCIES) {

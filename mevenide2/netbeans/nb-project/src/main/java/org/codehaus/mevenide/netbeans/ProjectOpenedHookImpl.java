@@ -28,7 +28,8 @@ import org.openide.filesystems.FileUtil;
 
 /**
  * openhook implementation, register global classpath and also
- * register in the fileOwnerQuery impl.
+ * register the project in the fileOwnerQuery impl, that's important for interproject
+ * dependencies to work.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ProjectOpenedHookImpl extends ProjectOpenedHook {
