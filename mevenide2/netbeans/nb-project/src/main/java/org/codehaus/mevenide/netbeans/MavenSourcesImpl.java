@@ -36,6 +36,7 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.SharabilityQuery;
+import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.support.GenericSources;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -194,44 +195,21 @@ public class MavenSourcesImpl implements Sources {
 //        if (TYPE_DOC_ROOT.equals(str)) {
 //            return createWebDocRoot();
 //        }
-//        if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
-//            List toReturn = new ArrayList();
-//            Build build = project.getOriginalMavenProject().getBuild();
-//            if (build != null) {
-//                List resources = null;
-//                if (TYPE_RESOURCES.equals(str)) {
-//                    resources = build.getResources();
-//                } else {
-//                    if (build.getUnitTest() != null) {
-//                        resources = build.getUnitTest().getResources();
-//                    }
-//                }
-//                if (resources != null) {
-//                    Iterator it = resources.iterator();
-//                    int count = 0;
-//                    while (it.hasNext()) {
-//                        count = count + 1;
-//                        Resource res = (Resource)it.next();
-//                        String dir = res.getDirectory();
-//                        // if dir is not found, just use basedir as fallback? MEVENIDE-306
-//                        String path = project.getPropertyResolver().resolveString(dir != null ? dir : "${basedir}");
-//                        FileObject folder = FileUtilities.findFolder(project.getProjectDirectory(),
-//                                                                     path);
-//                        if (folder == null) {
-//                            // maybe we got a absolutepath in the basedir definition.
-//                            File fl = FileUtil.normalizeFile(new File(path));
-//                            folder = FileUtil.toFileObject(fl);
-//                        }
-//                        if (folder != null) {
-//                            toReturn.add(new ResourceGroup(project, folder, res, "Resource" + count + res.getDirectory(), res.getDirectory(), null, null));
-//                        }
-//                    }
-//                }
-//            }
-//            SourceGroup[] grp = new SourceGroup[toReturn.size()];
-//            grp = (SourceGroup[])toReturn.toArray(grp);
-//            return grp;
-//        }
+        if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
+            // TODO not all these are probably resources.. maybe need to split in 2 groups..
+            boolean test = TYPE_TEST_RESOURCES.equals(str);
+            List toReturn = new ArrayList();
+            File[] roots = project.getOtherRoots(test);
+            for (int i = 0; i < roots.length; i++) {
+                FileObject folder = FileUtil.toFileObject(roots[i]);
+                if (folder != null) {
+                    toReturn.add(new OtherGroup(project, folder, "Resource" + (test ? "Test":"Main") + folder.getNameExt(), folder.getName()));
+                }
+            }
+            SourceGroup[] grp = new SourceGroup[toReturn.size()];
+            grp = (SourceGroup[])toReturn.toArray(grp);
+            return grp;
+        }
 //        logger.warn("unknown source type=" + str);
         return new SourceGroup[0];
     }
@@ -345,79 +323,72 @@ public class MavenSourcesImpl implements Sources {
 //        return new SourceGroup[0];
 //    }
     
-//    public static final class ResourceGroup implements SourceGroup {
-//        
-//        private final FileObject rootFolder;
-//        private File rootFile;
-//        private final String name;
-//        private final String displayName;
-//        private final Icon icon;
-//        private final Icon openedIcon;
-//        private MavenProject project;
-//        private Resource resource;
-//        
-//        ResourceGroup(MavenProject p, FileObject rootFold, Resource res, String nm, String displayNm,
-//        Icon icn, Icon opened) {
-//            project = p;
-//            resource = res;
-//            rootFolder = rootFold;
-//            rootFile = FileUtil.toFile(rootFolder);
-//            name = nm;
-//            displayName = displayNm != null ? displayNm : "<Root not defined>";
+    public static final class OtherGroup implements SourceGroup {
+        
+        private final FileObject rootFolder;
+        private File rootFile;
+        private final String name;
+        private final String displayName;
+        private final Icon icon = null;
+        private final Icon openedIcon = null;
+        private NbMavenProject project;
+        
+        OtherGroup(NbMavenProject p, FileObject rootFold, String nm, String displayNm/*,
+                Icon icn, Icon opened*/) {
+            project = p;
+            rootFolder = rootFold;
+            rootFile = FileUtil.toFile(rootFolder);
+            name = nm;
+            displayName = displayNm != null ? displayNm : "<Root not defined>";
 //            icon = icn;
 //            openedIcon = opened;
-//        }
-//        
-//        public FileObject getRootFolder() {
-//            return rootFolder;
-//        }
-//        
-//        public File getRootFolderFile() {
-//            return rootFile;
-//        }
-//        
-//        public Resource getResource() {
-//            return resource;
-//        }
-//        
-//        public String getName() {
-//            return name;
-//        }
-//        
-//        public String getDisplayName() {
-//            return displayName;
-//        }
-//        
-//        public Icon getIcon(boolean opened) {
-//            return opened ? icon : openedIcon;
-//        }
-//        
-//        public boolean contains(FileObject file)  {
-//            logger.debug("Resourcegroup.contains()=" + file);
-//            if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
-//                throw new IllegalArgumentException();
-//            }
-//            if (FileOwnerQuery.getOwner(file) != project) {
-//                return false;
-//            }
-//            File f = FileUtil.toFile(file);
-//            if (f != null) {
-//                // MIXED, UNKNOWN, and SHARABLE -> include it
-//                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE 
-//                     && DirScannerSubClass.checkIncluded(file, rootFolder, resource));
-//            } else {
-//                // Not on disk, include it.
-//                return true;
-//            }
-//        }
-//        
-//        public void addPropertyChangeListener(PropertyChangeListener l) {
-//            // XXX should react to ProjectInformation changes
-//        }
-//        
-//        public void removePropertyChangeListener(PropertyChangeListener l) {
-//            // XXX
-//        }
-//        
-//    }
+        }
+        
+        public FileObject getRootFolder() {
+            return rootFolder;
+        }
+        
+        public File getRootFolderFile() {
+            return rootFile;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+        
+        public Icon getIcon(boolean opened) {
+            return opened ? icon : openedIcon;
+        }
+        
+        public boolean contains(FileObject file)  {
+            if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
+                throw new IllegalArgumentException();
+            }
+            if (FileOwnerQuery.getOwner(file) != project) {
+                return false;
+            }
+            File f = FileUtil.toFile(file);
+            if (f != null) {
+                // MIXED, UNKNOWN, and SHARABLE -> include it
+                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE &&
+                        VisibilityQuery.getDefault().isVisible(file));
+            } else {
+                // Not on disk, include it.
+                return true;
+            }
+        }
+        
+        public void addPropertyChangeListener(PropertyChangeListener l) {
+            // XXX should react to ProjectInformation changes
+        }
+        
+        public void removePropertyChangeListener(PropertyChangeListener l) {
+            // XXX
+        }
+        
+    }
 }
