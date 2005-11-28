@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -47,6 +48,7 @@ import org.codehaus.mevenide.netbeans.queries.MavenTestForSourceImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.Sources;
+import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.ErrorManager;
@@ -263,6 +265,21 @@ public final class NbMavenProject implements Project {
            return new URI[] { uri };
        }
        return new URI[0];
+   }
+   
+   public File[] getOtherRoots(boolean test) {
+       URI uri = getDirURI(test ? "src/test" : "src/main");
+       File fil = new File(uri);
+       if (fil.exists()) {
+           return fil.listFiles(new FilenameFilter() {
+               public boolean accept(File dir, String name) {
+                   //TODO most probably a performance bottleneck of sorts..
+                   FileObject fo = FileUtil.toFileObject(new File(dir, name));
+                   return !("java".equalsIgnoreCase(name)) && VisibilityQuery.getDefault().isVisible(fo);
+               }
+           });
+       }
+       return new File[0];
    }
    
     public synchronized Lookup getLookup() {

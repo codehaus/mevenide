@@ -50,6 +50,7 @@ class MavenProjectChildren extends Children.Keys {
 //    private static final String KEY_EAR = "ear"; //NOI18N
 //    private static final String KEY_EJB = "ejb"; //NOI18N
     private static final String KEY_OTHER = "otherRoots"; //NOI18N
+    private static final String KEY_OTHER_TEST = "otherTestRoots"; //NOI18N
     private static final String KEY_DEPENDENCIES = "dependencies"; //NOI18N
     private static final String KEY_TEST_DEPENDENCIES = "dependencies2"; //NOI18N
     private static final String KEY_RUNTIME_DEPENDENCIES = "dependencies3"; //NOI18N
@@ -118,6 +119,12 @@ class MavenProjectChildren extends Children.Keys {
 //        }
 //        Project proj = project.getOriginalMavenProject();
 //        Build build = proj.getBuild();
+        if (project.getOtherRoots(false).length > 0) {
+            list.add(KEY_OTHER);
+        }
+        if (project.getOtherRoots(true).length > 0) {
+            list.add(KEY_OTHER_TEST);
+        }
 //        if (build != null) {
 //            List reso = build.getResources();
 //            if (reso != null && reso.size() > 0) {
@@ -165,8 +172,10 @@ class MavenProjectChildren extends Children.Keys {
 //            n = createEarNode();
 //        } else if (key == currentEjbKey) {
 //            n = createEjbNode();
-//        } else if (key == KEY_OTHER) {
-//            n = new ResourcesRootNode(project);
+        } else if (key == KEY_OTHER) {
+            n = new OthersRootNode(project, false);
+        } else if (key == KEY_OTHER_TEST) {
+            n = new OthersRootNode(project, true);
         } else if (key == KEY_DEPENDENCIES) {
             n = new DependenciesNode(project, DependenciesNode.TYPE_COMPILE);
         } else if (key == KEY_TEST_DEPENDENCIES) {
