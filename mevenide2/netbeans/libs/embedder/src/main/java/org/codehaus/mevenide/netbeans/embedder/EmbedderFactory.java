@@ -39,7 +39,7 @@ public class EmbedderFactory {
             embedder.setInteractiveMode(false);
             embedder.setCheckLatestPluginVersion(false);
             embedder.setUpdateSnapshots(false);
-            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
@@ -55,7 +55,7 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
             embedder.setInteractiveMode(false);
-            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
@@ -69,7 +69,7 @@ public class EmbedderFactory {
     
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) throws MavenEmbedderException {
             MavenEmbedder embedder = new MavenEmbedder();
-            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
             embedder.setLogger(logger);
             embedder.start();
             return embedder;

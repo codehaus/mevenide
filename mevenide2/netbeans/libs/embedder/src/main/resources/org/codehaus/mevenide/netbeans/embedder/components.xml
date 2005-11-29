@@ -1,0 +1,8 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.apache.maven.artifact.resolver.ResolutionListener</role>
+      <implementation>org.codehaus.mevenide.netbeans.embedder.MyResolutionListener</implementation>
+    </component>
+  </components>
+</component-set>
