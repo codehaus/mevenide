@@ -101,7 +101,7 @@ public class DependencyNode extends AbstractNode {
                     }
                 }
             };
-            project.addPropertyChangeListener(WeakListeners.propertyChange(listener, this));
+            project.addPropertyChangeListener(WeakListeners.propertyChange(listener, project));
             listener2 = new ChangeListener() {
                 public void stateChanged(ChangeEvent event) {
                     refreshNode();
