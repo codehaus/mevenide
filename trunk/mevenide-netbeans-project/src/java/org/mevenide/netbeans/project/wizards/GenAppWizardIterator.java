@@ -26,14 +26,11 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.genapp.TemplateInfo;
 import org.mevenide.netbeans.project.MavenModule;
 import org.mevenide.netbeans.project.exec.BeanRunContext;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
-import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.project.exec.MavenJavaExecutor;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
@@ -52,7 +49,6 @@ import org.openide.loaders.TemplateWizard;
  */
 public class GenAppWizardIterator implements TemplateWizard.Iterator {
 
-    private static final Log logger = LogFactory.getLog(GenAppWizardIterator.class);
 //    private static final String TEMPLATE_LOC_ATTR = "MavenTemplateLocation"; //NOI18N
 
     private static final long serialVersionUID = 13334234343323432L;
@@ -140,7 +136,6 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
     }
     
     public void initialize(TemplateWizard wiz) {
-        FileObject templateFO = Templates.getTemplate(wiz);
         wiz.putProperty("projectDir", System.getProperty("user.home"));
         index = 0;
         panels = createPanels();

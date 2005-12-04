@@ -98,7 +98,7 @@ public class RepositoryNode extends AbstractNode implements LocalRepoRefresher {
     
     public String getHtmlDisplayName() {
         if (element.isRemote()) {
-            return "<html><b><font color='#9f9a93'>" + getDisplayName() + "</font></b></html>";
+            return "<html><b><font color='#d2a96e'>" + getDisplayName() + "</font></b></html>";
         }
         return super.getHtmlDisplayName();
     }
