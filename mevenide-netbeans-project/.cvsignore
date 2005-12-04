@@ -1,5 +1,6 @@
-.project
-.classpath
-target
 *.ser
-*.properties
+.classpath
+velocity.log
+build.properties
+.project
+target

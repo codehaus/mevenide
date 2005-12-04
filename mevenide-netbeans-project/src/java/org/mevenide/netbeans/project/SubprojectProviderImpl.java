@@ -160,7 +160,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             }
             if (dp != null) {
                 String dpVersion = project.getPropertyResolver().resolveString(dp.getVersion());
-                if (dpVersion != null && (dpVersion.equals(version) || "SNAPSHOT".equals(dpVersion))) {
+                if (dpVersion != null && (dpVersion.trim().equals(version.trim()) || "SNAPSHOT".equals(dpVersion.trim()))) {
                     toReturn.add(prj);
                 }
             }

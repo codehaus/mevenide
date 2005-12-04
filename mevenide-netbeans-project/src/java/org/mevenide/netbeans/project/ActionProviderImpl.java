@@ -224,22 +224,22 @@ public class ActionProviderImpl implements ActionProvider {
         }
     }
 
-    public void runGoal(String goal, Lookup lookup) {
-        runGoal(goal, lookup, new DefaultRunConfig());
+    public ExecutorTask runGoal(String goal, Lookup lookup) {
+        return runGoal(goal, lookup, new DefaultRunConfig());
     }
     
-    public void runGoal(String goal, Lookup lookup, RunConfig config) {
-        runGoal(goal, lookup, DefaultOutputProcessorFactory.getAllProcessors(project), null, config);
+    public ExecutorTask runGoal(String goal, Lookup lookup, RunConfig config) {
+        return runGoal(goal, lookup, DefaultOutputProcessorFactory.getAllProcessors(project), null, config);
     }
     
-    private void runGoal(String goal, Lookup lookup, 
+    private ExecutorTask runGoal(String goal, Lookup lookup, 
                          Set processors, 
                          InputOutput io, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
         boolean ok = MavenModule.checkMavenHome(project.getLocFinder());
         if (!ok) {
-            return;
+            return null;
         }
         MavenModule.copyMevenidePlugin(project.getLocFinder());
         // setup executor first..                     
@@ -261,6 +261,7 @@ public class ActionProviderImpl implements ActionProvider {
                     project.firePropertyChange(MavenProject.PROP_PROJECT);
                 }
         });
+        return task;
     }
     
     public boolean isActionEnabled(String str, Lookup lookup) {

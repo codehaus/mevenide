@@ -80,13 +80,13 @@ public class MultiRepositoryNode extends AbstractNode implements LocalRepoRefres
     
     public String getHtmlDisplayName() {
         if ((element.isLocal() || downloaded) == element.isRemote()) {
-            return "<html><b><font color='#8d8ba7'>" + getDisplayName() + "</font></b></html>";
+            return "<html><b><font color='#0d075c'>" + getDisplayName() + "</font></b></html>";
         }
         if (element.isLocal()) {
             return super.getHtmlDisplayName();
         }
         if (element.isRemote()) {
-            return "<html><b><font color='#9f9a93'>" + getDisplayName() + "</font></b></html>";
+            return "<html><b><font color='#d2a96e'>" + getDisplayName() + "</font></b></html>";
         }
         throw new IllegalStateException();
     }

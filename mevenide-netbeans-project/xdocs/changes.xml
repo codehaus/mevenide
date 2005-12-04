@@ -6,6 +6,10 @@
   </properties>
 
   <body>
+    <release version="1.0" date="December 2005" description="">
+    </release>
+    <release version="0.9" date="October 2005" description="4.1 release, also works with 5.0 betas">
+    </release>
     <release version="0.8" date="08/08/2005" description="4.1 release, should work with 4.0 and also 4.2 dev">
       <action dev="mkleint" type="add">
           Dependencies now visible and editable in Project View. Add/Edit/Remove dependency actions
