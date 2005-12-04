@@ -136,7 +136,6 @@ public class MavenJ2eeModule implements J2eeModule {
                 }
             }
         }
-        System.out.println("getarchive- get type=" + getModuleType());
         return null;
     }
     /** Returns the contents of the archive, in copyable form.
@@ -199,7 +198,7 @@ public class MavenJ2eeModule implements J2eeModule {
             if (webApp != null) {
                 //TODO find a better way to get the BB from WApp and remove the HACK from DDProvider!!
                 return DDProvider.getDefault ().getBaseBean (webApp);
-            }
+            } 
         }
         if (J2eeModule.APP_XML.equals(location)) {
             EarProvider prov = (EarProvider)project.getLookup().lookup(EarProvider.class);

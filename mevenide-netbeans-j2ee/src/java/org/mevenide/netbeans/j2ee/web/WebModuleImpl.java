@@ -23,6 +23,7 @@ import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 import org.mevenide.properties.IPropertyLocator;
+import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.web.api.webmodule.WebModule;
@@ -48,9 +49,19 @@ public class WebModuleImpl implements WebModuleImplementation {
     public FileObject getWebInf() {
         FileObject fo = FileUtilities.getFileObjectForProperty("maven.war.src", project.getPropertyResolver()); //NOI18N
         if (fo != null) {
-            return fo.getFileObject("WEB-INF"); //NOI18N
+            FileObject inf =  fo.getFileObject("WEB-INF"); //NOI18N
+            if (inf != null) {
+                return inf;
+            }
         }
-        return fo;
+        // try to guess the correct loc by the descriptor, rather then the maven.war.src property
+        FileObject dd = getDeploymentDescriptor();
+        if (dd != null) {
+            if ("WEB-INF".equalsIgnoreCase(dd.getParent().getName())) {
+                return dd.getParent();
+            }
+        }
+        return null;
     }
 
     public String getJ2eePlatformVersion() {
@@ -77,7 +88,7 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public FileObject getDeploymentDescriptor() {
-        return FileUtilities.getFileObjectForProperty("maven.war.webxml", project.getPropertyResolver()); //NOI18N
+        return FileUtil.toFileObject(guessWebDescriptor(project)); //NOI18N
     }
 
     public String getContextPath() {
@@ -115,7 +126,27 @@ public class WebModuleImpl implements WebModuleImplementation {
             return fo;
         }
         Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
-        SourceGroup[] grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
+        SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        if (grps != null) {
+            for (int i = 0; i < grps.length; i++) {
+                fo = FileUtil.toFile(grps[0].getRootFolder());
+                File toRet = new File(fo, J2eeModule.WEB_XML); //NOI18N
+                if (toRet.exists()) {
+                    return toRet;
+                }
+            }
+        }        
+        grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
+        if (grps != null) {
+            for (int i = 0; i < grps.length; i++) {
+                fo = FileUtil.toFile(grps[0].getRootFolder());
+                File toRet = new File(fo, J2eeModule.WEB_XML); //NOI18N
+                if (toRet.exists()) {
+                    return toRet;
+                }
+            }
+        }        
+        grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {
                 fo = FileUtil.toFile(grps[0].getRootFolder());
