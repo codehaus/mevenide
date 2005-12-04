@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide XML grammar</name>
     <artifactId>mevenide-netbeans-grammar</artifactId>
-    <currentVersion>0.6.1</currentVersion>
+    <currentVersion>0.6.3</currentVersion>
     <package>org.mevenide.netbeans.grammar</package>
     <description>Maven files XML grammar and code-completion for Netbeans. (project.xml, maven.xml and plugin.jelly files completion.</description>
     <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
@@ -13,15 +13,11 @@
             <groupId>netbeans</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>1.8.3.999.4</version>
-            <!-- for nb4.2 
-             version>1.9.0.4</version-->
+            <version>1.11.0.4</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <properties>
-                <netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 3.999.4</netbeans.module.dep>
-                <!-- for nb 4.2
-                 netbeans.module.dep>impl=org.netbeans.modules.xml.core/2 = 4</netbeans.module.dep-->
+                <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
