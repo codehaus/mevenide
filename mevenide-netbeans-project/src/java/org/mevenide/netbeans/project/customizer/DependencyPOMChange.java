@@ -173,10 +173,14 @@ public final class DependencyPOMChange implements MavenPOMTreeChange {
                 if (oldval != null && newval != null) {
                     equal = oldval.equals(newval);
                 } else {
-                    equal= false;
+                    if (oldval == null && newval == null) {
+                        equal = true;
+                    } else {
+                        equal= false;
+                    }
                 }
                 if (!equal) {
-                    return false;
+                    break;
                 }
             }
         }
