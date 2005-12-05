@@ -35,6 +35,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.mevenide.context.IProjectContext;
 import org.mevenide.context.IQueryContext;
 
@@ -130,9 +131,10 @@ public final class DependencyUpdater {
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(reader);
                     reader.close();
+                    Format format = NbProjectWriter.figureOutFormat(roots[i], reader.getNewLineString());
+                    reader = null;
                     lock = fo.lock();
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(
-                            NbProjectWriter.figureOutFormat(roots[i], reader));
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(format);
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
                     marshall.marshall(writer, provider, originalDoc);
                 }

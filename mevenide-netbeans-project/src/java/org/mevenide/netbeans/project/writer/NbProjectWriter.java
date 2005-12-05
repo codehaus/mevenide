@@ -287,10 +287,12 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
                     SAXBuilder builder = new SAXBuilder();
                     Document originalDoc = builder.build(reader);
                     reader.close();
+                    Format format = figureOutFormat(roots[i], reader.getNewLineString());
+                    reader = null;
                     FileLock lock = fo.lock();
                     fileLockMap.put(files[i], lock);
                     writer = new OutputStreamWriter(fo.getOutputStream(lock));
-                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(figureOutFormat(roots[i], reader));
+                    CarefulProjectMarshaller marshall = new CarefulProjectMarshaller(format);
                     marshall.marshall(writer, provider, originalDoc);
                 }
             } catch (UserQuestionException exc) {
@@ -318,10 +320,9 @@ public class NbProjectWriter implements FileSystem.AtomicAction {
         return false;
     }
     
-    static Format figureOutFormat(org.jdom.Element root, CountNewLinesReader reader) {
+    static Format figureOutFormat(org.jdom.Element root, String lineSep) {
         Format toRet = Format.getPrettyFormat();
         List content = root.getContent();
-        String lineSep = reader.getNewLineString();
         String indent = "    ";
         if (content.size() > 2) {
             Content cont1 = (Content)content.get(0);
