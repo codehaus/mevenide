@@ -112,7 +112,7 @@ class HttpRepositoryReader extends AbstractRepositoryReader {
     StructureWrapper[] getNames(String output) {
         StringTokenizer tok = new StringTokenizer(output, "\n");
         Pattern folderPattern = Pattern.compile(".*<IMG SRC=\"/icons/folder.gif\" ALT=\"\\[DIR\\]\"> <A HREF=\"(.*)/\">(.*)/</A>.*", Pattern.CASE_INSENSITIVE);
-        Pattern filePattern = Pattern.compile(".*<IMG SRC=\"/icons/unknown.gif\" ALT=\"\\[   \\]\"> <A HREF=\"(.*)\">(.*)</A>.*", Pattern.CASE_INSENSITIVE);
+        Pattern filePattern = Pattern.compile(".*<IMG SRC=\"/icons/.*.gif\" ALT=\"\\[   \\]\"> <A HREF=\"(.*)\">(.*)</A>.*", Pattern.CASE_INSENSITIVE);
         Collection items = new ArrayList();
         while (tok.hasMoreTokens()) {
             String line = tok.nextToken();
