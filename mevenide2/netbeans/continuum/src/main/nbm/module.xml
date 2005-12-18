@@ -10,6 +10,27 @@
        <library>org.apache.maven.continuum:continuum-model</library>
    </libraries>
    <dependencies>
+        <dependency>
+            <id>org.netbeans.api:org-openide-util</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-options</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-explorer</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-nodes</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-windows</id>
+            <type>spec</type>
+        </dependency>
+       
       <dependency>
           <id>commons-logging:commons-logging</id>
 	  <type>spec</type>
