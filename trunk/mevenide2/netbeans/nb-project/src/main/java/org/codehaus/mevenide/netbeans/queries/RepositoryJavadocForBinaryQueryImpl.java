@@ -82,12 +82,12 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                         // each repository artifact should have this structure
                         String artifact = parentParent.getName();
                         String version = parent.getName();
-                        File pom = new File(parent, artifact + "-" + version + ".pom");
-                        // maybe this condition is already overkill..
-                        if (pom.exists()) {
+//                        File pom = new File(parent, artifact + "-" + version + ".pom");
+//                        // maybe this condition is already overkill..
+//                        if (pom.exists()) {
                             File javadoc = new File(parent, artifact + "-" + version + "-javadoc.jar");
                             return new DocResult(javadoc);
-                        }
+//                        }
                     }
                 }
             }
