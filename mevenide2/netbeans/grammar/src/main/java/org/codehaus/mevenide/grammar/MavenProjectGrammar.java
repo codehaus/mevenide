@@ -83,7 +83,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
              ) {
             // assuming we have the configuration node as parent..
             // does not need to be true for complex stuff
-            Node previous = path.contains("execution")
+            Node previous = path.indexOf("execution") > 0
                 ? hintCtx.getParentNode().getParentNode().getParentNode().getPreviousSibling()
                 : hintCtx.getParentNode().getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
