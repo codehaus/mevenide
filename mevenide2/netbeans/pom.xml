@@ -16,5 +16,6 @@
      <module>nb-project</module>
      <module>libs</module>
      <module>continuum</module>
+     <module>grammar</module>
   </modules>
 </project>
