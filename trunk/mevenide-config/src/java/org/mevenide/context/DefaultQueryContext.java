@@ -243,6 +243,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
             } catch (IOException exc) {
                 callback.handleError(IQueryErrorCallback.ERROR_UNREADABLE_PROP_FILE, exc);
             } finally {
+                timestamps.put(loc, new Long(lastModified));
                 if (str != null) {
                     try {
                         str.close();
