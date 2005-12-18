@@ -63,14 +63,14 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
                         // each repository artifact should have this structure
                         String artifact = parentParent.getName();
                         String version = parent.getName();
-                        File pom = new File(parent, artifact + "-" + version + ".pom");
-                        // maybe this condition is already overkill..
-                        if (pom.exists()) {
+//                        File pom = new File(parent, artifact + "-" + version + ".pom");
+//                        // maybe this condition is already overkill..
+//                        if (pom.exists()) {
                             File srcs = new File(parent, artifact + "-" + version + "-sources.jar");
                             if (srcs.exists()) {
                                 return new SrcResult(srcs);
                             }
-                        }
+//                        }
                     }
                 }
             }
