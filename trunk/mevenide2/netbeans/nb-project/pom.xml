@@ -9,62 +9,104 @@
     <url>http://mevenide.codehaus.org</url>
 
     <dependencies>
-        <dependency>
+        <!--dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>openide</artifactId>
             <version>5.9.1</version>
             <type>jar</type>
+        </dependency-->
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>6.5.1</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>openide-loaders</artifactId>
-            <version>5.2.1</version>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>6.3.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>6.6.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>6.3.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-actions</artifactId>
+            <version>6.4.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>6.6.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-text</artifactId>
+            <version>6.8.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-loaders</artifactId>
+            <version>5.8.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-io</artifactId>
-            <version>1.6.1</version>
+            <version>1.8.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-execution</artifactId>
-            <version>1.5.1</version>
+            <version>1.7.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
-            <version>1.5.4.0.0</version>
+            <version>1.12.1.5</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>1.3.1</version>
+            <version>1.8.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-project</artifactId>
-            <version>1.3.1</version>
-        </dependency>        
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-api-java</artifactId>
             <version>1.7.1</version>
         </dependency>        
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-java</artifactId>
+            <version>1.9.1</version>
+        </dependency>        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
-            <version>1.3.1</version>
+            <version>1.6.1</version>
         </dependency>        
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-queries</artifactId>
-            <version>1.4.1</version>
+            <version>1.6.1</version>
         </dependency>        
         
         <dependency>
