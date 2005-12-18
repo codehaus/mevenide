@@ -1,0 +1,23 @@
+<NetbeansModule>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.grammar/2</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <libraries>
+       <library>jdom:jdom</library>
+   </libraries>
+   <dependencies>
+      <dependency>
+          <id>org.netbeans.api:org-openide-util-enumerations</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
+          <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-netbeans-modules-xml-core</id>
+	  <type>spec</type>
+      </dependency>
+   </dependencies> 
+</NetbeansModule>

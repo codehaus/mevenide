@@ -1,0 +1,71 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.codehaus.mevenide</groupId>
+    <artifactId>grammar</artifactId>
+    <packaging>nbm</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <name>Netbeans Maven2 code completion support</name>
+    <url>http://mevenide.codehaus.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util-enumerations</artifactId>
+            <version>6.3</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>6.5</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>6.3</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+          <groupId>jdom</groupId>
+          <artifactId>jdom</artifactId>
+          <version>1.0</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>1.0.1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <version>6.6</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-xml-core</artifactId>
+            <version>1.10.0.4</version>
+        </dependency>               
+    </dependencies>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mevenide.plugins</groupId>
+                <artifactId>maven-nbm-plugin</artifactId>
+                <version>2.0.2</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <descriptor>src/main/nbm/module.xml</descriptor>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
