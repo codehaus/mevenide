@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -28,14 +29,14 @@ public class TweakingClassLoader extends ClassLoader {
     }
 
     protected Enumeration findResources(String name) throws IOException {
-        System.out.println("findResources=" + name);
+//        System.out.println("findResources=" + name);
 
         Enumeration retValue;
         
         retValue = super.findResources(name);
         if ("META-INF/plexus/components.xml".equals(name)) {
             URL url = getParent().getResource("org/codehaus/mevenide/netbeans/embedder/components.xml");
-            System.out.println("url=" + url);
+//            System.out.println("url=" + url);
             List lst = new ArrayList(Collections.list(retValue));
             lst.add(url);
             return Collections.enumeration(lst);
