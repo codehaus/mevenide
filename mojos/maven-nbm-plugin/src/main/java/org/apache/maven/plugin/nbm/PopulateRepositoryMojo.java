@@ -44,6 +44,8 @@ import org.apache.tools.ant.types.FileSet;
  *
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal populate-repository
+ * @requiresProject false
+ * @aggregator
  */
 public class PopulateRepositoryMojo
         extends AbstractNbmMojo {
