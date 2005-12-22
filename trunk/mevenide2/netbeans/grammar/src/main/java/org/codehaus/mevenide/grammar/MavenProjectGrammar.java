@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.grammar;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -36,10 +37,10 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
-import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.settings.Settings;
+import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyElement;
+import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -49,7 +50,6 @@ import org.jdom.JDOMException;
 import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
-import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -87,7 +87,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ? hintCtx.getParentNode().getParentNode().getParentNode().getPreviousSibling()
                 : hintCtx.getParentNode().getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
-            PluginInfoHolder info = findPluginInfo(previous, embedder);
+            PluginInfoHolder info = findPluginInfo(previous, embedder, true);
             Document pluginDoc = loadDocument(info, embedder);
             if (pluginDoc != null) {
                 return collectPluginParams(pluginDoc, hintCtx);
@@ -96,7 +96,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return Collections.EMPTY_LIST;
     }
     
-    private PluginInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder) {
+    private PluginInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder, boolean checkLocalRepo) {
         String artifact = null;
         String group = null;
         String version = null;
@@ -119,7 +119,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             previous = previous.getPreviousSibling();
         }
-        if (holder.getVersion() == null && holder.getArtifactId() != null && holder.getGroupId() != null) {
+        if (checkLocalRepo && holder.getVersion() == null && holder.getArtifactId() != null && holder.getGroupId() != null) {
             File lev1 = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), holder.getGroupId().replace('.', File.separatorChar));
             File dir = new File(lev1, holder.getArtifactId());
             File fil = new File(dir, "maven-metadata-local.xml");
@@ -184,7 +184,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             Node previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
             previous = previous.getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
-            PluginInfoHolder info = findPluginInfo(previous, embedder);
+            PluginInfoHolder info = findPluginInfo(previous, embedder, true);
             Document pluginDoc = loadDocument(info, embedder);
             if (pluginDoc != null) {
                 return collectGoals(pluginDoc, virtualTextCtx);
@@ -208,6 +208,37 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(col);
             } catch (MavenEmbedderException ex) {
                 ex.printStackTrace();
+            }
+        }
+        if ("/project/dependencies/dependency/version".equals(path) ||
+            "/project/dependencyManagement/dependencies/dependency/version".equals(path) || 
+            "/project/build/plugins/plugin/version".equals(path) ||
+            "/project/build/pluginManagement/plugins/plugin/version".equals(path)) {
+            
+            //poor mans solution, just check local repository for possible versions..
+            // in future would be nice to include remote repositories somehow..
+            PluginInfoHolder hold = findPluginInfo(virtualTextCtx.getPreviousSibling(), null, false);
+            if (hold.getGroupId() != null && hold.getArtifactId() != null) {
+                File lev1 = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), hold.getGroupId().replace('.', File.separatorChar));
+                File dir = new File(lev1, hold.getArtifactId());
+                File[] versions = dir.listFiles(new FileFilter() {
+                    public boolean accept(File pathname) {
+                        if (pathname.isDirectory()) {
+                            File[] subdirs = pathname.listFiles(new FileFilter() {
+                                public boolean accept(File pathname) {
+                                    return  pathname.isDirectory();
+                                }
+                            });
+                            return subdirs.length == 0;
+                        }
+                        return false;
+                    }
+                });
+                Collection elems = new ArrayList();
+                for (int i = 0; i < versions.length; i++) {
+                    elems.add(new MyTextElement(versions[i].getName()));
+                }
+                return Collections.enumeration(elems);
             }
         }
         return null;
