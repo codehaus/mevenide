@@ -74,7 +74,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return false;
     }
     
-    protected Enumeration getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element parent) {
+    protected List getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element parent) {
         if ("/project/build/plugins/plugin/configuration".equals(path) ||
             "/project/build/pluginManagement/plugins/plugin/configuration".equals(path) ||
             "/project/build/plugins/plugin/executions/execution/configuration".equals(path) ||
@@ -93,7 +93,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return collectPluginParams(pluginDoc, hintCtx);
             }
         }
-        return null;
+        return Collections.EMPTY_LIST;
     }
     
     private PluginInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder) {
@@ -148,7 +148,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return holder;
     }
     
-    private Enumeration collectPluginParams(Document pluginDoc, HintContext hintCtx) {
+    private List collectPluginParams(Document pluginDoc, HintContext hintCtx) {
         Iterator it = pluginDoc.getRootElement().getDescendants(new Filter() {
             public boolean matches(Object object) {
                 if (object instanceof Element) {
@@ -162,7 +162,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return false;
             }
         });
-        Collection toReturn = new ArrayList();
+        List toReturn = new ArrayList();
         Collection params = new HashSet();
         while (it.hasNext()) {
             Element el = (Element)it.next();
@@ -175,7 +175,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 }
             }
         }
-        return Collections.enumeration(toReturn);
+        return toReturn;
     }
 
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {

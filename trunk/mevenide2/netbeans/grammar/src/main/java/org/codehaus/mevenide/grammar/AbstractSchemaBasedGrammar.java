@@ -20,6 +20,7 @@ package org.codehaus.mevenide.grammar;
 import java.awt.Component;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.openide.util.enum.EmptyEnumeration;
 import org.openide.nodes.Node.Property;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
 
 /**
@@ -71,10 +73,10 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     /**
      * to override by subclasses that want to provide some dynamic content un a specific subtree.
      * @param path is slash separated path string
-     * @return null, if no such offering exists or the actual completion nodes..
+     * @return the actual completion nodes or empty list
      */
-    protected Enumeration getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element lowestParent) {
-        return null;
+    protected List getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element lowestParent) {
+        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -273,15 +275,13 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
             Iterator it = parentNames.iterator();
             String path = "";
+            Vector toReturn = new Vector();
             while (it.hasNext() && schemaParent != null) {
                 String str = (String)it.next();
                 path = path + "/" + str;
                 org.jdom.Element el = findElement(schemaParent, str);
                 if (!it.hasNext()) {
-                    Enumeration en = getDynamicCompletion(path, virtualElementCtx, el);
-                    if (en != null) {
-                        return en;
-                    }
+                    toReturn.addAll(getDynamicCompletion(path, virtualElementCtx, el));
                 }
                 if (el != null) {
                     String type = el.getAttributeValue("type");
@@ -297,7 +297,6 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
                     System.err.println("cannot find element=" + str);
                 }
             }
-            Vector toReturn = new Vector();
             if (schemaParent != null) {
                 processSequence(start, schemaParent, toReturn);
             }
@@ -388,7 +387,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
          * //??? is it really needed
          */
         public String getText() {
-            return getNodeName();
+            return getNodeName() + "XXX";
         }
         
         /**
@@ -411,7 +410,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     }
 
     
-    protected static class MyElement extends org.codehaus.mevenide.grammar.MavenProjectGrammar.AbstractResultNode implements Element {
+    protected static class MyElement extends AbstractResultNode implements Element {
         
         private String name;
         
@@ -458,5 +457,57 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         }
         
     }
+     
+    protected static class ComplexElement extends AbstractResultNode implements Element {
+        
+        private String name;
+        private String display;
+        private NodeList list;
+        
+        ComplexElement(String tagName, String displayName, NodeList listimpl) {
+            this.name = tagName;
+            display = displayName;
+            list = listimpl;
+        }
+        
+        public short getNodeType() {
+            return Node.ELEMENT_NODE;
+        }
+        
+        public String getNodeName() {
+            return name;
+        }
+        
+        public String getTagName() {
+            return name;
+        }
+        
+        public String getDisplayName() {
+            return display;
+        }
+
+        public NodeList getChildNodes() {
+            return list;
+        }
+     /**
+     * @return false
+     */
+    public boolean hasChildNodes() {
+        return true;
+    }
+        public org.w3c.dom.Node getLastChild() {
+        return list.item(list.getLength() - 1);
+    }
+    /**
+     * @return null
+     */
+    public org.w3c.dom.Node getFirstChild() {
+        return list.item(0);
+    }
+
+       
+        
+    }
+     
    
 }
