@@ -6,4 +6,10 @@
    <libraries>
       <library>org.apache.maven:maven-embedder</library>
    </libraries> 
+   <dependencies>
+       <dependency>
+           <id>org.netbeans.api:org-netbeans-api-progress</id>
+           <type>spec</type>
+       </dependency>
+   </dependencies>
 </NetbeansModule>
