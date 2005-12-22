@@ -38,6 +38,7 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.support.GenericSources;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
@@ -192,9 +193,9 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         }
-//        if (TYPE_DOC_ROOT.equals(str)) {
-//            return createWebDocRoot();
-//        }
+        if (TYPE_DOC_ROOT.equals(str)) {
+            return createWebDocRoot();
+        }
         if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
             // TODO not all these are probably resources.. maybe need to split in 2 groups..
             boolean test = TYPE_TEST_RESOURCES.equals(str);
@@ -241,24 +242,24 @@ public class MavenSourcesImpl implements Sources {
         return changed;
     }
     
-//    private SourceGroup[] createWebDocRoot() {
-//        try {
-//            FileObject folder = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
-//            SourceGroup grp = null;
-//            synchronized (lock) {
-//                checkWebDocGroupCache(folder);
-//                grp = webDocSrcGroup;
-//            }
-//            if (grp != null) {
-//                return new SourceGroup[] {grp};
-//            } else {
-//                return new SourceGroup[0];
-//            }
-//        } catch (MalformedURLException exc) {
-//            logger.error("Malformed URL", exc);
-//            return new SourceGroup[0];
-//        }
-//    }
+    private SourceGroup[] createWebDocRoot() {
+        try {
+            FileObject folder = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
+            SourceGroup grp = null;
+            synchronized (lock) {
+                checkWebDocGroupCache(folder);
+                grp = webDocSrcGroup;
+            }
+            if (grp != null) {
+                return new SourceGroup[] {grp};
+            } else {
+                return new SourceGroup[0];
+            }
+        } catch (MalformedURLException exc) {
+            ErrorManager.getDefault().notify(exc);
+            return new SourceGroup[0];
+        }
+    }
     
     
 
@@ -275,7 +276,7 @@ public class MavenSourcesImpl implements Sources {
         }
         boolean changed = false;
         if (webDocSrcGroup == null || !webDocSrcGroup.getRootFolder().equals(root)) {
-            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Document Sources", null, null);
+            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Pages", null, null);
             changed = true;
         } 
         return changed;

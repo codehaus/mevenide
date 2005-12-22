@@ -48,6 +48,10 @@ public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
         }
         //TODO temporary solution
         col.addAll(Arrays.asList(getMavenProject().getGeneratedSourceRoots()));
+        URI webSrc = getMavenProject().getWebAppDirectory();
+        if (new File(webSrc).exists()) {
+            col.add(webSrc);
+        }
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        

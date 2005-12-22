@@ -22,13 +22,13 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,13 +38,17 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.project.DefaultMavenProjectBuilder;
+import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
+import org.codehaus.mevenide.netbeans.queries.MavenSourceLevelImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenTestForSourceImpl;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.Sources;
@@ -127,18 +131,43 @@ public final class NbMavenProject implements Project {
     public MavenProject getOriginalMavenProject() {
         if (project == null) {
             try {
+                //http://jira.codehaus.org/browse/MNG-1876
+                // need to restart the embedder to avoid a weirdo exception.
+                embedder.stop();
+                embedder.start();
                 try {
                     project = embedder.readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
+                    //http://jira.codehaus.org/browse/MNG-1876
+                    // need to restart the embedder to avoid a weirdo exception.
+                    embedder.stop();
+                    embedder.start();
+                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = embedder.readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
+                    //http://jira.codehaus.org/browse/MNG-1876
+                    // need to restart the embedder to avoid a weirdo exception.
+                    embedder.stop();
+                    embedder.start();
+                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = embedder.readProject(projectFile);
                 }
             } catch (ProjectBuildingException ex) {
-                ex.printStackTrace();
+                ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                try {
+                    project = new MavenProject(embedder.readModel(projectFile));
+                } catch (FileNotFoundException ex2) {
+                    ex2.printStackTrace();
+                } catch (IOException ex2) {
+                    ex2.printStackTrace();
+                } catch (XmlPullParserException ex2) {
+                    ex2.printStackTrace();
+                }
+            } catch (MavenEmbedderException exc) {
+                exc.printStackTrace();
             }
         }
-        // TODO
+        
         return project;
     }
     
@@ -249,33 +278,40 @@ public final class NbMavenProject implements Project {
     }
     
    
-   private URI getDirURI(String path) {
-       String pth = path.trim();
-       pth = pth.replaceFirst("^\\./", "");
-       pth = pth.replaceFirst("^\\.\\\\", "");
-       File src = FileUtilities.resolveFilePath(FileUtil.toFile(getProjectDirectory()), pth);
-       return FileUtil.normalizeFile(src).toURI();
-   }
 
    public URI[] getGeneratedSourceRoots() {
        //TODO more or less a hack.. should be better supported by embedder itself.
-       URI uri = getDirURI("target/generated-sources");
+       URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources");
        File fil = new File(uri);
        if (fil.exists()) {
            return new URI[] { uri };
        }
        return new URI[0];
    }
+
+   public URI getWebAppDirectory() {
+       //TODO hack, should be supported somehow to read this..
+       String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
+                                              "maven-war-plugin", 
+                                              "warSourceDirectory", 
+                                              "war");
+       prop = prop == null ? "src/main/webapp" : prop;
+       URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
+       File fil = new File(uri);
+       return fil.toURI();
+    }
+   
+   
    
    public File[] getOtherRoots(boolean test) {
-       URI uri = getDirURI(test ? "src/test" : "src/main");
+       URI uri = FileUtilities.getDirURI(getProjectDirectory(), test ? "src/test" : "src/main");
        File fil = new File(uri);
        if (fil.exists()) {
            return fil.listFiles(new FilenameFilter() {
                public boolean accept(File dir, String name) {
                    //TODO most probably a performance bottleneck of sorts..
                    FileObject fo = FileUtil.toFileObject(new File(dir, name));
-                   return !("java".equalsIgnoreCase(name)) && VisibilityQuery.getDefault().isVisible(fo);
+                   return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo);
                }
            });
        }
@@ -307,8 +343,8 @@ public final class NbMavenProject implements Project {
 ////            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
-            new RecommendedTemplatesImpl()//,
-//            new MavenSourceLevelImpl(this)
+            new RecommendedTemplatesImpl(this),
+            new MavenSourceLevelImpl(this)
                     
         });
         return staticLookup;
@@ -444,10 +480,84 @@ public final class NbMavenProject implements Project {
         
     }
     
+    
+    /**
+     * TODO maybe make somehow extensible from other modules?
+    */
+    
     private static final class RecommendedTemplatesImpl 
                         implements RecommendedTemplates, PrivilegedTemplates {
-                            
-        private static final String[] APPLICATION_TYPES = new String[] { 
+    
+        
+        private static final String[] EAR_TYPES = new String[] {
+            "XML",                  // NOI18N
+            "ear-types",                 // NOI18N
+            "wsdl",                 // NOI18N
+            "simple-files"          // NOI18N
+        };
+        
+        private static final String[] EAR_PRIVILEGED_NAMES = new String[] {
+            "Templates/XML/XMLWizard",
+            "Templates/Other/Folder"
+        };
+        
+        private static final String[] EJB_TYPES = new String[] {
+            "java-classes",         // NOI18N
+            "ejb-types",            // NOI18N
+            "web-services",         // NOI18N
+            "wsdl",                 // NOI18N
+            "j2ee-types",           // NOI18N
+            "java-beans",           // NOI18N
+            "java-main-class",      // NOI18N
+            "oasis-XML-catalogs",   // NOI18N
+            "XML",                  // NOI18N
+            "ant-script",           // NOI18N
+            "ant-task",             // NOI18N
+            "junit",                // NOI18N
+            "simple-files"          // NOI18N
+        };
+        
+        private static final String[] EJB_PRIVILEGED_NAMES = new String[] {
+            
+            "Templates/J2EE/Session", // NOI18N
+            "Templates/J2EE/Entity",  // NOI18N
+            "Templates/J2EE/RelatedCMP", // NOI18N                    
+            "Templates/J2EE/Message", //NOI18N
+            "Templates/WebServices/WebService", // NOI18N
+            "Templates/WebServices/MessageHandler", // NOI18N
+            "Templates/Classes/Class.java" // NOI18N
+        };
+
+        private static final String[] WEB_TYPES = new String[] { 
+            "java-classes",         // NOI18N
+            "java-main-class",      // NOI18N
+            "java-beans",           // NOI18N
+            "oasis-XML-catalogs",   // NOI18N
+            "XML",                  // NOI18N
+            "ant-script",           // NOI18N
+            "ant-task",             // NOI18N
+            "servlet-types",        // NOI18N
+            "web-types",            // NOI18N
+            "web-services",         // NOI18N
+            "web-service-clients",  // NOI18N
+            "wsdl",                 // NOI18N
+            "j2ee-types",           // NOI18N                    
+            "junit",                // NOI18N
+            "simple-files"          // NOI18N
+        };
+
+        private static final String[] WEB_PRIVILEGED_NAMES = new String[] {
+            "Templates/JSP_Servlet/JSP.jsp",            // NOI18N
+            "Templates/JSP_Servlet/Html.html",          // NOI18N
+            "Templates/JSP_Servlet/Servlet.java",       // NOI18N
+            "Templates/Classes/Class.java",             // NOI18N
+            "Templates/Classes/Package",                // NOI18N
+            "Templates/WebServices/WebService",         // NOI18N
+            "Templates/WebServices/WebServiceClient",   // NOI18N                    
+            "Templates/Other/Folder",                   // NOI18N
+        };
+        
+        private static final String[] JAR_APPLICATION_TYPES = new String[] { 
             "java-classes",         // NOI18N
             "java-main-class",      // NOI18N
             "java-forms",           // NOI18N
@@ -455,32 +565,84 @@ public final class NbMavenProject implements Project {
             "java-beans",           // NOI18N
             "oasis-XML-catalogs",   // NOI18N
             "XML",                  // NOI18N
-            //"ant-script",           // NOI18N
-            //"ant-task",             // NOI18N
-            "servlet-types",     // NOI18N
-            "web-types",         // NOI18N
+            "ant-script",           // NOI18N
+            "ant-task",             // NOI18N
+            "web-service-clients",  // NOI18N
+            "wsdl",                 // NOI18N
+            // "servlet-types",     // NOI18N
+            // "web-types",         // NOI18N
             "junit",                // NOI18N
-            "MIDP",              // NOI18N
+            // "MIDP",              // NOI18N
             "simple-files"          // NOI18N
         };
         
-        private static final String[] PRIVILEGED_NAMES = new String[] {
+        private static final String[] JAR_PRIVILEGED_NAMES = new String[] {
             "Templates/Classes/Class.java", // NOI18N
             "Templates/Classes/Package", // NOI18N
             "Templates/Classes/Interface.java", // NOI18N
             "Templates/GUIForms/JPanel.java", // NOI18N
             "Templates/GUIForms/JFrame.java", // NOI18N
+            "Templates/WebServices/WebServiceClient"   // NOI18N                    
         };
         
-        RecommendedTemplatesImpl() {
+        private static final String[] POM_APPLICATION_TYPES = new String[] { 
+            "XML",                  // NOI18N
+            "simple-files"          // NOI18N
+        };
+        
+        private static final String[] POM_PRIVILEGED_NAMES = new String[] {
+            "Templates/XML/XMLWizard", // NOI18N
+            "Templates/Other/Folder" // NOI18N
+        };
+        
+        private NbMavenProject project;
+        
+        RecommendedTemplatesImpl(NbMavenProject proj) {
+            project = proj;
         }
         
         public String[] getRecommendedTypes() {
-            return APPLICATION_TYPES;
+            String packaging = project.getOriginalMavenProject().getPackaging();
+            if (packaging == null) {
+                packaging = "jar";
+            }
+            packaging = packaging.trim();
+            if ("ejb".equals(packaging)) {
+                return EJB_TYPES;
+            }
+            if ("ear".equals(packaging)) {
+                return EAR_TYPES;
+            }
+            if ("war".equals(packaging)) {
+                return WEB_TYPES;
+            }
+            if ("pom".equals(packaging)) {
+                return POM_APPLICATION_TYPES;
+            }
+            //NBM also fall under this I guess..
+            return JAR_APPLICATION_TYPES;
         }
         
         public String[] getPrivilegedTemplates() {
-            return PRIVILEGED_NAMES;
+            String packaging = project.getOriginalMavenProject().getPackaging();
+            if (packaging == null) {
+                packaging = "jar";
+            }
+            packaging = packaging.trim();
+            if ("ejb".equals(packaging)) {
+                return EJB_PRIVILEGED_NAMES;
+            }
+            if ("ear".equals(packaging)) {
+                return EAR_PRIVILEGED_NAMES;
+            }
+            if ("war".equals(packaging)) {
+                return WEB_PRIVILEGED_NAMES;
+            }
+            if ("pom".equals(packaging)) {
+                return POM_PRIVILEGED_NAMES;
+            }
+            
+            return JAR_PRIVILEGED_NAMES;
         }
         
     }   
