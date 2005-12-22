@@ -220,4 +220,17 @@ public final class FileUtilities {
         }
     }
     
+   public static URI getDirURI(File root, String path) {
+       String pth = path.trim();
+       pth = pth.replaceFirst("^\\./", "");
+       pth = pth.replaceFirst("^\\.\\\\", "");
+       File src = FileUtilities.resolveFilePath(root, pth);
+       return FileUtil.normalizeFile(src).toURI();
+   }
+    
+   public static URI getDirURI(FileObject root, String path) {
+       return getDirURI(FileUtil.toFile(root), path);
+   }
+    
+    
 }

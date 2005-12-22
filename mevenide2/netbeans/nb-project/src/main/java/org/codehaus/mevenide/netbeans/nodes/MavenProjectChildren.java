@@ -46,7 +46,7 @@ class MavenProjectChildren extends Children.Keys {
     
 //    private static final String KEY_RESOURCES = "resources"; //NOI18N
 //    private static final String KEY_TEST_RESOURCES = "testresources"; //NOI18N
-//    private static final String KEY_WEBAPP = "webapp"; //NOI18N
+    private static final String KEY_WEBAPP = "webapp"; //NOI18N
 //    private static final String KEY_EAR = "ear"; //NOI18N
 //    private static final String KEY_EJB = "ejb"; //NOI18N
     private static final String KEY_OTHER = "otherRoots"; //NOI18N
@@ -59,7 +59,7 @@ class MavenProjectChildren extends Children.Keys {
     
     private NbMavenProject project;
     private PropertyChangeListener changeListener;
-//    private String currentWebAppKey;
+    private String currentWebAppKey;
 //    private String currentEarKey;
 //    private String currentEjbKey;
     
@@ -102,11 +102,11 @@ class MavenProjectChildren extends Children.Keys {
         for (int i = 0; i < gengroup.length; i++) {
             list.add(gengroup[i]);
         }
-//        URI webapp = project.getWebAppDirectory();
-//        if (webapp != null) {
-//            currentWebAppKey = KEY_WEBAPP + webapp;
-//            list.add(currentWebAppKey);
-//        }
+        URI webapp = project.getWebAppDirectory();
+        if (webapp != null) {
+            currentWebAppKey = KEY_WEBAPP + webapp;
+            list.add(currentWebAppKey);
+        }
 //        URI ear = project.getEarDirectory();
 //        if (ear != null) {
 //            currentEarKey = KEY_EAR + ear;
@@ -166,8 +166,8 @@ class MavenProjectChildren extends Children.Keys {
 //            n = new ResourcesRootNode(project, false);
 //        } else if (key == KEY_TEST_RESOURCES) {
 //            n = new ResourcesRootNode(project, true);
-//        } else if (key == currentWebAppKey) {
-//            n = createWebAppNode();
+        } else if (key == currentWebAppKey) {
+            n = createWebAppNode();
 //        } else if (key == currentEarKey) {
 //            n = createEarNode();
 //        } else if (key == currentEjbKey) {
@@ -210,23 +210,22 @@ class MavenProjectChildren extends Children.Keys {
 //        return null;
 //    }
 //
-//    private Node createWebAppNode() {
-//        Node n =  null;
-//        try {
-//            FileObject fo = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
-//            if (fo != null) {
-//                DataFolder fold = DataFolder.findFolder(fo);
-//                File fil = FileUtil.toFile(fo);
-//                if (fold != null) {
-//                    n = new WebAppFilterNode(project, fold.getNodeDelegate().cloneNode(), fil);
-//                }
-//            }
-//        } catch (MalformedURLException exc) {
-//            logger.debug("malformed webapp rootfile url", exc);
-//            n = null;
-//        }
-//        return n;
-//    }
+    private Node createWebAppNode() {
+        Node n =  null;
+        try {
+            FileObject fo = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
+            if (fo != null) {
+                DataFolder fold = DataFolder.findFolder(fo);
+                File fil = FileUtil.toFile(fo);
+                if (fold != null) {
+                    n = new WebAppFilterNode(project, fold.getNodeDelegate().cloneNode(), fil);
+                }
+            }
+        } catch (MalformedURLException exc) {
+            n = null;
+        }
+        return n;
+    }
 //    
 //    private Node createEarNode() {
 //        Node n =  null;

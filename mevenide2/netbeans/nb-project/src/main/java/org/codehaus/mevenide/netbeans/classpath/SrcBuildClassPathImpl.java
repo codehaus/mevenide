@@ -41,11 +41,23 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         List lst = new ArrayList();
         try {
             List srcs = getMavenProject().getOriginalMavenProject().getCompileClasspathElements();
+            List assemblies = new ArrayList();
             Iterator it = srcs.iterator();
             while (it.hasNext()) {
                 String str = (String)it.next();
                 File fil = new File(str);
-                lst.add(fil.toURI());
+                // the assemblied jars go as last ones, otherwise source for binaries don't really work.
+                // unless one has the assembled source jar s well?? is it possible?
+                if (fil.getName().endsWith("-dep.jar")) {
+                    assemblies.add(0, fil);
+                } else {
+                    lst.add(fil.toURI());
+                }
+            }
+            it = assemblies.iterator();
+            while (it.hasNext()) {
+                File ass = (File)it.next();
+                lst.add(ass.toURI());
             }
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
