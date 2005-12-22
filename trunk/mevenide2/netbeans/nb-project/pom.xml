@@ -1,12 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
     <groupId>org.codehaus.mevenide</groupId>
+    <artifactId>netbeans</artifactId>
+    <version>1.0</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
     <artifactId>nb-project</artifactId>
     <packaging>nbm</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>Netbeans Maven 2 project support</name>
-    <url>http://mevenide.codehaus.org</url>
+    <name>Netbeans Maven2 project support</name>
 
     <dependencies>
         <!--dependency>
@@ -127,11 +130,6 @@
             <plugin>
                 <groupId>org.codehaus.mevenide.plugins</groupId>
                 <artifactId>maven-nbm-plugin</artifactId>
-                <version>2.0.2</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <descriptor>src/main/nbm/module.xml</descriptor>
-                </configuration>
             </plugin>
         </plugins>
     </build>
