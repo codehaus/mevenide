@@ -18,8 +18,15 @@
 package org.codehaus.mevenide.grammar;
 
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
+import org.netbeans.modules.xml.api.model.GrammarResult;
+import org.netbeans.modules.xml.api.model.HintContext;
+import org.netbeans.modules.xml.spi.dom.NodeListImpl;
 
 /**
  * xml completion grammar based on xsd, additionally allowing more to be added.
@@ -40,5 +47,20 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         }
         return false;
     }
+
+    protected List getDynamicCompletion(String path, HintContext hintCtx, Element lowestParent) {
+        if ("/settings/proxies".equals(path)) {
+            // doesn't work!!!'
+//            if ("proxy".startsWith(hintCtx.getCurrentPrefix())) {
+//                ArrayList lst = new ArrayList();
+//                lst.add(new MyElement("host"));
+//                lst.add(new MyElement("port"));
+//                GrammarResult rootRes = new ComplexElement("proxy2", "Insert Proxy", new NodeListImpl(lst));
+//                return Collections.singletonList(rootRes);
+//            }
+        }
+        return Collections.EMPTY_LIST;
+    }
+    
     
 }
