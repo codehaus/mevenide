@@ -55,11 +55,13 @@ class MavenProjectChildren extends Children.Keys {
     private static final String KEY_TEST_DEPENDENCIES = "dependencies2"; //NOI18N
     private static final String KEY_RUNTIME_DEPENDENCIES = "dependencies3"; //NOI18N
     private static final String KEY_PROJECT_FILES = "projectfiles"; //NOI18N
+    private static final String KEY_MODULES = "modules"; //NOI18N
     
     
     private NbMavenProject project;
     private PropertyChangeListener changeListener;
     private String currentWebAppKey;
+
 //    private String currentEarKey;
 //    private String currentEjbKey;
     
@@ -147,6 +149,9 @@ class MavenProjectChildren extends Children.Keys {
         list.add(KEY_DEPENDENCIES);
         list.add(KEY_TEST_DEPENDENCIES);
         list.add(KEY_RUNTIME_DEPENDENCIES);
+        if ("pom".equals(project.getOriginalMavenProject().getPackaging())) {
+            list.add(KEY_MODULES);
+        }
         list.add(KEY_PROJECT_FILES);
         setKeys(list);
     }
@@ -184,6 +189,8 @@ class MavenProjectChildren extends Children.Keys {
             n = new DependenciesNode(project, DependenciesNode.TYPE_RUNTIME);
         } else if (key == KEY_PROJECT_FILES) {
             n = new ProjectFilesNode(project);
+        } else if (key == KEY_MODULES) {
+            n = new ModulesNode(project);
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
