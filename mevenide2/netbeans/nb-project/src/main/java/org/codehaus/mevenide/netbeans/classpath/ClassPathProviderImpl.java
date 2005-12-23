@@ -143,11 +143,6 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots())) {
             return TYPE_SRC;
         }
-//        // web app src also considered source..
-//        dir = FileUtilities.convertURItoFileObject(project.getWebAppDirectory());
-//        if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
-//            return TYPE_SRC;
-//        }
         if (isChildOf(file, project.getOriginalMavenProject().getTestCompileSourceRoots())) {
             return TYPE_TESTSRC;
         }
@@ -178,7 +173,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         
         URI web = project.getWebAppDirectory();
         FileObject fo = FileUtil.toFileObject(new File(web));
-        if (fo != null && FileUtil.isParentOf(fo, file)) {
+        if (fo != null && (fo.equals(file) || FileUtil.isParentOf(fo, file))) {
             return TYPE_WEB;
         }
         
@@ -196,9 +191,6 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         ClassPath cp = cache[type];
         if (cp == null) {
             if (type == TYPE_SRC || type == TYPE_WEB) {
-                if (type == TYPE_WEB) {
-                   System.out.println("is web source path");
-               }
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             } else {
                 cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
@@ -228,9 +220,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private ClassPath getRuntimeClasspath(FileObject file) {
         int type = getType(file);
-        if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
+        if (type != TYPE_SRC &&  type != TYPE_TESTSRC && type != TYPE_WEB) {
             System.out.println("runtime type=" + type + " for " + file);
             return null;
+        }
+        if (type == TYPE_WEB) {
+            type = TYPE_SRC;
         }
         ClassPath cp = cache[4+type];
         if (cp == null) {
