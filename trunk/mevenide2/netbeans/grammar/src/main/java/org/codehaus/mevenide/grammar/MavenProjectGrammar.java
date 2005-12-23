@@ -213,7 +213,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         if ("/project/dependencies/dependency/version".equals(path) ||
             "/project/dependencyManagement/dependencies/dependency/version".equals(path) || 
             "/project/build/plugins/plugin/version".equals(path) ||
-            "/project/build/pluginManagement/plugins/plugin/version".equals(path)) {
+            "/project/build/pluginManagement/plugins/plugin/version".equals(path) || 
+            "/project/parent/version".equals(path)) {
             
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
@@ -236,10 +237,29 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 });
                 Collection elems = new ArrayList();
                 for (int i = 0; i < versions.length; i++) {
-                    elems.add(new MyTextElement(versions[i].getName()));
+                    if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
+                        elems.add(new MyTextElement(versions[i].getName()));
+                    }
                 }
                 return Collections.enumeration(elems);
             }
+        }
+        if ("/project/dependencyManagement/dependencies/dependency/scope".equals(path) ||
+            "/project/dependencies/dependency/scope".equals(path)) {
+            String[] scopes = new String[] {
+                "compile",
+                "test",
+                "runtime",
+                "provided",
+                "system"
+            };
+            Collection elems = new ArrayList();
+            for (int i = 0; i < scopes.length; i++) {
+                if (scopes[i].startsWith(virtualTextCtx.getCurrentPrefix())) {
+                    elems.add(new MyTextElement(scopes[i]));
+                }
+            }
+            return Collections.enumeration(elems);
         }
         return null;
     }
