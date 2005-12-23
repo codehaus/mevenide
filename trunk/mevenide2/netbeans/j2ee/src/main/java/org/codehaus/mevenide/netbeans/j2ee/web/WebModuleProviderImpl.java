@@ -41,6 +41,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     private NbMavenProject project;
     private WebModuleImpl implementation;
+    private WebModule module;
     
     private ModuleChangeReporter moduleChange;
     
@@ -52,10 +53,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     }
     
     public WebModule findWebModule(FileObject fileObject) {
-        System.out.println("find web module..");
         if (implementation != null && implementation.isValid()) {
-            System.out.println("  ... found..");
-            return WebModuleFactory.createWebModule(implementation);
+            if (module == null) {
+                module = WebModuleFactory.createWebModule(implementation);
+            }
+            return module;
         }
         return null;
     }

@@ -71,7 +71,6 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
                     content.remove(lastInstance);
                 }
                 lastInstance = new WebModuleProviderImpl(project);
-                System.out.println("J2eeLookupProvider.adding war");
                 content.add(lastInstance);
             } else if ("ear".equals(packaging)) {
                 
