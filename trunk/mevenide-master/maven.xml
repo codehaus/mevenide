@@ -113,7 +113,9 @@
 
     <j:if test="${!(empty eclipseDir)}">
       <ant:copy todir="${maven.repo.local}/eclipse/jars">
-        <ant:fileset dir="${eclipseDir}/plugins"/>
+        <ant:fileset dir="${eclipseDir}/plugins">
+          <ant:include name="*.jar"/>
+        </ant:fileset>
       </ant:copy>
     </j:if>
 
