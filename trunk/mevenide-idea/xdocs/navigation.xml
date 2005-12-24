@@ -1,52 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  # =========================================================================
+  # Copyright (c) 2003-2005 Mevenide Team
+  # 
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #      http://www.apache.org/licenses/LICENSE-2.0
+  #
+  #  Unless required by applicable law or agreed to in writing, software
+  #  distributed under the License is distributed on an "AS IS" BASIS,
+  #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  #  See the License for the specific language governing permissions and
+  #  limitations under the License.
+  # =========================================================================
+  -->
+<project>
 
-<project name="mevenide-idea">
+  <title>Mevenide IDEA</title>
 
-    <properties>
-        <author email="arikkfir@gmail.com">Arik Kfir</author>
-        <title>Mevenide IDEA</title>
-    </properties>
+  <body>
+    <links>
+      <item name="Eclipse"  href="http://www.eclipse.org/"/>
+      <item name="IDEA"     href="http://www.jetbrains.com/idea/"/>
+      <item name="JBuilder" href="http://www.borland.com/jbuilder/"/>
+      <item name="Netbeans" href="http://www.netbeans.org/"/>
+      <item name="Maven"    href="http://maven.apache.org/"/>
+      <item name="Mevenide" href="/"/>
+    </links>
 
-    <body>
-        <links>
-            <item name="Mevenide" href="http://mevenide.codehaus.org/"/>
-            <item name="Maven" href="http://www.maven.org/"/>
-            <item name="JetBrains" href="http://www.jetbrains.com/"/>
-            <item name="IDEA" href="http://www.jetbrains.com/idea/"/>
-        </links>
+    <menu name="General">
+      <item name="Overview" href="/index.html"/>
+      <item name="Source code" href="/cvs-usage.html"/>
+      <item name="Installation" href="/installation.html"/>
+      <item name="Changes" href="/changes-report.html"/>
+      <item name="Tasks" href="/todos.html"/>
+      <item name="Team" href="/team-list.html"/>
+    </menu>
 
-        <menu name="General">
-            <item name="Overview" href="/index.html"/>
-            <item name="Source code" href="/cvs-usage.html"/>
-            <item name="Installation" href="/installation.html"/>
-            <item name="Changes" href="/changes-report.html"/>
-            <item name="Tasks" href="/todos.html"/>
-            <item name="Team" href="/team-list.html"/>
-        </menu>
-        <menu name="Modules">
-    		<item name="Master Project" href="/../index.html"/>
-			<item name="Common Modules" collapse="true" href="/common-modules.html">
-				<item name="Mevenide Config" href="/../mevenide-config/index.html"/>
-				<item name="Mevenide Core" href="/../mevenide-core/index.html"/>
-				<item name="Goals Grabber" href="/../goals-grabber/index.html"/>
-				<item name="Mevenide Grammar" href="/../mevenide-grammar/index.html"/>
-			</item>
-			<item name="IDE Specific Modules" collapse="true" href="/ide.html">
-				<item name="Eclipse Plugin" href="/../mevenide-ui-eclipse/index.html"/>
-				<item name="Netbeans Module" href="/../mevenide-netbeans-project/index.html"/>
-				<item name="JBuilder Module" href="/../mevenide-ui-jbuilder/index.html"/>
-				<item name="IntelliJ IDEA Module" href="/../mevenide-idea/index.html"/>
-			</item>
-			<item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
-				<item name="PDE Plugin" href="/../maven-eclipse-plugin-plugin/index.html"/>
-				<item name="NBM Plugin" href="/../maven-nbm-plugin/index.html"/>
-                                <item name="JBuilder OpenTool Plugin" href="../maven-jbuilder-opentool-plugin/index.html" />
-                                <item name="Mevenide Plugin" href="../maven-mevenide-plugin/index.html"/>
-				<item name="Spinner Wiki Plugin" href="/../maven-spinner-wiki-plugin/index.html"/>
-			</item>
-		</menu>
+    <menu name="Modules">
+      <item name="Master Project" href="../index.html"/>
 
-        <search/>
-    </body>
+      <item name="Common Modules" href="/common-modules.html" collapse="true">
+        <item name="Mevenide Config"  href="../mevenide-config/index.html"/>
+        <item name="Mevenide Core"    href="../mevenide-core/index.html"/>
+        <item name="Goals Grabber"    href="../goals-grabber/index.html"/>
+        <item name="Mevenide Grammar" href="../mevenide-grammar/index.html"/>
+      </item>
 
+      <item name="IDE Specific Modules" href="/ide.html" collapse="true">
+        <item name="Eclipse Plugin" href="../mevenide-ui-eclipse/index.html"/>
+        <item name="IntelliJ IDEA Module" href="../mevenide-idea/index.html"/>
+        <item name="JBuilder Module" href="../mevenide-ui-jbuilder/index.html"/>
+        <item name="Netbeans Module" href="../mevenide-netbeans-project/index.html"/>
+        <item name="Netbeans Grammar Module" href="../mevenide-netbeans-grammar/index.html"/>
+      </item>
+
+      <item name="Maven Helper Plugins" collapse="true" href="/maven-plugins.html">
+        <item name="PDE Plugin" href="../maven-eclipse-plugin-plugin/index.html"/>
+        <item name="NBM Plugin" href="../maven-nbm-plugin/index.html"/>
+        <item name="JBuilder OpenTool Plugin" href="../maven-jbuilder-opentool-plugin/index.html" />
+        <item name="Mevenide Plugin" href="../maven-mevenide-plugin/index.html"/>
+        <item name="Spinner Wiki Plugin" href="../maven-spinner-wiki-plugin/index.html"/>
+      </item>
+    </menu>
+
+    <search/>
+
+  </body>
 </project>
