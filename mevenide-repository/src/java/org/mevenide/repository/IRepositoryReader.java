@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright (c) 2003-2005 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.repository;
 
 import java.net.URI;
@@ -23,10 +24,18 @@ import java.net.URI;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface IRepositoryReader {
+
     /**
-     * read the children for the parent element.
+     * Retrieves the child elements of the given repository element.
+     * @param element the repositry element to read
+     * @return the children of the element
+     * @throws Exception if anything goes wrong
      */
     RepoPathElement[] readElements(RepoPathElement element) throws Exception;
     
+    /**
+     * Returns the URI for the repository. 
+     * @return the root URI
+     */
     URI getRootURI();
 }
