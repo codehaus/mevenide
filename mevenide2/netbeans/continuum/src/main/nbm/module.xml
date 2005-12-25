@@ -1,4 +1,4 @@
-<NetbeansModule>
+<nbm>
    <moduleType>normal</moduleType>
    <codeNameBase>org.codehaus.mevenide.continuum/1</codeNameBase>
    <cluster>mevenide</cluster>
@@ -37,4 +37,4 @@
           <explicitValue>org.netbeans.libs.commons_logging/1 &gt; 1.0</explicitValue>
       </dependency>
    </dependencies> 
-</NetbeansModule>
+</nbm>

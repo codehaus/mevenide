@@ -1,4 +1,4 @@
-<NetbeansModule>
+<nbm>
    <moduleType>eager</moduleType>
    <codeNameBase>org.codehaus.mevenide.netbeans.j2ee/2</codeNameBase>
    <cluster>mevenide</cluster>
@@ -62,4 +62,4 @@
       </dependency>
         
    </dependencies> 
-</NetbeansModule>
+</nbm>
