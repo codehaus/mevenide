@@ -32,6 +32,9 @@ import org.mevenide.netbeans.project.MavenModule;
 import org.mevenide.netbeans.project.exec.BeanRunContext;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
 import org.mevenide.netbeans.project.exec.MavenJavaExecutor;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectManager;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutionEngine;
@@ -40,6 +43,8 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.TemplateWizard;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 
 
 
@@ -90,7 +95,7 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
 //        if (templateRoot == null) {
 //            throw new IOException("Wrong template definition. File a bug against mevenide");
 //        }
-        FileObject projectDir = dirFo.createFolder(name);
+        final FileObject projectDir = dirFo.createFolder(name);
         
         boolean ok = MavenModule.checkMavenHome(ConfigUtils.getDefaultLocationFinder());
         if (!ok) {
@@ -121,10 +126,21 @@ public class GenAppWizardIterator implements TemplateWizard.Iterator {
                     FileUtil.toFile(projectDir), add);
         MavenJavaExecutor exec = new MavenJavaExecutor(context, "", Collections.EMPTY_SET, new DefaultRunConfig());
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
-        // wait finished kind of ugly, but what can we do here?
-        task.waitFinished();
+        task.addTaskListener(new TaskListener() {
+            public void taskFinished(Task task) {
+                try {
+                    Project proj = ProjectManager.getDefault().findProject(projectDir);
+                    if (proj != null) {
+                        OpenProjects.getDefault().open(new Project[] {proj}, false);
+                    }
+                } catch (IllegalArgumentException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
         
-        resultSet.add (DataObject.find(projectDir));
         return resultSet;
     }
     

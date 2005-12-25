@@ -19,6 +19,7 @@
 package org.mevenide.netbeans.project;
 
 import java.awt.Dimension;
+import javax.swing.JFileChooser;
 
 /**
  *
@@ -80,6 +81,12 @@ public class NoMavenHomePanel extends javax.swing.JPanel {
         add(txtHome, gridBagConstraints);
 
         btnHome.setText("Browse...");
+        btnHome.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHomeActionPerformed(evt);
+            }
+        });
+
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 2;
         gridBagConstraints.gridy = 1;
@@ -97,8 +104,16 @@ public class NoMavenHomePanel extends javax.swing.JPanel {
         gridBagConstraints.insets = new java.awt.Insets(6, 6, 6, 6);
         add(lblHint2, gridBagConstraints);
 
-    }
-    // </editor-fold>//GEN-END:initComponents
+        }// </editor-fold>//GEN-END:initComponents
+
+    private void btnHomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHomeActionPerformed
+// TODO add your handling code here:
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        if (JFileChooser.APPROVE_OPTION == chooser.showDialog(this, "Select")) {
+            txtHome.setText("" + chooser.getSelectedFile());
+        }
+    }//GEN-LAST:event_btnHomeActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
