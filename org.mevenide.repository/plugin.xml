@@ -2,7 +2,7 @@
 <plugin
    id="org.mevenide.repository"
    name="Maven Repository Navigator"
-   version="0.2.0"
+   version="0.3.0"
    provider-name="The Codehaus">
    <runtime>
       <library name="lib/commons-httpclient-2.0.jar">
@@ -11,7 +11,7 @@
       <library name="lib/commons-logging-1.0.3.jar">
          <export name="*"/>
       </library>
-      <library name="lib/mevenide-repository-0.3-SNAPSHOT.jar">
+      <library name="lib/mevenide-repository-0.3.jar">
          <export name="*"/>
       </library>
    </runtime>
