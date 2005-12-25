@@ -143,7 +143,8 @@ public class ExceptionHandler {
         if (t instanceof CoreException) {
             displayError(title, message, (CoreException) t);
         } else {
-            displayError(title, message, newErrorStatus(t.getLocalizedMessage(), t));
+            displayError(title, message, newErrorStatus(message, t));
+//            displayError(title, message, newErrorStatus(t.getLocalizedMessage(), t));
         }
     }
 
@@ -159,13 +160,13 @@ public class ExceptionHandler {
         int severity = s.getSeverity();
         int code = s.getCode();
         String msg = s.getMessage();
+        Throwable t = s.getException();
 
-        MultiStatus status = new MultiStatus(this.pluginId, code, msg, null);
+        MultiStatus status = new MultiStatus(this.pluginId, code, msg, t);
         status.add(new Status(severity, this.pluginId, 0, msg, null));
         status.add(new Status(severity, this.pluginId, 0, "", null)); // adds a blank line
         for (int i = 0; i < this.pluginInfo.length; ++i) {
-            status.add(new Status(severity, this.pluginId, 0,
-                    this.pluginInfo[i], null));
+            status.add(new Status(severity, this.pluginId, 0, this.pluginInfo[i], null));
         }
 
         return status;
@@ -178,7 +179,13 @@ public class ExceptionHandler {
      * @return a new error status
      */
     private IStatus newErrorStatus(String message, Throwable exception) {
-        return new Status(IStatus.ERROR, this.pluginId, StatusConstants.INTERNAL_ERROR, message, exception);
+        return new Status(
+            IStatus.ERROR,
+			this.pluginId,
+			StatusConstants.INTERNAL_ERROR,
+			(message == null)? "An internal error occurred.": message,
+			exception
+	    );
     }
 
     /**
