@@ -9,6 +9,6 @@
   <artifactId>maven-archetype-nbm</artifactId>
   <name>Maven NBM Archetype template</name>
   <description>Archetype for Netbeans Modules Maven setup</description>
-  <version>1.0</version>
+  <version>1.0.1</version>
   <inceptionYear>2005</inceptionYear>
 </project>
