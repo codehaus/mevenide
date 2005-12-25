@@ -18,6 +18,7 @@
 package org.mevenide.ui.eclipse.wizard;
 
 import java.text.MessageFormat;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -101,7 +102,6 @@ public class MavenProjectWizardBasicSettingsPOMPage extends WizardPage {
 			// combo for versions
 			fCurrentVersionCombo = new Combo(projGroup, SWT.DROP_DOWN);
 			fCurrentVersionCombo.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
 			fCurrentVersionCombo.select(0);
 			
 			// label "Package:"
@@ -110,9 +110,11 @@ public class MavenProjectWizardBasicSettingsPOMPage extends WizardPage {
 			inceptionYearLabel.setFont(composite.getFont());
 
 			// text field for pacakge
+			int year = Calendar.getInstance().get(Calendar.YEAR);
 			fInceptionYearField = new Text(projGroup, SWT.BORDER);
 			fInceptionYearField.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 			fInceptionYearField.setFont(composite.getFont());
+			fInceptionYearField.setText("" + year);
 			fInceptionYearField.addModifyListener(this);			
 			
 			setChanged();
