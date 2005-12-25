@@ -56,6 +56,7 @@ class MavenProjectChildren extends Children.Keys {
     private static final String KEY_RUNTIME_DEPENDENCIES = "dependencies3"; //NOI18N
     private static final String KEY_PROJECT_FILES = "projectfiles"; //NOI18N
     private static final String KEY_MODULES = "modules"; //NOI18N
+    private static final String KEY_SITE = "SITE"; //NOI18N
     
     
     private NbMavenProject project;
@@ -142,10 +143,9 @@ class MavenProjectChildren extends Children.Keys {
 //        
 //        
 //        
-//        SourceGroup[] xdocsgroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_XDOCS);
-//        for (int i = 0; i < xdocsgroup.length; i++) {
-//            list.add(xdocsgroup[i]);
-//        }
+        if (project.getProjectDirectory().getFileObject("src/site") != null) {
+            list.add(KEY_SITE);
+        }
         list.add(KEY_DEPENDENCIES);
         list.add(KEY_TEST_DEPENDENCIES);
         list.add(KEY_RUNTIME_DEPENDENCIES);
@@ -161,22 +161,9 @@ class MavenProjectChildren extends Children.Keys {
         Node n = null;
         if (key instanceof SourceGroup) {
             SourceGroup grp = (SourceGroup)key;
-//            if (MavenSourcesImpl.NAME_XDOCS.equals(grp.getName())) {
-//                n = new DocsRootNode(grp, project);
-//            } else {
                 n = PackageView.createPackageView(grp);
-//            }
-//        }
-//        else if (key == KEY_RESOURCES) {
-//            n = new ResourcesRootNode(project, false);
-//        } else if (key == KEY_TEST_RESOURCES) {
-//            n = new ResourcesRootNode(project, true);
         } else if (key == currentWebAppKey) {
             n = createWebAppNode();
-//        } else if (key == currentEarKey) {
-//            n = createEarNode();
-//        } else if (key == currentEjbKey) {
-//            n = createEjbNode();
         } else if (key == KEY_OTHER) {
             n = new OthersRootNode(project, false);
         } else if (key == KEY_OTHER_TEST) {
@@ -191,6 +178,8 @@ class MavenProjectChildren extends Children.Keys {
             n = new ProjectFilesNode(project);
         } else if (key == KEY_MODULES) {
             n = new ModulesNode(project);
+        } else if (key == KEY_SITE) {
+            n = createSiteDocsNode();
         }
         return n == null ? new Node[0] : new Node[] {n};
     }
@@ -270,6 +259,18 @@ class MavenProjectChildren extends Children.Keys {
 //        return n;
 //    }    
 // 
+
+    private Node createSiteDocsNode() {
+        Node n =  null;
+        FileObject fo = project.getProjectDirectory().getFileObject("src/site");
+        if (fo != null) {
+            DataFolder fold = DataFolder.findFolder(fo);
+            if (fold != null) {
+                n = new SiteDocsNode(project, fold.getNodeDelegate().cloneNode());
+            }
+        }
+        return n;
+    }
     
     
 }
