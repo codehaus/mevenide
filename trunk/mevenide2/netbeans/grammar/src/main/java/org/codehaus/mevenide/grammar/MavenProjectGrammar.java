@@ -51,6 +51,8 @@ import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -60,18 +62,12 @@ import org.w3c.dom.NodeList;
 public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     
     
-    public MavenProjectGrammar() {
+    public MavenProjectGrammar(GrammarEnvironment env) {
+        super(env);
     }
     
     protected InputStream getSchemaStream() {
         return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/maven-4.0.0.xsd");
-    }
-    
-    public boolean isSupported(GrammarEnvironment env) {
-        if (env.getFileObject().getNameExt().equals("pom.xml")) {
-            return true;
-        }
-        return false;
     }
     
     protected List getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element parent) {
@@ -181,7 +177,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
         if ("/project/build/plugins/plugin/executions/execution/goals/goal".equals(path) ||
             "/project/build/pluginManagement/plugins/plugin/executions/execution/goals/goal".equals(path)) {
-            Node previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
+            Node previous;
+            // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
+            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+                 previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
+            } else {
+                previous = virtualTextCtx.getParentNode().getParentNode().getParentNode().getParentNode();
+            }
             previous = previous.getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             PluginInfoHolder info = findPluginInfo(previous, embedder, true);
@@ -192,7 +194,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if ("/project/build/plugins/plugin/executions/execution/phase".equals(path) ||
             "/project/build/pluginManagement/plugins/plugin/executions/execution/phase".equals(path)) {
-            Node previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
+            Node previous;
+            // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
+            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+                previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
+            } else {
+                previous = virtualTextCtx.getParentNode().getParentNode().getParentNode().getParentNode();
+            }
             previous = previous.getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             try {
@@ -218,7 +226,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
-            PluginInfoHolder hold = findPluginInfo(virtualTextCtx.getPreviousSibling(), null, false);
+            Node previous;
+            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+                previous = virtualTextCtx.getPreviousSibling();
+            } else {
+                previous = virtualTextCtx.getParentNode().getPreviousSibling();
+            }
+            PluginInfoHolder hold = findPluginInfo(previous, null, false);
             if (hold.getGroupId() != null && hold.getArtifactId() != null) {
                 File lev1 = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), hold.getGroupId().replace('.', File.separatorChar));
                 File dir = new File(lev1, hold.getArtifactId());
@@ -260,6 +274,25 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 }
             }
             return Collections.enumeration(elems);
+        }
+        if ("/project/modules/module".equals(path)) {
+            FileObject fo = getEnvironment().getFileObject();
+            if (fo != null) {
+                File dir = FileUtil.toFile(fo).getParentFile();  
+            
+                File[] modules = dir.listFiles(new FileFilter() {
+                    public boolean accept(File pathname) {
+                         return pathname.isDirectory() && new File(pathname, "pom.xml").exists();
+                    }
+                });
+                Collection elems = new ArrayList();
+                for (int i = 0; i < modules.length; i++) {
+                    if (modules[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
+                        elems.add(new MyTextElement(modules[i].getName()));
+                    }
+                }
+                return Collections.enumeration(elems);
+            }
         }
         return null;
     }

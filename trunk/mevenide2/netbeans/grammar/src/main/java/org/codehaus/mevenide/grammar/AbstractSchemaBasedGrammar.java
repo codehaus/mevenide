@@ -20,6 +20,7 @@ package org.codehaus.mevenide.grammar;
 import java.awt.Component;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -49,8 +50,10 @@ import org.w3c.dom.Text;
  */
 public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     Document schemaDoc;
+
+    private GrammarEnvironment environment;
     /** Creates a new instance of NewClass */
-    public AbstractSchemaBasedGrammar() {
+    public AbstractSchemaBasedGrammar(GrammarEnvironment env) {
         try {
             SAXBuilder builder = new SAXBuilder();
             InputStream stream = getSchemaStream();
@@ -58,6 +61,11 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         } catch (Exception exc) {
             ErrorManager.getDefault().notify(exc);
         }
+        environment = env;
+    }
+    
+    protected final GrammarEnvironment getEnvironment() {
+        return environment;
     }
     
     /**
@@ -65,10 +73,6 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      */
     protected abstract InputStream getSchemaStream();
     
-    /**
-     * decide if the given document/file is supported by this grammar
-     */
-    public abstract boolean isSupported(GrammarEnvironment env);
     
     /**
      * to override by subclasses that want to provide some dynamic content un a specific subtree.
@@ -330,7 +334,9 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     public Enumeration queryValues(HintContext virtualTextCtx) {
         Node parentNode = virtualTextCtx.getParentNode();
         List parentNames = new ArrayList();
-        parentNames.add(virtualTextCtx.getNodeName());
+        if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+            parentNames.add(virtualTextCtx.getNodeName());
+        }
         if (parentNode != null && schemaDoc != null) {
             while (parentNode != null & parentNode.getNodeName() != null) {
                 parentNames.add(0, parentNode.getNodeName());
@@ -368,6 +374,19 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     }
 
 
+    /**
+     * for subclasses that  have a given list of possible values in the element's text content. 
+     */
+    protected final Enumeration createTextValueList(String[] values, HintContext context) {
+        Collection elems = new ArrayList();
+        for (int i = 0; i < values.length; i++) {
+            if (values[i].startsWith(context.getCurrentPrefix())) {
+                elems.add(new MyTextElement(values[i]));
+            }
+        }
+        return Collections.enumeration(elems);
+        
+    }
     
     protected abstract static class AbstractResultNode extends AbstractNode implements GrammarResult {
         
@@ -387,7 +406,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
          * //??? is it really needed
          */
         public String getText() {
-            return getNodeName() + "XXX";
+            return getNodeName();
         }
         
         /**

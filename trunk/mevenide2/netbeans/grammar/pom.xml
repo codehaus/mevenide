@@ -15,6 +15,13 @@
     <dependencies>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectapi</artifactId>
+            <version>1.8.1</version>
+            <type>jar</type>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-enumerations</artifactId>
             <version>6.3.1</version>
             <type>jar</type>
@@ -43,6 +50,11 @@
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-mvn-embedder</artifactId>
             <version>1.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-project</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
         
         <dependency>
