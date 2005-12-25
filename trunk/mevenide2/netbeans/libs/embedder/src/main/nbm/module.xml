@@ -1,4 +1,4 @@
-<NetbeansModule>
+<nbm>
    <moduleType>normal</moduleType>
    <codeNameBase>org.codehaus.mevenide.nbmvnembedder/1</codeNameBase>
    <cluster>mevenide</cluster>
@@ -12,4 +12,4 @@
            <type>spec</type>
        </dependency>
    </dependencies>
-</NetbeansModule>
+</nbm>
