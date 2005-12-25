@@ -118,7 +118,10 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
         }
         // a fall back.. nothing exists, just try the default.
         fo = FileUtilities.getFileForProperty("maven.ejb.src", project.getPropertyResolver()); //NOI18N
-        return new File(fo, J2eeModule.EJBJAR_XML); //NOI18N
+        if (fo != null) {
+            return new File(fo, J2eeModule.EJBJAR_XML); //NOI18N
+        }
+        return null;
     }
     
     public FileObject[] getJavaSources() {

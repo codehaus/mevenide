@@ -88,7 +88,11 @@ public class WebModuleImpl implements WebModuleImplementation {
     }
 
     public FileObject getDeploymentDescriptor() {
-        return FileUtil.toFileObject(guessWebDescriptor(project)); //NOI18N
+        File fil = guessWebDescriptor(project);
+        if (fil != null) {
+            return FileUtil.toFileObject(fil); //NOI18N
+        }
+        return null;
     }
 
     public String getContextPath() {
