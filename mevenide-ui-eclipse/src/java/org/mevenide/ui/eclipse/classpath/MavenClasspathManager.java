@@ -433,8 +433,9 @@ public class MavenClasspathManager implements ClasspathManager {
                 convertToVariablePath(entry.getPath()),
                 convertToVariablePath(entry.getSourceAttachmentPath()),
                 entry.getSourceAttachmentRootPath(),
-                entry.getAccessRules(),
-                entry.getExtraAttributes(),
+// These do not appear in IClasspathEntry until v3.1 
+//                entry.getAccessRules(),
+//                entry.getExtraAttributes(),
                 entry.isExported()
             );
         }

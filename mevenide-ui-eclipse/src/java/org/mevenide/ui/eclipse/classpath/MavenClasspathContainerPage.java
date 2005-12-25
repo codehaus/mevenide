@@ -67,8 +67,8 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.help.WorkbenchHelp;
 import org.eclipse.ui.ide.IDE;
-import org.eclipse.ui.internal.Workbench;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.nature.MevenideNature;
 import org.mevenide.ui.eclipse.wizard.IHelpContextIds;
@@ -185,9 +185,7 @@ public class MavenClasspathContainerPage extends WizardPage implements
         Composite buttonPanel = createButtonPanel(container);
         buttonPanel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
 
-        // Changed for Eclipse 3.1
-        Workbench.getInstance().getHelpSystem().setHelp(container, IHelpContextIds.MAVEN_CONTAINER_PAGE);
-//      WorkbenchHelp.setHelp(container, IHelpContextIds.MAVEN_CONTAINER_PAGE);
+        WorkbenchHelp.setHelp(container, IHelpContextIds.MAVEN_CONTAINER_PAGE);
         setControl(container);
         Dialog.applyDialogFont(container);
 
@@ -210,12 +208,14 @@ public class MavenClasspathContainerPage extends WizardPage implements
                     // it redraw while we remove entries.  Some items in this table are
                     // being removed and may have icons which may have already been
                     // disposed elsewhere.
-                    if (usingMotif)
+                    if (usingMotif) {
                         getTable().setRedraw(false);
+                    }
                     super.internalRefresh(element);
                 } finally {
-                    if (usingMotif)
+                    if (usingMotif) {
                         getTable().setRedraw(true);
+                    }
                 }
             }
         };
