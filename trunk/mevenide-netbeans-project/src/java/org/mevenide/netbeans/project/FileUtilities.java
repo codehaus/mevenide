@@ -252,7 +252,8 @@ public final class FileUtilities {
     public static FileObject getFileObjectForProperty(String prop, IPropertyResolver resolver) {
         String val = resolver.getResolvedValue(prop);
         if (val != null) {
-            File fil = new File(val.trim());
+            String basedir = resolver.resolveString("${basedir}");
+            File fil = resolveFilePath(new File(basedir), val.trim());
             fil = FileUtil.normalizeFile(fil);
             FileObject fo = FileUtil.toFileObject(fil);
             if (fo != null) {
@@ -268,7 +269,8 @@ public final class FileUtilities {
     public static File getFileForProperty(String prop, IPropertyResolver resolver) {
         String val = resolver.getResolvedValue(prop);
         if (val != null) {
-            File fil = new File(val);
+            String basedir = resolver.resolveString("${basedir}");
+            File fil = resolveFilePath(new File(basedir), val.trim());
             fil = FileUtil.normalizeFile(fil);
             return fil;
         }
