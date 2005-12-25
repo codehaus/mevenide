@@ -192,7 +192,7 @@ public class MavenClasspathContainer implements IClasspathContainer {
         IPath root = ResourcesPlugin.getWorkspace().getRoot().getLocation();
 
         try {
-            path = Path.fromOSString(file.getCanonicalPath());
+            path = new Path(file.getCanonicalPath());
 
             int cnt = root.matchingFirstSegments(path);
             path = path.removeFirstSegments(cnt).makeAbsolute().setDevice(null);

@@ -2,21 +2,21 @@
 <classpath>
 	<classpathentry kind="src" path="src/test/etc"/>
 	<classpathentry kind="src" path="src/test/java"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.variables_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.resources_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.core_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.launching_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.core_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.debug.ui_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jdt.ui_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.team.ui_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.externaltools_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface.text_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.text_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench.texteditor_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.editors_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi.util_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.pde.ui_3.1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.core.variables-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.core.resources-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.jdt.core-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.jdt.launching-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.debug.core-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.debug.ui-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.jdt.ui-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.team.ui-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.externaltools-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.jface.text-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.text-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.workbench.texteditor-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.editors-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.osgi.util-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.pde.core-3.0.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-httpclient/jars/commons-httpclient-2.0-rc1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/forehead/jars/forehead-1.0-beta-5.jar"/>
@@ -33,20 +33,19 @@
 	<classpathentry kind="var" path="MAVEN_REPO/commons-discovery/jars/commons-discovery-0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-lang/jars/commons-lang-1.0.1.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/commons-logging/jars/commons-logging-1.0.3.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.help.base_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.jface_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.osgi_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.forms_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.ide_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.views_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.ui.workbench_3.1.0.jar"/>
-	<classpathentry kind="var" path="ECLIPSE_HOME/plugins/org.eclipse.core.runtime_3.1.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.help-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.help.base-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.jface-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.osgi-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.forms-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.ide-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.views-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.ui.workbench-3.0.0.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.core.runtime-3.0.0.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/junit/jars/junit-3.8.1.jar"/>
 	<classpathentry kind="src" path="/mevenide-ui-eclipse"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-core-0.09.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/mockobjects/jars/mockobjects-jdk1.4-0.09.jar"/>
-	<classpathentry kind="var" path="SWT_LIB"/>
+	<classpathentry kind="var" path="MAVEN_REPO/eclipse/jars/org.eclipse.swt.win32-3.0.0.jar"/>
 	<classpathentry kind="output" path="target/test-classes"/>
 </classpath>
