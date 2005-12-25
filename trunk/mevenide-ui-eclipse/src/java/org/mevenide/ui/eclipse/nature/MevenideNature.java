@@ -101,10 +101,12 @@ public class MevenideNature implements IProjectNature {
     private void openSynchronizationView() throws PartInitException {
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow activeWnd = workbench.getActiveWorkbenchWindow();
-        final IWorkbenchPage activePage = activeWnd.getActivePage();
 
-        SynchronizationView view = (SynchronizationView) activePage.showView(SynchronizationView.ID);
-        view.setInput(getProject());
+        if (activeWnd != null) {
+            final IWorkbenchPage activePage = activeWnd.getActivePage();
+            SynchronizationView view = (SynchronizationView) activePage.showView(SynchronizationView.ID);
+            view.setInput(getProject());
+        }
     }
 
 ////////////////////////////////////////////////////////////////////////////////
