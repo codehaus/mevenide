@@ -1,12 +1,9 @@
 <j:jelly xmlns:j="jelly:core" xmlns:util="jelly:util" xmlns:log="jelly:log">    
     <!-- determine which stylesheet to use -->
-    <j:set var="stylesheet" value="${maven.xdoc.jsl}"/>
+    <j:set var="stylesheet" value="${plugin.resources}/site.jsl"/>
     <j:if test="${empty(stylesheet)}">
-      <j:set var="stylesheet" value="${plugin.resources}/site.jsl"/>
-      <j:if test="${empty(stylesheet)}">
         <log:warn>Could not load the JSL stylesheet 'site.jsl' on the classpath</log:warn>
         <j:set var="stylesheet" value="./site.jsl"/>
-      </j:if>
     </j:if>
     
     <!-- determine nav file to be used -->
