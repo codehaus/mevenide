@@ -27,25 +27,25 @@
       <p>Mevenide IDE plug-ins rely on a few common non-UI modules:</p>
       <ul>
         <li>
-          <a href="../mevenide-core/index.html">Mevenide Core</a>
+          <a href="/mevenide-core/index.html">Mevenide Core</a>
           provides POM management support. It can be used to read, write
           and modify a project's model.
         </li>
         <li>
-          <a href="../goals-grabber/index.html">Mevenide Goals Grabber</a>
+          <a href="/goals-grabber/index.html">Mevenide Goals Grabber</a>
           provides access to a project's Maven goals and reports.
         </li>
         <li>
-          <a href="../mevenide-config/index.html">Mevenide Config</a>
+          <a href="/mevenide-config/index.html">Mevenide Config</a>
           provides an API for resolving environment related properties
           and variables.
         </li>
         <li>
-          <a href="../mevenide-grammar/index.html">Mevenide Grammar</a>
+          <a href="/mevenide-grammar/index.html">Mevenide Grammar</a>
           provides an API for retrieving code completion proposals.
         </li>
         <li>
-          <a href="../mevenide-repository/index.html">Mevenide Repository</a>
+          <a href="/mevenide-repository/index.html">Mevenide Repository</a>
           provides Maven repository browsing support for both local and
           remote repositories.
         </li>
