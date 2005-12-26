@@ -27,7 +27,7 @@
   <!-- ==================================== -->
   <!--             build section            -->
   <!-- ==================================== -->
-  <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean,mevenide-eclipse:init">
+  <goal name="mevenide-eclipse:build" description="Build all Mevenide modules" prereqs="mevenide-eclipse:clean">
     <j:set var="maven.multiproject.includes" value="${maven.multiproject.eclipse.includes}"/>
     <j:set var="maven.multiproject.excludes" value="mevenide-master/project.xml"/>
     <attainGoal name="multiproject:goal"/>
@@ -96,31 +96,6 @@
      </ant:delete>
   </goal>
 
-  <goal name="mevenide-eclipse:init" description="Copy Eclipse plug-ins to maven.repo.local if necessary">
-
-    <!-- test ECLIPSE_HOME property -->
-    <ant:property environment="env"/>
-    <j:set var="eclipseDir" value="${env.ECLIPSE_HOME}"/>
-
-    <j:if test="${empty eclipseDir}">
-      <ant:fail>
-        The environment variable ECLIPSE_HOME must be set to the directory
-        of the Eclipse installation you plan to use. For example:
-          Unix -- /usr/local/eclipse
-          Windows -- &quot;C:\Program Files\eclipse&quot;
-      </ant:fail>
-    </j:if>
-
-    <j:if test="${!(empty eclipseDir)}">
-      <ant:copy todir="${maven.repo.local}/eclipse/jars">
-        <ant:fileset dir="${eclipseDir}/plugins">
-          <ant:include name="*.jar"/>
-        </ant:fileset>
-      </ant:copy>
-    </j:if>
-
-  </goal>
-
   <goal name="mevenide-jbuilder:clean" prereqs="mevenide:clean-lib,clean:clean">
     <ant:delete dir="${maven.repo.local}/jbuilder" quiet="true"/>
   	<ant:delete dir="${maven.repo.local}/mevenide/jars" quiet="true"/>
@@ -146,13 +121,13 @@
 
   <goal name="mevenide-site:init"
         description="Main initialization goal"
-        prereqs="mevenide-eclipse:init,mevenide-site:quick-init" />
+        prereqs="mevenide-site:quick-init" />
 
 
   <!-- ==================================== -->
   <!--   eclipse plugins creation section   -->
   <!-- ==================================== -->
-  <goal name="mevenide-eclipse:create-update-dist" prereqs="mevenide-eclipse:init" description="Build Eclipse plugin update site">
+  <goal name="mevenide-eclipse:create-update-dist" description="Build Eclipse plugin update site">
    	<util:file var="updateSiteProjectDescriptor" name="${mevenide.eclipse.update.project.location}/project.xml"/>
     <maven:maven descriptor="${updateSiteProjectDescriptor}" goals="eclipse-plugin:create-artifact-dist"/>
   </goal>
