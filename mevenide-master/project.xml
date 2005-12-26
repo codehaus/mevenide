@@ -43,7 +43,7 @@
   	<dependency>
   	  <groupId>mevenide</groupId>
       <artifactId>maven-eclipse-plugin-plugin</artifactId>
-  	  <version>0.3.3</version>
+  	  <version>0.4.0</version>
   	  <type>plugin</type>
   	</dependency>
   	<dependency>
