@@ -223,6 +223,7 @@
 		<maven:maven goals="eclipse-plugin:create-artifact-dist" descriptor="${plugin}"/>
 
 		<!-- copy plugin archives -->
+        <ant:mkdir dir="${maven.eclipse.plugin.dist.dir}/plugins"/>
         <j:set var="pluginPomArtifactId" value="${pluginPom.artifactId}"/>
         <j:if test="${pluginPom.artifactId == 'org.mevenide.repository'}">
           <ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
@@ -230,9 +231,9 @@
           </ant:copy>
         </j:if>
         <j:if test="${pluginPom.artifactId != 'org.mevenide.repository'}">
-		<ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
-		  <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
-		</ant:copy>
+          <ant:copy todir="${maven.eclipse.plugin.dist.dir}/plugins">
+            <fileset dir="${pluginPom.getContext().getVariable('maven.eclipse.plugin.dist.dir')}" includes="*.jar"/>
+          </ant:copy>
         </j:if>
 		
 	  </j:forEach>
