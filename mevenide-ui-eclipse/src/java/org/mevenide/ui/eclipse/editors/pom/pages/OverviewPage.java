@@ -74,7 +74,7 @@ public class OverviewPage extends AbstractPomEditorPage implements IPropertyList
 		gd = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
 		gd.horizontalSpan = 1;
 		control.setLayoutData(gd);
-		getManagedForm().addPart(linksSection);
+        addSection(linksSection);
 	}
 
 	protected void update(Project pom) {
