@@ -228,7 +228,6 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 				cpEntries.add(JavaCore.newVariableEntry(new Path("JUNIT_HOME/junit.jar"), null, null)); //$NON-NLS-1$
 				
 				IClasspathEntry[] entries = (IClasspathEntry[]) cpEntries.toArray(new IClasspathEntry[cpEntries.size()]);
-				IPath outputLocation = projectPath.append(pathOutputDefault);
 				
 				//set maven repo if not set 
 				IPath mavenRepoVar = JavaCore.getClasspathVariable("MAVEN_REPO"); //$NON-NLS-1$
@@ -237,7 +236,7 @@ public class MavenProjectWizardSecondPage extends JavaCapabilityConfigurationPag
 				    JavaCore.setClasspathVariable("MAVEN_REPO", new Path(mavenRepo), null); //$NON-NLS-1$
 				}
 				
-				init(JavaCore.create(fCurrProject), outputLocation, entries, false);
+				init(JavaCore.create(fCurrProject), pathOutputDefault, entries, false);
 			}
 			
 			//@TODO might make use of templates sometime in the future
