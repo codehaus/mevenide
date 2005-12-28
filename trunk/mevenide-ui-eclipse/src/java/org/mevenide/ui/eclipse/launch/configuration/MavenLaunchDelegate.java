@@ -47,10 +47,13 @@ import org.eclipse.debug.core.ILaunchesListener2;
 import org.eclipse.debug.core.model.ILaunchConfigurationDelegate;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.launching.JavaLocalApplicationLaunchConfigurationDelegate;
+import org.eclipse.jdt.launching.AbstractJavaLaunchConfigurationDelegate;
 import org.eclipse.jdt.launching.IVMInstall;
 import org.eclipse.jdt.launching.IVMRunner;
 import org.eclipse.jdt.launching.JavaRuntime;
 import org.eclipse.jdt.launching.VMRunnerConfiguration;
+import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.ISelectionService;
@@ -58,6 +61,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.externaltools.internal.launchConfigurations.ExternalToolsUtil;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.runner.AbstractRunner;
 import org.mevenide.runner.ArgumentsManager;
 import org.mevenide.runner.RunnerHelper;
@@ -76,6 +80,9 @@ import org.mevenide.ui.eclipse.util.FileUtils;
  * 
  */
 public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfigurationDelegate {
+	JavaLocalApplicationLaunchConfigurationDelegate a;
+	AbstractJavaLaunchConfigurationDelegate         b;
+
 	private static Log log = LogFactory.getLog(MavenLaunchDelegate.class); 
 	
     private static final String FOREHEAD_LIBRARY = "lib/forehead-1.0-beta-5.jar"; //$NON-NLS-1$
@@ -99,6 +106,14 @@ public class MavenLaunchDelegate extends AbstractRunner implements ILaunchConfig
 		String[] mavenClasspath = ArgumentsManager.getMavenClasspath();
 
 		VMRunnerConfiguration vmConfig = new VMRunnerConfiguration("com.werken.forehead.Forehead", mavenClasspath); //$NON-NLS-1$
+		/*
+		 * ArgumentsManager uses ConfigUtils to set the maximum heap (-Xmx).
+		 * We must, therefore, set the value before calling ArgumentsManager.
+		 */
+		IPersistentPreferenceStore preferences = Mevenide.getInstance().getCustomPreferenceStore();
+		int heapSize = preferences.getInt(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY);
+	    ConfigUtils.setHeapSize(heapSize);
+
 		String[] vmArgs = ArgumentsManager.getVMArgs(this);
 		
 		Map customVmArgsMap = configuration.getAttribute(MavenArgumentsTab.SYS_PROPERTIES, new HashMap());

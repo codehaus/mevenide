@@ -25,6 +25,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.preference.PreferenceStore;
+import org.mevenide.environment.ConfigUtils;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -60,7 +61,7 @@ public class PreferencesManager {
     		preferenceStore = new PreferenceStore(name);
 			preferenceStore.load();
             preferenceStore.setDefault(MevenidePreferenceKeys.MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY, "test");
-            preferenceStore.setDefault(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, 160);
+            preferenceStore.setDefault(MevenidePreferenceKeys.JAVA_HEAP_SIZE_PREFERENCE_KEY, ConfigUtils.XMX_DEFAULT);
 		}
 		catch ( Exception ex ) {
 			log.debug("Unable to load preferences from file '" + getPreferenceStoreFilename(), ex); //$NON-NLS-1$
