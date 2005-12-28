@@ -19,11 +19,13 @@ package org.codehaus.mevenide.grammar;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.model.Dependency;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -59,6 +61,23 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
                 "eager"
                 }, hintCtx);
             
+        }
+        if ("/nbm/dependencies/dependency/id".equals(path) ||
+            "/nbm/libraries/library".equals(path)) {
+            //TODO could be nice to filter out the dependencies that are already being used..
+            List toRet = new ArrayList();
+            NbMavenProject project = getOwnerProject();
+            if (project != null) {
+                Iterator it = project.getOriginalMavenProject().getCompileDependencies().iterator();
+                while (it.hasNext()) {
+                    Dependency elem = (Dependency) it.next();
+                    String str = elem.getGroupId() + ":" + elem.getArtifactId();
+                    if (str.startsWith(hintCtx.getCurrentPrefix())) {
+                        toRet.add(new MyTextElement(str));
+                    }
+                }
+            }
+            return Collections.enumeration(toRet);
         }
         return null;
     }

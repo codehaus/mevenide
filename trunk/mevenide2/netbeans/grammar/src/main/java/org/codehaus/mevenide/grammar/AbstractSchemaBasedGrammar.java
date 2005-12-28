@@ -27,10 +27,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.Icon;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.jdom.Document;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
@@ -66,6 +69,15 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     
     protected final GrammarEnvironment getEnvironment() {
         return environment;
+    }
+    
+    protected final NbMavenProject getOwnerProject() {
+        Project proj = FileOwnerQuery.getOwner(environment.getFileObject());
+        if (proj != null && proj instanceof NbMavenProject) {
+            return (NbMavenProject)proj;
+        }
+        ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project.");
+        return null;
     }
     
     /**
