@@ -27,6 +27,7 @@ import java.util.List;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -110,39 +111,23 @@ class MavenProjectChildren extends Children.Keys {
             currentWebAppKey = KEY_WEBAPP + webapp;
             list.add(currentWebAppKey);
         }
-//        URI ear = project.getEarDirectory();
-//        if (ear != null) {
-//            currentEarKey = KEY_EAR + ear;
-//            list.add(currentEarKey);
-//        }
-//        URI ejb = project.getEjbDirectory();
-//        if (ejb != null) {
-//            currentEjbKey = KEY_EJB + ejb;
-//            list.add(currentEjbKey);
-//        }
-//        Project proj = project.getOriginalMavenProject();
-//        Build build = proj.getBuild();
         if (project.getOtherRoots(false).length > 0) {
             list.add(KEY_OTHER);
         }
         if (project.getOtherRoots(true).length > 0) {
             list.add(KEY_OTHER_TEST);
         }
-//        if (build != null) {
-//            List reso = build.getResources();
-//            if (reso != null && reso.size() > 0) {
-//                list.add(KEY_RESOURCES);
-//            }
-//            if (build.getUnitTest() != null) {
-//                List testlst = build.getUnitTest().getResources();
-//                if (testlst != null && testlst.size() > 0) {
-//                    list.add(KEY_TEST_RESOURCES);
-//                }
-//            }
+
+        //TODO one should check if someone overrides the path to the site directory,
+        // no real way doing it now.. just ignore..
+//        String siteDir = PluginPropertyUtils.getPluginProperty(project,
+//                "org.apache.maven.plugins",
+//                "maven-site-plugin",
+//                "siteDirectory",
+//                "site");
+//        if (siteDir == null) {
+//            siteDir = "src/site";
 //        }
-//        
-//        
-//        
         if (project.getProjectDirectory().getFileObject("src/site") != null) {
             list.add(KEY_SITE);
         }

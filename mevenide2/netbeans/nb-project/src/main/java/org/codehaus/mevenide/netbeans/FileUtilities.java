@@ -42,33 +42,6 @@ public final class FileUtilities {
     private FileUtilities() {
     }
     
-    public static FileObject findFolder(FileObject rootFolder, String relPath) {
-        if (rootFolder != null) {
-            File fl = FileUtil.toFile(rootFolder);
-            if (fl != null) {
-                File result = new File(fl, relPath);
-                result = FileUtil.normalizeFile(result);
-                return FileUtil.toFileObject(result);
-            }
-        }
-        return null;
-    }
-    
-    public static FileObject findOrCreate(FileObject rootFolder, String relPath) throws IOException {
-        FileObject parentFolder = rootFolder;
-        FileObject folder = rootFolder;
-        StringTokenizer tok = new StringTokenizer(relPath, "/", false); //NOI18N
-        while (tok.hasMoreTokens()) {
-            String name = tok.nextToken();
-            folder = parentFolder.getFileObject(name, null);
-            if (folder == null) {
-                parentFolder.createFolder(name);
-            }
-            parentFolder = folder;
-        }
-        return folder;
-    }
-    
     public static FileObject convertURItoFileObject(URI uri) {
         if (uri == null) {
             return null;

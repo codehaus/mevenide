@@ -96,13 +96,6 @@ public class MavenSourcesImpl implements Sources {
                 changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
                 folder = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
                 changed = changed | checkJavaGroupCache(folder, NAME_TESTSOURCE, "Test Sources");
-//                folder = URLMapper.findFileObject(project.getAspectsDirectory().toURL());
-//                changed = changed | checkJavaGroupCache(folder, NAME_ASPECTSOURCE, "Aspect Sources");
-//                folder = URLMapper.findFileObject(project.getIntegrationTestsDirectory().toURL());
-//                changed = changed | checkJavaGroupCache(folder, NAME_INTEGRATIONSOURCE, "Integration Test Sources");
-//                URI cactus = project.getCactusDirectory();
-//                folder = cactus == null ? null : URLMapper.findFileObject(cactus.toURL());
-//                changed = changed | checkJavaGroupCache(folder, NAME_CACTUS_SOURCE, "Cactus Test Sources");
                 URI[] uris = project.getGeneratedSourceRoots();
                 if (uris.length > 0) {
                     try {
@@ -169,9 +162,6 @@ public class MavenSourcesImpl implements Sources {
             grp = (SourceGroup[])toReturn.toArray(grp);
             return grp;
         }
-//        if (TYPE_XDOCS.equals(str)) {
-//            return createXDocs();
-//        }
         if (TYPE_GEN_SOURCES.equals(str)) {
             try {
                 URI[] uris = project.getGeneratedSourceRoots();
@@ -301,28 +291,6 @@ public class MavenSourcesImpl implements Sources {
         return changed;
     }
     
-    
-    
-//    private SourceGroup[] createXDocs() {
-//        String path = project.getPropertyResolver().getResolvedValue("maven.docs.src");
-//        if (path != null) {
-//            File docs = FileUtil.normalizeFile(new File(path));
-//            if (!docs.exists()) {
-//                File rootDir = FileUtil.toFile(project.getProjectDirectory());
-//                // attempt relative path now.. shall we?
-//                docs = FileUtil.normalizeFile(new File(rootDir, path));
-//                if (!docs.exists()) {
-//                    return new SourceGroup[0];
-//                }
-//            }
-//            FileObject dir = FileUtil.toFileObject(docs);
-//            if (xdocsGroup == null || !xdocsGroup.getRootFolder().equals(dir)) {
-//                xdocsGroup = GenericSources.group(project, dir, NAME_XDOCS, "Documentation", null, null);
-//            }
-//            return new SourceGroup[] {xdocsGroup};
-//        }
-//        return new SourceGroup[0];
-//    }
     
     public static final class OtherGroup implements SourceGroup {
         
