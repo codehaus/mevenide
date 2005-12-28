@@ -94,8 +94,6 @@ public final class ArgumentsManager {
 	public static Map getSystemProperties(AbstractRunner runner) {
 	    Map props = new HashMap();
 	
-	    props.put("javax.xml.parsers.DocumentBuilderFactory", "org.apache.xerces.jaxp.DocumentBuilderFactoryImpl");
-	    props.put("javax.xml.parsers.SAXParserFactory", "org.apache.xerces.jaxp.SAXParserFactoryImpl");
 	    ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
 	    
 	    props.put("maven.home", StringUtils.isNull(runner.getMavenHome()) ? config.getMavenHome() : runner.getMavenHome());
