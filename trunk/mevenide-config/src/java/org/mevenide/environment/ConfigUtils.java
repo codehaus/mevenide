@@ -16,8 +16,6 @@
  */
 package org.mevenide.environment;
 
-import java.io.File;
-
 /**
  * Utility class.
  * @author  Milos Kleint (ca206216@tiscali.cz)
@@ -51,7 +49,8 @@ public final class ConfigUtils {
 	 * The default value for the JVM's max heap size parameter (-Xmx).
 	 * <p>
 	 * Sun specifies (for their JVM) that the default is 64MB. We override
-	 * this value for some reason lost in history.
+	 * this value for some reason lost in history. The shell scripts provided
+	 * with Maven set the max heap space to 256MB.
 	 * </p>
 	 * <p>Value: {@value}MB</p> 
 	 */
@@ -115,23 +114,5 @@ public final class ConfigUtils {
     	}
         heapSize = hSize;
     }    
-
-    /**
-     * constructs the endorsedDirs property needed for Maven execution
-     * @return "JAVA_HOME/lib/endorsed:MAVEN_HOME/lib/endorsed"
-     */
-	public static String getEndorsedDirs() {
-		return getDefaultLocationFinder().getJavaHome() + File.separatorChar 
-		          + "lib" + File.separatorChar + "endorsed"
-		          + File.pathSeparator + getDefaultLocationFinder().getMavenHome()
-		          + File.separator + "lib" + File.separator + "endorsed";
-	}
-
-   /**
-     * @return the configuration file. for now the value of forehead.conf.file 
-     */
-	public static String getConfigurationFile() {
-        return new File(new File(getDefaultLocationFinder().getMavenHome(), "bin"), "forehead.conf").getAbsolutePath();
-	}    
     
 }
