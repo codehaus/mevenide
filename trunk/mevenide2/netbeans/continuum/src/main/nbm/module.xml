@@ -15,6 +15,10 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-dialogs</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-options</id>
             <type>spec</type>
         </dependency>
@@ -28,6 +32,10 @@
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-windows</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-options-api</id>
             <type>spec</type>
         </dependency>
        
