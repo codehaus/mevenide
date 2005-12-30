@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.maven.continuum.model.project.ProjectDependency;
@@ -144,10 +145,10 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
 
         setLayout(new java.awt.GridBagLayout());
 
-        jButton1.setText("jButton1");
+        jButton1.setText("Refresh");
         add(jButton1, new java.awt.GridBagConstraints());
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Add Project...");
         add(jButton2, new java.awt.GridBagConstraints());
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -335,9 +336,6 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
