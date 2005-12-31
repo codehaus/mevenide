@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.environment;
 
 import org.apache.commons.logging.Log;
@@ -22,19 +23,17 @@ import org.mevenide.environment.sysenv.DefaultSysEnvProvider;
 import org.mevenide.environment.sysenv.SysEnvProvider;
 
 /**  
- * 
+ * Looks for important Maven locations in the system's environment.
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: SysEnvLocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
- * 
  */
 public class SysEnvLocationFinder extends AbstractLocationFinder {
-    private static Log log = LogFactory.getLog(SysEnvLocationFinder.class); 
-    
+    private static Log LOGGER = LogFactory.getLog(SysEnvLocationFinder.class);
+
     private static SysEnvLocationFinder locationFinder;
     private static SysEnvProvider defaultProvider = null;
     private SysEnvProvider provider = null;
     private static Object LOCK = new Object();
-	
+
     private SysEnvLocationFinder() {
     }
     
@@ -51,54 +50,56 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
                 }
             }
         }
-        return locationFinder; 
+        return locationFinder;
     }
-    
+
     /**
-     * Sets the SysEnv provider instance for the locationFinder. Please not that if you
-     * define a custom one impl, you should set it *before* the singleton SysEnvLocationFinder instance is 
-     * created, thus before the getInstance() method is called for the first time. Best place is during the
-     * startup sequence of your IDE. (For performance reasons your provider impl should be lazy initialized).
+     * Sets the SysEnv provider instance for the locationFinder. Please not that
+     * if you define a custom one impl, you should set it *before* the singleton
+     * SysEnvLocationFinder instance is created, thus before the getInstance()
+     * method is called for the first time. Best place is during the startup
+     * sequence of your IDE. (For performance reasons your provider impl should
+     * be lazy initialized).
      */
     public static void setDefaultSysEnvProvider(SysEnvProvider prov) {
         synchronized (LOCK) {
             defaultProvider = prov;
             if (locationFinder != null) {
-                // if setting provider later in the game, do discard the created LocationFinder??
-                // or just ignore? or set to the current singleton?
+                // if setting provider later in the game, discard the created
+                // LocationFinder, just ignore or set to the current singleton?
                 locationFinder = null;
-                log.warn("Setting defaultSysEnvProvider while the singleton isntance of SysEnvLocationFinder exists");
+                LOGGER.warn("Setting defaultSysEnvProvider while the singleton isntance of SysEnvLocationFinder exists");
             }
         }
     }
-    
-    private void setSysEnvProvider(SysEnvProvider prov)
-    {
+
+    private void setSysEnvProvider(SysEnvProvider prov) {
         provider = prov;
     }
-    
+
     public String getJavaHome() {
-		return provider.getProperty("JAVA_HOME");
+        return provider.getProperty("JAVA_HOME");
     }
-    
+
     public String getMavenHome() {
-		return provider.getProperty("MAVEN_HOME");
+        return provider.getProperty("MAVEN_HOME");
     }
-    
+
     public String getMavenLocalHome() {
-		return provider.getProperty("MAVEN_HOME_LOCAL");
+        return provider.getProperty("MAVEN_HOME_LOCAL");
     }
-    
+
     public String getMavenLocalRepository() {
-		return provider.getProperty("MAVEN_REPO_LOCAL");
+        return provider.getProperty("MAVEN_REPO_LOCAL");
     }
-    
+
     public String getMavenPluginsDir() {
         // makes no sense
         return null;
     }
-    
+
     public String getUserHome() {
+        // FIXME: This should be provider.getProperty("HOME");
         return System.getProperty("user.home");
     }
 

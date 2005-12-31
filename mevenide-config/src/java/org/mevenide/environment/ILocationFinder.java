@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,40 +14,91 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.environment;
 
-/**  
+/**
  * Finder for important maven locations.
- * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: ILocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
  * 
+ * @author Gilles Dodinet (gdodinet@wanadoo.fr)
+ * @version $Id: ILocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet
  */
 public interface ILocationFinder {
-    
-	String getMavenHome();
-    
-	String getJavaHome();
-        
-    String getMavenLocalHome();
-    
-    String getMavenLocalRepository();
-    
+
+    String FOREHEAD_CONF_FILE        = "forehead.conf.file";        //$NON-NLS-1$
+    String JAVA_HOME                 = "java.home";                 //$NON-NLS-1$
+    String MAVEN_HOME                = "maven.home";                //$NON-NLS-1$
+    String MAVEN_HOME_LOCAL          = "maven.home.local";          //$NON-NLS-1$
+    String MAVEN_PLUGIN_DIR          = "maven.plugin.dir";          //$NON-NLS-1$
+    String MAVEN_PLUGIN_UNPACKED_DIR = "maven.plugin.unpacked.dir"; //$NON-NLS-1$
+    String MAVEN_PLUGIN_USER_DIR     = "maven.plugin.user.dir";     //$NON-NLS-1$
+    String MAVEN_REPO_LOCAL          = "maven.repo.local";          //$NON-NLS-1$
+    String USER_HOME                 = "user.home";                 //$NON-NLS-1$
+
     /**
-     * directory with the expanded plugin cache, basically value of 
-     * maven.plugin.unpacked.dir property
+     * The directory on the local machine that contains Maven.
+     * <p>This is equivalent to getting the <tt>maven.home</tt> system property.</p>
+     * <p>Defaults to <tt>${env.MAVEN_HOME}</tt></p>
      */
-	String getMavenPluginsDir();
+    String getMavenHome();
+
     /**
-     * directory with user's custom plugins, denoted by maven.plugin.user.dir property
-     */    
-        String getUserPluginsDir();
+     * The directory on the local machine that contains the JDK. Note that a JRE
+     * alone is not sufficient to execute Maven.
+     * <p>This is equivalent to getting the <tt>java.home</tt> system property.</p>
+     * <p>Defaults to <tt>${env.JAVA_HOME}</tt></p>
+     */
+    String getJavaHome();
+
     /**
-     * the directory containing maven plugin jars, denoted by maven.plugin.dir propertu
-     */   
-        String getPluginJarsDir();
-    
+     * The directory on the local machine Maven uses to write user specific
+     * details to, such as expanded plugins and cache data.
+     * <p>This is equivalent to getting the <tt>maven.home.local</tt> system property.</p>
+     * <p>Defaults to <tt>${user.home}/.maven</tt></p>
+     */
+    String getMavenLocalHome();
+
+    /**
+     * The repository on the local machine Maven should use to store downloaded
+     * artifacts (jars etc).
+     * <p>This is equivalent to getting the <tt>maven.repo.local</tt> system property.</p>
+     * <p>Defaults to <tt>${maven.home.local}/repository</tt></p>
+     */
+    String getMavenLocalRepository();
+
+    /**
+     * Where Maven expands installed plugins for processing.
+     * <p>This is equivalent to getting the <tt>maven.plugin.unpacked.dir</tt> system property.</p>
+     * <p>Defaults to <tt>${maven.home.local}/cache</tt></p>
+     */
+    String getMavenPluginsDir();
+
+    /**
+     * Where Maven can find plugins for this user only.
+     * <p>This is equivalent to getting the <tt>maven.plugin.user.dir</tt> system property.</p>
+     * <p>Defaults to <tt>${maven.home.local}/plugins</tt></p>
+     */
+    String getUserPluginsDir();
+
+    /**
+     * Where Maven can find it's plugins.
+     * <p>This is equivalent to getting the <tt>maven.plugin.dir</tt> system property.</p>
+     * <p>Defaults to <tt>${maven.home}/plugins</tt></p>
+     */
+    String getPluginJarsDir();
+
+    /**
+     * Where Maven can find it's forehead configuration file.
+     * <p>This is equivalent to getting the <tt>forehead.conf.file</tt> system property.</p>
+     * <p>Defaults to <tt>${maven.home}/bin/forehead.conf</tt></p>
+     */
     String getConfigurationFileLocation();
-        
+
+    /**
+     * The user's home directory on the local machine.
+     * <p>This is equivalent to getting the <tt>user.home</tt> system property.</p>
+     * <p>Defaults to <tt>${env.HOME}</tt></p>
+     */
     String getUserHome();
 
 }
