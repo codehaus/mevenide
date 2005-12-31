@@ -44,6 +44,7 @@ import org.mevenide.ui.eclipse.preferences.PreferencesManager;
 import org.mevenide.ui.eclipse.preferences.dynamic.DynamicPreferencesManager;
 import org.mevenide.ui.eclipse.util.ExceptionHandler;
 import org.mevenide.ui.eclipse.util.LifecycleListener;
+import org.mevenide.ui.eclipse.util.Tracer;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -85,6 +86,18 @@ public class Mevenide extends AbstractUIPlugin {
      */
     public void start(BundleContext context) throws Exception {
         super.start(context);
+
+        /* FIXME: Remove the need to make this call.
+         * We make this call to ensure that the classloader has
+         * loaded Tracer. If we do not then we see an error
+         * message from the LifecycleListener when it attempts
+         * to access Tracer during shutdown and Tracer was
+         * never loaded.
+         */
+        if (Tracer.isDebugging()) {
+        	Tracer.trace("Starting MevenIDE.");
+        }
+
         this.exceptionHandler = new ExceptionHandler(this);
 
         final IWorkspace workspace = ResourcesPlugin.getWorkspace();
