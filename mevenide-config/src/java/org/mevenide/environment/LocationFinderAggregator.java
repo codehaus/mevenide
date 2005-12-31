@@ -92,7 +92,10 @@ public class LocationFinderAggregator implements ILocationFinder {
             && customLocationFinder.getMavenHome() != null ) {
             mavenHome = customLocationFinder.getMavenHome();
         }
-        mavenHome = resolver.getResolvedValue("maven.home");
+        String resValue = resolver.getResolvedValue("maven.home");
+        if (resValue != null) {
+            mavenHome = resValue;
+        }
         if (   sysEnvLocationFinder !=  null
             && sysEnvLocationFinder.getMavenHome() != null ) {
             mavenHome = sysEnvLocationFinder.getMavenHome();
