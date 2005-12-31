@@ -18,15 +18,11 @@
 package org.mevenide.ui.eclipse.preferences;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.StringTokenizer;
 
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.mevenide.ui.eclipse.Mevenide;
-import org.mevenide.util.StringUtils;
-
 
 /**  
  * 
@@ -54,18 +50,8 @@ public class DependencyTypeRegistry {
     }
 
     public static String[] getUserRegisteredTypes() {
-        List prefTypes = new ArrayList();
         String registeredTypes = getPreferenceStore().getString(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
-        if ( !StringUtils.isNull(registeredTypes) ) {
-            StringTokenizer tokenizer = new StringTokenizer(registeredTypes, ","); //$NON-NLS-1$
-            while ( tokenizer.hasMoreTokens() ) {
-                String type = tokenizer.nextToken();
-                if ( !StringUtils.isNull(type) ) {
-                    prefTypes.add(type);
-                }
-            }
-        }
-        return (String[]) prefTypes.toArray(new String[prefTypes.size()]);
+        return (registeredTypes == null) ? new String[0] : registeredTypes.split(","); //$NON-NLS-1$
     }
     
     public static String[] getAllRegisteredTypes() {
@@ -79,15 +65,17 @@ public class DependencyTypeRegistry {
     public static boolean storeTypes(List types) {
         final List knownTypes = Arrays.asList(KNOWN_TYPES);
 
-        String registeredTypes = ""; //$NON-NLS-1$
-        for (int i = 0; i < types.size(); i++) {
-            if ( !knownTypes.contains(types.get(i)) ) {
-                registeredTypes += (String) types.get(i) + ","; //$NON-NLS-1$
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < types.size(); ++i) {
+            if (!knownTypes.contains(types.get(i))) {
+    			if (buffer.length() > 0) buffer.append(','); //$NON-NLS-1$
+    			buffer.append((String)types.get(i));
             }
         }
+
         getPreferenceStore().setValue(
         	MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES, 
-        	registeredTypes
+        	buffer.toString()
         );
         
         return commitChanges();
