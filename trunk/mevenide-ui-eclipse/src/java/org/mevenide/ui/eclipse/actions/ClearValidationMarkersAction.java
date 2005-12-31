@@ -16,12 +16,17 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
+import java.io.File;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.mevenide.context.IQueryContext;
+import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.pom.validation.MarkerHelper;
 
 /**
@@ -48,10 +53,27 @@ public class ClearValidationMarkersAction extends AbstractMevenideAction {
 	
     public void selectionChanged(IAction action, ISelection selection) {
         super.selectionChanged(action, selection);
-        Object firstElement = ((StructuredSelection) selection).getFirstElement();
-        if ( firstElement instanceof IFile ) {
-            pomFile = (IFile) firstElement;
+        action.setEnabled(isPOMSelected(selection));
+    }
+
+    /**
+     * A convienence method.
+     * @return <tt>true</tt> if the given project has an associated IQueryContext
+     */
+    private static final boolean isPOMSelected(ISelection selection) {
+        if (((StructuredSelection) selection).size() == 1) {
+            Object firstElement = ((StructuredSelection) selection).getFirstElement();
+            if (firstElement instanceof IResource) {
+                final IResource resource = (IResource)firstElement;
+                final IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(resource.getProject());
+                if (context != null) {
+                    final File pomFile = context.getPOMContext().getFinalProject().getFile();
+                    return pomFile.equals(resource.getLocation().toFile());
+                }
+            }
         }
+
+        return false;
     }
 
 }
