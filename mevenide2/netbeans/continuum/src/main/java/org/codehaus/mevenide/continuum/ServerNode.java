@@ -40,6 +40,7 @@ public class ServerNode extends AbstractNode {
         super(new ServerChildren(url));
         setName(url);
         setDisplayName(url);
+        setIconBaseWithExtension("org/codehaus/mevenide/continuum/ContinuumServer.png");
     }
     
     

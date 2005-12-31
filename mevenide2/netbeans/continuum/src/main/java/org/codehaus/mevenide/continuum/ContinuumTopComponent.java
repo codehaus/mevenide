@@ -20,6 +20,7 @@ package org.codehaus.mevenide.continuum;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.DefaultListModel;
@@ -36,6 +37,8 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
+import org.openide.util.WeakListeners;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
 
@@ -48,7 +51,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
 
     private static ContinuumTopComponent instance;
     /** path to the icon used by the component and its open action */
-//    static final String ICON_PATH = "SET/PATH/TO/ICON/HERE";
+    static final String ICON_PATH = "/org/codehaus/mevenide/continuum/ContinuumServer.png";
 
     private static final String PREFERRED_ID = "ContinuumTopComponent";
 
@@ -60,12 +63,11 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         initComponents();
         setName(NbBundle.getMessage(ContinuumTopComponent.class, "CTL_ContinuumTopComponent"));
         setToolTipText(NbBundle.getMessage(ContinuumTopComponent.class, "HINT_ContinuumTopComponent"));
-//        setIcon(Utilities.loadImage(ICON_PATH, true));
+        setIcon(Utilities.loadImage(ICON_PATH, true));
         manager = new ExplorerManager();
         nodeListener = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (ProjectNode.PROPERTY_COMPLETE_RELOAD.equals(evt.getPropertyName())) {
-                    System.out.println("property complete reload");
                     Node[] nds = manager.getSelectedNodes();
                     Project proj = (Project)nds[0].getLookup().lookup(Project.class);
                     populateProjectPanel(proj);
@@ -102,6 +104,8 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         view.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         jPanel1.add(view);
         pnlDetails.setVisible(false);
+        jButton1.setEnabled(false);
+        jButton2.setEnabled(false);
     }
 
     /** This method is called from within the constructor to
@@ -415,7 +419,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         if (running) {
             stateStr = stateStr + " (Now running)";
         }
-        lblStateValue.setText(stateStr);
+        lblStateValue.setText("<html><b>" + stateStr + "</b></html>");
         lblBuildNumberValue.setText("" + proj.getBuildNumber() + " " + proj.getLatestBuildId());
         txtUrl.setText(proj.getUrl());
     }
@@ -453,12 +457,10 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
     }
 
     public void componentOpened() {
-        // TODO add custom code on component opening
         startLoading();
     }
 
     public void componentClosed() {
-        // TODO add custom code on component closing
     }
 
     /** replaces this in object stream */
@@ -475,13 +477,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
     }
 
     private void startLoading() {
-        Children.Array children = new Children.Array();
-        String[] ser = ContinuumSettings.getDefault().getServers();
-        Node[] nds = new Node[ser.length];
-        for (int i = 0; i < ser.length; i++) {
-            nds[i] = new ServerNode(ser[i]);
-        }
-        children.add(nds);
+        Children.Keys children = new RootChildren();
         AbstractNode nd = new AbstractNode(children);
         manager.setRootContext(nd);
     }
@@ -491,6 +487,41 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         public Object readResolve() {
             return ContinuumTopComponent.getDefault();
         }
+    }
+    
+    private static class RootChildren extends Children.Keys {
+
+        private PropertyChangeListener listener;
+        
+        RootChildren() {
+            listener = new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (ContinuumSettings.PROP_SERVERS.equals(evt.getPropertyName())) {
+                        reloadKeys();
+                    }
+                }
+            };
+        }
+        
+        protected Node[] createNodes(Object object) {
+            return new Node[] { new ServerNode((String)object) };
+        }
+
+        protected void removeNotify() {
+            super.removeNotify();
+            setKeys(Collections.EMPTY_LIST);
+        }
+
+        protected void addNotify() {
+            super.addNotify();
+            reloadKeys();
+            ContinuumSettings.getDefault().addPropertyChangeListener(WeakListeners.propertyChange(listener, ContinuumSettings.getDefault()));
+        }
+        
+        void reloadKeys() {
+            setKeys(ContinuumSettings.getDefault().getServers());
+        }
+        
     }
 
 }
