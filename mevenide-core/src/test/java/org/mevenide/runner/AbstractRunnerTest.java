@@ -125,7 +125,7 @@ final class MyAbstractRunnerStub extends AbstractRunnerStub {
 					 + File.separator
 					 + "jars"
 					 + File.separator
-					 + "forehead-1.0-beta-4.jar";
+					 + "forehead-1.0-beta-5.jar";
 
 		for (int i = 4; i < cmdLine.length; i++) {
 			cmdLine[i] = newArray[i-4];
