@@ -56,15 +56,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>jtidy</groupId>
-            <artifactId>jtidy</artifactId>
-            <version>4aug2000r7-dev</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>forehead</groupId>
             <artifactId>forehead</artifactId>
             <version>1.0-beta-5</version>
