@@ -80,7 +80,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         if (grp.length > 0) {
             return grp[0].getRootFolder();
         }
-        System.out.println("NO DOCUMENT BASE!!!");
+//        System.out.println("NO DOCUMENT BASE!!!");
         return null;
     }
 
@@ -98,7 +98,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     
     public FileObject getDeploymentDescriptor() {
         File dd = getDDFile(J2eeModule.WEB_XML);
-        System.out.println("getDDFIle=" + dd);
+//        System.out.println("getDDFIle=" + dd);
         if (dd != null) {
             return FileUtil.toFileObject(dd);
         }

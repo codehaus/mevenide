@@ -237,7 +237,6 @@ public class ProjectNode extends AbstractNode {
     
     private class RepeatingRefresher implements Runnable {
         public void run() {
-            System.out.println("updating..");
             try {
                 reader.updateProject(project);
             } catch (XmlRpcException ex) {
@@ -250,7 +249,6 @@ public class ProjectNode extends AbstractNode {
             ProjectNode.this.firePropertyChange(PROPERTY_COMPLETE_RELOAD, null, Boolean.TRUE);
             ((ProjectChildren)getChildren()).doRefresh();
             if (project.getState() == 6 || project.getState() == 7 || project.getState() == 8) {
-                System.out.println("rescheduling..");
                 refreshTask.schedule(10 * 1000);
                 
             }
