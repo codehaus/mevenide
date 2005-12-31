@@ -42,7 +42,6 @@ import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
  * @version $Id$
  */
 public class RunMavenPreferencePage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
-	private static final String PAGE_NAME = Mevenide.getResourceString("RunMavenPreferencePage.title"); //$NON-NLS-1$
     private static final String PAGE_DESC = Mevenide.getResourceString("RunMavenPreferencePage.description"); //$NON-NLS-1$
 
 	private final class DefaultGoalsEditor extends StringButtonFieldEditor {
@@ -107,7 +106,6 @@ public class RunMavenPreferencePage extends FieldEditorPreferencePage implements
 		super(GRID);
         super.setDescription(PAGE_DESC);
 		super.setPreferenceStore(Mevenide.getInstance().getCustomPreferenceStore());
-//        super.setImageDescriptor(MavenPlugin.getImageDescriptor("sample.gif"));
 	}
 
 	/* (non-Javadoc)
