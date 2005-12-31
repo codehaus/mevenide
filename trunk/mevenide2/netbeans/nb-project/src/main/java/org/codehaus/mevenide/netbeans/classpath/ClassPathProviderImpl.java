@@ -185,7 +185,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getSourcepath(FileObject file) {
         int type = getType(file);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC && type != TYPE_WEB) {
-            System.out.println("source type=" + type + " for " + file);
+//            System.out.println("source type=" + type + " for " + file);
             return null;
         }
         ClassPath cp = cache[type];
@@ -203,7 +203,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getCompileTimeClasspath(FileObject file) {
         int type = getType(file);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
-            System.out.println("compile type=" + type + " for " + file);
+//            System.out.println("compile type=" + type + " for " + file);
             return null;
         }
         ClassPath cp = cache[2+type];
@@ -221,7 +221,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getRuntimeClasspath(FileObject file) {
         int type = getType(file);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC && type != TYPE_WEB) {
-            System.out.println("runtime type=" + type + " for " + file);
+//            System.out.println("runtime type=" + type + " for " + file);
             return null;
         }
         if (type == TYPE_WEB) {
