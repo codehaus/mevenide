@@ -16,16 +16,8 @@
  */
 package org.mevenide.ui.eclipse.properties.pages;
 
-import org.apache.plexus.util.StringInputStream;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.preference.PreferenceStore;
 import org.eclipse.ui.IWorkbenchPropertyPage;
-import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.preferences.pages.LocationPreferencePage;
 
 /**
@@ -44,31 +36,6 @@ public class LocationPropertyPage extends LocationPreferencePage implements IWor
 
     public void setElement(IAdaptable element) {
         this.element = element;
-    }
-    
-    private PreferenceStore store;
-    protected PreferenceStore getStore() {
-        try {
-            if ( store == null ) {
-                IProject project = (IProject) this.element.getAdapter(IProject.class);
-                IFile props = project.getFile(new Path(".settings/org.mevenide.ui.prefs"));
-                if ( !props.exists() ) {
-                    IFolder folder = project.getFolder(new Path(".settings"));
-                    if ( !folder.exists() ) {
-                        folder.create(true, true, null);
-                    }
-                    props.create(new StringInputStream(""), true, null);
-                }
-                store = new PreferenceStore(props.getLocation().toOSString());
-                store.load();
-            }
-            return store;
-        }
-        catch ( Exception e ) {
-            String msg = "Unable to load property store"; 
-            Mevenide.getInstance().getLog().log(new Status(1, Mevenide.PLUGIN_ID, 1, msg, e));
-            throw new RuntimeException(msg, e);
-        }
     }
     
     protected boolean isPropertyPage() {
