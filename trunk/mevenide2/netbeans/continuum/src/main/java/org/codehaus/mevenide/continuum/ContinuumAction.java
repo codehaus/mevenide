@@ -32,7 +32,7 @@ public class ContinuumAction extends AbstractAction {
 
     public ContinuumAction() {
         putValue(NAME, NbBundle.getMessage(ContinuumAction.class, "CTL_ContinuumAction"));
-//        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(ContinuumTopComponent.ICON_PATH, true)));
+        putValue(SMALL_ICON, new ImageIcon(Utilities.loadImage(ContinuumTopComponent.ICON_PATH, true)));
     }
 
     public void actionPerformed(ActionEvent evt) {
