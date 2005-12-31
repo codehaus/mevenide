@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
+ * Copyright 2003-2005 Apache Software Foundation
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,23 @@
  */
 package org.mevenide.ui.eclipse.actions;
 
-import java.io.File;
-
-import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.StructuredSelection;
-import org.mevenide.context.IQueryContext;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.launch.configuration.MavenLaunchShortcut;
 
 /**
  * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id$
- * 
  */
-public class RunMavenAction extends AbstractMevenideAction {
+public class RunMavenContainerAction extends AbstractMevenideAction {
 	private ISelection selection;
 	
 	public void run(IAction action) {
 		MavenLaunchShortcut shortcut = new MavenLaunchShortcut();
 		shortcut.setShowDialog(true);
 		shortcut.launch(selection, null);
-		
 	}
 	
     /* (non-Javadoc)
@@ -48,26 +41,14 @@ public class RunMavenAction extends AbstractMevenideAction {
     public void selectionChanged(IAction action, ISelection selection) {
 		this.selection = selection; 
         super.selectionChanged(action, selection);
-        action.setEnabled(isPOMSelected(selection));
+        action.setEnabled(hasQueryContext(getCurrentProject()));
     }
 
     /**
      * A convienence method.
      * @return <tt>true</tt> if the given project has an associated IQueryContext
      */
-    private static final boolean isPOMSelected(ISelection selection) {
-        if (((StructuredSelection) selection).size() == 1) {
-            Object firstElement = ((StructuredSelection) selection).getFirstElement();
-            if (firstElement instanceof IResource) {
-                final IResource resource = (IResource)firstElement;
-                final IQueryContext context = Mevenide.getInstance().getPOMManager().getQueryContext(resource.getProject());
-                if (context != null) {
-                    final File pomFile = context.getPOMContext().getFinalProject().getFile();
-                    return pomFile.equals(resource.getLocation().toFile());
-                }
-            }
-        }
-
-        return false;
+    private static final boolean hasQueryContext(IProject project) {
+        return Mevenide.getInstance().getPOMManager().getQueryContext(project) != null;
     }
 }
