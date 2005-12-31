@@ -39,5 +39,19 @@
       </folder> <!-- Building -->
     </folder> <!-- Services -->
   </folder>   
-    
+  
+  <!--folder name="Projects">
+      <folder name="Actions">
+        <file name="org-codehaus-mevenide-continuum-ContinuumAction.instance"/>
+      </folder>    
+  </folder-->    
+  
+    <folder name="OptionsDialog">
+        <folder name="Advanced">
+            <file name="Continuum.instance">
+                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.continuum.options.ContinuumAdvancedOption"/>
+            </file>
+        </folder>
+   </folder>
+  
 </filesystem>
