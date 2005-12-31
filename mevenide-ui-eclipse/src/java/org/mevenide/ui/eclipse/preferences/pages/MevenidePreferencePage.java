@@ -46,7 +46,7 @@ public class MevenidePreferencePage extends FieldEditorPreferencePage implements
      * Initializes a new instance of MevenidePreferencePage.
      */
     public MevenidePreferencePage() {
-        super(PAGE_NAME, GRID);
+        super(GRID);
         super.setDescription(PAGE_DESC);
         super.setPreferenceStore(Mevenide.getInstance().getPreferenceStore());
     }
