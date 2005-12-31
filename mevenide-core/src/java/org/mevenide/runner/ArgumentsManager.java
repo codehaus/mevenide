@@ -16,6 +16,7 @@
  */
 package org.mevenide.runner;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -95,16 +96,46 @@ public final class ArgumentsManager {
 	    Map props = new HashMap();
 	
 	    ILocationFinder config = ConfigUtils.getDefaultLocationFinder();
-	    
-	    props.put("maven.home", StringUtils.isNull(runner.getMavenHome()) ? config.getMavenHome() : runner.getMavenHome());
+
+	    final String javaHome = StringUtils.isNull(runner.getJavaHome()) ? config.getMavenLocalHome() : runner.getJavaHome();
+	    final String mavenHome = StringUtils.isNull(runner.getMavenHome()) ? config.getMavenHome() : runner.getMavenHome();
+
+	    props.put("maven.home", mavenHome);
 		props.put("maven.home.local", StringUtils.isNull(runner.getMavenLocalHome()) ? config.getMavenLocalHome() : runner.getMavenLocalHome());
-		props.put("java.home", StringUtils.isNull(runner.getJavaHome()) ? config.getMavenLocalHome() : runner.getJavaHome());
+		props.put("java.home", javaHome);
 		props.put("maven.repo.local", StringUtils.isNull(runner.getMavenLocalRepository()) ? config.getMavenLocalRepository() : runner.getMavenLocalRepository());
-	    props.put("forehead.conf.file", ConfigUtils.getConfigurationFile());
-	    props.put("java.endorsed.dirs", ConfigUtils.getEndorsedDirs());
+	    props.put("forehead.conf.file", StringUtils.isNull(runner.getConfigurationFileLocation()) ? config.getConfigurationFileLocation() : runner.getConfigurationFileLocation());
+	    props.put("java.endorsed.dirs", getEndorsedDirs(javaHome, mavenHome));
 	    props.put("basedir", runner.getBasedir());
 	    //props.put("user.dir", runner.getBasedir());
 	    
 	    return props;
+	}
+
+    /**
+     * constructs the endorsedDirs property needed for Maven execution
+     * @return "$JAVA_HOME/lib/endorsed:$MAVEN_HOME/lib/endorsed"
+     */
+	private static String getEndorsedDirs(final String javaHome, final String mavenHome) {
+		StringBuffer path = new StringBuffer();
+
+		// construct $JAVA_HOME/lib/endorsed
+		path.append(javaHome);
+		path.append(File.separatorChar);
+		path.append("lib");
+		path.append(File.separatorChar);
+		path.append("endorsed");
+
+		// add path separator
+		path.append(File.pathSeparatorChar);
+
+		// construct $MAVEN_HOME/lib/endorsed
+		path.append(mavenHome);
+		path.append((File.separatorChar));
+		path.append("lib");
+		path.append(File.separatorChar);
+		path.append("endorsed");
+
+		return path.toString();
 	}
 }
