@@ -22,6 +22,7 @@ import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -77,7 +78,7 @@ public class ResourcesSection extends PageSection {
 		
 		// Build resources table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		resourcesViewer = createTableViewer(container, factory, 1);
+		resourcesViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		resourcesTable = new TableEntry(resourcesViewer, toggle, Mevenide.getResourceString(sectionName + ".tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {

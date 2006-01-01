@@ -106,21 +106,22 @@ public class DependenciesSection extends PageSection {
 	}
 
     public Composite createSectionContent(Composite parent, FormToolkit factory) {
-		Composite container = factory.createComposite(parent);
 		GridLayout layout = new GridLayout();
 		layout.numColumns = isInherited() ? 3 : 2;
 		layout.marginWidth = 2;
 		layout.verticalSpacing = 7;
 		layout.horizontalSpacing = 5;
+
+		Composite container = factory.createComposite(parent);
 		container.setLayout(layout);
-		
+
 		final Project pom = getPage().getPomEditor().getPom();
 		
         createDescriptionWithLink(container, factory, layout.numColumns);
         
 		// POM dependencies table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-        dependenciesViewer = createTableViewer(container, factory, 1);
+        dependenciesViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		dependenciesTable = new TableEntry(dependenciesViewer, toggle, Mevenide.getResourceString("DependenciesSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
@@ -234,7 +235,7 @@ public class DependenciesSection extends PageSection {
 		
 		// POM dependency properties table
 		if (isInherited()) createSpacer(container, factory);
-		TableViewer viewer = createTableViewer(container, factory, 1);
+		TableViewer viewer = createTableViewer(container, factory, 1, SWT.SINGLE);
 		propertiesTable = new TableEntry(viewer, null, Mevenide.getResourceString("DependenciesSection.properties.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		dependenciesTable.addDependentTableEntry(propertiesTable);
 		propertiesTable.addEntryChangeListener(
@@ -303,17 +304,16 @@ public class DependenciesSection extends PageSection {
 	}
     
     private void createDescriptionWithLink(Composite parent, FormToolkit factory, int nColumns) {
-        Composite container = factory.createComposite(parent);
         TableWrapLayout layout = new TableWrapLayout();
         layout.numColumns = nColumns;
-        layout.verticalSpacing = 7;
-        layout.horizontalSpacing = 5;
-        layout.leftMargin = layout.rightMargin = layout.topMargin = layout.bottomMargin = 0;
-        container.setLayout(layout);
         
         GridData data = new GridData(GridData.FILL_HORIZONTAL | GridData.VERTICAL_ALIGN_BEGINNING);
         data.horizontalSpan = nColumns;
+
+        Composite container = factory.createComposite(parent);
+        container.setLayout(layout);
         container.setLayoutData(data);
+//        container.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
         
         FormText text = factory.createFormText(container, true);
         text.setLayoutData(new TableWrapData(TableWrapData.FILL_GRAB));

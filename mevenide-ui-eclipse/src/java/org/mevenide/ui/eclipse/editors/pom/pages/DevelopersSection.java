@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.maven.project.Developer;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -64,7 +65,7 @@ public class DevelopersSection extends PageSection {
 		
 		// POM developers table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-        devViewer = createTableViewer(container, factory, 1);
+        devViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		devTable = new TableEntry(devViewer, toggle, Mevenide.getResourceString("DevelopersSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {

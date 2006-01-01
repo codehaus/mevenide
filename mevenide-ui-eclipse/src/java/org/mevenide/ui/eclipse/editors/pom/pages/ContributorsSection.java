@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -64,7 +65,7 @@ public class ContributorsSection extends PageSection {
 		
 		// POM contributors table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-        contribViewer = createTableViewer(container, factory, 1);
+        contribViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		contribTable = new TableEntry(contribViewer, toggle, Mevenide.getResourceString("ContributorsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {

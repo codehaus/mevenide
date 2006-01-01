@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Version;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -64,7 +65,7 @@ public class VersionsSection extends PageSection {
 		
 		// POM versions table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-        versionViewer = createTableViewer(container, factory, 1);
+        versionViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		versionTable = new TableEntry(versionViewer, toggle, Mevenide.getResourceString("VersionsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {

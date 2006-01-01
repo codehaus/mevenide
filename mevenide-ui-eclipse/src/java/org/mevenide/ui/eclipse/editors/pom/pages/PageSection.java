@@ -226,10 +226,12 @@ public abstract class PageSection extends SectionPart {
         return text;
     }
 
-    protected TableViewer createTableViewer(Composite parent, FormToolkit factory, int style) {
+    protected TableViewer createTableViewer(Composite parent, FormToolkit factory, int span, int style) {
+
+        GridData data = new GridData(GridData.FILL_BOTH);
+        data.horizontalSpan = span;
 
         Table table = factory.createTable(parent, style);
-        GridData data = new GridData(GridData.FILL_BOTH);
         table.setLayoutData(data);
 
         TableViewer viewer = new TableViewer(table);

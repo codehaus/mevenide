@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.maven.project.MailingList;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -61,7 +62,7 @@ public class MailingListsSection extends PageSection {
 		
 		// POM mailingLists table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-		TableViewer viewer = createTableViewer(container, factory, 1);
+		TableViewer viewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		mailingListTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("MailingListsSection.tableEntry.tooltip"), container, factory, this); //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {

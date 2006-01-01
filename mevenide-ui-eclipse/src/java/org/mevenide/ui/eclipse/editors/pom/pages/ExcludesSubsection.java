@@ -23,6 +23,7 @@ import java.util.List;
 import org.apache.maven.project.Project;
 import org.apache.maven.project.Resource;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -57,7 +58,7 @@ public class ExcludesSubsection extends AbstractResourcePatternSubsection {
 				section.createSpacer(container, factory);
 			}
 		}
-		TableViewer viewer = section.createTableViewer(container, factory, 1);
+		TableViewer viewer = section.createTableViewer(container, factory, 1, SWT.MULTI);
 		TableEntry excludesTable = new TableEntry(viewer, toggle, Mevenide.getResourceString("ExcludesSubsection.tableEntry.tooltip"), container, factory, section); //$NON-NLS-1$
 		PageSection.OverrideAdaptor adaptor = section.new OverrideAdaptor() {
 			public void overrideParent(Object value) {

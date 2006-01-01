@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Project;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -64,7 +65,7 @@ public class BranchesSection extends PageSection {
 		
 		// POM branch table
 		Button toggle = createOverrideToggle(container, factory, 1, true);
-        branchViewer = createTableViewer(container, factory, 1);
+        branchViewer = createTableViewer(container, factory, 1, SWT.MULTI);
 		branchTable = new TableEntry(branchViewer, toggle, Mevenide.getResourceString("BranchesSection.tableEntry.tooltip"), container, factory, this);  //$NON-NLS-1$
 		OverrideAdaptor adaptor = new OverrideAdaptor() {
 			public void overrideParent(Object value) {
