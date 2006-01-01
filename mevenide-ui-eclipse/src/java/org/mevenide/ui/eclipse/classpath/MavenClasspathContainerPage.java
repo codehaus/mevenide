@@ -464,7 +464,7 @@ public class MavenClasspathContainerPage extends WizardPage implements
                 case 4:
                     return dependency.getType();
                 default:
-                    return null;
+                    return "";
                 }
             }
             return null;
