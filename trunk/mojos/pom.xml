@@ -12,6 +12,13 @@
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MEVENIDE</url>
   </issueManagement>
+  <ciManagement>
+      <system>continuum</system>
+  </ciManagement>
+  <scm>
+      <connection>scm:cvs:ext:anoncvs@beaver.codehaus.org:/home/projects/mevenide/scm:mojos</connection>
+      <url>http://cvs.mevenide.codehaus.org/mojos</url>
+  </scm>
   <mailingLists>
     <mailingList>
       <name>Development List</name>
