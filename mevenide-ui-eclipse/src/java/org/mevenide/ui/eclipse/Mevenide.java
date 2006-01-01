@@ -35,6 +35,8 @@ import org.eclipse.jface.preference.IPersistentPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.mevenide.environment.SysEnvLocationFinder;
+import org.mevenide.environment.sysenv.SysEnvProvider;
 import org.mevenide.ui.eclipse.classpath.ClasspathManager;
 import org.mevenide.ui.eclipse.classpath.MavenClasspathManager;
 import org.mevenide.ui.eclipse.nature.ActionDefinitionsManager;
@@ -73,6 +75,7 @@ public class Mevenide extends AbstractUIPlugin {
     private POMManager pomManager;
     private MavenClasspathManager mavenClasspathManager;
     private ActionDefinitionsManager actionDefinitionsManager;
+    private SysEnvProvider environmentProvider;
 
     /**
      * Initializes a new instance of Mevenide.
@@ -97,6 +100,13 @@ public class Mevenide extends AbstractUIPlugin {
         if (Tracer.isDebugging()) {
         	Tracer.trace("Starting MevenIDE.");
         }
+
+        /* Set the system wide environment provider to use values from
+         * user preferences if they exist.
+         */
+        this.environmentProvider = new PreferencesSysEnvProvider(getCustomPreferenceStore());
+        SysEnvLocationFinder.setDefaultSysEnvProvider(this.environmentProvider);
+
 
         this.exceptionHandler = new ExceptionHandler(this);
 
