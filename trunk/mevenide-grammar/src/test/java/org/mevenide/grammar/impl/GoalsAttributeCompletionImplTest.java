@@ -32,6 +32,7 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
 
     private GoalsAttributeCompletionImpl impl;
     private List siteGoals;
+    private List maven11Goals;
     protected void setUp() throws Exception {
         impl = new GoalsAttributeCompletionImpl();
         siteGoals = new ArrayList();
@@ -47,11 +48,12 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         //Maven RC2 added..
         siteGoals.add("site:ftpdeploy");
         //Maven 1.1 added...
-        siteGoals.add("site:site");
-        siteGoals.add("site:local-deploy-init");
-        siteGoals.add("site:publish");
-        siteGoals.add("site:remote-deploy-init");
-        siteGoals.add("site:rsyncdeploy");
+        maven11Goals = new ArrayList();
+        maven11Goals.add("site:site");
+        maven11Goals.add("site:local-deploy-init");
+        maven11Goals.add("site:publish");
+        maven11Goals.add("site:remote-deploy-init");
+        maven11Goals.add("site:rsyncdeploy");
     }
 
     protected void tearDown() throws Exception {
@@ -70,9 +72,9 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         Iterator it = col.iterator();
         while (it.hasNext()) {
            String goal = (String)it.next();
-           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal)); 
+           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal) || maven11Goals.contains(goal)); 
         }
-        assertEquals("wrong number of items", col.size(), siteGoals.size());
+        assertTrue("wrong number of items", col.size() == siteGoals.size() || col.size() == siteGoals.size() + maven11Goals.size());
     }
     
     public void testPartialPlugin2() throws Exception {
@@ -83,11 +85,11 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         String list = "";
         while (it.hasNext()) {
            String goal = (String)it.next();
-           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal)); 
+           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal) || maven11Goals.contains(goal)); 
            list = list + " " + goal;
         }
         // all except the default "site" goal.
-        assertEquals("wrong number of items (" + list + ")", col.size(), siteGoals.size() - 1);
+        assertTrue("wrong number of items (" + list + ")", col.size() == siteGoals.size() - 1 || col.size() == siteGoals.size() + maven11Goals.size() - 1);
     }
 
     public void testPartialPlugin3() throws Exception {
@@ -98,11 +100,12 @@ public class GoalsAttributeCompletionImplTest extends TestCase {
         Iterator it = col.iterator();
         while (it.hasNext()) {
            String goal = (String)it.next();
-           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal)); 
+           assertTrue("goal:" + goal + " should not have been returned.", siteGoals.contains(goal) || maven11Goals.contains(goal)); 
            list = list + " " + goal;
         }
         // only site:sshdeploy should be returned.
-        assertEquals("wrong number of items (" + list + ")", col.size(), 2);
+        // on maven 1.1 also site:site
+        assertTrue("wrong number of items (" + list + ")", col.size() == 2 || col.size() == 1);
     }
     
 }
