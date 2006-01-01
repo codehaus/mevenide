@@ -17,6 +17,8 @@
 
 package org.mevenide.ui.eclipse.preferences;
 
+import org.mevenide.environment.ILocationFinder;
+
 /**  
  * Constant definitions for plug-in preferences
  * 
@@ -25,13 +27,13 @@ package org.mevenide.ui.eclipse.preferences;
  */
 public interface MevenidePreferenceKeys {
 
-    String JAVA_HOME_PREFERENCE_KEY                 = "java.home";                    //$NON-NLS-1$
+    String JAVA_HOME_PREFERENCE_KEY                 = ILocationFinder.JAVA_HOME;
     String MEVENIDE_CHECKTIMESTAMP_PREFERENCE_KEY   = "mevenide.checktimestamp";      //$NON-NLS-1$
     String JAVA_HEAP_SIZE_PREFERENCE_KEY            = "maven.heap.size";              //$NON-NLS-1$
-    String MAVEN_HOME_PREFERENCE_KEY                = "maven.home";                   //$NON-NLS-1$
+    String MAVEN_HOME_PREFERENCE_KEY                = ILocationFinder.MAVEN_HOME;
     String MAVEN_LAUNCH_DEFAULTGOALS_PREFERENCE_KEY = "maven.launch.defaultgoals";    //$NON-NLS-1$
-    String MAVEN_LOCAL_HOME_PREFERENCE_KEY          = "maven.local.home";             //$NON-NLS-1$
-    String MAVEN_REPO_PREFERENCE_KEY                = "maven.repo";                   //$NON-NLS-1$
+    String MAVEN_LOCAL_HOME_PREFERENCE_KEY          = ILocationFinder.MAVEN_HOME_LOCAL;
+    String MAVEN_REPO_PREFERENCE_KEY                = ILocationFinder.MAVEN_REPO_LOCAL;
     String POM_TEMPLATE_LOCATION_PREFERENCE_KEY     = "pom.template.location";        //$NON-NLS-1$
     String DEFAULT_GOALS_PREFERENCE_KEY             = "maven.launch.defaultgoals";    //$NON-NLS-1$
     String REGISTERED_DEPENPENCY_TYPES              = "mevenide.pom.dependency.type"; //$NON-NLS-1$
