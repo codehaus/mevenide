@@ -112,14 +112,17 @@ public class TableEntry extends PageEntry {
 	}
 	
 	private void init(Composite parent, FormToolkit factory, final PageSection section, String tooltipInfo) {
-		Composite buttonContainer = factory.createComposite(parent);
 		GridData data = new GridData(GridData.HORIZONTAL_ALIGN_END | GridData.VERTICAL_ALIGN_BEGINNING);
 		data.horizontalSpan = 1;
-		buttonContainer.setLayoutData(data);
+
 		GridLayout layout = new GridLayout();
 		layout.marginWidth = 0;
 		layout.marginHeight = 0;
+
+		Composite buttonContainer = factory.createComposite(parent);
+		buttonContainer.setLayoutData(data);
 		buttonContainer.setLayout(layout);
+//		buttonContainer.setData(FormToolkit.KEY_DRAW_BORDER, FormToolkit.TEXT_BORDER);
 		
 		addButton = factory.createButton(buttonContainer, ADD_BUTTON_LABEL, SWT.PUSH);
 		data = new GridData(GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_BEGINNING);
