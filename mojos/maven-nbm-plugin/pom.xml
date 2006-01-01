@@ -12,6 +12,13 @@
   <description>Maven plugin for creating Netbeans Modules</description>
   <version>2.0.4</version>
   <inceptionYear>2005</inceptionYear>
+  <ciManagement>
+      <system>continuum</system>
+  </ciManagement>
+  <scm>
+      <connection>scm:cvs:ext:anoncvs@beaver.codehaus.org:/home/projects/mevenide/scm:mojos/maven-nbm-plugin</connection>
+      <url>http://cvs.mevenide.codehaus.org/mojos/maven-nbm-plugin</url>
+  </scm>
   <build>
     <plugins>
       <plugin>
