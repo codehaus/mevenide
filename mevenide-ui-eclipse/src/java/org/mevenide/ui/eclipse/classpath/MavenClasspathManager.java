@@ -290,13 +290,10 @@ public class MavenClasspathManager implements ClasspathManager {
                     }
                 }
 
-                if (dirty) {
-                    entries.put(containerPath, JavaCore.newContainerEntry(containerPath));
-                    entry = (IClasspathEntry[])entries.values().toArray(new IClasspathEntry[entries.size()]);
-                    javaProject.setRawClasspath(entry, null);
-                }
-
-//                update(containerPath, javaProject, container);
+                // always set the classpath so that the newly created container is added
+                entries.put(containerPath, JavaCore.newContainerEntry(containerPath));
+                entry = (IClasspathEntry[])entries.values().toArray(new IClasspathEntry[entries.size()]);
+                javaProject.setRawClasspath(entry, null);
             }
         }
 
