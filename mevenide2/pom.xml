@@ -12,6 +12,20 @@
     <system>jira</system>
     <url>http://jira.codehaus.org/browse/MEVENIDE</url>
   </issueManagement>
+  <ciManagement>
+      <system>continuum</system>
+      <notifiers>
+          <notifier>
+            <configuration>
+              <address>dev@mevenide.codehaus.org</address>
+            </configuration>
+          </notifier>
+      </notifiers>
+  </ciManagement>
+  <scm>
+      <connection>scm:cvs:pserver:anoncvs:@beaver.codehaus.org:/home/projects/mevenide/scm:mevenide2</connection>
+      <url>http://cvs.mevenide.codehaus.org/mevenide2</url>
+  </scm>
   <mailingLists>
     <mailingList>
       <name>Development List</name>
