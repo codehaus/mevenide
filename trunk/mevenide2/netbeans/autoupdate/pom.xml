@@ -11,6 +11,14 @@
     <version>1.0</version>
     <name>Netbeans Maven2 autoupdate site</name>
     <description>Autoupdate server for Mevenide 2.0, the support for Maven2.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-autoupdate</artifactId>
+            <version>2.15.1</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

@@ -7,8 +7,8 @@
       <attr name="autoupdate_xml_type_2.settings/" boolvalue="true" />
       <file name="mevenide2_server.settings" url="mevenide_autoupdate.xml">
         <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.autoupdate.Bundle"/>
-        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/autoupdate/updateAction.gif"/>
-        <attr name="url_key" stringvalue="MEVENIDE_URL"/>
+        <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/autoupdate/updateAction.gif"/-->
+        <attr name="url_key" stringvalue="MEVENIDE2_URL"/>
         <attr name="enabled" boolvalue="true"/>
       </file>
     </folder>
