@@ -14,9 +14,16 @@
   </issueManagement>
   <ciManagement>
       <system>continuum</system>
+      <notifiers>
+          <notifier>
+            <configuration>
+              <address>dev@mevenide.codehaus.org</address>
+            </configuration>
+          </notifier>
+      </notifiers>
   </ciManagement>
   <scm>
-      <connection>scm:cvs:ext:anoncvs@beaver.codehaus.org:/home/projects/mevenide/scm:mojos</connection>
+      <connection>scm:cvs:pserver:anoncvs:@beaver.codehaus.org:/home/projects/mevenide/scm:mojos</connection>
       <url>http://cvs.mevenide.codehaus.org/mojos</url>
   </scm>
   <mailingLists>
