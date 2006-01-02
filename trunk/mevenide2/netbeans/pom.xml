@@ -18,10 +18,13 @@
             <plugin>
                 <groupId>org.codehaus.mevenide.plugins</groupId>
                 <artifactId>maven-nbm-plugin</artifactId>
-                <version>2.0.4</version>
+                <version>2.0.5</version>
                 <extensions>true</extensions>
                 <configuration>
                     <descriptor>src/main/nbm/module.xml</descriptor>
+                    <keystore>${nbm.keystore}</keystore>
+                    <keystorealias>mevenide2</keystorealias>
+                    <keystorepassword>${nbm.keystorepasswd}</keystorepassword>
                 </configuration>
             </plugin>
             <plugin>
@@ -43,5 +46,10 @@
      <module>continuum</module>
      <module>grammar</module>
      <module>j2ee</module>
+     <module>autoupdate</module>
   </modules>
+  <properties>
+      <nbm.keystore>/home/mkleint/.keystore</nbm.keystore>
+      <nbm.keystorepasswd>?</nbm.keystorepasswd>
+  </properties>
 </project>
