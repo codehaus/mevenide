@@ -1,8 +1,11 @@
 <nbm>
-   <moduleType>normal</moduleType>
+   <moduleType>autoload</moduleType>
    <codeNameBase>org.codehaus.mevenide.continuum.rpc/1</codeNameBase>
    <cluster>mevenide</cluster>
    <manifest>src/main/nbm/manifest.mf</manifest>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
    <libraries>
        <library>xmlrpc:xmlrpc</library>
        <library>commons-httpclient:commons-httpclient</library>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+  <folder name="Services">
+    <folder name="AutoupdateType">
+      <attr name="autoupdate_xml_type_2.settings/" boolvalue="true" />
+      <file name="mevenide2_server.settings" url="mevenide_autoupdate.xml">
+        <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.autoupdate.Bundle"/>
+        <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/autoupdate/updateAction.gif"/>
+        <attr name="url_key" stringvalue="MEVENIDE_URL"/>
+        <attr name="enabled" boolvalue="true"/>
+      </file>
+    </folder>
+  </folder> 
+</filesystem>
