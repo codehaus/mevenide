@@ -107,7 +107,7 @@ public abstract class AbstractPomEditorPage
 	}
 	
 	protected void update(Project pom) {
-	    if (isActive() && getManagedForm() != null ) {
+	    if (/*isActive() &&*/ getManagedForm() != null ) {
 		    IFormPart[] sections = getManagedForm().getParts();
 			for (int i = 0; i < sections.length; i++) {
                 if (sections[i] instanceof PageSection) {
@@ -116,8 +116,6 @@ public abstract class AbstractPomEditorPage
                 }
 			}
 			setUpdateNeeded(false);
-//	    } else {
-//	        //mark as allRefreshNeeded so that when page activates later it will update
 	    }
 	}
     
