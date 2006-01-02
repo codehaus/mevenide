@@ -326,10 +326,10 @@ public class CreateNbmMojo
             nbmTask.setHomepage(homePageUrl);
         }
         if (module.getDistributionUrl() != null) {
-            nbmTask.setDistribution(module.getDistributionUrl());
+            nbmTask.setDistribution(module.getDistributionUrl() + (module.getDistributionUrl().endsWith("/") ? "" : "/") + nbmFile.getName());
         } else {
             getLog().warn("You don't define distribution URL in the netbeans module descriptor. That's ok for local installation but f you want to create an autoupdate site, you have to define this property.");
-            nbmTask.setDistribution(project.getUrl() + "/" + nbmFile.getName());
+            nbmTask.setDistribution(project.getUrl() + (project.getUrl() != null && project.getUrl().endsWith("/") ? "" :"/") + nbmFile.getName());
             getLog().warn("  Using default value for distribution URL: " + nbmTask.getDescription());
         }
         try {
