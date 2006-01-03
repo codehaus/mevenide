@@ -169,8 +169,6 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
         String timestamp = new SimpleDateFormat("yyyyMMddhhmm").format(new Date());
         conditionallyAddAttribute(mainSection, "OpenIDE-Module-Build-Version", timestamp);
         conditionallyAddAttribute(mainSection, "OpenIDE-Module", moduleName);
-        // TODO don't hardwire the value
-        conditionallyAddAttribute(mainSection, "OpenIDE-Module-IDE-Dependencies", "IDE/1 > 3.40");
         // localization items
         if (!examinator.isLocalized()) {
             conditionallyAddAttribute(mainSection, "OpenIDE-Module-Display-Category", project.getGroupId());
