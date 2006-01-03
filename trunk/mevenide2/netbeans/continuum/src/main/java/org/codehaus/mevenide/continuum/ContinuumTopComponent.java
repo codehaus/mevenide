@@ -51,7 +51,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
 
     private static ContinuumTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "/org/codehaus/mevenide/continuum/ContinuumServer.png";
+    static final String ICON_PATH = "org/codehaus/mevenide/continuum/ContinuumServer.png";
 
     private static final String PREFERRED_ID = "ContinuumTopComponent";
 
