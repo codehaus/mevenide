@@ -128,7 +128,7 @@ public final class NbMavenProject implements Project {
      * getter for the maven's own project representation.. this instance is cached but gets reloaded
      * when one the pom files have changed.
      */
-    public MavenProject getOriginalMavenProject() {
+    public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
             try {
                 //http://jira.codehaus.org/browse/MNG-1876
