@@ -16,7 +16,7 @@
 	  <type>spec</type>
       </dependency>
       <dependency>
-          <id>org.netbeans.api:openide-loaders</id>
+          <id>org.netbeans.api:org-openide-loaders</id>
 	  <type>spec</type>
       </dependency>
         <dependency>
