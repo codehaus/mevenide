@@ -19,8 +19,10 @@
 		  </ul>
           <p>
           For a detailed walkthrough describing the feautures accompanied with pictures, see the <a href="user-guide/index.html">User Guide</a>
-          
 		</p>
+          <p>
+          <b>To download and install, go <a href="index.html">here</a> </b>
+          </p>
 	  </div>
   </section>
   <section name="Maven Project recognition">
