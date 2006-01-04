@@ -18,16 +18,13 @@
 package org.mevenide.ui.eclipse.util;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Dictionary;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
-import org.osgi.framework.Constants;
 
 /**
  * The exception handler shows an error dialog when one of its displayError methods
@@ -37,10 +34,7 @@ import org.osgi.framework.Constants;
  * is written to the platform log.
  */
 public class ExceptionHandler {
-    private Plugin   plugin;
-    private String   pluginId;
-    private String   pluginName;
-    private String[] pluginInfo = new String[6];
+    private Plugin plugin;
 
     /**
      * Initializes this exception handler with contact information from the plugin.
@@ -48,25 +42,6 @@ public class ExceptionHandler {
      */
     public ExceptionHandler(Plugin plugin) {
         this.plugin = plugin;
-
-        final Dictionary headers = plugin.getBundle().getHeaders();
-
-        this.pluginId = valueOf(headers, Constants.BUNDLE_SYMBOLICNAME);
-        this.pluginName = valueOf(headers, Constants.BUNDLE_NAME);
-
-        // look for trailing info like 'singleton=true' and remove it
-        int pos = pluginId.indexOf(';');
-        if (pos > 0) {
-            this.pluginId = this.pluginId.substring(0, pos);
-        }
-
-        this.pluginInfo = new String[6];
-        this.pluginInfo[0] = "Plug-in ID:       " + this.pluginId;
-        this.pluginInfo[1] = "Plug-in Name:     " + this.pluginName;
-        this.pluginInfo[2] = "Plug-in Version:  " + valueOf(headers, Constants.BUNDLE_VERSION);
-        this.pluginInfo[3] = "Plug-in Provider: " + valueOf(headers, Constants.BUNDLE_VENDOR);
-        this.pluginInfo[4] = "Plug-in Site:     " + valueOf(headers, Constants.BUNDLE_DOCURL);
-        this.pluginInfo[5] = "Plug-in Contact:  " + valueOf(headers, Constants.BUNDLE_CONTACTADDRESS);
     }
 
     /**
@@ -86,7 +61,8 @@ public class ExceptionHandler {
     public void displayError(String title, String message, IStatus s) {
         this.plugin.getLog().log(s);
 
-        MultiStatus status = createMultiStatus(s);
+        MultiStatus status = createMultiStatus(message, s);
+        addStackTrace(status, s.getException());
 
         String dialogMsg
             = message + "\n"
@@ -100,25 +76,53 @@ public class ExceptionHandler {
             dialogMsg = null;
         }
 
-        openError(title, dialogMsg, status);
+        openError(this.plugin, title, dialogMsg, status);
     }
 
-    /**
-     * Opens an error dialog to display the given error
-     * and logs the error in the plugin's error log.
-     * 
-     * @param title
-     *            the title to use for this dialog, or <code>null</code> to
-     *            indicate that the default title should be used
-     * @param message
-     *            the message to show in this dialog, or <code>null</code> to
-     *            indicate that the error's message should be shown as the
-     *            primary message
-     * @param e
-     *            the error to show to the user
-     */
-    public void displayError(String title, String message, CoreException e) {
-        displayError(title, message, e.getStatus());
+    private void addStackTrace(MultiStatus s, Throwable t) {
+        if (s != null && t != null) {
+	        synchronized (s) {
+	            String pluginId = this.plugin.getBundle().getSymbolicName();
+
+	            s.add(new Status(IStatus.INFO, pluginId, 0, t.toString(), null));
+
+	            StackTraceElement[] trace = t.getStackTrace();
+	            for (int i = 0; i < trace.length; ++i) {
+	                s.add(new Status(IStatus.INFO, pluginId, 0, "   at " + trace[i], null));
+	            }
+
+	            Throwable cause = t.getCause();
+	            if (cause != null) {
+	                addStackTraceAsCause(pluginId, cause, s, trace);
+	            }
+	        }
+	    }
+    }
+
+    private void addStackTraceAsCause(String pluginId, Throwable t, MultiStatus s, StackTraceElement[] causedTrace) {
+        // Compute number of frames in common between t and caused
+        StackTraceElement[] trace = t.getStackTrace();
+        int m = trace.length - 1, n = causedTrace.length - 1;
+        while (m >= 0 && n >=0 && trace[m].equals(causedTrace[n])) {
+            m--; n--;
+        }
+        int framesInCommon = trace.length - 1 - m;
+
+        s.add(new Status(IStatus.INFO, pluginId, 0, "Caused by: " + t, null));
+
+        for (int i = 0; i <= m; ++i) {
+            s.add(new Status(IStatus.INFO, pluginId, 0, "   tat " + trace[i], null));
+        }
+
+        if (framesInCommon != 0) {
+            s.add(new Status(IStatus.INFO, pluginId, 0, "   ... " + framesInCommon + " more", null));
+        }
+
+        // Recurse if we have a cause
+        Throwable cause = t.getCause();
+        if (cause != null) {
+            addStackTraceAsCause(pluginId, cause, s, trace);
+        }
     }
 
     /**
@@ -141,7 +145,7 @@ public class ExceptionHandler {
         }
 
         if (t instanceof CoreException) {
-            displayError(title, message, (CoreException) t);
+            displayError(title, message, ((CoreException) t).getStatus());
         } else {
             displayError(title, message, newErrorStatus(message, t));
 //            displayError(title, message, newErrorStatus(t.getLocalizedMessage(), t));
@@ -156,19 +160,9 @@ public class ExceptionHandler {
      * @param s the status to report
      * @return a MultiStatus suitable for use with the Error Dialog
      */
-    private MultiStatus createMultiStatus(IStatus s) {
-        int severity = s.getSeverity();
-        int code = s.getCode();
-        String msg = s.getMessage();
-        Throwable t = s.getException();
-
-        MultiStatus status = new MultiStatus(this.pluginId, code, msg, t);
-        status.add(new Status(severity, this.pluginId, 0, msg, null));
-        status.add(new Status(severity, this.pluginId, 0, "", null)); // adds a blank line
-        for (int i = 0; i < this.pluginInfo.length; ++i) {
-            status.add(new Status(severity, this.pluginId, 0, this.pluginInfo[i], null));
-        }
-
+    private MultiStatus createMultiStatus(String message, IStatus s) {
+        MultiStatus status = new MultiStatus(s.getPlugin(), s.getCode(), message, s.getException());
+        status.merge(s);
         return status;
     }
 
@@ -181,7 +175,7 @@ public class ExceptionHandler {
     private IStatus newErrorStatus(String message, Throwable exception) {
         return new Status(
             IStatus.ERROR,
-			this.pluginId,
+			this.plugin.getBundle().getSymbolicName(),
 			StatusConstants.INTERNAL_ERROR,
 			(message == null)? "An internal error occurred.": message,
 			exception
@@ -202,11 +196,11 @@ public class ExceptionHandler {
      * @param status
      *            the error to show to the user
      */
-    private static void openError(final String title, final String message, final IStatus status) {
+    private static void openError(final Plugin plugin, final String title, final String message, final IStatus status) {
         Display display = getStandardDisplay();
         display.asyncExec(new Runnable() {
             public void run() {
-                ErrorDialog.openError(null, title, message, status);
+                NotifyingErrorDialog.openError(plugin, null, title, message, status);
             }
         });
     }
@@ -219,22 +213,5 @@ public class ExceptionHandler {
     private static final Display getStandardDisplay() {
         final Display display = Display.getCurrent();
         return (display != null) ? display : Display.getDefault();
-    }
-
-    /**
-     * Returns the value of the specified key or
-     * the empty string if the values does not exist.
-     * @param headers the headers to search
-     * @param key the name of the value to return
-     * @return the value represented by key
-     */
-    private static String valueOf(final Dictionary headers, final String key) {
-        String result = null;
-
-        if (key != null) {
-            result = (String)headers.get(key);
-        }
-
-        return (result == null)? "": result;
     }
 }
