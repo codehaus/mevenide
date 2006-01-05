@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,123 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.environment;
 
 import java.io.File;
 
 /**  
+ * Provides the default behavior of a <tt>ILocationFinder</tt>. If any
+ * value may be derived from any of the other values, that derivation
+ * happens in this class. For example, <tt>getMavenLocalHome()</tt>,
+ * if not explicitly set, may be derived by appending '.maven' to the
+ * user's home directory (<tt>${user.home}/.maven</tt>). So, the
+ * implementation provided by this class does just that. 
  * 
+ * @see org.mevenide.environment.ILocationFinder
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: AbstractLocationFinder.java,v 1.1 15 nov. 2003 Exp gdodinet 
- * 
  */
 public abstract class AbstractLocationFinder implements ILocationFinder {
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getMavenLocalHome()
+     */
+    public String getMavenLocalHome() {
+        String result = null;
+
+        final String parent = getUserHome();
+        if (parent != null) {
+            File location = new File(parent, ".maven");
+            if (true /*location.exists()*/) {
+                result = location.getAbsolutePath();
+            }
+        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getMavenLocalRepository()
+     */
+    public String getMavenLocalRepository() {
+        String result = null;
+
+        final String parent = getMavenLocalHome();
+        if (parent != null) {
+            File location = new File(parent, "repository");
+            if (true /*location.exists()*/) {
+                result = location.getAbsolutePath();
+            }
+        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getMavenPluginsDir()
+     */
+    public String getMavenPluginsDir() {
+        String result = null;
+
+        final String parent = getMavenLocalHome();
+        if (parent != null) {
+            File location = new File(parent, "cache");
+            if (true /*location.exists()*/) {
+                result = location.getAbsolutePath();
+            }
+        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getPluginJarsDir()
+     */
+    public String getPluginJarsDir() {
+        String result = null;
+
+        final String parent = getMavenHome();
+        if (parent != null) {
+            File location = new File(parent, "plugins");
+            if (true /*location.exists()*/) {
+                result = location.getAbsolutePath();
+            }
+        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getUserPluginsDir()
+     */
+    public String getUserPluginsDir() {
+        String result = null;
+
+        final String parent = getMavenLocalHome();
+        if (parent != null) {
+            File location = new File(parent, "plugins");
+            if (true /*location.exists()*/) {
+                result = location.getAbsolutePath();
+            }
+        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getConfigurationFileLocation()
+     */
 	public String getConfigurationFileLocation() {
-		if ( getMavenHome() != null ) {
-			File conf = new File(new File(getMavenHome(), "bin"), "forehead.conf");
-			if ( conf.exists() ) {
-				return conf.getAbsolutePath();
+        String result = null;
+
+        final String mavenHome = getMavenHome();
+        if (mavenHome != null) {
+            File conf = new File(new File(mavenHome, "bin"), "forehead.conf");
+            if (conf.exists()) {
+                result = conf.getAbsolutePath();
 			}
 		}
-		return null;
+
+        return result;
 	}
 }

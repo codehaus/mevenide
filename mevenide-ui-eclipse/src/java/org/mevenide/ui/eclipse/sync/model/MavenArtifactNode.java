@@ -36,6 +36,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.mevenide.context.DefaultQueryContext;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.project.dependency.DependencyUtil;
@@ -69,8 +70,12 @@ public class MavenArtifactNode extends ArtifactNode {
 	public MavenArtifactNode(Artifact artifact, MavenProjectNode project) {
 		this.artifact = artifact;
 		parent = project;
-		locationFinder = new LocationFinderAggregator(new DefaultQueryContext(((Project) project.getData()).getFile().getParentFile()));
-        ((LocationFinderAggregator)locationFinder).setCustomLocationFinder(Mevenide.getInstance().getPOMManager().getCustomLocationFinder());
+
+		final File            projectDir = ((Project)project.getData()).getFile().getParentFile();
+		final IQueryContext   queryContext = new DefaultQueryContext(projectDir);
+		final ILocationFinder locationFinder = Mevenide.getInstance().getPOMManager().getCustomLocationFinder();
+        this.locationFinder = new LocationFinderAggregator(queryContext, locationFinder);
+
 		initialize();
 	}
 	

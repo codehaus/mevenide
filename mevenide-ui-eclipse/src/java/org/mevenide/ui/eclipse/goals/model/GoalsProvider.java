@@ -20,6 +20,7 @@ package org.mevenide.ui.eclipse.goals.model;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.mevenide.context.IQueryContext;
+import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
 import org.mevenide.goals.grabber.IGoalsGrabber;
@@ -42,8 +43,8 @@ public class GoalsProvider implements ITreeContentProvider {
     public GoalsProvider(IQueryContext context) {
         try {
             if (context != null) {
-                LocationFinderAggregator locationFinder = new LocationFinderAggregator(context);
-                locationFinder.setCustomLocationFinder(Mevenide.getInstance().getPOMManager().getCustomLocationFinder());
+                ILocationFinder customFinder = Mevenide.getInstance().getPOMManager().getCustomLocationFinder();
+                LocationFinderAggregator locationFinder = new LocationFinderAggregator(context, customFinder);
                 goalsGrabber = GoalsGrabbersManager.getGoalsGrabber(context, locationFinder);
             } else {
                 goalsGrabber = new DefaultGoalsGrabber();

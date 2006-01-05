@@ -20,7 +20,6 @@ package org.mevenide.ui.eclipse.pom.manager;
 import org.apache.maven.project.Dependency;
 import org.eclipse.core.resources.IProject;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.ILocationFinder;
 
 /**
@@ -60,7 +59,7 @@ public interface POMManager {
     /**
      * @return Returns the customLocationFinder.
      */
-    CustomLocationFinder getCustomLocationFinder();
+    ILocationFinder getCustomLocationFinder();
 
     /**
      * @return Returns the defaultLocationFinder.

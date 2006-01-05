@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,67 +14,65 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.environment;
 
-import java.io.File;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyResolver;
 
 /**  
- * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: LocationFinderAggregator.java,v 1.1 15 nov. 2003 Exp gdodinet 
- * 
  */
-public class LocationFinderAggregator implements ILocationFinder {
-    
-    private static Log log = LogFactory.getLog(LocationFinderAggregator.class);
+public class LocationFinderAggregator extends AbstractLocationFinder {
     
     private SysEnvLocationFinder sysEnvLocationFinder;
-    private CustomLocationFinder customLocationFinder;
-    
-    private IQueryContext context;
+    private ILocationFinder customLocationFinder;
     private IPropertyResolver resolver;
 
     /**
-     * Use the default context (non-project based) WARNING use just when you know what you are doing.
+     * Use the default context (non-project based) WARNING use just when you
+     * know what you are doing.
      */
     LocationFinderAggregator() {
-        this(DefaultQueryContext.getNonProjectContextInstance());
+        this(null, null);
     }
-    
+
+    /**
+     * Use the default context (non-project based) WARNING use just when you
+     * know what you are doing.
+     */
+    LocationFinderAggregator(ILocationFinder custom) {
+        this(null, custom);
+    }
+
     /**
      * default constructor for the aggregator
+     * 
      * @param queryContext the project's query context.
      */
     public LocationFinderAggregator(IQueryContext queryContext) {
-        sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
-        context = queryContext;
-        resolver = context.getResolver();
+        this(queryContext, null);
     }
-    
 
-
-    public String getConfigurationFileLocation() {
-        if ( getMavenHome() != null ) {
-            File conf = new File(new File(getMavenHome(), "bin"), "forehead.conf");
-            if ( conf.exists() ) {
-                return conf.getAbsolutePath();
-            }
-        }
-        return null;
+    /**
+     * default constructor for the aggregator
+     * 
+     * @param queryContext the project's query context.
+     */
+    public LocationFinderAggregator(IQueryContext queryContext, ILocationFinder custom) {
+        sysEnvLocationFinder = SysEnvLocationFinder.getInstance();
+        IQueryContext context = (queryContext == null)? DefaultQueryContext.getNonProjectContextInstance(): queryContext;
+        resolver = context.getResolver();
+        customLocationFinder = (custom == null)? new MissingLocationFinder(): custom;
     }
 
     public String getJavaHome() {
-        String javaHome = System.getProperty("java.home");
-        if ( customLocationFinder !=  null
-            && customLocationFinder.getJavaHome() != null ) {
+        String javaHome = System.getProperty(JAVA_HOME);
+        if ( customLocationFinder.getJavaHome() != null ) {
             javaHome = customLocationFinder.getJavaHome();
         }
-        String resValue = resolver.getResolvedValue("java.home");
+        String resValue = resolver.getResolvedValue(JAVA_HOME);
         if (resValue != null) {
             javaHome = resValue;
         }
@@ -88,11 +86,10 @@ public class LocationFinderAggregator implements ILocationFinder {
     public String getMavenHome() {
         // does it make sense to consult the resolver.. MAVEN_HOME *has* to be set..
         String mavenHome = null;
-        if ( customLocationFinder !=  null
-            && customLocationFinder.getMavenHome() != null ) {
+        if ( customLocationFinder.getMavenHome() != null ) {
             mavenHome = customLocationFinder.getMavenHome();
         }
-        String resValue = resolver.getResolvedValue("maven.home");
+        String resValue = resolver.getResolvedValue(MAVEN_HOME);
         if (resValue != null) {
             mavenHome = resValue;
         }
@@ -104,12 +101,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalHome() {
-	String mavenLocalHome = new File(getUserHome(), ".maven").getAbsolutePath();
-        if ( customLocationFinder !=  null
-          && customLocationFinder.getMavenLocalHome() != null ) {
+	    String mavenLocalHome = super.getMavenLocalHome();
+        if ( customLocationFinder.getMavenLocalHome() != null ) {
             mavenLocalHome = customLocationFinder.getMavenLocalHome();
         }    
-        String resValue = resolver.getResolvedValue("maven.home.local");
+        String resValue = resolver.getResolvedValue(MAVEN_HOME_LOCAL);
         if (resValue != null) {
             mavenLocalHome = resValue;
         }
@@ -117,12 +113,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenLocalRepository() {
-        String mavenLocalRepository =  new File(getMavenLocalHome(), "repository").getAbsolutePath();
-        if ( customLocationFinder !=  null
-          && customLocationFinder.getMavenLocalRepository() != null ) {
+        String mavenLocalRepository = super.getMavenLocalRepository();
+        if ( customLocationFinder.getMavenLocalRepository() != null ) {
             mavenLocalRepository = customLocationFinder.getMavenLocalRepository();
         }
-        String resValue = resolver.getResolvedValue("maven.repo.local");
+        String resValue = resolver.getResolvedValue(MAVEN_REPO_LOCAL);
         if (resValue != null) {
             mavenLocalRepository = resValue;
         }
@@ -130,12 +125,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getMavenPluginsDir() {
-        String mavenPluginsDir = new File(getMavenLocalHome(), "cache").getAbsolutePath();
-        if ( customLocationFinder !=  null
-          && customLocationFinder.getMavenPluginsDir() != null ) {
+        String mavenPluginsDir = super.getMavenPluginsDir();
+        if ( customLocationFinder.getMavenPluginsDir() != null ) {
             mavenPluginsDir = customLocationFinder.getMavenPluginsDir();
         }
-        String resValue = resolver.getResolvedValue("maven.plugin.unpacked.dir");
+        String resValue = resolver.getResolvedValue(MAVEN_PLUGIN_UNPACKED_DIR);
         if (resValue != null) {
             mavenPluginsDir = resValue;
         }
@@ -143,12 +137,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }
     
     public String getUserPluginsDir() {
-        String pluginsDir = new File(getMavenLocalHome(), "plugins").getAbsolutePath();
-        if ( customLocationFinder !=  null
-          && customLocationFinder.getUserPluginsDir() != null ) {
+        String pluginsDir = super.getUserPluginsDir();
+        if ( customLocationFinder.getUserPluginsDir() != null ) {
             pluginsDir = customLocationFinder.getUserPluginsDir();
         }
-        String resValue = resolver.getResolvedValue("maven.plugin.user.dir");
+        String resValue = resolver.getResolvedValue(MAVEN_PLUGIN_USER_DIR);
         if (resValue != null) {
             pluginsDir = resValue;
         }
@@ -156,12 +149,11 @@ public class LocationFinderAggregator implements ILocationFinder {
     }  
     
     public String getPluginJarsDir() {
-        String pluginsDir = new File(getMavenHome(), "plugins").getAbsolutePath();
-        if ( customLocationFinder !=  null
-          && customLocationFinder.getPluginJarsDir() != null ) {
+        String pluginsDir = super.getPluginJarsDir();
+        if ( customLocationFinder.getPluginJarsDir() != null ) {
             pluginsDir = customLocationFinder.getPluginJarsDir();
         }
-        String resValue = resolver.getResolvedValue("maven.plugin.dir");
+        String resValue = resolver.getResolvedValue(MAVEN_PLUGIN_DIR);
         if (resValue != null) {
             pluginsDir = resValue;
         }
@@ -169,17 +161,20 @@ public class LocationFinderAggregator implements ILocationFinder {
     }        
     
     public String getUserHome() {
-        String userHome = System.getProperty("user.home");
+        String userHome = System.getProperty(USER_HOME);
         if ( sysEnvLocationFinder !=  null
           && sysEnvLocationFinder.getUserHome() != null ) {
             userHome = sysEnvLocationFinder.getUserHome();
         }
         return userHome;
     }    
-
-    public void setCustomLocationFinder(CustomLocationFinder customLocationFinder) {
-        this.customLocationFinder = customLocationFinder;
-    }    
     
+    /**
+     * @param customLocationFinder
+     * @deprecated Pass the custom location finder in the constructor.
+     */
+    public void setCustomLocationFinder(ILocationFinder locationFinder) {
+        this.customLocationFinder = (locationFinder == null)? new MissingLocationFinder(): locationFinder;
+    }
 
 }
