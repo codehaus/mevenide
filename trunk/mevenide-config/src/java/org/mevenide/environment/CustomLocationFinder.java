@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.mevenide.environment;
 
 /**
- * 
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
- * @version $Id: CustomLocationFinder.java,v 1.1 14 d?c. 2003 Exp gdodinet
- * 
  */
-public class CustomLocationFinder implements ILocationFinder {
+public class CustomLocationFinder extends AbstractLocationFinder implements IMutableLocationFinder {
     private String javaHome;
     private String mavenHome;
     private String mavenLocalHome;
@@ -31,10 +29,6 @@ public class CustomLocationFinder implements ILocationFinder {
     private String userHome;
     private String userPluginsDir;
     private String pluginJarsDir;
-
-    public String getConfigurationFileLocation() {
-        return null;
-    }
 
     public String getJavaHome() {
         return javaHome;
@@ -84,16 +78,10 @@ public class CustomLocationFinder implements ILocationFinder {
         this.userHome = userHome;
     }
 
-    /**
-     * directory with user's custom plugins, denoted by maven.plugin.user.dir property
-     */
     public String getUserPluginsDir() {
         return userPluginsDir;
     }
 
-    /**
-     * the directory containing maven plugin jars, denoted by maven.plugin.dir propertu
-     */
     public String getPluginJarsDir() {
         return pluginJarsDir;
     }

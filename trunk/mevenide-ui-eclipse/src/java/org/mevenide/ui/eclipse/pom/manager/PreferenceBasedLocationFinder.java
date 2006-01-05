@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2005 MevenIDE Project
+ * Copyright 2003-2005 Mevenide Team
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,46 +17,144 @@
 
 package org.mevenide.ui.eclipse.pom.manager;
 
-import java.io.File;
-
 import org.eclipse.jface.preference.IPersistentPreferenceStore;
-import org.mevenide.environment.CustomLocationFinder;
-import org.mevenide.ui.eclipse.preferences.MevenidePreferenceKeys;
-import org.mevenide.util.StringUtils;
+import org.mevenide.environment.AbstractLocationFinder;
+import org.mevenide.environment.IMutableLocationFinder;
 
-class PreferenceBasedLocationFinder extends CustomLocationFinder {
+/**
+ * Looks for important Maven locations in user preferences.
+ * @author fdutton
+ */
+class PreferenceBasedLocationFinder extends AbstractLocationFinder implements IMutableLocationFinder {
     private IPersistentPreferenceStore preferences;
-    private String defaultMavenLocalHome;
 
+    /**
+     * Initializes a new instance of PreferenceBasedLocationFinder.
+     * @param preferences the preference store to use
+     */
     public PreferenceBasedLocationFinder(IPersistentPreferenceStore preferences) {
         this.preferences = preferences;
-        this.defaultMavenLocalHome = new File(new File(getUserHome()), ".maven").getAbsolutePath(); //$NON-NLS-1$
-
-        setMavenHome(preferences.getString(MevenidePreferenceKeys.MAVEN_HOME_PREFERENCE_KEY));
-
-        //preferences that are defaulted
-        String localHome = preferences.getString(MevenidePreferenceKeys.MAVEN_LOCAL_HOME_PREFERENCE_KEY);
-        //maven.local.home has not been initialized - defaults to ${user.home}/.maven
-        if (StringUtils.isNull(localHome)) {
-            localHome = defaultMavenLocalHome;
-        }
-        super.setMavenLocalHome(localHome);
-
-        String mavenRepo = preferences.getString(MevenidePreferenceKeys.MAVEN_REPO_PREFERENCE_KEY);
-        //maven.repo has not been initialized - defaults to ${maven.local.home}/repository
-        if (StringUtils.isNull(mavenRepo)) {
-            mavenRepo = new File(super.getMavenLocalHome(), "repository").getAbsolutePath(); //$NON-NLS-1$
-        }
-        super.setMavenLocalRepository(mavenRepo);
-
-        super.setMavenPluginsDir(new File(super.getMavenLocalHome(), "cache").getAbsolutePath()); //$NON-NLS-1$
     }
 
+	/**
+     * @return the preference store in use
+     */
+    protected IPersistentPreferenceStore getPreferences() {
+        return this.preferences;
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getJavaHome()
+     */
     public String getJavaHome() {
-        return this.preferences.getString(MevenidePreferenceKeys.JAVA_HOME_PREFERENCE_KEY);
+        return getPreferences().getString(JAVA_HOME);
     }
 
-    public final String getUserHome() {
-        return System.getProperty("user.home");
+	/* (non-Javadoc)
+	 * @see org.mevenide.environment.ILocationFinder#getMavenHome()
+	 */
+	public String getMavenHome() {
+		return getPreferences().getString(MAVEN_HOME);
+    }
+
+	/* (non-Javadoc)
+	 * @see org.mevenide.environment.ILocationFinder#getMavenLocalHome()
+	 */
+	public String getMavenLocalHome() {
+		return getPreferences().getString(MAVEN_HOME_LOCAL);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mevenide.environment.ILocationFinder#getMavenLocalRepository()
+	 */
+	public String getMavenLocalRepository() {
+		return getPreferences().getString(MAVEN_REPO_LOCAL);
+	}
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getMavenPluginsDir()
+     */
+    public String getMavenPluginsDir() {
+        return super.getMavenPluginsDir();
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getUserPluginsDir()
+     */
+    public String getUserPluginsDir() {
+        return super.getUserPluginsDir();
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getPluginJarsDir()
+     */
+    public String getPluginJarsDir() {
+        return super.getPluginJarsDir();
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.ILocationFinder#getConfigurationFileLocation()
+     */
+    public String getConfigurationFileLocation() {
+        return super.getConfigurationFileLocation();
+    }
+
+    /* (non-Javadoc)
+	 * @see org.mevenide.environment.ILocationFinder#getUserHome()
+	 */
+	public String getUserHome() {
+        return System.getProperty(USER_HOME);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setJavaHome(java.lang.String)
+     */
+    public void setJavaHome(String value) {
+        getPreferences().setValue(JAVA_HOME, value);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setMavenHome(java.lang.String)
+     */
+    public void setMavenHome(String value) {
+        getPreferences().setValue(MAVEN_HOME, value);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setMavenLocalHome(java.lang.String)
+     */
+    public void setMavenLocalHome(String value) {
+        getPreferences().setValue(MAVEN_HOME_LOCAL, value);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setMavenLocalRepository(java.lang.String)
+     */
+    public void setMavenLocalRepository(String value) {
+        getPreferences().setValue(MAVEN_REPO_LOCAL, value);
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setMavenPluginsDir(java.lang.String)
+     */
+    public void setMavenPluginsDir(String value) {
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setUserPluginsDir(java.lang.String)
+     */
+    public void setUserPluginsDir(String value) {
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setPluginJarsDir(java.lang.String)
+     */
+    public void setPluginJarsDir(String value) {
+    }
+
+    /* (non-Javadoc)
+     * @see org.mevenide.environment.IMutableLocationFinder#setUserHome(java.lang.String)
+     */
+    public void setUserHome(String value) {
     }
 }

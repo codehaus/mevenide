@@ -33,7 +33,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.CustomLocationFinder;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
 import org.mevenide.ui.eclipse.Mevenide;
@@ -53,7 +52,7 @@ import org.mevenide.ui.eclipse.util.Tracer;
  */
 public class DefaultPOMManager extends AbstractPOMManager implements IResourceChangeListener, IResourceDeltaVisitor {
     private Set fileToProjectMap;
-    private CustomLocationFinder customLocationFinder;
+    private ILocationFinder customLocationFinder;
     private LocationFinderAggregator defaultLocationFinder;
 
     /**
@@ -71,8 +70,7 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
         }
 
         this.customLocationFinder = new PreferenceBasedLocationFinder(Mevenide.getInstance().getCustomPreferenceStore());
-        this.defaultLocationFinder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance());
-        this.defaultLocationFinder.setCustomLocationFinder(this.customLocationFinder);
+        this.defaultLocationFinder = new LocationFinderAggregator(DefaultQueryContext.getNonProjectContextInstance(), this.customLocationFinder);
     }
 
     public void dispose() {
@@ -236,7 +234,7 @@ public class DefaultPOMManager extends AbstractPOMManager implements IResourceCh
     /* (non-Javadoc)
      * @see org.mevenide.ui.eclipse.pom.manager.POMManager#getCustomLocationFinder()
      */
-    public CustomLocationFinder getCustomLocationFinder() {
+    public ILocationFinder getCustomLocationFinder() {
         return this.customLocationFinder;
     }
 
