@@ -1,7 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Apache Software Foundation
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
+* CCopyright 2003-2006 Mevenide Teamnsed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
