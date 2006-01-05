@@ -188,13 +188,24 @@ public class MavenClasspathManager implements ClasspathManager {
      */
     private void pomUpdated(IProject eclipseProject, IQueryContext context) {
         if (this.autosyncEnabled) {
+
+            IJavaProject javaProject = JavaCore.create(eclipseProject);
+            if (javaProject != null) {
+                try {
+                    initializeClasspathContainer(CONTAINER_PATH, javaProject);
+                } catch (CoreException e) {
+                    final String msg = "Unable to update classpath for " + eclipseProject.getName() + ".";
+                    Mevenide.displayError(msg, e);
+                }
+            }
+
             IProject[] referer = eclipseProject.getReferencingProjects();
             for (int i = 0; i < referer.length; ++i) {
                 if (Tracer.isDebugging()) {
                     Tracer.trace("Update classpath entry in " + referer[i].getName() + ".");
                 }
 
-                IJavaProject javaProject = JavaCore.create(eclipseProject);
+                javaProject = JavaCore.create(referer[i]);
                 if (javaProject != null) {
                     try {
                         initializeClasspathContainer(CONTAINER_PATH, javaProject);
