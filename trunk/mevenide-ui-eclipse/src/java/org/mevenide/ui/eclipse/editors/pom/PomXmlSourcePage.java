@@ -35,6 +35,7 @@ import org.eclipse.ui.forms.editor.IFormPage;
 import org.mevenide.context.JDomProjectUnmarshaller;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
+import org.mevenide.project.ProjectComparator;
 import org.mevenide.ui.eclipse.Mevenide;
 
 /**
@@ -62,16 +63,37 @@ public class PomXmlSourcePage
 	
 	public PomXmlSourcePage(MevenidePomEditor pomEditor) {
 		super();
-		this.editor = pomEditor;
+		initialize(pomEditor);
+
 		unmarshaller = new JDomProjectUnmarshaller();
 		
 		setSourceViewerConfiguration(new PomXmlConfiguration());
 		initializeDocumentListener();
 	}
-	
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.forms.editor.IFormPage#initialize(org.eclipse.ui.forms.editor.FormEditor)
+     */
+    public void initialize(FormEditor editor) {
+		this.editor = (MevenidePomEditor)editor;
+
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.addProjectChangeListener(this);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
     public void dispose() {
-		super.dispose();
-	}
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.removeProjectChangeListener(this);
+        }
+
+        super.dispose();
+    }
 	
 	public void init(IEditorSite site, IEditorInput input) 
 		throws PartInitException {
@@ -157,13 +179,6 @@ public class PomXmlSourcePage
 	 */
 	public boolean isPropertySourceSupplier() {
 		return false;
-	}
-
-	/**
-	 * @see org.eclipse.ui.forms.editor.IFormPage#initialize(org.eclipse.ui.forms.editor.FormEditor)
-	 */
-	public void initialize(FormEditor parent) {
-		this.editor = (MevenidePomEditor) parent;
 	}
 
 	/**
