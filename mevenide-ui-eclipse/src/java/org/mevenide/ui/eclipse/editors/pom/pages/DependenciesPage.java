@@ -20,7 +20,9 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.mevenide.project.ProjectComparator;
 import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
 
@@ -38,7 +40,31 @@ public class DependenciesPage extends AbstractPomEditorPage {
     public DependenciesPage(MevenidePomEditor editor) {
         super(editor, MevenideResources.DEPENDENCIES_PAGE_ID, MevenideResources.DEPENDENCIES_PAGE_TAB, MevenideResources.DEPENDENCIES_PAGE_HEADING);
     }
-	
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.forms.editor.IFormPage#initialize(org.eclipse.ui.forms.editor.FormEditor)
+     */
+    public void initialize(FormEditor editor) {
+        super.initialize(editor);
+
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, this);
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
+    public void dispose() {
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.removeProjectChangeListener(ProjectComparator.DEPENDENCIES, this);
+        }
+
+        super.dispose();
+    }
+
     /**
      * @see org.mevenide.ui.eclipse.editors.pom.pages.AbstractPomEditorPage#createPageContent(org.eclipse.swt.widgets.Composite)
      */

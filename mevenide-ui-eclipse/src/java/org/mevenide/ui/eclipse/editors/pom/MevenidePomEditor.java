@@ -28,6 +28,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.viewers.ISelection;
@@ -42,15 +44,13 @@ import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.IElementStateListener;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
-import org.mevenide.context.JDomProjectUnmarshaller;
+import org.mevenide.context.IQueryContext;
 import org.mevenide.project.IProjectChangeListener;
 import org.mevenide.project.ProjectChangeEvent;
 import org.mevenide.project.ProjectComparator;
 import org.mevenide.project.ProjectComparatorFactory;
 import org.mevenide.project.io.CarefulProjectMarshaller;
 import org.mevenide.project.io.IProjectMarshaller;
-import org.mevenide.project.io.ProjectReader;
-import org.mevenide.properties.resolver.ProjectWalker;
 import org.mevenide.ui.eclipse.Mevenide;
 import org.mevenide.ui.eclipse.editors.pom.pages.BuildPage;
 import org.mevenide.ui.eclipse.editors.pom.pages.DependenciesPage;
@@ -80,7 +80,6 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     private Project pom;
     private Project parentPom;
     private IProjectMarshaller marshaller;
-    private JDomProjectUnmarshaller unmarshaller;
     private ProjectComparator comparator;
     private PomEditorSelectionProvider selectionProvider = new PomEditorSelectionProvider(this);
     private IDocumentProvider documentProvider;
@@ -130,7 +129,6 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         super();
         try {
             marshaller = new CarefulProjectMarshaller();
-            unmarshaller = new JDomProjectUnmarshaller();
         } catch (Exception e) {
             final String msg = "Could not create a POM marshaller"; //$NON-NLS-1$
             Mevenide.displayError(msg, e);
@@ -154,128 +152,21 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
      */
     protected void addPages() {
         try {
-            createOverviewPage();
-            createDescriptionPage();
-            createOrganizationPage();
-            createRepositoryPage();
-            createTeamPage();
-            createDependenciesPage();
-            createBuildPage();
-            createUnitTestsPage();
-            createReportsPage();
-            createSourcePage();
+            this.overviewPageIndex = addPage(new OverviewPage(this));
+            addPage(new DescriptionPage(this));
+            addPage(new OrganizationPage(this));
+            addPage(new RepositoryPage(this));
+            addPage(new TeamPage(this));
+            addPage(new DependenciesPage(this));
+            addPage(new BuildPage(this));
+            addPage(new UnitTestsPage(this));
+            addPage(new ReportsPage(this));
+            this.sourcePage = new PomXmlSourcePage(this);
+            addPage(this.sourcePage, sourcePage.getEditorInput());
         } catch (PartInitException e) {
             final String msg = "Unable to create source page"; //$NON-NLS-1$
             Mevenide.displayError(msg, e);
         }
-    }
-
-    /**
-     * Creates the overview page of the Project Object Model editor, where
-     * basic information about the project is defined.
-     */
-    private void createOverviewPage() throws PartInitException {
-        OverviewPage overviewPage = new OverviewPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.PROJECT, overviewPage);
-        overviewPageIndex = addPage(overviewPage);
-        addPropertyListener(overviewPage);
-    }
-
-    /**
-     * Creates the overview page of the Project Object Model editor, where
-     * basic information about the project is defined.
-     */
-    private void createDescriptionPage() throws PartInitException {
-        DescriptionPage projectInfoPage = new DescriptionPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.PROJECT, projectInfoPage);
-        addPage(projectInfoPage);
-    }
-
-    /**
-     * Creates the organization-specific, licensing, and site generation
-     * information in the project..
-     */
-    private void createOrganizationPage() throws PartInitException {
-        OrganizationPage orgPage = new OrganizationPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.PROJECT, orgPage);
-        comparator.addProjectChangeListener(ProjectComparator.ORGANIZATION, orgPage);
-        comparator.addProjectChangeListener(ProjectComparator.LICENSES, orgPage);
-        addPage(orgPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where properties of the project repository are defined.
-     */
-    private void createRepositoryPage() throws PartInitException {
-        RepositoryPage repoPage = new RepositoryPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.REPOSITORY, repoPage);
-        comparator.addProjectChangeListener(ProjectComparator.VERSIONS, repoPage);
-        comparator.addProjectChangeListener(ProjectComparator.BRANCHES, repoPage);
-        addPage(repoPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where is defined.
-     */
-    private void createTeamPage() throws PartInitException {
-        TeamPage teamPage = new TeamPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.CONTRIBUTORS, teamPage);
-        comparator.addProjectChangeListener(ProjectComparator.DEVELOPERS, teamPage);
-        comparator.addProjectChangeListener(ProjectComparator.MAILINGLISTS, teamPage);
-        addPage(teamPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where is defined.
-     */
-    private void createDependenciesPage() throws PartInitException {
-        DependenciesPage depsPage = new DependenciesPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.DEPENDENCIES, depsPage);
-        addPage(depsPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where is defined.
-     */
-    private void createBuildPage() throws PartInitException {
-        BuildPage buildPage = new BuildPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.BUILD, buildPage);
-        comparator.addProjectChangeListener(ProjectComparator.RESOURCES, buildPage);
-        addPage(buildPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where is defined.
-     */
-    private void createUnitTestsPage() throws PartInitException {
-        UnitTestsPage testsPage = new UnitTestsPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.UNIT_TESTS, testsPage);
-        addPage(testsPage);
-    }
-
-    /**
-     * Creates the version control page of the Project Object Model editor,
-     * where is defined.
-     */
-    private void createReportsPage() throws PartInitException {
-        ReportsPage reportsPage = new ReportsPage(this);
-        comparator.addProjectChangeListener(ProjectComparator.REPORTS, reportsPage);
-        addPage(reportsPage);
-    }
-
-    /**
-     * Creates the source view page of the Project Object Model editor, where
-     * the raw XML is displayed and edited.
-     */
-    private void createSourcePage() throws PartInitException {
-        sourcePage = new PomXmlSourcePage(this);
-        addPage(sourcePage, sourcePage.getEditorInput());
-        comparator.addProjectChangeListener(sourcePage);
     }
 
     protected void pageChange(int newPageIndex) {
@@ -304,11 +195,11 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         }
     }
 
-    public IPomEditorPage getCurrentPomEditorPage() {
+    private IPomEditorPage getCurrentPomEditorPage() {
         return getPomEditorPage(getCurrentPage());
     }
 
-    public IPomEditorPage getPomEditorPage(int pageIndex) {
+    private IPomEditorPage getPomEditorPage(int pageIndex) {
         if (pageIndex >= 0 && pageIndex < getPageCount()) {
             return (IPomEditorPage) getEditor(pageIndex);
         }
@@ -364,7 +255,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
      */
     public void doSaveAs() {
         sourcePage.doSaveAs();
-        setPageText(overviewPageIndex, sourcePage.getTitle());
+        setPageText(this.overviewPageIndex, sourcePage.getTitle());
         setInput(sourcePage.getEditorInput());
         updateTitleAndToolTip();
         setModelDirty(false);
@@ -392,7 +283,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         return dirtiness;
     }
 
-    public boolean isModelDirty() {
+    private boolean isModelDirty() {
         return modelDirty;
     }
 
@@ -420,15 +311,45 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 
         try {
             initializeModel(pomFile);
-        } 
-        catch (CoreException e) {
+        } catch (CoreException e) {
             throw new PartInitException(e.getStatus());
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
+    public void dispose() {
+        super.dispose();
+
+        this.comparator.removeProjectChangeListener(this);
+
+        this.documentProvider.removeElementStateListener(this.elementListener);
+
+        IEditorInput editorInput = getEditorInput();
+        IAnnotationModel annotModel = this.documentProvider.getAnnotationModel(editorInput);
+        if (annotModel != null) {
+            annotModel.disconnect(this.documentProvider.getDocument(editorInput));
+        }
+
+        this.documentProvider.disconnect(editorInput);
+    }
+
     private void initializeModel(IFile pomFile) throws CoreException {
+        IQueryContext queryContext = Mevenide.getInstance().getPOMManager().getQueryContext(pomFile.getProject());
+        if (queryContext != null) {
+            Project[] project = queryContext.getPOMContext().getProjectLayers();
+            pom = project[0];
+            if (project.length > 1) {
+                parentPom = project[1];
+            }
+        } else {
+            IStatus status = new Status(IStatus.ERROR, Mevenide.PLUGIN_ID, 0, "Unable to locate the Maven POM.", null);
+            throw new CoreException(status);
+        }
+
+        updateTitleAndToolTip();
         documentProvider = new PomXmlDocumentProvider();
-        createModel(pomFile);
         comparator = ProjectComparatorFactory.getComparator(pom);
         
         IEditorInput editorInput = getEditorInput();
@@ -444,43 +365,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
     }
     
     
-    private void createModel(IFile pomFile) throws CoreException {
-        try {
-            File file = pomFile.getRawLocation().toFile();
-            ProjectReader reader = ProjectReader.getReader();
-            pom = reader.read(file);
-
-            if (pom.getExtend() != null && !"".equals(pom.getExtend().trim())) { //$NON-NLS-1$
-                String resolvedExtend = new ProjectWalker(pom).resolve(pom.getExtend());
-                File extendFile = new File(resolvedExtend);
-                if (Tracer.isDebugging()) {
-                    Tracer.trace("parentPom path = " + resolvedExtend + "; exists = " + extendFile.exists()); //$NON-NLS-1$ //$NON-NLS-2$
-                }
-
-                if (!extendFile.exists()) {
-                    // not an absolute path; must've been relative
-                    extendFile = new File(new File(pomFile.getLocation().toOSString()).getParentFile(), resolvedExtend);
-                    if (Tracer.isDebugging()) {
-                        Tracer.trace("parentPom path = " + extendFile.getAbsolutePath() + "; exists = " //$NON-NLS-1$ //$NON-NLS-2$
-                                + extendFile.exists());
-                    }
-                }
-
-                if (extendFile.exists()) {
-                    parentPom = reader.read(extendFile);
-                }
-            }
-
-            updateTitleAndToolTip();
-        } catch (Exception e) {
-            final String msg = "Could not obtain Project reader."; //$NON-NLS-1$
-            Mevenide.displayError(msg, e);
-            throw new PartInitException(msg, e);
-//            pom = new Project();
-        }
-    }
-
-    public boolean updateModel() {
+    protected boolean updateModel() {
         if (Tracer.isDebugging()) {
             Tracer.trace("updateModel entered"); //$NON-NLS-1$
         }
@@ -489,8 +374,14 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
 	    
         Project updatedPom = null;
         try {
-            updatedPom = unmarshaller.parse(((IFileEditorInput) getEditorInput()).getFile().getRawLocation().toFile());
-
+            IEditorInput editorInput = getEditorInput();
+            IFileEditorInput fileEditorInput = (IFileEditorInput) editorInput;
+            IFile eclipseFile = fileEditorInput.getFile();
+            IQueryContext queryContext = Mevenide.getInstance().getPOMManager().getQueryContext(eclipseFile.getProject());
+            if (queryContext != null) {
+                Project[] project = queryContext.getPOMContext().getProjectLayers();
+                updatedPom = project[0];
+            }
             
             if (Tracer.isDebugging()) {
                 Tracer.trace("old pom name = " + pom.getName() + " and new = " + updatedPom.getName()); //$NON-NLS-1$ //$NON-NLS-2$
@@ -548,6 +439,7 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
             Tracer.trace("getting adapter for class: " + adapter); //$NON-NLS-1$
         }
 
+        if (ProjectComparator.class.equals(adapter)) { return this.comparator; }
         if (IContentOutlinePage.class.equals(adapter)) { return getContentOutline(); }
         return super.getAdapter(adapter);
     }
@@ -562,24 +454,9 @@ public class MevenidePomEditor extends FormEditor implements IProjectChangeListe
         return outline;
     }
 
-    public IDocumentProvider getDocumentProvider() {
+    protected IDocumentProvider getDocumentProvider() {
         return documentProvider;
     }
-
-    public MevenidePomEditorContributor getContributor() {
-        return (MevenidePomEditorContributor) getEditorSite().getActionBarContributor();
-    }
-
-    //    public void fireSaveNeeded() {
-    //        firePropertyChange(PROP_DIRTY);
-    //        if (Tracer.isDebugging()) {
-    //            Tracer.trace("fireSaveNeeded");
-    //        }
-    //        // MevenidePomEditorContributor contributor = getContributor();
-    //        // if (contributor != null) {
-    //        // contributor.updateActions();
-    //        // }
-    //    }
 
     private void fireDirtyStateChanged() {
         firePropertyChange(PROP_DIRTY);

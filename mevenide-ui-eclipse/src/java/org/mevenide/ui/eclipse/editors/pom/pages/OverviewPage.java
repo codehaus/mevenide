@@ -25,8 +25,10 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.mevenide.project.ProjectComparator;
 import org.mevenide.ui.eclipse.MevenideResources;
 import org.mevenide.ui.eclipse.editors.pom.IPomEditorPage;
 import org.mevenide.ui.eclipse.editors.pom.MevenidePomEditor;
@@ -40,20 +42,47 @@ import org.mevenide.util.StringUtils;
  * @version $Id$
  */
 public class OverviewPage extends AbstractPomEditorPage implements IPropertyListener {
-
     private static final Log log = LogFactory.getLog(OverviewPage.class);
-    
-	private IdentificationSection idSection;
+
+    private IdentificationSection idSection;
     private PomEditorLinksSection linksSection;
 
     private boolean updateHeadingNeeded;
-	
+
     public OverviewPage(MevenidePomEditor editor) {
         super(editor, MevenideResources.OVERVIEW_PAGE_ID, MevenideResources.OVERVIEW_PAGE_TAB);
         setHeading(editor.getPom());
     }
 
-	protected void createPageContent(Composite parent) {
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.forms.editor.IFormPage#initialize(org.eclipse.ui.forms.editor.FormEditor)
+     */
+    public void initialize(FormEditor editor) {
+        super.initialize(editor);
+
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.addProjectChangeListener(ProjectComparator.PROJECT, this);
+        }
+
+        getEditor().addPropertyListener(this);
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPart#dispose()
+     */
+    public void dispose() {
+        getEditor().removePropertyListener(this);
+
+        ProjectComparator comparator = (ProjectComparator)getEditor().getAdapter(ProjectComparator.class);
+        if (comparator != null) {
+            comparator.removeProjectChangeListener(ProjectComparator.PROJECT, this);
+        }
+
+        super.dispose();
+    }
+
+    protected void createPageContent(Composite parent) {
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 2;
 		layout.marginWidth = 10;
