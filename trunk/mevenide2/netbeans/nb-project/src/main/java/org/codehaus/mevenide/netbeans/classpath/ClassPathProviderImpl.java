@@ -188,9 +188,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
 //            System.out.println("source type=" + type + " for " + file);
             return null;
         }
+        if (type == TYPE_WEB) {
+            type = TYPE_SRC;
+        }
         ClassPath cp = cache[type];
         if (cp == null) {
-            if (type == TYPE_SRC || type == TYPE_WEB) {
+            if (type == TYPE_SRC) {
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             } else {
                 cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));

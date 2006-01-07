@@ -48,7 +48,7 @@ public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             Iterator it = srcs.iterator();
             while (it.hasNext()) {
                 String str = (String)it.next();
-                File fil = new File(str);
+                File fil = FileUtil.normalizeFile(new File(str));
                 lst.add(fil.toURI());
             }
         } catch (DependencyResolutionRequiredException ex) {

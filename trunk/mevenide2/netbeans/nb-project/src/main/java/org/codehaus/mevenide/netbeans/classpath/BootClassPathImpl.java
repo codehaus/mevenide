@@ -53,25 +53,6 @@ final class BootClassPathImpl implements ClassPathImplementation {
         project = proj;
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                //TODO
-//                String customCompile = project.getPropertyResolver().getResolvedValue("maven.compile.executable");
-//                if (customCompile != null && !customCompile.equals(lastNonDefault) 
-//                 || customCompile == null && lastNonDefault != null) {
-//                    List oldValue = resourcesCache;
-//                    resourcesCache = null;
-//                    List newValue = getResources();
-//                    support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldValue, newValue);
-//                }
-//                if (lastNonDefaultPlatform != null) {
-//                    JavaPlatform[] pms = JavaPlatformManager.getDefault().getPlatforms(lastNonDefaultPlatform, null);
-//                    // the platform in question was removed..
-//                    if (pms.length == 0) {
-//                        List oldValue = resourcesCache;
-//                        resourcesCache = null;
-//                        List newValue = getResources();
-//                        support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldValue, newValue);
-//                    }
-//                }
             }
         });
         
@@ -106,25 +87,6 @@ final class BootClassPathImpl implements ClassPathImplementation {
     private JavaPlatform findActivePlatform () {
         JavaPlatformManager pm = JavaPlatformManager.getDefault();
         //TODO how to find custom compiler in m2?
-//        String customCompile = project.getPropertyResolver().getResolvedValue("maven.compile.executable");
-//        if (customCompile != null) {
-//            FileObject toolFO = FileUtil.toFileObject(new File(customCompile));
-//            if (toolFO != null) {
-//                String toolname = toolFO.getNameExt();
-//                JavaPlatform[] platforms = pm.getInstalledPlatforms();
-//                for (int i = 0; i < platforms.length; i++) {
-//                    FileObject fo = platforms[i].findTool(toolname);
-//                    if (fo != null && fo.equals(toolFO)) {
-//                        lastNonDefault = customCompile;
-//                        lastNonDefaultPlatform = platforms[i].getDisplayName();
-//                        return platforms[i];
-//                    }
-//                }
-//                // not found, platform not defined.
-//            }
-//        }
-//        lastNonDefault = null;
-//        lastNonDefaultPlatform = null;
         //Invalid platform ID or default platform
         return pm.getDefaultPlatform();
     }
