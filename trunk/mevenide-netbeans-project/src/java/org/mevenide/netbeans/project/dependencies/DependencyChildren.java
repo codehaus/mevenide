@@ -146,6 +146,11 @@ public class DependencyChildren extends Children.Keys {
         dep.setType("src.jar");
         URI uri = FileUtilities.getDependencyURI(dep,  project);
         FileObject obj = FileUtilities.convertURItoFileObject(uri);
+        if (obj == null) {
+            dep.setType("java-source");
+            uri = FileUtilities.getDependencyURI(dep,  project);
+            obj = FileUtilities.convertURItoFileObject(uri);
+        }
         if (obj != null) {
             try {
                 DataObject dobj = DataObject.find(obj);

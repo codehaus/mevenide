@@ -77,6 +77,13 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
                         if (srcFile.exists()) {
                             return new SrcResult(srcFile);
                         }
+                        srcsDir = new File(groupDir, "java-sources");
+                        srcFile = new File(srcsDir, jarFile.getName().substring(0,  
+                                   jarFile.getName().length() - ext.length()) 
+                                + "-sources.jar");
+                        if (srcFile.exists()) {
+                            return new SrcResult(srcFile);
+                        }
                     }
                 } catch (Exception exc) {
                     ErrorManager.getDefault().notify(exc);

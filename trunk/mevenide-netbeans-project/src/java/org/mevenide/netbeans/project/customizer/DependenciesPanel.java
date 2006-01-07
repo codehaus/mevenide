@@ -516,6 +516,24 @@ public class DependenciesPanel extends JPanel implements ExplorerManager.Provide
                                 StatusDisplayer.getDefault().setStatusText("Error downloading " + destinationFile.getName() + " : " + exc.getLocalizedMessage());
                             }
                         }
+                        if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
+                            try {
+                                // the since maven 1.1 existing default location
+                                final RepoPathElement newsrcEl = new RepoPathElement(readers[i], null,
+                                        res.resolveString(prov.getValue("groupId")),
+                                        "java-source",
+                                        res.resolveString(prov.getValue("version")),
+                                        res.resolveString(prov.getValue("artifactId")),
+                                        "jar");
+                                RepositoryUtilities.downloadArtifact(project.getLocFinder(),
+                                        project.getPropertyResolver(),
+                                        newsrcEl);
+                            } catch (FileNotFoundException exc) {
+                                // well can happen, definitely if having multiple repositories
+                            } catch (Exception exc) {
+                                StatusDisplayer.getDefault().setStatusText("Error downloading " + destinationFile.getName() + " : " + exc.getLocalizedMessage());
+                            }
+                        }
                         destinationFile = new File(URI.create(localRepo.toURI().toString() + docEl.getRelativeURIPath()));
                         if (!destinationFile.exists() || destinationFile.getName().indexOf("SNAPSHOT") >= 0) {
                             try {

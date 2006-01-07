@@ -283,8 +283,11 @@ public class DependencyNode extends AbstractNode {
     public boolean hasSourceInRepository() {
         Dependency depSnap = createDependencySnapshot(dependency, project.getPropertyResolver());
         depSnap.setType("src.jar");
-        URI uri = FileUtilities.getDependencyURI(depSnap, project);
-        return (uri != null && new File(uri).exists());
+        URI uri1 = FileUtilities.getDependencyURI(depSnap, project);
+        depSnap.setType("java-source");
+        URI uri2 = FileUtilities.getDependencyURI(depSnap, project);
+        
+        return (uri1 != null && new File(uri1).exists()) || (uri2 != null && new File(uri2).exists());
     }
     
     public java.awt.Image getIcon(int param) {
