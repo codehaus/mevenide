@@ -288,18 +288,44 @@ class DependenciesNode extends AbstractNode {
                             StatusDisplayer.getDefault().setStatusText("Error downloading " 
                                     + dep.getArtifact() + " : " + exc.getLocalizedMessage());
                         }
+                        boolean sourceDownloaded = false;
                         try {
-                            dep.setType("src.jar");
+                            dep.setType("java-source");
+                            // this type is the default for 1.1+
                             boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
                             if (downloaded) {
                                 atLeastOneDownloaded = true;
+                            } else {
+                                dep.setType("src.jar");
+                                //the old one needs to be checked as well..
+                                downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                                if (downloaded) {
+                                    atLeastOneDownloaded = true;
+                                    sourceDownloaded = true;
+                                }
                             }
                         } catch (FileNotFoundException e) {
                             StatusDisplayer.getDefault().setStatusText(dep.getArtifact()
-                                    + " is not available in repote repositories.");
+                            + " is not available in repote repositories.");
                         } catch (Exception exc) {
                             StatusDisplayer.getDefault().setStatusText("Error downloading "
                                     + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                        }
+                        if (!sourceDownloaded) {
+                            try {
+                                dep.setType("src.jar");
+                                //the old one needs to be checked as well..
+                                boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
+                                if (downloaded) {
+                                    atLeastOneDownloaded = true;
+                                }
+                            } catch (FileNotFoundException e) {
+                                StatusDisplayer.getDefault().setStatusText(dep.getArtifact()
+                                + " is not available in repote repositories.");
+                            } catch (Exception exc) {
+                                StatusDisplayer.getDefault().setStatusText("Error downloading "
+                                        + dep.getArtifact() + " : " + exc.getLocalizedMessage());
+                            }
                         }
                     }
                     if (atLeastOneDownloaded) {
