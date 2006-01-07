@@ -19,6 +19,14 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-filesystems</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-nodes</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-netbeans-modules-xml-core</id>
             <type>spec</type>
         </dependency>
