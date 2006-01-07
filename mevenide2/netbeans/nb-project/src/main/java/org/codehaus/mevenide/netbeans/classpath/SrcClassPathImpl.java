@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -43,7 +44,7 @@ public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
         Iterator it = srcs.iterator();
         while (it.hasNext()) {
             String str = (String)it.next();
-            File fil = new File(str);
+            File fil = FileUtil.normalizeFile(new File(str));
             col.add(fil.toURI());
         }
         //TODO temporary solution

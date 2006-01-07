@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -45,7 +46,7 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
             Iterator it = srcs.iterator();
             while (it.hasNext()) {
                 String str = (String)it.next();
-                File fil = new File(str);
+                File fil = FileUtil.normalizeFile(new File(str));
                 // the assemblied jars go as last ones, otherwise source for binaries don't really work.
                 // unless one has the assembled source jar s well?? is it possible?
                 if (fil.getName().endsWith("-dep.jar")) {

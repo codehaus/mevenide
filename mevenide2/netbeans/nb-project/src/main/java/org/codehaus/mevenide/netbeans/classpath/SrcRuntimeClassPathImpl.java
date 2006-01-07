@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * class path def for runtime..
@@ -45,7 +46,7 @@ public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             Iterator it = srcs.iterator();
             while (it.hasNext()) {
                 String str = (String)it.next();
-                File fil = new File(str);
+                File fil = FileUtil.normalizeFile(new File(str));
                 lst.add(fil.toURI());
             }
         } catch (DependencyResolutionRequiredException ex) {
