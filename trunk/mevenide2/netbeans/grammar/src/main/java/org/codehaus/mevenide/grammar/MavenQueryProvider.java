@@ -76,6 +76,15 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     private static class DefaultGrammarFactory extends GrammarFactory {
         
         public GrammarQuery isSupported(GrammarEnvironment env) {
+            if (env.getFileObject().getNameExt().equals("pom.xml")) {
+                //TODO also locate by namespace??
+                return new MavenProjectGrammar(env);
+            }
+            if (env.getFileObject().getNameExt().equals("settings.xml")) {
+                //TODO also locate by namespace??
+                //TODO more proper condition
+                return new MavenSettingsGrammar(env);
+            }
             File file = FileUtil.toFile(env.getFileObject());
             Project owner = FileOwnerQuery.getOwner(env.getFileObject());
             if (owner instanceof NbMavenProject) {
@@ -101,15 +110,6 @@ public final class MavenQueryProvider extends GrammarQueryManager {
                         return new MavenNbmGrammar(env);
                     }
                 }
-            }
-            if (env.getFileObject().getNameExt().equals("pom.xml")) {
-                //TODO also locate by namespace??
-                return new MavenProjectGrammar(env);
-            }
-            if (env.getFileObject().getNameExt().equals("settings.xml")) {
-                //TODO also locate by namespace??
-                //TODO more proper condition
-                return new MavenSettingsGrammar(env);
             }
             return null;
         }
