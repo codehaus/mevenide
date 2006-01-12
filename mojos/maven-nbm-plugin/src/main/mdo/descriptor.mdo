@@ -168,6 +168,13 @@
                     <required>true</required>
                 </field>
                 <field>
+                    <name>relativeClusterPath</name>
+                    <description>A relative path to be added to cluster root where the files will be copied to.</description>
+                    <version>1.0.0</version>
+                    <type>String</type>
+                    <required>false</required>
+                </field>
+                <field>
                     <name>includes</name>
                     <description>Include pattern, what shall be included in the nbm. </description>
                     <version>1.0.0</version>

@@ -169,6 +169,8 @@ public class NetbeansJarUpdateMojo extends AbstractNbmMojo {
         String timestamp = new SimpleDateFormat("yyyyMMddhhmm").format(new Date());
         conditionallyAddAttribute(mainSection, "OpenIDE-Module-Build-Version", timestamp);
         conditionallyAddAttribute(mainSection, "OpenIDE-Module", moduleName);
+        // TODO if the value doesn't get included I got  a few scary sounding errors in the IDE. probably IDE bug but didn't report or figured a workaround yet.
+        conditionallyAddAttribute(mainSection, "OpenIDE-Module-IDE-Dependencies", "IDE/1 > 3.40");
         // localization items
         if (!examinator.isLocalized()) {
             conditionallyAddAttribute(mainSection, "OpenIDE-Module-Display-Category", project.getGroupId());
