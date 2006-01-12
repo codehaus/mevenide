@@ -27,9 +27,12 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -200,11 +203,13 @@ public class CreateNbmMojo
             if (nbmResources.size() > 0) {
                 Copy cp = (Copy)antProject.createTask("copy");
                 cp.setTodir(clusterDir);
+                HashMap customPaths = new HashMap();
                 Iterator it = nbmResources.iterator();
                 while (it.hasNext()) {
                     NbmResource res = (NbmResource)it.next();
                     if (res.getBaseDirectory() != null) {
-                        File base = new File(res.getBaseDirectory());
+                        File base = new File(project.getBasedir(), res.getBaseDirectory());
+                        System.out.println("basedir=" + base);
                         FileSet set = new FileSet();
                         set.setDir(base);
                         if (res.getIncludes().size() > 0){
@@ -219,11 +224,36 @@ public class CreateNbmMojo
                                 set.createExclude().setName((String)it2.next());
                             }
                         }
-                        cp.addFileset(set);
+                        if (res.getRelativeClusterPath() != null) {
+                            File path = new File(clusterDir, res.getRelativeClusterPath());
+                            Collection col = (Collection)customPaths.get(path);
+                            if (col == null) {
+                                col = new ArrayList();
+                                customPaths.put(path, col);
+                            }
+                            col.add(path);
+                        } else {
+                            cp.addFileset(set);
+                        }
                     }
                 }
                 try {
                     cp.execute();
+                    if (customPaths.size() > 0) {
+                        Iterator itx = customPaths.entrySet().iterator();
+                        while (itx.hasNext()) {
+                            Map.Entry ent = (Map.Entry)itx.next();
+                            Collection elem = (Collection)ent.getValue();
+                            cp = (Copy)antProject.createTask("copy");
+                            cp.setTodir((File)ent.getKey());
+                            Iterator itz = elem.iterator();
+                            while (itz.hasNext()) {
+                                FileSet set = (FileSet) itz.next();
+                                cp.addFileset(set);
+                            }
+                            cp.execute();
+                        }
+                    }
                 } catch (BuildException e) {
                     getLog().error( "Cannot copy additional resources into the nbm file" );
                     throw new MojoExecutionException( e.getMessage(), e );
