@@ -208,9 +208,13 @@ public final class RepoPathElement {
                         buf.append("-");
                         buf.append(version);
                     }
-                    if (extension != null) {
-                        buf.append(".");
-                        buf.append(extension);
+                    if ("java-source".equals(type)) {
+                       buf.append("-sources.jar"); 
+                    } else {
+                        if (extension != null) {
+                            buf.append(".");
+                            buf.append(extension);
+                        }
                     }
                 }
             }
