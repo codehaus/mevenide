@@ -61,19 +61,18 @@ public class PopulateRepositoryMojo
     /**
      * Location of netbeans installation
      *
-     * @parameter
+     * @parameter expression="${netbeansInstallDirectory}"
      */
     
     protected String netbeansInstallDirectory;
     
-//     /**
-//     * Maven Project Builder.
-//     *
-//     * @parameter expression="${component.org.apache.maven.project.MavenProjectBuilder}"
-//     * @required
-//     * @readonly
-//     */
-//   protected MavenProjectBuilder builder;
+    /**
+     * Optional parameter, when specified, will force all modules to have the designated version.
+     * Good when depending on releases. Then you would for example specify RELEASE50 in this parameter and
+     * all modules get this version in the repository.
+     * @parameter expression="${forcedVersion}"
+     */
+    protected String forcedVersion;
     
     /**
      * Maven ArtifactFactory.
@@ -150,7 +149,7 @@ public class PopulateRepositoryMojo
             if (examinator.isNetbeansModule()) {
                 //TODO get artifact id from the module's manifest?
                 String artifact = module.getName().substring(0, module.getName().indexOf(".jar"));
-                String version = examinator.getSpecVersion();
+                String version = forcedVersion == null ? examinator.getSpecVersion() : forcedVersion;
                 String group = "org.netbeans." + (examinator.hasPublicPackages() ? "api" : "modules");
                 
                 Artifact art = createArtifact(artifact, version, group);
