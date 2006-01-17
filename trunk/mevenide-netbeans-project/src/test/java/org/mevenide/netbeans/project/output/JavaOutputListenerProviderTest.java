@@ -34,14 +34,14 @@ public class JavaOutputListenerProviderTest extends TestCase {
         TestSuite suite = new TestSuite(JavaOutputListenerProviderTest.class);
         return suite;
     }
-
+    
     protected void setUp() throws java.lang.Exception {
         provider = new JavaOutputListenerProvider(null);
     }
-
+    
     protected void tearDown() throws java.lang.Exception {
     }
-
+    
     public void testIsInWatchedGoals() throws Exception {
         assertFalse(provider.isInWatchedGoals("   hello"));
         assertFalse(provider.isInWatchedGoals("java:compile"));
@@ -52,6 +52,9 @@ public class JavaOutputListenerProviderTest extends TestCase {
         assertTrue(provider.isInWatchedGoals(" untest:my"));
         assertFalse(provider.isInWatchedGoals("untest:my:"));
         assertFalse(provider.isInWatchedGoals(" hello"));
+        assertTrue(provider.isInWatchedGoals("axis:compile:"));
+        assertTrue(provider.isInWatchedGoals("untest:my"));
+        assertFalse(provider.isInWatchedGoals("untest:my:"));
     }
     
     public void testRecognizeLine() {
@@ -78,4 +81,38 @@ public class JavaOutputListenerProviderTest extends TestCase {
         provider.processLine("/home/cenda/mav_src/mevenide/mevenide-netbeans-project/src/test/java/org/mevenide/netbeans/project/exec/JavaOutputListenerProviderTest.java:59: cannot resolve symbol", visitor);
         assertNull(visitor.getOutputListener());
     }
+    
+    public void testRecognizeAxisLine() {
+        
+        OutputVisitor visitor = new OutputVisitor();
+        visitor.resetVisitor();
+        provider.processLine("axis:compile:", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("[echo] ...java:compile preGoal finished.", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("[echo] Compiling to /usr/local/src/schibsted/search-front-html/target/classes", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("[javac] Compiling 175 source files to /usr/local/src/schibsted/search-front-html/target/classes", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("/usr/local/src/schibsted/search-front-html/src/java/no/schibstedsok/front/searchportal/util/SearchConstants.java:65: warning: unmappable character for encoding UTF-8", visitor);
+        assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("public static final String OVERTURE_PPC_SEARCH_BASE_URL = \"http://?/\";", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("^", visitor);
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("/usr/local/src/schibsted/search-front-html/src/java/no/schibstedsok/front/searchportal/result/Linkpulse.java:10: warning: unmappable character for encoding UTF-8", visitor);
+        assertNotNull(visitor.getOutputListener());
+    }
+    
+    
 }
