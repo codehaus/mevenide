@@ -19,7 +19,7 @@
         <ant:path refid="maven.dependency.classpath"/>
        </ant:path>
        <j:set var="mainClass" value="${maven.mevenide.run.classname}"/>
-       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true" jvm="${maven.mevenide.run.jvm}">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.run.jvmargs}"/>
        </ant:java>
@@ -40,7 +40,7 @@
        <j:if test="empty mainClass">
           <fail message="Your project doesn't define maven.jar.mainclass property. Cannot run the jar properly."/>
        </j:if>
-       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true" jvm="${maven.mevenide.run.jvm}">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.run.jvmargs}"/>
        </ant:java>
@@ -94,7 +94,7 @@
 
        <ant:echo message="jvmargs=${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
 <!-- ant:echo seems to be necesary to flush the maven output before running the app -->       
-       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true" jvm="${maven.mevenide.run.jvm}">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
        </ant:java>
@@ -119,7 +119,7 @@
 
        <ant:echo message="jvmargs=${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
 <!-- ant:echo seems to be necesary to flush the maven output before running the app -->       
-       <ant:java classname="${mainClass}" classpathref="cp" fork="true">
+       <ant:java classname="${mainClass}" classpathref="cp" fork="true" jvm="${maven.mevenide.run.jvm}">
          <ant:arg line="${maven.mevenide.run.args}"/>
          <ant:jvmarg line="${maven.mevenide.debug.jvmargs} ${maven.mevenide.run.jvmargs}"/>
        </ant:java>
