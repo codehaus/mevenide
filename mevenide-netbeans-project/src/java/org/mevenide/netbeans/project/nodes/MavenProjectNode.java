@@ -112,6 +112,8 @@ public class MavenProjectNode extends AbstractNode {
         boolean hasCompile = project.getPropertyResolver().getResolvedValue("maven.netbeans.exec.compile.single") != null;
         boolean isMultiproject = (project.getPropertyLocator().getPropertyLocation("maven.multiproject.includes") 
                                     > IPropertyLocator.LOCATION_DEFAULTS); //NOI18N
+        boolean isRunnableProject = (project.getPropertyResolver().getResolvedValue("maven.jar.mainclass") != null) 
+                                    && (project.getPropertyResolver().getResolvedValue("maven.jar.mainclass").length() > 0);
         ArrayList lst = new ArrayList();
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         lst.add(CommonProjectActions.newFileAction());
@@ -119,6 +121,13 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD));
         lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
         lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
+        lst.add(provider.createBasicMavenAction("Test", ActionProvider.COMMAND_TEST));
+        lst.add(null);
+        
+        if (isRunnableProject) {
+            lst.add(provider.createBasicMavenAction("Run", ActionProvider.COMMAND_RUN));
+            lst.add(provider.createBasicMavenAction("Debug", ActionProvider.COMMAND_DEBUG));
+        }
         lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
         if (isMultiproject) {
             lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
