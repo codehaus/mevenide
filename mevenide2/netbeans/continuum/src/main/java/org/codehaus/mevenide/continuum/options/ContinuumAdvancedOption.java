@@ -19,6 +19,7 @@ package org.codehaus.mevenide.continuum.options;
 
 import org.netbeans.spi.options.AdvancedOption;
 import org.netbeans.spi.options.OptionsCategory;
+import org.netbeans.spi.options.OptionsPanelController;
 
 /**
  * advanced option UI,registred in the layer file.
@@ -38,7 +39,7 @@ public class ContinuumAdvancedOption extends AdvancedOption {
         return "Setting up of Apache Continuum continuous integration servers.";
     }
 
-    public OptionsCategory.PanelController create() {
+    public OptionsPanelController create() {
         return new ContinuumOptionController();
     }
     

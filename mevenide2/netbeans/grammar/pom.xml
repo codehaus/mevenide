@@ -17,27 +17,27 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>1.8.1</version>
+            <version>1.9.1</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-enumerations</artifactId>
-            <version>6.3.1</version>
+            <version>6.4.1</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>6.5.1</version>
+            <version>6.8.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>6.3.1</version>
+            <version>6.4.1</version>
             <type>jar</type>
         </dependency>
 
@@ -61,14 +61,14 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>6.6.1</version>
+            <version>6.7.1</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
-            <version>1.10.1.4</version>
+            <version>1.11.1.4</version>
         </dependency>               
     </dependencies>
     

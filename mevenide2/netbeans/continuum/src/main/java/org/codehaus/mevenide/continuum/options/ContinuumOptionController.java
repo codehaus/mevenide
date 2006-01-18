@@ -21,7 +21,7 @@ import java.beans.PropertyChangeListener;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.codehaus.mevenide.continuum.ContinuumSettings;
-import org.netbeans.spi.options.OptionsCategory;
+import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.util.HelpCtx;
 import org.openide.util.Lookup;
 
@@ -29,7 +29,7 @@ import org.openide.util.Lookup;
  * controller for contuinuum advanced settings
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class ContinuumOptionController extends OptionsCategory.PanelController {
+class ContinuumOptionController extends OptionsPanelController {
     private SettingsPanel panel;
     /** Creates a new instance of ContinuumOptionController */
     ContinuumOptionController() {
