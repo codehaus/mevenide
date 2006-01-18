@@ -58,30 +58,10 @@ import org.openide.windows.InputOutput;
  */
 public class ActionProviderImpl implements ActionProvider {
     private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
-    private static final Properties defaultIDEGoals;
+    private static final Properties defaultIDEGoals = new Properties();
     
     public static final String COMMAND_MULTIPROJECTBUILD = "multiprojectbuild"; //NOI18N
     public static final String COMMAND_MULTIPROJECTCLEAN = "multiprojectclean"; //NOI18N
-    static {
-        defaultIDEGoals = new Properties();
-        InputStream str = Thread.currentThread().getContextClassLoader()
-                  .getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
-        if (str != null) {
-            try {
-                defaultIDEGoals.load(str);
-            } catch (IOException exc) {
-                logger.error("cannot read the default props file", exc);
-            } finally {
-                try {
-                    str.close();
-                } catch (IOException exc) {
-                    logger.error("cannot read the default props file2", exc);
-                }
-            }
-        } else {
-            logger.error("cannot read the default props file");
-        }
-    }
     
     private MavenProject project;
     private static String[] supported = new String[] {
@@ -99,6 +79,13 @@ public class ActionProviderImpl implements ActionProvider {
     };
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(MavenProject proj) {
+		if (defaultIDEGoals.size() == 0) {
+			synchronized(defaultIDEGoals) {
+				if (defaultIDEGoals.size() == 0) {				
+					initDefaultGoals();
+				}
+			}
+		}
         project = proj;
     }
     
@@ -292,6 +279,12 @@ public class ActionProviderImpl implements ActionProvider {
             } 
             return found;
         }
+        if (COMMAND_RUN.equals(str) || COMMAND_DEBUG.equals(str)) {
+            String mainClass = project.getPropertyResolver().getResolvedValue("maven.jar.mainclass");
+            if ((mainClass == null) || (mainClass.length() == 0)) {
+                return false;
+            }
+        }
         return true;
     }
     
@@ -344,6 +337,26 @@ public class ActionProviderImpl implements ActionProvider {
         return new CustomAction(name, goal);
     }
     
+ 
+    private void initDefaultGoals() {
+		InputStream str = Thread.currentThread().getContextClassLoader()
+				  .getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
+		if (str != null) {
+			try {
+				defaultIDEGoals.load(str);
+			} catch (IOException exc) {
+				logger.error("cannot read the default props file", exc);
+			} finally {
+				try {
+					str.close();
+				} catch (IOException exc) {
+					logger.error("cannot read the default props file2", exc);
+				}
+			}
+		} else {
+			logger.error("cannot read the default props file");
+		}
+    }
     
     //    public Action createMultiProjectAction(String name, String goals) {
     //        return new MultiProjectAction(name, goals);
