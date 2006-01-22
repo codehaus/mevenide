@@ -393,7 +393,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         Collection elems = new ArrayList();
         for (int i = 0; i < values.length; i++) {
             if (values[i].startsWith(context.getCurrentPrefix())) {
-                elems.add(new MyTextElement(values[i]));
+                elems.add(new MyTextElement(values[i], context.getCurrentPrefix()));
             }
         }
         return Collections.enumeration(elems);
@@ -466,9 +466,11 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      protected static class MyTextElement extends AbstractResultNode implements Text {
         
         private String name;
+        private String prefix;
         
-        MyTextElement(String name) {
+        MyTextElement(String name, String prefix) {
             this.name = name;
+            this.prefix = prefix;
         }
         
         public short getNodeType() {
@@ -484,7 +486,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         }
         
         public String getNodeValue() {
-            return name;
+            return name.substring(prefix.length());
         }
         
     }
@@ -526,7 +528,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     public boolean hasChildNodes() {
         return true;
     }
-        public org.w3c.dom.Node getLastChild() {
+    public org.w3c.dom.Node getLastChild() {
         return list.item(list.getLength() - 1);
     }
     /**

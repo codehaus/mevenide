@@ -205,15 +205,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             try {
                 List phases = embedder.getLifecyclePhases();
-                Iterator it = phases.iterator();
-                Collection col = new ArrayList();
-                while (it.hasNext()) {
-                    String str = (String)it.next();
-                    if (str.startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        col.add(new MyTextElement(str));
-                    }
-                }
-                return Collections.enumeration(col);
+                return super.createTextValueList((String[])phases.toArray(new String[phases.size()]), virtualTextCtx);
             } catch (MavenEmbedderException ex) {
                 ex.printStackTrace();
             }
@@ -252,7 +244,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 Collection elems = new ArrayList();
                 for (int i = 0; i < versions.length; i++) {
                     if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        elems.add(new MyTextElement(versions[i].getName()));
+                        elems.add(new MyTextElement(versions[i].getName(), virtualTextCtx.getCurrentPrefix()));
                     }
                 }
                 return Collections.enumeration(elems);
@@ -267,13 +259,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 "provided",
                 "system"
             };
-            Collection elems = new ArrayList();
-            for (int i = 0; i < scopes.length; i++) {
-                if (scopes[i].startsWith(virtualTextCtx.getCurrentPrefix())) {
-                    elems.add(new MyTextElement(scopes[i]));
-                }
-            }
-            return Collections.enumeration(elems);
+            return super.createTextValueList(scopes, virtualTextCtx);
         }
         if ("/project/modules/module".equals(path)) {
             FileObject fo = getEnvironment().getFileObject();
@@ -288,7 +274,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 Collection elems = new ArrayList();
                 for (int i = 0; i < modules.length; i++) {
                     if (modules[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        elems.add(new MyTextElement(modules[i].getName()));
+                        elems.add(new MyTextElement(modules[i].getName(), virtualTextCtx.getCurrentPrefix()));
                     }
                 }
                 return Collections.enumeration(elems);
@@ -341,7 +327,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             Element el = (Element)it.next();
             String name = el.getText();
             if (name.startsWith(virtualTextCtx.getCurrentPrefix())) {
-               toReturn.add(new MyTextElement(name));
+               toReturn.add(new MyTextElement(name, virtualTextCtx.getCurrentPrefix()));
             }
         }
         return Collections.enumeration(toReturn);

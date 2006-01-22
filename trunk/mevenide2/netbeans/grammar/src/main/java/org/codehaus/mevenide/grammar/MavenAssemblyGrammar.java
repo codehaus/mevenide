@@ -99,7 +99,7 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
                     Dependency elem = (Dependency) it.next();
                     String str = elem.getGroupId() + ":" + elem.getArtifactId();
                     if (str.startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        toRet.add(new MyTextElement(str));
+                        toRet.add(new MyTextElement(str, virtualTextCtx.getCurrentPrefix()));
                     }
                 }
             }
