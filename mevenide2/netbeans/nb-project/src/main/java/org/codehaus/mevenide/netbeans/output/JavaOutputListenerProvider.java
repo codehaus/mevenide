@@ -55,7 +55,7 @@ public class JavaOutputListenerProvider implements OutputProcessor {
                 String lineNum = match.group(2);
                 String text = match.group(4);
                 visitor.setOutputListener(new CompileAnnotation(project, clazz, lineNum, 
-                        text), !text.startsWith("warning"));
+                        text), text.indexOf("[deprecation]") < 0);
             }
     }
 
