@@ -42,7 +42,7 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
         List lst = new ArrayList();
         //TODO we shall add the test class output as well. how?
         try {
-            List srcs = getMavenProject().getOriginalMavenProject().getCompileClasspathElements();
+            List srcs = getMavenProject().getOriginalMavenProject().getTestClasspathElements();
             Iterator it = srcs.iterator();
             List assemblies = new ArrayList();
             while (it.hasNext()) {
@@ -61,6 +61,9 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
                 File ass = (File)it.next();
                 lst.add(ass.toURI());
             }
+            File fil = new File(getMavenProject().getOriginalMavenProject().getBuild().getOutputDirectory());
+            fil = FileUtil.normalizeFile(fil);
+            lst.add(0, fil.toURI());
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
         }
