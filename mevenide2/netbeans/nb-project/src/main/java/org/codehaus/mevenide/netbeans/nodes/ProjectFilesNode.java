@@ -43,7 +43,7 @@ public class ProjectFilesNode extends AbstractNode {
         super(new ProjectFilesChildren(project));
         setName("projectfiles"); //NOI18N
         setDisplayName("Project Files");
-        setIconBase("org/codehaus/mevenide/netbeans/MavenFiles");
+        setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif");
     }
     
    private static class ProjectFilesChildren extends Children.Keys implements PropertyChangeListener {
