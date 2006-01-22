@@ -20,16 +20,18 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Iterator;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
-import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.schema2beans.BaseBean;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
+import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.netbeans.api.project.SourceGroup;
@@ -44,10 +46,12 @@ import org.openide.filesystems.FileUtil;
  */
 public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     private NbMavenProject project;
+    
+    private String url = "";
     public WebModuleImpl(NbMavenProject proj) {
         project = proj;
     }
-
+    
     public FileObject getWebInf() {
         FileObject root = getDocumentBase();
         if (root != null) {
@@ -55,7 +59,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         }
         return null;
     }
-
+    
     public String getJ2eePlatformVersion() {
         DDProvider prov = DDProvider.getDefault();
         FileObject dd = getDeploymentDescriptor();
@@ -63,7 +67,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
             try {
                 WebApp wa = prov.getDDRoot(dd);
                 String waVersion = wa.getVersion() ;
-
+                
                 if(WebApp.VERSION_2_4.equals(waVersion)) {
                     return WebModule.J2EE_14_LEVEL;
                 }
@@ -73,7 +77,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         }
         return WebModule.J2EE_13_LEVEL;
     }
-
+    
     public FileObject getDocumentBase() {
         Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
         SourceGroup[] grp = srcs.getSourceGroups(MavenSourcesImpl.TYPE_DOC_ROOT);
@@ -83,7 +87,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
 //        System.out.println("NO DOCUMENT BASE!!!");
         return null;
     }
-
+    
     File getDDFile(final String path) {
         String webxmlDefined = PluginPropertyUtils.getPluginProperty(project,
                 "org.apache.maven.plugins", "maven-war-plugin",
@@ -104,9 +108,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         }
         return null;
     }
-
+    
     public String getContextPath() {
-        return "/" + project.getOriginalMavenProject().getBuild().getFinalName();
+        String toRet =  "/" + project.getOriginalMavenProject().getBuild().getFinalName();
+//        System.out.println("get context path=" + toRet);
+        return toRet;
     }
     
     public boolean isValid() {
@@ -117,43 +123,138 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     //88888888888888888888888888888888888888888888888888888888888888888888888888
     // methods of j2eeModule
     //88888888888888888888888888888888888888888888888888888888888888888888888888
-
+    
     public String getModuleVersion() {
-        return null;
+        return getJ2eePlatformVersion();
     }
-
+    
     public Object getModuleType() {
         return J2eeModule.WAR;
     }
-
+    
     public String getUrl() {
-        return null;
+        System.out.println("get rul=" + url);
+        return url;
     }
-
+    
     public void setUrl(String string) {
+        url = string;
     }
-
+    
     public FileObject getArchive() throws IOException {
-        return null;
+        //TODO get the correct values for the plugin properties..
+        MavenProject proj = project.getOriginalMavenProject();
+        String finalName = proj.getBuild().getFinalName();
+        String loc = proj.getBuild().getDirectory();
+        File fil = FileUtil.normalizeFile(new File(loc, finalName + ".war"));
+//        System.out.println("get archive=" + fil);
+        return FileUtil.toFileObject(fil);
     }
-
+    
     public Iterator getArchiveContents() throws IOException {
+//        System.out.println("get archive content");
+        FileObject fo = getArchive();
+        if (FileUtil.isArchiveFile(fo)) {
+            FileObject root = FileUtil.getArchiveRoot(fo);
+            return new ContentIterator(root);
+        }
         return null;
     }
-
+    
     public FileObject getContentDirectory() throws IOException {
-        return null;
+        MavenProject proj = project.getOriginalMavenProject();
+        String finalName = proj.getBuild().getFinalName();
+        String loc = proj.getBuild().getDirectory();
+        File fil = FileUtil.normalizeFile(new File(loc, finalName));
+//        System.out.println("get content=" + fil);
+        FileObject fo = FileUtil.toFileObject(fil);
+        if (fo != null) {
+            fo.refresh();
+        }
+        return FileUtil.toFileObject(fil);
     }
-
+    
     public BaseBean getDeploymentDescriptor(String string) {
+//        System.out.println("get DD");
+        if (J2eeModule.WEB_XML.equals(string)) {
+            try {
+                
+                FileObject deploymentDescriptor = getContentDirectory().getFileObject(J2eeModule.WEB_XML);
+                if(deploymentDescriptor != null) {
+                    WebApp web = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
+                    if (web != null) {
+                        return DDProvider.getDefault().getBaseBean(web);
+                    }
+                }
+            } catch (IOException e) {
+                ErrorManager.getDefault().log(e.getLocalizedMessage());
+            }
+        }
+        System.out.println("no dd for=" + string);
         return null;
     }
-
+    
     public void addVersionListener(J2eeModule.VersionListener versionListener) {
+        System.out.println("adding version listener");
     }
-
+    
     public void removeVersionListener(J2eeModule.VersionListener versionListener) {
+        System.out.println("removing version listener");
     }
-
-
+    
+    
+    // inspired by netbeans' webmodule codebase, not really sure what is the point
+    // of the iterator..
+    private static final class ContentIterator implements Iterator {
+        private ArrayList ch;
+        private FileObject root;
+        
+        private ContentIterator(FileObject f) {
+            this.ch = new ArrayList();
+            ch.add(f);
+            this.root = f;
+        }
+        
+        public boolean hasNext() {
+            return ! ch.isEmpty();
+        }
+        
+        public Object next() {
+            FileObject f = (FileObject) ch.get(0);
+            ch.remove(0);
+            if (f.isFolder()) {
+                f.refresh();
+                System.out.println("next folder=" + f);
+                FileObject[] chArr = f.getChildren();
+                for (int i = 0; i < chArr.length; i++) {
+                    ch.add(chArr [i]);
+                }
+            }
+            return new FSRootRE(root, f);
+        }
+        
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+    
+    private static final class FSRootRE implements J2eeModule.RootedEntry {
+        private FileObject f;
+        private FileObject root;
+        
+        FSRootRE(FileObject rt, FileObject fo) {
+            f = fo;
+            root = rt;
+        }
+        
+        public FileObject getFileObject() {
+            return f;
+        }
+        
+        public String getRelativePath() {
+            return FileUtil.getRelativePath(root, f);
+        }
+    }
+    
 }

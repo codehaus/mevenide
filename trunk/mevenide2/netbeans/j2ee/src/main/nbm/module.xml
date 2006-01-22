@@ -8,6 +8,14 @@
    <licenseFile>license.txt</licenseFile>
    <dependencies>
         <dependency>
+            <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-util</id>
             <type>spec</type>
         </dependency>
@@ -52,6 +60,22 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-netbeans-api-java</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-java-platform</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-api-debugger</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-api-debugger-jpda</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2eeserver</id>
             <type>spec</type>
         </dependency>
@@ -63,6 +87,5 @@
           <id>org.codehaus.mevenide:nb-mvn-embedder</id>
 	  <type>spec</type>
       </dependency>
-        
    </dependencies> 
 </nbm>

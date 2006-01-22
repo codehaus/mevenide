@@ -21,6 +21,7 @@ package org.codehaus.mevenide.netbeans;
 import org.codehaus.mevenide.netbeans.nodes.MavenProjectNode;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.java.project.support.ui.PackageView;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
@@ -70,8 +71,14 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
             if ( !proj.equals( owner ) ) {
                 return null; // Don't waste time if project does not own the fo
             }
+            Node[] nodes = node.getChildren().getNodes(true);
+            for (int i = 0; i < nodes.length; i++) {
+                Node result = PackageView.findPath(nodes[i], target);
+                if (result != null) {
+                    return result;
+                }
+            }
         }
-        //TODO now what to do here and what is it good for?
         
         return null;
     }

@@ -19,9 +19,13 @@ package org.codehaus.mevenide.netbeans;
 
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
+import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.openide.util.Lookup;
 
 /**
- * Interface that allows to put additional items to project node's popup.
+ * Interface that allows to put additional items to project's popup plus to provide specific
+ * implementations of ActionProvider actions.
  * Implementations should be registered in default lookup.
  * (Using META-INF/services/AdditionalM2ActionsProvider file in the module's jar.)
  * It's purpose is to get additional implementations of APIs that are related to 5.0 only, 
@@ -29,8 +33,22 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface AdditionalM2ActionsProvider {
+
+    /**
+     *
+     */
+    public static RunConfig EMPTY = new DefaultRunConfig(null, null);
+    
     /**
      * add action instances to the popup of the project.
      */
     Action[] createPopupActions(NbMavenProject project);
+    
+    /**
+     * Create an instance of RunConfig configured for execution.
+     * @param actionName one of the ActionProvider constants
+     * @returns RunConfig or null, if action not supported
+     */
+    RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup);
+    
 }

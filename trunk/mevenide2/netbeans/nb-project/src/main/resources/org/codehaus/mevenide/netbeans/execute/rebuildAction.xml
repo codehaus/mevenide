@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : deployWebAction.xml
+    Created on : January 17, 2006, 7:26 AM
+    Author     : mkleint
+    Description:
+        
+-->
+
+<action>
+    <goals>
+        <goal>clean</goal>
+        <goal>install</goal>
+    </goals>
+</action>

@@ -18,7 +18,9 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileUtil;
@@ -31,10 +33,22 @@ public class DefaultRunConfig implements RunConfig {
     
     private NbMavenProject project;
     private List goals;
+    private Properties props;
+
+    private ClassLoader classLoader;
+
+    private List plugins;
     /** Creates a new instance of DefaultRunConfig */
     public DefaultRunConfig(NbMavenProject proj, List gls) {
         project = proj;
         goals = gls;
+        props = new Properties();
+        plugins = Collections.emptyList();
+    }
+    
+    public DefaultRunConfig(NbMavenProject proj, List gls, ClassLoader ldr) {
+        this(proj, gls);
+        classLoader = ldr;
     }
 
     public File getExecutionDirectory() {
@@ -56,5 +70,24 @@ public class DefaultRunConfig implements RunConfig {
     public NbMavenProject getProject() {
         return project;
     }
+
+    public Properties getProperties() {
+        return props;
+    }
     
+    public ClassLoader getClassLoader() {
+        return classLoader;
+    }
+    
+    /**
+     * list of <org.apache.maven.model.Plugin>
+     */
+    public List getAdditionalPluginConfigurations() {
+        return plugins;
+    }
+    
+    public void setAdditionalPluginConfigurations(List plugs) {
+        assert plugs != null;
+        plugins = plugs;
+    }
 }

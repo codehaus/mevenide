@@ -8,15 +8,20 @@
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>2.0</version>
+    <version>2.0.1</version>
     <name>Netbeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>2.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
-            <version>2.0</version>
+            <version>2.0.1</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -67,6 +72,31 @@
             <version>1.13.1</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-java</artifactId>
+            <version>1.10.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-java-platform</artifactId>
+            <version>1.7.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-debugger</artifactId>
+            <version>1.7.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-debugger-jpda</artifactId>
+            <version>2.4.1</version>
+            <type>jar</type>
+        </dependency>
+        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-schema2beans</artifactId>

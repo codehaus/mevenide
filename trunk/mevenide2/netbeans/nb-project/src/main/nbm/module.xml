@@ -12,6 +12,10 @@
 	  <type>spec</type>
       </dependency>
       <dependency>
+          <id>org.netbeans.api:org-openide-modules</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-openide-execution</id>
 	  <type>spec</type>
       </dependency>
@@ -76,4 +80,12 @@
 	  <type>spec</type>
       </dependency>
    </dependencies> 
+   <nbmResources>
+       <nbmResource>
+           <baseDirectory>../ide-mojos/netbeans-debugger-plugin/target</baseDirectory>
+           <includes>
+               <include>m2-repository/**</include>
+           </includes>
+       </nbmResource>
+   </nbmResources>
 </nbm>

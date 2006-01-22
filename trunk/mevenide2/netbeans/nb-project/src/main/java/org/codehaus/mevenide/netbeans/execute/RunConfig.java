@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
 import java.util.List;
+import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 
 /**
@@ -26,10 +27,21 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public interface RunConfig {
+    
     File getExecutionDirectory();
+
     NbMavenProject getProject();
+    
     List getGoals();
-    String[] getParameters();
 
     String getExecutionName();
+
+    Properties getProperties();
+    
+    ClassLoader getClassLoader();
+    
+    /**
+     * list of <org.apache.maven.model.Plugin>
+     */
+    List getAdditionalPluginConfigurations();
 }
