@@ -1,10 +1,18 @@
-/*
- * ModelRunConfig.java
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
  *
- * Created on January 16, 2006, 6:07 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.execute;
@@ -30,11 +38,11 @@ import org.openide.filesystems.FileUtil;
  * @author mkleint
  */
 public final class ModelRunConfig implements RunConfig {
-
+    
     private ClassLoader classloader;
-
+    
     private NetbeansActionMapping model;
-
+    
     private NbMavenProject project;
     
     /** Creates a new instance of ModelRunConfig */
@@ -44,42 +52,34 @@ public final class ModelRunConfig implements RunConfig {
         classloader = loader;
     }
     
-    public ModelRunConfig(NbMavenProject proj, Reader modelXml, ClassLoader loader) 
-                             throws IOException, XmlPullParserException {
-        project = proj;
-        classloader = loader;
-        model = new NetbeansBuildActionXpp3Reader().read(modelXml);
-    }
-
     public File getExecutionDirectory() {
         return FileUtil.toFile(project.getProjectDirectory());
     }
-
+    
     public NbMavenProject getProject() {
         return project;
     }
-
+    
     public List getGoals() {
         Iterator it = model.getGoals().iterator();
         while (it.hasNext()) {
             String elem = (String)it.next();
-            System.out.println("model goal=" + elem);
-                    }
+        }
         return model.getGoals();
     }
-
+    
     public String getExecutionName() {
         return project.getName();
     }
-
+    
     public Properties getProperties() {
         return model.getProperties();
     }
-
+    
     public ClassLoader getClassLoader() {
         return classloader;
     }
-
+    
     public List getAdditionalPluginConfigurations() {
         List toReturn = new ArrayList();
         Iterator it = model.getPlugins().iterator();

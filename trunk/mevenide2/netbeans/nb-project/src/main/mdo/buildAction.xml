@@ -10,7 +10,21 @@
     </defaults>
 
     <classes>
-        <class rootElement="true" xml.tagName="action">
+        <class rootElement="true" xml.tagName="actions">
+            <name>ActionToGoalMapping</name>
+            <version>1.0.0+</version>
+            <fields>
+                <field xml.listStyle="flat">
+                    <name>actions</name>
+                    <version>1.0.0+</version>
+                    <association>
+                        <type>NetbeansActionMapping</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+            </fields>
+        </class>
+        <class xml.tagName="action">
             <name>NetbeansActionMapping</name>
             <version>1.0.0+</version>
             <fields>
