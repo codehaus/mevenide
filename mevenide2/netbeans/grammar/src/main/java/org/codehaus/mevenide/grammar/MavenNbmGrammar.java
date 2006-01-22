@@ -73,7 +73,7 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
                     Dependency elem = (Dependency) it.next();
                     String str = elem.getGroupId() + ":" + elem.getArtifactId();
                     if (str.startsWith(hintCtx.getCurrentPrefix())) {
-                        toRet.add(new MyTextElement(str));
+                        toRet.add(new MyTextElement(str, hintCtx.getCurrentPrefix()));
                     }
                 }
             }
