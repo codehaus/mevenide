@@ -1,0 +1,22 @@
+<nbm>
+   <moduleType>eager</moduleType>
+   <codeNameBase>org.codehaus.mevenide.netbeans.nbrepo/2</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+   <dependencies>
+       <dependency>
+           <id>org.codehaus.mevenide:nb-project</id>
+       </dependency>
+   </dependencies> 
+   <nbmResources>
+       <nbmResource>
+           <baseDirectory>../target</baseDirectory>
+           <includes>
+               <include>m2-repository/**</include>
+           </includes>
+       </nbmResource>
+   </nbmResources>
+</nbm>
