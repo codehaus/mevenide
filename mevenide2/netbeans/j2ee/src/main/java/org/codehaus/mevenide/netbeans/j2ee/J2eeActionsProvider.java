@@ -1,10 +1,18 @@
-/*
- * J2eeActionsProvider.java
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
  *
- * Created on January 10, 2006, 9:06 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.j2ee;
@@ -48,13 +56,13 @@ public class J2eeActionsProvider implements AdditionalM2ActionsProvider {
     }
     
     public RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup) {
-        if ((ActionProvider.COMMAND_RUN_SINGLE.equals(actionName) || 
-             ActionProvider.COMMAND_DEBUG.equals(actionName) ||
-             ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName) ||
-             ActionProvider.COMMAND_RUN.equals(actionName)) &&
+        if ((ActionProvider.COMMAND_RUN_SINGLE.equals(actionName) ||
+                ActionProvider.COMMAND_DEBUG.equals(actionName) ||
+                ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName) ||
+                ActionProvider.COMMAND_RUN.equals(actionName)) &&
                 "war".equals(project.getOriginalMavenProject().getPackaging())) {
             String relPath = null;
-            if (ActionProvider.COMMAND_RUN_SINGLE.equals(actionName) || 
+            if (ActionProvider.COMMAND_RUN_SINGLE.equals(actionName) ||
                     ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName)) {
                 FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
                 if (fos.length > 0) {
@@ -75,25 +83,9 @@ public class J2eeActionsProvider implements AdditionalM2ActionsProvider {
             }
             HashMap replacements = new HashMap();
             replacements.put("webpagePath", relPath);
-            String debug = ActionProvider.COMMAND_DEBUG.equals(actionName) || ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName) ?
-                            "Debug" : "";
-            String single = ActionProvider.COMMAND_RUN_SINGLE.equals(actionName) || ActionProvider.COMMAND_DEBUG_SINGLE.equals(actionName) ?
-                            "Single" : "";
-            
-            InputStream str = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/j2ee/deploy" + debug + single + "WebAction.xml");
-            assert str != null;
-            
-            try {
-                ModelRunConfig rc = new ModelRunConfig(project, DefaultActionGoalProvider.performDynamicSubstitutions(replacements, str),
-                        getClass().getClassLoader());
-                return rc;
-            } catch (XmlPullParserException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            String path = "/org/codehaus/mevenide/netbeans/j2ee/webActionMappings.xml";
+            return DefaultActionGoalProvider.mapGoalsToAction(project, actionName, path, replacements, getClass());
         }
-        
         return null;
     }
     

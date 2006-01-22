@@ -1,10 +1,18 @@
-/*
- * DefaultActionProvider.java
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
  *
- * Created on January 18, 2006, 6:54 AM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.execute;
@@ -22,6 +30,9 @@ import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -60,9 +71,9 @@ public class DefaultActionGoalProvider implements AdditionalM2ActionsProvider {
                     group = grp[i].getName();
                     replaceMap.put("classNameWithExtension", fos[0].getNameExt());
                     replaceMap.put("className", fos[0].getName());
-                    replaceMap.put("packageClassName", (FileUtil.getRelativePath(grp[i].getRootFolder(), 
-                                                                          fos[0].getParent()) 
-                                                 + fos[0].getName()).replace('/','.'));
+                    replaceMap.put("packageClassName", (FileUtil.getRelativePath(grp[i].getRootFolder(),
+                            fos[0].getParent())
+                            + fos[0].getName()).replace('/','.'));
                     break;
                 }
             }
@@ -77,20 +88,37 @@ public class DefaultActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         if (group != null && group.equals(MavenSourcesImpl.NAME_SOURCE) &&
                 (ActionProvider.COMMAND_TEST_SINGLE.equals(actionName) ||
-                 ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(actionName))) {
+                ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(actionName))) {
             //TODO.. get the rel path for test not class..
             
         }
-        String path = "/org/codehaus/mevenide/netbeans/execute/" + actionName.replace('.','-') + "Action.xml";
-        
-        InputStream in = getClass().getResourceAsStream(path);
-//TODO --------------------------------        
+        String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml";
+        return mapGoalsToAction(project, actionName, path, replaceMap, getClass());
+    }
+
+    public static  RunConfig mapGoalsToAction(NbMavenProject project, String actionName, String path, HashMap replaceMap, Class clazz) {
+        InputStream in = clazz.getResourceAsStream(path);
         if (in == null) {
+            System.out.println("no instream for=" + path);
             return null;
         }
-        ModelRunConfig rc;
         try {
-            return rc = new ModelRunConfig(project, performDynamicSubstitutions(replaceMap, in), getClass().getClassLoader());
+            Reader read = performDynamicSubstitutions(replaceMap, in);
+            NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+            ActionToGoalMapping mapping = reader.read(read);
+            Iterator it = mapping.getActions().iterator();
+            NetbeansActionMapping action = null;
+            while (it.hasNext()) {
+                NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
+                if (actionName.equals(elem.getActionName()) &&
+                        (elem.getPackagings().contains(project.getOriginalMavenProject().getPackaging().trim()) ||
+                         elem.getPackagings().contains("*"))) {
+                    action = elem;
+                }
+            }
+            if (action != null) {
+                return new ModelRunConfig(project, action, clazz.getClassLoader());
+            }
         } catch (XmlPullParserException ex) {
             ex.printStackTrace();
         } catch (IOException ex) {
