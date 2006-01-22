@@ -133,18 +133,21 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         if ("file".equals(url.getProtocol())) {
             // true for directories.
             try {
-                Build build = project.getOriginalMavenProject().getBuild();
-                if (build != null) {
-                    File src = FileUtil.normalizeFile(new File(build.getOutputDirectory()));
-                    URL srcUrl = src.toURI().toURL();
-                    if (url.equals(srcUrl)) {
-                        return 0;
-                    }
-                    File test = FileUtil.normalizeFile(new File(build.getTestOutputDirectory()));
-                    // can be null in some obscrure cases.
-                    URL testsrcUrl = test.toURI().toURL();
-                    if (url.equals(testsrcUrl)) {
-                        return 1;
+                MavenProject proj = project.getOriginalMavenProject();
+                if (proj != null) {
+                    Build build = proj.getBuild();
+                    if (build != null) {
+                        File src = FileUtil.normalizeFile(new File(build.getOutputDirectory()));
+                        URL srcUrl = src.toURI().toURL();
+                        if (url.equals(srcUrl)) {
+                            return 0;
+                        }
+                        File test = FileUtil.normalizeFile(new File(build.getTestOutputDirectory()));
+                        // can be null in some obscrure cases.
+                        URL testsrcUrl = test.toURI().toURL();
+                        if (url.equals(testsrcUrl)) {
+                            return 1;
+                        }
                     }
                 }
             } catch (MalformedURLException exc) {
@@ -171,6 +174,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         while (it.hasNext()) {
             String item = (String)it.next();
             FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(item)));
+            if (fo != null) {
+                toReturn.add(fo);
+            }
+        }
+        URI[] genRoots = project.getGeneratedSourceRoots();
+        for (int i = 0; i < genRoots.length; i++) {
+            FileObject fo = FileUtil.toFileObject(new File(genRoots[i]));
             if (fo != null) {
                 toReturn.add(fo);
             }
