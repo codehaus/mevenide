@@ -65,9 +65,11 @@ public class ProjectNode extends AbstractNode {
         setDisplayName(project.getArtifactId());
         String executor = project.getExecutorId();
         if ("maven2".equals(executor)) {
-            setIconBase("org/codehaus/mevenide/continuum/Maven2Icon");
+            setIconBaseWithExtension("org/codehaus/mevenide/continuum/Maven2Icon.gif");
         } else if ("maven1".equals(executor)) {
-            setIconBase("org/codehaus/mevenide/continuum/MavenIcon");
+            setIconBaseWithExtension("org/codehaus/mevenide/continuum/MavenIcon.gif");
+        } else if ("ant".equals(executor)) {
+            setIconBaseWithExtension("org/codehaus/mevenide/continuum/AntIcon.gif");
         }
         refreshTask = QUEUE.create(new RepeatingRefresher());
     }
