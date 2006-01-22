@@ -16,6 +16,8 @@
  */
 package org.codehaus.mevenide.netbeans.embedder;
 
+import java.io.InputStream;
+import java.net.URL;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
@@ -38,8 +40,9 @@ public class EmbedderFactory {
             embedder.setInteractiveMode(false);
             embedder.setCheckLatestPluginVersion(false);
             embedder.setUpdateSnapshots(false);
-            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
-//            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            URL components = EmbedderFactory.class.getResource("/org/codehaus/mevenide/netbeans/embedder/components.xml");
+            embedder.setEmbedderConfiguration(components);
+            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
@@ -55,8 +58,7 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
             embedder.setInteractiveMode(false);
-            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
-//            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
@@ -69,11 +71,53 @@ public class EmbedderFactory {
     }
     
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) throws MavenEmbedderException {
+        return createExecuteEmbedder(logger, EmbedderFactory.class.getClassLoader());
+    }
+    
+    public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger, ClassLoader loader) throws MavenEmbedderException {
             MavenEmbedder embedder = new MavenEmbedder();
-            embedder.setClassLoader(new TweakingClassLoader(EmbedderFactory.class.getClassLoader()));
-//            embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setClassLoader(new HackyClassLoader(loader, EmbedderFactory.class.getClassLoader()));
             embedder.setLogger(logger);
             embedder.start();
             return embedder;
+        
+    }
+    
+    private static class HackyClassLoader extends ClassLoader {
+        private ClassLoader additionalLoader;
+        public HackyClassLoader(ClassLoader additional, ClassLoader embedderModuleLoader) {
+            super(embedderModuleLoader);
+            additionalLoader = additional;
+        }
+
+        public URL getResource(String name) {
+            URL retValue;
+            if (name.startsWith("META-INF/plexus") || name.startsWith("META-INF/maven") || name.startsWith("org/codehaus/plexus")) {
+                return super.getResource(name);
+            }
+            
+            retValue = additionalLoader.getResource(name);
+            return retValue;
+        }
+
+        public InputStream getResourceAsStream(String name) {
+            InputStream retValue;
+            if (name.startsWith("META-INF/plexus") || name.startsWith("META-INF/maven") || name.startsWith("org/codehaus/plexus")) {
+                return super.getResourceAsStream(name);
+            }
+            retValue = additionalLoader.getResourceAsStream(name);
+            return retValue;
+        }
+
+        public Class loadClass(String name) throws ClassNotFoundException {
+            Class retValue;
+            try {
+                retValue = super.loadClass(name);
+            } catch (ClassNotFoundException ex) {
+                return additionalLoader.loadClass(name);
+            }
+            return retValue;
+        }
+        
     }
 }
