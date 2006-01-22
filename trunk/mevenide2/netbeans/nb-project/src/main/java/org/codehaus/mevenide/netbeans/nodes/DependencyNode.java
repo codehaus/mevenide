@@ -114,15 +114,15 @@ public class DependencyNode extends AbstractNode {
     
     private void setIconBase() {
         if (isDependencyProjectOpen() && isTransitive()) {
-            setIconBase("org/codehaus/mevenide/netbeans/TransitiveMaven2Icon"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveMaven2Icon.gif"); //NOI18N
         } else if (isDependencyProjectOpen()) {
-            setIconBase("org/codehaus/mevenide/netbeans/Maven2Icon"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif"); //NOI18N
         } else if (isTransitive()) {
-            setIconBase("org/codehaus/mevenide/netbeans/TransitiveDependencyIcon"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveDependencyIcon.gif"); //NOI18N
         } else if (isJarDependency()) { //NOI18N
-            setIconBase("org/codehaus/mevenide/netbeans/DependencyJar"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyJar.gif"); //NOI18N
         } else {
-            setIconBase("org/codehaus/mevenide/netbeans/DependencyIcon"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.gif"); //NOI18N
         }        
     }
     
@@ -233,6 +233,26 @@ public class DependencyNode extends AbstractNode {
             online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
             StatusDisplayer.getDefault().setStatusText("Checking Sources for " + art.getId());
             online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+        } catch (ArtifactNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (ArtifactResolutionException ex) {
+            ex.printStackTrace();
+        } finally {
+            StatusDisplayer.getDefault().setStatusText("");
+        }
+        refreshNode();
+    }
+    
+    void downloadMainArtifact(MavenEmbedder online) {
+        Artifact art2 = project.getEmbedder().createArtifactWithClassifier(
+                art.getGroupId(),
+                art.getArtifactId(),
+                art.getVersion(),
+                art.getType(),
+                art.getClassifier());
+        try {
+            StatusDisplayer.getDefault().setStatusText("Checking for " + art.getId());
+            online.resolve(art2, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
         } catch (ArtifactNotFoundException ex) {
             ex.printStackTrace();
         } catch (ArtifactResolutionException ex) {

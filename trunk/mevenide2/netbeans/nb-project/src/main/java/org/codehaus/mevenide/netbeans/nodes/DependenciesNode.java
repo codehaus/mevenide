@@ -31,15 +31,20 @@ import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -68,7 +73,7 @@ class DependenciesNode extends AbstractNode {
             case TYPE_RUNTIME : setDisplayName("Runtime Dependencies"); break;
         }
         project = mavproject;
-        setIconBase("org/codehaus/mevenide/netbeans/defaultFolder"); //NOI18N
+        setIconBaseWithExtension("org/codehaus/mevenide/netbeans/defaultFolder.gif"); //NOI18N
     }
     
     public java.awt.Image getIcon(int param) {
@@ -92,6 +97,7 @@ class DependenciesNode extends AbstractNode {
 //                              new AddDependencyAction(),
 //                              null,
 //                              new DownloadAction(),
+                              new ResolveDepsAction(),
                               new DownloadJavadocSrcAction()
         };
     }
@@ -276,7 +282,31 @@ class DependenciesNode extends AbstractNode {
                 }
             });
         }
+    }  
+
+    private class ResolveDepsAction extends AbstractAction {
+        public ResolveDepsAction() {
+            putValue(Action.NAME, "Download Dependencies");
+        }
         
+        public void actionPerformed(ActionEvent evnt) {
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+                    try {
+                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")), 
+                                                           new ProgressTransferListener());
+                    } catch (ArtifactNotFoundException ex) {
+                        ex.printStackTrace();
+                    } catch (ArtifactResolutionException ex) {
+                        ex.printStackTrace();
+                    } catch (ProjectBuildingException ex) {
+                        ex.printStackTrace();
+                    }
+                    project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                }
+            });
+        }
     }  
     
     private static class DependenciesComparator implements Comparator {
