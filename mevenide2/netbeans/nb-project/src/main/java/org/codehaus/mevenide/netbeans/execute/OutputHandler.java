@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,6 +35,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
+import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.openide.util.Lookup;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -57,10 +60,13 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     private OutputVisitor visitor;
     private Set currentProcessors;
     
+    private ProgressTransferListener downloadProgress;
+    
     OutputHandler() {
         processors = new HashMap();
         currentProcessors = new HashSet();
         visitor = new OutputVisitor();
+        downloadProgress = new ProgressTransferListener();
     }
     
     /**
@@ -130,6 +136,7 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void transferProgress(TransferEvent transferEvent, byte[] b, int i)    {
+        downloadProgress.transferProgress(transferEvent, b, i);
     }
     
     private String getEventId(String eventName, String target) {
@@ -159,18 +166,19 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void transferStarted(TransferEvent transferEvent)    {
-        stdOut.println("" + transferEvent);
+        downloadProgress.transferStarted(transferEvent);
     }
     
     public void transferInitiated(TransferEvent transferEvent)    {
+        downloadProgress.transferInitiated(transferEvent);
     }
     
     public void transferError(TransferEvent transferEvent)    {
-        stdOut.println("" + transferEvent);
+        downloadProgress.transferError(transferEvent);
     }
     
     public void transferCompleted(TransferEvent transferEvent)    {
-        stdOut.println("" + transferEvent);
+        downloadProgress.transferCompleted(transferEvent);
     }
     
     public void debug(String string) {
@@ -214,7 +222,12 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void error(String string, Throwable throwable)    {
-        processMultiLine("[ERROR]" + string, stdErr);
+        StringWriter sw = new StringWriter();
+        PrintWriter wr = new PrintWriter(sw);
+        wr.write("[ERROR]" + string + "\n");
+        throwable.printStackTrace(wr);
+        wr.close();
+        processMultiLine(sw.toString(), stdErr);
     }
     
     public boolean isErrorEnabled()    {
@@ -222,11 +235,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void fatalError(String string)    {
-        processMultiLine(string, stdErr);
+        processMultiLine("[FATAL]" + string, stdErr);
     }
     
     public void fatalError(String string, Throwable throwable)    {
-        processMultiLine(string, stdErr);
+        processMultiLine("[FATAL]" + string + "\n" + throwable.toString(), stdErr);
     }
     
     public boolean isFatalErrorEnabled()    {

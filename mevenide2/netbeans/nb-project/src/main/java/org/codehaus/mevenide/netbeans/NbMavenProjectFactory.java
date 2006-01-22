@@ -59,10 +59,10 @@ public class NbMavenProjectFactory implements ProjectFactory
         if ("nbproject".equalsIgnoreCase(fileObject.getName())) {
             return null;
         }
-        if (fileObject.getFileObject("project.xml") != null) {
-            // for now maven 1 projects have precedence
-            return null;
-        }
+//        if (fileObject.getFileObject("project.xml") != null) {
+//            // for now maven 1 projects have precedence
+//            return null;
+//        }
         FileObject projectFile = fileObject.getFileObject("pom.xml"); //NOI18N
         if (projectFile == null || !projectFile.isData()) {
             return null;

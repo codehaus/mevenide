@@ -91,6 +91,8 @@ public final class NbMavenProject implements Project {
     private MavenEmbedder embedder;
 
     private Info projectInfo;
+
+    private MavenProject oldProject;
     
     /** 
      * Creates a new instance of MavenProject, should never be called by user code.
@@ -133,22 +135,22 @@ public final class NbMavenProject implements Project {
             try {
                 //http://jira.codehaus.org/browse/MNG-1876
                 // need to restart the embedder to avoid a weirdo exception.
-                embedder.stop();
-                embedder.start();
+//                embedder.stop();
+//                embedder.start();
                 try {
                     project = embedder.readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
                     //http://jira.codehaus.org/browse/MNG-1876
                     // need to restart the embedder to avoid a weirdo exception.
-                    embedder.stop();
-                    embedder.start();
+//                    embedder.stop();
+//                    embedder.start();
                     ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = embedder.readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
                     //http://jira.codehaus.org/browse/MNG-1876
                     // need to restart the embedder to avoid a weirdo exception.
-                    embedder.stop();
-                    embedder.start();
+//                    embedder.stop();
+//                    embedder.start();
                     ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = embedder.readProject(projectFile);
                 }
@@ -163,9 +165,13 @@ public final class NbMavenProject implements Project {
                 } catch (XmlPullParserException ex2) {
                     ex2.printStackTrace();
                 }
-            } catch (MavenEmbedderException exc) {
-                exc.printStackTrace();
+//            } catch (MavenEmbedderException exc) {
+//                exc.printStackTrace();
             }
+            if (project == null && oldProject != null) {
+                project = oldProject;
+            }
+            oldProject = null;
         }
         
         return project;
@@ -173,6 +179,7 @@ public final class NbMavenProject implements Project {
     
     public void firePropertyChange(String property) {
         synchronized (support) {
+            oldProject = project;
             project = null;
             projectInfo.reset();
             support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));
@@ -218,7 +225,11 @@ public final class NbMavenProject implements Project {
     }
         
     public String getName() {
-        String toReturn = getOriginalMavenProject().getId();
+        String toReturn = null;
+        MavenProject pr = getOriginalMavenProject();
+        if (pr != null) {
+            toReturn = pr.getId();
+        }
         if (toReturn == null) {
             toReturn = getProjectDirectory().getName() + " <No Project ID>";
         }

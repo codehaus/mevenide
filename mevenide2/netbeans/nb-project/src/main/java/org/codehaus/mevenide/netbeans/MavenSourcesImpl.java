@@ -31,6 +31,7 @@ import java.util.TreeMap;
 import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.maven.project.MavenProject;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.SourceGroup;
@@ -47,7 +48,7 @@ import org.openide.util.RequestProcessor;
 
 /**
  * Implementation of Sources interface for maven projects.
- * generic and java are necessary for proper workings of the project, the rest is custom thing.. 
+ * generic and java are necessary for proper workings of the project, the rest is custom thing..
  * IMHO at least..
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
@@ -62,7 +63,7 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
     public static final String TYPE_DOC_ROOT="doc_root"; //NOI18N
-    public static final String TYPE_WEB_INF="web_inf"; //NOI18N    
+    public static final String TYPE_WEB_INF="web_inf"; //NOI18N
     
     private NbMavenProject project;
     private List listeners;
@@ -92,9 +93,11 @@ public class MavenSourcesImpl implements Sources {
     private void checkChanges(boolean synchronous) {
         boolean changed = false;
         synchronized (lock) {
-                FileObject folder = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getSourceDirectory());
+            MavenProject mp = project.getOriginalMavenProject();
+            if (mp != null) {
+                FileObject folder = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
                 changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
-                folder = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
+                folder = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
                 changed = changed | checkJavaGroupCache(folder, NAME_TESTSOURCE, "Test Sources");
                 URI[] uris = project.getGeneratedSourceRoots();
                 if (uris.length > 0) {
@@ -108,6 +111,12 @@ public class MavenSourcesImpl implements Sources {
                     folder = null;
                 }
                 changed = changed | checkGeneratedGroupCache(folder);
+            } else {
+                changed = true;
+                checkJavaGroupCache(null, NAME_SOURCE, "Sources");
+                checkJavaGroupCache(null, NAME_TESTSOURCE, "Test Sources");
+                checkGeneratedGroupCache(null);
+            }
         }
         if (changed) {
             if (synchronous) {
@@ -252,7 +261,7 @@ public class MavenSourcesImpl implements Sources {
     }
     
     
-
+    
     /**
      * consult the SourceGroup cache, return true if anything changed..
      */
@@ -268,11 +277,11 @@ public class MavenSourcesImpl implements Sources {
         if (webDocSrcGroup == null || !webDocSrcGroup.getRootFolder().equals(root)) {
             webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Pages", null, null);
             changed = true;
-        } 
+        }
         return changed;
-    }   
+    }
     
-   /**
+    /**
      * consult the SourceGroup cache, return true if anything changed..
      */
     private boolean checkGeneratedGroupCache(FileObject root) {
@@ -287,7 +296,7 @@ public class MavenSourcesImpl implements Sources {
         if (genSrcGroup == null || !genSrcGroup.getRootFolder().equals(root)) {
             genSrcGroup = GenericSources.group(project, root, NAME_GENERATED_SOURCE, "Generated Sources", null, null);
             changed = true;
-        } 
+        }
         return changed;
     }
     

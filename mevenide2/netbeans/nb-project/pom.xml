@@ -8,17 +8,11 @@
   <modelVersion>4.0.0</modelVersion>
     <artifactId>nb-project</artifactId>
     <packaging>nbm</packaging>
-    <version>2.0</version>
+    <version>2.0.1</version>
     <name>Netbeans Maven2 project support</name>
     <description>Implementation of a Netbeans project backed by Maven2 POM files.</description>
 
     <dependencies>
-        <!--dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>openide</artifactId>
-            <version>5.9.1</version>
-            <type>jar</type>
-        </dependency-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
@@ -81,6 +75,11 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>6.5.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
             <version>1.13.1.5</version>
             <type>jar</type>
@@ -116,14 +115,8 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-mvn-embedder</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.1-SNAPSHOT</version>
         </dependency>
-	<!--dependency>
-	    <groupId>org.apache.maven</groupId>
-	    <artifactId>maven-embedder</artifactId>
-	    <version>2.0</version>
-	    <classifier>jar-assembly</classifier>
-	</dependency-->        
     </dependencies>
     
     <build>
@@ -132,6 +125,25 @@
                 <groupId>org.codehaus.mevenide.plugins</groupId>
                 <artifactId>maven-nbm-plugin</artifactId>
             </plugin>
+             <plugin>
+                <groupId>org.codehaus.modello</groupId>
+                <artifactId>modello-maven-plugin</artifactId>
+                <version>1.0-alpha-5</version>
+                <executions>
+                  <execution>
+                    <goals>
+                      <goal>java</goal>
+                      <goal>xpp3-reader</goal>
+                      <goal>xpp3-writer</goal>
+                    </goals>
+                  </execution>
+                </executions>
+                <configuration>
+                  <version>1.0.0</version>
+                  <packageWithVersion>false</packageWithVersion>
+                  <model>src/main/mdo/buildAction.xml</model>
+                </configuration>
+             </plugin>
         </plugins>
     </build>
 </project>

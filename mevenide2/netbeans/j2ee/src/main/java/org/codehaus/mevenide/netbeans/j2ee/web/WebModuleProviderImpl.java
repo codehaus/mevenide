@@ -50,6 +50,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
+        getConfigSupport().setWebContextRoot("/" + getDeploymentName());
     }
     
     public WebModule findWebModule(FileObject fileObject) {
@@ -70,11 +71,21 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return moduleChange;
     }
     
-    public File getDeploymentConfigurationFile(String path) {
-        if (J2eeModule.WEB_XML.equals(path)) {
-            return implementation.getDDFile(path);
+    public File getDeploymentConfigurationFile(String name) {
+        if (name == null) {
+            return null;
         }
-        return null;
+        if (J2eeModule.WEB_XML.equals(name)) {
+            return implementation.getDDFile(name);
+        }
+        String path = getConfigSupport().getContentRelativePath(name);
+        if (path == null) {
+            path = name;
+        }
+        String loc = project.getOriginalMavenProject().getBuild().getDirectory();
+        File fil = FileUtil.normalizeFile(new File(new File(loc, project.getOriginalMavenProject().getBuild().getFinalName()), path));
+        System.out.println("guess is=" + fil);
+        return fil;
     }
 
     
@@ -121,6 +132,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         }
         return super.getServerID();
     }
+
     
     // TODO
     private class ModuleChangeReporterImpl implements ModuleChangeReporter {

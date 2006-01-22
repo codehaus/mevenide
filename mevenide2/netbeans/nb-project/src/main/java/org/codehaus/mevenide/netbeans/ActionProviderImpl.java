@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -31,6 +33,9 @@ import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.LifecycleManager;
 import org.openide.awt.StatusDisplayer;
@@ -54,25 +59,16 @@ public class ActionProviderImpl implements ActionProvider {
         ActionProvider.COMMAND_BUILD,
         ActionProvider.COMMAND_CLEAN,
         ActionProvider.COMMAND_REBUILD,
-        "javadoc"//, //NOI18N
-//        ActionProvider.COMMAND_TEST,
-//        ActionProvider.COMMAND_TEST_SINGLE,
-//        ActionProvider.COMMAND_RUN,
-//        ActionProvider.COMMAND_RUN_SINGLE,
-//        ActionProvider.COMMAND_DEBUG,
-//        ActionProvider.COMMAND_DEBUG_SINGLE,
-//        ActionProvider.COMMAND_DEBUG_TEST_SINGLE
+        "javadoc", //NOI18N
+        ActionProvider.COMMAND_TEST,
+        ActionProvider.COMMAND_TEST_SINGLE,
+        ActionProvider.COMMAND_RUN,
+        ActionProvider.COMMAND_RUN_SINGLE,
+        ActionProvider.COMMAND_DEBUG,
+        ActionProvider.COMMAND_DEBUG_SINGLE,
+        ActionProvider.COMMAND_DEBUG_TEST_SINGLE
     };
-
-    //TODO need some customizable 
-    private static Properties mappedGoals;
-    static {
-        mappedGoals = new Properties();
-        mappedGoals.put(ActionProvider.COMMAND_BUILD, "install");
-        mappedGoals.put(ActionProvider.COMMAND_CLEAN, "clean");
-        mappedGoals.put(ActionProvider.COMMAND_REBUILD, "clean install");
-        mappedGoals.put("javadoc", "javadoc:javadoc");
-    }
+    
     
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(NbMavenProject proj) {
@@ -83,40 +79,72 @@ public class ActionProviderImpl implements ActionProvider {
         return supported;
     }
     
-    private List getGoalsDefForAction(String actionName, Lookup lookup) {
-        String val = mappedGoals.getProperty(actionName);
-        String[] vals = val.split(" ");
-        return Arrays.asList(vals);
-    }
-    
     public void invokeAction(String action, Lookup lookup) {
-        runGoal(getGoalsDefForAction(action, lookup), lookup);
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
+        Iterator it = res.allInstances().iterator();
+        RunConfig rc = null;
+        while (it.hasNext()) {
+            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+            rc = add.createConfigForDefaultAction(action, project, lookup);
+            if (rc != null) {
+                break;
+            }
+        }
+        assert rc != null;
+        runGoal(lookup, rc);
     }
     
-    public void runGoal(List goals, Lookup lookup) {
-        runGoal(lookup, new DefaultRunConfig(project, goals));
-    }
     
-    private void runGoal(Lookup lookup, 
-                         RunConfig config) {
+    private void runGoal(Lookup lookup, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
         
-        // setup executor first..                     
+        // setup executor first..
         MavenJavaExecutor exec = new MavenJavaExecutor(config);
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
         //        RequestProcessor.getDefault().post();
         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
-                public void taskFinished(Task task2) {
-                    project.firePropertyChange(NbMavenProject.PROP_PROJECT);
-                }
+            public void taskFinished(Task task2) {
+                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            }
         });
     }
     
-    public boolean isActionEnabled(String str, Lookup lookup) {
-        return true;
+    public boolean isActionEnabled(String action, Lookup lookup) {
+        //TODO maybe needs some performance optimizations
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
+        Iterator it = res.allInstances().iterator();
+        RunConfig rc = null;
+        while (it.hasNext()) {
+            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+            rc = add.createConfigForDefaultAction(action, project, lookup);
+            if (rc != null) {
+                return rc != AdditionalM2ActionsProvider.EMPTY;
+            }
+        }
+        return false;
+    }
+    
+    private String[] getRelPath(String groupName, FileObject[] fos) {
+        Collection toRet = new ArrayList();
+        if (fos.length > 0) {
+            for (int x = 0; x < fos.length; x++) {
+                Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+                SourceGroup[] grp = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+                for (int i = 0; i < grp.length; i++) {
+                    if (grp[i].getName().equals(groupName)) {
+                        String path = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[x]);
+                        if (path != null ) {
+                            toRet.add(path);
+                        }
+                    }
+                }
+            }
+        }
+        return (String[])toRet.toArray(new String[toRet.size()]);
+        
     }
     
     
@@ -130,7 +158,7 @@ public class ActionProviderImpl implements ActionProvider {
 //        }
 //        return null;
 //    }
-//    
+//
 //   /** Find either selected tests or tests which belong to selected source files
 //     */
 //    private FileObject[] findSources(Lookup lookup) {
@@ -140,7 +168,7 @@ public class ActionProviderImpl implements ActionProvider {
 //            return files;
 //        }
 //        return null;
-//    }    
+//    }
     
 //    private String extractPackageName(Lookup lookup, FileObject root, boolean test) {
 //        FileObject[] fos = test ? findTestSources(lookup) : findSources(lookup);
@@ -149,16 +177,16 @@ public class ActionProviderImpl implements ActionProvider {
 //        }
 //        return null;
 //    }
-//    
-//    private String extractPackageName(FileObject fo, FileObject root) {
-//        String path = FileUtil.getRelativePath(root, fo);
-//        path = path.replace('/', '.');
-//        path = path.replace('\\', '.');
-//        if (path.endsWith(".java")) {
-//            path = path.substring(0, path.length() - ".java".length());
-//        }
-//        return path;
-//    }
+//
+    private String extractPackageName(FileObject fo, FileObject root) {
+        String path = FileUtil.getRelativePath(root, fo);
+        path = path.replace('/', '.');
+        path = path.replace('\\', '.');
+        if (path.endsWith(".java")) {
+            path = path.substring(0, path.length() - ".java".length());
+        }
+        return path;
+    }
     
     public Action createBasicMavenAction(String name, String action) {
         return new BasicAction(name, action);
@@ -168,10 +196,6 @@ public class ActionProviderImpl implements ActionProvider {
         return new CustomAction(name, goals);
     }
     
-    
-    //    public Action createMultiProjectAction(String name, String goals) {
-    //        return new MultiProjectAction(name, goals);
-    //    }
     
     private final class BasicAction extends AbstractAction {
         private String gls;
@@ -197,8 +221,8 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            ActionProviderImpl.this.runGoal(Arrays.asList(gls), ActionProviderImpl.this.project.getLookup());
+            ActionProviderImpl.this.runGoal(ActionProviderImpl.this.project.getLookup(), new DefaultRunConfig(ActionProviderImpl.this.project, Arrays.asList(gls)));
         }
     }
- 
+    
 }
