@@ -97,19 +97,19 @@ public class CreateNbmMojo
     
     /**
      * keystore location for signing the nbm file
-     * @parameter
+     * @parameter expression="${keystore}"
      */
     private String keystore;
     
     /**
      * keystore password
-     * @parameter
+     * @parameter expression="${keystorepass}"
      */
     private String keystorepassword;
     
     /**
      * keystore alias
-     * @parameter
+     * @parameter expression="${keystorealias}"
      */
     private String keystorealias;
     
@@ -209,7 +209,6 @@ public class CreateNbmMojo
                     NbmResource res = (NbmResource)it.next();
                     if (res.getBaseDirectory() != null) {
                         File base = new File(project.getBasedir(), res.getBaseDirectory());
-                        System.out.println("basedir=" + base);
                         FileSet set = new FileSet();
                         set.setDir(base);
                         if (res.getIncludes().size() > 0){
