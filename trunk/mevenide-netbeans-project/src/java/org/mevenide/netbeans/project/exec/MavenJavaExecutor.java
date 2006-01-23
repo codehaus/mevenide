@@ -130,7 +130,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         if (opts == null) {
             opts = "-Xmx256m";
         }
-        lst.add(opts);
+        lst.addAll(Arrays.asList(opts.split(" ")));
         
         File lib = new File(mavenHome, "lib");
         String forehead = null;
