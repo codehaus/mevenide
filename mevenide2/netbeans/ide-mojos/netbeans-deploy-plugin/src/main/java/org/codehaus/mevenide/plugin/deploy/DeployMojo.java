@@ -77,6 +77,10 @@ public class DeployMojo extends AbstractMojo {
     
     
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (clientUrlPart == null) {
+            getLog().debug("Setting empty clientUrlPart");
+            clientUrlPart = "";
+        }
         Set allowedPackagings = new HashSet();
         allowedPackagings.add("war");
         allowedPackagings.add("ejb");
@@ -90,11 +94,11 @@ public class DeployMojo extends AbstractMojo {
             // see issue #62448
             ClassLoader current = (ClassLoader)Lookup.getDefault().lookup(ClassLoader.class);
             if (current == null) {
-                getLog().error("No classloader in lookup");
+                getLog().debug("No classloader in lookup");
                 current = ClassLoader.getSystemClassLoader();
             }
             if (current != null) {
-                getLog().error("setting classloader..");
+                getLog().debug("setting classloader..");
                 originalLoader = Thread.currentThread().getContextClassLoader();
                 Thread.currentThread().setContextClassLoader(current);
             }
@@ -103,8 +107,14 @@ public class DeployMojo extends AbstractMojo {
             fob.refresh(); // without this the "target" directory is not found in filesystems
             
             J2eeModuleProvider jmp = (J2eeModuleProvider) FileOwnerQuery.getOwner(fob).getLookup().lookup(J2eeModuleProvider.class);
+            
             getLog().info("Deploying on " + Deployment.getDefault().getServerInstanceDisplayName(jmp.getServerInstanceID()));
             try {
+                getLog().info("    debugMode=" + debugmode);
+                getLog().info("    clientModuleuri=" + clientModuleUri);
+                getLog().info("    clientUrlPart=" + clientUrlPart);
+                getLog().info("    forcedeploy=" + forceRedeploy);
+                
                 String clientUrl = Deployment.getDefault().deploy(jmp, debugmode, clientModuleUri, clientUrlPart, forceRedeploy/*, new DLogger(getLog())*/);
                 if (clientUrl != null) {
                     getLog().info("Executing browser to show " + clientUrl);
@@ -129,8 +139,6 @@ public class DeployMojo extends AbstractMojo {
                     
                 }
             } catch (Exception ex) {
-                ex.printStackTrace();
-                getLog().error(ex);
                 throw new MojoFailureException("Failed Deployment:" + ex.getMessage());
             }
         } finally {
