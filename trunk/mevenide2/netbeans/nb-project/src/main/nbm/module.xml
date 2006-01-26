@@ -80,12 +80,4 @@
 	  <type>spec</type>
       </dependency>
    </dependencies> 
-   <nbmResources>
-       <nbmResource>
-           <baseDirectory>../ide-mojos/netbeans-debugger-plugin/target</baseDirectory>
-           <includes>
-               <include>m2-repository/**</include>
-           </includes>
-       </nbmResource>
-   </nbmResources>
 </nbm>
