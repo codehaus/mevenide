@@ -17,28 +17,30 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.filesystems.FileObject;
 
 /**
- * a default implementation of AdditionalM2ActionsProvider, a fallback when nothing is
- * user configured or overriden by a more specialized provider.
+ * user defined definitions, to be found in the project directory in the nbactions.xml file.
  * @author mkleint
  */
-public class DefaultActionGoalProvider extends AbstractActionGoalProvider {
-    /** Creates a new instance of DefaultActionProvider */
-    public DefaultActionGoalProvider() {
+public class UserActionGoalProvider extends AbstractActionGoalProvider {
+    /** Creates a new instance of UserActionGoalProvider */
+    public UserActionGoalProvider() {
     }
     
     public InputStream getActionDefinitionStream(NbMavenProject project) {
-       String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml";
-       InputStream in = getClass().getResourceAsStream(path);
-        if (in == null) {
-            System.out.println("no instream for=" + path);
-            return null;
+        FileObject fo = project.getProjectDirectory().getFileObject("nbactions.xml");
+        if (fo != null) {
+            try {
+                return fo.getInputStream();
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
         }
-       return in;
+        return null;
     }
-
     
 }
