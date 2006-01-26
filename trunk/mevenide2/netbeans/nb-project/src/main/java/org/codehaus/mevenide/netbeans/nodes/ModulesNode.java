@@ -17,17 +17,22 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -110,10 +115,32 @@ public class ModulesNode extends AbstractNode {
     }
     
     private static class ProjectFilterNode extends FilterNode {
+        private NbMavenProject project;
         ProjectFilterNode(NbMavenProject proj, Node original, boolean isPom) {
             super(original, isPom ? new ModulesChildren(proj) : Children.LEAF);
-            disableDelegation(DELEGATE_GET_ACTIONS);
+//            disableDelegation(DELEGATE_GET_ACTIONS);
+            project = proj;
         }
+
+        public Action[] getActions(boolean b) {
+            ArrayList lst = new ArrayList();
+            lst.add(new OpenProjectAction(project));
+            lst.addAll(Arrays.asList(super.getActions(b)));
+            return (Action[])lst.toArray(new Action[lst.size()]);
+        }
+        
+        
     }
     
+    private static class OpenProjectAction extends AbstractAction {
+        private NbMavenProject project;
+        public OpenProjectAction(NbMavenProject proj) {
+            putValue(Action.NAME, "Open Project");
+            project = proj;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            OpenProjects.getDefault().open(new Project[] {project}, false);
+        }
+    }
 }
