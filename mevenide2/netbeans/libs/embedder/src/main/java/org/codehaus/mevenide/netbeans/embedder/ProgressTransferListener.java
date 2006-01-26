@@ -49,12 +49,10 @@ public class ProgressTransferListener implements TransferListener {
             map.put(fil, handle);
         }
         Resource res = transferEvent.getResource();
-        System.out.println("res=" + res.getContentLength());
     }
 
     public void transferStarted(TransferEvent transferEvent) {
         Resource res = transferEvent.getResource();
-        System.out.println("res2=" + res.getContentLength());
         File fil = transferEvent.getLocalFile();
         ProgressHandle handle;
         synchronized (LOCK) {
