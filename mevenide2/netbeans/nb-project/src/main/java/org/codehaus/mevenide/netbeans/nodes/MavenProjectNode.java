@@ -17,12 +17,16 @@
 package org.codehaus.mevenide.netbeans.nodes;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
@@ -31,8 +35,11 @@ import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ActionProvider;
+import org.netbeans.spi.project.SubprojectProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.ErrorManager;
 import org.openide.actions.FindAction;
@@ -131,6 +138,9 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(project.createRefreshAction());
         lst.add(CommonProjectActions.setAsMainProjectAction());
         lst.add(CommonProjectActions.openSubprojectsAction());
+        if ("pom".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+            lst.add(new CloseSuprojectsAction());
+        }
         lst.add(CommonProjectActions.closeProjectAction());
         lst.add(null);
         lst.add(SystemAction.get(FindAction.class));
@@ -171,6 +181,18 @@ public class MavenProjectNode extends AbstractNode {
     public String getShortDescription() {
         return project.getShortDescription();
     }
+    
+    private class CloseSuprojectsAction extends AbstractAction {
+        public CloseSuprojectsAction() {
+            putValue(Action.NAME, "Close Required Projects");
+        }
 
+        public void actionPerformed(ActionEvent e) {
+            SubprojectProvider subs = (SubprojectProvider)project.getLookup().lookup(SubprojectProvider.class);
+            Set lst = subs.getSubprojects();
+            Project[] arr = (Project[]) lst.toArray(new Project[lst.size()]);
+            OpenProjects.getDefault().close(arr);
+        }
+    }
 
 }
