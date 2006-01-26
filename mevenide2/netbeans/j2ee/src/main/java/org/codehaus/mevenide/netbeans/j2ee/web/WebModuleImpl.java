@@ -97,6 +97,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         }
         URI dir = project.getWebAppDirectory();
         File fil = new File(new File(dir), path);
+        fil = FileUtil.normalizeFile(fil);
         return fil;
     }
     
@@ -133,7 +134,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     }
     
     public String getUrl() {
-        System.out.println("get rul=" + url);
+        System.out.println("get url=" + url);
         return url;
     }
     
@@ -178,8 +179,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
 //        System.out.println("get DD");
         if (J2eeModule.WEB_XML.equals(string)) {
             try {
-                
-                FileObject deploymentDescriptor = getContentDirectory().getFileObject(J2eeModule.WEB_XML);
+                FileObject content = getContentDirectory();
+                if (content == null) {
+                    content = getDocumentBase();
+                }
+                FileObject deploymentDescriptor = content.getFileObject(J2eeModule.WEB_XML);
                 if(deploymentDescriptor != null) {
                     WebApp web = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
                     if (web != null) {

@@ -50,7 +50,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
-        getConfigSupport().setWebContextRoot("/" + getDeploymentName());
+        setContextPath(implementation.getContextPath());
     }
     
     public WebModule findWebModule(FileObject fileObject) {
@@ -75,17 +75,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         if (name == null) {
             return null;
         }
-        if (J2eeModule.WEB_XML.equals(name)) {
-            return implementation.getDDFile(name);
-        }
         String path = getConfigSupport().getContentRelativePath(name);
         if (path == null) {
             path = name;
         }
-        String loc = project.getOriginalMavenProject().getBuild().getDirectory();
-        File fil = FileUtil.normalizeFile(new File(new File(loc, project.getOriginalMavenProject().getBuild().getFinalName()), path));
-        System.out.println("guess is=" + fil);
-        return fil;
+        return implementation.getDDFile(path);
     }
 
     
@@ -96,6 +90,20 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         }
         return null;
     }
+    
+    public String getContextPath() {
+        if(implementation.getDeploymentDescriptor() == null) {
+            return null;
+        }
+        return getConfigSupport().getWebContextRoot ();
+    }
+    
+    public void setContextPath(String path) {
+        if (implementation.getDeploymentDescriptor() != null) {
+            getConfigSupport().setWebContextRoot (path);
+        }
+    }
+    
     
     public void setServerInstanceID(String str) {
         serverId = str;
