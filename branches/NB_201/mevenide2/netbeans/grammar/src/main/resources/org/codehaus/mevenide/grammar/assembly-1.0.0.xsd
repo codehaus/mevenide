@@ -1,0 +1,214 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://maven.apache.org/POM/4.0.0" xmlns="http://maven.apache.org/POM/4.0.0">
+  <xs:element name="assembly" type="Assembly">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+      <xs:documentation source="description">Describes the assembly layout and packaging.</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:complexType name="Assembly">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+      <xs:documentation source="description">Describes the assembly layout and packaging.</xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="id" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="formats" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="format" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="includeBaseDirectory" minOccurs="0" type="xs:boolean" default="true">
+        <xs:annotation>
+          <xs:documentation source="version">0.0.0+</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="fileSets" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="fileSet" minOccurs="0" maxOccurs="unbounded" type="FileSet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="files" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="file" minOccurs="0" maxOccurs="unbounded" type="FileItem"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="dependencySets" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="dependencySet" minOccurs="0" maxOccurs="unbounded" type="DependencySet"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="DependencySet">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="outputFileNameMapping" minOccurs="0" type="xs:string" default="${artifactId}-${version}.${extension}">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="unpack" minOccurs="0" type="xs:boolean" default="false">
+        <xs:annotation>
+          <xs:documentation source="version">0.0.0+</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="scope" minOccurs="0" type="xs:string" default="runtime">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="outputDirectory" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="includes" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="include" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="excludes" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="fileMode" minOccurs="0" type="xs:string" default="0644">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="directoryMode" minOccurs="0" type="xs:string" default="0755">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="FileItem">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+      <xs:documentation source="description">Allows individual file copy with option to change destination 
+                   file name not supported by fileSet</xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="source" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">Absolute or relative from the module&apos;s directory.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="outputDirectory" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">Relative to root archive.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="destName" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">Destination file name in outputDirectory. Default is source&apos;s file name</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="fileMode" minOccurs="0" type="xs:string" default="0644">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="lineEnding" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+  <xs:complexType name="FileSet">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="directory" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">Absolute or relative from the module&apos;s directory.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="lineEnding" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="outputDirectory" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="includes" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="include" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="excludes" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="exclude" minOccurs="0" maxOccurs="unbounded" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="fileMode" minOccurs="0" type="xs:string" default="0644">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="directoryMode" minOccurs="0" type="xs:string" default="0755">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
+</xs:schema>

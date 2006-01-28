@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/embedder/Bundle.properties
+OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/embedder/layer.xml
+OpenIDE-Public-Packages: **
+
