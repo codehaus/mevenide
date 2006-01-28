@@ -1,8 +1,0 @@
-        
-  <!-- register a xml file describing custom jelly taglib 
-  -->
-        <folder name="XML">
-            <folder name="Mevenide-Grammar">
-                <file name="jelly-custom.xml" url="nbresloc:/@PACKAGEPATH@/resources/jelly-custom.xml"/>
-            </folder>
-        </folder>    
