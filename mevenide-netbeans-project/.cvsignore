@@ -1,6 +1,0 @@
-*.ser
-.classpath
-velocity.log
-build.properties
-.project
-target
