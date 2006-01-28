@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : deployWebAction.xml
+    Created on : January 17, 2006, 7:26 AM
+    Author     : mkleint
+    Description:
+        
+-->
+<actions>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+        </goals>
+        <plugins>
+            <plugin>
+                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
+                <groupId>org.codehaus.mevenide</groupId>
+                <artifactId>netbeans-deploy-plugin</artifactId>
+                <version>LATEST</version>
+            </plugin>
+        </plugins>
+    </action>
+    <action>
+        <actionName>run.single</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+        </goals>
+        <plugins>
+            <plugin>
+                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
+                <groupId>org.codehaus.mevenide</groupId>
+                <artifactId>netbeans-deploy-plugin</artifactId>
+                <version>LATEST</version>
+                <configuration>
+                    <clientUrlPart>${webpagePath}</clientUrlPart>
+                </configuration>
+            </plugin>
+        </plugins>
+    </action>
+    <action>
+        <actionName>debug</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
+        </goals>
+        <plugins>
+            <plugin>
+                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
+                <groupId>org.codehaus.mevenide</groupId>
+                <artifactId>netbeans-deploy-plugin</artifactId>
+                <version>LATEST</version>
+                <configuration>
+                    <debugmode>true</debugmode>
+                </configuration>
+            </plugin>
+        </plugins>
+    </action>
+    <action>
+        <actionName>debug.single</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
+        </goals>
+        <plugins>
+            <plugin>
+                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
+                <groupId>org.codehaus.mevenide</groupId>
+                <artifactId>netbeans-deploy-plugin</artifactId>
+                <version>LATEST</version>
+                <configuration>
+                    <clientUrlPart>${webpagePath}</clientUrlPart>
+                    <debugmode>true</debugmode>
+                </configuration>
+            </plugin>
+        </plugins>
+    </action>
+    
+</actions>
