@@ -39,7 +39,6 @@ public class MavenGrammarModule extends ModuleInstall
  
     private static final long serialVersionUID = -485754848837354747L;
     
-    private static transient ClassLoader mavenClassLoader;
     public void restored()
     {
         // By default, do nothing.
@@ -47,60 +46,5 @@ public class MavenGrammarModule extends ModuleInstall
         
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
     }
-    
-    public void validate() throws java.lang.IllegalStateException
-    {
-//        System.out.println("#########################################validating");
-        String maven_home = System.getProperty("Env-MAVEN_HOME");//NOI18N
-        if (maven_home == null)
-        {
-            throw new IllegalStateException("Maven not installed or the MAVEN_HOME property not set. Cannot Install.");
-        }
-        File pluginDir = new File(maven_home, "lib"); //NOI18N
-        File[] jars = pluginDir.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.startsWith("commons-jelly") || name.equals("maven.jar"); //NOI18N
-            }
-        });
-        try {
-            URL[] urls = new URL[jars.length];
-            for (int i = 0; i < jars.length; i++) {
-                urls[i] = jars[i].toURL();
-            }
-            mavenClassLoader = new URLClassLoader(urls);
-        } catch (MalformedURLException exc)
-        {
-            System.out.println("error" + exc);
-        }
-    }    
-
-    public static ClassLoader getMavenClassLoader() {
-        return mavenClassLoader;
-    }
-    
-    // Less commonly needed:
-    /*
-    public boolean closing() {
-        // return false if cannot close now
-        return true;
-    }
-    public void close() {
-        // shut down stuff
-    }
-     */
-    
-/*     
-    // By default, do nothing.
-    public void uninstalled() {
-    }
-     
-    // By default, call restored().
-    public void updated(int release, String specVersion) {
-    }
-     */
-    
-    // It is no longer recommended to override Externalizable methods
-    // (readExternal and writeExternal). See the Modules API section on
-    // "installation-clean" modules for an explanation.
     
 }
