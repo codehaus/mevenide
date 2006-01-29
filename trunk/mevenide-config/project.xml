@@ -21,14 +21,12 @@
   <pomVersion>3</pomVersion>
   <artifactId>mevenide-config</artifactId>
   <name>Mevenide Config</name>
-  <currentVersion>0.10</currentVersion>
+  <currentVersion>0.11</currentVersion>
   <package>org.mevenide.config</package>
-  <description>
-    The Mevenide Config module provides mechanisms for manipulating Maven
+  <description>The Mevenide Config module provides mechanisms for manipulating Maven
     configuration files. For example, system environment variables, project
     configuration (project.properties), and user-defined configuration
-    (build.properties).
-  </description>
+    (build.properties).</description>
   <versions>
     <version>
       <id>0.3</id>
@@ -111,7 +109,6 @@
     </dependency>
   </dependencies>
   <build>
-
     <resources>
       <resource>
         <directory>${basedir}/etc</directory>
@@ -125,3 +122,4 @@
     </resources>
   </build>
 </project>
+

@@ -2,7 +2,7 @@
 <project>
    <extend>${basedir}/../mevenide-parent/project.xml</extend>
    <artifactId>mevenide-netbeans-j2ee</artifactId>
-   <currentVersion>1.2-SNAPSHOT</currentVersion>
+   <currentVersion>1.2</currentVersion>
    <inceptionYear>2005</inceptionYear>
    <name>Mevenide J2EE support</name>
    <shortDescription>J2EE support for Maven project type.</shortDescription>
@@ -18,17 +18,17 @@
          <type>jar</type>
          <url>http://www.netbeans.org</url>
       </dependency>
-        <dependency>
-            <groupId>netbeans</groupId>
-            <artifactId>org-openide-execution</artifactId>
-            <!-- include nb specification version.. that's important for compiling -->
-            <version>1.5.1</version>
-            <type>jar</type>
-            <url>http://www.netbeans.org</url>
-            <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
-        </dependency>
+      <dependency>
+         <groupId>netbeans</groupId>
+         <artifactId>org-openide-execution</artifactId>
+         <!-- include nb specification version.. that's important for compiling -->
+         <version>1.5.1</version>
+         <type>jar</type>
+         <url>http://www.netbeans.org</url>
+         <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+         </properties>
+      </dependency>
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-io</artifactId>
@@ -56,7 +56,7 @@
       <dependency>
          <groupId>mevenide</groupId>
          <artifactId>mevenide-netbeans-project</artifactId>
-         <version>1.0-SNAPSHOT</version>
+         <version>1.0</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -101,7 +101,7 @@
       <dependency>
          <groupId>mevenide</groupId>
          <artifactId>mevenide-config</artifactId>
-         <version>0.10</version>
+         <version>0.11</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
