@@ -70,6 +70,7 @@ public class JavaPanel extends JPanel implements ProjectPanel {
     private OriginChange ocExecutable;
     
     private NonUiPropertyChange fork;
+    private NonUiPropertyChange forkExec;
     private HashMap changes;
     private boolean initialized;
     
@@ -348,6 +349,15 @@ public class JavaPanel extends JPanel implements ProjectPanel {
             location = IPropertyLocator.LOCATION_NOT_DEFINED;
         }
         fork = new NonUiPropertyChange("maven.compile.fork", value, location);
+
+        value = project.getPropertyResolver().getResolvedValue("maven.mevenide.run.exec");
+        location = project.getPropertyLocator().getPropertyLocation("maven.mevenide.run.exec");
+        if (value == null) {
+            value = Boolean.FALSE.toString();
+            location = IPropertyLocator.LOCATION_NOT_DEFINED;
+        }
+        forkExec = new NonUiPropertyChange("maven.mevenide.run.exec", value, location);
+        changes.put("maven.mevenide.run.exec", forkExec);
     }
     
     private void createToggleChangeInstance(String key, JCheckBox field, OriginChange oc, boolean defaultValue) {
@@ -523,6 +533,14 @@ public class JavaPanel extends JPanel implements ProjectPanel {
                         if (fo != null) {
                             File fil = FileUtil.toFile(fo);
                             txtExecutable.setText(fil.getAbsolutePath());
+                        }
+                        if (forkExec.getOldValue() != "") {
+                            toFind = Utilities.isWindows() ? "java.exe" : "java";
+                            fo = plat.findTool(toFind);
+                            if (fo != null) {
+                                File fil = FileUtil.toFile(fo);
+                                forkExec.setNewValue(fil.getAbsolutePath());
+                            }      
                         }
                     }
                 } else {
