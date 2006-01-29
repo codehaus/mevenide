@@ -35,7 +35,7 @@ import org.mevenide.grammar.TagLibProvider;
  * 
  * @author Milos Kleint (ca206216@tiscali.cz)
  */
-public abstract class MavenTagLibProvider implements TagLibProvider {
+public class MavenTagLibProvider implements TagLibProvider {
 	
 	private static Log logger = LogFactory.getLog(MavenTagLibProvider.class);
 	
@@ -125,6 +125,5 @@ public abstract class MavenTagLibProvider implements TagLibProvider {
 			logger.debug("readCache:key=" + key + "=value=" + pros.getProperty(key));
 		}
 	}
-	
-	protected abstract ClassLoader getMavenClassLoader();
+
 }

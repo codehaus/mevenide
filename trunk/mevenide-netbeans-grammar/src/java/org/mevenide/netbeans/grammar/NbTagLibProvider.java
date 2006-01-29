@@ -49,11 +49,7 @@ public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider 
     /** Creates a new instance of NbTagLibProvider */
     public NbTagLibProvider() {
         dynaTagFile = new File(ConfigUtils.getDefaultLocationFinder().getMavenPluginsDir(), "dynatag.cache");
-        mavenProvider = new MavenTagLibProvider(dynaTagFile) {
-			protected ClassLoader getMavenClassLoader() {
-				return MavenGrammarModule.getMavenClassLoader();
-			}
-        };
+        mavenProvider = new MavenTagLibProvider(dynaTagFile);
     }
     
     public String[] getAvailableTags() {
