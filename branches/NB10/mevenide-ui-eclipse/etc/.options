@@ -1,0 +1,10 @@
+# Debugging options for the org.mevenide.ui plug-in.
+
+# Turn on debugging for the org.mevenide.ui plug-in.
+org.mevenide.ui/debug = false
+
+# Trace Maven POM Management
+org.mevenide.ui/POM_Management = false
+
+# Trace Maven POM Synchronization
+org.mevenide.ui/POM_Synchronization = false

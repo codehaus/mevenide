@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:j="jelly:core">
+	
+  <postGoal name="xdoc:register-reports">
+  	<!-- deregister test related plugins since there are none -->
+    <attainGoal name="maven-jcoverage-plugin:deregister"/>  
+    <attainGoal name="maven-junit-report-plugin:deregister"/>  
+    <attainGoal name="maven-clover-plugin:deregister"/>
+  </postGoal>
+	  
+  <preGoal name="jar:jar">
+    <copy toDir="target/classes">
+      <fileset dir="etc">
+  	    <include name="*.properties"/>
+      </fileset>
+    </copy>
+    <copy toDir="target/classes">
+      <fileset dir="etc">
+  	    <include name="META-INF/services/*"/>
+      </fileset>
+    </copy>
+  </preGoal>
+   
+</project>
+

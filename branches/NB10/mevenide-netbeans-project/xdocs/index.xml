@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="mkleint@codehaus.org">Milos Kleint</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+       <section name="Netbeans Module page">
+        <div id="documentContent">
+            <p>This project allows to open and work with Maven projects in the Netbeans IDE. Mevenide currently supports NetBeans 4.1 and 5.0 dev.</p>
+	</div>
+        </section>
+        
+       <section name="Netbeans 4.1 and 5.0 beta">
+        <div id="documentContent">
+            <p>Mevenide for the 4.1 version and 5.0 beta version contains these <a href="features.html" class="documentLink"> features </a>.</p>
+            <p> You can download the <a href="../download/mevenide-netbeans-0.9.zip"> 0.9 release</a>. It was tested with Maven 1.0.2 and Netbeans IDE 4.1 final. (also 5.0beta)</p>
+            <p>Reasonable effort is made to have it always working with the latest development builds of Netbeans 5.0. Please note that the grammar module 
+            (editor completion for maven xml files) in 0.9 release zip will work
+            with the 4.1 but to get it working with 4.0 you need the <a href="../download/mevenide-netbeans-grammar-0.6.nbm">old 4.0 nbm </a>. 
+        In case you are using 5.0 development builds or 5.0 q-builds, get the <a href="../download/mevenide-netbeans-grammar-0.6.2.nbm">the 5.0 nbm </a>. 
+            </p>
+            <p>
+            To get the latest Netbeans builds, go to the  download page <a href="http://www.netbeans.info/downloads/download.php?a=b&amp;p=1"><img src="images/download-nb-4.gif" border="0" alt="Download NetBeans!"/></a> </p>
+	</div>
+        </section>
+       <section name="Maven 2.0 support">
+        <div id="documentContent">
+            An initial release of Maven2 support has been released. It can be used simultaneously with the Maven1 integration
+            or on it's own. See <a href="http://docs.codehaus.org/display/MEVENIDE/MevenideNetbeans2.0">available features and download instructions</a>
+            It works only in <b>Netbeans 5.0 beta2  and later </b>
+	</div>
+       </section>
+    </body>
+
+</document>

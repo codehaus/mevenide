@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin id="%EclipsePlugin.id"
+		name="%MavenPlugin.Name Properties"
+        version="%MavenPlugin.version"
+        provider-name="%MavenPluginProvider.Name">
+        <requires>
+           <import plugin="org.mevenide.ui"/>
+        </requires>
+        <extension
+              point="org.mevenide.ui.preference">
+              
+				<plugin-provider id="%MavenPlugin.Name" name="%MavenPlugin.Label">
+					<description> 
+						%MavenPlugin.Description
+					</description>
+					<category name="%MavenPlugin.Category.1">
+						<property name="%MavenPluginProperty.1.Name" 
+								  label="%MavenPluginProperty.1.Label" 
+								  default="%MavenPluginProperty.1.Default" 
+								  required="%MavenPluginProperty.1.Required" 
+								  description="%MavenPluginProperty.1.Description" />
+				    </category>
+				</plugin-provider>
+        </extension>
+</plugin>

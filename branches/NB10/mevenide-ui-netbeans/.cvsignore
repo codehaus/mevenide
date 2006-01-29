@@ -1,0 +1,5 @@
+*.project
+*.log
+*.ser
+target
+.classpath

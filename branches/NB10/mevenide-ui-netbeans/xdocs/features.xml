@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+	<title>Features</title>
+  </properties>
+  <body>
+	<section name="Features List">
+	  <div id="documentContent">
+		<p>
+		  Implemented features fall into three categories :
+		  <ul>
+			<li><a href="#Synchronization">Netbeans project and Maven project synchronization</a></li>
+			<li><a href="#Maven Executor">Maven Executor</a></li>
+			<li><a href="#POM Editor">POM Editor</a></li>
+		  </ul>
+		</p>
+	  </div>
+	  <subsection name="Synchronization">
+  	    <div id="documentContent">
+	      <p>
+	        <ul>
+	  	      <li>Dependencies - mounting all dependency jars, to allow Netbeans code completion and other features.</li>
+                      <li>Mounting of source and resource directories</li>
+                      <li>Project Properties viewing (Editing - TODO) </li>
+                      <li>Jar overriding support - TODO </li>
+                      <li>Unite all the features into complete creation of a netbeans project according to the POM </li>
+		    </ul>
+		  </p>
+		</div>
+	  </subsection>
+	  <subsection name="Maven Executor">
+	    <div id="documentContent">
+	      <p>
+	        <ul>
+	  	      <li>Executing Maven goals or goal sequences from within the IDE.</li>
+                      <li>List of all available goals - plugins defined ones as well as custom ones</li>
+        	    </ul>
+		  </p>
+		</div>
+	  </subsection>
+	  <subsection name="POM Editor">
+	  	<div id="documentContent">
+	      <p>
+              TODO
+		  </p>
+		</div>
+	  </subsection>
+	</section>
+  </body>
+</document>

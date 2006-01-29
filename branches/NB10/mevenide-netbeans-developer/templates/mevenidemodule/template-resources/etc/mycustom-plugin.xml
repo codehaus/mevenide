@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin-provider id="maven-mycustom-plugin" name="My maven plugin">
+<description></description>
+<category name="All">
+      <property name="maven.custom.first" 
+                label="maven.custom.first"
+                default=""
+                required="false"
+                description="description"/>                     
+      <property name="maven.custom.second" 
+                label="my second property"
+                default="${basedir}"
+                required="true"
+                description="description"/>                     
+</category>
+</plugin-provider>

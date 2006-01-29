@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project>
+
+  <pomVersion>3</pomVersion>
+  <currentVersion>1.0</currentVersion>
+  <organization>
+    <name>SourceForge</name>
+    <url>http://sourceforge.net/projects/${pom.id}/</url>
+    <logo>http://sourceforge.net/sflogo.php?group_id=1&amp;type=5</logo>
+  </organization>
+  <inceptionYear>2002</inceptionYear>
+
+  <!-- Gump integration -->
+  <gumpRepositoryId>${pom.id}</gumpRepositoryId>
+
+  <url>http://${pom.id}.sourceforge.net</url>
+  <!-- Hard to guess the issuetracking id ...
+  <issueTrackingUrl>http://sourceforge.net/tracker/?group_id=${maven.sourceforge.issuetracking.id}</issueTrackingUrl>
+  -->
+  <siteAddress>${pom.id}.sourceforge.net</siteAddress>
+  <siteDirectory>/home/groups/${pom.id.substring(0,1)}/${pom.id.substring(0,2)}/${pom.id}/htdocs/</siteDirectory>
+  <distributionDirectory>/home/groups/${pom.id.substring(0,1)}/${pom.id.substring(0,2)}/${pom.id}/htdocs/distributions/</distributionDirectory>
+
+  <repository>
+    <connection>scm:cvs:pserver:anoncvs@cvs.${pom.id}.sourceforge.net:/cvsroot/${pom.id}:${pom.id}</connection>
+    <url>http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/${pom.id}/${pom.id}/</url>
+  </repository>
+
+  <versions>
+  </versions>
+
+  <branches>
+  </branches>
+
+  <mailingLists>
+    <mailingList>
+      <name>${pom.name} User List</name>
+      <subscribe>${pom.id}-developer-subscribe@lists.sourceforge.net</subscribe>
+      <unsubscribe>${pom.id}-user-unsubscribe@lists.sourceforge.net</unsubscribe>
+      <!-- Hard to guess the mailing-list id ...
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=${maven.sourceforge.ml.user}</archive>
+      -->
+    </mailingList>
+    <mailingList>
+      <name>${pom.name} Developer List</name>
+      <subscribe>${pom.id}-developer-subscribe@lists.sourceforge.net</subscribe>
+      <unsubscribe>${pom.id}-developer-unsubscribe@lists.sourceforge.net</unsubscribe>
+      <!-- Hard to guess the mailing-list id ...
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=${maven.sourceforge.ml.dev}</archive>
+      -->
+    </mailingList>
+    <mailingList>
+      <name>${pom.name} CVS Commits List</name>
+      <subscribe>${pom.id}-cvs-subscribe@lists.sourceforge.net</subscribe>
+      <unsubscribe>${pom.id}-cvs-unsubscribe@lists.sourceforge.net</unsubscribe>
+      <!-- Hard to guess the mailing-list id ...
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=${maven.sourceforge.ml.cvs}</archive>
+      -->
+    </mailingList>
+  </mailingLists>
+
+  <build>
+
+    <nagEmailAddress>${pom.id}@sourceforge.net</nagEmailAddress>
+
+    <sourceDirectory>src/java</sourceDirectory>
+
+    <unitTestSourceDirectory>src/test</unitTestSourceDirectory>
+    <integrationUnitTestSourceDirectory/>
+
+    <aspectSourceDirectory></aspectSourceDirectory>
+
+    <!-- Unit test classes -->
+    <unitTest>
+      <includes>
+        <include>**/*Test.java</include>
+      </includes>
+    </unitTest>
+    
+    <!-- J A R  R E S O U R C E S -->
+    <!-- Resources that are packaged up inside the JAR file -->
+
+    <resources>
+    </resources>
+
+    <jars>
+    </jars>
+  </build>
+</project>
+

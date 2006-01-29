@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin-provider id="maven-jar-plugin" name="Maven Jar Plugin">
+<description></description>
+<category name="All">
+      <property name="maven.jar.excludes" 
+                label="maven.jar.excludes"
+                default="**/package.html"
+                required="false"
+                description="Specifies a list of patterns to exclude from the jar process. The default value is **/package.html, and is used by the java:jar goal."/>                     
+      <property name="maven.jar.includes" 
+                label="maven.jar.includes"
+                default=""
+                required="false"
+                description=" Specifies a list of patterns to include with the jar process. The default value is null"/>                    
+      <property name="maven.jar.index" 
+                label="maven.jar.index"
+                default="false"
+                required="false"
+                description="Whether to create an index list to speed up classloading. This is a JDK 1.3+ specific feature. Defaults to false."/>
+      <property name="maven.jar.manifest" 
+                label="maven.jar.manifest"
+                default=""
+                required="false"
+                description=" Specifies the manifest to be used in the creation of a jar. This file is 'merged' with the default manifest created by Maven. Any values specified in the file referenced by this property will override Maven's defaults."/>
+      <property name="maven.jar.manifest.classpath.add" 
+                label="maven.jar.manifest.classpath.add"
+                default="false"
+                required="false"
+                description="Tells maven to add classpath information the the jar manifest. This can cause some applications to break, so it has been disabled by default. Set to 'true' to enable classpath information."/>                    
+      <property name="maven.jar.manifest.extensions.add" 
+                label="maven.jar.manifest.extensions.add"
+                default="false"
+                required="false"
+                description="Tells maven to add extension information the the jar manifest. This can cause some applications to break, so it has been disabled by default. Set to 'true' to enable extension information."/>
+      <property name="maven.jar.mainclass" 
+                label="maven.jar.mainclass"
+                default=""
+                required="false"
+                description="Specifies the Main-Class attribute for your manifest. If not set, no MainClass attribute will be added to the manifest."/>
+      <property name="maven.jarResources.basedir" 
+                label="maven.jarResources.basedir"
+                default="${basedir}"
+                required="false"
+                description="The base directory from which resources to be included in a jar can be found. Defaults to the base directory of the project."/>
+
+      <property name="maven.jar.compress" 
+                label="maven.jar.compress"
+                default="true"
+                required="false"
+                description="Not only store data but also compress them, defaults to true."/>
+   </category>
+</plugin-provider>

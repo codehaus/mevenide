@@ -1,0 +1,7 @@
+  <preGoal name="nbm:prepare-nbm-resources">
+      <!--copy the project templates to correct location -->
+      <ant:mkdir dir="${maven.nbm.build.dir}/netbeans/${maven.nbm.cluster.name}/maven-project-templates"/>
+      <ant:copy toDir="${maven.nbm.build.dir}/netbeans/${maven.nbm.cluster.name}/maven-project-templates">
+          <fileset dir="${basedir}/templates"/>
+      </ant:copy>
+  </preGoal>  

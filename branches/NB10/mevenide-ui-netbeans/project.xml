@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE project [
+  <!ENTITY netbeans-dependencies SYSTEM "file:../mevenide-ui-netbeans/pom-fragments/netbeans-dependencies.xml">	
+]>
+<project>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <id>mevenide-ui-netbeans</id>
+  <name>Mevenide Netbeans</name>
+  <artifactId>mevenide-ui-netbeans</artifactId>
+  <currentVersion>0.1-SNAPSHOT</currentVersion>
+  <package>org.mevenide.ui.netbeans</package>
+  <description>Netbeans Maven integration</description>
+  <shortDescription>NetbeansIDE maven module</shortDescription>
+  
+  <dependencies>
+    <dependency>     
+        <groupId>mevenide</groupId>
+        <artifactId>goals-grabber</artifactId>
+        <version>0.3-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+    </dependency>
+    <dependency>     
+        <groupId>mevenide</groupId>
+        <artifactId>mevenide-core</artifactId>
+        <version>0.2-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+    </dependency>
+    <dependency>
+        <groupId>mevenide</groupId>
+        <artifactId>mevenide-config</artifactId>
+        <version>0.3-SNAPSHOT</version>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+    </dependency>
+    <dependency>     
+        <groupId>maven</groupId>
+        <artifactId>maven</artifactId>
+        <version>1.0-rc2</version>
+        <type>jar</type>
+        <properties>
+            <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+        <!-- a runtime dependency for netbeans, will include all the maven related jars on classpath -->
+<!--        <dependency>
+            <groupId>mevenide</groupId>
+            <artifactId>maven-nb-module</artifactId>
+            <version>1.0-RC1</version>
+            <type>jar</type>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+    -->        
+    &netbeans-dependencies;
+    
+    <dependency>
+        <groupId>commons-logging</groupId>
+        <artifactId>commons-logging</artifactId>
+        <version>1.0.3</version>
+        <type>jar</type>
+        <properties>
+             <netbeans.module.dep>spec</netbeans.module.dep>
+        </properties>
+    </dependency>
+    <dependency>
+        <!-- for netbeans part of maven module -->
+        <groupId>commons-discovery</groupId>
+        <artifactId>commons-discovery</artifactId>
+        <version>0.1</version>
+        <type>jar</type>
+    </dependency>
+    
+  </dependencies>
+  
+  <build>
+    <resources>
+      <resource>
+        <directory>src/conf</directory>
+        <includes>
+          <include>**</include>
+        </includes>
+        <excludes>
+          <exclude>**/.nbattrs</exclude>
+          <exclude>manifest.mf</exclude>
+        </excludes>
+      </resource>
+    </resources>
+  </build>
+
+</project>
+

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  # =========================================================================
+  # Copyright 2003-2005 Mevenide Team
+  # 
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #      http://www.apache.org/licenses/LICENSE-2.0
+  #
+  #  Unless required by applicable law or agreed to in writing, software
+  #  distributed under the License is distributed on an "AS IS" BASIS,
+  #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  #  See the License for the specific language governing permissions and
+  #  limitations under the License.
+  # =========================================================================
+  -->
+<document>
+
+  <properties>
+    <author email="rhill2@free.fr">Gilles Dodinet</author>
+    <title>Overview</title>
+  </properties>
+
+  <body>
+    <section name="Project Overview">
+        	
+      <p>
+        This project provides an API for resolving environment
+        related properties and variables. It provides the following
+        functionality:
+      </p>
+      <ul>
+        <li>
+          <code>org.mevenide.context</code> provides a
+          single entry point into the Maven project model
+        </li>
+        <li>
+          <code>org.mevenide.environment</code> exposes
+          various environment values, such as MAVEN_HOME,
+          to the model
+        </li>
+        <li>
+          <code>org.mevenide.properties</code> property
+          file management that keeps track of comments
+          and element order
+        </li>
+        <li>
+          <code>org.mevenide.resolver</code> expression
+          evaluation, which is used to resolve scripted
+          properties. For example, ${some.property} or
+          ${pom.build.sourceDirectory}
+        </li>
+      </ul>
+      <p>Refer to the javadoc and source xref for more information.</p>
+			
+    </section>
+  </body>
+</document>

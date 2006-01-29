@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--JBuilder XML Project-->
+<project>
+  <property category="debug.0" name="SmartStepRedefineClasses" value="0"/>
+  <property category="debug.0" name="SmartStepSkipStaticInitializers" value="0"/>
+  <property category="debug.0" name="SmartStepSkipSynthetics" value="0"/>
+  <property category="generalFormatting" name="blockIndent" value="4"/>
+  <property category="generalFormatting" name="tabSize" value="4"/>
+  <property category="generalFormatting2" name="blockIndent" value="4"/>
+  <property category="generalFormatting2" name="overrideBasicFormatting" value="1"/>
+  <property category="generalFormatting2" name="tabSize" value="4"/>
+  <property category="idl" name="ProcessIDL" value="false"/>
+  <property category="javaFormatting" name="alwaysClasses" value="1"/>
+  <property category="javaFormatting" name="arrayInitDataOnNewLine" value="0"/>
+  <property category="javaFormatting" name="catchOnNewLine" value="0"/>
+  <property category="javaFormatting" name="elseOnNewLine" value="0"/>
+  <property category="javaFormatting" name="extendsOnNewLine" value="0"/>
+  <property category="javaFormatting" name="finallyOnNewLine" value="0"/>
+  <property category="javaFormatting" name="packagePrefixGroups" value="java;javax;BLANK_LINE;java.awt;javax.swing;BLANK_LINE;org;(*)"/>
+  <property category="javaFormatting" name="spaceBeforeMethodDefLparen" value="1"/>
+  <property category="javaFormatting" name="throwsOnNewLine" value="1"/>
+  <property category="javaFormatting" name="whileOnNewLine" value="0"/>
+  <property category="javadoc" name="custom.tags.1" value="todo;a;To Do:"/>
+  <property category="optimize.0" name="OptimizableType" value="intuitive.ide.borland.jb10.ProfilerBootstrap"/>
+  <property category="optimize.0" name="oicc.FilterFile" value="mevenide-ui-jbuilder.oif"/>
+  <property category="optimize.0" name="oipr.DisableMemoryProfiler" value="1"/>
+  <property category="optimize.0" name="oipr.FilterFile" value="mevenide-ui-jbuilder.oif"/>
+  <property category="runtime" name="DefaultConfiguration" value="-1"/>
+  <property category="runtime.0" name="BuildTargetOnRun" value="org.mevenide.ui.jbuilder.MavenBuilder;project.xml;clean"/>
+  <property category="runtime.0" name="ConfigurationName" value="Default (without Maven goal)"/>
+  <property category="runtime.0" name="RunnableType" value="com.borland.jbuilder.runtime.OpenToolRunner"/>
+  <property category="runtime.0" name="opentool.jar" value="[target/opentool/mevenide-ui-jbuilder.jar]/mevenide-ui-jbuilder.jar"/>
+  <property category="runtime.0" name="opentool.parameters" value="-verbose"/>
+  <property category="runtime.0" name="opentool.runjar" value="1"/>
+  <property category="runtime.1" name="BuildTargetOnRun" value="com.jahia.opentools.maven.MavenBuilder;maven.xml;java:compile"/>
+  <property category="runtime.1" name="ConfigurationName" value="Maven Goal Test"/>
+  <property category="runtime.1" name="RunnableType" value="com.borland.jbuilder.runtime.ApplicationRunner"/>
+  <property category="serverservices" name="disabled.services" value="jdatastore"/>
+  <property category="sys" name="AuthorLabel" value="@author"/>
+  <property category="sys" name="BackupPath" value="target/bak"/>
+  <property category="sys" name="BeansInstantiate" value="false"/>
+  <property category="sys" name="BraceStyle" value="0"/>
+  <property category="sys" name="CheckStable" value="1"/>
+  <property category="sys" name="Company" value="Jahia Ltd"/>
+  <property category="sys" name="CompanyLabel" value="Company:"/>
+  <property category="sys" name="Copyright" value="Copyright (c) 2004 Jahia Ltd"/>
+  <property category="sys" name="CopyrightLabel" value="Copyright:"/>
+  <property category="sys" name="DefaultPath" value="src/java"/>
+  <property category="sys" name="Description" value=""/>
+  <property category="sys" name="DescriptionLabel" value="Description:"/>
+  <property category="sys" name="DocPath" value="doc"/>
+  <property category="sys" name="EventMatch" value="false"/>
+  <property category="sys" name="EventStyle" value="1"/>
+  <property category="sys" name="ExcludeClassEnabled" value="0"/>
+  <property category="sys" name="IncludeTestPath" value="1"/>
+  <property category="sys" name="InstanceVisibility" value="0"/>
+  <property category="sys" name="JDK" value="java version 1.4.2_04-b05"/>
+  <property category="sys" name="LastTag" value="0"/>
+  <property category="sys" name="Libraries" value="Open Tools SDK;commons-collections-2.1;commons-logging-1.0.1;xpp3-1.1.2a;log4j-1.2.7;maven-1.0.1;jdom-1.0;xml-apis-1.0.b2;mevenide-config-0.7;mevenide-core-0.7;goals-grabber-0.8;commons-lang-1.0.1"/>
+  <property category="sys" name="MakeStable" value="0"/>
+  <property category="sys" name="OutPath" value="target/classes"/>
+  <property category="sys" name="SourcePath" value="src/java;test"/>
+  <property category="sys" name="TestPath" value="test"/>
+  <property category="sys" name="Title" value=""/>
+  <property category="sys" name="TitleLabel" value="Title:"/>
+  <property category="sys" name="Version" value="1.0"/>
+  <property category="sys" name="VersionLabel" value="@version"/>
+  <property category="sys" name="WorkingDirectory" value="."/>
+  <property category="sys" name="enable.auto.packages" value="false"/>
+  <node name="org.mevenide.ui.jbuilder" type="Package"/>
+  <node name="OpenTool" type="Archive">
+    <property category="archiving" name="archiverClass" value="com.borland.jbuilder.wizard.archive.OpenToolArchiver"/>
+    <property category="archiving" name="contentRules.1" value="I:**/*.*"/>
+    <property category="archiving" name="overrideManifestPath" value="src/conf/classes.opentools"/>
+    <property category="archiving" name="targetPath" value="target/opentool/mevenide-ui-jbuilder.jar"/>
+    <property category="archiving" name="usingRules" value="1"/>
+  </node>
+  <file path="src/conf/classes.opentools"/>
+  <file path="project.properties"/>
+  <file path="project.xml">
+    <property category="antparams" name="build.compiler" value="com.borland.jbuilder.ant.compiler.Bmj"/>
+  </file>
+</project>

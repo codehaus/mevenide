@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <pomVersion>3</pomVersion>
+    <groupId>mevenide</groupId>
+    <logo>/images/mevenide-simple-125x37.png</logo>
+    <organization>
+        <name>The Codehaus</name>
+        <url>http://www.codehaus.org/</url>
+        <logo>/images/codehaus_209x40.gif</logo>
+    </organization>
+    <inceptionYear>2003</inceptionYear>
+    <package>org.mevenide</package>
+    <url>http://mevenide.codehaus.org/${pom.artifactId}</url>
+    <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10480</issueTrackingUrl>
+    <siteAddress>beaver.codehaus.org</siteAddress>
+    <siteDirectory>/home/projects/mevenide/public_html/${pom.artifactId}</siteDirectory>
+    <distributionDirectory>/dist</distributionDirectory>
+    <repository>
+        <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
+        <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
+        <url>http://cvs.mevenide.codehaus.org/${pom.artifactId}/</url>
+    </repository>
+    <mailingLists>
+        <mailingList>
+            <name>Mevenide User List</name>
+            <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/user/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Mevenide Developer List</name>
+            <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/dev/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Mevenide Announce List</name>
+            <subscribe>announce-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>announce-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/announce/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Mevenide SCM List</name>
+            <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/scm/</archive>
+        </mailingList>
+    </mailingLists>
+    <developers>
+        <developer>
+            <name>Gilles Dodinet</name>
+            <id>gdodinet</id>
+            <email>rhill2@free.fr</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Jeffrey Bonevich</name>
+            <id>jbonevic</id>
+            <email>jeff@bonevich.com</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <url>http://www.bonevich.com/index.php</url>
+            <timezone>-4</timezone>
+        </developer>
+        <developer>
+            <name>Milos Kleint</name>
+            <id>mkleint</id>
+            <email>mkleint@codehaus.org</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Jens Andersen</name>
+            <id>jens</id>
+            <email>jens@iostream.net</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <url>http://www.iostream.net/</url>
+            <timezone>+1</timezone>
+        </developer>
+        <developer>
+            <name>Serge Huber</name>
+            <id>shuber</id>
+            <email>shuber2@jahia.com</email>
+            <organization>Jahia Ltd</organization>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Peter Nabbefeld</name>
+            <id>epdv</id>
+            <email>Peter.Nabbefeld@gmx.de</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Arik Kfir</name>
+            <id>arik</id>
+            <email>arikkfir@gmail.com</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+            <url>http://www.codehaus.org/~arik/</url>
+            <timezone>2</timezone>
+        </developer>
+        <developer>
+            <name>Faron Dutton</name>
+            <id>fdutton</id>
+            <email>fdutton@codehaus.org</email>
+            <roles>
+                <role>Developer Java</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Ludovic Claude</name>
+            <email>ludovicc@users.sourceforge.net</email>
+        </contributor>
+        <contributor>
+            <name>Emmanuel Venisse</name>
+            <email>evenisse@apache.org</email>
+        </contributor>
+    </contributors>
+    <dependencies>
+        <!-- required for maven-jcoverage-plugin to work -->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.0.b2</version>
+        </dependency>
+        <dependency>
+            <groupId>maven-plugins</groupId>
+            <artifactId>maven-findbugs-plugin</artifactId>
+            <version>0.9.2</version>
+            <type>plugin</type>
+        </dependency>
+        <dependency>
+            <groupId>statcvs</groupId>
+            <artifactId>maven-statcvs-plugin</artifactId>
+            <version>2.5</version>
+            <type>plugin</type>
+        </dependency>
+    </dependencies>
+    <build>
+        <nagEmailAddress>rhill@localhost</nagEmailAddress>
+        <sourceDirectory>src/java</sourceDirectory>
+        <unitTestSourceDirectory>src/test/java</unitTestSourceDirectory>
+        <aspectSourceDirectory>src/aspects</aspectSourceDirectory>
+        <unitTest>
+            <includes>
+                <include>**/*Test.java</include>
+            </includes>
+            <excludes>
+                <exclude>**/Abstract*Test.java</exclude>
+            </excludes>
+            <resources>
+                <resource>
+                    <directory>${basedir}/etc</directory>
+                    <includes>
+                        <include>**/*.*</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${basedir}/src/test/etc</directory>
+                    <includes>
+                        <include>**/*.*</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${basedir}/src/test/etc</directory>
+                    <includes>
+                        <include>fixtures/*.*</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${basedir}/src/test/conf</directory>
+                    <includes>
+                        <include>**/*.*</include>
+                    </includes>
+                </resource>
+                <resource>
+                    <directory>${basedir}/etc</directory>
+                    <includes>
+                        <include>*.*</include>
+                        <include>META-INF/services/*.*</include>
+                        <include>templates/**/*.*</include>
+                    </includes>
+                </resource>
+            </resources>
+        </unitTest>
+        <resources>
+            <resource>
+                <directory>${basedir}/etc</directory>
+                <includes>
+                    <include>*.*</include>
+                    <include>META-INF/services/*.*</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+    <reports>
+        <report>maven-jdepend-plugin</report>
+        <report>maven-pmd-plugin</report>
+        <report>maven-checkstyle-plugin</report>
+        <report>maven-simian-plugin</report>
+        <report>maven-findbugs-plugin</report>
+        <report>maven-changes-plugin</report>
+        <report>maven-changelog-plugin</report>
+        <report>maven-file-activity-plugin</report>
+        <report>maven-developer-activity-plugin</report>
+        <report>maven-statcvs-plugin</report>
+        <report>maven-jxr-plugin</report>
+        <!-- report>maven.dotuml.plugin</report -->
+        <report>maven-junit-report-plugin</report>
+        <report>maven-jcoverage-plugin</report>
+        <!-- report>maven-clover-plugin</report -->
+        <report>maven-tasklist-plugin</report>
+        <report>maven-javadoc-plugin</report>
+        <report>maven-faq-plugin</report>
+        <!-- report>maven-linkcheck-plugin</report -->
+    </reports>
+</project>
+

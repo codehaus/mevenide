@@ -1,0 +1,15 @@
+   <dependency>
+      <groupId>jbuilder</groupId>
+      <artifactId>jbuilder</artifactId>
+      <version>2005</version>
+   </dependency>
+   <dependency>
+      <groupId>jbuilder</groupId>
+      <artifactId>help</artifactId>
+      <version>2005</version>
+   </dependency>
+   <dependency>
+      <groupId>jbuilder</groupId>
+      <artifactId>primetime</artifactId>
+      <version>2005</version>
+   </dependency>

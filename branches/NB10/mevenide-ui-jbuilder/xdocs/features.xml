@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+<document>
+
+  	<properties>
+    	<author email="shuber2@jahia.com">Serge Huber</author>
+    	<title>Maven JBuilder OpenTool Features</title>
+  	</properties>
+
+	<body>
+		<section name="Features">
+			
+			<subsection name="Maven goal integration">
+				<div id="documentContent">
+				  <p>The list of goals you can use in your project is completely integrated with
+				  JBuilder's target system, so you may easily use Maven goals when building or
+				  even running programs.<br/>
+				  <br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/browser.png"/><br/>
+					Project browser integration<br/>
+					<br/>
+					<img border="1px" src="images/screenshots/messages.png"/><br/>
+					Maven output in message window<br/>
+					<br/>
+				  </center>
+				  </p>
+				  <p>For example you can call a deployment Maven goal just before running your
+				  program<br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/run_config.png"/><br/>
+					Runtime configuration goal integration<br/>
+					<br/>
+				  </center>
+				  </p>
+				</div>
+			</subsection>
+			
+			<subsection name="Maven settings">
+				<div id="documentContent">
+				  <p>You can also set some setting on how Maven execution will happen :<br/>
+				  <center>
+				    <img border="1px" src="images/screenshots/project_properties.png"/><br/>
+					Maven settings for project<br/>
+					<br/>
+				  </center>
+				  </p>
+				</div>
+			</subsection>
+
+			<subsection name="Automatic Dependency Library Generation">
+				<div id="documentContent">
+				<p>This tool also automatically updates a JBuilder library called
+				   <b>MavenAutoUpdated.library</b> that is generated in the same directory as the
+				   JBuilder project (*.jpx) file. <br/>
+				   <center>
+				     <img border="1px" src="images/screenshots/autoupdated_library.png"/><br/>
+ 					 Automatically updated JAR library<br/>
+					 <br/>
+				   </center>
+				   It is generated from the Maven project
+				   descriptor file (project.xml), which contains all the JAR dependencies. In
+				   order for this function to work, you must have inserted the <b>project.xml</b>
+				   in your project and the JARs *must* be already present in
+				   the maven local repository, which is assumed to be located in :
+				</p>
+				<p>${user.home}/.maven/repository</p>
+				<p>You can therefore simply include all Maven dependencies as a required library
+					for the JBuilder project and you should then be able to compile the project
+					with JBuilder in sync with Maven. Note that this OpenTool does not automatically
+					insert the library into the project, since this is something that might not
+					be desired, but the library file will always be updated nonetheless (should
+					you want to add it later on).
+				</p>
+				</div>
+			</subsection>
+						
+		</section>
+	
+	</body>
+	
+</document>

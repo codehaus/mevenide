@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  # =========================================================================
+  # Copyright 2003-2005 Mevenide Team
+  # 
+  # Licensed under the Apache License, Version 2.0 (the "License");
+  # you may not use this file except in compliance with the License.
+  # You may obtain a copy of the License at
+  #
+  #      http://www.apache.org/licenses/LICENSE-2.0
+  #
+  #  Unless required by applicable law or agreed to in writing, software
+  #  distributed under the License is distributed on an "AS IS" BASIS,
+  #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  #  See the License for the specific language governing permissions and
+  #  limitations under the License.
+  # =========================================================================
+  -->
+
+<project>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
+  <pomVersion>3</pomVersion>
+  <name>Mevenide Master</name>
+  <id>mevenide-master</id>
+  <artifactId>mevenide-master</artifactId>
+  <currentVersion>0.2.2</currentVersion>
+  <url>http://mevenide.codehaus.org/</url>
+  
+  <siteDirectory>/home/projects/mevenide/public_html</siteDirectory>
+  
+  <dependencies>
+  	<dependency>
+  	  <groupId>commons-jelly</groupId>
+      <artifactId>commons-jelly-tags-xml</artifactId>
+  	  <version>1.1</version>
+  	</dependency>
+  	<dependency>
+  	  <groupId>maven</groupId>
+      <artifactId>maven-dashboard-plugin</artifactId>
+  	  <version>1.0</version>
+  	  <type>plugin</type>
+  	</dependency>
+  	<dependency>
+  	  <groupId>mevenide</groupId>
+      <artifactId>maven-eclipse-plugin-plugin</artifactId>
+  	  <version>0.4.0</version>
+  	  <type>plugin</type>
+  	</dependency>
+  	<dependency>
+  	  <groupId>mevenide</groupId>
+      <artifactId>maven-nbm-plugin</artifactId>
+  	  <version>1.3</version>
+  	  <type>plugin</type>
+  	</dependency>
+   
+  </dependencies>
+  
+  <reports>
+    <report>maven-changes-plugin</report> 
+    <report>maven-faq-plugin</report> 
+    <report>maven-multiproject-plugin</report> 
+  </reports>
+ 
+</project>
+

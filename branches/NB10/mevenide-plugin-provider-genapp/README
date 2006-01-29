@@ -1,0 +1,6 @@
+Maven Plugin Providers can contribute to Mevenide by providing their runtime
+properties. 
+
+This template creates the structure needed to create a fairly simple 
+Eclipse plugin that uses the 'org.mevenide.ui.preference' extension point 
+through which runtime properties are passed to Mevenide. 

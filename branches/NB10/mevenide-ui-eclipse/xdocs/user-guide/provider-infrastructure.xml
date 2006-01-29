@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+  <properties>
+	<author email="rhill2@free.fr">Gilles Dodinet</author>
+	<title>Maven Plugin Provider Infrastructure</title>
+  </properties>
+  <body>
+	<section name="Maven Plugin Provider Infrastructure">
+	  <subsection name="Rationale">
+	    <div id="documentContent">
+		  <p>
+			There are many Maven plugins that are available out there 
+			and there will be ever more in the future. Making the best
+			use of them requires the user to have a good knowledge of the 
+			exposed properties.
+			<br/>
+			Mevenide can help by providing an infrastructure to help Maven 
+			Plugins to expose their properties in a easy way.
+		  </p>
+		  <p>
+		  	Properties modified through those pages (i.e. properties whose value is not the default one) are passed to the 
+		  	VM. However properties specified in the launch config are particular to a specific build and thus 
+		  	take precedence. 
+		  	<br/>
+		  	So you can see those dynamic preference pages much like a particular view of a default.properties file - later 
+		  	we will also provide a simple way to edit the ~/build.properties file.
+		  </p>
+	    </div>
+	  </subsection>
+	  <subsection name="Plug into Mevenide">
+	  	<div id="documentContent">
+		  <p>
+			To provide their own page Maven plugin providers can declaratively 
+			plug into Mevenide preference pages. Screenshot 1 and 2 below is an 
+			example of that interaction : 
+			<br/>
+			<center>
+				<img border="1px" src="../images/screenshots/providers/plugins_providers.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
+				<br/>
+			</center>
+		</p>
+		<p>
+			First Tab presents a short description of the plugin. The other Tabs display the various properties 
+			that the plugin exposes, each Tab representing a different categories. We introduced categories to 
+			allow better organization of the properties - it is helpful for plugins exposing quite a number of properties,
+			as the Maven PDE Plugin example demonstrates it.
+			<br/><br/>
+			<center>
+				<img border="1px" src="../images/screenshots/providers/plugins_providers_properties.png"/>
+				<br/>
+				<font size="-1"><b>Screenshot 1</b> PDE plugin provider</font>
+				<br/>
+			</center>
+		</p>
+		<p>
+			To add a new page, plugins provider have to contribute a new 
+			Eclipse plugin that uses the org.mevenide.ui.preference extension 
+			point. Please refer to the <a href="extension-point.html" target="_blank" class="newWindow">extension point documentation</a> for 
+			more details.
+			<br/>
+			A template  for the <a href="http://maven.apache.org/reference/plugins/genapp/">Genapp plugin</a> 
+			is available in <a href="http://cvs.mevenide.codehaus.org/mevenide-plugin-provider-genapp/">Mevenide CVS Head</a> 
+			for quicker startup.
+			<br/>
+			However we are aware that almost all needed informations are already available in the goals.xml and 
+			properties.xml documents. So in the near future we will provide a Maven plugin to automatically generate 
+			the most part of the Eclipse plugin.
+		  </p>
+		  <p>
+		  	The Provider infrastucture is still in the early stages, so we welcome any feedback about it, either through 
+	  		<a href="http://jira.codehaus.org/MEVENIDE">Jira</a> or the mevenide user-list.
+		  </p>
+	    </div>
+	  </subsection>
+	</section>
+	<section>
+		<p>
+			<navbar prev="wizard.html" toc="help.html" next="validate.html"/>
+		</p>
+	</section>
+  </body>
+</document>

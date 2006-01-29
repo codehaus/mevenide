@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<project>
+  <extend>${basedir}/../mevenide-parent/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <id>mevenide-eclipse-help</id>
+    <name>Mevenide Eclipse Help</name>
+    <artifactId>mevenide-eclipse-help</artifactId>
+    <currentVersion>0.3.0-SNAPSHOT</currentVersion>
+    <shortDescription>This project provides HTML Help plugin for Eclipse</shortDescription>
+    <description>This project provides HTML Help plugin for Eclipse</description>
+    <reports>
+    	<report>maven-faq-plugin</report>
+    </reports>
+    <versions>
+      <version>
+        <id>0.2.2</id>
+        <name>0.2.2</name>
+        <tag>V_0_2_2</tag>
+      </version>
+      <version>
+        <id>0.2.1</id>
+        <name>0.2.1</name>
+        <tag>V_0_2_1</tag>
+      </version>
+	  <version>
+        <id>0.2</id>
+        <name>0.2</name>
+        <tag>V_0_2</tag>
+      </version>
+    </versions>
+</project>

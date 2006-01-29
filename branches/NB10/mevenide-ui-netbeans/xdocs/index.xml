@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<document>
+    <properties>
+    	<author email="ca206216@tiscali.cz">Milos Kleint</author>
+        <title>Overview</title>
+    </properties>
+    <body>
+        <section name="Project Overview">
+        <div id="documentContent">
+        <p> This project is a concrete implementation of Mevenide Core for Netbeans. See the 
+        <a href="features.html" class="documentLink">features list</a>  <!-- and the <a href="help.html" class="documentLink">Help page</a> -->
+	    to learn more about Mevenide for Netbeans. </p>
+        <p>
+        It works with Netbeans 3.5 and later, JDK 1.4.1 and Maven 1.0-rc2. Please note that JDK 1.4+ is <b>required</b> since Java 1.4 regex Engine is used.
+        The <a href="../download/mevenide-ui-netbeans-0-1-SNAPSHOT.zip" class="documentLink"> snapshot release </a> can be downloaded.
+        </p>
+        <p>
+        The module is not actively developed anymore, since it's targeted at 3.x series of Netbeans which will be shortly replaced by Netbeans 4.0.
+        The new Netbeans version has a completely rewritten project support and currently time and effort is put into integration with future 4.0.
+        </p>
+        <p> There is another Netbeans module that adds code completion to Maven related xml files. It's a lightweight module independent of the rest of mevenide. 
+          For details, go to <a href="../mevenide-netbeans-grammar/index.html" class="documentLink"> Mevenide Grammar module </a>
+        </p>
+	</div>
+        </section>
+
+    </body>
+
+</document>

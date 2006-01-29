@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <pomVersion>3</pomVersion>
+    <groupId>mevenide</groupId>
+    <logo>/images/mevenide-simple-125x37.png</logo>
+    <organization>
+        <name>The Codehaus</name>
+        <url>http://www.codehaus.org/</url>
+        <logo>/images/codehaus_209x40.gif</logo>
+    </organization>
+    <siteAddress>beaver.codehaus.org</siteAddress>
+    <siteDirectory>/home/projects/mevenide/public_html/${pom.artifactId}</siteDirectory>
+    <distributionDirectory>/dist</distributionDirectory>
+    <issueTrackingUrl>http://jira.codehaus.org/secure/BrowseProject.jspa?id=10480</issueTrackingUrl>
+    <repository>
+        <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
+        <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
+        <url>http://cvs.mevenide.codehaus.org/${pom.artifactId}/</url>
+    </repository>
+</project>
+
