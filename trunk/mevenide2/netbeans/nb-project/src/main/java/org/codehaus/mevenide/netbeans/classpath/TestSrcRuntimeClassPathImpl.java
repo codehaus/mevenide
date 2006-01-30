@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileUtil;
 
@@ -42,6 +43,16 @@ public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     
    URI[] createPath() {
         List lst = new ArrayList();
+        MavenProject prj = getMavenProject().getOriginalMavenProject();
+        if (prj != null && prj.getBuild() != null) {
+            File fil = new File(prj.getBuild().getOutputDirectory());
+            fil = FileUtil.normalizeFile(fil);
+            lst.add(fil.toURI());
+            fil = new File(prj.getBuild().getTestOutputDirectory());
+            fil = FileUtil.normalizeFile(fil);
+            lst.add(fil.toURI());
+        }
+        
         try {
             // TODO is it really the correct thing?
             List srcs = getMavenProject().getOriginalMavenProject().getTestClasspathElements();
