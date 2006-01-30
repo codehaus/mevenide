@@ -53,6 +53,9 @@ public class JavaOutputListenerProviderTest extends TestCase {
         provider.processLine("/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java:[31,1] illegal start of type", visitor);
         assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
+        provider.processLine("C:\\lfo\\pers\\projects\\mojos\\maven-hello-plugin\\src\\main\\java\\org\\laurentforet\\mojos\\hello\\GreetingMojo.java:[14,8] cannot find symbol", visitor);
+        assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
         provider.sequenceFail("mojoexecute#compiler:testCompile", visitor);
     }
 }
