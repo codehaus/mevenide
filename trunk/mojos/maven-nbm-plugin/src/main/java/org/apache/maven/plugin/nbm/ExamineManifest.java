@@ -20,6 +20,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -27,7 +31,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 
 /**
  * Tag examines the manifest of a jar file and retrieves netbeans specific information.
- * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
+ * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  *
  */
 public class ExamineManifest  {
@@ -43,7 +47,9 @@ public class ExamineManifest  {
     private String moduleDeps;
     private String locBundle;
     private boolean publicPackages;
-    
+    private boolean populateDependencies = false;
+    private List dependencyTokens = Collections.EMPTY_LIST;
+   
     
     public void checkFile() throws MojoExecutionException {
         
@@ -112,10 +118,33 @@ public class ExamineManifest  {
             setImplVersion(attrs.getValue("OpenIDE-Module-Implementation-Version"));
             setModuleDeps(attrs.getValue("OpenIDE-Module-Module-Dependencies"));
             String value = attrs.getValue("OpenIDE-Module-Public-Packages");
-            if (value == null || value.trim().equals("-")) {
+            if (attrs.getValue("OpenIDE-Module-Friends") != null || value == null || value.trim().equals("-")) {
                 setPublicPackages(false);
             } else {
                 setPublicPackages(true);
+            }
+            if (isPopulateDependencies()) {
+                String deps = attrs.getValue("OpenIDE-Module-Module-Dependencies");
+                if (deps != null) {
+                    StringTokenizer tokens = new StringTokenizer(deps, ",");
+                    List depList = new ArrayList();
+                    while (tokens.hasMoreTokens()) {
+                        String tok = tokens.nextToken();
+                        //we are just interested in specification and loose dependencies.
+                        int spec = tok.indexOf(">");
+                        if (spec > 0 || (tok.indexOf("=") == -1 && spec == -1)) {
+                            if (spec > 0) {
+                                tok = tok.substring(0, spec - 1);
+                            }
+                            int slash = tok.indexOf("/");
+                            if (slash > 0) {
+                                tok = tok.substring(0, slash - 1);
+                            }
+                            depList.add(tok.trim());
+                        }
+                    }
+                    setDependencyTokens(depList);
+                }
             }
             
         } else {
@@ -232,6 +261,22 @@ public class ExamineManifest  {
 
     public void setPublicPackages(boolean publicPackages) {
         this.publicPackages = publicPackages;
+    }
+
+    public boolean isPopulateDependencies() {
+        return populateDependencies;
+    }
+
+    public void setPopulateDependencies(boolean populateDependencies) {
+        this.populateDependencies = populateDependencies;
+    }
+
+    public List getDependencyTokens() {
+        return dependencyTokens;
+    }
+
+    public void setDependencyTokens(List dependencyTokens) {
+        this.dependencyTokens = dependencyTokens;
     }
     
 }
