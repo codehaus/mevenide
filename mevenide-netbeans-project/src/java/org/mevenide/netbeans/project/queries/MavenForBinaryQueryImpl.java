@@ -188,11 +188,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         logger.debug("getsrcRoot");
         Collection toReturn = new ArrayList();
         Collection uris = new ArrayList();
-        URI uri = project.getGeneratedSourcesDir();
+        URI uri = project.getSrcDirectory();
         if (uri != null) {
             uris.add(uri);
         }
-        uri = project.getSrcDirectory();
+        uri = project.getGeneratedSourcesDir();
         if (uri != null) {
             uris.add(uri);
         }
