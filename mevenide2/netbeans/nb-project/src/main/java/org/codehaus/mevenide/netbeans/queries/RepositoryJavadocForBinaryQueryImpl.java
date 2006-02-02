@@ -119,9 +119,9 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
         public java.net.URL[] getRoots() {
             if (file.exists()) {
                 try {
-                    URL[] url = new URL[1];
+                    URL[] url = new URL[2];
                     url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
-                    url[0] = new URL(url[0] + "apidocs/");
+                    url[1] = new URL(url[1] + "apidocs/");
                     return url;
                 } catch (MalformedURLException exc) {
                     ErrorManager.getDefault().notify(exc);
