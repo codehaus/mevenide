@@ -130,6 +130,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                         result.add(ClassPathSupport.createResource(entry));
                     } else {
 //                        logger.debug("pointing to non-existing resource=" + checkFile);
+                        result.add(ClassPathSupport.createResource(entry));
                     }
                 }
             } catch (MalformedURLException mue) {

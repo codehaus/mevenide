@@ -22,6 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -157,11 +158,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         if ("jar".equals(url.getProtocol())) {
             URL binRoot = FileUtil.getArchiveFile(url);
-            FileObject fo = URLMapper.findFileObject(binRoot);
-            if (fo != null) {
-                File file = FileUtil.toFile(fo);
+            File file;
+            try {
+                file = new File(binRoot.toURI());
                 String path = project.getArtifactRelativeRepositoryPath();
                 return file.getAbsolutePath().endsWith(path) ? 0 : -1;
+            } catch (URISyntaxException ex) {
+                ex.printStackTrace();
             }
         }
         return -1;
