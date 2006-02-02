@@ -88,7 +88,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             ArtifactRepository netbeansRepo = null;
             try {
                 File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
-                netbeansRepo = embedder.createRepository("file://" + repoRoot.getAbsolutePath(), "netbeans-repo");
+                netbeansRepo = embedder.createRepository("file://" + repoRoot.getAbsolutePath(), "netbeansIDE-repo-internal");
             } catch (ComponentLookupException ex) {
                 ex.printStackTrace();
             }
