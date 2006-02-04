@@ -412,6 +412,7 @@ public final class MavenProject implements Project {
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
             new MavenTestForSourceImpl(this),
+            new MavenAuxilaryConfigImpl(this),
 //            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
