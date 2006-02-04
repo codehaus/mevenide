@@ -19,10 +19,12 @@
         </goals>
         <plugins>
             <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
                 <groupId>org.codehaus.mevenide</groupId>
                 <artifactId>netbeans-deploy-plugin</artifactId>
                 <version>LATEST</version>
+                <configuration>
+                    <forceRedeploy>false</forceRedeploy>
+                </configuration>
             </plugin>
         </plugins>
     </action>
@@ -43,6 +45,7 @@
                 <version>LATEST</version>
                 <configuration>
                     <clientUrlPart>${webpagePath}</clientUrlPart>
+                    <forceRedeploy>false</forceRedeploy>
                 </configuration>
             </plugin>
         </plugins>
@@ -59,11 +62,11 @@
         </goals>
         <plugins>
             <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
                 <groupId>org.codehaus.mevenide</groupId>
                 <artifactId>netbeans-deploy-plugin</artifactId>
                 <version>LATEST</version>
                 <configuration>
+                    <forceRedeploy>false</forceRedeploy>
                     <debugmode>true</debugmode>
                 </configuration>
             </plugin>
@@ -88,6 +91,7 @@
                 <configuration>
                     <clientUrlPart>${webpagePath}</clientUrlPart>
                     <debugmode>true</debugmode>
+                    <forceRedeploy>false</forceRedeploy>
                 </configuration>
             </plugin>
         </plugins>
