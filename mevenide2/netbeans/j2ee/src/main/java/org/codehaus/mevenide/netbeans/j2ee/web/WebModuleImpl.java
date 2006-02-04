@@ -151,13 +151,17 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
 //        System.out.println("get archive=" + fil);
         return FileUtil.toFileObject(fil);
     }
-    
+
+    /**
+     * according to sharold@netbeans.org this should return the iterator over
+     * non-warred file, meaning from the expanded webapp. weird.
+     */
     public Iterator getArchiveContents() throws IOException {
+        
 //        System.out.println("get archive content");
-        FileObject fo = getArchive();
-        if (FileUtil.isArchiveFile(fo)) {
-            FileObject root = FileUtil.getArchiveRoot(fo);
-            return new ContentIterator(root);
+        FileObject fo = getContentDirectory();
+        if (fo != null) {
+            return new ContentIterator(fo);
         }
         return null;
     }
@@ -228,7 +232,6 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
             ch.remove(0);
             if (f.isFolder()) {
                 f.refresh();
-                System.out.println("next folder=" + f);
                 FileObject[] chArr = f.getChildren();
                 for (int i = 0; i < chArr.length; i++) {
                     ch.add(chArr [i]);
