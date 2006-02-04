@@ -150,10 +150,9 @@ public class MavenJ2eeModule implements J2eeModule {
         if (     J2eeModule.EJB.equals(getModuleType()) 
               || J2eeModule.WAR.equals(getModuleType())
               || J2eeModule.EAR.equals((getModuleType()))) {
-            FileObject fo = getArchive();
-            if (FileUtil.isArchiveFile(fo)) {
-                FileObject root = FileUtil.getArchiveRoot(fo);
-                return new ContentIterator(root);
+            FileObject fo = getContentDirectory();
+            if (fo != null) {
+                return new ContentIterator(fo);
             }
         }
         return null;
