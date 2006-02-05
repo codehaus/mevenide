@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.continuum.options;
 
 import java.awt.Dimension;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  *
@@ -177,4 +179,17 @@ public class SingleServer extends javax.swing.JPanel {
         }
         return null;
     } 
+    
+    public void setValues(String url, String output) {
+        try {
+            URL u1 = new URL(url);
+            URL u2 = new URL(output);
+            txtServer.setText(u1.getHost());
+            txtPort.setText("" + u1.getPort());
+            txtPort2.setText("" + u2.getPort());
+            txtOuputPath.setText(u2.getPath());
+        } catch (MalformedURLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }

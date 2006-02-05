@@ -116,7 +116,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         add(btnRemove, gridBagConstraints);
 
     }// </editor-fold>//GEN-END:initComponents
-
+    
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         int selected = jList1.getSelectedIndex();
         if (selected != -1) {
@@ -125,18 +125,32 @@ public class SettingsPanel extends javax.swing.JPanel {
         }
         
     }//GEN-LAST:event_btnRemoveActionPerformed
-
+    
     private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-        
-        
+        ServerOutputPair pair = (ServerOutputPair)jList1.getSelectedValue();
+        if (pair != null) {
+            SingleServer ss = new SingleServer();
+            ss.setValues(pair.getRpc(), pair.getOutput());
+            DialogDescriptor dd = new DialogDescriptor(ss, "Edit Continuum server");
+            dd.setOptions(new Object [] {
+                NotifyDescriptor.OK_OPTION,
+                NotifyDescriptor.CANCEL_OPTION
+            });
+            Object ret = DialogDisplayer.getDefault().notify(dd);
+            if (ret == NotifyDescriptor.OK_OPTION) {
+                pair.setNewValues(ss.getURL(), ss.getOutputURL());
+                changed = true;
+                jList1.repaint();
+            }
+        }
     }//GEN-LAST:event_btnEditActionPerformed
-
+    
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         SingleServer ss = new SingleServer();
-        DialogDescriptor dd = new DialogDescriptor(ss, "Add Continuum XML-RPC server");
+        DialogDescriptor dd = new DialogDescriptor(ss, "Add Continuum server");
         dd.setOptions(new Object [] {
-           NotifyDescriptor.OK_OPTION, 
-           NotifyDescriptor.CANCEL_OPTION
+            NotifyDescriptor.OK_OPTION,
+            NotifyDescriptor.CANCEL_OPTION
         });
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
@@ -181,7 +195,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         btnRemove.setEnabled(selected != -1);
         btnEdit.setEnabled(selected != -1);
     }
-
+    
     String[] getOutputs() {
         DefaultListModel mod = (DefaultListModel)jList1.getModel();
         ServerOutputPair[] ser = new ServerOutputPair[mod.getSize()];
@@ -192,15 +206,15 @@ public class SettingsPanel extends javax.swing.JPanel {
         }
         return toRet;
     }
-
+    
     boolean isChanged() {
         return changed;
     }
     
     private class ServerOutputPair {
-
+        
         private String output;
-
+        
         private String rpc;
         ServerOutputPair(String rpc, String output) {
             this.rpc = rpc;
@@ -213,6 +227,11 @@ public class SettingsPanel extends javax.swing.JPanel {
         
         String getRpc() {
             return rpc;
+        }
+        
+        void setNewValues(String rpc, String output) {
+            this.rpc = rpc;
+            this.output = output;
         }
         
         public String toString() {
