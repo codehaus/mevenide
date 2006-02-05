@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.embedder;
 
+import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import org.apache.maven.embedder.MavenEmbedder;
@@ -40,6 +41,7 @@ public class EmbedderFactory {
             embedder.setInteractiveMode(false);
             embedder.setCheckLatestPluginVersion(false);
             embedder.setUpdateSnapshots(false);
+            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             URL components = EmbedderFactory.class.getResource("/org/codehaus/mevenide/netbeans/embedder/components.xml");
             embedder.setEmbedderConfiguration(components);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
@@ -58,6 +60,7 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
             embedder.setInteractiveMode(false);
+            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             try {
                 embedder.start();
@@ -77,6 +80,7 @@ public class EmbedderFactory {
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger, ClassLoader loader) throws MavenEmbedderException {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setClassLoader(new HackyClassLoader(loader, EmbedderFactory.class.getClassLoader()));
+            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setLogger(logger);
             embedder.start();
             return embedder;
