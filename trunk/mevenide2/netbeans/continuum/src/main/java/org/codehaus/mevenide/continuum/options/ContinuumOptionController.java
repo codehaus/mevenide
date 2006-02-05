@@ -36,15 +36,16 @@ class ContinuumOptionController extends OptionsPanelController {
     }
 
     public void update() {
-        getPanel().setServers(ContinuumSettings.getDefault().getServers());
+        getPanel().setServers(ContinuumSettings.getDefault().getServers(), ContinuumSettings.getDefault().getOutputs());
     }
 
     public void applyChanges() {
         ContinuumSettings.getDefault().setServers(getPanel().getServers());
+        ContinuumSettings.getDefault().setOutputs(getPanel().getOutputs());
     }
 
     public void cancel() {
-        getPanel().setServers(ContinuumSettings.getDefault().getServers());
+        getPanel().setServers(ContinuumSettings.getDefault().getServers(), ContinuumSettings.getDefault().getOutputs());
     }
 
     public boolean isValid() {
@@ -52,7 +53,7 @@ class ContinuumOptionController extends OptionsPanelController {
     }
 
     public boolean isChanged() {
-        return true;
+        return getPanel().isChanged();
     }
 
     public JComponent getComponent(Lookup lookup) {
