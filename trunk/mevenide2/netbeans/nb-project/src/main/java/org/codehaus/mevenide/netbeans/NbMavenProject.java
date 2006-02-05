@@ -133,31 +133,19 @@ public final class NbMavenProject implements Project {
     public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
             try {
-                //http://jira.codehaus.org/browse/MNG-1876
-                // need to restart the embedder to avoid a weirdo exception.
-//                embedder.stop();
-//                embedder.start();
                 try {
-                    project = embedder.readProjectWithDependencies(projectFile);
+                    project = getEmbedder().readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
-                    //http://jira.codehaus.org/browse/MNG-1876
-                    // need to restart the embedder to avoid a weirdo exception.
-//                    embedder.stop();
-//                    embedder.start();
                     ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
-                    project = embedder.readProject(projectFile);
+                    project = getEmbedder().readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
-                    //http://jira.codehaus.org/browse/MNG-1876
-                    // need to restart the embedder to avoid a weirdo exception.
-//                    embedder.stop();
-//                    embedder.start();
                     ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
-                    project = embedder.readProject(projectFile);
+                    project = getEmbedder().readProject(projectFile);
                 }
             } catch (ProjectBuildingException ex) {
                 ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                 try {
-                    project = new MavenProject(embedder.readModel(projectFile));
+                    project = new MavenProject(getEmbedder().readModel(projectFile));
                 } catch (FileNotFoundException ex2) {
                     ex2.printStackTrace();
                 } catch (IOException ex2) {
@@ -277,8 +265,8 @@ public final class NbMavenProject implements Project {
     }
     
     public String getArtifactRelativeRepositoryPath(Artifact artifact) {
-        embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
-        String toRet = embedder.getLocalRepository().pathOf(artifact);
+//        embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
+        String toRet = getEmbedder().getLocalRepository().pathOf(artifact);
         //TODO this is more or less a hack..
         // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
         return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar";
