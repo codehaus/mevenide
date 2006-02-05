@@ -32,6 +32,7 @@ import org.openide.util.NbBundle;
  */
 public class ContinuumSettings extends SystemOption {
     public static final String PROP_SERVERS = "servers"; // NOI18N
+    public static final String PROP_OUTPUTS = "outputs"; //NOI18N
     
     private static final long serialVersionUID = -4857548488373437L;
     
@@ -39,7 +40,14 @@ public class ContinuumSettings extends SystemOption {
         super.initialize();
         setServers(new String[] {
             "http://maven.zones.apache.org:8000",
+            "http://ci.codehaus.org:8000",
             "http://localhost:8000"        
+        });
+        setOutputs(new String[] {
+            "http://maven.zones.apache.org:8080/continuum/build-output-directory",
+            "http://ci.codehaus.org:8080/continuum/build-output-directory",        
+            "http://localhost:8080/continuum/build-output-directory"        
+            
         });
     }
     
@@ -62,5 +70,31 @@ public class ContinuumSettings extends SystemOption {
     public void setServers(String[] repos) {
         putProperty(PROP_SERVERS, repos, true);
     }    
+    
+    public String[] getOutputs() {
+        return (String[])getProperty(PROP_OUTPUTS);
+    }
+    
+    public void setOutputs(String[] repos) {
+        putProperty(PROP_OUTPUTS, repos, true);
+    }    
+    
+    public String getOutputForServer(String server) {
+        String[] sers = getServers();
+        int index = -1;
+        for (int i = 0; i < sers.length; i++) {
+            if (server.equals(sers[i])) {
+                index = i;
+                break;
+            }
+        }
+        if (index != -1) {
+            String[] outs = getOutputs();
+            if (index < outs.length) {
+                return outs[index];
+            }
+        }
+        return null;
+    }
     
 }

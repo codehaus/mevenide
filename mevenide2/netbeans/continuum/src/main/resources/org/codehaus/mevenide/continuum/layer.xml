@@ -30,22 +30,6 @@
         <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
     </file>
   </folder>
-  <folder name="UI">
-    <folder name="Services">
-      <folder name="Building">
-        <file name="org-codehaus-mevenide-continuum-ContinuumSettings.shadow">
-          <attr name="originalFile" stringvalue="Services/org-codehaus-mevenide-continuum-ContinuumSettings.settings"/>
-        </file>
-      </folder> <!-- Building -->
-    </folder> <!-- Services -->
-  </folder>   
-  
-  <!--folder name="Projects">
-      <folder name="Actions">
-        <file name="org-codehaus-mevenide-continuum-ContinuumAction.instance"/>
-      </folder>    
-  </folder-->    
-  
     <folder name="OptionsDialog">
         <folder name="Advanced">
             <file name="Continuum.instance">

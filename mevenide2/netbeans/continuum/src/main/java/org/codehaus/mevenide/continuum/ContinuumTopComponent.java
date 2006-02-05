@@ -122,6 +122,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         jPanel1 = new javax.swing.JPanel();
         pnlDetails = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        spGeneral = new javax.swing.JScrollPane();
         pnlGeneral = new javax.swing.JPanel();
         lblArtifactId = new javax.swing.JLabel();
         txtArtifactId = new javax.swing.JTextField();
@@ -170,6 +171,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         pnlDetails.setLayout(new java.awt.BorderLayout());
 
         jTabbedPane1.setTabLayoutPolicy(javax.swing.JTabbedPane.SCROLL_TAB_LAYOUT);
+        spGeneral.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         pnlGeneral.setLayout(new java.awt.GridBagLayout());
 
         lblArtifactId.setText("ArtifactId :");
@@ -290,7 +292,9 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
         pnlGeneral.add(lblBuildNumberValue, gridBagConstraints);
 
-        jTabbedPane1.addTab("General", pnlGeneral);
+        spGeneral.setViewportView(pnlGeneral);
+
+        jTabbedPane1.addTab("General", spGeneral);
 
         pnlDevelopers.setLayout(new java.awt.BorderLayout());
 
@@ -320,7 +324,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
 
         jTabbedPane1.addTab("Build Definitions", jPanel5);
 
-        pnlDetails.add(jTabbedPane1, java.awt.BorderLayout.CENTER);
+        pnlDetails.add(jTabbedPane1, java.awt.BorderLayout.NORTH);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 4;
@@ -360,6 +364,7 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
     private javax.swing.JPanel pnlDetails;
     private javax.swing.JPanel pnlDevelopers;
     private javax.swing.JPanel pnlGeneral;
+    private javax.swing.JScrollPane spGeneral;
     private javax.swing.JTextField txtArtifactId;
     private javax.swing.JTextField txtDescription;
     private javax.swing.JTextField txtGroupId;

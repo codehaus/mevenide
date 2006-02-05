@@ -19,12 +19,19 @@ package org.codehaus.mevenide.continuum;
 
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.maven.continuum.model.project.BuildResult;
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.xmlrpc.XmlRpcException;
@@ -37,22 +44,25 @@ import org.openide.nodes.Sheet;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 
 /**
  *
  * @author mkleint
  */
 public class ProjectNode extends AbstractNode {
-
+    
     private static final String DEPENDENCIES = "Dependencies";
     private static final String BUILD_RESULTS = "BuildResults";
     private static final String BUILD_DEFS = "BuildDefs";
-    static final String PROPERTY_COMPLETE_RELOAD = "COMPLETE_RELOAD"; 
+    static final String PROPERTY_COMPLETE_RELOAD = "COMPLETE_RELOAD";
     
     static RequestProcessor QUEUE = new RequestProcessor("Continuum refresh", 1);
     
     private Project project;
-
+    
     private ProjectsReader reader;
     private RequestProcessor.Task refreshTask;
     
@@ -78,15 +88,15 @@ public class ProjectNode extends AbstractNode {
         Image img = super.getIcon(param);
         int state = project.getState();
         if (state == 2) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"), 16, 8);
         }
         // fail or error
         if (state == 3 || state == 4) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"), 16, 8);
         }
         // many running states
         if (state == 5 || state == 6 || state == 7 || state == 8) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"), 16, 8);
         }
         return img;
     }
@@ -96,15 +106,15 @@ public class ProjectNode extends AbstractNode {
         Image img = super.getOpenedIcon(param);
         int state = project.getState();
         if (state == 2) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-ok.png"), 16, 8);
         }
         // fail or error
         if (state == 3 || state == 4) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-error.png"), 16, 8);
         }
         // many running states
         if (state == 6 || state == 7 || state == 8) {
-            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"), 8, 8);
+            return Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/continuum/state-running.png"), 16, 8);
         }
         return img;
     }
@@ -140,11 +150,12 @@ public class ProjectNode extends AbstractNode {
         }
         return sheet;
     }
-
+    
     public Action[] getActions(boolean context) {
-        Action[] retValue = new Action[2];
+        Action[] retValue = new Action[3];
         retValue[0] = new RefreshAction();
         retValue[1] = new ForceBuildAction();
+        retValue[2] = new ShowLastOutputAction();
         return retValue;
     }
     
@@ -186,11 +197,11 @@ public class ProjectNode extends AbstractNode {
             }
             setKeys(lst);
         }
-         protected void removeNotify() {
+        protected void removeNotify() {
             super.removeNotify();
             setKeys(Collections.EMPTY_LIST);
         }
-
+        
         protected void addNotify() {
             super.addNotify();
             doRefresh();
@@ -215,11 +226,11 @@ public class ProjectNode extends AbstractNode {
             ProjectNode.this.firePropertyChange(PROPERTY_COMPLETE_RELOAD, null, Boolean.TRUE);
             ((ProjectChildren)getChildren()).doRefresh();
         }
-
+        
     }
     
     private class ForceBuildAction extends AbstractAction {
-
+        
         public ForceBuildAction() {
             this.putValue(Action.NAME, "Force Build");
         }
@@ -234,7 +245,63 @@ public class ProjectNode extends AbstractNode {
                 ex.printStackTrace();
             }
         }
-
+    }
+    
+    private class ShowLastOutputAction extends AbstractAction {
+        public ShowLastOutputAction() {
+            this.putValue(Action.NAME, "Show Last Build Output");
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    int projectId = project.getId();
+                    int lastBuildId = project.getLatestBuildId();
+                    
+                    String pathRoot = ContinuumSettings.getDefault().getOutputForServer(reader.getURL().toString());
+                    try {
+                        BufferedReader read;
+                        if (pathRoot != null) {
+                            if (!pathRoot.endsWith("/")) {
+                                pathRoot = pathRoot + "/";
+                            }
+                            String path = pathRoot + projectId + "/" + lastBuildId + ".log.txt";
+                            HttpClient client = new HttpClient();
+                            HttpMethod method = new GetMethod(path);
+                            int ret = client.executeMethod(method);
+                            if (ret == HttpStatus.SC_OK) {
+                                read = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+                            } else if (ret == org.apache.commons.httpclient.HttpStatus.SC_NOT_FOUND) {
+                                read = new BufferedReader(new StringReader("The output page for build " + lastBuildId + " was not found.\n" +
+                                        "Tried accessing the build output under " + path + "\n" +
+                                        "Please make sure that the Continuum server is setup correctly and allows the build outputs to be accessible through the web interface.\n" +
+                                        "It's configurable through the web interface, under Configuration submenu.\n\n" +
+                                        "Please also check that the settings in Netbeans Options match those set on the server."));
+                            } else {
+                                read = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
+                            }
+                        } else {
+                            read = new BufferedReader(new StringReader("You don't defined the URL for locating the build outputs" +
+                                    " for server '" + reader.getURL() + "'. Please go to Options dialog and under Miscellaneous update " +
+                                    "your server settings."));
+                        }
+                        InputOutput io = IOProvider.getDefault().getIO("Continuum-" + project.getName(), true);
+                        io.select();
+                        OutputWriter out = io.getOut();
+                        String line = read.readLine();
+                        while (line != null) {
+                            out.println(line);
+                            line = read.readLine();
+                        }
+                        out.close();
+                        read.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            
+        }
     }
     
     private class RepeatingRefresher implements Runnable {

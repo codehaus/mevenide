@@ -51,6 +51,10 @@ public class ProjectsReader {
         server = serverUrl;
     }
     
+    public URL getURL() {
+        return server;
+    }
+    
     public Project[] readProjects() throws XmlRpcException, IOException {
         XmlRpcClient client = new XmlRpcClient(server);
         Object obj = client.execute("continuum.getProjects", new Vector());

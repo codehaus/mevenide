@@ -16,6 +16,10 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-io</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-dialogs</id>
             <type>spec</type>
         </dependency>

@@ -121,6 +121,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         int selected = jList1.getSelectedIndex();
         if (selected != -1) {
             ((DefaultListModel)jList1.getModel()).removeElementAt(selected);
+            changed = true;
         }
         
     }//GEN-LAST:event_btnRemoveActionPerformed
@@ -139,7 +140,8 @@ public class SettingsPanel extends javax.swing.JPanel {
         });
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
-            ((DefaultListModel)jList1.getModel()).addElement(ss.getURL());
+            ((DefaultListModel)jList1.getModel()).addElement(new ServerOutputPair(ss.getURL(), ss.getOutputURL()));
+            changed = true;
         }
         
     }//GEN-LAST:event_btnAddActionPerformed
@@ -151,19 +153,26 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JButton btnRemove;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+
+    private boolean changed;
     // End of variables declaration//GEN-END:variables
     
-    void setServers(String[] servers) {
+    void setServers(String[] servers, String[] outputs) {
+        changed= false;
         DefaultListModel model = new DefaultListModel();
         for (int i = 0; i < servers.length; i++) {
-            model.addElement(servers[i]);
+            model.addElement(new ServerOutputPair(servers[i], outputs.length > i ? outputs[i] : null));
         }
         jList1.setModel(model);
     }
     String[] getServers() {
         DefaultListModel mod = (DefaultListModel)jList1.getModel();
+        ServerOutputPair[] ser = new ServerOutputPair[mod.getSize()];
         String[] toRet = new String[mod.getSize()];
-        mod.copyInto(toRet);
+        mod.copyInto(ser);
+        for (int i = 0; i < ser.length; i++) {
+            toRet[i] = ser[i].getRpc();
+        }
         return toRet;
     }
     
@@ -171,5 +180,43 @@ public class SettingsPanel extends javax.swing.JPanel {
         int selected = jList1.getSelectedIndex();
         btnRemove.setEnabled(selected != -1);
         btnEdit.setEnabled(selected != -1);
+    }
+
+    String[] getOutputs() {
+        DefaultListModel mod = (DefaultListModel)jList1.getModel();
+        ServerOutputPair[] ser = new ServerOutputPair[mod.getSize()];
+        String[] toRet = new String[mod.getSize()];
+        mod.copyInto(ser);
+        for (int i = 0; i < ser.length; i++) {
+            toRet[i] = ser[i].getOutput();
+        }
+        return toRet;
+    }
+
+    boolean isChanged() {
+        return changed;
+    }
+    
+    private class ServerOutputPair {
+
+        private String output;
+
+        private String rpc;
+        ServerOutputPair(String rpc, String output) {
+            this.rpc = rpc;
+            this.output = output;
+        }
+        
+        String getOutput() {
+            return output;
+        }
+        
+        String getRpc() {
+            return rpc;
+        }
+        
+        public String toString() {
+            return rpc;
+        }
     }
 }
