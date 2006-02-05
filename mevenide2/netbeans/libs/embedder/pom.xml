@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans-libs</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>nb-mvn-embedder</artifactId>
@@ -21,7 +21,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
-            <version>1.5.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
     </dependencies>  
