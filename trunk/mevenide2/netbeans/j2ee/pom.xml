@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
@@ -26,99 +26,87 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-j2ee-common</artifactId>
-            <version>1.4.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-websvc-websvcapi</artifactId>
-            <version>1.4.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-api-ejbmodule</artifactId>
-            <version>1.4.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>1.9.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-web-webmodule</artifactId>
-            <version>1.6.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-project</artifactId>
-            <version>1.8.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-dd</artifactId>
-            <version>1.7.1.2</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2eeserver</artifactId>
-            <version>1.13.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java</artifactId>
-            <version>1.10.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
-            <version>1.7.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger</artifactId>
-            <version>1.7.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger-jpda</artifactId>
-            <version>2.4.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-schema2beans</artifactId>
-            <version>1.14.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>6.8.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>6.4.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
-            <version>6.5.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         

@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>continuum</artifactId>
@@ -23,43 +23,49 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>6.8.1</version>
+            <version>RELEASE50</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-io</artifactId>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-options</artifactId>
-            <version>6.4.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-explorer</artifactId>
-            <version>6.5.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>6.7.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>6.5.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-options-api</artifactId>
-            <version>1.3.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
-            <version>6.5.1</version>
+            <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
         <dependency>
