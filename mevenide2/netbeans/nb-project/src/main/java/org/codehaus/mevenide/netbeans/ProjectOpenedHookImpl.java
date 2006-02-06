@@ -78,14 +78,16 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         FileObject fo = project.getProjectDirectory();
         FileObject userFo = project.getHomeDirectory();
         fo.addFileChangeListener(project.getProjectFolderUpdater());
-        userFo.addFileChangeListener(project.getUserFolderUpdater());
         FileObject xml = fo.getFileObject("pom.xml");
-        FileObject prop = userFo.getFileObject("settings.xml");
+        if (userFo != null) {
+            userFo.addFileChangeListener(project.getUserFolderUpdater());
+            FileObject prop = userFo.getFileObject("settings.xml");
+            if (prop != null) {
+                prop.addFileChangeListener(project.getFileUpdater());
+            }
+        }
         if (xml != null) {
             xml.addFileChangeListener(project.getFileUpdater());
-        }
-        if (prop != null) {
-            prop.addFileChangeListener(project.getFileUpdater());
         }
     }    
     
@@ -93,14 +95,16 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         FileObject fo = project.getProjectDirectory();
         FileObject userFo = project.getHomeDirectory();
         fo.removeFileChangeListener(project.getProjectFolderUpdater());
-        userFo.removeFileChangeListener(project.getUserFolderUpdater());
+        if (userFo != null) {
+            userFo.removeFileChangeListener(project.getUserFolderUpdater());
+            FileObject prop = userFo.getFileObject("settings.xml");
+            if (prop != null) {
+                prop.removeFileChangeListener(project.getFileUpdater());
+            }
+        }
         FileObject xml = fo.getFileObject("pom.xml");
-        FileObject prop = userFo.getFileObject("settings.xml");
         if (xml != null) {
             xml.removeFileChangeListener(project.getFileUpdater());
-        }
-        if (prop != null) {
-            prop.removeFileChangeListener(project.getFileUpdater());
         }
     }        
 

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
@@ -100,7 +101,7 @@ public class ProjectFilesNode extends AbstractNode {
         private void regenerateKeys() {
             Collection keys = new ArrayList();
             keys.add(new FileWrapper("Project POM file", new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")));
-            keys.add(new FileWrapper("User settings", new File(FileUtil.toFile(project.getHomeDirectory()), "settings.xml")));
+            keys.add(new FileWrapper("User settings", new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")));
             setKeys(keys);
         }
     }    
