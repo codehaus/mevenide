@@ -43,6 +43,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSourceLevelImpl;
@@ -239,25 +240,16 @@ public final class NbMavenProject implements Project {
     }
     
     public FileObject getHomeDirectory() {
-        String homeStr = System.getProperty("user.home");
-        FileObject fo = FileUtil.toFileObject(new File(homeStr));
-        FileObject home = fo.getFileObject(".m2");
+        File homeFile = MavenSettingsSingleton.getInstance().getM2UserDir();
+        if (!homeFile.exists()) {
+            homeFile.mkdirs();
+        }
+        FileObject home = FileUtil.toFileObject(homeFile);
         if (home == null) {
-            try {
-                home = fo.createFolder(".m2");
-            } catch (IOException ex) {
-                ErrorManager.getDefault().notify(ex);
-            }
+            //TODO this is a problem, probably UNC path on windows - MEVENIDE-380
+            // some functionality won't work
         }
         return home;
-    }
-    
-    /**
-     * TODO temporary.. how to figure correctly the root path to repository
-     */
-    public FileObject getRepositoryRoot() {
-        FileObject parent = getHomeDirectory();
-        return parent.getFileObject("repository");
     }
     
     public String getArtifactRelativeRepositoryPath() {

@@ -44,10 +44,18 @@ public class MavenSettingsSingleton {
         }
         return instance;
     }
+    /**
+     * the location of ${user.home}/.m2
+     */
+    public File getM2UserDir() {
+        return new File(System.getProperty("user.home"), ".m2");
+    }
     
     public Settings getSettings() {
+        //TODO need probably some kind of caching.. 
+        // currently just localrepository is ever accessed.
         Settings sets = null;
-        File dir = new File(System.getProperty("user.home"), ".m2");
+        File dir = getM2UserDir();
         try {
             File fil = new File(dir, "settings.xml");
             if (fil.exists()) {
