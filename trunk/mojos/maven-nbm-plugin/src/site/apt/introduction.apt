@@ -12,7 +12,9 @@ Netbeans Module plugin
 this packaging willbe automatically turned into a netbeans module. Additionally it allows to create clusters of modules and to generate
 an autoupdate site content. 
 
- It is also capable of populating the local maven repository with module jars from a given Netbeans installation. Useful for 
+ To get access to Netbeans.org API artifacts, add http://208.44.201.216:18080/maven/ to the list of remote repositories for your project.
+
+ The plugin is also capable of populating the local maven repository with module jars from a given Netbeans installation. Useful for 
 module development, modules with public APIs are separated from those without a public API.
 
  There is an archetype template that lets you create a sample netbeans module project. Just type
