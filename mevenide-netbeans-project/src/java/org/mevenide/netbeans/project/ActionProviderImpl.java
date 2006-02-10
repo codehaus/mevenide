@@ -339,23 +339,23 @@ public class ActionProviderImpl implements ActionProvider {
     
  
     private void initDefaultGoals() {
-		InputStream str = Thread.currentThread().getContextClassLoader()
-				  .getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
-		if (str != null) {
-			try {
-				defaultIDEGoals.load(str);
-			} catch (IOException exc) {
-				logger.error("cannot read the default props file", exc);
-			} finally {
-				try {
-					str.close();
-				} catch (IOException exc) {
-					logger.error("cannot read the default props file2", exc);
-				}
-			}
-		} else {
-			logger.error("cannot read the default props file");
-		}
+        InputStream str = getClass().getClassLoader()
+        .getResourceAsStream("org/mevenide/netbeans/project/exec/execdefaults.properties");
+        if (str != null) {
+            try {
+                defaultIDEGoals.load(str);
+            } catch (IOException exc) {
+                logger.error("cannot read the default props file", exc);
+            } finally {
+                try {
+                    str.close();
+                } catch (IOException exc) {
+                    logger.error("cannot read the default props file2", exc);
+                }
+            }
+        } else {
+            logger.error("cannot read the default props file");
+        }
     }
     
     //    public Action createMultiProjectAction(String name, String goals) {
