@@ -17,14 +17,10 @@
 package org.codehaus.mevenide.continuum;
 
 import java.awt.Image;
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.beans.SimpleBeanInfo;
 import org.openide.ErrorManager;
-import org.openide.util.NbBundle;
-import org.openide.util.Utilities;
-
 
 public class ContinuumSettingsBeanInfo extends SimpleBeanInfo {
 

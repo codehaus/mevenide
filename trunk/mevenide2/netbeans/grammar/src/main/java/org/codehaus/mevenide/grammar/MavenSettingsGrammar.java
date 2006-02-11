@@ -18,15 +18,11 @@
 package org.codehaus.mevenide.grammar;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
-import org.netbeans.modules.xml.api.model.GrammarQuery;
-import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
-import org.netbeans.modules.xml.spi.dom.NodeListImpl;
 
 /**
  * xml completion grammar based on xsd, additionally allowing more to be added.

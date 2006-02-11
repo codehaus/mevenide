@@ -93,9 +93,6 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
     
     private PluginInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder, boolean checkLocalRepo) {
-        String artifact = null;
-        String group = null;
-        String version = null;
         PluginInfoHolder holder = new PluginInfoHolder();
         while (previous != null) {
             if (previous instanceof org.w3c.dom.Element) {
