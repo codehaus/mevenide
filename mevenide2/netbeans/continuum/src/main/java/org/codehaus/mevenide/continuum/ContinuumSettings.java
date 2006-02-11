@@ -17,11 +17,6 @@
 
 package org.codehaus.mevenide.continuum;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;

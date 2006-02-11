@@ -17,15 +17,9 @@
 
 package org.codehaus.mevenide.continuum;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import org.apache.maven.continuum.model.project.BuildResult;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.nodes.PropertySupport;
-import org.openide.nodes.Sheet;
 
 /**
  *

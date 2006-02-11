@@ -34,7 +34,6 @@ import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarQueryManager;
 import org.openide.filesystems.FileUtil;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 public final class MavenQueryProvider extends GrammarQueryManager {
