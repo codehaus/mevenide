@@ -216,9 +216,9 @@
         <report>maven-findbugs-plugin</report>
         <report>maven-changes-plugin</report>
         <report>maven-changelog-plugin</report>
-        <report>maven-file-activity-plugin</report>
-        <report>maven-developer-activity-plugin</report>
-        <report>maven-statcvs-plugin</report>
+        <!--report>maven-file-activity-plugin</report-->
+        <!--report>maven-developer-activity-plugin</report-->
+        <!--report>maven-statcvs-plugin</report-->
         <report>maven-jxr-plugin</report>
         <!-- report>maven.dotuml.plugin</report -->
         <report>maven-junit-report-plugin</report>
