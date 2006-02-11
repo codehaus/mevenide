@@ -18,23 +18,9 @@ package org.mevenide.netbeans.project;
 
 import junit.framework.*;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
 import org.apache.maven.project.Dependency;
-import org.mevenide.context.IQueryContext;
-import org.mevenide.environment.ILocationFinder;
-import org.mevenide.netbeans.api.customizer.OriginChange;
-import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.properties.IPropertyResolver;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.Repository;
-import org.openide.loaders.DataObject;
-import org.openide.util.Lookup;
 
 /**
  *
