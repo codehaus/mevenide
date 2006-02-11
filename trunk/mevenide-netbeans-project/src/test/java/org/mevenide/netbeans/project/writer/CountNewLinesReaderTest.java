@@ -19,11 +19,6 @@ package org.mevenide.netbeans.project.writer;
 
 import java.io.StringBufferInputStream;
 import junit.framework.*;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
 
 /**
  *
