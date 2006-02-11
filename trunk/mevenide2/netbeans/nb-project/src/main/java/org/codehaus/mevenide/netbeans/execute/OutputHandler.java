@@ -108,14 +108,14 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void errorEvent(String eventName, String target, long l, Throwable throwable) {
-        processMultiLine(throwable.getLocalizedMessage(), stdErr);
+        processMultiLine(throwable.getLocalizedMessage(), stdErr, "ERROR");
         if (throwable instanceof MojoExecutionException) {
             MojoExecutionException exc = (MojoExecutionException)throwable;
-            processMultiLine(exc.getLongMessage(), stdErr);
+            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
         }
         if (throwable instanceof MojoFailureException) {
             MojoFailureException exc = (MojoFailureException)throwable;
-            processMultiLine(exc.getLongMessage(), stdErr);
+            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
         }
         processFail(getEventId(eventName, target), stdErr);
 //        if (throwable instanceof BuildFailureException) {
@@ -194,11 +194,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void info(String string)    {
-        processMultiLine("[INFO]" + string, stdOut);
+        processMultiLine(string, stdOut, "INFO");
     }
     
     public void info(String string, Throwable throwable)    {
-        processMultiLine("[INFO]" + string, stdOut);
+        processMultiLine( string, stdOut, "INFO");
     }
     
     public boolean isInfoEnabled()    {
@@ -206,11 +206,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void warn(String string)    {
-        processMultiLine("[WARN]" + string, stdOut);
+        processMultiLine(string, stdOut, "WARN");
     }
     
     public void warn(String string, Throwable throwable)    {
-        processMultiLine("[WARN]" + string, stdOut);
+        processMultiLine(string, stdOut, "WARN");
     }
     
     public boolean isWarnEnabled()    {
@@ -218,16 +218,16 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void error(String string)    {
-        processMultiLine("[ERROR]" + string, stdErr);
+        processMultiLine(string, stdErr, "ERROR");
     }
     
     public void error(String string, Throwable throwable)    {
         StringWriter sw = new StringWriter();
         PrintWriter wr = new PrintWriter(sw);
-        wr.write("[ERROR]" + string + "\n");
+        wr.write(string + "\n");
         throwable.printStackTrace(wr);
         wr.close();
-        processMultiLine(sw.toString(), stdErr);
+        processMultiLine(sw.toString(), stdErr, "ERROR");
     }
     
     public boolean isErrorEnabled()    {
@@ -235,11 +235,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void fatalError(String string)    {
-        processMultiLine("[FATAL]" + string, stdErr);
+        processMultiLine(string, stdErr, "FATAL");
     }
     
     public void fatalError(String string, Throwable throwable)    {
-        processMultiLine("[FATAL]" + string + "\n" + throwable.toString(), stdErr);
+        processMultiLine(string + "\n" + throwable.toString(), stdErr, "FATAL");
     }
     
     public boolean isFatalErrorEnabled()    {
@@ -254,17 +254,17 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         return threshold;
     }
  
-    private void processMultiLine(String input, OutputWriter writer) {
+    private void processMultiLine(String input, OutputWriter writer, String levelText) {
         if (input == null) {
             return;
         }
         String[] strs = input.split("\n");
         for (int i = 0; i < strs.length; i++) {
-            processLine(strs[i], writer);
+            processLine(strs[i], writer, levelText);
         }
     }
     
-    private void processLine(String input, OutputWriter writer) {
+    private void processLine(String input, OutputWriter writer, String levelText) {
         visitor.resetVisitor();
         Iterator it = currentProcessors.iterator();
         while (it.hasNext()) {
@@ -274,12 +274,12 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         String line = visitor.getLine() == null ? input : visitor.getLine();
         if (visitor.getOutputListener() != null) {
             try {
-                writer.println(line, visitor.getOutputListener(), visitor.isImportant());
+                writer.println("[" + levelText + "]" + line, visitor.getOutputListener(), visitor.isImportant());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         } else {
-            writer.println(line);
+            writer.println("[" + levelText + "]" + line);
         }
     }
     
