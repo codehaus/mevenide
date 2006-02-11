@@ -323,6 +323,7 @@ public final class NbMavenProject implements Project {
     private Lookup createBasicLookup() {
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
+            this,
             new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
             new M2AuxilaryConfigImpl(this),
