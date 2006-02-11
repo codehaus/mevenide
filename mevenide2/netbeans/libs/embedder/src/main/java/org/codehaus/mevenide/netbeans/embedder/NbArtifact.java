@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.WeakHashMap;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
@@ -270,4 +269,7 @@ public class NbArtifact implements Artifact {
         return original.compareTo(o);
     }
     
+    public String toString() {
+        return original.toString();
+    }
 }

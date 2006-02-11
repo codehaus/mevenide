@@ -73,8 +73,8 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     
     protected final NbMavenProject getOwnerProject() {
         Project proj = FileOwnerQuery.getOwner(environment.getFileObject());
-        if (proj != null && proj instanceof NbMavenProject) {
-            return (NbMavenProject)proj;
+        if (proj != null) {
+            return (NbMavenProject)proj.getLookup().lookup(NbMavenProject.class);
         }
         ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project.");
         return null;

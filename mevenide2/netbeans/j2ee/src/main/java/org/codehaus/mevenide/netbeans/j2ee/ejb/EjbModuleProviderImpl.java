@@ -45,7 +45,10 @@ public class EjbModuleProviderImpl implements EjbJarProvider  {
 
     public EjbJar findEjbJar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner (file);
-        if (proj != null && proj instanceof NbMavenProject && project == proj) {
+        if (proj != null) {
+            proj = (Project)proj.getLookup().lookup(NbMavenProject.class);
+        }
+        if (proj != null && project == proj) {
             if (ejbimpl != null && ejbimpl.isValid()) {
                 return EjbJarFactory.createEjbJar(ejbimpl);
             }

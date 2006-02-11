@@ -44,7 +44,10 @@ public class EarModuleProviderImpl implements EarProvider  {
     
     public Ear findEar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner(file);
-        if (proj != null && proj instanceof NbMavenProject && project == proj) {
+        if (proj != null) {
+            proj = (Project)proj.getLookup().lookup(NbMavenProject.class);
+        }
+        if (proj != null && project == proj) {
             if (earimpl != null && earimpl.isValid()) {
                 return EjbJarFactory.createEar(earimpl);
             }
