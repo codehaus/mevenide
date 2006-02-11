@@ -19,44 +19,14 @@
 package org.apache.maven.plugin.nbm;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.nbm.model.NbmResource;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.taskdefs.Copy;
-import org.apache.tools.ant.taskdefs.Jar;
-import org.apache.tools.ant.taskdefs.LoadProperties;
-import org.apache.tools.ant.taskdefs.Manifest;
-import org.apache.tools.ant.taskdefs.Move;
 import org.apache.tools.ant.types.FileSet;
-import org.apache.tools.ant.types.FilterSet;
-import org.apache.tools.ant.types.Mapper;
-import org.apache.tools.ant.types.PatternSet;
-import org.apache.tools.ant.types.Reference;
-import org.apache.tools.ant.util.FileUtils;
-import org.netbeans.nbbuild.CreateModuleXML;
-import org.netbeans.nbbuild.MakeListOfNBM;
-import org.netbeans.nbbuild.MakeNBM;
-import org.netbeans.nbbuild.MakeNBM.Blurb;
-import org.netbeans.nbbuild.MakeNBM.Signature;
-
-import org.apache.maven.plugin.nbm.model.Dependency;
-import org.apache.maven.plugin.nbm.model.NetbeansModule;
-import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
 import org.netbeans.nbbuild.MakeUpdateDesc;
 
 /**

@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 
 /**
  *  will try to convert the maven version number to a Netbeans friendly version number.
- * @author <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
+ * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  *
  */
 public class AdaptNbVersion {

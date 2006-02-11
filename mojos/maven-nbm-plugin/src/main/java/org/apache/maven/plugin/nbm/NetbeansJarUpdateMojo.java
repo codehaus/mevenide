@@ -20,13 +20,11 @@ package org.apache.maven.plugin.nbm;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +33,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.nbm.model.Dependency;
 import org.apache.maven.plugin.nbm.model.NetbeansModule;
-import org.apache.maven.plugin.nbm.model.io.xpp3.NetbeansModuleXpp3Reader;
 import org.apache.maven.project.MavenProject;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -43,7 +40,6 @@ import org.apache.tools.ant.taskdefs.Jar;
 import org.apache.tools.ant.taskdefs.Manifest;
 import org.apache.tools.ant.taskdefs.ManifestException;
 import org.apache.tools.ant.util.FileUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  * goal for updating the artifact jar with netbeans specific entries.
