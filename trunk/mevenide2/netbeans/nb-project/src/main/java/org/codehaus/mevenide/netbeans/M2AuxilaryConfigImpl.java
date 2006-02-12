@@ -173,18 +173,23 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         return result;
     }
     
-    private static final DocumentBuilder db;
-    static {
-        try {
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new AssertionError(e);
+    private static DocumentBuilder db;
+    
+    private static synchronized DocumentBuilder getBuilder() {
+        if (db == null) {
+            try {
+                db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            } catch (ParserConfigurationException e) {
+                throw new AssertionError(e);
+            }
         }
+        return db;
     }
+    
     private static Element cloneSafely(Element el) {
         // Using XMLUtil.createDocument is much too slow.
-        synchronized (db) {
-            Document dummy = db.newDocument();
+        synchronized (getBuilder()) {
+            Document dummy = getBuilder().newDocument();
             return (Element) dummy.importNode(el, true);
         }
         
