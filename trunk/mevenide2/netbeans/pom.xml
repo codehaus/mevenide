@@ -19,7 +19,7 @@
             <plugin>
                 <groupId>org.codehaus.mevenide.plugins</groupId>
                 <artifactId>maven-nbm-plugin</artifactId>
-                <version>LATEST</version>
+                <version>2.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <descriptor>src/main/nbm/module.xml</descriptor>
