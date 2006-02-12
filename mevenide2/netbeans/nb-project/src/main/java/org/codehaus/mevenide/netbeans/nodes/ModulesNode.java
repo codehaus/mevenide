@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2005-2006 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.graph.ModulesGraphTopComponent;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -40,6 +41,8 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * display the modules for pom packaged project
@@ -56,6 +59,13 @@ public class ModulesNode extends AbstractNode {
         setName("Modules");//NOI18N
         setDisplayName("Modules");
     }
+
+    public Action[] getActions(boolean bool) {
+        return new Action[] {
+            new ShowGraphAction()  
+        };
+    }
+    
     
     static class ModulesChildren extends Children.Keys {
         
@@ -141,6 +151,18 @@ public class ModulesNode extends AbstractNode {
 
         public void actionPerformed(ActionEvent e) {
             OpenProjects.getDefault().open(new Project[] {project}, false);
+        }
+    }
+    private class ShowGraphAction extends AbstractAction {
+        public ShowGraphAction() {
+            putValue(Action.NAME, "Show Module Graph");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            TopComponent tc = new ModulesGraphTopComponent(project);
+            WindowManager.getDefault().findMode("editor").dockInto(tc);
+            tc.open();
+            tc.requestActive();
         }
     }
 }
