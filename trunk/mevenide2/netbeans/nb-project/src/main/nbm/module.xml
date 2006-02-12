@@ -6,6 +6,10 @@
    <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
+   <libraries>
+       <library>org.netbeans.api:org-netbeans-graph</library>
+       <library>org.netbeans.api:org-netbeans-graph-vmd</library>
+   </libraries>
    <dependencies>
       <dependency>
           <id>org.netbeans.api:org-openide-io</id>
@@ -21,6 +25,10 @@
       </dependency>
       <dependency>
           <id>org.netbeans.api:org-openide-loaders</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-openide-windows</id>
 	  <type>spec</type>
       </dependency>
         <dependency>
