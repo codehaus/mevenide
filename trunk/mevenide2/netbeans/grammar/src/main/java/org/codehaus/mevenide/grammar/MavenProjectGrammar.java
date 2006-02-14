@@ -285,7 +285,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar");
             String repopath = embedder.getLocalRepository().pathOf(art);
             
-            File fil = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), repopath);
+            File fil = new File(embedder.getLocalRepositoryDirectory(), repopath);
             if (fil.exists()) {
                 try {
                     JarFile jf = new JarFile(fil);
