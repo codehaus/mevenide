@@ -113,6 +113,10 @@ public final class NbMavenProject implements Project {
         
     }
     
+    public File getPOMFile() {
+        return projectFile;
+    }
+    
     
     
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {

@@ -43,10 +43,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 /**
- * component showing graph of modules for a pom project.
+ * component showing graph of dependencies for a pom project.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class ModulesGraphTopComponent extends TopComponent {
+public class DependencyGraphTopComponent extends TopComponent {
     
     private NbMavenProject project;
     private JComponent view = null;
@@ -55,11 +55,11 @@ public class ModulesGraphTopComponent extends TopComponent {
     private float zoom = 1;
     
     /** Creates new form ModulesGraphTopComponent */
-    public ModulesGraphTopComponent(NbMavenProject proj) {
+    public DependencyGraphTopComponent(NbMavenProject proj) {
         initComponents();
         project = proj;
-        setName("Module Graph");
-        setDisplayName("Module Graph - " + proj.getDisplayName());
+        setName("Dependency Graph");
+        setDisplayName("Dependency Graph - " + proj.getDisplayName());
     }
     
     
@@ -71,18 +71,18 @@ public class ModulesGraphTopComponent extends TopComponent {
     
     protected void componentOpened() {
         super.componentOpened();
-        controller = new ModuleGraphController();
-        GraphDocument doc = GraphDocumentFactory.createModuleDocument(project);
+        controller = new DefaultViewController();
+        GraphDocument doc = GraphDocumentFactory.createDependencyDocument(project);
         handler = new MyGraphEventHandler(doc);
         view = GraphFactory.createView(doc,
                 new VMDDocumentRenderer(),
                 controller,
                 handler);
         GraphFactory.layoutNodes(view);
-        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
-        if (fo != null) {
-            loadDocument(fo);
-        }
+//        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
+//        if (fo != null) {
+//            loadDocument(fo);
+//        }
         JScrollPane pane = new JScrollPane();
         pane.setViewportView(view);
         add(pane, BorderLayout.CENTER);
@@ -171,35 +171,35 @@ public class ModulesGraphTopComponent extends TopComponent {
     }//GEN-LAST:event_cbSelectionStateChanged
 
     private void btnSaveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLayoutActionPerformed
-        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
-        VMDSerializer ser = new VMDSerializer();
-        ser.createStructure(controller.getHelper());
-        Node nd = ser.saveStructure(doc, "layout");
-        doc.getDocumentElement().appendChild(nd);
-        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
-        FileLock lock = null;
-        OutputStream str = null;
-        try {
-            if (fo == null) {
-                fo = project.getProjectDirectory().createData("modules-graph.xml");
-            }
-            lock = fo.lock();
-            str = fo.getOutputStream(lock);
-            XMLUtil.write(doc, str, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (str != null) {
-                try {
-                str.close();
-                } catch (IOException exc) {
-                    
-                }
-            }
-            if (lock != null) {
-                lock.releaseLock();
-            }
-        }
+//        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
+//        VMDSerializer ser = new VMDSerializer();
+//        ser.createStructure(controller.getHelper());
+//        Node nd = ser.saveStructure(doc, "layout");
+//        doc.getDocumentElement().appendChild(nd);
+//        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
+//        FileLock lock = null;
+//        OutputStream str = null;
+//        try {
+//            if (fo == null) {
+//                fo = project.getProjectDirectory().createData("modules-graph.xml");
+//            }
+//            lock = fo.lock();
+//            str = fo.getOutputStream(lock);
+//            XMLUtil.write(doc, str, "UTF-8");
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (str != null) {
+//                try {
+//                str.close();
+//                } catch (IOException exc) {
+//                    
+//                }
+//            }
+//            if (lock != null) {
+//                lock.releaseLock();
+//            }
+//        }
     }//GEN-LAST:event_btnSaveLayoutActionPerformed
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
@@ -213,38 +213,38 @@ public class ModulesGraphTopComponent extends TopComponent {
 // TODO add your handling code here:
     }//GEN-LAST:event_btnBiggerActionPerformed
 
-    private void loadDocument(FileObject fo) {
-        VMDSerializer ser = new VMDSerializer();
-        InputStream str = null;
-        try {
-            str = fo.getInputStream();
-            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
-            Node nd = doc.getDocumentElement().getFirstChild();
-            while (nd != null && !(nd instanceof Element)) {
-                nd = nd.getNextSibling();
-            }
-            if (nd == null) {
-                System.out.println("errror...");
-            } else {
-                ser.loadStructure(nd);
-                ser.useStructure(controller.getHelper());
-            }
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } catch (SAXException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (str != null) {
-                try {
-                    str.close();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }
-    }
+//    private void loadDocument(FileObject fo) {
+//        VMDSerializer ser = new VMDSerializer();
+//        InputStream str = null;
+//        try {
+//            str = fo.getInputStream();
+//            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
+//            Node nd = doc.getDocumentElement().getFirstChild();
+//            while (nd != null && !(nd instanceof Element)) {
+//                nd = nd.getNextSibling();
+//            }
+//            if (nd == null) {
+//                System.out.println("errror...");
+//            } else {
+//                ser.loadStructure(nd);
+//                ser.useStructure(controller.getHelper());
+//            }
+//        } catch (FileNotFoundException ex) {
+//            ex.printStackTrace();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } catch (SAXException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (str != null) {
+//                try {
+//                    str.close();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            }
+//        }
+//    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

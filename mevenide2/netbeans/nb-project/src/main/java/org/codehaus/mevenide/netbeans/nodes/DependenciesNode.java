@@ -20,12 +20,8 @@ package org.codehaus.mevenide.netbeans.nodes;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
@@ -34,16 +30,11 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.ErrorManager;
-import org.openide.NotifyDescriptor;
-import org.openide.awt.StatusDisplayer;
+import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -52,6 +43,8 @@ import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
+import org.openide.windows.TopComponent;
+import org.openide.windows.WindowManager;
 
 /**
  * root node for dependencies in project's view.
@@ -98,7 +91,8 @@ class DependenciesNode extends AbstractNode {
 //                              null,
 //                              new DownloadAction(),
                               new ResolveDepsAction(),
-                              new DownloadJavadocSrcAction()
+                              new DownloadJavadocSrcAction(),
+                              new ShowGraphAction()
         };
     }
     
@@ -308,6 +302,20 @@ class DependenciesNode extends AbstractNode {
             });
         }
     }  
+    
+    private class ShowGraphAction extends AbstractAction {
+        public ShowGraphAction() {
+            putValue(Action.NAME, "Show Dependency Graph");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            TopComponent tc = new DependencyGraphTopComponent(project);
+            WindowManager.getDefault().findMode("editor").dockInto(tc);
+            tc.open();
+            tc.requestActive();
+        }
+    }
+    
     
     private static class DependenciesComparator implements Comparator {
         public int compare(Object o1, Object o2) {
