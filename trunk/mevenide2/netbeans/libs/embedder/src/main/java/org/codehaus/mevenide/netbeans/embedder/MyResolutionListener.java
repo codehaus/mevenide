@@ -27,48 +27,97 @@ import org.apache.maven.artifact.versioning.VersionRange;
  */
 public class MyResolutionListener implements ResolutionListener {
     
+    private ResolutionListener listener;
     /** Creates a new instance of MyResolutionListener */
     public MyResolutionListener() {
-        System.out.println("my resolutionlistener created");
-        throw new RuntimeException();
+//        System.out.println("my resolutionlistener created");
+        EmbedderFactory.setProjectResolutionListener(this);
+        
     }
     
-    public void  testArtifact( Artifact node ){
-        System.out.println("testArtifact" + node);
+    public void setDelegateResolutionListener(ResolutionListener listen) {
+        listener = listen;
+    }
+    
+    public void clearDelegateResolutionListener() {
+        setDelegateResolutionListener(null);
+    }
+    
+    public void  testArtifact(Artifact node) {
+        if (listener != null) {
+            listener.testArtifact(node);
+        }
+//        System.out.println("testArtifact" + node);
     }
 
     public void  startProcessChildren( Artifact artifact ) {
-        System.out.println("startProcessChildren" + artifact);
+        if (listener != null) {
+            listener.startProcessChildren(artifact);
+        }
+//        System.out.println("startProcessChildren" + artifact);
     }
 
     public void  endProcessChildren( Artifact artifact ){
-        System.out.println("endProcessChildren" + artifact);
+        if (listener != null) {
+            listener.endProcessChildren(artifact);
+        }
+//        System.out.println("endProcessChildren" + artifact);
     }
 
     public void  includeArtifact( Artifact artifact ){
-        System.out.println("includeArtifact" + artifact);
+        if (listener != null) {
+            listener.includeArtifact(artifact);
+        }
+//        System.out.println("includeArtifact" + artifact);
     }
 
     public void  omitForNearer( Artifact omitted, Artifact kept ) {
+        if (listener != null) {
+            listener.omitForNearer(omitted, kept);
+        }
+//        System.out.println("omitted.. kept" + kept);
     }
 
     public void  updateScope( Artifact artifact, String scope ){
+        if (listener != null) {
+            listener.updateScope(artifact, scope);
+        }
+//        System.out.println("update scope");
     }
 
     public void  manageArtifact( Artifact artifact, Artifact replacement ){
-        System.out.println("manageArtifact" + artifact);
+        if (listener != null) {
+            listener.manageArtifact(artifact, replacement);
+        }
+//        System.out.println("MANAGE Artifact=" + artifact + " replacement=" + replacement);
     }
 
     public void  omitForCycle( Artifact artifact ){
+        if (listener != null) {
+            listener.omitForCycle(artifact);
+        }
+//        System.out.println("omit cycle" + artifact);
     }
 
     public void  updateScopeCurrentPom( Artifact artifact, String scope ){
+        if (listener != null) {
+            listener.updateScopeCurrentPom(artifact, scope);
+        }
+//        System.out.println("update scope");
     }
 
     public void  selectVersionFromRange( Artifact artifact ){
+        if (listener != null) {
+            listener.selectVersionFromRange(artifact);
+        }
+//        System.out.println("select version");
     }
 
     public void  restrictRange( Artifact artifact, Artifact replacement, VersionRange newRange ){
+        if (listener != null) {
+            listener.restrictRange(artifact, replacement, newRange);
+        }
+//        System.out.println("restrict range");
     }
     
 }
