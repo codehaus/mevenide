@@ -23,10 +23,10 @@ import org.netbeans.graph.api.model.IGraphNode;
  *
  * @author mkleint
  */
-public class MyGraphController extends DefaultViewController {
+public class ModuleGraphController extends DefaultViewController {
     
     /** Creates a new instance of MyGraphController */
-    public MyGraphController() {
+    public ModuleGraphController() {
         super();
     }
 
