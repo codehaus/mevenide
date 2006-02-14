@@ -720,7 +720,15 @@ implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</imple
         <requirement>
           <role>org.apache.maven.artifact.resolver.ArtifactCollector</role>
         </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.resolver.ResolutionListener</role>
+        </requirement>
       </requirements>
+    </component>
+    <!-- MK added because of the artifactresolver -->
+    <component>
+      <role>org.apache.maven.artifact.resolver.ResolutionListener</role>
+      <implementation>org.codehaus.mevenide.netbeans.embedder.MyResolutionListener</implementation>
     </component>
     <component>
       <role>org.apache.maven.artifact.installer.ArtifactInstaller</role>

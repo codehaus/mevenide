@@ -272,4 +272,14 @@ public class NbArtifact implements Artifact {
     public String toString() {
         return original.toString();
     }
+
+    public boolean equals(Object obj) {
+        return original.equals(obj);
+    }
+
+    public int hashCode() {
+        return original.hashCode();
+    }
+    
+    
 }

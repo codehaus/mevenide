@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.embedder;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,6 +34,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.DefaultArtifactResolver;
+import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.transform.ArtifactTransformationManager;
 import org.codehaus.plexus.context.Context;
@@ -55,6 +58,8 @@ public class NbArtifactResolver extends AbstractLogEnabled implements ArtifactRe
     private ArtifactCollector artifactCollector;
 
     private DefaultArtifactResolver original;
+    
+    private ResolutionListener listener;
     
     /** Creates a new instance of NbWagonManager */
     public NbArtifactResolver() {
@@ -86,34 +91,63 @@ public class NbArtifactResolver extends AbstractLogEnabled implements ArtifactRe
         original.resolve(artifact, list, artifactRepository);
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, List list, ArtifactRepository artifactRepository, ArtifactMetadataSource artifactMetadataSource) throws ArtifactResolutionException, ArtifactNotFoundException {
+    public ArtifactResolutionResult resolveTransitively(
+            Set set, Artifact artifact, 
+            List list, ArtifactRepository artifactRepository, ArtifactMetadataSource artifactMetadataSource) throws ArtifactResolutionException, ArtifactNotFoundException {
 //        System.out.println("resolve trans1=" + artifact);
-        return original.resolveTransitively(set, artifact, list, artifactRepository, artifactMetadataSource);
+        return resolveTransitively(set, artifact, list, artifactRepository, artifactMetadataSource, null);
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, List list, ArtifactRepository artifactRepository, ArtifactMetadataSource artifactMetadataSource, List list0) throws ArtifactResolutionException, ArtifactNotFoundException {
+    public ArtifactResolutionResult resolveTransitively(
+            Set set, Artifact artifact, 
+            List list, ArtifactRepository artifactRepository, 
+            ArtifactMetadataSource artifactMetadataSource, List list0) throws ArtifactResolutionException, ArtifactNotFoundException {
 //        System.out.println("resolve trans2=" + artifact);
-        return original.resolveTransitively(set, artifact, list, artifactRepository, artifactMetadataSource, list0);
+        return resolveTransitively(set, artifact, Collections.EMPTY_MAP, artifactRepository, list, artifactMetadataSource, null, list0);
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, ArtifactRepository artifactRepository, List list, ArtifactMetadataSource artifactMetadataSource, ArtifactFilter artifactFilter) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve trans3=" + artifact);
-        return original.resolveTransitively(set, artifact, artifactRepository, list, artifactMetadataSource, artifactFilter);
+    public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
+                                                         ArtifactRepository localRepository, List remoteRepositories,
+                                                         ArtifactMetadataSource source, ArtifactFilter filter )
+        throws ArtifactResolutionException, ArtifactNotFoundException
+    {
+        return resolveTransitively( artifacts, originatingArtifact, Collections.EMPTY_MAP, localRepository,
+                                    remoteRepositories, source, filter );
+
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, Map map, ArtifactRepository artifactRepository, List list, ArtifactMetadataSource artifactMetadataSource) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve trans4=" + artifact);
-        return original.resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource);
+    public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
+                                                         Map managedVersions, ArtifactRepository localRepository,
+                                                         List remoteRepositories, ArtifactMetadataSource source )
+        throws ArtifactResolutionException, ArtifactNotFoundException
+    {
+        return resolveTransitively( artifacts, originatingArtifact, managedVersions, localRepository,
+                                    remoteRepositories, source, null );
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, Map map, ArtifactRepository artifactRepository, List list, ArtifactMetadataSource artifactMetadataSource, ArtifactFilter artifactFilter) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve trans5=" + artifact);
-        return resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter);
+    public ArtifactResolutionResult resolveTransitively(
+            Set set, Artifact artifact, 
+            Map map, ArtifactRepository artifactRepository, 
+            List list, ArtifactMetadataSource artifactMetadataSource, 
+            ArtifactFilter artifactFilter) throws ArtifactResolutionException, ArtifactNotFoundException 
+    {
+        return resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, null);
     }
 
-    public ArtifactResolutionResult resolveTransitively(Set set, Artifact artifact, Map map, ArtifactRepository artifactRepository, List list, ArtifactMetadataSource artifactMetadataSource, ArtifactFilter artifactFilter, List list0) throws ArtifactResolutionException, ArtifactNotFoundException {
+    public ArtifactResolutionResult resolveTransitively(
+                   Set set, Artifact artifact, 
+                   Map map, ArtifactRepository artifactRepository, 
+                   List list, ArtifactMetadataSource artifactMetadataSource, 
+                   ArtifactFilter artifactFilter, List listeners) throws ArtifactResolutionException, ArtifactNotFoundException {
 //        System.out.println("resolve trans6=" + artifact);
-        return resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, list0);
+        ArrayList newListeners = new ArrayList();
+        if (listeners != null) {
+            newListeners.addAll(listeners);
+        }
+        if (listener != null) {
+            newListeners.add(listener);
+        }
+        return original.resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, newListeners);
     }
 
     public void resolveAlways(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
