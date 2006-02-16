@@ -58,8 +58,8 @@ public class DependencyGraphTopComponent extends TopComponent {
     public DependencyGraphTopComponent(NbMavenProject proj) {
         initComponents();
         project = proj;
-        setName("Dependency Graph");
-        setDisplayName("Dependency Graph - " + proj.getDisplayName());
+        setName("DependencyGraph" + proj.getName());
+        setDisplayName("Dependencies - " + proj.getDisplayName());
     }
     
     
@@ -75,7 +75,7 @@ public class DependencyGraphTopComponent extends TopComponent {
         GraphDocument doc = GraphDocumentFactory.createDependencyDocument(project);
         handler = new MyGraphEventHandler(doc);
         view = GraphFactory.createView(doc,
-                new DependencyDocumentRenderer(controller.getHelper()),
+                new DependencyDocumentRenderer("Transitive Dependencies for " + project.getDisplayName(), controller.getHelper()),
                 controller,
                 handler);
         GraphFactory.layoutNodes(view);
@@ -147,7 +147,7 @@ public class DependencyGraphTopComponent extends TopComponent {
         jPanel1.add(btnSaveLayout);
 
         cbSelection.setSelected(true);
-        cbSelection.setText("Select With Modules");
+        cbSelection.setText("Select With Direct Deps");
         cbSelection.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSelection.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbSelection.addChangeListener(new javax.swing.event.ChangeListener() {

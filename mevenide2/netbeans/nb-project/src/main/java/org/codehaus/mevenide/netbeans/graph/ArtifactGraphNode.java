@@ -38,7 +38,8 @@ import org.openide.util.Utilities;
  */
 public class ArtifactGraphNode extends GraphNode implements DependencyGraphNodeLayouter.IRootDistance, 
                                                             DependencyGraphNodeLayouter.IInLinks,
-                                                            DependencyGraphNodeLayouter.IOutLinks {
+                                                            DependencyGraphNodeLayouter.IOutLinks, 
+                                                            DependencyDocumentRenderer.IArtifactGetter {
 
     private Artifact artifact;
     private GraphPort parentPort;
