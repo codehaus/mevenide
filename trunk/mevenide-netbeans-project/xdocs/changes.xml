@@ -6,7 +6,7 @@
   </properties>
 
   <body>
-    <release version="1.0" date="December 2005" description="">
+    <release version="1.0" date="16/02/2006" description="Bug fixes, making sure it works ith 5.0">
     </release>
     <release version="0.9" date="October 2005" description="4.1 release, also works with 5.0 betas">
     </release>
