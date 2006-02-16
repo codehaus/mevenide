@@ -1,14 +1,18 @@
-/*
- *                 Sun Public License Notice
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
  *
- * The contents of this file are subject to the Sun Public License
- * Version 1.0 (the "License"). You may not use this file except in
- * compliance with the License. A copy of the License is available at
- * http://www.sun.com/
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The Original Code is NetBeans. The Initial Developer of the Original
- * Code is Sun Microsystems, Inc. Portions Copyright 1997-2005 Sun
- * Microsystems, Inc. All Rights Reserved.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 package org.codehaus.mevenide.netbeans.graph;
 
@@ -27,7 +31,9 @@ import java.awt.geom.GeneralPath;
 import java.awt.geom.Line2D;
 
 /**
+ * too bad this have to be copied from examples and not reused somehow..
  * @author David Kaspar
+ * @author Milos Kleint
  */
 public class SimpleLinkRenderer implements IGraphLinkRenderer {
 
@@ -94,22 +100,6 @@ public class SimpleLinkRenderer implements IGraphLinkRenderer {
             gr.setColor (hightlighted ? colorLinkSelected : (helper.isComponentHighlighted (link) ? colorLinkHighlighted : colorLink));
             renderLinkHook (link, gr);
             paintLink (link, gr);
-//////        } else if (layer == LAYER_SELECTED_PORTS) {
-//////            if (hightlighted) {
-//////                final Point[] controlPoints = helper.getControlPoints (link);
-//////                if (controlPoints != null) {
-//////                    final int length = controlPoints.length;
-//////                    if (length > 0)
-//////                        paintSelectedPoint (gr, controlPoints[0]);
-//////                    if (length > 1)
-//////                        paintSelectedPoint (gr, controlPoints[length - 1]);
-//////                }
-//////            }
-//////        } else if (layer == LAYER_ALT_MODE  &&  helper.isAltMode ()) {
-//////            final Point[] controlPoints = helper.getControlPoints (link);
-//////            if (controlPoints != null)
-//////                for (int i = 0; i < controlPoints.length; i++)
-//////                    paintAltPoint (gr, controlPoints[i]);
         }
 
     }
@@ -145,14 +135,6 @@ public class SimpleLinkRenderer implements IGraphLinkRenderer {
         gr.setStroke(new BasicStroke(width, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
         paintLinkWithCorners (gr, points);
         gr.setStroke (previousStroke);
-//        final int length = points.length;
-//        int[] xs = new int[length];
-//        int[] ys = new int[length];
-//        for (int i = 0; i < length; i++) {
-//            xs[i] = points[i].x;
-//            ys[i] = points[i].y;
-//        }
-//        paintLink (gr, xs, ys, length);
     }
 
     private static void paintLinkWithCorners (Graphics2D gr, Point[] points) {
@@ -284,15 +266,5 @@ public class SimpleLinkRenderer implements IGraphLinkRenderer {
             gr.setRenderingHint (RenderingHints.KEY_ANTIALIASING, originalAntialiasingRenderingHint);
         }
     }
-
-//////    private void paintSelectedPoint (Graphics2D gr, Point point) {
-//////        if (point != null)
-//////            SimpleDocumentRenderer.renderSelectedRect (gr, new Rectangle(point.x - 3, point.y - 3, 7, 7));
-//////    }
-//////
-//////    private void paintAltPoint (Graphics2D gr, Point point) {
-//////        if (point != null)
-//////            SimpleDocumentRenderer.renderAltRect (gr, new Rectangle (point.x - 3, point.y - 3, 7, 7));
-//////    }
 
 }
