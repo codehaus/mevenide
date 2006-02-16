@@ -129,6 +129,12 @@ class DependenciesNode extends AbstractNode {
 //                }
 //            }
 //        }
+        List getDeps() {
+            if (deps == null) {
+                regenerateKeys();
+            }
+            return deps;
+        }
         
         protected void addNotify() {
             super.addNotify();
@@ -268,7 +274,7 @@ class DependenciesNode extends AbstractNode {
         public void actionPerformed(ActionEvent evnt) {
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
-                    List lst = new ArrayList(((DependenciesChildren)getChildren()).deps);
+                    List lst = new ArrayList(((DependenciesChildren)getChildren()).getDeps());
                     Iterator it = lst.iterator();
                     boolean atLeastOneDownloaded = false;
                     while (it.hasNext()) {
