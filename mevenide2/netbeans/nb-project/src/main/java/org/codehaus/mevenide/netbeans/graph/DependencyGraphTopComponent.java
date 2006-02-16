@@ -75,7 +75,7 @@ public class DependencyGraphTopComponent extends TopComponent {
         GraphDocument doc = GraphDocumentFactory.createDependencyDocument(project);
         handler = new MyGraphEventHandler(doc);
         view = GraphFactory.createView(doc,
-                new VMDDocumentRenderer(),
+                new DependencyDocumentRenderer(controller.getHelper()),
                 controller,
                 handler);
         GraphFactory.layoutNodes(view);

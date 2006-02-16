@@ -165,6 +165,7 @@ public class GraphDocumentFactory {
             nodes = new ArrayList();
             links = new ArrayList();
             parentChain = new ArrayList();
+            
         }
         
         public List getNodes() {
@@ -190,24 +191,17 @@ public class GraphDocumentFactory {
         }
         
         public void startProcessChildren(Artifact artifact) {
-            GraphNode node = findNode(artifact);
+            ArtifactGraphNode node = findNode(artifact);
             parentChain.add(node);
-            GraphPort port = getParentPort(node);
-            if (port == null) {
-                port = new GraphPort();
-                port.setID("Parent");
-                port.setPreferredOrderPosition(new Integer(0));
-                node.addPort(port);
-            }
-//            node.setDefaultPort(port);
+            node.createParentPort();
         }
         
         public void endProcessChildren(Artifact artifact) {
-            GraphNode node = findNode(artifact);
+            ArtifactGraphNode node = findNode(artifact);
             parentChain.remove(node);
-            GraphPort port = getParentPort(node);
+            GraphPort port = node.getParentPort();
             if (port.getLinks() == null || port.getLinks().length == 0) {
-                node.removePort(port);
+                node.removeParentPort();
             }
             
         }
@@ -219,16 +213,12 @@ public class GraphDocumentFactory {
                 nodes.add(node);
             }
             if (parentChain.size() != 0) {
-                GraphPort port = getChildPort(node);
-                if (port == null) {
-                    port = new GraphPort();
-                    port.setTarget(true);
-                    port.setPreferredOrderPosition(new Integer(8));
-                    port.setID("Child");
-                    node.addPort(port);
+                if (node.getDistanceFromRoot() > parentChain.size()) {
+                    node.setDistanceFromRoot(parentChain.size());
                 }
-                GraphNode parent = (GraphNode)parentChain.get(parentChain.size() - 1);
-                GraphPort parentPort = getParentPort(parent);
+                GraphPort port = node.createChildPort();
+                ArtifactGraphNode parent = (ArtifactGraphNode)parentChain.get(parentChain.size() - 1);
+                GraphPort parentPort = parent.getParentPort();
                 GraphLink link = new GraphLink();
                 link.setSourcePort(parentPort);
                 link.setTargetPort(port);
@@ -236,19 +226,21 @@ public class GraphDocumentFactory {
                 link.setTooltipText(link.getID());
                 link.setDisplayName(link.getID());
                 links.add(link);
+            } else {
+                // for root, it's distance to itself is zero
+                node.setDistanceFromRoot(0);
             }
         }
         
         public void omitForNearer(Artifact omitted, Artifact kept) {
-            GraphNode node = findNode(kept);
+            ArtifactGraphNode node = findNode(kept);
             if (node == null) {
                 node = findNode(omitted);
-                ((ArtifactGraphNode)node).setArtifact(kept);
+                node.setArtifact(kept);
             }
-            assert node != null : "non existant kept= " + kept + " omitted=" + omitted;
-            GraphPort port = getChildPort(node);
-            GraphNode parent = (GraphNode)parentChain.get(parentChain.size() - 1);
-            GraphPort parentPort = getParentPort(parent);
+            GraphPort port = node.getChildPort();
+            ArtifactGraphNode parent = (ArtifactGraphNode)parentChain.get(parentChain.size() - 1);
+            GraphPort parentPort = parent.getParentPort();
             GraphLink link = new GraphLink();
 //            link.setDisplayName("Omitted was " + omitted);
             link.setID(((ArtifactGraphNode)parent).getArtifact().getId() + ":" + kept.getId());
@@ -263,9 +255,9 @@ public class GraphDocumentFactory {
         }
         
         public void manageArtifact(Artifact artifact, Artifact replacement) {
-            System.out.println("MANAGING=" + replacement);
+//            System.out.println("MANAGING=" + replacement);
             ArtifactGraphNode node = (ArtifactGraphNode)findNode(artifact);
-            System.out.println("artifact = " + artifact);
+//            System.out.println("artifact = " + artifact);
             if (node == null) {
                 includeArtifact(replacement);
             } else {
@@ -285,30 +277,6 @@ public class GraphDocumentFactory {
         
         public void restrictRange(Artifact artifact, Artifact replacement, VersionRange newRange) {
             System.out.println("RESTRICT RANGE " + artifact + " repl=" + replacement + " range=" + newRange);
-        }
-        
-        private GraphPort getParentPort(GraphNode parent) {
-            IGraphPort[] ports = parent.getPorts();
-            if (ports != null) {
-                for (int i = 0; i < ports.length; i++) {
-                    if ("Parent".equals(ports[i].getID())) {
-                        return (GraphPort)ports[i];
-                    }
-                }
-            }
-            return null;
-        }
-        
-        private GraphPort getChildPort(GraphNode node) {
-            IGraphPort[] ports = node.getPorts();
-            if (ports != null) {
-                for (int i = 0; i < ports.length; i++) {
-                    if ("Child".equals(ports[i].getID())) {
-                        return (GraphPort)ports[i];
-                    }
-                }
-            }
-            return null;
         }
         
     }
