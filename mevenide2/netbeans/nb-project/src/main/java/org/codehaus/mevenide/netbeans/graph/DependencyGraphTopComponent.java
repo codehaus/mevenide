@@ -18,20 +18,22 @@
 package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.plexus.util.StringOutputStream;
 import org.netbeans.graph.api.GraphFactory;
 import org.netbeans.graph.api.control.builtin.DefaultViewController;
+import org.netbeans.graph.api.model.IGraphNode;
 import org.netbeans.graph.api.model.builtin.GraphDocument;
-import org.netbeans.graph.vmd.VMDDocumentRenderer;
 import org.netbeans.graph.vmd.VMDSerializer;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
@@ -47,6 +49,7 @@ import org.xml.sax.SAXException;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class DependencyGraphTopComponent extends TopComponent {
+    public static final String ATTRIBUTE_DEPENDENCIES_LAYOUT = "MavenProjectDependenciesLayout"; //NOI18N
     
     private NbMavenProject project;
     private JComponent view = null;
@@ -79,15 +82,30 @@ public class DependencyGraphTopComponent extends TopComponent {
                 controller,
                 handler);
         GraphFactory.layoutNodes(view);
-//        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
-//        if (fo != null) {
-//            loadDocument(fo);
-//        }
+        loadDocument();
+        
         JScrollPane pane = new JScrollPane();
         pane.setViewportView(view);
         add(pane, BorderLayout.CENTER);
+        IGraphNode[] nds = controller.getHelper().getNodes();
+        IGraphNode rootNode = null;
+        for (int i = 0; i < nds.length; i++) {
+            DependencyGraphNodeLayouter.IRootDistance dist = (DependencyGraphNodeLayouter.IRootDistance) nds[i].getLookup().lookup(DependencyGraphNodeLayouter.IRootDistance.class);
+            if (dist.getDistanceFromRoot() == 0) {
+                rootNode = nds[i];
+                break;
+            }
+        }
+        if (rootNode != null) {
+            Point point = controller.getHelper().getNodeLocation(rootNode);
+            Rectangle rect = new Rectangle(Math.max(0, point.x - 200), Math.max(0, point.y - 200), 400, 400);
+            pane.getViewport().scrollRectToVisible(rect);
+        }
+
+        
         revalidate();
         repaint();
+        
         
     }
     
@@ -171,35 +189,28 @@ public class DependencyGraphTopComponent extends TopComponent {
     }//GEN-LAST:event_cbSelectionStateChanged
 
     private void btnSaveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLayoutActionPerformed
-//        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
-//        VMDSerializer ser = new VMDSerializer();
-//        ser.createStructure(controller.getHelper());
-//        Node nd = ser.saveStructure(doc, "layout");
-//        doc.getDocumentElement().appendChild(nd);
-//        FileObject fo = project.getProjectDirectory().getFileObject("modules-graph.xml");
-//        FileLock lock = null;
-//        OutputStream str = null;
-//        try {
-//            if (fo == null) {
-//                fo = project.getProjectDirectory().createData("modules-graph.xml");
-//            }
-//            lock = fo.lock();
-//            str = fo.getOutputStream(lock);
-//            XMLUtil.write(doc, str, "UTF-8");
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            if (str != null) {
-//                try {
-//                str.close();
-//                } catch (IOException exc) {
-//                    
-//                }
-//            }
-//            if (lock != null) {
-//                lock.releaseLock();
-//            }
-//        }
+        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
+        VMDSerializer ser = new VMDSerializer();
+        ser.createStructure(controller.getHelper());
+        Node nd = ser.saveStructure(doc, "layout");
+        doc.getDocumentElement().appendChild(nd);
+        FileObject fo = project.getProjectDirectory();
+        StringOutputStream str = new StringOutputStream();
+        try {
+            XMLUtil.write(doc, str, "UTF-8");
+            str.close();
+            fo.setAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT, str.toString());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            if (str != null) {
+                try {
+                str.close();
+                } catch (IOException exc) {
+                    
+                }
+            }
+        }
     }//GEN-LAST:event_btnSaveLayoutActionPerformed
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
@@ -213,38 +224,33 @@ public class DependencyGraphTopComponent extends TopComponent {
 // TODO add your handling code here:
     }//GEN-LAST:event_btnBiggerActionPerformed
 
-//    private void loadDocument(FileObject fo) {
-//        VMDSerializer ser = new VMDSerializer();
-//        InputStream str = null;
-//        try {
-//            str = fo.getInputStream();
-//            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
-//            Node nd = doc.getDocumentElement().getFirstChild();
-//            while (nd != null && !(nd instanceof Element)) {
-//                nd = nd.getNextSibling();
-//            }
-//            if (nd == null) {
-//                System.out.println("errror...");
-//            } else {
-//                ser.loadStructure(nd);
-//                ser.useStructure(controller.getHelper());
-//            }
-//        } catch (FileNotFoundException ex) {
-//            ex.printStackTrace();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        } catch (SAXException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            if (str != null) {
-//                try {
-//                    str.close();
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            }
-//        }
-//    }
+    private void loadDocument() {
+        VMDSerializer ser = new VMDSerializer();
+        FileObject fo = project.getProjectDirectory();
+        String attrVal = (String)fo.getAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT);
+        if (attrVal != null) {
+            try {
+            Reader str = new StringReader(attrVal);
+            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
+            Node nd = doc.getDocumentElement().getFirstChild();
+            while (nd != null && !(nd instanceof Element)) {
+                nd = nd.getNextSibling();
+            }
+            if (nd == null) {
+                System.out.println("errror...");
+            } else {
+                ser.loadStructure(nd);
+                ser.useStructure(controller.getHelper());
+            }
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (SAXException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
