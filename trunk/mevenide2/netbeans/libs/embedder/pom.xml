@@ -19,8 +19,19 @@
             <classifier>mevenide</classifier>
         </dependency>        
         <dependency>
+            <groupId>jdom</groupId>
+            <artifactId>jdom</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-progress</artifactId>
+            <version>RELEASE50</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
             <version>RELEASE50</version>
             <type>jar</type>
         </dependency>
