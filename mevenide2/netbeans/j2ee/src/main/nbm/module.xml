@@ -8,7 +8,7 @@
    <licenseFile>license.txt</licenseFile>
    <dependencies>
         <dependency>
-            <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+            <id>org.netbeans.api:org-netbeans-modules-projectuiapi</id>
             <type>spec</type>
         </dependency>
         <dependency>
@@ -83,9 +83,9 @@
             <id>org.netbeans.api:org-netbeans-modules-schema2beans</id>
             <type>spec</type>
         </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:nb-mvn-embedder</id>
-	  <type>spec</type>
-      </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-jdesktop-layout</id>
+            <type>spec</type>
+        </dependency>
    </dependencies> 
 </nbm>

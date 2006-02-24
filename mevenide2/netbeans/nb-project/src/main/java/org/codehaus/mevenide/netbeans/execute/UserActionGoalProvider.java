@@ -27,11 +27,14 @@ import org.openide.filesystems.FileObject;
  * @author mkleint
  */
 public class UserActionGoalProvider extends AbstractActionGoalProvider {
+
+    private NbMavenProject project;
     /** Creates a new instance of UserActionGoalProvider */
-    public UserActionGoalProvider() {
+    public UserActionGoalProvider(NbMavenProject project) {
+        this.project = project;
     }
     
-    public InputStream getActionDefinitionStream(NbMavenProject project) {
+    public InputStream getActionDefinitionStream() {
         FileObject fo = project.getProjectDirectory().getFileObject("nbactions.xml");
         if (fo != null) {
             try {

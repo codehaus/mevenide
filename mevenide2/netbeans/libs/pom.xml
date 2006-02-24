@@ -15,5 +15,6 @@
   <modules>
      <module>embedder</module>
      <module>continuum-rpc</module>
+     <!--module>writer</module-->
   </modules>
 </project>

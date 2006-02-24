@@ -18,9 +18,15 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.URI;
+import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -29,6 +35,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -46,11 +53,33 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private ModuleChangeReporter moduleChange;
     
     private String serverId;
+
+    private static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
+    private static final String ATTRIBUTE_DEPLOYMENT_SERVER = "NetbeansDeploymentServerType"; //NOI18N
+    
+    
     public WebModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
-        setContextPath(implementation.getContextPath());
+        String val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
+        setContextPathImpl(val != null ? val : implementation.getContextPath());
+        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_DEPLOYMENT_SERVER);
+        String server = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER);
+        if (server != null) {
+            String[] instances = Deployment.getDefault().getInstancesOfServer(server);
+            String inst = null;
+            if (instances != null && instances.length > 0) {
+                inst = instances[0];
+                for (int i = 0; i < instances.length; i++) {
+                    if (val != null && val.equals(instances[i])) {
+                        inst = instances[i];
+                        break;
+                    }
+                }
+                serverId = inst;
+            }
+        }
     }
     
     public WebModule findWebModule(FileObject fileObject) {
@@ -99,6 +128,16 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     }
     
     public void setContextPath(String path) {
+        try {
+            // remember the path for next time..
+            project.getProjectDirectory().setAttribute(ATTRIBUTE_CONTEXT_PATH, path);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        setContextPathImpl(path);
+    }
+    
+    private void setContextPathImpl(String path) {
         if (implementation.getDeploymentDescriptor() != null) {
             getConfigSupport().setWebContextRoot (path);
         }
@@ -107,6 +146,21 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     public void setServerInstanceID(String str) {
         serverId = str;
+        try {
+            // remember the instance for next time..
+            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverId);
+            Model mdl = project.getEmbedder().readModel(project.getPOMFile());
+            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverId));
+            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), mdl);
+        } catch (FileNotFoundException ex) {
+            ex.printStackTrace();
+        } catch (XmlPullParserException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+        
     }
     
     /** If the module wants to specify a target server instance for deployment

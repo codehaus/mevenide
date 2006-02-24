@@ -43,7 +43,9 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSourceLevelImpl;
@@ -331,7 +333,7 @@ public final class NbMavenProject implements Project {
             new MavenForBinaryQueryImpl(this),
             new ActionProviderImpl(this),
             new M2AuxilaryConfigImpl(this),
-//            new CustomizerProviderImpl(this),
+            new CustomizerProviderImpl(this),
             new LogicalViewProviderImpl(this),
             new ProjectOpenedHookImpl(this),
             new ClassPathProviderImpl(this),
@@ -341,7 +343,9 @@ public final class NbMavenProject implements Project {
             new SubprojectProviderImpl(this),
             new MavenSourcesImpl(this), 
             new RecommendedTemplatesImpl(this),
-            new MavenSourceLevelImpl(this)
+            new MavenSourceLevelImpl(this), 
+            
+            new UserActionGoalProvider(this)
                     
         });
         return staticLookup;

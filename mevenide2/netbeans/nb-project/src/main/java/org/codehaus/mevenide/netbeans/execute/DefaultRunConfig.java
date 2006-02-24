@@ -43,7 +43,7 @@ public class DefaultRunConfig implements RunConfig {
         project = proj;
         goals = gls;
         props = new Properties();
-        plugins = Collections.emptyList();
+        plugins = Collections.EMPTY_LIST;
     }
     
     public DefaultRunConfig(NbMavenProject proj, List gls, ClassLoader ldr) {

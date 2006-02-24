@@ -30,7 +30,7 @@ public class DefaultActionGoalProvider extends AbstractActionGoalProvider {
     public DefaultActionGoalProvider() {
     }
     
-    public InputStream getActionDefinitionStream(NbMavenProject project) {
+    public InputStream getActionDefinitionStream() {
        String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml";
        InputStream in = getClass().getResourceAsStream(path);
         if (in == null) {

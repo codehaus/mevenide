@@ -19,9 +19,11 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -33,7 +35,9 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.StringInputStream;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
@@ -49,6 +53,9 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsProvider {
+    protected ActionToGoalMapping originalMappings;
+    private NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+    private NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
     /** Creates a new instance of DefaultActionProvider */
     public AbstractActionGoalProvider() {
     }
@@ -109,21 +116,83 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             //TODO.. get the rel path for test not class..
             
         }
-        return mapGoalsToAction(project, actionName, getActionDefinitionStream(project), replaceMap);
+        return mapGoalsToAction(project, actionName, replaceMap);
     }
+    
+    public ActionToGoalMapping getRawMappings() {
+        if (originalMappings == null) {
+            Reader rdr = null;
+            try {
+                rdr = new InputStreamReader(getActionDefinitionStream());
+                originalMappings = reader.read(rdr);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                originalMappings = new ActionToGoalMapping();
+            } catch (XmlPullParserException ex) {
+                ex.printStackTrace();
+                originalMappings = new ActionToGoalMapping();
+            } finally {
+                if (rdr != null) {
+                    try {
+                        rdr.close();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return originalMappings;
+    }
+    
+    public String getRawMappingsAsString() {
+        StringWriter str = new StringWriter();
+        try {
+            writer.write(str, getRawMappings());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return str.toString();
+    }
+    
+    /**
+     * get a action to maven mapping configuration for the given action.
+     * No replacements happen.
+     */
+    public NetbeansActionMapping getMappingForAction(String actionName, NbMavenProject project) {
+        NetbeansActionMapping action = null;
+        try {
+            // TODO need some caching really badly here..
+            Reader read = performDynamicSubstitutions(Collections.EMPTY_MAP, getRawMappingsAsString());
+            // basically doing a copy here..
+            ActionToGoalMapping mapping = reader.read(read);
+            Iterator it = mapping.getActions().iterator();
+            while (it.hasNext()) {
+                NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
+                if (actionName.equals(elem.getActionName()) &&
+                        (elem.getPackagings().contains(project.getOriginalMavenProject().getPackaging().trim()) ||
+                        elem.getPackagings().contains("*"))) {
+                    action = elem;
+                }
+            }
+        } catch (XmlPullParserException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return action;
+        
+    }
+
     
     /**
      * content of the input stream shall be the xml with action definitions
      */
-    public abstract InputStream getActionDefinitionStream(NbMavenProject project);
+    protected abstract InputStream getActionDefinitionStream();
     
-    public static RunConfig mapGoalsToAction(NbMavenProject project, String actionName, InputStream in, HashMap replaceMap) {
-        if (in == null) {
-            return null;
-        }
+    private RunConfig mapGoalsToAction(NbMavenProject project, String actionName, HashMap replaceMap) {
         try {
-            Reader read = performDynamicSubstitutions(replaceMap, in);
-            NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+            // TODO need some caching really badly here..
+            Reader read = performDynamicSubstitutions(replaceMap, getRawMappingsAsString());
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
             NetbeansActionMapping action = null;
@@ -143,12 +212,6 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             ex.printStackTrace();
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
-            try {
-                in.close();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
         }
         return null;
     }
@@ -156,25 +219,24 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     /**
      * takes the input stream and a map, and for each occurence of ${<mapKey>}, replaces it with map entry value..
      */
-    public static Reader performDynamicSubstitutions(final HashMap replaceMap, final InputStream in) throws IOException {
-        StringWriter writer = new StringWriter();
-        IOUtil.copy(in, writer);
+    private Reader performDynamicSubstitutions(final Map replaceMap, final String in) throws IOException {
+        StringBuffer buf = new StringBuffer(in);
         Iterator it = replaceMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry elem = (Map.Entry) it.next();
             String replaceItem = "${" + elem.getKey() + "}";
-            int index = writer.getBuffer().indexOf(replaceItem);
+            int index = buf.indexOf(replaceItem);
             while (index > -1) {
                 String newItem = (String)elem.getValue();
                 if (newItem == null) {
                     System.out.println("no value for key=" + replaceItem);
                 }
                 newItem = newItem == null ? "" : newItem;
-                writer.getBuffer().replace(index, index + replaceItem.length(), newItem);
-                index = writer.getBuffer().indexOf(replaceItem);
+                buf.replace(index, index + replaceItem.length(), newItem);
+                index = buf.indexOf(replaceItem);
             }
         }
-        return new StringReader(writer.toString());
+        return new StringReader(buf.toString());
     }
     
 }

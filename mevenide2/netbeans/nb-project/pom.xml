@@ -123,6 +123,17 @@
             <artifactId>org-netbeans-modules-queries</artifactId>
             <version>RELEASE50</version>
         </dependency>        
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-jdesktop-layout</artifactId>
+            <version>RELEASE50</version>
+        </dependency>  
+      <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
+        <dependency>
+            <groupId>org.jdesktop</groupId>
+            <artifactId>swing-layout</artifactId>
+            <version>1.0</version>
+        </dependency>        
         
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>

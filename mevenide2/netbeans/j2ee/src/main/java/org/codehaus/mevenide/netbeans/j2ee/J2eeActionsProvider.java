@@ -31,7 +31,7 @@ public class J2eeActionsProvider extends AbstractActionGoalProvider {
     public J2eeActionsProvider() {
     }
     
-    public InputStream getActionDefinitionStream(NbMavenProject project) {
+    public InputStream getActionDefinitionStream() {
         String path = "/org/codehaus/mevenide/netbeans/j2ee/webActionMappings.xml";
         InputStream in = getClass().getResourceAsStream(path);
         if (in == null) {
