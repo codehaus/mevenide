@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.graph;
 
-import com.sun.corba.se.spi.orbutil.fsm.Action;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;

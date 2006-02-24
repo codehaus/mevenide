@@ -1,4 +1,2 @@
-org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider
-#position=10
 org.codehaus.mevenide.netbeans.execute.DefaultActionGoalProvider
 #position=666

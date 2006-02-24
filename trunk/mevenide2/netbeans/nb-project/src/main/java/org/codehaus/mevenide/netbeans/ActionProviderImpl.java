@@ -33,6 +33,7 @@ import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -80,14 +81,18 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public void invokeAction(String action, Lookup lookup) {
-        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-        Iterator it = res.allInstances().iterator();
         RunConfig rc = null;
-        while (it.hasNext()) {
-            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
-            rc = add.createConfigForDefaultAction(action, project, lookup);
-            if (rc != null) {
-                break;
+        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        rc = user.createConfigForDefaultAction(action, project, lookup);
+        if (rc == null) {
+            Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
+            Iterator it = res.allInstances().iterator();
+            while (it.hasNext()) {
+                AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+                rc = add.createConfigForDefaultAction(action, project, lookup);
+                if (rc != null) {
+                    break;
+                }
             }
         }
         assert rc != null;
@@ -113,15 +118,21 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public boolean isActionEnabled(String action, Lookup lookup) {
-        //TODO maybe needs some performance optimizations
+        //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over
+        // again from each provider..
+        RunConfig rc = null;
+        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        rc = user.createConfigForDefaultAction(action, project, lookup);
+        if (rc != null) {
+            return true;
+        }
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
         Iterator it = res.allInstances().iterator();
-        RunConfig rc = null;
         while (it.hasNext()) {
             AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
             rc = add.createConfigForDefaultAction(action, project, lookup);
             if (rc != null) {
-                return rc != AdditionalM2ActionsProvider.EMPTY;
+                return true;
             }
         }
         return false;
