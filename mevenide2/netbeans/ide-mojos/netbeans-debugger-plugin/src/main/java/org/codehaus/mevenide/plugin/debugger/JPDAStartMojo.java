@@ -20,7 +20,6 @@ import com.sun.jdi.Bootstrap;
 import com.sun.jdi.connect.Connector;
 import com.sun.jdi.connect.ListeningConnector;
 import com.sun.jdi.connect.Transport;
-import com.sun.tools.javac.code.Source;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
 import java.net.URL;
