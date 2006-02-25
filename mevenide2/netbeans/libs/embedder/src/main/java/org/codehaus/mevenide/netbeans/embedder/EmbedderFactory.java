@@ -60,10 +60,14 @@ public class EmbedderFactory {
             URL components = EmbedderFactory.class.getResource("/org/codehaus/mevenide/netbeans/embedder/components.xml");
             embedder.setEmbedderConfiguration(components);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            ClassLoader ldr = Thread.currentThread().getContextClassLoader();
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
                 e.printStackTrace();
+            } finally {
+                //http://jira.codehaus.org/browse/PLX-203
+                Thread.currentThread().setContextClassLoader(ldr);
             }
             project = embedder;
         }
@@ -77,10 +81,14 @@ public class EmbedderFactory {
             embedder.setInteractiveMode(false);
             embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            ClassLoader ldr = Thread.currentThread().getContextClassLoader();
             try {
                 embedder.start();
             } catch (MavenEmbedderException e) {
                 e.printStackTrace();
+            } finally {
+                //http://jira.codehaus.org/browse/PLX-203
+                Thread.currentThread().setContextClassLoader(ldr);
             }
             online = embedder;
         }
@@ -97,7 +105,15 @@ public class EmbedderFactory {
             embedder.setClassLoader(new HackyClassLoader(loader, EmbedderFactory.class.getClassLoader()));
             embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setLogger(logger);
-            embedder.start();
+            ClassLoader ldr = Thread.currentThread().getContextClassLoader();
+            try {
+                embedder.start();
+            } catch (MavenEmbedderException e) {
+                e.printStackTrace();
+            } finally {
+                //http://jira.codehaus.org/browse/PLX-203
+                Thread.currentThread().setContextClassLoader(ldr);
+            }
             return embedder;
         
     }
