@@ -121,22 +121,27 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     
     public ActionToGoalMapping getRawMappings() {
         if (originalMappings == null) {
-            Reader rdr = null;
-            try {
-                rdr = new InputStreamReader(getActionDefinitionStream());
-                originalMappings = reader.read(rdr);
-            } catch (IOException ex) {
-                ex.printStackTrace();
+            InputStream in = getActionDefinitionStream();
+            if (in == null) {
                 originalMappings = new ActionToGoalMapping();
-            } catch (XmlPullParserException ex) {
-                ex.printStackTrace();
-                originalMappings = new ActionToGoalMapping();
-            } finally {
-                if (rdr != null) {
-                    try {
-                        rdr.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+            } else {
+                Reader rdr = null;
+                try {
+                    rdr = new InputStreamReader(getActionDefinitionStream());
+                    originalMappings = reader.read(rdr);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    originalMappings = new ActionToGoalMapping();
+                } catch (XmlPullParserException ex) {
+                    ex.printStackTrace();
+                    originalMappings = new ActionToGoalMapping();
+                } finally {
+                    if (rdr != null) {
+                        try {
+                            rdr.close();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
                     }
                 }
             }
