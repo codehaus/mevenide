@@ -874,7 +874,9 @@ implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</imple
     </component>
     <component>
       <role>org.apache.maven.project.validation.ModelValidator</role>
-      <implementation>org.apache.maven.project.validation.DefaultModelValidator</implementation>
+      <!--MK
+implementation>org.apache.maven.project.validation.DefaultModelValidator</implementation-->
+       <implementation>org.codehaus.mevenide.netbeans.embedder.NbModelValidator</implementation>
     </component>
     <component>
       <role>org.apache.maven.project.ModelResolver</role>

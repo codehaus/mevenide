@@ -40,6 +40,7 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.Project;
 import org.openide.ErrorManager;
@@ -131,6 +132,9 @@ public class DependencyNode extends AbstractNode {
     }
     
     boolean isDependencyProjectOpen() {
+        if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
+            return false;
+        }
         URI uri = art.getFile().toURI();
 //        URI  rootUri = project.getRepositoryRoot().getURL().toURI(); 
 //        URI uri = rootUri.create(rootUri.toString() + "/" + project.getArtifactRelativeRepositoryPath(art));
@@ -154,6 +158,12 @@ public class DependencyNode extends AbstractNode {
     }
     
     private String createName() {
+        if (art instanceof NbArtifact) {
+            NbArtifact nb = (NbArtifact)art;
+            if (nb.isFakedSystemDependency()) {
+                return nb.getNonFakedFile().getName();
+            }
+        }
         return art.getFile().getName();
     }
     
@@ -193,11 +203,17 @@ public class DependencyNode extends AbstractNode {
     }
     
     private boolean checkLocal() {
+        if (art instanceof NbArtifact) {
+            NbArtifact nb = (NbArtifact)art;
+            if (nb.isFakedSystemDependency()) {
+                return false;
+            }
+        }
         return art.getFile().exists();
     }
     
     public boolean hasJavadocInRepository() {
-        return getJavadocFile().exists();
+        return (! Artifact.SCOPE_SYSTEM.equals(art.getScope())) &&  getJavadocFile().exists();
     }
     
     private File getJavadocFile() {
@@ -208,6 +224,9 @@ public class DependencyNode extends AbstractNode {
     }
     
     public boolean hasSourceInRepository() {
+        if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
+            return false;
+        }
         File artifact = art.getFile();
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
@@ -216,6 +235,9 @@ public class DependencyNode extends AbstractNode {
     }
     
     void downloadJavadocSources(MavenEmbedder online) {
+        if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
+            return;
+        }
         Artifact javadoc = project.getEmbedder().createArtifactWithClassifier(
                 art.getGroupId(),
                 art.getArtifactId(),
