@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.jar.JarOutputStream;
+import java.util.jar.Manifest;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.handler.ArtifactHandler;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
@@ -43,6 +45,8 @@ public class NbArtifact implements Artifact {
     
     private Artifact original;
     private static Map cache = new HashMap();
+    private boolean fakesSystem = false;
+    private File originalSystemFile;
     
     public static synchronized File getCachedPom(String id) {
         return (File)cache.get(id);
@@ -118,7 +122,47 @@ public class NbArtifact implements Artifact {
                 }
             }
         }
+        if (Artifact.SCOPE_SYSTEM.equals(getScope())) {
+            File systemFile = original.getFile();
+            if (!systemFile.exists()) {
+                File tempSystemFile = null;
+                JarOutputStream out = null;
+                try {
+                    tempSystemFile = File.createTempFile("mvn-system-dep", ".jar");
+//                    tempSystemFile.deleteOnExit();
+                    out = new JarOutputStream(new FileOutputStream(tempSystemFile), new Manifest());
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    try {
+                        if(out != null) {
+                            out.close();
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+                if (tempSystemFile != null) {
+                    originalSystemFile = systemFile;
+                    setFile(tempSystemFile);
+                    fakesSystem = true;
+                } else {
+                    // oh well..
+                }
+            }
+        }
+        
         return original.getFile();
+    }
+    
+    public boolean isFakedSystemDependency() {
+        return fakesSystem;
+    }
+    
+    public File getNonFakedFile() {
+        return originalSystemFile;
     }
     
     public void setFile(File destination) {
