@@ -1,3 +1,19 @@
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
+ */
 
 package org.codehaus.mevenide.netbeans.customizer;
 
@@ -10,31 +26,28 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.ProjectUtils;
-import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
-
 
 /**
  *
@@ -114,9 +127,47 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-        handle = new ModelHandle(model, project.getOriginalMavenProject(), mapping);
+        handle = new ModelHandle(model, project.getOriginalMavenProject(), mapping, createPropsFromFileObject(project.getProjectDirectory()));
         panelProvider = new PanelProvider(handle, project);
     }
+    
+    private Properties createPropsFromFileObject(FileObject projectDir) {
+        Properties props = new Properties();
+        Enumeration en = projectDir.getAttributes();
+        while (en.hasMoreElements()) {
+            String key = (String)en.nextElement();
+            Object val = projectDir.getAttribute(key);
+            if (val instanceof String) {
+                props.setProperty(key, (String)val);
+            }
+        }
+        return props;
+    }
+    
+    private void writeFileAttributes(FileObject projectDir, Properties newValues) throws IOException {
+        Enumeration en = projectDir.getAttributes();
+        List oldKeys = new ArrayList();
+        while (en.hasMoreElements()) {
+            String key = (String)en.nextElement();
+            Object val = projectDir.getAttribute(key);
+            if (val instanceof String) {
+                oldKeys.add(key);
+            }
+        }
+        Iterator it = newValues.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry elem = (Map.Entry) it.next();
+            projectDir.setAttribute((String)elem.getKey(), elem.getValue());
+            oldKeys.remove((String)elem.getKey());
+        }
+        it = oldKeys.iterator();
+        while (it.hasNext()) {
+            String elem = (String) it.next();
+            projectDir.setAttribute(elem, null);
+        }
+        
+    }
+    
     
     private static class PanelProvider implements ProjectCustomizer.CategoryComponentProvider {
         
@@ -162,7 +213,9 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
+                    writeFileAttributes(project.getProjectDirectory(), handle.getAttributes());
                     WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
+                    handle.fireActionPerformed();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     //TODO
