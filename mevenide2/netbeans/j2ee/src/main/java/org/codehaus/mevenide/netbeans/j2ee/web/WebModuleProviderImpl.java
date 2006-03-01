@@ -52,19 +52,24 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     private ModuleChangeReporter moduleChange;
     
-    private String serverId;
+    private String serverInstanceID;
 
-    private static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
-    private static final String ATTRIBUTE_DEPLOYMENT_SERVER = "NetbeansDeploymentServerType"; //NOI18N
+    static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "NetbeansDeploymentServerType"; //NOI18N
     
     
     public WebModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
-        String val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
-        setContextPathImpl(val != null ? val : implementation.getContextPath());
-        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_DEPLOYMENT_SERVER);
+        loadPersistedServerId();
+    }
+    
+    public void loadPersistedServerId() {
+        String oldId = getServerInstanceID();
+        String oldSer = getServerID();
+        System.out.println("load persisted----------------------------------------------");
+        String val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_DEPLOYMENT_SERVER);
         String server = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER);
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
@@ -77,9 +82,14 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                         break;
                     }
                 }
-                serverId = inst;
+                serverInstanceID = inst;
             }
         }
+        if (oldId != null) {
+            fireServerChange(oldSer, getServerID());
+        }
+//        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
+//        setContextPathImpl(val != null ? val : implementation.getContextPath());
     }
     
     public WebModule findWebModule(FileObject fileObject) {
@@ -143,14 +153,13 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         }
     }
     
-    
     public void setServerInstanceID(String str) {
-        serverId = str;
+        serverInstanceID = str;
         try {
             // remember the instance for next time..
-            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverId);
+            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverInstanceID);
             Model mdl = project.getEmbedder().readModel(project.getPOMFile());
-            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverId));
+            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverInstanceID));
             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), mdl);
         } catch (FileNotFoundException ex) {
             ex.printStackTrace();
@@ -167,7 +176,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
      * it needs to override this method to return false.
      */
     public boolean useDefaultServer() {
-        return serverId == null;
+        return serverInstanceID == null;
     }
     
     /** Id of server isntance for deployment. The default implementation returns
@@ -176,8 +185,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
      * If modules override this method they also need to override {@link useDefaultServer}.
      */
     public String getServerInstanceID() {
-        if (serverId != null && Deployment.getDefault().getServerID(serverId) != null) {
-            return serverId;
+        if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
+            return serverInstanceID;
         }
         return super.getServerInstanceID();
     }
@@ -186,8 +195,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
      * The return value must correspond to value returned from {@link getServerInstanceID}.
      */
     public String getServerID() {
-        if (serverId != null) {
-            String tr = Deployment.getDefault().getServerID(serverId);
+        if (serverInstanceID != null) {
+            String tr = Deployment.getDefault().getServerID(serverInstanceID);
             if (tr != null) {
                 return tr;
             }

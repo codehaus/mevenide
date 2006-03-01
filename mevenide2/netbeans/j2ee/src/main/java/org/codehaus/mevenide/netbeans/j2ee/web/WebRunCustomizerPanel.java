@@ -1,15 +1,31 @@
-/*
- * WebRunCustomizerPanel.java
+/* ==========================================================================
+ * Copyright 2005-2006 Mevenide Team
  *
- * Created on February 23, 2006, 7:39 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.DefaultComboBoxModel;
+import org.apache.maven.model.Model;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
@@ -26,7 +42,9 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     private NbMavenProject project;
     private ModelHandle handle;
     private WebModule module;
-    private J2eeModuleProvider moduleProvider;
+    private WebModuleProviderImpl moduleProvider;
+
+    private ArrayList listeners;
     
     /** Creates new form WebRunCustomizerPanel */
     public WebRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
@@ -34,36 +52,101 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         this.handle = handle;
         this.project = project;
         module = WebModule.getWebModule(project.getProjectDirectory());
-        moduleProvider = (J2eeModuleProvider)project.getLookup().lookup(J2eeModuleProvider.class);
-        String selected = findSelectedServer();
-        loadComboModel(selected);
+        moduleProvider = (WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class);
+        loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
         }
+        handle.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("updatin module provider..");
+                moduleProvider.loadPersistedServerId();
+            }
+        });
+        initValues();
     }
     
-    
-    private String findSelectedServer() {
-        return moduleProvider.getServerInstanceID();
+    private void initValues() {
+        Model mdl = handle.getPOMModel();
+        listeners = new ArrayList();
+        listeners.add(new ComboBoxUpdater(comServer) {
+            public Object getDefaultValue() {
+                Wrapper wr = null;
+                String id = (String)project.getProjectDirectory().getAttribute(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                if (id != null) {
+                    wr = findWrapperByInstance(id);
+                }
+                if (wr == null) {
+                    String str = handle.getProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    if (str != null) {
+                        wr = findWrapperByType(str);
+                    }
+                }
+                return wr;
+            }
+            
+            public Object getValue() {
+                Wrapper wr = null;
+                String id = handle.getAttributes().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                if (id != null) {
+                    wr = findWrapperByInstance(id);
+                }
+                if (wr == null) {
+                    String str = handle.getPOMModel().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    if (str != null) {
+                        wr = findWrapperByType(str);
+                    }
+                }
+                return wr;
+            }
+            
+            public void setValue(Object value) {
+                System.out.println("setting value.." + value);
+               Wrapper wr = (Wrapper)value;
+               String sID = wr.getServerID();
+               String iID = wr.getServerInstanceID();
+               handle.getPOMModel().getProperties().put(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+               handle.getAttributes().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, iID);
+            }
+        });
     }
     
-    private void loadComboModel(String selectedId) {
+    private Wrapper findWrapperByInstance(String instanceId) {
+        for (int i = 0; i < comServer.getModel().getSize(); i++) {
+            Wrapper wr = (Wrapper)comServer.getModel().getElementAt(i);
+            if (instanceId.equals(wr.getServerInstanceID())) {
+                return wr;
+            }
+        }
+        return null;
+    }
+    
+    private Wrapper findWrapperByType(String serverId) {
+        for (int i = 0; i < comServer.getModel().getSize(); i++) {
+            Wrapper wr = (Wrapper)comServer.getModel().getElementAt(i);
+            if (serverId.equals(wr.getServerID())) {
+                return wr;
+            }
+        }
+        return null;
+    }
+    
+    private void loadComboModel() {
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
         Collection col = new ArrayList();
         Wrapper selected = null;
         for (int i = 0; i < ids.length; i++) {
-            Wrapper wr = new Wrapper(ids[i], 
-                             Deployment.getDefault().getServerInstanceDisplayName(ids[i]));
+            Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);
-            if (selectedId.equals(ids[i])) {
-                selected = wr;
-            }
+//            if (selectedId.equals(ids[i])) {
+//                selected = wr;
+//            }
             
         }
         comServer.setModel(new DefaultComboBoxModel(col.toArray()));
-        if (selected != null) {
-            comServer.setSelectedItem(selected);
-        }
+//        if (selected != null) {
+//            comServer.setSelectedItem(selected);
+//        }
     }
     
     
@@ -180,20 +263,22 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     private class Wrapper {
-        private String dn;
         private String id;
         
-        public Wrapper(String serverid, String name) {
+        public Wrapper(String serverid) {
             id = serverid;
-            dn = name;
         }
         
-        public String getId() {
+        public String getServerInstanceID() {
             return id;
         }
         
+        public String getServerID() {
+            return Deployment.getDefault().getServerID(id);
+        }
+        
         public String toString() {
-            return dn;
+            return Deployment.getDefault().getServerInstanceDisplayName(id);
         }
                 
     }
