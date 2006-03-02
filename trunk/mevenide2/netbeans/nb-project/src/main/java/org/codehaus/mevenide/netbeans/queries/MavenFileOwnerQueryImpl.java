@@ -158,10 +158,11 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         Set currentProjects = getAllKnownProjects();
         
         Iterator it = currentProjects.iterator();
+        String filepath = file.getAbsolutePath().replace('\\', '/');
         while (it.hasNext()) {
             NbMavenProject project = (NbMavenProject)it.next();
             String path = project.getArtifactRelativeRepositoryPath();
-            if (file.getAbsolutePath().endsWith(path)) {
+            if (filepath.endsWith(path)) {
                 return project;
             }
         }
