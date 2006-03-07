@@ -40,9 +40,9 @@ public class JPDAConnectMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * @parameter expression="${jpda-host}" defaultvalue="localhost"
+     * @parameter expression="${jpda-host}"
      */
-    private String host;
+    private String host = "localhost";
 
     /**
      * @parameter expression="${jpda-address}"
@@ -57,7 +57,7 @@ public class JPDAConnectMojo extends AbstractMojo {
     private String name;
 
     /**
-     * @parameter expression="${jpda-transport}" defaultvalue="dt_socket"
+     * @parameter expression="${jpda-transport}"
      */
     private String transport = "dt_socket";
     
@@ -90,7 +90,6 @@ public class JPDAConnectMojo extends AbstractMojo {
                     public void run() {
                         synchronized(lock) {
                             try {
-                                
                                 // VirtualMachineManagerImpl can be initialized 
                                 // here, so needs to be inside RP thread.
                                 if (transport.equals ("dt_socket"))
