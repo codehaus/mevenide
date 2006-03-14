@@ -120,7 +120,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     }
     
     public ActionToGoalMapping getRawMappings() {
-        if (originalMappings == null) {
+        if (originalMappings == null || reloadStream()) {
             InputStream in = getActionDefinitionStream();
             if (in == null) {
                 originalMappings = new ActionToGoalMapping();
@@ -160,13 +160,21 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     }
     
     /**
+     * override in children that are listening on changes of model and need refreshing..
+     */
+    protected boolean reloadStream() {
+        return false;
+    }
+    
+    /**
      * get a action to maven mapping configuration for the given action.
      * No replacements happen.
+     * The instance returned is always a new copy, can be modified or reused.
      */
     public NetbeansActionMapping getMappingForAction(String actionName, NbMavenProject project) {
         NetbeansActionMapping action = null;
         try {
-            // TODO need some caching really badly here..
+            // just a converter for the To-Object reader..
             Reader read = performDynamicSubstitutions(Collections.EMPTY_MAP, getRawMappingsAsString());
             // basically doing a copy here..
             ActionToGoalMapping mapping = reader.read(read);

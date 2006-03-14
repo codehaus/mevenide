@@ -47,21 +47,21 @@ public class GlobalOutputProcessor implements OutputProcessor {
     }
 
     public void sequenceEnd(String sequenceId, OutputVisitor visitor) {
-        if (sequenceId.startsWith("project-execute")) {
-            long time = System.currentTimeMillis() - start;
-            visitor.setLine("-------------------------------------------------------" +
-                            "\nBUILD SUCCESSFUL - Time: " + convertTime(time) + "\n" +
-                            "-------------------------------------------------------");
-        }
+//        if (sequenceId.startsWith("project-execute")) {
+//            long time = System.currentTimeMillis() - start;
+//            visitor.setLine("-------------------------------------------------------" +
+//                            "\nBUILD SUCCESSFUL - Time: " + convertTime(time) + "\n" +
+//                            "-------------------------------------------------------");
+//        }
     }
 
     public void sequenceFail(String sequenceId, OutputVisitor visitor) {
-        if (sequenceId.startsWith("project-execute")) {
-            long time = System.currentTimeMillis() - start;
-            visitor.setLine("-------------------------------------------------------" +
-                            "\nBUILD FAILED - Time: " + convertTime(time) + "\n" +
-                            "-------------------------------------------------------");
-        }
+//        if (sequenceId.startsWith("project-execute")) {
+//            long time = System.currentTimeMillis() - start;
+//            visitor.setLine("-------------------------------------------------------" +
+//                            "\nBUILD FAILED - Time: " + convertTime(time) + "\n" +
+//                            "-------------------------------------------------------");
+//        }
     }
     
     private String convertTime(long time) {

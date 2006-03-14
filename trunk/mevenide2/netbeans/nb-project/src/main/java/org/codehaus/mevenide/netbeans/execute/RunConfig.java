@@ -40,8 +40,4 @@ public interface RunConfig {
     
     ClassLoader getClassLoader();
     
-    /**
-     * list of <org.apache.maven.model.Plugin>
-     */
-    List getAdditionalPluginConfigurations();
 }

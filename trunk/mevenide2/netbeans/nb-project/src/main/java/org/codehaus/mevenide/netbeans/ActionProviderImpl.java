@@ -30,6 +30,7 @@ import java.util.Properties;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
@@ -81,20 +82,7 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public void invokeAction(String action, Lookup lookup) {
-        RunConfig rc = null;
-        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
-        rc = user.createConfigForDefaultAction(action, project, lookup);
-        if (rc == null) {
-            Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-            Iterator it = res.allInstances().iterator();
-            while (it.hasNext()) {
-                AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
-                rc = add.createConfigForDefaultAction(action, project, lookup);
-                if (rc != null) {
-                    break;
-                }
-            }
-        }
+        RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         assert rc != null;
         runGoal(lookup, rc);
     }
@@ -120,22 +108,8 @@ public class ActionProviderImpl implements ActionProvider {
     public boolean isActionEnabled(String action, Lookup lookup) {
         //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over
         // again from each provider..
-        RunConfig rc = null;
-        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
-        rc = user.createConfigForDefaultAction(action, project, lookup);
-        if (rc != null) {
-            return true;
-        }
-        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-        Iterator it = res.allInstances().iterator();
-        while (it.hasNext()) {
-            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
-            rc = add.createConfigForDefaultAction(action, project, lookup);
-            if (rc != null) {
-                return true;
-            }
-        }
-        return false;
+        RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
+        return rc != null;
     }
     
     private String[] getRelPath(String groupName, FileObject[] fos) {

@@ -24,7 +24,10 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
+import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -35,22 +38,28 @@ import java.util.Properties;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.apache.maven.model.Model;
+import org.apache.maven.profiles.ProfilesRoot;
+import org.apache.maven.profiles.io.xpp3.ProfilesXpp3Reader;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 
 /**
- *
+ * maven implementation of CustomizerProvider, handles the general workflow,
+ *for panel creation depegates to M2CustomizerPanelProvider instances.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class CustomizerProviderImpl implements CustomizerProvider {
@@ -69,6 +78,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     private static final String COMMAND_CANCEL = "CANCEL";  // NOI18N
 
     private ModelHandle handle;
+    private List visitedPanels = new ArrayList();
     
     
     public CustomizerProviderImpl(NbMavenProject project) {
@@ -125,59 +135,91 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             run
         };
         Model model = project.getEmbedder().readModel(project.getPOMFile());
+        FileObject profiles = project.getProjectDirectory().getFileObject("profiles.xml");
+        ProfilesRoot prof;
+        if (profiles != null) {
+            InputStreamReader read = new InputStreamReader(profiles.getInputStream());
+            try {
+                prof = new ProfilesXpp3Reader().read(read);
+            } finally {
+                read.close();
+            }
+        } else {
+            prof = new ProfilesRoot();
+        }
         UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-        handle = new ModelHandle(model, project.getOriginalMavenProject(), mapping, createPropsFromFileObject(project.getProjectDirectory()));
-        panelProvider = new PanelProvider(handle, project);
+        handle = new ModelHandle(model, prof, project.getOriginalMavenProject(), mapping);
+        panelProvider = new PanelProvider();
+        visitedPanels.clear();
     }
     
-    private Properties createPropsFromFileObject(FileObject projectDir) {
-        Properties props = new Properties();
-        Enumeration en = projectDir.getAttributes();
-        while (en.hasMoreElements()) {
-            String key = (String)en.nextElement();
-            Object val = projectDir.getAttribute(key);
-            if (val instanceof String) {
-                props.setProperty(key, (String)val);
+//    private Properties createPropsFromFileObject(FileObject projectDir) {
+//        Properties props = new Properties();
+//        Enumeration en = projectDir.getAttributes();
+//        while (en.hasMoreElements()) {
+//            String key = (String)en.nextElement();
+//            Object val = projectDir.getAttribute(key);
+//            if (val instanceof String) {
+//                props.setProperty(key, (String)val);
+//            }
+//        }
+//        return props;
+//    }
+    
+//    private void writeFileAttributes(FileObject projectDir, Properties newValues) throws IOException {
+//        Enumeration en = projectDir.getAttributes();
+//        List oldKeys = new ArrayList();
+//        while (en.hasMoreElements()) {
+//            String key = (String)en.nextElement();
+//            Object val = projectDir.getAttribute(key);
+//            if (val instanceof String) {
+//                oldKeys.add(key);
+//            }
+//        }
+//        Iterator it = newValues.entrySet().iterator();
+//        while (it.hasNext()) {
+//            Map.Entry elem = (Map.Entry) it.next();
+//            projectDir.setAttribute((String)elem.getKey(), elem.getValue());
+//            oldKeys.remove((String)elem.getKey());
+//        }
+//        it = oldKeys.iterator();
+//        while (it.hasNext()) {
+//            String elem = (String) it.next();
+//            projectDir.setAttribute(elem, null);
+//        }
+//        
+//    }
+    
+    private void writeNbActions(FileObject projectDir, ActionToGoalMapping actionToGoalMapping) throws IOException {
+        NetbeansBuildActionXpp3Writer wr = new NetbeansBuildActionXpp3Writer();
+        FileObject fo = projectDir.getFileObject(UserActionGoalProvider.FILENAME);
+        if (actionToGoalMapping.getActions().size() == 0) {
+            if (fo != null) {
+                fo.delete();
             }
+            return;
         }
-        return props;
-    }
-    
-    private void writeFileAttributes(FileObject projectDir, Properties newValues) throws IOException {
-        Enumeration en = projectDir.getAttributes();
-        List oldKeys = new ArrayList();
-        while (en.hasMoreElements()) {
-            String key = (String)en.nextElement();
-            Object val = projectDir.getAttribute(key);
-            if (val instanceof String) {
-                oldKeys.add(key);
-            }
+        if (fo == null) {
+            fo = projectDir.createData(UserActionGoalProvider.FILENAME);
         }
-        Iterator it = newValues.entrySet().iterator();
-        while (it.hasNext()) {
-            Map.Entry elem = (Map.Entry) it.next();
-            projectDir.setAttribute((String)elem.getKey(), elem.getValue());
-            oldKeys.remove((String)elem.getKey());
+        FileLock lock = fo.lock();
+        Writer writer = null;
+        try {
+            writer = new OutputStreamWriter(fo.getOutputStream(lock));
+            wr.write(writer, actionToGoalMapping);
+        } finally {
+            IOUtil.close(writer);
+            lock.releaseLock();
         }
-        it = oldKeys.iterator();
-        while (it.hasNext()) {
-            String elem = (String) it.next();
-            projectDir.setAttribute(elem, null);
-        }
-        
     }
     
     
-    private static class PanelProvider implements ProjectCustomizer.CategoryComponentProvider {
+    private class PanelProvider implements ProjectCustomizer.CategoryComponentProvider {
         
         private JPanel EMPTY_PANEL = new JPanel();
-        private NbMavenProject project;
-        private ModelHandle handle;
         
-        PanelProvider(ModelHandle handle, NbMavenProject project) {
-            this.handle = handle;
-            this.project = project;
+        PanelProvider() {
         }
         
         public JComponent create( ProjectCustomizer.Category category ) {
@@ -187,6 +229,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 M2CustomizerPanelProvider prov = (M2CustomizerPanelProvider) it.next();
                 JComponent comp = prov.createPanel(handle, project, category);
                 if (comp != null) {
+                    visitedPanels.add(comp);
                     return comp;
                 }
             }
@@ -213,8 +256,21 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
-                    writeFileAttributes(project.getProjectDirectory(), handle.getAttributes());
-                    WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
+                    Iterator it = visitedPanels.iterator();
+                    while (it.hasNext()) {
+                        Object obj = it.next();
+                        if (obj instanceof M2CustomizerPanelProvider.Panel) {
+                            M2CustomizerPanelProvider.Panel panel = (M2CustomizerPanelProvider.Panel)obj;
+                            panel.applyChanges();
+                        }
+                    }
+                    project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
+                        public void run() throws IOException {
+                            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
+                            WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
+                            writeNbActions(project.getProjectDirectory(), handle.getActionMappings());
+                        }
+                    });
                     handle.fireActionPerformed();
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -234,6 +290,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.dispose();
             }
         }
+
     }
     
     static interface SubCategoryProvider {

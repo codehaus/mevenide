@@ -54,32 +54,31 @@ public class DeployMojo extends AbstractMojo {
     
     /**
      * Holds value of property debugmode.
-     * @parameter
+     * @parameter expression = "${netbeans.deploy.debugmode}"
      *
      */
     private boolean debugmode = false;
     
     /**
-     * @parameter
+     * @parameter expression = "${netbeans.deploy.forceRedeploy}"
      */
     private boolean forceRedeploy = true;
     
     /**
      *  URI of the web client or rich client in J2EE application to execute after deployment.
-     * @parameter expression="${clientModuleUri}"
+     * @parameter expression="${netbeans.deploy.clientModuleUri}"
      */
     private String clientModuleUri;
     
     /**
-     * Part to build returned property client.url
-     * @parameter expression="${clientUrlPart}"
+     * equivalent of netbeans-ant property client.url
+     * @parameter expression="${netbeans.deploy.clientUrlPart}"
      */
     private String clientUrlPart;
     
     
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (clientUrlPart == null) {
-            getLog().debug("Setting empty clientUrlPart");
             clientUrlPart = "";
         }
         Set allowedPackagings = new HashSet();
@@ -95,11 +94,9 @@ public class DeployMojo extends AbstractMojo {
             // see issue #62448
             ClassLoader current = (ClassLoader)Lookup.getDefault().lookup(ClassLoader.class);
             if (current == null) {
-                getLog().debug("No classloader in lookup");
                 current = ClassLoader.getSystemClassLoader();
             }
             if (current != null) {
-                getLog().debug("setting classloader..");
                 originalLoader = Thread.currentThread().getContextClassLoader();
                 Thread.currentThread().setContextClassLoader(current);
             }

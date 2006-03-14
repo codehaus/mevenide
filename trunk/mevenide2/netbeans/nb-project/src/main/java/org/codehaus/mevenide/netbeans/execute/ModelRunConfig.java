@@ -28,7 +28,6 @@ import java.util.Properties;
 import org.apache.maven.model.Plugin;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
-import org.codehaus.mevenide.netbeans.execute.model.SimplePluginConfig;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileUtil;
@@ -79,20 +78,6 @@ public final class ModelRunConfig implements RunConfig {
     public ClassLoader getClassLoader() {
         return classloader;
     }
-    
-    public List getAdditionalPluginConfigurations() {
-        List toReturn = new ArrayList();
-        Iterator it = model.getPlugins().iterator();
-        while (it.hasNext()) {
-            SimplePluginConfig elem = (SimplePluginConfig)it.next();
-            Plugin plug = new Plugin();
-            plug.setGroupId(elem.getGroupId());
-            plug.setArtifactId(elem.getArtifactId());
-            plug.setVersion(elem.getVersion());
-            plug.setConfiguration(elem.getConfiguration());
-            toReturn.add(plug);
-        }
-        return toReturn;
-    }
+
     
 }

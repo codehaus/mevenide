@@ -59,6 +59,22 @@
       <implementation>org.apache.maven.project.path.DefaultPathTranslator</implementation>
     </component>
     <component>
+      <role>org.apache.maven.CommonMavenObjectFactory</role>
+      <implementation>org.apache.maven.DefaultCommonMavenObjectFactory</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout</role>
+          <role-hint>default</role-hint>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.repository.ArtifactRepositoryFactory</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.settings.MavenSettingsBuilder</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
       <role>org.apache.maven.Maven</role>
       <implementation>org.apache.maven.DefaultMaven</implementation>
       <requirements>
@@ -73,6 +89,12 @@
         </requirement>
         <requirement>
           <role>org.apache.maven.execution.RuntimeInformation</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.manager.WagonManager</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.CommonMavenObjectFactory</role>
         </requirement>
       </requirements>
     </component>
@@ -164,9 +186,9 @@
               <phase>test-compile</phase>
               <phase>test</phase>
               <phase>package</phase>
-              <phase>before-integration-test</phase>
+              <phase>pre-integration-test</phase>
               <phase>integration-test</phase>
-              <phase>after-integration-test</phase>
+              <phase>post-integration-test</phase>
               <phase>verify</phase>
               <phase>install</phase>
               <phase>deploy</phase>
@@ -211,9 +233,13 @@
           <lifecycle>
             <id>default</id>
             <phases>
+              <package>org.apache.maven.plugins:maven-site-plugin:attach-descriptor</package>
               <install>org.apache.maven.plugins:maven-install-plugin:install</install>
               <deploy>org.apache.maven.plugins:maven-deploy-plugin:deploy</deploy>
             </phases>
+            <optional-mojos>
+              <optional-mojo>org.apache.maven.plugins:maven-site-plugin:attach-descriptor</optional-mojo>
+            </optional-mojos>
           </lifecycle>
         </lifecycles>
       </configuration>
@@ -605,14 +631,8 @@ implementation>org.apache.maven.artifact.factory.DefaultArtifactFactory</impleme
     </component>
     <component>
       <role>org.apache.maven.wagon.Wagon</role>
-      <role-hint>http</role-hint>
-      <implementation>org.apache.maven.wagon.providers.http.LightweightHttpWagon</implementation>
-      <instantiation-strategy>per-lookup</instantiation-strategy>
-    </component>
-    <component>
-      <role>org.apache.maven.wagon.Wagon</role>
-      <role-hint>https</role-hint>
-      <implementation>org.apache.maven.wagon.providers.http.LightweightHttpWagon</implementation>
+      <role-hint>file</role-hint>
+      <implementation>org.apache.maven.wagon.providers.file.FileWagon</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
     <component>
@@ -622,16 +642,72 @@ implementation>org.apache.maven.artifact.factory.DefaultArtifactFactory</impleme
     <component>
       <role>org.apache.maven.settings.MavenSettingsBuilder</role>
       <implementation>org.apache.maven.settings.DefaultMavenSettingsBuilder</implementation>
-      <configuration>
-        <globalSettingsPath>${maven.home}/conf/settings.xml</globalSettingsPath>
-        <userSettingsPath>${user.home}/.m2/settings.xml</userSettingsPath>
-      </configuration>
     </component>
     <component>
       <role>org.apache.maven.wagon.Wagon</role>
-      <role-hint>file</role-hint>
-      <implementation>org.apache.maven.wagon.providers.file.FileWagon</implementation>
+      <role-hint>scp</role-hint>
+      <implementation>org.apache.maven.wagon.providers.ssh.ScpWagon</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo</role>
+        </requirement>
+        <requirement>
+          <role>com.jcraft.jsch.UIKeyboardInteractive</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.Wagon</role>
+      <role-hint>sftp</role-hint>
+      <implementation>org.apache.maven.wagon.providers.ssh.SftpWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo</role>
+        </requirement>
+        <requirement>
+          <role>com.jcraft.jsch.UIKeyboardInteractive</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.CommandExecutor</role>
+      <implementation>org.apache.maven.wagon.providers.sshext.ScpExternalWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.providers.ssh.interactive.InteractiveUserInfo</role>
+      <implementation>org.apache.maven.wagon.providers.ssh.interactive.ConsoleInteractiveUserInfo</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.components.interactivity.Prompter</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.providers.ssh.knownhost.KnownHostsProvider</role>
+      <implementation>org.apache.maven.wagon.providers.ssh.knownhost.FileKnownHostsProvider</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+      <configuration>
+        <hostKeyChecking>ask</hostKeyChecking>
+      </configuration>
+    </component>
+    <component>
+      <role>com.jcraft.jsch.UIKeyboardInteractive</role>
+      <implementation>org.apache.maven.wagon.providers.ssh.interactive.PrompterUIKeyboardInteractive</implementation>
+      <requirements>
+        <requirement>
+          <role>org.codehaus.plexus.components.interactivity.Prompter</role>
+        </requirement>
+      </requirements>
     </component>
     <component>
       <role>org.apache.maven.artifact.manager.WagonManager</role>
@@ -772,6 +848,12 @@ implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</imple
       </requirements>
     </component>
     <component>
+      <role>org.apache.maven.wagon.Wagon</role>
+      <role-hint>scpexe</role-hint>
+      <implementation>org.apache.maven.wagon.providers.sshext.ScpExternalWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
       <role>org.apache.maven.usability.diagnostics.ErrorDiagnostics</role>
       <implementation>org.apache.maven.usability.diagnostics.ErrorDiagnostics</implementation>
     </component>
@@ -903,6 +985,18 @@ implementation>org.apache.maven.project.validation.DefaultModelValidator</implem
           <role>org.apache.maven.artifact.repository.metadata.RepositoryMetadataManager</role>
         </requirement>
       </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.Wagon</role>
+      <role-hint>http</role-hint>
+      <implementation>org.apache.maven.wagon.providers.http.LightweightHttpWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.Wagon</role>
+      <role-hint>https</role-hint>
+      <implementation>org.apache.maven.wagon.providers.http.LightweightHttpWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
     </component>
   </components>
 </component-set>

@@ -17,16 +17,6 @@
             <goal>package</goal>
             <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
         </goals>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
-                <version>LATEST</version>
-                <configuration>
-                    <forceRedeploy>false</forceRedeploy>
-                </configuration>
-            </plugin>
-        </plugins>
     </action>
     <action>
         <actionName>run.single</actionName>
@@ -37,20 +27,11 @@
             <goal>package</goal>
             <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
         </goals>
-        <plugins>
-            <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
-                <version>LATEST</version>
-                <configuration>
-                    <clientUrlPart>${webpagePath}</clientUrlPart>
-                    <forceRedeploy>false</forceRedeploy>
-                </configuration>
-            </plugin>
-        </plugins>
+        <properties>
+            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+        </properties>
     </action>
-    <action>
+    <!--action>
         <actionName>debug</actionName>
         <packagings>
             <packaging>war</packaging>
@@ -84,7 +65,6 @@
         </goals>
         <plugins>
             <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
                 <groupId>org.codehaus.mevenide</groupId>
                 <artifactId>netbeans-deploy-plugin</artifactId>
                 <version>LATEST</version>
@@ -95,6 +75,6 @@
                 </configuration>
             </plugin>
         </plugins>
-    </action>
+    </action-->
     
 </actions>

@@ -61,20 +61,20 @@
                         <multiplicity>*</multiplicity>
                     </association>
                 </field>
-                <field>
+                <!--field>
                     <name>plugins</name>
                     <version>1.0.0+</version>
                     <association>
                         <type>SimplePluginConfig</type>
                         <multiplicity>*</multiplicity>
                     </association>
-                </field>
+                </field-->
                 
             </fields>
         </class>
         
         
-        <class>
+        <!--class>
             <name>SimplePluginConfig</name>
             <version>1.0.0+</version>
             <fields>
@@ -102,6 +102,6 @@
                     <type>DOM</type>
                 </field>
             </fields>
-        </class>
+        </class-->
     </classes>
 </model>
