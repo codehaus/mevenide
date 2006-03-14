@@ -55,7 +55,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private String serverInstanceID;
 
     static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "NetbeansDeploymentServerType"; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
     
     
     public WebModuleProviderImpl(NbMavenProject proj) {
@@ -68,8 +69,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     public void loadPersistedServerId() {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
-        System.out.println("load persisted----------------------------------------------");
-        String val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_DEPLOYMENT_SERVER);
+        String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER);
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
@@ -155,20 +155,21 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     public void setServerInstanceID(String str) {
         serverInstanceID = str;
-        try {
-            // remember the instance for next time..
-            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverInstanceID);
-            Model mdl = project.getEmbedder().readModel(project.getPOMFile());
-            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverInstanceID));
-            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), mdl);
-        } catch (FileNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (XmlPullParserException ex) {
-            ex.printStackTrace();
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-        }
+        // TODO write into the private/public profile..
+//        try {
+//            // remember the instance for next time..
+//            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverInstanceID);
+//            Model mdl = project.getEmbedder().readModel(project.getPOMFile());
+//            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverInstanceID));
+//            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), mdl);
+//        } catch (FileNotFoundException ex) {
+//            ex.printStackTrace();
+//        } catch (XmlPullParserException ex) {
+//            ex.printStackTrace();
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//        }
         
     }
     

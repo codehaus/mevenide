@@ -19,5 +19,18 @@
            <id>org.netbeans.api:org-openide-filesystems</id>
            <type>spec</type>
        </dependency>
+       <dependency>
+           <id>org.netbeans.api:org-openide-modules</id>
+           <type>spec</type>
+       </dependency>
    </dependencies>
+   <nbmResources>
+       <nbmResource>
+           <baseDirectory>src/main/nbm</baseDirectory>
+           <includes>
+               <include>maven2/settings.xml</include>
+               <include>maven2/plugin-registry.xml</include>
+           </includes>
+       </nbmResource>
+   </nbmResources>
 </nbm>

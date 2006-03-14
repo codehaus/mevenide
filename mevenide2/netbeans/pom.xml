@@ -69,6 +69,12 @@
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://208.44.201.216:18080/maven</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
     </repositories>
   

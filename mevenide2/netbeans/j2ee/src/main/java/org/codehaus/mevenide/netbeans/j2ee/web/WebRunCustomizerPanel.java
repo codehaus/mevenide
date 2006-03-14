@@ -21,16 +21,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
+import org.codehaus.mevenide.netbeans.customizer.M2CustomizerPanelProvider;
 import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
+import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.ErrorManager;
 
@@ -38,13 +44,23 @@ import org.openide.ErrorManager;
  *
  * @author  mkleint
  */
-public class WebRunCustomizerPanel extends javax.swing.JPanel {
+public class WebRunCustomizerPanel extends javax.swing.JPanel implements M2CustomizerPanelProvider.Panel {
     private NbMavenProject project;
     private ModelHandle handle;
     private WebModule module;
     private WebModuleProviderImpl moduleProvider;
 
     private ArrayList listeners;
+
+    private NetbeansActionMapping run;
+
+    private NetbeansActionMapping debug;
+
+    private boolean isRunCompatible;
+
+    private boolean isDebugCompatible;
+
+    private String oldUrl;
     
     /** Creates new form WebRunCustomizerPanel */
     public WebRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
@@ -59,7 +75,6 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         handle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("updatin module provider..");
                 moduleProvider.loadPersistedServerId();
             }
         });
@@ -72,7 +87,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         listeners.add(new ComboBoxUpdater(comServer) {
             public Object getDefaultValue() {
                 Wrapper wr = null;
-                String id = (String)project.getProjectDirectory().getAttribute(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                String id = (String)handle.getProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
@@ -87,12 +102,12 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             
             public Object getValue() {
                 Wrapper wr = null;
-                String id = handle.getAttributes().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                String id = handle.getNetbeansPrivateProfile().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getPOMModel().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getNetbeansPublicProfile().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -101,14 +116,26 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
             
             public void setValue(Object value) {
-                System.out.println("setting value.." + value);
                Wrapper wr = (Wrapper)value;
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
-               handle.getPOMModel().getProperties().put(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
-               handle.getAttributes().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, iID);
+               handle.getNetbeansPublicProfile().getProperties().put(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+               handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
             }
         });
+        ActionToGoalMapping mappings = handle.getActionMappings();
+        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project);
+        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
+        isRunCompatible = checkMapping(run);
+        isDebugCompatible = checkMapping(debug);
+        oldUrl = isRunCompatible ? run.getProperties().getProperty("netbeans.deploy.clientUrlPart") :
+                                      debug.getProperties().getProperty("netbeans.deploy.clientUrlPart");
+        if (oldUrl != null) {
+            txtRelativeUrl.setText(oldUrl);
+        } else {
+            oldUrl = "";
+        }
+        
     }
     
     private Wrapper findWrapperByInstance(String instanceId) {
@@ -246,6 +273,34 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 .addContainerGap(102, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private boolean checkMapping(NetbeansActionMapping map) {
+        if (map == null) {
+            return false;
+        }
+        Iterator it = map.getGoals().iterator();
+        while (it.hasNext()) {
+            String goal = (String) it.next();
+            if (goal.indexOf("org.codehaus.mevenide:netbeans-deploy-plugin") > -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void applyChanges() {
+        String newUrl = txtRelativeUrl.getText().trim();
+        if (!newUrl.equals(oldUrl)) {
+            if (isRunCompatible) {
+                run.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl);
+                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+            }
+            if (isDebugCompatible) {
+                debug.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl);
+                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+            }
+        }
+    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

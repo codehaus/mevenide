@@ -39,21 +39,22 @@ import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
 /**
  * goal for running the project's jar artifact through maven in netbeans.
- * runs java -jar <jar>, assuming the assembly's jar-with-dependencies to be run before this one.
- * also assuming a Main-Class: entry in the manifest.
+ * runs java -jar <jar>, assuming the custom assembly to be run before this one.
+ * also assuming a Main-Class: + Class-Path: entry in the manifest.
  *
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
- * @goal run-jar
+ * @goal run-jar-no-wait
  * @requiresDependencyResolution runtime
  * @requiresProject
  */
-public class RunJarMojo extends AbstractRunMojo  {
+public class RunJarNoWaitMojo extends AbstractRunMojo  {
     
 //    /**
 //     * The main class to execute
@@ -67,10 +68,11 @@ public class RunJarMojo extends AbstractRunMojo  {
     
     public void execute() throws MojoExecutionException {
         ExecutorTask task = startExecutorTask();
-        int result = task.result();
-        getLog().info("Exited with return code=" + result);
+        task.addTaskListener(new TaskListener() {
+            public void taskFinished(Task task) {
+                // do something??
+            }
+        });
     }
-    
-    
 
 }

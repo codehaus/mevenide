@@ -40,12 +40,12 @@ public class JPDAConnectMojo extends AbstractMojo {
     private MavenProject project;
 
     /**
-     * @parameter expression="${jpda-host}"
+     * @parameter expression="${jpda.host}"
      */
     private String host = "localhost";
 
     /**
-     * @parameter expression="${jpda-address}"
+     * @parameter expression="${jpda.address}"
      * @required
      */
     private String address;
@@ -57,7 +57,7 @@ public class JPDAConnectMojo extends AbstractMojo {
     private String name;
 
     /**
-     * @parameter expression="${jpda-transport}"
+     * @parameter expression="${jpda.transport}"
      */
     private String transport = "dt_socket";
     

@@ -22,6 +22,8 @@ import java.net.URL;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
+import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
+import org.openide.modules.InstalledFileLocator;
 
 /**
  *
@@ -54,9 +56,8 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(true);
             embedder.setInteractiveMode(false);
-            embedder.setCheckLatestPluginVersion(false);
-            embedder.setUpdateSnapshots(false);
-            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
+            embedder.setAlignWithUserInstallation(true);
+//            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             URL components = EmbedderFactory.class.getResource("/org/codehaus/mevenide/netbeans/embedder/components.xml");
             embedder.setEmbedderConfiguration(components);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
@@ -79,6 +80,7 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
             embedder.setInteractiveMode(false);
+            embedder.setAlignWithUserInstallation(true);
             embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
@@ -101,8 +103,14 @@ public class EmbedderFactory {
     }
     
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger, ClassLoader loader) throws MavenEmbedderException {
+
+            // need to have some location for the global plugin registry because otherwise we get NPE
+            File globalPluginRegistry = InstalledFileLocator.getDefault().locate("maven2/plugin-registry.xml", null, false);
+            System.setProperty(MavenPluginRegistryBuilder.ALT_GLOBAL_PLUGIN_REG_LOCATION, globalPluginRegistry.getAbsolutePath()); 
+            
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setClassLoader(new HackyClassLoader(loader, EmbedderFactory.class.getClassLoader()));
+            embedder.setAlignWithUserInstallation(true);
             embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setLogger(logger);
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
@@ -144,14 +152,9 @@ public class EmbedderFactory {
             return retValue;
         }
 
-        public Class loadClass(String name) throws ClassNotFoundException {
-            Class retValue;
-            try {
-                retValue = super.loadClass(name);
-            } catch (ClassNotFoundException ex) {
-                return additionalLoader.loadClass(name);
-            }
-            return retValue;
+        public Class findClass(String name) throws ClassNotFoundException {
+//            System.out.println("find class=" + name);
+            return additionalLoader.loadClass(name);
         }
         
     }

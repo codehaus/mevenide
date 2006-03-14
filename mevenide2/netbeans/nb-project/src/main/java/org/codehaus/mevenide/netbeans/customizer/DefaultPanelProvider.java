@@ -37,7 +37,9 @@ public class DefaultPanelProvider implements M2CustomizerPanelProvider {
             return new BasicInfoPanel(handle, project);
         }
         if (M2CustomizerPanelProvider.PANEL_RUN.equals(category.getName())) {
-            
+            if ("jar".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+                return new RunJarPanel(handle, project);
+            }
         }
         return null;
     }

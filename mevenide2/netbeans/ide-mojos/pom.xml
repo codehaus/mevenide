@@ -129,6 +129,9 @@
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://208.44.201.216:18080/maven</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
         </repository>
         <repository>
             <id>mevenide1</id>
@@ -141,6 +144,9 @@
             <id>mevenide2</id>
             <name>Mevenide's M2 plugins</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
+            <!--snapshots>
+                <enabled>false</enabled>
+            </snapshots-->
         </pluginRepository>
     </pluginRepositories>
     <modules>

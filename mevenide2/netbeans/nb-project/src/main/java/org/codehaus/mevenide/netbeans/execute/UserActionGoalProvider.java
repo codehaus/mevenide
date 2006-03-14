@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.Date;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileObject;
 
@@ -27,23 +28,33 @@ import org.openide.filesystems.FileObject;
  * @author mkleint
  */
 public class UserActionGoalProvider extends AbstractActionGoalProvider {
-
+    
+    public static final String FILENAME = "nbactions.xml";
+    
     private NbMavenProject project;
+    private Date lastModified = new Date();
     /** Creates a new instance of UserActionGoalProvider */
     public UserActionGoalProvider(NbMavenProject project) {
         this.project = project;
     }
     
     public InputStream getActionDefinitionStream() {
-        FileObject fo = project.getProjectDirectory().getFileObject("nbactions.xml");
+        FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
         if (fo != null) {
             try {
+                lastModified = fo.lastModified();
                 return fo.getInputStream();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             }
         }
+        lastModified = new Date();
         return null;
     }
     
+    protected boolean reloadStream() {
+        FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
+        return (fo != null && fo.lastModified().after(lastModified));
+        
+    }
 }

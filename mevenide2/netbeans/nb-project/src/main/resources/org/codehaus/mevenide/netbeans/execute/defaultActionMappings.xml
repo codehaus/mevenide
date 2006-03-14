@@ -64,10 +64,26 @@
             <packaging>jar</packaging>
         </packagings>
         <goals>
-            <goal>install</goal>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar</goal>
         </goals>
     </action>
     <action>
+        <actionName>debug</actionName>
+        <packagings>
+            <packaging>jar</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar-no-wait</goal>
+            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
+        </goals>
+        <properties>
+            <netbeans.jar.run.debugparams>-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8765</netbeans.jar.run.debugparams>
+            <jpda.address>8765</jpda.address>
+        </properties>
+    </action>
+    <!--action>
         <actionName>run.single</actionName>
         <packagings>
             <packaging>jar</packaging>
@@ -75,52 +91,41 @@
         <goals>
             <goal>install</goal>
         </goals>
-    </action>
-    <action>
+    </action-->
+    <!--action>
         <actionName>debug.single</actionName>
         <packagings>
             <packaging>jar</packaging>
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdastart</goal>
         </goals>
         <plugins>
             <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
                 <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
+                <artifactId>netbeans-debugger-plugin</artifactId>
                 <version>LATEST</version>
-                <configuration>
-                    <clientUrlPart>index.html</clientUrlPart>
-                </configuration>
             </plugin>
         </plugins>
-    </action>
+    </action-->
 
     <action>
         <actionName>debug.test.single</actionName>
         <packagings>
-            <packaging>jar</packaging>
+            <packaging>*</packaging>
         </packagings>
         <goals>
             <goal>surefire:test</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
         </goals>
         <properties>
             <test>${className}</test>
+            <forkMode>once</forkMode>
+            <argLine>-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,host=localhost,address=8765</argLine>
+            <jpda.address>8765</jpda.address>
+            <jpda.host>localhost</jpda.host>
+            <jpda.listen>true</jpda.listen>
         </properties>
-        <plugins>
-            <plugin>
-                <!-- when changing the plugin setup, check also the J2eeActionProvider class -->
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
-                <version>LATEST</version>
-                <configuration>
-                    <clientUrlPart>index.html</clientUrlPart>
-                </configuration>
-            </plugin>
-        </plugins>
     </action>
     
 </actions>

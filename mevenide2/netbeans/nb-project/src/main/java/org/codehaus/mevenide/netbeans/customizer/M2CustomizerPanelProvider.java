@@ -38,4 +38,12 @@ public interface M2CustomizerPanelProvider {
      */
     JComponent createPanel(ModelHandle handle, NbMavenProject project, ProjectCustomizer.Category category);
     
+    
+    /**
+     * If the panel returned from createPanel implements this interface, it will be notified before the saving of 
+     * of the values, to allow last time checks and modifications.
+     */
+    public interface Panel {
+        void applyChanges();
+    }
 }
