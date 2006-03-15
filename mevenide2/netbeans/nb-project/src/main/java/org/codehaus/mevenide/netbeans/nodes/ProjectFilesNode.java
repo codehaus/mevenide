@@ -25,7 +25,12 @@ import java.util.Collection;
 import java.util.Collections;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.openide.filesystems.FileAttributeEvent;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
@@ -49,9 +54,21 @@ public class ProjectFilesNode extends AbstractNode {
     
    private static class ProjectFilesChildren extends Children.Keys implements PropertyChangeListener {
         private NbMavenProject project;
+        private FileChangeAdapter fileChangeListener;
+        
         public ProjectFilesChildren(NbMavenProject proj) {
             super();
             project = proj;
+            fileChangeListener = new FileChangeAdapter() {
+                public void fileDataCreated(FileEvent fe) {
+                    regenerateKeys();
+                    refresh();
+                }
+                public void fileDeleted(FileEvent fe) {
+                    regenerateKeys();
+                    refresh();
+                }
+            };
         }
         
         protected Node[] createNodes(Object obj) {
@@ -89,18 +106,21 @@ public class ProjectFilesNode extends AbstractNode {
         protected void addNotify() {
             super.addNotify();
             project.addPropertyChangeListener(this);
+            project.getProjectDirectory().addFileChangeListener(fileChangeListener);
             regenerateKeys();
         }
         
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
             project.removePropertyChangeListener(this);
+            project.getProjectDirectory().removeFileChangeListener(fileChangeListener);
             super.removeNotify();
         }
         
         private void regenerateKeys() {
             Collection keys = new ArrayList();
             keys.add(new FileWrapper("Project POM file", new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")));
+            keys.add(new FileWrapper("Project Profiles", new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")));
             keys.add(new FileWrapper("User settings", new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")));
             setKeys(keys);
         }
@@ -135,8 +155,7 @@ public class ProjectFilesNode extends AbstractNode {
    private static class MyFilterNode extends FilterNode {
        public MyFilterNode(Node original, String dn) {
            super(original);
-           disableDelegation(DELEGATE_GET_DISPLAY_NAME | DELEGATE_SET_DISPLAY_NAME |
-                             DELEGATE_DESTROY);
+           disableDelegation(DELEGATE_GET_DISPLAY_NAME | DELEGATE_SET_DISPLAY_NAME);
            setDisplayName(dn);
        }
    }
