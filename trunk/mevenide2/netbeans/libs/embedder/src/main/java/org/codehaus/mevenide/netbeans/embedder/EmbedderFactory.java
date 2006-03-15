@@ -19,6 +19,8 @@ package org.codehaus.mevenide.netbeans.embedder;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import org.apache.maven.embedder.DefaultMavenEmbedRequest;
+import org.apache.maven.embedder.MavenEmbedRequest;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
@@ -62,8 +64,10 @@ public class EmbedderFactory {
             embedder.setEmbedderConfiguration(components);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
+            MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             try {
-                embedder.start();
+                embedder.start(req);
             } catch (MavenEmbedderException e) {
                 e.printStackTrace();
             } finally {
