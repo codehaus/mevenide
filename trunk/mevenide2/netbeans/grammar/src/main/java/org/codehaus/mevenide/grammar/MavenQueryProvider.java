@@ -84,6 +84,11 @@ public final class MavenQueryProvider extends GrammarQueryManager {
                 //TODO more proper condition
                 return new MavenSettingsGrammar(env);
             }
+            if (env.getFileObject().getNameExt().equals("profiles.xml")) {
+                //TODO also locate by namespace??
+                //TODO more proper condition
+                return new MavenProfilesGrammar(env);
+            }
             File file = FileUtil.toFile(env.getFileObject());
             Project owner = FileOwnerQuery.getOwner(env.getFileObject());
             if (owner instanceof NbMavenProject) {
