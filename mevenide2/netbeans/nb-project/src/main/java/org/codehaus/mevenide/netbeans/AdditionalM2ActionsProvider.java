@@ -53,7 +53,8 @@ public interface AdditionalM2ActionsProvider {
     RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup);
     
     /**
-     * get a action to maven mapping configuration for the given action.
+     * get a action to maven mapping configuration for the given action. No context specific value replacements
+     * happen.
      */
     NetbeansActionMapping getMappingForAction(String actionName, NbMavenProject project);
     
