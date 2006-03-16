@@ -120,6 +120,11 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
         lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
         lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
+        lst.add(null);
+        lst.add(provider.createBasicMavenAction("Run", ActionProvider.COMMAND_RUN));
+        lst.add(provider.createBasicMavenAction("Debug", ActionProvider.COMMAND_DEBUG));
+        lst.add(provider.createBasicMavenAction("Test", ActionProvider.COMMAND_TEST));
+        lst.add(null);
 //        if (isMultiproject) {
 //            lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
 //            lst.add(provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN));
