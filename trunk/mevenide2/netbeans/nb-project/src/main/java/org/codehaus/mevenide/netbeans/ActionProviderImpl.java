@@ -32,6 +32,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
+import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -84,15 +85,21 @@ public class ActionProviderImpl implements ActionProvider {
     public void invokeAction(String action, Lookup lookup) {
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         assert rc != null;
-        runGoal(lookup, rc);
+        runGoal(action, lookup, rc);
     }
     
     
-    private void runGoal(Lookup lookup, RunConfig config) {
+    private void runGoal(String action, Lookup lookup, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
         
-        // setup executor first..
+        // check the prerequisites
+        JarPackagingRunChecker jar = new JarPackagingRunChecker();
+        if (!jar.checkRunConfig(action, config)) {
+            return;
+        }
+        
+        // setup executor now..
         MavenJavaExecutor exec = new MavenJavaExecutor(config);
         ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
         //        RequestProcessor.getDefault().post();
@@ -183,16 +190,20 @@ public class ActionProviderImpl implements ActionProvider {
     
     
     private final class BasicAction extends AbstractAction {
-        private String gls;
+        private String actionid;
         
         
-        private BasicAction(String name, String goals) {
-            gls = goals;
+        private BasicAction(String name, String act) {
+            actionid = act;
             putValue(Action.NAME, name);
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            ActionProviderImpl.this.invokeAction(gls, ActionProviderImpl.this.project.getLookup());
+            ActionProviderImpl.this.invokeAction(actionid, ActionProviderImpl.this.project.getLookup());
+        }
+
+        public boolean isEnabled() {
+            return ActionProviderImpl.this.isActionEnabled(actionid, ActionProviderImpl.this.project.getLookup());
         }
     }
     
@@ -206,7 +217,7 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            ActionProviderImpl.this.runGoal(ActionProviderImpl.this.project.getLookup(), new DefaultRunConfig(ActionProviderImpl.this.project, Arrays.asList(gls)));
+            ActionProviderImpl.this.runGoal("", ActionProviderImpl.this.project.getLookup(), new DefaultRunConfig(ActionProviderImpl.this.project, Arrays.asList(gls)));
         }
     }
     
