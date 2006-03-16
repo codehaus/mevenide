@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -65,6 +66,7 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
         this.handle = handle;
         this.project = project;
         initValues();
+        lblMainClass.setFont(lblMainClass.getFont().deriveFont((int)Font.BOLD));
     }
     
     private void initValues() {
