@@ -64,8 +64,14 @@ public class EmbedderFactory {
             embedder.setEmbedderConfiguration(components);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
+            
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
+            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            File userSettingsPath = new File(userLoc, "settings.xml");
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
+            req.setUserSettings(userSettingsPath);
+            req.setGlobalSettings(globalSettingsPath);
             try {
                 embedder.start(req);
             } catch (MavenEmbedderException e) {
@@ -85,11 +91,19 @@ public class EmbedderFactory {
             embedder.setOffline(false);
             embedder.setInteractiveMode(false);
             embedder.setAlignWithUserInstallation(true);
-            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
+//            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
+            
+            MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
+            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            File userSettingsPath = new File(userLoc, "settings.xml");
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
+            req.setUserSettings(userSettingsPath);
+            req.setGlobalSettings(globalSettingsPath);
             try {
-                embedder.start();
+                embedder.start(req);
             } catch (MavenEmbedderException e) {
                 e.printStackTrace();
             } finally {
@@ -115,11 +129,19 @@ public class EmbedderFactory {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setClassLoader(new HackyClassLoader(loader, EmbedderFactory.class.getClassLoader()));
             embedder.setAlignWithUserInstallation(true);
-            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
+//            embedder.setLocalRepositoryDirectory(new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository()));
             embedder.setLogger(logger);
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
+            
+            MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
+            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            File userSettingsPath = new File(userLoc, "settings.xml");
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
+            req.setUserSettings(userSettingsPath);
+            req.setGlobalSettings(globalSettingsPath);
             try {
-                embedder.start();
+                embedder.start(req);
             } catch (MavenEmbedderException e) {
                 e.printStackTrace();
             } finally {
