@@ -60,6 +60,14 @@
       </roles>
     </developer>
   </developers>
+  <contributors>
+      <contributor>
+          <name>Laurent Foret</name>
+          <roles>
+              <role>Mevenide2 Site creator</role>
+          </roles>
+      </contributor>
+  </contributors>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
