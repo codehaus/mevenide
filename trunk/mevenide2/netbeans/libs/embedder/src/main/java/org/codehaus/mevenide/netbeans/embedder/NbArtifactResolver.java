@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.embedder;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,48 +48,42 @@ import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
  *
  * @author mkleint
  */
-public class NbArtifactResolver extends AbstractLogEnabled implements ArtifactResolver, Contextualizable {    
+public class NbArtifactResolver extends DefaultArtifactResolver {    
     
-    private WagonManager wagonManager;
-
-    private ArtifactTransformationManager transformationManager;
-
-    protected ArtifactFactory artifactFactory;
-
-    private ArtifactCollector artifactCollector;
-
-    private DefaultArtifactResolver original;
     
     private ResolutionListener listener;
     
     /** Creates a new instance of NbWagonManager */
     public NbArtifactResolver() {
-        original = new DefaultArtifactResolver();
-    }
-
-    public void enableLogging(Logger logger ) {
-        super.enableLogging(logger);
-        original.enableLogging(logger);
-    }
-
-    private void setField(String name, Object value) {
-        try {
-            Field fld = original.getClass().getDeclaredField(name);
-            fld.setAccessible(true);
-            fld.set(original, value);
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchFieldException ex) {
-            ex.printStackTrace();
-        }
+        super();
     }
 
     public void resolve(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
-        original.resolve(artifact, list, artifactRepository);
+//        artifact.setResolved(true);
+        try {
+            super.resolve(artifact, list, artifactRepository);
+        } catch (ArtifactResolutionException exc) {
+            if (exc.getCause() instanceof IOException) {
+                // DefaultArtifactResolver:193 when having snapshots something gets copied and fails
+                // when the wagon manager just pretends to download something..
+                System.out.println("exc=" + exc.getCause().getMessage());
+                return;
+            }
+            throw exc;
+        }
+    }
+    public void resolveAlways(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
+        try {
+            super.resolveAlways(artifact, list, artifactRepository);
+        } catch (ArtifactResolutionException exc) {
+            if (exc.getCause() instanceof IOException) {
+                // DefaultArtifactResolver:193 when having snapshots something gets copied and fails
+                // when the wagon manager just pretends to download something..
+                System.out.println("exc=" + exc.getCause().getMessage());
+                return;
+            }
+            throw exc;
+        }
     }
 
     public ArtifactResolutionResult resolveTransitively(
@@ -147,19 +142,7 @@ public class NbArtifactResolver extends AbstractLogEnabled implements ArtifactRe
         if (listener != null) {
             newListeners.add(listener);
         }
-        return original.resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, newListeners);
-    }
-
-    public void resolveAlways(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve always=" + artifact);
-        original.resolveAlways(artifact, list, artifactRepository);
-    }
-
-    public void contextualize(Context context) throws ContextException {
-        setField("wagonManager", wagonManager);
-        setField("artifactFactory", artifactFactory);
-        setField("artifactCollector", artifactCollector);
-        setField("transformationManager", transformationManager);
+        return super.resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, newListeners);
     }
 
     
