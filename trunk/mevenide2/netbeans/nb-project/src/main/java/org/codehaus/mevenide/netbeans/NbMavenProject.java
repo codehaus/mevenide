@@ -91,7 +91,6 @@ public final class NbMavenProject implements Project {
     private Updater updater3;
     private Sources sources;
     private MavenProject project;
-    private MavenEmbedder embedder;
 
     private Info projectInfo;
 
@@ -110,9 +109,6 @@ public final class NbMavenProject implements Project {
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         File projectDir = FileUtil.toFile(fileObject.getParent());
-        embedder = EmbedderFactory.getProjectEmbedder();
-        //TODO maybe just be offline when reading project?
-        
     }
     
     public File getPOMFile() {
@@ -271,7 +267,12 @@ public final class NbMavenProject implements Project {
     }
     
     public MavenEmbedder getEmbedder() {
-        return embedder;
+        try {
+            return EmbedderFactory.getProjectEmbedder();
+        } catch (MavenEmbedderException ex) {
+            ErrorManager.getDefault().notify(ex);
+        }
+        throw new IllegalStateException("Cannot start the embedder.");
     }
     
    
