@@ -12,6 +12,10 @@
    </libraries>
    <dependencies>
       <dependency>
+          <id>org.netbeans.api:org-netbeans-modules-options-api</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-openide-io</id>
 	  <type>spec</type>
       </dependency>
