@@ -25,6 +25,13 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
+import org.openide.filesystems.FileAttributeEvent;
+import org.openide.filesystems.FileChangeAdapter;
+import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileEvent;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileRenameEvent;
+import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
 
 /**
@@ -37,6 +44,7 @@ public class EmbedderFactory {
     private static MavenEmbedder online;
     
     private static MyResolutionListener listener;
+    private static SettingsFileListener fileListener = new SettingsFileListener();
             
     /** Creates a new instance of EmbedderFactory */
     public EmbedderFactory() {
@@ -52,7 +60,7 @@ public class EmbedderFactory {
         return listener;
     }
     
-    public static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
+    public synchronized static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
         // let there always be just one embedder, otherwise the resolution listener hack stops working..
         if (project == null) {
             MavenEmbedder embedder = new MavenEmbedder();
@@ -85,7 +93,7 @@ public class EmbedderFactory {
         return project;
     }
     
-    public static MavenEmbedder getOnlineEmbedder() {
+    public synchronized static MavenEmbedder getOnlineEmbedder() {
         if (online == null) {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
@@ -181,6 +189,52 @@ public class EmbedderFactory {
         public Class findClass(String name) throws ClassNotFoundException {
 //            System.out.println("find class=" + name);
             return additionalLoader.loadClass(name);
+        }
+        
+    }
+    
+    private static class SettingsFileListener extends FileChangeAdapter {
+        private FileObject dir;
+    
+        public SettingsFileListener() {
+            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            if (!userLoc.exists()) {
+                userLoc.mkdirs();
+            }
+            dir = FileUtil.toFileObject(userLoc);
+            if (dir != null) {
+                dir.addFileChangeListener(this);
+                FileObject settings = dir.getFileObject("settings.xml");
+                settings.addFileChangeListener(this);
+            }
+        }
+            
+
+        public void fileDeleted(FileEvent fe) {
+            if ("settings.xml".equals(fe.getFile().getNameExt())) {
+                synchronized (EmbedderFactory.class) {
+                    online = null;
+                    project = null;
+                }
+            }
+        }
+
+        public void fileDataCreated(FileEvent fe) {
+            if ("settings.xml".equals(fe.getFile().getNameExt())) {
+                synchronized (EmbedderFactory.class) {
+                    online = null;
+                    project = null;
+                }
+            }
+        }
+        
+        public void fileChanged(FileEvent fe) {
+            if ("settings.xml".equals(fe.getFile().getNameExt())) {
+                synchronized (EmbedderFactory.class) {
+                    online = null;
+                    project = null;
+                }
+            }
         }
         
     }
