@@ -108,15 +108,16 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void errorEvent(String eventName, String target, long l, Throwable throwable) {
-        processMultiLine(throwable.getLocalizedMessage(), stdErr, "ERROR");
-        if (throwable instanceof MojoExecutionException) {
-            MojoExecutionException exc = (MojoExecutionException)throwable;
-            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
-        }
-        if (throwable instanceof MojoFailureException) {
-            MojoFailureException exc = (MojoFailureException)throwable;
-            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
-        }
+//        if (throwable != null) {
+//            processMultiLine(throwable.getLocalizedMessage(), stdErr, "ERROR2");
+//        }
+//        if (throwable instanceof MojoExecutionException) {
+//            MojoExecutionException exc = (MojoExecutionException)throwable;
+//            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
+//        } else if (throwable instanceof MojoFailureException) {
+//            MojoFailureException exc = (MojoFailureException)throwable;
+//            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
+//        }
         processFail(getEventId(eventName, target), stdErr);
 //        if (throwable instanceof BuildFailureException) {
 //            stdErr.println("");
@@ -218,16 +219,16 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void error(String string)    {
-        processMultiLine(string, stdErr, "ERROR");
+//        processMultiLine(string, stdErr, "ERROR1");
     }
     
     public void error(String string, Throwable throwable)    {
-        StringWriter sw = new StringWriter();
-        PrintWriter wr = new PrintWriter(sw);
-        wr.write(string + "\n");
-        throwable.printStackTrace(wr);
-        wr.close();
-        processMultiLine(sw.toString(), stdErr, "ERROR");
+//        StringWriter sw = new StringWriter();
+//        PrintWriter wr = new PrintWriter(sw);
+//        wr.write(string + "\n");
+//        throwable.printStackTrace(wr);
+//        wr.close();
+//        processMultiLine(string, stdErr, "ERROR1");
     }
     
     public boolean isErrorEnabled()    {
