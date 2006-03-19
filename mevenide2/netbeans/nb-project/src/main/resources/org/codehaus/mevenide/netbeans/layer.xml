@@ -33,5 +33,19 @@
       </folder>
     </folder>
   </folder>  
+    <folder name="OptionsDialog">
+        <folder name="Advanced">
+            <file name="Maven.instance">
+                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.netbeans.options.MavenAdvancedOption"/>
+            </file>
+        </folder>
+   </folder>
+  <folder name="Services">
+    <file name="org-codehaus-mevenide-netbeans-options-NetbeansExecutionSettings.settings" 
+          url="options/MavenExecutionSettings.xml">
+        <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.continuum.Bundle"/-->
+        <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
+    </file>
+  </folder>
  
 </filesystem>

@@ -44,6 +44,7 @@ import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
 import org.openide.ErrorManager;
@@ -110,16 +111,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             repo.setName("Netbeans IDE internal Repository hosting plugins that are executable in Netbeans IDE only.");
             myProfile.addPluginRepository(repo);
             
-            
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
+            
             Settings settings = embedder.buildSettings( userSettingsPath,
                                                         globalSettingsPath, 
-                                                        false,
-                                                        false,
-                                                        true, //use plugin registry
-                                                        Boolean.FALSE);
+                                                        MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
             settings.addProfile(myProfile);
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
             // need to set some profiles or get NPE!
@@ -136,11 +134,17 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setTransferListener(out);
 //            req.setReactorActive(true);
 
-            req.setFailureBehavior(MavenExecutionRequest.REACTOR_FAIL_FAST);
+            req.setFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
             req.setStartTime(new Date());
-            req.setGlobalChecksumPolicy(MavenExecutionRequest.CHECKSUM_POLICY_WARN);
-            req.setShowErrors(true);
-            req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_WARN);
+            req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
+            
+            boolean debug = MavenExecutionSettings.getDefault().isShowDebug();
+            req.setShowErrors(debug || MavenExecutionSettings.getDefault().isShowErrors());
+            if (debug) {
+                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
+            } else {
+                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_WARN);
+            }
             req.setUpdateSnapshots(false);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
