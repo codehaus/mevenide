@@ -33,7 +33,7 @@ public class ContinuumSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor outputs = new PropertyDescriptor ("outputs", ContinuumSettings.class); //NOI18N
             outputs.setDisplayName ("Log Outputs"); //NOI18N
             outputs.setShortDescription (""); //NOI18N
-            outputs.setHidden(false);
+            outputs.setHidden(true);
             
             return new PropertyDescriptor[] { servers, outputs };
         } catch (IntrospectionException ie) {
