@@ -26,7 +26,9 @@ import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
- *
+ * a workaround for the fact that one cannot access the settings values the embedder is using.
+ * nice thing to do would be to have access to 1. the merged global/user settings for retrieval of used values
+ * 2. the model of user settings for reading/writing in UI.
  * @author mkleint
  */
 public class MavenSettingsSingleton {
@@ -50,9 +52,21 @@ public class MavenSettingsSingleton {
         return new File(System.getProperty("user.home"), ".m2");
     }
     
+    /**
+     * this method  should rather use the embedder's settings, however there's no clear
+     * way of retrieving/using them.
+     * @deprecated rather not use, doesn't contain the global setting values
+     */
     public Settings getSettings() {
         //TODO need probably some kind of caching.. 
-        // currently just localrepository is ever accessed.
+        Settings sets = createUserSettingsModel();
+        if (sets.getLocalRepository() == null) {
+            sets.setLocalRepository(new File(getM2UserDir(), "repository").toString());
+        }
+        return sets;
+    }
+    
+    public Settings createUserSettingsModel() {
         Settings sets = null;
         File dir = getM2UserDir();
         try {
@@ -67,9 +81,6 @@ public class MavenSettingsSingleton {
         }
         if (sets == null) {
             sets = new Settings();
-        }
-        if (sets.getLocalRepository() == null) {
-            sets.setLocalRepository(new File(dir, "repository").toString());
         }
         return sets;
     }
