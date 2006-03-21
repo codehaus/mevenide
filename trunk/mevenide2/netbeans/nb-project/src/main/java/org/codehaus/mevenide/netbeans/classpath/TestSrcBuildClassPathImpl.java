@@ -22,6 +22,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileUtil;
@@ -41,32 +42,35 @@ public class TestSrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
    URI[] createPath() {
         List lst = new ArrayList();
         //TODO we shall add the test class output as well. how?
-        try {
-            List srcs = getMavenProject().getOriginalMavenProject().getTestClasspathElements();
-            Iterator it = srcs.iterator();
-            List assemblies = new ArrayList();
-            while (it.hasNext()) {
-                String str = (String)it.next();
-                File fil = FileUtil.normalizeFile(new File(str));
+        // according the current 2.1 sources this is almost the same as getCompileClasspath()
+        //except for the fact that multiproject references are not redirected to their respective
+        // output folders.. we lways retrieve stuff from local repo..
+        List arts = getMavenProject().getOriginalMavenProject().getTestArtifacts();
+        List assemblies = new ArrayList();
+        Iterator it = arts.iterator();
+        while (it.hasNext()) {
+            Artifact art = (Artifact)it.next();
+            if (art.getFile() != null) {
+                File fil = FileUtil.normalizeFile(art.getFile());
                 // the assemblied jars go as last ones, otherwise source for binaries don't really work.
                 // unless one has the assembled source jar s well?? is it possible?
-                if (fil.getName().endsWith("-dep.jar")) {
+                if (art.getClassifier() != null) {
                     assemblies.add(0, fil);
                 } else {
                     lst.add(fil.toURI());
                 }
+            } else {
+                //null means dependencies were not resolved..
             }
-            it = assemblies.iterator();
-            while (it.hasNext()) {
-                File ass = (File)it.next();
-                lst.add(ass.toURI());
-            }
-            File fil = new File(getMavenProject().getOriginalMavenProject().getBuild().getOutputDirectory());
-            fil = FileUtil.normalizeFile(fil);
-            lst.add(0, fil.toURI());
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
         }
+        it = assemblies.iterator();
+        while (it.hasNext()) {
+            File ass = (File)it.next();
+            lst.add(ass.toURI());
+        }
+        File fil = new File(getMavenProject().getOriginalMavenProject().getBuild().getOutputDirectory());
+        fil = FileUtil.normalizeFile(fil);
+        lst.add(0, fil.toURI());
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
         return uris;
