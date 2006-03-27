@@ -111,6 +111,9 @@
             <id>mevenide1</id>
             <name>Mevenide's M2 repo</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     <pluginRepositories>
