@@ -66,9 +66,10 @@ public class JPDAConnectMojo extends AbstractMojo {
     }
     
     public void execute() throws MojoExecutionException, MojoFailureException {
-        getLog().info("Transport=" + transport);
-        getLog().info("Address=" + address);
-        getLog().info("Host=" + host);
+        getLog().info("Attaching JPDA Debugger...");
+        getLog().info("    Transport=" + transport);
+        getLog().info("    Address=" + address);
+        getLog().info("    Host=" + host);
 //        JPDAStart.verifyPaths(getProject(), classpath);
 //        JPDAStart.verifyPaths(getProject(), sourcepath);
         
@@ -76,8 +77,8 @@ public class JPDAConnectMojo extends AbstractMojo {
         try {
 
             Project nbproject = ProjectManager.getDefault().findProject(FileUtil.toFileObject(project.getBasedir()));
-            ClassPath sourcePath = JPDAStartMojo.createSourcePath(nbproject, project);
-            ClassPath jdkSourcePath = JPDAStartMojo.createJDKSourcePath(nbproject);
+            ClassPath sourcePath = Utils.createSourcePath(nbproject, project);
+            ClassPath jdkSourcePath = Utils.createJDKSourcePath(nbproject);
             
             final Map properties = new HashMap ();
             properties.put ("sourcepath", sourcePath);
