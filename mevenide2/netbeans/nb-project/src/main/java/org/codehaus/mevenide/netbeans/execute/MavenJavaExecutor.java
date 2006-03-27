@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 import java.io.*;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import org.apache.maven.BuildFailureException;
 import org.apache.maven.SettingsConfigurationException;
@@ -47,6 +48,8 @@ import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.util.dag.CycleDetectedException;
+import org.netbeans.api.debugger.DebuggerInfo;
+import org.netbeans.api.debugger.jpda.JPDADebugger;
 import org.openide.ErrorManager;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
@@ -96,6 +99,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 embedder = EmbedderFactory.createExecuteEmbedder(out, config.getClassLoader());
             } else {
                 embedder = EmbedderFactory.createExecuteEmbedder(out);
+            }
+            try {
+                checkDebuggerListening(config, out);
+            } catch (MojoExecutionException ex) {
+                ex.printStackTrace();
+            } catch (MojoFailureException ex) {
+                ex.printStackTrace();
             }
 //            ArtifactRepository netbeansRepo = null;
             File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
@@ -176,6 +186,33 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             io = createInputOutput();
         }
         return io;
+    }
+
+    private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
+        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {
+            JPDAStart start = new JPDAStart();
+            start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
+            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));
+            start.setLog(handler);
+            String val = start.execute(config.getProject());
+            Enumeration en = config.getProperties().propertyNames();
+            while (en.hasMoreElements()) {
+                String key = (String)en.nextElement();
+                String value = config.getProperties().getProperty(key);
+                StringBuffer buf = new StringBuffer(value);
+                String replaceItem = "${jpda.address}";
+                int index = buf.indexOf(replaceItem);
+                while (index > -1) {
+                    String newItem = val;
+                    newItem = newItem == null ? "" : newItem;
+                    buf.replace(index, index + replaceItem.length(), newItem);
+                    index = buf.indexOf(replaceItem);
+                }
+//                System.out.println("setting property=" + key + "=" + buf.toString());
+                config.getProperties().setProperty(key, buf.toString());
+            }
+            config.getProperties().put("jpda.address", val);
+        }
     }
     
 }

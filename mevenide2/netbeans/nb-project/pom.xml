@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <parent>
-    <groupId>org.codehaus.mevenide</groupId>
-    <artifactId>netbeans</artifactId>
-    <version>1.1</version>
-  </parent>
-  <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.codehaus.mevenide</groupId>
+        <artifactId>netbeans</artifactId>
+        <version>1.1</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>nb-project</artifactId>
     <packaging>nbm</packaging>
     <version>2.0.1</version>
@@ -13,6 +13,16 @@
     <description>Implementation of a Netbeans project backed by Maven2 POM files.</description>
 
     <dependencies>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-debugger</artifactId>
+            <version>RELEASE50</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-debugger-jpda</artifactId>
+            <version>RELEASE50</version>
+        </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-graph</artifactId>
@@ -128,7 +138,7 @@
             <artifactId>org-jdesktop-layout</artifactId>
             <version>RELEASE50</version>
         </dependency>  
-      <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
+        <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
         <dependency>
             <groupId>org.jdesktop</groupId>
             <artifactId>swing-layout</artifactId>
@@ -146,7 +156,30 @@
             <artifactId>nb-mvn-embedder</artifactId>
             <version>2.0.1.1</version>
         </dependency>
+        
+        <dependency>
+            <groupId>sun.jdk</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.4.2</version>
+            <scope>system</scope>
+            <systemPath>${java142.home}/lib/tools.jar</systemPath>
+        </dependency>        
+        
     </dependencies>
+    <profiles>
+        <profile>
+            <id>jdk142</id>
+            <activation>
+                <jdk>1.4.2</jdk>
+            </activation>
+            <properties>
+                <java142.home>${java.home}/..</java142.home>
+            </properties>
+        </profile>
+    </profiles>
+    <properties>
+        <java142.home>${java.home}/..</java142.home>
+    </properties>
     
     <build>
         <plugins>
@@ -154,25 +187,25 @@
                 <groupId>org.codehaus.mevenide.plugins</groupId>
                 <artifactId>maven-nbm-plugin</artifactId>
             </plugin>
-             <plugin>
+            <plugin>
                 <groupId>org.codehaus.modello</groupId>
                 <artifactId>modello-maven-plugin</artifactId>
                 <version>1.0-alpha-5</version>
                 <executions>
-                  <execution>
-                    <goals>
-                      <goal>java</goal>
-                      <goal>xpp3-reader</goal>
-                      <goal>xpp3-writer</goal>
-                    </goals>
-                  </execution>
+                    <execution>
+                        <goals>
+                            <goal>java</goal>
+                            <goal>xpp3-reader</goal>
+                            <goal>xpp3-writer</goal>
+                        </goals>
+                    </execution>
                 </executions>
                 <configuration>
-                  <version>1.0.0</version>
-                  <packageWithVersion>false</packageWithVersion>
-                  <model>src/main/mdo/buildAction.xml</model>
+                    <version>1.0.0</version>
+                    <packageWithVersion>false</packageWithVersion>
+                    <model>src/main/mdo/buildAction.xml</model>
                 </configuration>
-             </plugin>
+            </plugin>
         </plugins>
     </build>
 </project>

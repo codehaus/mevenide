@@ -12,6 +12,14 @@
    </libraries>
    <dependencies>
       <dependency>
+          <id>org.netbeans.api:org-netbeans-api-debugger-jpda</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-netbeans-api-debugger</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-netbeans-modules-options-api</id>
 	  <type>spec</type>
       </dependency>
