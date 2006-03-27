@@ -8,7 +8,7 @@
 		<section name="User Guide">
 			<subsection name="Intended audience">
 				<div id="documentContent">
-					<p>This guide is targeted to Netbeans (4.0) users that want to use Maven projects in their IDE.</p>
+					<p>This guide is targeted to Netbeans (4.1, 5.0) users that want to use Maven projects in their IDE.</p>
 				</div>
 			</subsection>
 			<subsection name="Topics">
