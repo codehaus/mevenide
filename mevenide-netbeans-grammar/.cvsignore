@@ -1,7 +1,0 @@
-*.project
-*.log
-*.ser
-target
-.classpath
-bin
-*.properties
