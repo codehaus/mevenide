@@ -23,8 +23,8 @@
       </notifiers>
   </ciManagement>
   <scm>
-    <connection>scm:svn:http://svn.codehaus.org/mevenide/trunk/mojos</connection>
-    <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mojos</developerConnection>
+    <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mojos/</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mojos/</developerConnection>
     <url>http://fisheye.codehaus.org/viewrep/mevenide/mojos</url>
   </scm>
   <mailingLists>
