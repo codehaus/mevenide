@@ -16,9 +16,9 @@
     <siteDirectory>/home/projects/mevenide/public_html/${pom.artifactId}</siteDirectory>
     <distributionDirectory>/dist</distributionDirectory>
     <repository>
-        <connection>scm:cvs:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</connection>
-        <developerConnection>scm:cvs:ext:${maven.username}@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm:${pom.artifactId}</developerConnection>
-        <url>http://cvs.mevenide.codehaus.org/${pom.artifactId}/</url>
+        <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/${pom.artifactId}</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/${pom.artifactId}</developerConnection>
+        <url>http://fisheye.codehaus.org/viewrep/mevenide/${pom.artifactId}/</url>
     </repository>
     <mailingLists>
         <mailingList>
