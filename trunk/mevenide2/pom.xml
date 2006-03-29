@@ -17,14 +17,15 @@
       <notifiers>
           <notifier>
             <configuration>
-              <address>dev@mevenide.codehaus.org</address>
+              <address>mkleint@codehaus.org</address>
             </configuration>
           </notifier>
       </notifiers>
   </ciManagement>
   <scm>
-      <connection>scm:cvs:pserver:anoncvs:@beaver.codehaus.org:/home/projects/mevenide/scm:mevenide2</connection>
-      <url>http://cvs.mevenide.codehaus.org/mevenide2</url>
+    <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2</connection>
+    <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2</developerConnection>
+    <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2</url>
   </scm>
   <mailingLists>
     <mailingList>
