@@ -18,14 +18,15 @@
         <notifiers>
             <notifier>
                 <configuration>
-                    <address>dev@mevenide.codehaus.org</address>
+                    <address>mkleint@codehaus.org</address>
                 </configuration>
             </notifier>
         </notifiers>
     </ciManagement>
     <scm>
-        <connection>scm:cvs:pserver:anoncvs:@beaver.codehaus.org:/home/projects/mevenide/scm:mevenide2</connection>
-        <url>http://cvs.mevenide.codehaus.org/mevenide2</url>
+        <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</developerConnection>
+        <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2/netbeans/ide-mojos</url>
     </scm>
     <mailingLists>
         <mailingList>
@@ -82,9 +83,7 @@
                     <extensions>true</extensions>
                     <configuration>
                         <descriptor>src/main/nbm/module.xml</descriptor>
-                        <keystore>${nbm.keystore}</keystore>
                         <keystorealias>mevenide2</keystorealias>
-                        <keystorepassword>${nbm.keystorepasswd}</keystorepassword>
                     </configuration>
                 </plugin>
             </plugins>
@@ -122,6 +121,11 @@
             <name>Build temporary repository</name>
             <url>file://${basedir}/target/m2-repository</url>
         </repository>
+        <!--repository>
+            <id>mevenide</id>
+            <name>Mevenide's private repository</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-repository</url>
+        </repository-->
     </distributionManagement>
     
     <repositories>
@@ -145,7 +149,7 @@
             <name>Mevenide's M2 plugins</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
             <!--snapshots>
-                <enabled>false</enabled>
+            <enabled>false</enabled>
             </snapshots-->
         </pluginRepository>
     </pluginRepositories>
@@ -159,8 +163,6 @@
     <properties>
         <!--a fallback to make it work everywhere -->
         <java142.home>${java.home}/..</java142.home>
-        <nbm.keystore>/home/mkleint/.keystore</nbm.keystore>
-        <nbm.keystorepasswd>?</nbm.keystorepasswd>
     </properties>
   
 </project>
