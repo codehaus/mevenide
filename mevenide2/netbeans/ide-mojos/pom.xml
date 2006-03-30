@@ -74,20 +74,6 @@
         </profile>
     </profiles>
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mevenide.plugins</groupId>
-                    <artifactId>maven-nbm-plugin</artifactId>
-                    <version>LATEST</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <descriptor>src/main/nbm/module.xml</descriptor>
-                        <keystorealias>mevenide2</keystorealias>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -157,7 +143,6 @@
         <module>netbeans-debugger-plugin</module>
         <module>netbeans-deploy-plugin</module>
         <module>netbeans-run-plugin</module>
-        <module>netbeans-repository</module>
     </modules>
   
     <properties>

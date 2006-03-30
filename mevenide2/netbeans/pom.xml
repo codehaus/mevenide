@@ -59,8 +59,9 @@
      <module>grammar</module>
      <module>j2ee</module>
      <module>autoupdate</module>
-     <module>continuum-bridges</module>
+     <!--module>continuum-bridges</module-->
      <module>ide-mojos</module>
+     <module>netbeans-repository</module>
   </modules>
     <repositories>
         <repository>
