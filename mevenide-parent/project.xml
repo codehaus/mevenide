@@ -18,7 +18,7 @@
     <repository>
         <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/${pom.artifactId}</connection>
         <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/${pom.artifactId}</developerConnection>
-        <url>http://fisheye.codehaus.org/viewrep/mevenide/${pom.artifactId}/</url>
+        <url>http://fisheye.codehaus.org/viewrep/mevenide/trunk/${pom.artifactId}/</url>
     </repository>
     <mailingLists>
         <mailingList>
@@ -215,7 +215,7 @@
         <report>maven-simian-plugin</report>
         <report>maven-findbugs-plugin</report>
         <report>maven-changes-plugin</report>
-        <report>maven-changelog-plugin</report>
+        <!--report>maven-changelog-plugin</report-->
         <!--report>maven-file-activity-plugin</report-->
         <!--report>maven-developer-activity-plugin</report-->
         <!--report>maven-statcvs-plugin</report-->
