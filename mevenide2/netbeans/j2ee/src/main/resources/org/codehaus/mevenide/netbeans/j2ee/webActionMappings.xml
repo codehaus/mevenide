@@ -31,7 +31,7 @@
             <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
         </properties>
     </action>
-    <!--action>
+    <action>
         <actionName>debug</actionName>
         <packagings>
             <packaging>war</packaging>
@@ -39,19 +39,10 @@
         <goals>
             <goal>package</goal>
             <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
-            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
         </goals>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
-                <version>LATEST</version>
-                <configuration>
-                    <forceRedeploy>false</forceRedeploy>
-                    <debugmode>true</debugmode>
-                </configuration>
-            </plugin>
-        </plugins>
+        <properties>
+            <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+        </properties>
     </action>
     <action>
         <actionName>debug.single</actionName>
@@ -61,20 +52,11 @@
         <goals>
             <goal>package</goal>
             <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
-            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
         </goals>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-deploy-plugin</artifactId>
-                <version>LATEST</version>
-                <configuration>
-                    <clientUrlPart>${webpagePath}</clientUrlPart>
-                    <debugmode>true</debugmode>
-                    <forceRedeploy>false</forceRedeploy>
-                </configuration>
-            </plugin>
-        </plugins>
-    </action-->
+        <properties>
+            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+            <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+        </properties>
+    </action>
     
 </actions>

@@ -25,6 +25,7 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.plugin.debugger.JPDAConnectMojo;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ServerManager;
@@ -131,10 +132,14 @@ public class DeployMojo extends AbstractMojo {
                     } else {
                         address = Integer.toString(sdi.getPort());
                     }
-                    project.getProperties().put("jpda-transport", transport);
-                    project.getProperties().put("jpda-host", h);
-                    project.getProperties().put("jpda-address", address);
-                    
+                    JPDAConnectMojo connect = new JPDAConnectMojo();
+                    connect.setLog(getLog());
+                    connect.setPluginContext(getPluginContext());
+                    connect.setHost(h);
+                    connect.setTransport(transport);
+                    connect.setAddress(address);
+                    connect.setProject(project);
+                    connect.execute();
                 }
             } catch (Exception ex) {
                 throw new MojoFailureException("Failed Deployment:" + ex.getMessage());
