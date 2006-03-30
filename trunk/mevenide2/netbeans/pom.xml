@@ -33,9 +33,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <descriptor>src/main/nbm/module.xml</descriptor>
-                    <keystore>${nbm.keystore}</keystore>
                     <keystorealias>mevenide2</keystorealias>
-                    <keystorepassword>${nbm.keystorepasswd}</keystorepassword>
                 </configuration>
             </plugin>
         </plugins>
@@ -81,7 +79,5 @@
   <properties>
       <!--a fallback to make it work everywhere -->
       <java142.home>${java.home}/..</java142.home>
-      <nbm.keystore>/home/mkleint/.keystore</nbm.keystore>
-      <nbm.keystorepasswd>?</nbm.keystorepasswd>
   </properties>
 </project>
