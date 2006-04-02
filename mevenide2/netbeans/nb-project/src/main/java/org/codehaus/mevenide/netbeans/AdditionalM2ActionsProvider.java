@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans;
 
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.openide.util.Lookup;
@@ -35,11 +34,6 @@ import org.openide.util.Lookup;
  */
 public interface AdditionalM2ActionsProvider {
 
-    /**
-     *
-     */
-    public static RunConfig EMPTY = new DefaultRunConfig(null, null);
-    
     /**
      * add action instances to the popup of the project.
      */

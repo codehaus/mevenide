@@ -19,11 +19,16 @@ package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.apache.maven.profiles.ProfilesRoot;
+import org.apache.maven.profiles.io.xpp3.ProfilesXpp3Reader;
 import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.openide.filesystems.FileObject;
 
 /**
  * a workaround for the fact that one cannot access the settings values the embedder is using.
@@ -58,7 +63,7 @@ public class MavenSettingsSingleton {
      * @deprecated rather not use, doesn't contain the global setting values
      */
     public Settings getSettings() {
-        //TODO need probably some kind of caching.. 
+        //TODO need probably some kind of caching..
         Settings sets = createUserSettingsModel();
         if (sets.getLocalRepository() == null) {
             sets.setLocalRepository(new File(getM2UserDir(), "repository").toString());
@@ -73,7 +78,7 @@ public class MavenSettingsSingleton {
             File fil = new File(dir, "settings.xml");
             if (fil.exists()) {
                 sets = builder.read(new InputStreamReader(new FileInputStream(fil)));
-            } 
+            }
         } catch (IOException ex) {
             ex.printStackTrace();
         } catch (XmlPullParserException ex) {
@@ -83,6 +88,28 @@ public class MavenSettingsSingleton {
             sets = new Settings();
         }
         return sets;
+    }
+    
+    public static ProfilesRoot createProfilesModel(FileObject projectDir) {
+        FileObject profiles = projectDir.getFileObject("profiles.xml");
+        ProfilesRoot prof = null;
+        if (profiles != null) {
+            InputStreamReader read = null;
+            try {
+                read = new InputStreamReader(profiles.getInputStream());
+                prof = new ProfilesXpp3Reader().read(read);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (XmlPullParserException ex) {
+                ex.printStackTrace();
+            } finally {
+                IOUtil.close(read);
+            }
+        } 
+        if (prof == null) {
+            prof = new ProfilesRoot();
+        }
+        return prof;
     }
     
 }

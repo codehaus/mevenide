@@ -61,47 +61,15 @@
                         <multiplicity>*</multiplicity>
                     </association>
                 </field>
-                <!--field>
-                    <name>plugins</name>
+                <field>
+                    <name>activatedProfiles</name>
                     <version>1.0.0+</version>
                     <association>
-                        <type>SimplePluginConfig</type>
+                        <type>String</type>
                         <multiplicity>*</multiplicity>
                     </association>
-                </field-->
-                
+                </field>
             </fields>
         </class>
-        
-        
-        <!--class>
-            <name>SimplePluginConfig</name>
-            <version>1.0.0+</version>
-            <fields>
-                <field>
-                    <name>groupId</name>
-                    <version>1.0.0+</version>
-                    <type>String</type>
-                    <required>true</required>
-                    <defaultValue>org.apache.maven.plugins</defaultValue>
-                </field>
-                <field>
-                    <name>artifactId</name>
-                    <version>1.0.0+</version>
-                    <type>String</type>
-                    <required>true</required>
-                </field>
-                <field>
-                    <name>version</name>
-                    <version>1.0.0+</version>
-                    <required>true</required>
-                    <type>String</type>
-                </field>
-                <field>
-                    <name>configuration</name>
-                    <type>DOM</type>
-                </field>
-            </fields>
-        </class-->
     </classes>
 </model>

@@ -29,7 +29,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -40,8 +42,10 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.settings.SettingsUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -314,6 +318,27 @@ public final class NbMavenProject implements Project {
            });
        }
        return new File[0];
+   }
+   
+   /**
+    * gets a set of profile ids accessible to the project, is rather slow as it reloads the files all over again.
+    */
+   
+   
+   public Set getAvailableProfiles() {
+       Set profiles = new HashSet();
+       profiles.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().getProfilesAsMap().keySet());
+       Iterator it = getOriginalMavenProject().getModel().getProfiles().iterator();
+       while (it.hasNext()) {
+           Profile prof = (Profile)it.next();
+           profiles.add(prof.getId());
+       }
+       it = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
+       while (it.hasNext()) {
+           org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile)it.next();
+           profiles.add(prof.getId());
+       }
+       return profiles;
    }
    
     public synchronized Lookup getLookup() {

@@ -18,18 +18,12 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import org.apache.maven.model.Plugin;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
-import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -43,12 +37,21 @@ public final class ModelRunConfig implements RunConfig {
     private NetbeansActionMapping model;
     
     private NbMavenProject project;
+
+    private Boolean showError;
+
+    private Boolean showDebug;
+    
+    private Boolean offline;
+    
+    private List profiles;
     
     /** Creates a new instance of ModelRunConfig */
     public ModelRunConfig(NbMavenProject proj, NetbeansActionMapping mod, ClassLoader loader) {
         project = proj;
         model = mod;
         classloader = loader;
+        profiles = new ArrayList();
     }
     
     public File getExecutionDirectory() {
@@ -78,6 +81,35 @@ public final class ModelRunConfig implements RunConfig {
     public ClassLoader getClassLoader() {
         return classloader;
     }
+
+    public Boolean isShowDebug() {
+        return showDebug;
+    }
+
+    public Boolean isShowError() {
+        return showError;
+    }
+
+    public void setShowError(Boolean showError) {
+        this.showError = showError;
+    }
+
+    public void setShowDebug(Boolean showDebug) {
+        this.showDebug = showDebug;
+    }
+
+    public Boolean isOffline() {
+        return offline;
+    }
+
+    public void setOffline(Boolean offline) {
+        this.offline = offline;
+    }
+    
+    public List getActiveteProfiles() {
+        return profiles;
+    }
+
 
     
 }

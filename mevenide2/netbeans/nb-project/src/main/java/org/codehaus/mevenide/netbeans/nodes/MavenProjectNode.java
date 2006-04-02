@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -138,6 +139,7 @@ public class MavenProjectNode extends AbstractNode {
         }
 //        lst.add(new RunGoalsAction(project));
         lst.add(new LifecyclePopupAction(project));
+        lst.add(provider.createCustomMavenAction("Run Custom Goals...", new NetbeansActionMapping()));
         // separator
         lst.add(null);
         lst.add(project.createRefreshAction());
