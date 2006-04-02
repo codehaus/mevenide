@@ -341,9 +341,9 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbOffline.setSelected(sett.isOffline());
         cbPluginRegistry.setSelected(sett.isUsePluginRegistry());
         txtLocalRepository.setText(sett.getLocalRepository());
-
-        cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
+        cbErrors.putClientProperty("wasSelected", Boolean.valueOf(cbErrors.isSelected()));
+        cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();
         if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(failureBehaviour)) {
             rbFailFast.setSelected(true);
