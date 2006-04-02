@@ -20,46 +20,26 @@ import java.io.*;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
-import org.apache.maven.BuildFailureException;
 import org.apache.maven.SettingsConfigurationException;
-import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.lifecycle.LifecycleExecutionException;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.monitor.event.EventMonitor;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
-import org.apache.maven.project.DuplicateProjectException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.reactor.MavenExecutionException;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
-import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.dag.CycleDetectedException;
-import org.netbeans.api.debugger.DebuggerInfo;
-import org.netbeans.api.debugger.jpda.JPDADebugger;
 import org.openide.ErrorManager;
 import org.openide.modules.InstalledFileLocator;
-import org.openide.modules.ModuleInstall;
 import org.openide.util.Cancellable;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
-import org.openide.windows.OutputWriter;
-
-
 
 /**
  * support for executing maven, from the ide using embedder
@@ -133,7 +113,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             // need to set some profiles or get NPE!
             req.addActiveProfiles(Collections.EMPTY_LIST).addInactiveProfiles(Collections.EMPTY_LIST);
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
+            req.addActiveProfiles(config.getActiveteProfiles());
 //            req.activateDefaultEventMonitor();
+            if (config.isOffline() != null) {
+                settings.setOffline(config.isOffline().booleanValue());
+            }
             req.setSettings(settings);
             req.setGoals(config.getGoals());
             req.setProperties(config.getProperties());
@@ -148,8 +132,12 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
-            boolean debug = MavenExecutionSettings.getDefault().isShowDebug();
-            req.setShowErrors(debug || MavenExecutionSettings.getDefault().isShowErrors());
+            boolean debug = config.isShowDebug() != null 
+                                ? config.isShowDebug().booleanValue()
+                                : MavenExecutionSettings.getDefault().isShowDebug();
+            req.setShowErrors(debug || (config.isShowError() != null 
+                    ? config.isShowError().booleanValue()
+                    : MavenExecutionSettings.getDefault().isShowErrors()));
             if (debug) {
                 req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
             } else {

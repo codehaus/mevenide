@@ -89,9 +89,14 @@
         </site>
         <repository>
             <id>mevenide</id>
-            <name>Mevenide's private repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-repository</url>
+            <name>Mevenide's repository</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/repository</url>
         </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Mevenide's snapshot repository</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/snapshot-repository</url>
+        </snapshotRepository>
     </distributionManagement>
     <repositories>
         <repository>

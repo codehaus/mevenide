@@ -20,6 +20,7 @@ import java.io.File;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.filesystems.FileUtil;
@@ -61,8 +62,12 @@ class SiteDocsNode extends FilterNode {
             Action[] toReturn = new Action[4];
             toReturn[0] = CommonProjectActions.newFileAction();
             toReturn[1] = null;
-            toReturn[2] = impl.createCustomMavenAction("Generate Site", new String[] {"site:site"});
-            toReturn[3] = impl.createCustomMavenAction("Deploy Site", new String[] {"site:deploy"});
+            NetbeansActionMapping mapp = new NetbeansActionMapping();
+            mapp.addGoal("site:site");
+            toReturn[2] = impl.createCustomMavenAction("Generate Site", mapp);
+            mapp = new NetbeansActionMapping();
+            mapp.addGoal("site:deploy");
+            toReturn[3] = impl.createCustomMavenAction("Deploy Site", mapp);
             return toReturn;
         } else {
             return super.getActions(param);

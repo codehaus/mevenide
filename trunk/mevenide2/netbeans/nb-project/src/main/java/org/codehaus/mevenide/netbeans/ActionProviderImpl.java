@@ -17,31 +17,27 @@
 
 package org.codehaus.mevenide.netbeans;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.DefaultRunConfig;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
+import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
-import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
-import org.openide.awt.StatusDisplayer;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -49,7 +45,6 @@ import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import org.openide.windows.InputOutput;
 
 /**
  *
@@ -184,8 +179,8 @@ public class ActionProviderImpl implements ActionProvider {
         return new BasicAction(name, action);
     }
     
-    public Action createCustomMavenAction(String name, String[] goals) {
-        return new CustomAction(name, goals);
+    public Action createCustomMavenAction(String name, NetbeansActionMapping mapping) {
+        return new CustomAction(name, mapping);
     }
     
     
@@ -208,16 +203,34 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     private final class CustomAction extends AbstractAction {
-        private String[] gls;
+        private NetbeansActionMapping mapping;
         
         
-        private CustomAction(String name, String[] goals) {
-            gls = goals;
+        private CustomAction(String name, NetbeansActionMapping mapp) {
+            mapping = mapp;
             putValue(Action.NAME, name);
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            ActionProviderImpl.this.runGoal("", ActionProviderImpl.this.project.getLookup(), new DefaultRunConfig(ActionProviderImpl.this.project, Arrays.asList(gls)));
+            RunGoalsPanel pnl = new RunGoalsPanel();
+            DialogDescriptor dd = new DialogDescriptor(pnl, "Run Maven");
+            ActionToGoalMapping maps = ActionToGoalUtils.readMappingsFromFileAttributes(project.getProjectDirectory());
+            pnl.readMapping(mapping, project.getOriginalMavenProject(), project.getAvailableProfiles(), maps);
+            pnl.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
+            pnl.setOffline(MavenSettingsSingleton.getInstance().createUserSettingsModel().isOffline());
+            Object retValue = DialogDisplayer.getDefault().notify(dd);
+            if (retValue == DialogDescriptor.OK_OPTION) {
+                pnl.applyValues(mapping);
+                if (maps.getActions().size() > 10) {
+                    maps.getActions().remove(0);
+                }
+                maps.getActions().add(mapping);
+                ActionToGoalUtils.writeMappingsToFileAttributes(project.getProjectDirectory(), maps);
+                ModelRunConfig rc = new ModelRunConfig(project, mapping, getClass().getClassLoader());
+                rc.setOffline(Boolean.valueOf(pnl.isOffline()));
+                rc.setShowDebug(Boolean.valueOf(pnl.isShowDebug()));
+                runGoal("custom", Lookup.EMPTY, rc);
+            }
         }
     }
     

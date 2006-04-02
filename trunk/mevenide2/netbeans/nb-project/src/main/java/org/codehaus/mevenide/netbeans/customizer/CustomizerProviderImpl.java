@@ -41,6 +41,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.profiles.io.xpp3.ProfilesXpp3Reader;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -135,24 +136,14 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             run
         };
         Model model = project.getEmbedder().readModel(project.getPOMFile());
-        FileObject profiles = project.getProjectDirectory().getFileObject("profiles.xml");
-        ProfilesRoot prof;
-        if (profiles != null) {
-            InputStreamReader read = new InputStreamReader(profiles.getInputStream());
-            try {
-                prof = new ProfilesXpp3Reader().read(read);
-            } finally {
-                read.close();
-            }
-        } else {
-            prof = new ProfilesRoot();
-        }
+        ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
         handle = new ModelHandle(model, prof, project.getOriginalMavenProject(), mapping);
         panelProvider = new PanelProvider();
         visitedPanels.clear();
     }
+
     
 //    private Properties createPropsFromFileObject(FileObject projectDir) {
 //        Properties props = new Properties();

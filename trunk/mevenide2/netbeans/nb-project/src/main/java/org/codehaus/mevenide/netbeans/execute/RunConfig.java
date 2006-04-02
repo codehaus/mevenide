@@ -40,4 +40,13 @@ public interface RunConfig {
     
     ClassLoader getClassLoader();
     
+    Boolean isShowDebug();
+    
+    Boolean isShowError();
+    
+    Boolean isOffline();
+
+    List getActiveteProfiles();
+
+    
 }

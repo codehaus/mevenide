@@ -25,6 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.openide.util.actions.Presenter;
 
 /**
@@ -64,7 +65,9 @@ public class LifecyclePopupAction extends AbstractAction implements Presenter.Po
             Iterator it = phases.iterator(); 
             while (it.hasNext()) {
                 String str = (String)it.next();
-                menu.add(provider.createCustomMavenAction(str, new String[] {str}));
+                NetbeansActionMapping mapp = new NetbeansActionMapping();
+                mapp.addGoal(str);
+                menu.add(provider.createCustomMavenAction(str, mapp));
             }
         }
         return menu;

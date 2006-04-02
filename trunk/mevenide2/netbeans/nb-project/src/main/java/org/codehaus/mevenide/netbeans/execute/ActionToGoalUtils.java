@@ -17,6 +17,9 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +27,10 @@ import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.openide.filesystems.FileObject;
 import org.openide.util.Lookup;
 
 /**
@@ -35,7 +42,7 @@ public final class ActionToGoalUtils {
     /** Creates a new instance of ActionToGoalUtils */
     private ActionToGoalUtils() {
     }
-
+    
     public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
         RunConfig rc = null;
         UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
@@ -52,7 +59,7 @@ public final class ActionToGoalUtils {
             }
         }
         return rc;
-     }
+    }
     
     public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
@@ -88,5 +95,53 @@ public final class ActionToGoalUtils {
         //if not found, dd to the end.
         lst.add(action);
     }
-            
+    
+    /**
+     * read the action mappings from the fileobject attribute "customActionMappings"
+     * @parameter fo should be the project's root directory fileobject
+     *
+     */
+    public static ActionToGoalMapping readMappingsFromFileAttributes(FileObject fo) {
+        String string = (String)fo.getAttribute("customActionMappings");
+        ActionToGoalMapping mapp = null;
+        if (string != null) {
+            NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+            try {
+                mapp = reader.read(new StringReader(string));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (XmlPullParserException ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (mapp == null) {
+            mapp = new ActionToGoalMapping();
+        }
+        return mapp;
+    }
+    
+    /**
+     * writes the action mappings to the fileobject attribute "customActionMappings"
+     * @parameter fo should be the project's root directory fileobject
+     *
+     */
+    public static void writeMappingsToFileAttributes(FileObject fo, ActionToGoalMapping mapp) {
+        NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
+        StringWriter string = new StringWriter();
+        boolean error = false;
+        try {
+            writer.write(string, mapp);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            error = true;
+        }
+        if (!error) {
+            try {
+                fo.setAttribute("customActionMappings", string.toString());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
 }
