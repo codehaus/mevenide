@@ -58,6 +58,16 @@ subcomponent <<mevenide2-netbeans>>.
 
 [../images/completion3.png]
 
+* Module/Dependency graph
+ 
+  * Show hierarchy between projects
+ 
+[../images/moduleGraph.png]
+ 
+  * Show dependency graph
+ 
+[../images/dependencyGraph.png]
+ 
 * Continuum 
 
   Apache Continuum is a continuous integration server, the Mevenide support is able to connect to these servers through the XML-RPC interface.

@@ -25,7 +25,7 @@ Building Mevenide 2 for Netbeans
   * Checkout modules required for the Mevenide 2:
 
 +-------------------------------------------------------------------------------+
-cvs -d:pserver:anonymous@cvs.mevenide.codehaus.org:/home/projects/mevenide/scm co mevenide2
+svn co https://svn.codehaus.org/mevenide/trunk/mevenide2
 +-------------------------------------------------------------------------------+
 
 * Building 
