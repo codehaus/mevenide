@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin id="org.mevenide.m2" 
+        name="Mevenide M2 Alpha Support" 
+        version="0.0.1" 
+        provider-name="The Codehaus">
+    <runtime>
+        <library name="mevenide2-0.0.1-SNAPSHOT.jar">
+            <export name="*" />
+        </library>
+    </runtime>
+</plugin>
+

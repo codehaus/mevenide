@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.codehaus.mevenide</groupId>
+    <artifactId>mevenide2-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.1</version>
+    <name>Maven2 support at Mevenide</name>
+    <description>Maven2 support at Mevenide</description>
+    <url>http://mevenide.codehaus.org</url>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.codehaus.org/browse/MEVENIDE</url>
+    </issueManagement>
+    <ciManagement>
+        <system>continuum</system>
+        <notifiers>
+            <notifier>
+                <configuration>
+                    <address>mkleint@codehaus.org</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+    <scm>
+        <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2</developerConnection>
+        <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2</url>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>Development List</name>
+            <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <post>dev@mevenide.codehaus.org</post>
+            <archive>http://archive.mevenide.codehaus.org/dev/</archive>
+        </mailingList>
+        <mailingList>
+            <name>User List</name>
+            <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <post>user@mevenide.codehaus.org</post>
+            <archive>http://archive.mevenide.codehaus.org/user/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Commits List</name>
+            <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/scm/</archive>
+        </mailingList>
+    </mailingLists>
+  
+    <developers>
+        <developer>
+            <id>mkleint</id>
+            <name>Milos Kleint</name>
+            <email>mkleint@codehaus.org</email>
+            <organization>Mevenide</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <contributors>
+        <contributor>
+            <name>Laurent Foret</name>
+            <roles>
+                <role>Mevenide2 Site creator</role>
+            </roles>
+        </contributor>
+    </contributors>
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    <organization>
+        <name>The Codehaus</name>
+        <url>http://www.codehaus.org/</url>
+    </organization>
+    <distributionManagement>
+        <site>
+            <id>site</id>
+            <name>Mevenide Website</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-site</url>
+        </site>
+        <repository>
+            <id>mevenide</id>
+            <name>Mevenide's repository</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/repository</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>Mevenide's snapshot repository</name>
+            <url>scp://beaver.codehaus.org/home/projects/mevenide/snapshot-repository</url>
+        </snapshotRepository>
+    </distributionManagement>
+    <repositories>
+        <repository>
+            <id>mevenide1</id>
+            <name>Mevenide's M2 repo</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+            <snapshots>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mevenide2</id>
+            <name>Mevenide's M2 plugins</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <modules>
+        <module>netbeans</module>
+    </modules>
+    
+</project>
