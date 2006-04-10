@@ -40,7 +40,7 @@ import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.netbeans.modules.xml.spi.dom.AbstractNode;
 import org.openide.ErrorManager;
-import org.openide.util.enum.EmptyEnumeration;
+import org.openide.util.Enumerations;
 import org.openide.nodes.Node.Property;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -256,7 +256,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      *         Every list member represents one possibility.
      */
     public Enumeration queryAttributes(HintContext ownerElementCtx) {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
 
     /**
@@ -318,7 +318,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             }
             return toReturn.elements();
         } else {
-            return EmptyEnumeration.EMPTY;
+            return Enumerations.empty();
         }
     }
 
@@ -330,7 +330,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      * @return enumeration of <code>GrammarResult</code>s (ENTITY_REFERENCE_NODEs)
      */
     public Enumeration queryEntities(String prefix) {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
 
     /**
@@ -339,7 +339,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      * @return enumeration of <code>GrammarResult</code>s (NOTATION_NODEs)
      */
     public Enumeration queryNotations(String prefix) {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
 
     
@@ -382,7 +382,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
                 }                
             }
         }
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
 
 
