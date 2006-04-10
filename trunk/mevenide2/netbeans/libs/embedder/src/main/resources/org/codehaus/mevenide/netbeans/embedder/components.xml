@@ -59,22 +59,6 @@
       <implementation>org.apache.maven.project.path.DefaultPathTranslator</implementation>
     </component>
     <component>
-      <role>org.apache.maven.CommonMavenObjectFactory</role>
-      <implementation>org.apache.maven.DefaultCommonMavenObjectFactory</implementation>
-      <requirements>
-        <requirement>
-          <role>org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout</role>
-          <role-hint>default</role-hint>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.artifact.repository.ArtifactRepositoryFactory</role>
-        </requirement>
-        <requirement>
-          <role>org.apache.maven.settings.MavenSettingsBuilder</role>
-        </requirement>
-      </requirements>
-    </component>
-    <component>
       <role>org.apache.maven.Maven</role>
       <implementation>org.apache.maven.DefaultMaven</implementation>
       <requirements>
@@ -94,7 +78,7 @@
           <role>org.apache.maven.artifact.manager.WagonManager</role>
         </requirement>
         <requirement>
-          <role>org.apache.maven.CommonMavenObjectFactory</role>
+          <role>org.apache.maven.MavenTools</role>
         </requirement>
       </requirements>
     </component>
@@ -631,20 +615,6 @@ implementation>org.apache.maven.artifact.factory.DefaultArtifactFactory</impleme
     </component>
     <component>
       <role>org.apache.maven.wagon.Wagon</role>
-      <role-hint>file</role-hint>
-      <implementation>org.apache.maven.wagon.providers.file.FileWagon</implementation>
-      <instantiation-strategy>per-lookup</instantiation-strategy>
-    </component>
-    <component>
-      <role>org.apache.maven.profiles.MavenProfilesBuilder</role>
-      <implementation>org.apache.maven.profiles.DefaultMavenProfilesBuilder</implementation>
-    </component>
-    <component>
-      <role>org.apache.maven.settings.MavenSettingsBuilder</role>
-      <implementation>org.apache.maven.settings.DefaultMavenSettingsBuilder</implementation>
-    </component>
-    <component>
-      <role>org.apache.maven.wagon.Wagon</role>
       <role-hint>scp</role-hint>
       <implementation>org.apache.maven.wagon.providers.ssh.ScpWagon</implementation>
       <instantiation-strategy>per-lookup</instantiation-strategy>
@@ -708,6 +678,36 @@ implementation>org.apache.maven.artifact.factory.DefaultArtifactFactory</impleme
           <role>org.codehaus.plexus.components.interactivity.Prompter</role>
         </requirement>
       </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.MavenTools</role>
+      <implementation>org.apache.maven.DefaultMavenTools</implementation>
+      <requirements>
+        <requirement>
+          <role>org.apache.maven.artifact.repository.layout.ArtifactRepositoryLayout</role>
+          <role-hint>default</role-hint>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.artifact.repository.ArtifactRepositoryFactory</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.settings.MavenSettingsBuilder</role>
+        </requirement>
+      </requirements>
+    </component>
+    <component>
+      <role>org.apache.maven.profiles.MavenProfilesBuilder</role>
+      <implementation>org.apache.maven.profiles.DefaultMavenProfilesBuilder</implementation>
+    </component>
+    <component>
+      <role>org.apache.maven.wagon.Wagon</role>
+      <role-hint>file</role-hint>
+      <implementation>org.apache.maven.wagon.providers.file.FileWagon</implementation>
+      <instantiation-strategy>per-lookup</instantiation-strategy>
+    </component>
+    <component>
+      <role>org.apache.maven.settings.MavenSettingsBuilder</role>
+      <implementation>org.apache.maven.settings.DefaultMavenSettingsBuilder</implementation>
     </component>
     <component>
       <role>org.apache.maven.artifact.manager.WagonManager</role>
@@ -922,6 +922,9 @@ implementation>org.apache.maven.artifact.resolver.DefaultArtifactResolver</imple
         </requirement>
         <requirement>
           <role>org.apache.maven.artifact.manager.WagonManager</role>
+        </requirement>
+        <requirement>
+          <role>org.apache.maven.MavenTools</role>
         </requirement>
       </requirements>
     </component>
