@@ -25,6 +25,7 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileAttributeEvent;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileChangeListener;
@@ -83,7 +84,7 @@ public class EmbedderFactory {
             try {
                 embedder.start(req);
             } catch (MavenEmbedderException e) {
-                e.printStackTrace();
+                ErrorManager.getDefault().notify(e);
             } finally {
                 //http://jira.codehaus.org/browse/PLX-203
                 Thread.currentThread().setContextClassLoader(ldr);
@@ -112,7 +113,7 @@ public class EmbedderFactory {
             try {
                 embedder.start(req);
             } catch (MavenEmbedderException e) {
-                e.printStackTrace();
+                ErrorManager.getDefault().notify(e);
             } finally {
                 //http://jira.codehaus.org/browse/PLX-203
                 Thread.currentThread().setContextClassLoader(ldr);
@@ -149,7 +150,7 @@ public class EmbedderFactory {
             try {
                 embedder.start(req);
             } catch (MavenEmbedderException e) {
-                e.printStackTrace();
+                ErrorManager.getDefault().notify(e);
             } finally {
                 //http://jira.codehaus.org/browse/PLX-203
                 Thread.currentThread().setContextClassLoader(ldr);
@@ -203,13 +204,16 @@ public class EmbedderFactory {
             if (dir != null) {
                 dir.addFileChangeListener(this);
                 FileObject settings = dir.getFileObject("settings.xml");
-                settings.addFileChangeListener(this);
+                if (settings != null) {
+                    settings.addFileChangeListener(this);
+                }
             }
         }
             
 
         public void fileDeleted(FileEvent fe) {
             if ("settings.xml".equals(fe.getFile().getNameExt())) {
+                fe.getFile().removeFileChangeListener(this);
                 synchronized (EmbedderFactory.class) {
                     online = null;
                     project = null;
@@ -219,6 +223,7 @@ public class EmbedderFactory {
 
         public void fileDataCreated(FileEvent fe) {
             if ("settings.xml".equals(fe.getFile().getNameExt())) {
+                fe.getFile().addFileChangeListener(this);
                 synchronized (EmbedderFactory.class) {
                     online = null;
                     project = null;
