@@ -32,11 +32,13 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.ImageIcon;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListDataListener;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -54,6 +56,13 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         initComponents();
         propertyList = new ArrayList();
         historyMappings = new ArrayList();
+        btnPrev.setIcon(new ImageIcon(Utilities.loadImage("/org/codehaus/mevenide/netbeans/execute/back.png")));
+        btnNext.setIcon(new ImageIcon(Utilities.loadImage("/org/codehaus/mevenide/netbeans/execute/forward.png")));
+    }
+
+    public void addNotify() {
+        super.addNotify();
+        txtGoals.requestFocus();
     }
     
     public void readMapping(NetbeansActionMapping mapp, MavenProject project, Set profiles, ActionToGoalMapping historyMappings)  {
@@ -175,14 +184,16 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
         jScrollPane2.setViewportView(pnlProperties);
 
-        btnNext.setText(">");
+        btnNext.setToolTipText("Get next entry");
+        btnNext.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnNextActionPerformed(evt);
             }
         });
 
-        btnPrev.setText("<");
+        btnPrev.setToolTipText("Get previous entry");
+        btnPrev.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnPrevActionPerformed(evt);
@@ -193,15 +204,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
                     .add(layout.createSequentialGroup()
-                        .add(btnPrev)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnNext))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
                         .add(lblGoals)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -211,12 +218,17 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                                     .add(cbDebug)
                                     .add(cbOffline))
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 101, Short.MAX_VALUE)
-                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 179, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
+                                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 179, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(btnPrev)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnNext)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnNext)
                     .add(btnPrev))
@@ -232,7 +244,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                         .add(cbDebug))
                     .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 82, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .add(jScrollPane2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
