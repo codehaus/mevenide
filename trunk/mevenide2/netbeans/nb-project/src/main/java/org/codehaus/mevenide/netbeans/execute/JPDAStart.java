@@ -221,14 +221,14 @@ public class JPDAStart implements Runnable {
         FileObject[] roots;
         ClassPath cp;
         try {
-            roots = FileUtilities.convertStringsToFileObjects(mproject.getRuntimeClasspathElements());
+            roots = FileUtilities.convertStringsToFileObjects(mproject.getTestClasspathElements());
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
         
-        roots = FileUtilities.convertStringsToFileObjects(mproject.getCompileSourceRoots());
+        roots = FileUtilities.convertStringsToFileObjects(mproject.getTestCompileSourceRoots());
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(
