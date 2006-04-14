@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -30,21 +31,29 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class TestSrcClassPathImpl extends AbstractProjectClassPathImpl {
+public class SourceClassPathImpl extends AbstractProjectClassPathImpl {
     
-    /** Creates a new instance of TestSrcClassPathImpl */
-    public TestSrcClassPathImpl(NbMavenProject proj) {
+    /**
+     * Creates a new instance of SourceClassPathImpl
+     */
+    public SourceClassPathImpl(NbMavenProject proj) {
         super(proj);
     }
     
     URI[] createPath() {
         Collection col = new ArrayList();
-        List srcs = getMavenProject().getOriginalMavenProject().getTestCompileSourceRoots();
+        List srcs = getMavenProject().getOriginalMavenProject().getCompileSourceRoots();
         Iterator it = srcs.iterator();
         while (it.hasNext()) {
             String str = (String)it.next();
             File fil = FileUtil.normalizeFile(new File(str));
             col.add(fil.toURI());
+        }
+        //TODO temporary solution
+        col.addAll(Arrays.asList(getMavenProject().getGeneratedSourceRoots()));
+        URI webSrc = getMavenProject().getWebAppDirectory();
+        if (new File(webSrc).exists()) {
+            col.add(webSrc);
         }
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);

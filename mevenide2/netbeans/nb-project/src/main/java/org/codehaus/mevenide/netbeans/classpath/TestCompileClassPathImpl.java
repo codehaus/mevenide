@@ -31,20 +31,21 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
+public class TestCompileClassPathImpl extends AbstractProjectClassPathImpl {
     
     /** Creates a new instance of SrcClassPathImpl */
-    public SrcBuildClassPathImpl(NbMavenProject proj) {
+    public TestCompileClassPathImpl(NbMavenProject proj) {
         super(proj);
         
     }
     
-    URI[] createPath() {
+   URI[] createPath() {
         List lst = new ArrayList();
+        //TODO we shall add the test class output as well. how?
         // according the current 2.1 sources this is almost the same as getCompileClasspath()
         //except for the fact that multiproject references are not redirected to their respective
         // output folders.. we lways retrieve stuff from local repo..
-        List arts = getMavenProject().getOriginalMavenProject().getCompileArtifacts();
+        List arts = getMavenProject().getOriginalMavenProject().getTestArtifacts();
         List assemblies = new ArrayList();
         Iterator it = arts.iterator();
         while (it.hasNext()) {
@@ -67,9 +68,12 @@ public class SrcBuildClassPathImpl extends AbstractProjectClassPathImpl {
             File ass = (File)it.next();
             lst.add(ass.toURI());
         }
+        File fil = new File(getMavenProject().getOriginalMavenProject().getBuild().getOutputDirectory());
+        fil = FileUtil.normalizeFile(fil);
+        lst.add(0, fil.toURI());
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
         return uris;
-    }
+    }    
     
 }
