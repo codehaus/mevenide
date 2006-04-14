@@ -26,6 +26,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
@@ -54,19 +55,17 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     private BinResult srcResult;
     private BinResult jarResult;
     private BinResult testResult;
+    private HashMap map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(NbMavenProject proj) {
         project = proj;
+        map = new HashMap();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (srcResult != null) {
-                    srcResult.fireChanged();
-                }
-                if (jarResult != null) {
-                    jarResult.fireChanged();
-                }
-                if (testResult != null) {
-                    testResult.fireChanged();
+                Iterator it = map.values().iterator();
+                while (it.hasNext()) {
+                    BinResult res = (BinResult)it.next();
+                    res.fireChanged();
                 }
             }
         });
@@ -82,28 +81,26 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @return a list of source roots; may be empty but not null
      */   
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
+        SourceForBinaryQuery.Result toReturn = (SourceForBinaryQuery.Result)map.get(url);
+        if (toReturn != null) {
+            return toReturn;
+        }
         if (url.getProtocol().equals("jar") && checkURL(url) != -1) { //NOI18N
-            if (jarResult == null) {
-                jarResult = new BinResult(url);
-            }
-            return jarResult;
+            toReturn = new BinResult(url);
         }
         if (url.getProtocol().equals("file")) { //NOI18N
             int result = checkURL(url);
             if (result == 1) {
-                if (testResult == null) {
-                    testResult = new BinResult(url);
-                }
-                return testResult;
+                toReturn = new BinResult(url);
             }
             if (result == 0) {
-                if (srcResult == null) {
-                    srcResult = new BinResult(url);
-                }
-                return srcResult;
+                toReturn = new BinResult(url);
             }
         }
-        return null;
+        if (toReturn != null) {
+            map.put(url, toReturn);
+        }
+        return toReturn;
     }
     
     /**
@@ -140,12 +137,20 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                     if (build != null) {
                         File src = FileUtil.normalizeFile(new File(build.getOutputDirectory()));
                         URL srcUrl = src.toURI().toURL();
+                        if  (!srcUrl.toExternalForm().endsWith("/")) {
+                            srcUrl = new URL(srcUrl.toExternalForm() + "/");
+                        }
+                        
                         if (url.equals(srcUrl)) {
                             return 0;
                         }
                         File test = FileUtil.normalizeFile(new File(build.getTestOutputDirectory()));
                         // can be null in some obscrure cases.
                         URL testsrcUrl = test.toURI().toURL();
+                        if  (!testsrcUrl.toExternalForm().endsWith("/")) {
+                            testsrcUrl = new URL(testsrcUrl.toExternalForm() + "/");
+                        }
+                        
                         if (url.equals(testsrcUrl)) {
                             return 1;
                         }
