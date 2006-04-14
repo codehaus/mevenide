@@ -22,6 +22,7 @@ import com.sun.jdi.connect.ListeningConnector;
 import com.sun.jdi.connect.Transport;
 import java.beans.PropertyChangeEvent;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -218,17 +219,18 @@ public class JPDAStart implements Runnable {
     }
     
     static ClassPath createSourcePath(Project proj, MavenProject mproject) {
-        FileObject[] roots;
+        File[] roots;
         ClassPath cp;
         try {
-            roots = FileUtilities.convertStringsToFileObjects(mproject.getTestClasspathElements());
+            //TODO this ought to be really configurable based on what class gets debugged.
+            roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
         
-        roots = FileUtilities.convertStringsToFileObjects(mproject.getTestCompileSourceRoots());
+        roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(
@@ -247,10 +249,10 @@ public class JPDAStart implements Runnable {
         }
     }
     
-    private static ClassPath convertToClassPath(FileObject[] roots) {
+    private static ClassPath convertToClassPath(File[] roots) {
         List l = new ArrayList();
         for (int i = 0; i < roots.length; i++) {
-            URL url = fileToURL(FileUtil.toFile(roots[i]));
+            URL url = fileToURL(roots[i]);
             l.add(url);
         }
         URL[] urls = (URL[]) l.toArray(new URL[l.size()]);
@@ -263,11 +265,11 @@ public class JPDAStart implements Runnable {
      * the sources were not found are omitted.
      *
      */
-    private static ClassPath convertToSourcePath(FileObject[] fos) {
+    private static ClassPath convertToSourcePath(File[] fs) {
         List lst = new ArrayList();
         Set existingSrc = new HashSet();
-        for (int i = 0; i < fos.length; i++) {
-            URL url = fileToURL(FileUtil.toFile(fos[i]));
+        for (int i = 0; i < fs.length; i++) {
+            URL url = fileToURL(fs[i]);
             try {
                 FileObject[] srcfos = SourceForBinaryQuery.findSourceRoots(url).getRoots();
                 for (int j = 0; j < srcfos.length; j++) {
@@ -296,13 +298,14 @@ public class JPDAStart implements Runnable {
     
     private static URL fileToURL(File file) {
         try {
-            FileObject fileObject = FileUtil.toFileObject(file);
-            if (fileObject == null) return null;
-            if (FileUtil.isArchiveFile(fileObject))
-                fileObject = FileUtil.getArchiveRoot(fileObject);
-            return fileObject.getURL();
-        } catch (FileStateInvalidException e) {
-            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, e);
+            URL url;
+            url = file.toURI().toURL();
+            if (FileUtil.isArchiveFile(url)) {
+                url = FileUtil.getArchiveRoot(url);
+            }
+            return url;
+        } catch (MalformedURLException ex) {
+            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, ex);
             return null;
         }
     }
@@ -378,27 +381,27 @@ public class JPDAStart implements Runnable {
             debuggers.remove(debugger);
         }
     }
-
+    
     public String getTransport() {
         return transport;
     }
-
+    
     public void setTransport(String transport) {
         this.transport = transport;
     }
-
+    
     public String getName() {
         return name;
     }
-
+    
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public String getStopClassName() {
         return stopClassName;
     }
-
+    
     public void setStopClassName(String stopClassName) {
         this.stopClassName = stopClassName;
     }

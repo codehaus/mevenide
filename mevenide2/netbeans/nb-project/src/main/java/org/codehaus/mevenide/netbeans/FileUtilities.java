@@ -73,6 +73,21 @@ public final class FileUtilities {
         return fos;
     }
     
+    public static File[] convertStringsToNormalizedFiles(List strings) {
+        File[] fos = new File[strings.size()];
+        int index = 0;
+        Iterator it = strings.iterator();
+        while (it.hasNext()) {
+            String str = (String)it.next();
+            File fil = new File(str);
+            fil = FileUtil.normalizeFile(fil);
+            fos[index] = fil;
+            index++;
+        }
+        return fos;
+    }
+    
+    
     /**
      * inspired by netbeans's org.apache.tools.ant.module.api.support.ActionUtils.findSelectedFiles
      */
