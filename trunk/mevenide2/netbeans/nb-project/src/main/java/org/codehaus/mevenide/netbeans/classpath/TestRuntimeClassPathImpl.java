@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -34,10 +35,12 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
+public class TestRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     
-    /** Creates a new instance of TestSrcRuntimeClassPathImpl */
-    public TestSrcRuntimeClassPathImpl(NbMavenProject proj) {
+    /**
+     * Creates a new instance of TestRuntimeClassPathImpl
+     */
+    public TestRuntimeClassPathImpl(NbMavenProject proj) {
         super(proj);
     }
     
@@ -52,18 +55,28 @@ public class TestSrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             fil = FileUtil.normalizeFile(fil);
             lst.add(fil.toURI());
         }
-        
-        try {
-            // TODO is it really the correct thing?
-            List srcs = getMavenProject().getOriginalMavenProject().getTestClasspathElements();
-            Iterator it = srcs.iterator();
-            while (it.hasNext()) {
-                String str = (String)it.next();
-                File fil = FileUtil.normalizeFile(new File(str));
-                lst.add(fil.toURI());
+        List arts = getMavenProject().getOriginalMavenProject().getTestArtifacts();
+        List assemblies = new ArrayList();
+        Iterator it = arts.iterator();
+        while (it.hasNext()) {
+            Artifact art = (Artifact)it.next();
+            if (art.getFile() != null) {
+                File fil = FileUtil.normalizeFile(art.getFile());
+                // the assemblied jars go as last ones, otherwise source for binaries don't really work.
+                // unless one has the assembled source jar s well?? is it possible?
+                if (art.getClassifier() != null) {
+                    assemblies.add(0, fil);
+                } else {
+                    lst.add(fil.toURI());
+                }
+            } else {
+                //null means dependencies were not resolved..
             }
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
+        }
+        it = assemblies.iterator();
+        while (it.hasNext()) {
+            File ass = (File)it.next();
+            lst.add(ass.toURI());
         }
         
         URI[] uris = new URI[lst.size()];

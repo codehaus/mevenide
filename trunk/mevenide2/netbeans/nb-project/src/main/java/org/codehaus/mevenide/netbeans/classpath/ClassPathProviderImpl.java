@@ -42,24 +42,14 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private static final int TYPE_SRC = 0;
     private static final int TYPE_TESTSRC = 1;
-    private static final int TYPE_TESTCLASS = 3;
-    private static final int TYPE_CLASS = 2;
-    private static final int TYPE_ARTIFACT = 4;
     private static final int TYPE_WEB = 5;
     private static final int TYPE_UNKNOWN = -1;
-    
-    
     
     private NbMavenProject project;
     private ClassPath[] cache = new ClassPath[7];
     
     public ClassPathProviderImpl(NbMavenProject proj) {
         project = proj;
-//        project.addPropertyChangeListener(new PropertyChangeListener() {
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                cache = new SoftReference[7];
-//            }
-//        });
     }
     
     /**
@@ -73,51 +63,38 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         }
         if (ClassPath.COMPILE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            FileObject d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getSourceDirectory());
-            if (d != null) {
-                l.add(getCompileTimeClasspath(d));
-            }
-            d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
-            if (d != null) {
-                l.add(getCompileTimeClasspath(d));
-            }
+            l.add(getCompileTimeClasspath(TYPE_SRC));
+            l.add(getCompileTimeClasspath(TYPE_TESTSRC));
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         if (ClassPath.EXECUTE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            FileObject d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getSourceDirectory());
-            if (d != null) {
-                l.add(getRuntimeClasspath(d));
-            }
-            d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
-            if (d != null) {
-                l.add(getRuntimeClasspath(d));
-            }
+            l.add(getRuntimeClasspath(TYPE_SRC));
+            l.add(getRuntimeClasspath(TYPE_TESTSRC));
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         
         if (ClassPath.SOURCE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            FileObject d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getSourceDirectory());
-            if (d != null) {
-                l.add(getSourcepath(d));
-            }
-            d = FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
-            if (d != null) {
-                l.add(getSourcepath(d));
-            }
+            l.add(getSourcepath(TYPE_SRC));
+            l.add(getSourcepath(TYPE_TESTSRC));
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         return new ClassPath[0];
     }
     
     public ClassPath findClassPath(FileObject file, String type) {
+        int fileType = getType(file);
+        if (fileType != TYPE_SRC &&  fileType != TYPE_TESTSRC && fileType != TYPE_WEB) {
+            System.out.println(" bad type=" + type + " for " + file);
+            return null;
+        }
         if (type.equals(ClassPath.COMPILE)) {
-            return getCompileTimeClasspath(file);
+            return getCompileTimeClasspath(fileType);
         } else if (type.equals(ClassPath.EXECUTE)) {
-            return getRuntimeClasspath(file);
+            return getRuntimeClasspath(fileType);
         } else if (ClassPath.SOURCE.equals(type)) {
-            return getSourcepath(file);
+            return getSourcepath(fileType);
         } else if (type.equals(ClassPath.BOOT)) {
             return getBootClassPath();
         } else {
@@ -139,8 +116,19 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         return false;
     }
     
+    private boolean isChildOf(FileObject child, URI[] uris) {
+        for (int i = 0; i < uris.length; i++) {
+            FileObject fo = FileUtilities.convertURItoFileObject(uris[i]);
+            if (fo != null  && fo.isFolder() && (fo.equals(child) || FileUtil.isParentOf(fo, child))) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     private int getType(FileObject file) {
-        if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots())) {
+        if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots()) ||
+            isChildOf(file, project.getGeneratedSourceRoots())) {
             return TYPE_SRC;
         }
         if (isChildOf(file, project.getOriginalMavenProject().getTestCompileSourceRoots())) {
@@ -151,25 +139,25 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
 //        if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
 //            return TYPE_TESTSRC;
 //        }
-        try {
-            if (isChildOf(file, project.getOriginalMavenProject().getCompileClasspathElements())) {
-                return TYPE_CLASS;
-            }
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
-        }
-        project.getOriginalMavenProject().getArtifact().getFile();
-//        dir = getBuildJar();
-//        if (dir != null && (dir.equals(file))) {     //TODO When MasterFs check also isParentOf
-//            return TYPE_ARTIFACT;
-//        }
-        try {
-            if (isChildOf(file, project.getOriginalMavenProject().getTestClasspathElements())) {
-                return TYPE_TESTCLASS;
-            }
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
-        }
+//////        try {
+//////            if (isChildOf(file, project.getOriginalMavenProject().getCompileClasspathElements())) {
+//////                return TYPE_CLASS;
+//////            }
+//////        } catch (DependencyResolutionRequiredException ex) {
+//////            ex.printStackTrace();
+//////        }
+//////        project.getOriginalMavenProject().getArtifact().getFile();
+////////        dir = getBuildJar();
+////////        if (dir != null && (dir.equals(file))) {     //TODO When MasterFs check also isParentOf
+////////            return TYPE_ARTIFACT;
+////////        }
+//////        try {
+//////            if (isChildOf(file, project.getOriginalMavenProject().getTestClasspathElements())) {
+//////                return TYPE_TESTCLASS;
+//////            }
+//////        } catch (DependencyResolutionRequiredException ex) {
+//////            ex.printStackTrace();
+//////        }
         
         URI web = project.getWebAppDirectory();
         FileObject fo = FileUtil.toFileObject(new File(web));
@@ -182,60 +170,48 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     
     
-    private ClassPath getSourcepath(FileObject file) {
-        int type = getType(file);
-        if (type != TYPE_SRC &&  type != TYPE_TESTSRC && type != TYPE_WEB) {
-//            System.out.println("source type=" + type + " for " + file);
-            return null;
-        }
+    private ClassPath getSourcepath(int type) {
         if (type == TYPE_WEB) {
             type = TYPE_SRC;
         }
         ClassPath cp = cache[type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new SourceClassPathImpl(project));
             } else {
-                cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new TestSourceClassPathImpl(project));
             }
             cache[type] = cp;
         }
         return cp;
     }
     
-    private ClassPath getCompileTimeClasspath(FileObject file) {
-        int type = getType(file);
-        if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
-//            System.out.println("compile type=" + type + " for " + file);
-            return null;
+    private ClassPath getCompileTimeClasspath(int type) {
+        if (type == TYPE_WEB) {
+            type = TYPE_SRC;
         }
         ClassPath cp = cache[2+type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new CompileClassPathImpl(project));
             } else {
-                cp = ClassPathFactory.createClassPath(new TestSrcBuildClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new TestCompileClassPathImpl(project));
             }
             cache[2+type] = cp;
         }
         return cp;
     }
     
-    private ClassPath getRuntimeClasspath(FileObject file) {
-        int type = getType(file);
-        if (type != TYPE_SRC &&  type != TYPE_TESTSRC && type != TYPE_WEB) {
-//            System.out.println("runtime type=" + type + " for " + file);
-            return null;
-        }
+    private ClassPath getRuntimeClasspath(int type) {
         if (type == TYPE_WEB) {
             type = TYPE_SRC;
         }
         ClassPath cp = cache[4+type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                cp = ClassPathFactory.createClassPath(new SrcRuntimeClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new RuntimeClassPathImpl(project));
             } else {
-                cp = ClassPathFactory.createClassPath(new TestSrcRuntimeClassPathImpl(project));
+                cp = ClassPathFactory.createClassPath(new TestRuntimeClassPathImpl(project));
             }
             cache[4+type] = cp;
         }

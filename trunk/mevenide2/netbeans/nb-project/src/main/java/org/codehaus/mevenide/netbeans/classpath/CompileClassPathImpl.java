@@ -20,46 +20,53 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileUtil;
 
 /**
- * class path def for runtime..
+ *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class SrcRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
+public class CompileClassPathImpl extends AbstractProjectClassPathImpl {
     
     /** Creates a new instance of SrcClassPathImpl */
-    public SrcRuntimeClassPathImpl(NbMavenProject proj) {
+    public CompileClassPathImpl(NbMavenProject proj) {
         super(proj);
         
     }
     
     URI[] createPath() {
         List lst = new ArrayList();
-        MavenProject prj = getMavenProject().getOriginalMavenProject();
-        if (prj != null && prj.getBuild() != null) {
-            File fil = new File(prj.getBuild().getOutputDirectory());
-            fil = FileUtil.normalizeFile(fil);
-            lst.add(fil.toURI());
-        }
-        try {
-            List srcs = getMavenProject().getOriginalMavenProject().getRuntimeClasspathElements();
-            Iterator it = srcs.iterator();
-            while (it.hasNext()) {
-                String str = (String)it.next();
-                File fil = FileUtil.normalizeFile(new File(str));
-                lst.add(fil.toURI());
+        // according the current 2.1 sources this is almost the same as getCompileClasspath()
+        //except for the fact that multiproject references are not redirected to their respective
+        // output folders.. we lways retrieve stuff from local repo..
+        List arts = getMavenProject().getOriginalMavenProject().getCompileArtifacts();
+        List assemblies = new ArrayList();
+        Iterator it = arts.iterator();
+        while (it.hasNext()) {
+            Artifact art = (Artifact)it.next();
+            if (art.getFile() != null) {
+                File fil = FileUtil.normalizeFile(art.getFile());
+                // the assemblied jars go as last ones, otherwise source for binaries don't really work.
+                // unless one has the assembled source jar s well?? is it possible?
+                if (art.getClassifier() != null) {
+                    assemblies.add(0, fil);
+                } else {
+                    lst.add(fil.toURI());
+                }
+            } else {
+                //null means dependencies were not resolved..
             }
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
         }
-        
+        it = assemblies.iterator();
+        while (it.hasNext()) {
+            File ass = (File)it.next();
+            lst.add(ass.toURI());
+        }
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
         return uris;
