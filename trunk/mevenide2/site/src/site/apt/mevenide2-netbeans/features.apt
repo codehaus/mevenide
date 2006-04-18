@@ -24,12 +24,6 @@ subcomponent <<mevenide2-netbeans>>.
 
   We use the maven embedder to retrieve information about the project. There are a few outstanding issues on the embedder side:
 
-  * {{{http://jira.codehaus.org/browse/MNG-1457}[MNG-1457]Embedder is never completely offline}}. This one can cause a slow startup of the IDE or slow opening of the project, especially when the project was not built before and it's dependencies are not present locally.
-
-  * {{{http://jira.codehaus.org/browse/MNG-1665}[MNG-1667]No way to plug into artifact resolution}}. When dependency resolution fails, the UI shows no dependencies.
-
-  * {{{http://jira.codehaus.org/browse/MNG-1181}[MNG-1181]No multiproject builds}}. Cannot build "pom" packages projects.
-
   * {{{http://jira.codehaus.org/browse/MNG-1117}[MNG-1117]Writing the pom doesn't preserver formatting}}. No project updating from the UI yet.
 
   * {{{http://jira.codehaus.org/browse/MNG-1118}[MNG-1118]Not possible to handle failed artifact resolution from IDE.}}
