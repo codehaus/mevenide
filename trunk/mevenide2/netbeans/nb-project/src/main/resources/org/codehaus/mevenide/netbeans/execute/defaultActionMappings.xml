@@ -76,12 +76,11 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar-no-wait</goal>
-            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdaconnect</goal>
+            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar</goal>
         </goals>
         <properties>
-            <netbeans.jar.run.debugparams>-Xdebug -Xnoagent -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8765</netbeans.jar.run.debugparams>
-            <jpda.address>8765</jpda.address>
+            <netbeans.jar.run.debugparams>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</netbeans.jar.run.debugparams>
+            <jpda.listen>true</jpda.listen>
         </properties>
     </action>
     <!--action>

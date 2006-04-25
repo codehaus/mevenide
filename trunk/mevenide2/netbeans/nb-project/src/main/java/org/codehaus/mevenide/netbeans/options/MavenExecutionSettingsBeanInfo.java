@@ -41,9 +41,12 @@ public class MavenExecutionSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor failure = new PropertyDescriptor ("failureBehaviour", MavenExecutionSettings.class); //NOI18N
             failure.setDisplayName ("failureBehaviour"); //NOI18N
             failure.setHidden(true);
+            PropertyDescriptor useRegistry = new PropertyDescriptor ("usePluginRegistry", MavenExecutionSettings.class); //NOI18N
+            useRegistry.setDisplayName ("usePluginRegistry"); //NOI18N
+            useRegistry.setHidden(true);
             
             
-            return new PropertyDescriptor[] { showDebug, showError, checksum, updates, failure };
+            return new PropertyDescriptor[] { showDebug, showError, checksum, updates, failure, useRegistry };
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

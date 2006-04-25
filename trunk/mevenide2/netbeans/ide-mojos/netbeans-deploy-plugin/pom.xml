@@ -12,11 +12,11 @@
     <description>Maven plugin for deployment within Netbeans IDE</description>
     <version>1.2</version>
     <dependencies>
-        <dependency>
+        <!--dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-debugger-plugin</artifactId>
             <version>LATEST</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
@@ -35,30 +35,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-awt</artifactId>
-            <version>RELEASE50</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-j2eeserver</artifactId>
-            <version>RELEASE50</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-filesystems</artifactId>
-            <version>RELEASE50</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE50</version>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>deployment-bridge</artifactId>
+            <version>1.0</version>
             <type>jar</type>
             <scope>provided</scope>
         </dependency>

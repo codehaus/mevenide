@@ -38,8 +38,6 @@ public interface RunConfig {
 
     Properties getProperties();
     
-    ClassLoader getClassLoader();
-    
     Boolean isShowDebug();
     
     Boolean isShowError();

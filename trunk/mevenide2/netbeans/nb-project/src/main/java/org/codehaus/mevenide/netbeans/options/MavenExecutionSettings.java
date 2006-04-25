@@ -32,9 +32,9 @@ public class MavenExecutionSettings extends SystemOption {
     public static final String PROP_CHECKSUM_POLICY = "checksumPolicy"; //NOI18N
     public static final String PROP_PLUGIN_POLICY = "pluginUpdatePolicy"; //NOI18N
     public static final String PROP_FAILURE_BEHAVIOUR = "failureBehaviour"; //NOI18N
+    public static final String PROP_USE_REGISTRY = "usePluginRegistry"; //NOI18N
     
     private static final long serialVersionUID = -4857548487373437L;
-
     
     protected void initialize() {
         super.initialize();
@@ -43,6 +43,7 @@ public class MavenExecutionSettings extends SystemOption {
         setShowDebug(false);
         setShowErrors(false);
         setFailureBehaviour(MavenExecutionRequest.REACTOR_FAIL_FAST);
+        setUsePluginRegistry(true);
     }
     
     public String displayName() {
@@ -95,6 +96,14 @@ public class MavenExecutionSettings extends SystemOption {
 
     public void setFailureBehaviour(String failureBehaviour) {
         putProperty(PROP_FAILURE_BEHAVIOUR, failureBehaviour, true);
+    }
+
+    public boolean isUsePluginRegistry() {
+        return ((Boolean)getProperty(PROP_USE_REGISTRY)).booleanValue();
+    }
+
+    public void setUsePluginRegistry(boolean usePluginRegistry) {
+        putProperty(PROP_USE_REGISTRY, Boolean.valueOf(usePluginRegistry), true);
     }
     
 }

@@ -226,7 +226,7 @@ public class ActionProviderImpl implements ActionProvider {
                 }
                 maps.getActions().add(mapping);
                 ActionToGoalUtils.writeMappingsToFileAttributes(project.getProjectDirectory(), maps);
-                ModelRunConfig rc = new ModelRunConfig(project, mapping, getClass().getClassLoader());
+                ModelRunConfig rc = new ModelRunConfig(project, mapping);
                 rc.setOffline(Boolean.valueOf(pnl.isOffline()));
                 rc.setShowDebug(Boolean.valueOf(pnl.isShowDebug()));
                 runGoal("custom", Lookup.EMPTY, rc);

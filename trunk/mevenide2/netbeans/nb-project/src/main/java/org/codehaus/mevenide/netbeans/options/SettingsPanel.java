@@ -339,7 +339,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     public void setValues(Settings sett) {
         changed = false;
         cbOffline.setSelected(sett.isOffline());
-        cbPluginRegistry.setSelected(sett.isUsePluginRegistry());
+        cbPluginRegistry.setSelected(MavenExecutionSettings.getDefault().isUsePluginRegistry());
         txtLocalRepository.setText(sett.getLocalRepository());
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
         cbErrors.putClientProperty("wasSelected", Boolean.valueOf(cbErrors.isSelected()));
@@ -372,13 +372,13 @@ public class SettingsPanel extends javax.swing.JPanel {
     
     public void applyValues(Settings sett) {
         sett.setOffline(cbOffline.isSelected());
-        sett.setUsePluginRegistry(cbPluginRegistry.isSelected());
         String locrepo = txtLocalRepository.getText().trim();
         if (locrepo.length() == 0) {
             locrepo = null;
         }
         sett.setLocalRepository(locrepo);
         
+        MavenExecutionSettings.getDefault().setUsePluginRegistry(cbPluginRegistry.isSelected());
         MavenExecutionSettings.getDefault().setShowDebug(cbDebug.isSelected());
         MavenExecutionSettings.getDefault().setShowErrors(cbErrors.isSelected());
         String checksums = null;

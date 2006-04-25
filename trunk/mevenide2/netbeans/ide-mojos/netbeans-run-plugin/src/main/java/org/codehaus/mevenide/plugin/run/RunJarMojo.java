@@ -14,34 +14,12 @@
  *  limitations under the License.
  * =========================================================================
  */
-
-
 package org.codehaus.mevenide.plugin.run;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.util.cli.Commandline;
-import org.openide.execution.ExecutionEngine;
-import org.openide.execution.ExecutorTask;
-import org.openide.util.RequestProcessor;
-import org.openide.util.Task;
-import org.openide.windows.IOProvider;
-import org.openide.windows.InputOutput;
-import org.openide.windows.OutputWriter;
+import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.mevenide.bridges.runjar.MavenRunJar;
+import org.openide.util.Lookup;
 
 /**
  * goal for running the project's jar artifact through maven in netbeans.
@@ -55,22 +33,13 @@ import org.openide.windows.OutputWriter;
  */
 public class RunJarMojo extends AbstractRunMojo  {
     
-//    /**
-//     * The main class to execute
-//     * @parameter expression="${nb.mainClass}"
-//     * @required
-//     */
-//    private String mainClass;
-    
-    
-    
-    
-    public void execute() throws MojoExecutionException {
-        ExecutorTask task = startExecutorTask();
-        int result = task.result();
-        getLog().info("Exited with return code=" + result);
+    public void execute() throws MojoExecutionException, MojoFailureException {
+        MavenRunJar runjar = (MavenRunJar)Lookup.getDefault().lookup(MavenRunJar.class);
+        if (runjar == null) {
+            throw new MojoExecutionException("Not running within Netbeans, cannot lookup MavenRunJar instance");
+        }
+        int retCode = runjar.runJarProject(project, getLog(), finalName, jarLocation,workDirectory, executable, parameters, jvmParameters, debugJvmParameters, true);
+        getLog().info("Exited with return code=" + retCode);
     }
-    
-    
 
 }
