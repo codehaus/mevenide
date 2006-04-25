@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2006 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.netbeans.execute;
+package org.codehaus.mevenide.netbeans.debug;
 
 import com.sun.jdi.Bootstrap;
 import com.sun.jdi.connect.Connector;
@@ -165,11 +165,11 @@ public class JPDAStart implements Runnable {
                 getLog().info("JPDA Address: " + address);
                 getLog().info("Port=" + lock[0]);
                 
-                ClassPath sourcePath = createSourcePath(project, project.getOriginalMavenProject());
-                ClassPath jdkSourcePath = createJDKSourcePath(project);
+                ClassPath sourcePath = Utils.createSourcePath(project, project.getOriginalMavenProject());
+                ClassPath jdkSourcePath = Utils.createJDKSourcePath(project);
                 
                 if (getStopClassName() != null && getStopClassName().length() > 0) {
-                    MethodBreakpoint b = createBreakpoint(getStopClassName());
+                    MethodBreakpoint b = Utils.createBreakpoint(getStopClassName());
                     DebuggerManager.getDebuggerManager().addDebuggerListener(
                             DebuggerManager.PROP_DEBUGGER_ENGINES,
                             new Listener(b));
@@ -208,107 +208,7 @@ public class JPDAStart implements Runnable {
     
     // support methods .........................................................
     
-    private MethodBreakpoint createBreakpoint(String stopClassName) {
-        MethodBreakpoint breakpoint = MethodBreakpoint.create(
-                stopClassName,
-                "*"
-                );
-        breakpoint.setHidden(true);
-        DebuggerManager.getDebuggerManager().addBreakpoint(breakpoint);
-        return breakpoint;
-    }
     
-    static ClassPath createSourcePath(Project proj, MavenProject mproject) {
-        File[] roots;
-        ClassPath cp;
-        try {
-            //TODO this ought to be really configurable based on what class gets debugged.
-            roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
-            cp = convertToSourcePath(roots);
-        } catch (DependencyResolutionRequiredException ex) {
-            ex.printStackTrace();
-            cp = ClassPathSupport.createClassPath(new FileObject[0]);
-        }
-        
-        roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
-        ClassPath sp = convertToClassPath(roots);
-        
-        ClassPath sourcePath = ClassPathSupport.createProxyClassPath(
-                new ClassPath[] {cp, sp}
-        );
-        return sourcePath;
-    }
-    
-    static ClassPath createJDKSourcePath(Project nbproject) {
-        //TODO for now just assume the default platform...
-        JavaPlatform jp = JavaPlatform.getDefault();
-        if (jp != null) {
-            return jp.getSourceFolders();
-        } else {
-            return ClassPathSupport.createClassPath(Collections.EMPTY_LIST);
-        }
-    }
-    
-    private static ClassPath convertToClassPath(File[] roots) {
-        List l = new ArrayList();
-        for (int i = 0; i < roots.length; i++) {
-            URL url = fileToURL(roots[i]);
-            l.add(url);
-        }
-        URL[] urls = (URL[]) l.toArray(new URL[l.size()]);
-        return ClassPathSupport.createClassPath(urls);
-    }
-    
-    /**
-     * This method uses SourceForBinaryQuery to find sources for each
-     * path item and returns them as ClassPath instance. All path items for which
-     * the sources were not found are omitted.
-     *
-     */
-    private static ClassPath convertToSourcePath(File[] fs) {
-        List lst = new ArrayList();
-        Set existingSrc = new HashSet();
-        for (int i = 0; i < fs.length; i++) {
-            URL url = fileToURL(fs[i]);
-            try {
-                FileObject[] srcfos = SourceForBinaryQuery.findSourceRoots(url).getRoots();
-                for (int j = 0; j < srcfos.length; j++) {
-                    if (FileUtil.isArchiveFile(srcfos[j]))
-                        srcfos [j] = FileUtil.getArchiveRoot(srcfos [j]);
-                    try {
-                        url = srcfos[j].getURL();
-                    } catch (FileStateInvalidException ex) {
-                        ErrorManager.getDefault().notify
-                                (ErrorManager.EXCEPTION, ex);
-                        continue;
-                    }
-                    if (url == null) continue;
-                    if (!existingSrc.contains(url)) {
-                        lst.add(ClassPathSupport.createResource(url));
-                        existingSrc.add(url);
-                    }
-                } // for
-            } catch (IllegalArgumentException ex) {
-                //TODO??
-            }
-        }
-        return ClassPathSupport.createClassPath(lst);
-    }
-    
-    
-    private static URL fileToURL(File file) {
-        try {
-            URL url;
-            url = file.toURI().toURL();
-            if (FileUtil.isArchiveFile(url)) {
-                url = FileUtil.getArchiveRoot(url);
-            }
-            return url;
-        } catch (MalformedURLException ex) {
-            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, ex);
-            return null;
-        }
-    }
     
     
     // innerclasses ............................................................

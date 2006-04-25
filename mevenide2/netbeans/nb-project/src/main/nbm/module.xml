@@ -12,6 +12,14 @@
    </libraries>
    <dependencies>
       <dependency>
+          <id>org.codehaus.mevenide:run-jar-bridge</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
+          <id>org.codehaus.mevenide:debugger-bridge</id>
+	  <type>spec</type>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-netbeans-api-debugger-jpda</id>
 	  <type>spec</type>
       </dependency>

@@ -32,65 +32,46 @@ import org.netbeans.api.progress.ProgressHandleFactory;
  */
 public class ProgressTransferListener implements TransferListener {
     
-    private Map map;
-    private Object LOCK = new Object();
+    private long lenght = 0;
+    private int count = 0;
+    private ProgressHandle handle;
     /** Creates a new instance of ProgressTransferListener */
     public ProgressTransferListener() {
-        map = new HashMap();
     }
-
+    
     public void transferInitiated(TransferEvent transferEvent) {
-        File fil = transferEvent.getLocalFile();
-        String name = (transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? "Downloading " : "Uploading ")
-                     + fil.getName();
-                
-        ProgressHandle handle = ProgressHandleFactory.createHandle(name);
-        synchronized (LOCK) {
-            map.put(fil, handle);
-        }
         Resource res = transferEvent.getResource();
+        File fil = transferEvent.getLocalFile();
+        int lastSlash = res.getName().lastIndexOf("/");
+        String resName = lastSlash > -1 ? res.getName().substring(lastSlash + 1) : res.getName();
+        String name = (transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? 
+                          "Downloading " : "Uploading ") 
+                          + resName;
+        handle = ProgressHandleFactory.createHandle(name);
     }
-
+    
     public void transferStarted(TransferEvent transferEvent) {
         Resource res = transferEvent.getResource();
-        File fil = transferEvent.getLocalFile();
-        ProgressHandle handle;
-        synchronized (LOCK) {
-            handle = (ProgressHandle)map.get(fil);
-        }
-        if (handle != null) {
-            int total = (int)Math.min((long)Integer.MAX_VALUE, res.getContentLength());
-            handle.start(total);
-            handle.progress("Transfer Started...");
-        }
+        int total = (int)Math.min((long)Integer.MAX_VALUE, res.getContentLength());
+        handle.start(total);
+        lenght = total;
+        count = 0;
+        handle.progress("Transfer Started...");
     }
-
+    
     public void transferProgress(TransferEvent transferEvent, byte[] b, int i) {
-        File fil = transferEvent.getLocalFile();
-        ProgressHandle handle;
-        synchronized (LOCK) {
-            handle = (ProgressHandle)map.get(fil);
-        }
-        if (handle != null) {
-            handle.progress("Transferred " + i, i);
-        }
+        count = (int)Math.min((long)Integer.MAX_VALUE, (long)count + i);
+        handle.progress("Transferred " + count, count);
     }
-
+    
     public void transferCompleted(TransferEvent transferEvent) {
-        File fil = transferEvent.getLocalFile();
-        ProgressHandle handle;
-        synchronized (LOCK) {
-            handle = (ProgressHandle)map.get(fil);
-        }
-        if (handle != null) {
-            handle.finish();
-        }
+        handle.finish();
     }
-
+    
     public void transferError(TransferEvent transferEvent) {
         transferCompleted(transferEvent);
     }
-
+    
     public void debug(String string) {
     }
     

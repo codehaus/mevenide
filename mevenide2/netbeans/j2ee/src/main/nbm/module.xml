@@ -87,5 +87,13 @@
             <id>org.netbeans.api:org-jdesktop-layout</id>
             <type>spec</type>
         </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-awt</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.codehaus.mevenide:deployment-bridge</id>
+            <type>spec</type>
+        </dependency>
    </dependencies> 
 </nbm>

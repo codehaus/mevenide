@@ -1,10 +1,18 @@
-/*
- * JPDAConnectMojo.java
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Created on January 13, 2006, 10:17 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.plugin.debugger;
@@ -16,12 +24,8 @@ import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.project.MavenProject;
-import org.netbeans.api.debugger.jpda.JPDADebugger;
-import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectManager;
-import org.openide.filesystems.FileUtil;
-import org.openide.util.RequestProcessor;
+import org.codehaus.mevenide.bridges.debugger.MavenDebugger;
+import org.openide.util.Lookup;
 
 /**
  * Connect the JPDA debugger
@@ -70,77 +74,10 @@ public class JPDAConnectMojo extends AbstractMojo {
         getLog().info("    Transport=" + getTransport());
         getLog().info("    Address=" + getAddress());
         getLog().info("    Host=" + getHost());
-//        JPDAStart.verifyPaths(getProject(), classpath);
-//        JPDAStart.verifyPaths(getProject(), sourcepath);
-        
-        final Object[] lock = new Object [1];
-        try {
-            
-            Project nbproject = ProjectManager.getDefault().findProject(FileUtil.toFileObject(getProject().getBasedir()));
-            ClassPath sourcePath = Utils.createSourcePath(nbproject, getProject());
-            ClassPath jdkSourcePath = Utils.createJDKSourcePath(nbproject);
-            
-            final Map properties = new HashMap();
-            properties.put("sourcepath", sourcePath);
-            properties.put("name", name);
-            properties.put("jdksources", jdkSourcePath);
-            
-            
-            synchronized(lock) {
-                RequestProcessor.getDefault().post(new Runnable() {
-                    public void run() {
-                        synchronized(lock) {
-                            try {
-                                // VirtualMachineManagerImpl can be initialized
-                                // here, so needs to be inside RP thread.
-                                if (getTransport().equals("dt_socket"))
-                                    try {
-                                        JPDADebugger.attach(
-                                                getHost(),                                             
-                                                Integer.parseInt(getAddress()),
-                                                new Object[] {properties}
-                                        );
-                                    } catch (NumberFormatException e) {
-                                        throw new MojoFailureException(
-                                                "address attribute must specify port " +
-                                                "number for dt_socket connection");
-                                    } else
-                                        JPDADebugger.attach(
-                                                getAddress(),               
-                                                new Object[] {properties}
-                                        );
-                            } catch (Throwable e) {
-                                lock[0] = e;
-                            } finally {
-                                lock.notify();
-                            }
-                        }
-                    }
-                });
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    throw new MojoExecutionException("", e);
-                }
-                if (lock[0] != null)  {
-                    throw new MojoExecutionException("", (Throwable) lock[0]);
-                }
-                
-            }
-        } catch (IOException ex) {
-            throw new MojoExecutionException("", ex);
-        }
-//        if (host == null)
-//            log ("Attached JPDA debugger to " + address);
-//        else
-//            log ("Attached JPDA debugger to " + host + ":" + address);
-//        if (startVerbose)
-//            System.out.println(
-//                "\nS JPDAConnect.execute () " +
-//                "end: success "
-//            );
-        
+        MavenDebugger debugger = (MavenDebugger)Lookup.getDefault().lookup(MavenDebugger.class);
+        debugger.attachDebugger(getProject(), getLog(), name, getTransport(), getHost(), getAddress());
     }
+
     
     public String getHost() {
         return host;

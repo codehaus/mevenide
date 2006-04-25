@@ -1,15 +1,25 @@
-/*
- * Utils.java
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Created on March 26, 2006, 1:50 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
-package org.codehaus.mevenide.plugin.debugger;
+
+package org.codehaus.mevenide.netbeans.debug;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +29,8 @@ import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.netbeans.api.debugger.DebuggerManager;
+import org.netbeans.api.debugger.jpda.MethodBreakpoint;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
@@ -30,7 +42,7 @@ import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 
 /**
- *
+ * various debugger related utility methods.
  * @author mkleint
  */
 public class Utils {
@@ -39,18 +51,29 @@ public class Utils {
     private Utils() {
     }
     
+    static MethodBreakpoint createBreakpoint(String stopClassName) {
+        MethodBreakpoint breakpoint = MethodBreakpoint.create(
+                stopClassName,
+                "*"
+                );
+        breakpoint.setHidden(true);
+        DebuggerManager.getDebuggerManager().addBreakpoint(breakpoint);
+        return breakpoint;
+    }
+    
     static ClassPath createSourcePath(Project proj, MavenProject mproject) {
-        FileObject[] roots;
+        File[] roots;
         ClassPath cp;
         try {
-            roots = FileUtilities.convertStringsToFileObjects(mproject.getRuntimeClasspathElements());
+            //TODO this ought to be really configurable based on what class gets debugged.
+            roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
         
-        roots = FileUtilities.convertStringsToFileObjects(mproject.getCompileSourceRoots());
+        roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(
@@ -69,10 +92,10 @@ public class Utils {
         }
     }
     
-    private static ClassPath convertToClassPath(FileObject[] roots) {
+    private static ClassPath convertToClassPath(File[] roots) {
         List l = new ArrayList();
         for (int i = 0; i < roots.length; i++) {
-            URL url = fileToURL(FileUtil.toFile(roots[i]));
+            URL url = Utils.fileToURL(roots[i]);
             l.add(url);
         }
         URL[] urls = (URL[]) l.toArray(new URL[l.size()]);
@@ -85,11 +108,11 @@ public class Utils {
      * the sources were not found are omitted.
      *
      */
-    private static ClassPath convertToSourcePath(FileObject[] fos) {
+    private static ClassPath convertToSourcePath(File[] fs)  {
         List lst = new ArrayList();
         Set existingSrc = new HashSet();
-        for (int i = 0; i < fos.length; i++) {
-            URL url = fileToURL(FileUtil.toFile(fos[i]));
+        for (int i = 0; i < fs.length; i++) {
+            URL url = Utils.fileToURL(fs[i]);
             try {
                 FileObject[] srcfos = SourceForBinaryQuery.findSourceRoots(url).getRoots();
                 for (int j = 0; j < srcfos.length; j++) {
@@ -97,7 +120,14 @@ public class Utils {
                         srcfos [j] = FileUtil.getArchiveRoot(srcfos [j]);
                     try {
                         url = srcfos[j].getURL();
+                        if  (!url.toExternalForm().endsWith("/")) {
+                            url = new URL(url.toExternalForm() + "/");
+                        }
                     } catch (FileStateInvalidException ex) {
+                        ErrorManager.getDefault().notify
+                                (ErrorManager.EXCEPTION, ex);
+                        continue;
+                    } catch (MalformedURLException ex) {
                         ErrorManager.getDefault().notify
                                 (ErrorManager.EXCEPTION, ex);
                         continue;
@@ -116,15 +146,20 @@ public class Utils {
     }
     
     
-    private static URL fileToURL(File file) {
+    
+    static URL fileToURL(File file) {
         try {
-            FileObject fileObject = FileUtil.toFileObject(file);
-            if (fileObject == null) return null;
-            if (FileUtil.isArchiveFile(fileObject))
-                fileObject = FileUtil.getArchiveRoot(fileObject);
-            return fileObject.getURL();
-        } catch (FileStateInvalidException e) {
-            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, e);
+            URL url;
+            url = file.toURI().toURL();
+            if (FileUtil.isArchiveFile(url)) {
+                url = FileUtil.getArchiveRoot(url);
+            }
+            if  (!url.toExternalForm().endsWith("/")) {
+                url = new URL(url.toExternalForm() + "/");
+            }
+            return url;
+        } catch (MalformedURLException ex) {
+            ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, ex);
             return null;
         }
     }

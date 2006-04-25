@@ -56,8 +56,8 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         initComponents();
         propertyList = new ArrayList();
         historyMappings = new ArrayList();
-        btnPrev.setIcon(new ImageIcon(Utilities.loadImage("/org/codehaus/mevenide/netbeans/execute/back.png")));
-        btnNext.setIcon(new ImageIcon(Utilities.loadImage("/org/codehaus/mevenide/netbeans/execute/forward.png")));
+        btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png")));
+        btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png")));
     }
 
     public void addNotify() {

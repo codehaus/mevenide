@@ -23,6 +23,7 @@ import java.util.Enumeration;
 import org.apache.maven.SettingsConfigurationException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -32,6 +33,7 @@ import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
+import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.openide.ErrorManager;
@@ -72,14 +74,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
      */
     public void run() {
         InputOutput ioput = getInputOutput();
+        String basedir = System.getProperty("basedir");
         try {
             MavenEmbedder embedder;
             OutputHandler out = new OutputHandler(ioput, config.getProject());
-            if (config.getClassLoader() != null) {
-                embedder = EmbedderFactory.createExecuteEmbedder(out, config.getClassLoader());
-            } else {
-                embedder = EmbedderFactory.createExecuteEmbedder(out);
-            }
+            embedder = EmbedderFactory.createExecuteEmbedder(out);
             try {
                 checkDebuggerListening(config, out);
             } catch (MojoExecutionException ex) {
@@ -109,6 +108,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                                                         globalSettingsPath, 
                                                         MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
             settings.addProfile(myProfile);
+            settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
+            //MEVENIDE-407
+            if (settings.getLocalRepository() == null) {
+                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+            }
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
             // need to set some profiles or get NPE!
             req.addActiveProfiles(Collections.EMPTY_LIST).addInactiveProfiles(Collections.EMPTY_LIST);
@@ -123,7 +127,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setProperties(config.getProperties());
             req.setBasedir(config.getExecutionDirectory());
             req.setPomFile(new File(config.getExecutionDirectory(), "pom.xml").getAbsolutePath());
-            req.setLocalRepositoryPath(settings.getLocalRepository() != null ? settings.getLocalRepository() : new File(userLoc, "repository").getAbsolutePath());
+            req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
             req.addEventMonitor(out);
             req.setTransferListener(out);
 //            req.setReactorActive(true);
@@ -140,23 +144,32 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     : MavenExecutionSettings.getDefault().isShowErrors()));
             if (debug) {
                 req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
+                out.setThreshold(MavenEmbedderLogger.LEVEL_DEBUG);
             } else {
-                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_WARN);
+                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_INFO);
+                out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
             }
             req.setUpdateSnapshots(false);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
         } catch (MavenExecutionException ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
         } catch (SettingsConfigurationException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
         } catch (ThreadDeath death) {
             cancel();
             throw death;
         } finally {
             ioput.getOut().close();
             ioput.getErr().close();
+            //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
+            // in netbeans.
+            if (basedir == null) {
+                System.clearProperty("basedir");
+            } else {
+                System.setProperty("basedir", basedir);
+            }
         }
     }
     

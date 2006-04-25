@@ -218,8 +218,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 }
             }
             if (action != null) {
-                ClassLoader loader = (ClassLoader) Lookup.getDefault().lookup(ClassLoader.class);
-                return new ModelRunConfig(project, action, loader);
+                return new ModelRunConfig(project, action);
             }
         } catch (XmlPullParserException ex) {
             ex.printStackTrace();

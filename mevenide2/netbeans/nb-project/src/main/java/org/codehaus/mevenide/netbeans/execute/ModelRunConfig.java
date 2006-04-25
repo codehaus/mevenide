@@ -32,8 +32,6 @@ import org.openide.filesystems.FileUtil;
  */
 public final class ModelRunConfig implements RunConfig {
     
-    private ClassLoader classloader;
-    
     private NetbeansActionMapping model;
     
     private NbMavenProject project;
@@ -47,10 +45,9 @@ public final class ModelRunConfig implements RunConfig {
     private List profiles;
     
     /** Creates a new instance of ModelRunConfig */
-    public ModelRunConfig(NbMavenProject proj, NetbeansActionMapping mod, ClassLoader loader) {
+    public ModelRunConfig(NbMavenProject proj, NetbeansActionMapping mod) {
         project = proj;
         model = mod;
-        classloader = loader;
         profiles = new ArrayList();
     }
     
@@ -78,10 +75,6 @@ public final class ModelRunConfig implements RunConfig {
         return model.getProperties();
     }
     
-    public ClassLoader getClassLoader() {
-        return classloader;
-    }
-
     public Boolean isShowDebug() {
         return showDebug;
     }

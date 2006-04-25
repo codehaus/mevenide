@@ -120,7 +120,11 @@
             <artifactId>swing-layout</artifactId>
             <version>1.0</version>
         </dependency>        
-        
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>deployment-bridge</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
     
     <build>
