@@ -10,7 +10,7 @@
   <packaging>nbm</packaging>
   <name>Maven Embedder packaged as Netbeans library</name>
   <description>maven embedder library plus some additional hacks..</description>
-  <version>2.1</version>
+  <version>2.1.1</version>
   <dependencies>
          <dependency>
             <groupId>org.apache.maven</groupId>
