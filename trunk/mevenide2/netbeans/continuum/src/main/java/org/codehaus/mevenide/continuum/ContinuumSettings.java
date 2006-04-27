@@ -39,9 +39,9 @@ public class ContinuumSettings extends SystemOption {
             "http://localhost:8000"        
         });
         setOutputs(new String[] {
-            "http://maven.zones.apache.org:8080/continuum/build-output-directory",
-            "http://ci.codehaus.org:8080/continuum/build-output-directory",        
-            "http://localhost:8080/continuum/build-output-directory"        
+            "http://maven.zones.apache.org:8080/continuum/servlet/browse",
+            "http://ci.codehaus.org:8080/continuum/servlet/browse",        
+            "http://localhost:8080/continuum/servlet/browse"        
             
         });
     }

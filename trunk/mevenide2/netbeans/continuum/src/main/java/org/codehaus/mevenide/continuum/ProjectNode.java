@@ -265,7 +265,7 @@ public class ProjectNode extends AbstractNode {
                             if (!pathRoot.endsWith("/")) {
                                 pathRoot = pathRoot + "/";
                             }
-                            String path = pathRoot + projectId + "/" + lastBuildId + ".log.txt";
+                            String path = pathRoot + "?file=" + projectId + "/" + lastBuildId + ".log.txt";
                             HttpClient client = new HttpClient();
                             HttpMethod method = new GetMethod(path);
                             int ret = client.executeMethod(method);
@@ -273,10 +273,7 @@ public class ProjectNode extends AbstractNode {
                                 read = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
                             } else if (ret == org.apache.commons.httpclient.HttpStatus.SC_NOT_FOUND) {
                                 read = new BufferedReader(new StringReader("The output page for build " + lastBuildId + " was not found.\n" +
-                                        "Tried accessing the build output under " + path + "\n" +
-                                        "Please make sure that the Continuum server is setup correctly and allows the build outputs to be accessible through the web interface.\n" +
-                                        "It's configurable through the web interface, under Configuration submenu.\n\n" +
-                                        "Please also check that the settings in Netbeans Options match those set on the server."));
+                                        "Tried accessing the build output under " + path + "\n"));
                             } else {
                                 read = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream()));
                             }
