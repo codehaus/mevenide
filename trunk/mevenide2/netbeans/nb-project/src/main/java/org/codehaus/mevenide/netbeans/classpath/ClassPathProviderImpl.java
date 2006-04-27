@@ -18,12 +18,9 @@
 package org.codehaus.mevenide.netbeans.classpath;
 
 import java.io.File;
-import java.lang.ref.Reference;
-import java.lang.ref.SoftReference;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 

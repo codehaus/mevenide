@@ -52,9 +52,6 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                                                       JavadocForBinaryQueryImplementation {
                                                           
     private NbMavenProject project;
-    private BinResult srcResult;
-    private BinResult jarResult;
-    private BinResult testResult;
     private HashMap map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(NbMavenProject proj) {
@@ -208,27 +205,9 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
 
     
     private URL[] getJavadocRoot() {
-//        String destDir = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
-//        if (destDir != null) {
-//            File fil = new File(destDir);
-//            fil = FileUtil.normalizeFile(fil);
-//            try {
-//                return new URL[] {fil.toURI().toURL()};
-//            } catch (MalformedURLException exc) {
-//                ErrorManager.getDefault().notify(exc);
-//            }
-//        } else {
-//            ErrorManager.getDefault().log("Cannot resolve maven.javadoc.destdir. How come?");
-//        }
+        //TODO?
         return new URL[0];
     }    
-
-    private boolean doCompare(String one, String two) {
-        if (one == null || two == null) {
-            return false;
-        }
-        return one.trim().equals(two.trim());
-    }
     
     
     private class BinResult implements SourceForBinaryQuery.Result  {

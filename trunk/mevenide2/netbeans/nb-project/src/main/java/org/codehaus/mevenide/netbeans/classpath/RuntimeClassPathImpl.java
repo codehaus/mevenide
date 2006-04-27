@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;

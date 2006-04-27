@@ -19,16 +19,13 @@ package org.codehaus.mevenide.netbeans;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.io.StringWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.codehaus.plexus.util.StringOutputStream;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
-import org.netbeans.spi.project.CacheDirectoryProvider;
 import org.openide.ErrorManager;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Mutex;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
@@ -44,6 +41,7 @@ import org.xml.sax.SAXException;
  */
 public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
+    private static final String AUX_CONFIG = "AuxilaryConfiguration"; //NOI18N
     private NbMavenProject project;
     
     /** Creates a new instance of M2AuxilaryConfigImpl */
@@ -58,7 +56,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         }
         return (Element)ProjectManager.mutex().readAccess(new Mutex.Action() {
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute("AuxilaryConfiguration");
+                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 if (str != null) {
                     Document doc;
                     try {
@@ -80,7 +78,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         }
         ProjectManager.mutex().writeAccess(new Mutex.Action() {
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute("AuxilaryConfiguration");
+                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 Document doc = null;
                 if (str != null) {
                     try {
@@ -105,7 +103,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 try {
                     StringOutputStream wr = new StringOutputStream();
                     XMLUtil.write(doc, wr, "UTF-8");
-                    project.getProjectDirectory().setAttribute("AuxilaryConfiguration", wr.toString());
+                    project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -122,7 +120,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         }
         return ((Boolean)ProjectManager.mutex().writeAccess(new Mutex.Action() {
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute("AuxilaryConfiguration");
+                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 Document doc = null;
                 if (str != null) {
                     try {
@@ -144,7 +142,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 try {
                     StringOutputStream wr = new StringOutputStream();
                     XMLUtil.write(doc, wr, "UTF-8");
-                    project.getProjectDirectory().setAttribute("AuxilaryConfiguration", wr.toString());
+                    project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -186,14 +184,14 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         return db;
     }
     
-    private static Element cloneSafely(Element el) {
-        // Using XMLUtil.createDocument is much too slow.
-        synchronized (getBuilder()) {
-            Document dummy = getBuilder().newDocument();
-            return (Element) dummy.importNode(el, true);
-        }
-        
-    }
-
+//    private static Element cloneSafely(Element el) {
+//        // Using XMLUtil.createDocument is much too slow.
+//        synchronized (getBuilder()) {
+//            Document dummy = getBuilder().newDocument();
+//            return (Element) dummy.importNode(el, true);
+//        }
+//        
+//    }
+//
     
 }

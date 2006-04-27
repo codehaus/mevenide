@@ -49,8 +49,6 @@ import org.openide.windows.InputOutput;
  */
 public class MavenJavaExecutor implements Runnable, Cancellable {
     
-    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven2 execution", 3);
-    
     private RunConfig config;
     private InputOutput io;
     
@@ -153,8 +151,10 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
 //            ex.printStackTrace();
+//            ErrorManager.getDefault().notify(ex);
         } catch (MavenExecutionException ex) {
 //            ex.printStackTrace();
+//            ErrorManager.getDefault().notify(ex);
         } catch (SettingsConfigurationException ex) {
 //                ex.printStackTrace();
         } catch (ThreadDeath death) {

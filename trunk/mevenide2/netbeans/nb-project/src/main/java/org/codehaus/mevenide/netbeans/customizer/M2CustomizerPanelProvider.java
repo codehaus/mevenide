@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.customizer;
 import javax.swing.JComponent;
 import org.codehaus.mevenide.netbeans.*;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
-import org.openide.util.Lookup;
 
 /**
  * Interface that allows to put additional items into project's customizer and to provide custom

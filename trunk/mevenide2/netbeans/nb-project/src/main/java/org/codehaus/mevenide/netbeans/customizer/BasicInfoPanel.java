@@ -17,10 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.text.JTextComponent;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;

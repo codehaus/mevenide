@@ -114,12 +114,14 @@ public class JPDAStart implements Runnable {
                 for (; i.hasNext();) {
                     lc = (ListeningConnector) i.next();
                     Transport t = lc.transport();
-                    if (t != null && t.name().equals(getTransport())) break;
+                    if (t != null && t.name().equals(getTransport())) {
+                        break;
+                    }
                 }
-                if (lc == null)
+                if (lc == null) {
                     throw new RuntimeException
                             ("No trasports named " + getTransport() + " found!");
-                
+                }
                 // TODO: revisit later when http://developer.java.sun.com/developer/bugParade/bugs/4932074.html gets integrated into JDK
                 // This code parses the address string "HOST:PORT" to extract PORT and then point debugee to localhost:PORT
                 // This is NOT a clean solution to the problem but it SHOULD work in 99% cases
@@ -237,7 +239,9 @@ public class JPDAStart implements Runnable {
         public void engineAdded(DebuggerEngine engine) {
             JPDADebugger debugger = (JPDADebugger) engine.lookupFirst
                     (null, JPDADebugger.class);
-            if (debugger == null) return;
+            if (debugger == null) {
+                return;
+            }
             debugger.addPropertyChangeListener(
                     JPDADebugger.PROP_STATE,
                     this
@@ -248,7 +252,9 @@ public class JPDAStart implements Runnable {
         public void engineRemoved(DebuggerEngine engine) {
             JPDADebugger debugger = (JPDADebugger) engine.lookupFirst
                     (null, JPDADebugger.class);
-            if (debugger == null) return;
+            if (debugger == null) {
+                return;
+            }
             debugger.removePropertyChangeListener(
                     JPDADebugger.PROP_STATE,
                     this

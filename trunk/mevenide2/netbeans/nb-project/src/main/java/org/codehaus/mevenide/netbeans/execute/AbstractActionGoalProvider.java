@@ -36,8 +36,6 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.StringInputStream;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.SourceGroup;

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.filesystems.FileUtil;
 
@@ -61,7 +60,7 @@ public class TestCompileClassPathImpl extends AbstractProjectClassPathImpl {
                 }
             } else {
                 //null means dependencies were not resolved..
-            }
+            } //NOPMD
         }
         it = assemblies.iterator();
         while (it.hasNext()) {
