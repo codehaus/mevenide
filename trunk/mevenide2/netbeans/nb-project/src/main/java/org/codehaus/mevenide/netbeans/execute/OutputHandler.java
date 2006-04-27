@@ -18,17 +18,12 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.apache.maven.BuildFailureException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.monitor.event.EventMonitor;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.wagon.events.TransferEvent;
 import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -226,12 +221,12 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void error(String string)    {
-        processMultiLine(string, stdOut, "ERROR");
+        processMultiLine(string, stdErr, "ERROR");
     }
     
     public void error(String string, Throwable throwable)    {
-        processMultiLine(string, stdOut, "ERROR2");
-        throwable.printStackTrace(stdOut);
+        processMultiLine(string, stdErr, "ERROR");
+        throwable.printStackTrace(stdErr);
     }
     
     public boolean isErrorEnabled()    {
@@ -239,12 +234,12 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     }
     
     public void fatalError(String string)    {
-        processMultiLine(string, stdOut, "FATAL");
+        processMultiLine(string, stdErr, "FATAL");
     }
     
     public void fatalError(String string, Throwable throwable)    {
-        processMultiLine(string, stdOut, "FATAL2");
-        throwable.printStackTrace(stdOut);
+        processMultiLine(string, stdErr, "FATAL");
+        throwable.printStackTrace(stdErr);
     }
     
     public boolean isFatalErrorEnabled()    {
