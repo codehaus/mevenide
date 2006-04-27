@@ -88,7 +88,6 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             artPaths.add(project.getArtifactRelativeRepositoryPath(ar));
         }
         
-        Set toReturn = new HashSet();
         Iterator itx = opened.iterator();
         while (itx.hasNext()) {
             NbMavenProject prj = (NbMavenProject)itx.next();

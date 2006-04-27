@@ -16,7 +16,6 @@
  */
 package org.codehaus.mevenide.netbeans;
 
-import java.io.File;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -24,7 +23,6 @@ import org.netbeans.api.java.classpath.GlobalPathRegistry;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 
 /**
  * openhook implementation, register global classpath and also

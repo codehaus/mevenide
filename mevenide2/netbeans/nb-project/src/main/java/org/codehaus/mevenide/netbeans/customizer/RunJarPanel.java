@@ -48,6 +48,8 @@ import org.openide.filesystems.FileUtil;
  */
 public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanelProvider.Panel {
 
+    private static final String RUN_PARAMS = "netbeans.jar.run.params";
+    private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams";
     private ModelHandle handle;
     private NbMavenProject project;
     private NetbeansActionMapping run;
@@ -110,10 +112,10 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
         } else {
             oldMainClass = "";
         }
-        oldParams = isRunCompatible ? run.getProperties().getProperty("netbeans.jar.run.params") :
-                                      debug.getProperties().getProperty("netbeans.jar.run.params");
-        oldVMParams = isRunCompatible ? run.getProperties().getProperty("netbeans.jar.run.jvmparams") :
-                                        debug.getProperties().getProperty("netbeans.jar.run.jvmparams");
+        oldParams = isRunCompatible ? run.getProperties().getProperty(RUN_PARAMS) :
+                                      debug.getProperties().getProperty(RUN_PARAMS);
+        oldVMParams = isRunCompatible ? run.getProperties().getProperty(RUN_JVM_PARAMS) :
+                                        debug.getProperties().getProperty(RUN_JVM_PARAMS);
         if (oldParams != null) {
             txtArguments.setText(oldParams);
         } else {
@@ -268,22 +270,22 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
         String newParams = txtArguments.getText().trim();
         if (!newParams.equals(oldParams)) {
             if (isRunCompatible) {
-                run.getProperties().setProperty("netbeans.jar.run.params", newParams);
+                run.getProperties().setProperty(RUN_PARAMS, newParams);
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
             }
             if (isDebugCompatible) {
-                debug.getProperties().setProperty("netbeans.jar.run.params", newParams);
+                debug.getProperties().setProperty(RUN_PARAMS, newParams);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }
         String newVMParams = txtVMOptions.getText().trim();
         if (!newVMParams.equals(oldVMParams)) {
             if (isRunCompatible) {
-                run.getProperties().setProperty("netbeans.jar.run.jvmparams", newVMParams);
+                run.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
             }
             if (isDebugCompatible) {
-                debug.getProperties().setProperty("netbeans.jar.run.jvmparams", newVMParams);
+                debug.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }

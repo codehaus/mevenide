@@ -116,8 +116,9 @@ public class Utils {
             try {
                 FileObject[] srcfos = SourceForBinaryQuery.findSourceRoots(url).getRoots();
                 for (int j = 0; j < srcfos.length; j++) {
-                    if (FileUtil.isArchiveFile(srcfos[j]))
+                    if (FileUtil.isArchiveFile(srcfos[j])) {
                         srcfos [j] = FileUtil.getArchiveRoot(srcfos [j]);
+                    }
                     try {
                         url = srcfos[j].getURL();
                         if  (!url.toExternalForm().endsWith("/")) {
@@ -132,7 +133,9 @@ public class Utils {
                                 (ErrorManager.EXCEPTION, ex);
                         continue;
                     }
-                    if (url == null) continue;
+                    if (url == null)  {
+                        continue;
+                    }
                     if (!existingSrc.contains(url)) {
                         lst.add(ClassPathSupport.createResource(url));
                         existingSrc.add(url);

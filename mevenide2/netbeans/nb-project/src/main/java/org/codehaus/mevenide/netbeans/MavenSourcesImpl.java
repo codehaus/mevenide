@@ -23,7 +23,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -69,8 +68,6 @@ public class MavenSourcesImpl implements Sources {
     private List listeners;
     
     private Map javaGroup;
-    private HashMap resGroup;
-    private SourceGroup xdocsGroup;
     private SourceGroup genSrcGroup;
     private SourceGroup webDocSrcGroup;
     
@@ -82,7 +79,6 @@ public class MavenSourcesImpl implements Sources {
         project = proj;
         listeners = new ArrayList();
         javaGroup = new TreeMap();
-        resGroup = new HashMap();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 checkChanges(true);

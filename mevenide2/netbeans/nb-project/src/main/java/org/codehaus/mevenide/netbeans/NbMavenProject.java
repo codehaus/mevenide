@@ -109,7 +109,6 @@ public final class NbMavenProject implements Project {
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
-        File projectDir = FileUtil.toFile(fileObject.getParent());
     }
     
     public File getPOMFile() {
@@ -251,6 +250,7 @@ public final class NbMavenProject implements Project {
         if (home == null) {
             //TODO this is a problem, probably UNC path on windows - MEVENIDE-380
             // some functionality won't work
+            ErrorManager.getDefault().log("Cannot convert home dir to FileObject, some functionality won't work. It's usually the case on Windows and UNC paths. The path is " + homeFile);
         }
         return home;
     }
@@ -514,10 +514,10 @@ public final class NbMavenProject implements Project {
     
         
         private static final String[] EAR_TYPES = new String[] {
-            "XML",                  // NOI18N
+            "XML",            //NOPMD      // NOI18N
             "ear-types",                 // NOI18N
-            "wsdl",                 // NOI18N
-            "simple-files"          // NOI18N
+            "wsdl",          //NOPMD       // NOI18N
+            "simple-files"   //NOPMD       // NOI18N
         };
         
         private static final String[] EAR_PRIVILEGED_NAMES = new String[] {

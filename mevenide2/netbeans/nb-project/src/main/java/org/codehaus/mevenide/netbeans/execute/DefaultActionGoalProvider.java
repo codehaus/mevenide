@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.InputStream;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 
 /**
  * a default implementation of AdditionalM2ActionsProvider, a fallback when nothing is
