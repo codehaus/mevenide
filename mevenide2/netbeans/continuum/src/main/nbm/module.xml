@@ -8,6 +8,10 @@
    <licenseFile>license.txt</licenseFile>
    <dependencies>
         <dependency>
+            <id>org.netbeans.api:org-jdesktop-layout</id>
+            <type>spec</type>
+        </dependency>        
+        <dependency>
             <id>org.codehaus.mevenide:continuum-rpc</id>
             <type>spec</type>
         </dependency>

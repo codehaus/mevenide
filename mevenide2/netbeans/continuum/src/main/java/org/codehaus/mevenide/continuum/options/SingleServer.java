@@ -48,121 +48,65 @@ public class SingleServer extends javax.swing.JPanel {
         txtPort = new javax.swing.JTextField();
         lblPort2 = new javax.swing.JLabel();
         txtPort2 = new javax.swing.JTextField();
-        lblOutputPath = new javax.swing.JLabel();
-        txtOuputPath = new javax.swing.JTextField();
-        lblInfo = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JSeparator();
-
-        setLayout(new java.awt.GridBagLayout());
 
         lblServer.setLabelFor(txtServer);
         lblServer.setText("Server hostname :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 12, 0);
-        add(lblServer, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weightx = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(12, 12, 12, 12);
-        add(txtServer, gridBagConstraints);
 
         lblPort.setLabelFor(txtPort);
         lblPort.setText("XML-RPC port :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 0);
-        add(lblPort, gridBagConstraints);
 
         txtPort.setText("8000");
         txtPort.setMinimumSize(new java.awt.Dimension(30, 19));
         txtPort.setPreferredSize(new java.awt.Dimension(40, 19));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 1;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 0);
-        add(txtPort, gridBagConstraints);
 
         lblPort2.setLabelFor(txtPort2);
         lblPort2.setText("Http port :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 0);
-        add(lblPort2, gridBagConstraints);
 
         txtPort2.setText("8080");
         txtPort2.setMinimumSize(new java.awt.Dimension(30, 19));
         txtPort2.setPreferredSize(new java.awt.Dimension(40, 19));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.ipadx = 24;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 0);
-        add(txtPort2, gridBagConstraints);
 
-        lblOutputPath.setLabelFor(txtOuputPath);
-        lblOutputPath.setText("Output Location Path :");
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 0);
-        add(lblOutputPath, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 1;
-        gridBagConstraints.gridy = 4;
-        gridBagConstraints.gridwidth = 2;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 12);
-        add(txtOuputPath, gridBagConstraints);
-
-        lblInfo.setText("<html>\nIn order to get access to build outputs, the server has to place the build logs into the webapp area. You can customize it in the Continuum web interface under Configure.\n</htm>");
-        lblInfo.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-        lblInfo.setPreferredSize(new java.awt.Dimension(250, 100));
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 5;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.weighty = 0.1;
-        gridBagConstraints.insets = new java.awt.Insets(0, 12, 12, 12);
-        add(lblInfo, gridBagConstraints);
-
-        gridBagConstraints = new java.awt.GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.gridy = 2;
-        gridBagConstraints.gridwidth = 3;
-        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
-        gridBagConstraints.anchor = java.awt.GridBagConstraints.NORTHWEST;
-        gridBagConstraints.insets = new java.awt.Insets(0, 0, 12, 0);
-        add(jSeparator1, gridBagConstraints);
-
+        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(lblServer)
+                    .add(lblPort)
+                    .add(lblPort2))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(txtPort2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 64, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 64, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(txtServer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(layout.createSequentialGroup()
+                .addContainerGap()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(lblServer)
+                    .add(txtServer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblPort)
+                    .add(txtPort, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblPort2)
+                    .add(txtPort2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JLabel lblInfo;
-    private javax.swing.JLabel lblOutputPath;
     private javax.swing.JLabel lblPort;
     private javax.swing.JLabel lblPort2;
     private javax.swing.JLabel lblServer;
-    private javax.swing.JTextField txtOuputPath;
     private javax.swing.JTextField txtPort;
     private javax.swing.JTextField txtPort2;
     private javax.swing.JTextField txtServer;
@@ -174,11 +118,8 @@ public class SingleServer extends javax.swing.JPanel {
     }
     
     String getOutputURL() {
-        if (txtOuputPath.getText().trim().length() > 0) {
-            return "http://" + txtServer.getText().trim() + (txtPort2.getText().trim().length() > 0 ? (":" + txtPort2.getText().trim()) : "") + txtOuputPath.getText().trim();
-        }
-        return null;
-    } 
+        return "http://" + txtServer.getText().trim() + (txtPort2.getText().trim().length() > 0 ? (":" + txtPort2.getText().trim()) : "") + "/continuum/servlet/browse";
+    }
     
     public void setValues(String url, String output) {
         try {
@@ -187,7 +128,6 @@ public class SingleServer extends javax.swing.JPanel {
             txtServer.setText(u1.getHost());
             txtPort.setText("" + u1.getPort());
             txtPort2.setText("" + u2.getPort());
-            txtOuputPath.setText(u2.getPath());
         } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
