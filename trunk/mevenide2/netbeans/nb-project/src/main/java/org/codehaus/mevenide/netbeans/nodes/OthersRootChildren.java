@@ -21,22 +21,12 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.EventListenerList;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.VisibilityQueryDataFilter;
-
 import org.netbeans.api.project.SourceGroup;
-
 import org.netbeans.api.project.Sources;
-import org.netbeans.api.queries.VisibilityQuery;
-import org.openide.filesystems.FileObject;
-import org.openide.loaders.ChangeableDataFilter;
 import org.openide.loaders.DataFolder;
-import org.openide.loaders.DataObject;
-import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.Children;

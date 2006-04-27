@@ -18,13 +18,7 @@
 package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.Image;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Model;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.graph.api.model.IGraphLink;
 import org.netbeans.graph.api.model.IGraphPort;
 import org.netbeans.graph.api.model.builtin.GraphNode;

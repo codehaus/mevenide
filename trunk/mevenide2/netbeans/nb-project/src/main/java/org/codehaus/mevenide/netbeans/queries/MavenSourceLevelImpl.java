@@ -17,20 +17,10 @@
 
 package org.codehaus.mevenide.netbeans.queries;
 
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.util.Iterator;
-import java.util.List;
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Plugin;
-import org.apache.maven.plugin.lifecycle.Execution;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.spi.java.queries.SourceLevelQueryImplementation;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.URLMapper;
 
 /**
  * maven implementation of SourceLevelQueryImplementation.

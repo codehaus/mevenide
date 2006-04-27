@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,9 +31,6 @@ import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-
 
 /**
  *
