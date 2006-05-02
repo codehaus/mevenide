@@ -11,6 +11,7 @@ package org.codehaus.mevenide.netbeans;
 
 import java.util.Iterator;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.plugin.lifecycle.Execution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
@@ -39,7 +40,7 @@ public class PluginPropertyUtils {
                 if (plug.getExecutions() != null) {
                     Iterator it2 = plug.getExecutions().iterator();
                     while (it2.hasNext()) {
-                        Execution exe = (Execution)it.next();
+                        PluginExecution exe = (PluginExecution)it2.next();
                         if (exe.getGoals().contains(goal)) {
                             toRet = checkConfiguration(exe.getConfiguration(), property);
                             if (toRet != null) {
