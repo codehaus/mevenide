@@ -119,8 +119,11 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             previous = previous.getPreviousSibling();
         }
-        if (checkLocalRepo && holder.getVersion() == null && holder.getArtifactId() != null && holder.getGroupId() != null) {
-            File lev1 = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), holder.getGroupId().replace('.', File.separatorChar));
+        if (holder.getGroupId() == null) {
+            holder.setGroupId("org.apache.maven.plugins");
+        }
+        if (checkLocalRepo && (holder.getVersion() == null || "LATEST".equals(holder.getVersion())) && holder.getArtifactId() != null && holder.getGroupId() != null) {
+            File lev1 = new File(embedder.getLocalRepository().getBasedir(), holder.getGroupId().replace('.', File.separatorChar));
             File dir = new File(lev1, holder.getArtifactId());
             File fil = new File(dir, "maven-metadata-local.xml");
             if (fil.exists()) {
@@ -222,7 +225,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             PluginInfoHolder hold = findPluginInfo(previous, null, false);
             if (hold.getGroupId() != null && hold.getArtifactId() != null) {
-                File lev1 = new File(MavenSettingsSingleton.getInstance().getSettings().getLocalRepository(), hold.getGroupId().replace('.', File.separatorChar));
+                File lev1 = new File(EmbedderFactory.getOnlineEmbedder().getLocalRepository().getBasedir(), hold.getGroupId().replace('.', File.separatorChar));
                 File dir = new File(lev1, hold.getArtifactId());
                 File[] versions = dir.listFiles(new FileFilter() {
                     public boolean accept(File pathname) {
@@ -304,7 +307,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar");
             String repopath = embedder.getLocalRepository().pathOf(art);
             
-            File fil = new File(embedder.getLocalRepositoryDirectory(), repopath);
+            File fil = new File(embedder.getLocalRepository().getBasedir(), repopath);
             if (fil.exists()) {
                 try {
                     JarFile jf = new JarFile(fil);
