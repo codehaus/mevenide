@@ -61,6 +61,13 @@ import org.w3c.dom.NodeList;
  */
 public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     
+            private static final String[] SCOPES = new String[] {
+                "compile",
+                "test",
+                "runtime",
+                "provided",
+                "system"
+            };
     
     public MavenProjectGrammar(GrammarEnvironment env) {
         super(env);
@@ -191,14 +198,6 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if ("/project/build/plugins/plugin/executions/execution/phase".equals(path) ||
             "/project/build/pluginManagement/plugins/plugin/executions/execution/phase".equals(path)) {
-            Node previous;
-            // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
-            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
-                previous = virtualTextCtx.getParentNode().getParentNode().getParentNode();
-            } else {
-                previous = virtualTextCtx.getParentNode().getParentNode().getParentNode().getParentNode();
-            }
-            previous = previous.getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             try {
                 List phases = embedder.getLifecyclePhases();
@@ -249,15 +248,35 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if ("/project/dependencyManagement/dependencies/dependency/scope".equals(path) ||
             "/project/dependencies/dependency/scope".equals(path)) {
-            String[] scopes = new String[] {
-                "compile",
-                "test",
-                "runtime",
-                "provided",
-                "system"
-            };
-            return super.createTextValueList(scopes, virtualTextCtx);
+            return super.createTextValueList(SCOPES, virtualTextCtx);
         }
+        if ("/project/profiles/profile/repositories/repository/releases/updatePolicy".equals(path) ||
+            "/project/profiles/profile/repositories/repository/snapshots/updatePolicy".equals(path) ||
+            "/project/profiles/profile/pluginRepositories/pluginRepository/releases/updatePolicy".equals(path) ||
+            "/project/profiles/profile/pluginRepositories/pluginRepository/snapshots/updatePolicy".equals(path) ||
+            "/project/repositories/repository/releases/updatePolicy".equals(path) ||
+            "/project/repositories/repository/snapshots/updatePolicy".equals(path) ||
+            "/project/pluginRepositories/pluginRepository/releases/updatePolicy".equals(path) ||
+            "/project/pluginRepositories/pluginRepository/snapshots/updatePolicy".equals(path)) {
+            return super.createTextValueList(MavenSettingsGrammar.UPDATE_POLICIES, virtualTextCtx);
+        }
+        if ("/project/profiles/profile/repositories/repository/releases/checksumPolicy".equals(path) ||
+            "/project/profiles/profile/repositories/repository/snapshots/checksumPolicy".equals(path) ||
+            "/project/profiles/profile/pluginRepositories/pluginRepository/releases/checksumPolicy".equals(path) ||
+            "/project/profiles/profile/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path) ||
+            "/project/repositories/repository/releases/checksumPolicy".equals(path) ||
+            "/project/repositories/repository/snapshots/checksumPolicy".equals(path) ||
+            "/project/pluginRepositories/pluginRepository/releases/checksumPolicy".equals(path) ||
+            "/project/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path)) {
+            return super.createTextValueList(MavenSettingsGrammar.CHECKSUM_POLICIES, virtualTextCtx);
+        }
+        if ("/project/profiles/profile/repositories/repository/layout".equals(path) ||
+            "/project/profiles/profile/pluginRepositories/pluginRepository/layout".equals(path) ||
+            "/project/repositories/repository/releases/layout".equals(path) ||
+            "/project/pluginRepositories/pluginRepository/layout".equals(path)) {
+            return super.createTextValueList(MavenSettingsGrammar.LAYOUTS, virtualTextCtx);
+        }
+        
         if ("/project/modules/module".equals(path)) {
             FileObject fo = getEnvironment().getFileObject();
             if (fo != null) {
