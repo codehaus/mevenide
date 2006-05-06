@@ -186,7 +186,9 @@ public class MavenProjectNode extends AbstractNode {
     }
 
     public String getShortDescription() {
-        return project.getShortDescription();
+        return "<html><i>Location:</i><b> " + project.getProjectDirectory().getPath() + "</b><br>" + 
+                //TODO escape the short description
+                "<p><i>Description:</i> " + project.getShortDescription() + "</p></html>";
     }
     
     private class CloseSuprojectsAction extends AbstractAction {
