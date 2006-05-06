@@ -42,7 +42,6 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyElement;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.Document;
 import org.jdom.Element;
