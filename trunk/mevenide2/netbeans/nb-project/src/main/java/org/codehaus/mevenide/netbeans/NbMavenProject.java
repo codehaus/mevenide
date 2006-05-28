@@ -22,6 +22,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -283,7 +284,16 @@ public final class NbMavenProject implements Project {
        URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources");
        File fil = new File(uri);
        if (fil.exists()) {
-           return new URI[] { uri };
+           File[] fils = fil.listFiles(new FileFilter() {
+               public boolean accept(File pathname) {
+                   return pathname.isDirectory();
+               }
+           });
+           URI[] uris = new URI[fils.length];
+           for (int i = 0; i < fils.length; i++) {
+               uris[i] = fils[i].toURI();
+           }
+           return uris;
        }
        return new URI[0];
    }
