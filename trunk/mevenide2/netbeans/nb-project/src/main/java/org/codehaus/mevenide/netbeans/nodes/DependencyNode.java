@@ -23,12 +23,15 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
@@ -38,15 +41,23 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
+import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
+import org.codehaus.plexus.util.FileUtils;
 import org.netbeans.api.project.Project;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
+import org.openide.NotifyDescriptor;
 import org.openide.actions.PropertiesAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
+import org.openide.execution.ExecutionEngine;
+import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -55,6 +66,8 @@ import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
 
@@ -64,7 +77,6 @@ import org.openide.util.WeakListeners;
  */
 public class DependencyNode extends AbstractNode {
     
-    private Action actions[];
     private Artifact art;
     private NbMavenProject project;
     private boolean longLiving;
@@ -170,12 +182,21 @@ public class DependencyNode extends AbstractNode {
     public Action[] getActions( boolean context ) {
         Collection acts = new ArrayList();
         acts.add(new ViewJavadocAction());
-//        if (!checkLocal()) {
-//            acts.add(DownloadAction.get(DownloadAction.class));
-//        }
+        InstallLocalArtifactAction act = new InstallLocalArtifactAction();
+        acts.add(act);
+        if (!isLocal()) {
+            act.setEnabled(true);
+        }
+        
 //        acts.add(new EditAction());                
 //        acts.add(RemoveDepAction.get(RemoveDepAction.class));
         acts.add(new DownloadJavadocAndSourcesAction());
+        if (!hasJavadocInRepository()) {
+            acts.add(new InstallLocalJavadocAction());
+        }
+        if (!hasSourceInRepository()) {
+            acts.add(new InstallLocalSourcesAction());
+        }
         acts.add(null);
         acts.add(PropertiesAction.get(PropertiesAction.class));
         return (Action[])acts.toArray(new Action[acts.size()]);
@@ -202,7 +223,7 @@ public class DependencyNode extends AbstractNode {
         return false;
     }
     
-    private boolean checkLocal() {
+    private boolean isLocal() {
         if (art instanceof NbArtifact) {
             NbArtifact nb = (NbArtifact)art;
             if (nb.isFakedSystemDependency()) {
@@ -223,15 +244,18 @@ public class DependencyNode extends AbstractNode {
         return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");
     }
     
+    private File getSourceFile() {
+        File artifact = art.getFile();
+        String version = artifact.getParentFile().getName();
+        String artifactId = artifact.getParentFile().getParentFile().getName();
+        return  new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar");
+    }
+    
     public boolean hasSourceInRepository() {
         if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false;
         }
-        File artifact = art.getFile();
-        String version = artifact.getParentFile().getName();
-        String artifactId = artifact.getParentFile().getParentFile().getName();
-        File src = new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar");
-        return src.exists();
+        return getSourceFile().exists();
     }
     
     void downloadJavadocSources(MavenEmbedder online) {
@@ -289,7 +313,7 @@ public class DependencyNode extends AbstractNode {
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue;
         retValue = super.getIcon(param);
-        if (checkLocal()) {
+        if (isLocal()) {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
                         Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
@@ -311,7 +335,7 @@ public class DependencyNode extends AbstractNode {
     public Image getOpenedIcon(int type) {
         java.awt.Image retValue;
         retValue = super.getOpenedIcon(type);
-        if (checkLocal()) {
+        if (isLocal()) {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
                         Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
@@ -394,6 +418,127 @@ public class DependencyNode extends AbstractNode {
 
     }
     
+    private class InstallLocalArtifactAction extends AbstractAction implements RunConfig {
+        public InstallLocalArtifactAction() {
+            putValue(Action.NAME, "Manually install artifact");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            File fil = InstallPanel.showInstallDialog(DependencyNode.this.art);
+            if (fil != null) {
+                putValue("FileToInstall", fil);
+                MavenJavaExecutor exec = new MavenJavaExecutor(this);
+                ExecutorTask task = ExecutionEngine.getDefault().execute("Install", exec, exec.getInputOutput());
+        
+                task.addTaskListener(new TaskListener() {
+                    public void taskFinished(Task task2) {
+//                        project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                    }
+                });
+            }
+        }
+
+        public File getExecutionDirectory() {
+            return project.getPOMFile().getParentFile();
+        }
+
+        public NbMavenProject getProject() {
+            return project;
+        }
+
+        public List getGoals() {
+            return Collections.singletonList("install:install-file");
+        }
+
+        public String getExecutionName() {
+            return "install-artifact";
+        }
+
+        public Properties getProperties() {
+            Properties props = new Properties();
+            props.put("artifactId", art.getArtifactId());
+            props.put("groupId", art.getGroupId());
+            props.put("version", art.getVersion());
+            props.put("packaging", art.getType());
+            File file = (File)getValue("FileToInstall");
+            props.put("file", file.getAbsolutePath());
+            props.put("generatePom", "false");
+//            props.put("pomFile", );
+            
+            return props;
+        }
+
+        public Boolean isShowDebug() {
+            return null;
+        }
+
+        public Boolean isShowError() {
+            return null;
+        }
+
+        public Boolean isOffline() {
+            return null;
+        }
+
+        public List getActiveteProfiles() {
+            return Collections.emptyList();
+        }
+        
+    }
+    
+    private class InstallLocalJavadocAction extends AbstractAction implements Runnable {
+        private File source;
+        public InstallLocalJavadocAction() {
+            putValue(Action.NAME, "Add local javadoc");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            source = InstallDocSourcePanel.showInstallDialog(true);
+            if (source != null) {
+                RequestProcessor.getDefault().post(this);
+            }
+        }
+        
+        public void run() {
+            File target = getJavadocFile();
+            try {
+                FileUtils.copyFile(source, target);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                target.delete();
+            }
+            refreshNode();
+        }
+        
+    }
+    
+    private class InstallLocalSourcesAction extends AbstractAction implements Runnable {
+
+        private File source;
+        public InstallLocalSourcesAction() {
+            putValue(Action.NAME, "Add local sources");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            source = InstallDocSourcePanel.showInstallDialog(false);
+            if (source != null) {
+                RequestProcessor.getDefault().post(this);
+            }
+        }
+        
+        public void run() {
+            File target = getSourceFile();
+            try {
+                FileUtils.copyFile(source, target);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                target.delete();
+            }
+            refreshNode();
+        }
+        
+    }
+    
 //    private class EditAction extends AbstractAction {
 //        public EditAction() {
 //            putValue(Action.NAME, "Edit...");
@@ -441,148 +586,5 @@ public class DependencyNode extends AbstractNode {
             }
         }
     }
-//    
-//    
-//    private static class DownloadAction extends NodeAction {
-//
-//        public DownloadAction() {
-//        }
-//        
-//        protected boolean enable(org.openide.nodes.Node[] node) {
-//            if (node != null && node.length > 0) {
-//                for (int i = 0; i < node.length; i++) {
-//                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
-//                    if (obj == null) {
-//                        return false;
-//                    }
-//                }
-//                return true;
-//            }
-//            return false;
-//        }
-//
-//        public String getName() {
-//            return "Download artifact";
-//        }
-//
-//        protected void performAction(org.openide.nodes.Node[] node) {
-//            if (node != null && node.length > 0) {
-//                Collection projectsToFire = new HashSet();
-//                for (int i = 0; i < node.length; i++) {
-//                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
-//                    if (obj != null) {
-//                        DependencyPOMChange chng = (DependencyPOMChange)obj;
-//                        MavenProject prj = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
-//                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(prj.getPropertyResolver());
-//                        Dependency dep = createDependencySnapshot(chng.getChangedContent(), prj.getPropertyResolver());
-//                        try {
-//                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, prj, dep);
-//                            if (downloaded) {
-//                                projectsToFire.add(prj);
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                           StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
-//                                   + " is not available in repote repositories.");
-//                        } catch (Exception exc) {
-//                           StatusDisplayer.getDefault().setStatusText("Error downloading " 
-//                                   + dep.getArtifact() + " : " + exc.getLocalizedMessage());
-//                        }
-//                    }
-//                }
-//                Iterator it = projectsToFire.iterator();
-//                while (it.hasNext()) {
-//                    ((MavenProject)it.next()).firePropertyChange(MavenProject.PROP_PROJECT);
-//                }
-//                
-//            }
-//        }
-//        
-//        public HelpCtx getHelpCtx() {
-//            return HelpCtx.DEFAULT_HELP;
-//        }
-//
-//        protected boolean asynchronous() {
-//            return true;
-//        }
-//    }
-//    
-//    private static class RemoveDepAction extends NodeAction {
-//
-//        public RemoveDepAction() {
-//        }
-//        
-//        protected boolean enable(org.openide.nodes.Node[] node) {
-//            MavenProject project = null;
-//            if (node != null && node.length > 0) {
-//                for (int i = 0; i < node.length; i++) {
-//                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
-//                    if (obj == null) {
-//                        return false;
-//                    }
-//                    Object proj = node[i].getLookup().lookup(MavenProject.class);
-//                    if (project == null) {
-//                        project = (MavenProject)proj;
-//                    } else {
-//                        if (project != proj) {
-//                            return false;
-//                        }
-//                    }
-//                }
-//                return true;
-//            }
-//            return false;
-//        }
-//
-//        public String getName() {
-//            return "Delete";
-//        }
-//
-//        protected void performAction(org.openide.nodes.Node[] node) {
-//            List toDelete = new ArrayList();
-//            MavenProject project = null;
-//            if (node != null && node.length > 0) {
-//                for (int i = 0; i < node.length; i++) {
-//                    Object obj = node[i].getLookup().lookup(DependencyPOMChange.class);
-//                    if (obj != null) {
-//                        toDelete.add(obj);
-//                    }
-//                    if (project == null) {
-//                        project = (MavenProject)node[i].getLookup().lookup(MavenProject.class);
-//                    }
-//                }
-//            }
-//            if (project == null) {
-//                return;
-//            }
-//            if (toDelete.size() > 0) {
-//                NotifyDescriptor desc = new NotifyDescriptor.Confirmation(
-//                        "Are you sure you want to remove " + toDelete.size() + " dependencies?",
-//                        "Remove Dependencies", 
-//                        NotifyDescriptor.YES_NO_OPTION,
-//                        NotifyDescriptor.QUESTION_MESSAGE);
-//                Object ret = DialogDisplayer.getDefault().notify(desc);
-//                if (ret == NotifyDescriptor.YES_OPTION) {
-//                    try {
-//                        NbProjectWriter writer = new NbProjectWriter(project);
-//                        List changes = (List)node[0].getLookup().lookup(List.class);
-//                        changes.removeAll(toDelete);
-//                        writer.applyChanges(changes);
-//                    } catch (Exception exc) {
-//                        ErrorManager.getDefault().notify(ErrorManager.USER, exc);
-//                    }
-//                    
-//                }
-//            }
-//        }
-//        
-//        public HelpCtx getHelpCtx() {
-//            return HelpCtx.DEFAULT_HELP;
-//        }
-//
-//        protected boolean asynchronous() {
-//            return true;
-//        }
-//        
-//    }    
 }
 
