@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -273,6 +274,7 @@ class DependenciesNode extends AbstractNode {
                             }
                         }
                     }
+                    StatusDisplayer.getDefault().setStatusText("Done retrieving javadocs and sources from remote repositories.");
                 }
             });
         }
@@ -287,15 +289,22 @@ class DependenciesNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+                    boolean ok = true; 
                     try {
                         online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")), 
                                                            new ProgressTransferListener());
                     } catch (ArtifactNotFoundException ex) {
                         ex.printStackTrace();
+                        ok = false;
                     } catch (ArtifactResolutionException ex) {
                         ex.printStackTrace();
+                        ok = false;
                     } catch (ProjectBuildingException ex) {
                         ex.printStackTrace();
+                        ok = false;
+                    }
+                    if (ok) {
+                        StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
                     }
                     project.firePropertyChange(NbMavenProject.PROP_PROJECT);
                 }
