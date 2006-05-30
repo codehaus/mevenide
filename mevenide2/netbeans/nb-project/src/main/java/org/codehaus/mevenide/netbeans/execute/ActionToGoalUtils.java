@@ -17,12 +17,17 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.StringTokenizer;
+import org.apache.maven.model.Build;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -30,7 +35,9 @@ import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 
 /**
@@ -48,6 +55,18 @@ public final class ActionToGoalUtils {
         UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         rc = user.createConfigForDefaultAction(action, project, lookup);
         if (rc == null) {
+            // for build and rebuild check the pom for default goal and run that one..
+            if (ActionProvider.COMMAND_BUILD.equals(action) || 
+                ActionProvider.COMMAND_REBUILD.equals(action)) {
+                Build bld = project.getOriginalMavenProject().getBuild();
+                if (bld != null) {
+                    String goal = bld.getDefaultGoal();
+                    if (goal != null && goal.trim().length() > 0) {
+                        return new DefaultGoalRunConfig((ActionProvider.COMMAND_REBUILD.equals(action) ? "clean " : "") + goal, 
+                                                         project);
+                    }
+                }
+            }
             Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
             Iterator it = res.allInstances().iterator();
             while (it.hasNext()) {
@@ -142,6 +161,59 @@ public final class ActionToGoalUtils {
                 ex.printStackTrace();
             }
         }
+    }
+    
+    private static class DefaultGoalRunConfig implements RunConfig {
+
+        private NbMavenProject project;
+        private String goals;
+        
+        public DefaultGoalRunConfig(String goals, NbMavenProject proj) {
+            project = proj;
+            this.goals = goals;
+        }
+        
+        public File getExecutionDirectory() {
+            return FileUtil.toFile(project.getProjectDirectory());
+        }
+    
+        public NbMavenProject getProject() {
+            return project;
+        }
+
+        public List getGoals() {
+            StringTokenizer tok = new StringTokenizer(goals, " ", false);
+            List toRet = new ArrayList();
+            while (tok.hasMoreTokens()) {
+                toRet.add(tok.nextToken());
+            }
+            return toRet;
+        }
+
+        public String getExecutionName() {
+            return project.getName();
+        }
+
+        public Properties getProperties() {
+            return new Properties();
+        }
+
+        public Boolean isShowDebug() {
+            return null;
+        }
+
+        public Boolean isShowError() {
+            return null;
+        }
+
+        public Boolean isOffline() {
+            return null;
+        }
+
+        public List getActiveteProfiles() {
+            return Collections.EMPTY_LIST;
+        }
+        
     }
     
 }
