@@ -25,7 +25,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-repository</artifactId>
-            <version>0.3</version>
+            <version>0.4</version>
             <type>jar</type>
             <url>http://mevenide.codehaus.org/</url>
         </dependency>
