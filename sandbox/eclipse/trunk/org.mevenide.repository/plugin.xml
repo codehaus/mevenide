@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin
+   id="org.mevenide.repository"
+   name="Maven Repository Navigator"
+   version="0.4.0"
+   provider-name="The Codehaus">
+   <runtime>
+      <library name="lib/commons-httpclient-2.0.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/commons-logging-1.0.3.jar">
+         <export name="*"/>
+      </library>
+      <library name="lib/mevenide-repository-0.4.jar">
+         <export name="*"/>
+      </library>
+   </runtime>
+   <requires>
+      <import plugin="org.mevenide.core"/>
+   </requires>
+
+</plugin>
