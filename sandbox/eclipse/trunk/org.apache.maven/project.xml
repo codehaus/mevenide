@@ -26,19 +26,10 @@
                     <include>asl-v20.txt</include>
                     <include>plugin.xml</include>
                     <include>welcome.xml</include>
+                    <include>images/*.*</include>
+                    <include>maven/*.*</include>
+                    <include>META-INF/*.*</include>
                 </includes>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>META-INF</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>images</directory>
-                <filtering>false</filtering>
-            </resource>
-            <resource>
-                <directory>maven</directory>
                 <filtering>false</filtering>
             </resource>
         </resources>
