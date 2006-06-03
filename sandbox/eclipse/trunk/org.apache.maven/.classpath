@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="lib" path="maven/lib/ant-1.5.3-1.jar"/>
+	<classpathentry kind="lib" path="maven/lib/ant-optional-1.5.3-1.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-beanutils-1.6.1.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-betwixt-1.0-beta-1.20030111.103454.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-cli-1.0-beta-2.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-collections-2.1.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-digester-1.4.1.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-grant-1.0-beta-4.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-graph-0.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="maven/lib/commons-httpclient-2.0.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-io-20030203.000550.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jelly-20030902.160215.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jelly-tags-ant-1.0.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jelly-tags-define-20030211.142932.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jelly-tags-util-20030211.141939.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jelly-tags-xml-20040613.030723.jar"/>
+	<classpathentry kind="lib" path="maven/lib/commons-jexl-1.0-beta-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="maven/lib/commons-lang-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="maven/lib/commons-logging-1.0.3.jar"/>
+	<classpathentry kind="lib" path="maven/lib/dom4j-1.4-dev-8.jar"/>
+	<classpathentry kind="lib" path="maven/lib/forehead-1.0-beta-5.jar"/>
+	<classpathentry kind="lib" path="maven/lib/log4j-1.2.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="maven/lib/maven.jar"/>
+	<classpathentry kind="lib" path="maven/lib/maven-jelly-tags-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="maven/lib/plexus-0.6.jar"/>
+	<classpathentry kind="lib" path="maven/lib/werkz-20040426.222000.jar"/>
+	<classpathentry kind="lib" path="maven/lib/which-1.0.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="output" path="target"/>
+</classpath>

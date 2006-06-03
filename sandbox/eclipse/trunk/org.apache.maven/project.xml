@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+    <extend>${basedir}/../mevenide-parent/project.xml</extend>
+    <pomVersion>3</pomVersion>
+    <artifactId>org.apache.maven</artifactId>
+    <name>Apache Maven</name>
+    <currentVersion>1.0.2</currentVersion>
+    <description>Apache Maven wrapped as an Eclipse plug-in.</description>
+    <shortDescription>Apache Maven wrapped as an Eclipse plug-in.</shortDescription>
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>about.html</include>
+                    <include>about.ini</include>
+                    <include>about.mappings</include>
+                    <include>about.properties</include>
+                    <include>asl-v20.txt</include>
+                    <include>plugin.xml</include>
+                    <include>welcome.xml</include>
+                </includes>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>META-INF</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>images</directory>
+                <filtering>false</filtering>
+            </resource>
+            <resource>
+                <directory>maven</directory>
+                <filtering>false</filtering>
+            </resource>
+        </resources>
+    </build>
+</project>
+
