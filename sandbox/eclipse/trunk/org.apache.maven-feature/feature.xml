@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.apache.maven"
+      label="Apache Maven"
+      version="1.0.2"
+      provider-name="Apache Software Foundation">
+
+   <install-handler/>
+
+   <description>
+      %description
+   </description>
+
+   <copyright url="[Enter Copyright URL here.]">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://maven.apache.org/license.html">
+      %license
+   </license>
+
+   <url>
+      <update label="MevenIDE Update Site" url="http://mevenide.codehaus.org/release/eclipse/update"/>
+   </url>
+
+   <requires>
+      <import plugin="org.eclipse.osgi"/>
+   </requires>
+
+   <plugin
+         id="org.apache.maven"
+         download-size="6168"
+         install-size="6887"
+         version="1.0.2"/>
+
+</feature>
