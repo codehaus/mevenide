@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-Name: Mevenide Repository Plug-in
+Bundle-SymbolicName: org.mevenide.repository
+Bundle-Version: 0.4.0
+Bundle-ClassPath: lib/mevenide-repository-0.4.jar
+Bundle-Vendor: The Codehaus
+Bundle-Localization: plugin
+Eclipse-AutoStart: true
+Require-Bundle: org.eclipse.osgi,
+ org.apache.maven,
+ org.mevenide.core
+Provide-Package: org.mevenide.repository

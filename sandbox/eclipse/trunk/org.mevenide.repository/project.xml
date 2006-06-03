@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>org.mevenide.repository</artifactId>
     <name>Maven Repository Plugin for Eclipse</name>
-    <currentVersion>0.3</currentVersion>
+    <currentVersion>0.4</currentVersion>
     <description>Eclipse plugin for reading local and remote repositories.</description>
     <shortDescription>Eclipse plugin for navigating repositories.</shortDescription>
     <versions>
@@ -21,31 +21,6 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
-    <dependencies>
-        <dependency>
-            <groupId>mevenide</groupId>
-            <artifactId>mevenide-repository</artifactId>
-            <version>0.4</version>
-            <type>jar</type>
-            <url>http://mevenide.codehaus.org/</url>
-        </dependency>
-        <dependency>
-            <!-- transitive dependency of mevenide-repository -->
-            <groupId>commons-httpclient</groupId>
-            <artifactId>commons-httpclient</artifactId>
-            <version>2.0</version>
-            <type>jar</type>
-            <url>http://jakarta.apache.org/commons/httpclient/</url>
-        </dependency>
-        <dependency>
-            <!-- transitive dependency of commons-httpclient -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.3</version>
-            <type>jar</type>
-            <url>http://jakarta.apache.org/commons/logging/</url>
-        </dependency>
-    </dependencies>
     <build>
         <resources>
             <resource>
@@ -60,6 +35,8 @@
                     <include>plugin.xml</include>
                     <include>welcome.xml</include>
                     <include>images/*.*</include>
+                    <include>lib/*.*</include>
+                    <include>META-INF/*.*</include>
                 </includes>
                 <filtering>false</filtering>
             </resource>
