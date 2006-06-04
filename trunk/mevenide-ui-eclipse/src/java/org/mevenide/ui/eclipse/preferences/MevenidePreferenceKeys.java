@@ -36,7 +36,7 @@ public interface MevenidePreferenceKeys {
     String MAVEN_REPO_PREFERENCE_KEY                = ILocationFinder.MAVEN_REPO_LOCAL;
     String POM_TEMPLATE_LOCATION_PREFERENCE_KEY     = "pom.template.location";        //$NON-NLS-1$
     String DEFAULT_GOALS_PREFERENCE_KEY             = "maven.launch.defaultgoals";    //$NON-NLS-1$
-    String REGISTERED_DEPENPENCY_TYPES              = "mevenide.pom.dependency.type"; //$NON-NLS-1$
+    String REGISTERED_DEPENDENCY_TYPES              = "mevenide.pom.dependency.type"; //$NON-NLS-1$
     String TOOLS_JAR_PREFERENCE_KEY                 = "tools.jar";                    //$NON-NLS-1$
 
     /**
