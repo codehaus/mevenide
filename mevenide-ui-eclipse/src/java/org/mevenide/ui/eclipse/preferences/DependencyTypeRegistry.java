@@ -50,8 +50,8 @@ public class DependencyTypeRegistry {
     }
 
     public static String[] getUserRegisteredTypes() {
-        String registeredTypes = getPreferenceStore().getString(MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES);
-        return (registeredTypes == null) ? new String[0] : registeredTypes.split(","); //$NON-NLS-1$
+        String types = getPreferenceStore().getString(MevenidePreferenceKeys.REGISTERED_DEPENDENCY_TYPES);
+        return (types == null || types.trim().length() == 0) ? new String[0] : types.trim().split(","); //$NON-NLS-1$
     }
     
     public static String[] getAllRegisteredTypes() {
@@ -74,7 +74,7 @@ public class DependencyTypeRegistry {
         }
 
         getPreferenceStore().setValue(
-        	MevenidePreferenceKeys.REGISTERED_DEPENPENCY_TYPES, 
+        	MevenidePreferenceKeys.REGISTERED_DEPENDENCY_TYPES, 
         	buffer.toString()
         );
         
