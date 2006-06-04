@@ -52,6 +52,7 @@ Provide-Package: org.apache.maven,
  org.apache.commons.httpclient.methods,
  org.apache.commons.httpclient.methods.multipart,
  org.apache.commons.httpclient.protocol,
- org.apache.commons.httpclient.util
+ org.apache.commons.httpclient.util,
+ org.apache.commons.lang
 Eclipse-AutoStart: true
 Require-Bundle: org.eclipse.osgi
