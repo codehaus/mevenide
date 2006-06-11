@@ -29,6 +29,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 
 public interface OutputProcessorFactory {
     /**
+     * @param project the project associated with the output, can be null.
      * returns a Set of <code>OutputProcessor</code> instances or empty set, never null.
      *
      */

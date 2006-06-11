@@ -76,6 +76,10 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-explorer</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-awt</id>
             <type>spec</type>
         </dependency>

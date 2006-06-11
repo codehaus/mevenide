@@ -77,12 +77,14 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             MavenEmbedder embedder;
             OutputHandler out = new OutputHandler(ioput, config.getProject());
             embedder = EmbedderFactory.createExecuteEmbedder(out);
-            try {
-                checkDebuggerListening(config, out);
-            } catch (MojoExecutionException ex) {
-                ex.printStackTrace();
-            } catch (MojoFailureException ex) {
-                ex.printStackTrace();
+            if (config.getProject() != null) {
+                try {
+                    checkDebuggerListening(config, out);
+                } catch (MojoExecutionException ex) {
+                    ex.printStackTrace();
+                } catch (MojoFailureException ex) {
+                    ex.printStackTrace();
+                }
             }
 //            ArtifactRepository netbeansRepo = null;
             File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
@@ -124,7 +126,10 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setGoals(config.getGoals());
             req.setProperties(config.getProperties());
             req.setBasedir(config.getExecutionDirectory());
-            req.setPomFile(new File(config.getExecutionDirectory(), "pom.xml").getAbsolutePath());
+            File pom = new File(config.getExecutionDirectory(), "pom.xml");
+            if (pom.exists()) {
+                req.setPomFile(pom.getAbsolutePath());
+            }
             req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
             req.addEventMonitor(out);
             req.setTransferListener(out);
