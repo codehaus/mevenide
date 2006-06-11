@@ -35,8 +35,10 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
     public Set createProcessorsSet(NbMavenProject project) {
         Set toReturn = new HashSet();
         toReturn.add(new GlobalOutputProcessor());
-        toReturn.add(new JavaOutputListenerProvider(project));
-        toReturn.add(new TestOutputListenerProvider(project));
+        if (project != null) {
+            toReturn.add(new JavaOutputListenerProvider(project));
+            toReturn.add(new TestOutputListenerProvider(project));
+        }
         return toReturn;
     }
     
