@@ -4,7 +4,7 @@
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>mevenide2-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.1</version>
+    <version>1.2</version>
     <name>Maven2 support at Mevenide</name>
     <description>Maven2 support at Mevenide</description>
     <url>http://mevenide.codehaus.org</url>
@@ -81,40 +81,76 @@
         <name>The Codehaus</name>
         <url>http://www.codehaus.org/</url>
     </organization>
+    
     <distributionManagement>
-        <site>
-            <id>site</id>
-            <name>Mevenide Website</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-site</url>
-        </site>
         <repository>
-            <id>mevenide</id>
-            <name>Mevenide's repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/repository</url>
+            <id>mevenide-upload</id>
+            <name>Mevenide Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/mevenide/</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
-            <name>Mevenide's snapshot repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/snapshot-repository</url>
+            <id>mevenide-snapshots-upload</id>
+            <name>Mevenide Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/mevenide/</url>
         </snapshotRepository>
+        <site>
+            <id>mevenide-site-upload</id>
+            <name>Mevenide Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
+        </site>
     </distributionManagement>
+    
     <repositories>
         <repository>
-            <id>mevenide1</id>
+            <id>mevenide</id>
             <name>Mevenide's M2 repo</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
             <snapshots>
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <!-- required for webdav plugin, as it isn't released yet -->
+        <!-- FIXME remove when plugin released -->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Snapshot repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository/</url>
+        </repository>
     </repositories>
+    
     <pluginRepositories>
         <pluginRepository>
-            <id>mevenide2</id>
+            <id>mevenide-plugins</id>
             <name>Mevenide's M2 plugins</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
         </pluginRepository>
     </pluginRepositories>
+    
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-1-SNAPSHOT</version>
+            </extension>
+        </extensions>
+
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <tagBase>https://svn.codehaus.org/mevenide/tags</tagBase>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    
     <modules>
         <module>netbeans</module>
     </modules>
