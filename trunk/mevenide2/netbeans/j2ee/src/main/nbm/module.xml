@@ -95,5 +95,9 @@
             <id>org.codehaus.mevenide:deployment-bridge</id>
             <type>spec</type>
         </dependency>
+        <dependency>
+            <id>org.codehaus.mevenide:debugger-bridge</id>
+            <type>spec</type>
+        </dependency>
    </dependencies> 
 </nbm>
