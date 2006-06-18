@@ -22,6 +22,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.manager.DefaultWagonManager;
+import org.apache.maven.artifact.manager.WagonConfigurationException;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.artifact.metadata.ArtifactMetadata;
 import org.apache.maven.artifact.repository.ArtifactRepository;
@@ -33,6 +34,7 @@ import org.apache.maven.wagon.Wagon;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.repository.Repository;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -152,6 +154,10 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
         super.enableLogging(logger);
         original.enableLogging(logger);
         
+    }
+
+    public Wagon getWagon(Repository repository) throws UnsupportedProtocolException, WagonConfigurationException {
+        return original.getWagon(repository);
     }
 
 
