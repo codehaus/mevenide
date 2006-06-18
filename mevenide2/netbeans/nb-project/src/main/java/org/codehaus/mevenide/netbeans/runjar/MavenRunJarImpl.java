@@ -52,7 +52,7 @@ public class MavenRunJarImpl implements MavenRunJar {
         }
         InputOutput io = IOProvider.getDefault().getIO("Run " + jarArtifact.getName(), true);
         io.select();
-        Wrapper wrapper = new Wrapper(io, jarArtifact, executable, jvmParameters, debugJvmParameters, 
+        Wrapper wrapper = new Wrapper(io, jarArtifact, executable, parameters, jvmParameters, debugJvmParameters, 
                                       workDirectory, jarLocation, finalName, project, log);
 //        System.out.println("class=" + io.getClass());
 //        System.out.println("classloader=" + io.getClass().getClassLoader().getClass());
@@ -87,11 +87,12 @@ public class MavenRunJarImpl implements MavenRunJar {
         private Log log;
         Object semaphor = new Object();
         
-        public Wrapper(InputOutput io, File jarArtifact, String executable, String jvmParameters, String debugJvmParameters,
+        public Wrapper(InputOutput io, File jarArtifact, String executable, String parameters, String jvmParameters, String debugJvmParameters,
                 File workDirectory, File jarLocation, String finalName, MavenProject project, Log log) {
             this.io = io;
             this.jarArtifact = jarArtifact;
             this.executable = executable;
+            this.parameters = parameters;
             this.jvmParameters = jvmParameters;
             this.debugJvmParameters = debugJvmParameters;
             this.workDirectory = workDirectory;
