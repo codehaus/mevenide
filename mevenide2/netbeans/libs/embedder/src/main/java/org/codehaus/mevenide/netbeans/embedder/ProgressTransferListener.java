@@ -53,7 +53,11 @@ public class ProgressTransferListener implements TransferListener {
     public void transferStarted(TransferEvent transferEvent) {
         Resource res = transferEvent.getResource();
         int total = (int)Math.min((long)Integer.MAX_VALUE, res.getContentLength());
-        handle.start(total);
+        if (total < 0) {
+            handle.start();
+        } else {
+            handle.start(total);
+        }
         lenght = total;
         count = 0;
         handle.progress("Transfer Started...");
@@ -61,7 +65,11 @@ public class ProgressTransferListener implements TransferListener {
     
     public void transferProgress(TransferEvent transferEvent, byte[] b, int i) {
         count = (int)Math.min((long)Integer.MAX_VALUE, (long)count + i);
-        handle.progress("Transferred " + count, count);
+        if (lenght < 0) {
+            handle.progress("Transferring..");
+        } else {
+            handle.progress("Transferred " + count, count);
+        }
     }
     
     public void transferCompleted(TransferEvent transferEvent) {
