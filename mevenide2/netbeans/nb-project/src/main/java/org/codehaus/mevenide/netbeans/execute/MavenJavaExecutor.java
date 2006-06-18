@@ -20,6 +20,7 @@ import java.io.*;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Properties;
 import org.apache.maven.SettingsConfigurationException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
@@ -124,7 +125,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             }
             req.setSettings(settings);
             req.setGoals(config.getGoals());
-            req.setProperties(config.getProperties());
+            //mavenCLI adds all System.getProperties() in there as well..
+            Properties props = new Properties();
+            props.putAll(System.getProperties());
+            props.putAll(config.getProperties());
+            req.setProperties(props);
             req.setBasedir(config.getExecutionDirectory());
             File pom = new File(config.getExecutionDirectory(), "pom.xml");
             if (pom.exists()) {
