@@ -13,7 +13,7 @@ Building Mevenide 2 for Netbeans
 +-------------------------------------------------------------------------------+
 <settings>
     <pluginGroups>
-        <pluginGroup>org.codehaus.mevenide.plugins</pluginGroup>
+        <pluginGroup>org.codehaus.mojo</pluginGroup>
     </pluginGroups>
 </settings>
 +-------------------------------------------------------------------------------+
