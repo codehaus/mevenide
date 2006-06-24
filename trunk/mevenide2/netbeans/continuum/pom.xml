@@ -114,8 +114,8 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mevenide.plugins</groupId>
-                <artifactId>maven-nbm-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
             </plugin>
           </plugins>
     </build>
