@@ -14,12 +14,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
+import org.apache.maven.model.io.jdom.MavenJDOMWriter;
 import org.apache.maven.profiles.ProfilesRoot;
-import org.apache.maven.profiles.io.xpp3.ProfilesXpp3Writer;
+import org.apache.maven.profiles.io.jdom.ProfilesJDOMWriter;
+import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.io.jdom.SettingsJDOMWriter;
 import org.codehaus.plexus.util.IOUtil;
+import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
 import org.jdom.JDOMException;
+import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
@@ -29,6 +33,8 @@ import org.openide.filesystems.FileObject;
  * @author mkleint
  */
 public class WriterUtils {
+    
+    private static JDOMFactory factory = new DefaultJDOMFactory();
     
     /** Creates a new instance of WriterUtils */
     private WriterUtils() {
@@ -46,10 +52,9 @@ public class WriterUtils {
             inStr = null;
             lock = pom.lock();
             //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
-            MavenXpp3Writer writer = new MavenXpp3Writer();
+            MavenJDOMWriter writer = new MavenJDOMWriter();
             outStr = pom.getOutputStream(lock);
-            writer.write(new OutputStreamWriter(outStr), newModel);
-            //writer.write(newModel, doc, outStr);
+            writer.write(newModel, doc, outStr);
             outStr.close();
             outStr = null;
         } catch (JDOMException exc){
@@ -71,24 +76,25 @@ public class WriterUtils {
         OutputStream outStr = null;
         OutputStreamWriter wr = null;
         try {
+            Document doc;
             FileObject fo = pomDir.getFileObject("profiles.xml");
             if (fo == null) {
                 fo = pomDir.createData("profiles.xml");
+                doc = factory.document(factory.element("profilesXml"));
             } else {
                 //TODO..
                 inStr = fo.getInputStream();
                 SAXBuilder builder = new SAXBuilder();
-                Document doc = builder.build(inStr);
+                doc = builder.build(inStr);
                 inStr.close();
                 inStr = null;
             }
             lock = fo.lock();
             //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
-            ProfilesXpp3Writer writer = new ProfilesXpp3Writer();
+            ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
             outStr = fo.getOutputStream(lock);
-            wr = new OutputStreamWriter(outStr);
-            writer.write(wr, profilesRoot);
-            //writer.write(newModel, doc, outStr);
+//            writer.write(wr, profilesRoot);
+            writer.write(profilesRoot, doc, outStr);
 //            outStr.close();
 //            outStr = null;
         } catch (JDOMException exc){
@@ -97,6 +103,42 @@ public class WriterUtils {
         } finally {
             IOUtil.close(inStr);
             IOUtil.close(wr);
+            if (lock != null) {
+                lock.releaseLock();
+            }
+            
+        }
+    }
+    
+    public static void writeSettingsModel(FileObject m2dir, Settings settings) throws IOException {
+        InputStream inStr = null;
+        FileLock lock = null;
+        OutputStream outStr = null;
+        try {
+            Document doc;
+            FileObject fo = m2dir.getFileObject("settings.xml");
+            if (fo == null) {
+                fo = m2dir.createData("settings.xml");
+                doc = factory.document(factory.element("settings"));
+            } else {
+                //TODO..
+                inStr = fo.getInputStream();
+                SAXBuilder builder = new SAXBuilder();
+                doc = builder.build(inStr);
+                inStr.close();
+                inStr = null;
+            }
+            lock = fo.lock();
+            
+            SettingsJDOMWriter writer = new SettingsJDOMWriter();
+            outStr = fo.getOutputStream(lock);
+            writer.write(settings, doc, outStr);
+        } catch (JDOMException exc){
+            exc.printStackTrace();
+            throw (IOException) new IOException("Cannot parse the settings.xml by JDOM.").initCause(exc);
+        } finally {
+            IOUtil.close(inStr);
+            IOUtil.close(outStr);
             if (lock != null) {
                 lock.releaseLock();
             }

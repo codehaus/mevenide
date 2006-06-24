@@ -30,6 +30,7 @@ import org.apache.maven.settings.Settings;
 import org.apache.maven.settings.SettingsUtils;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Writer;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.spi.options.OptionsPanelController;
 import org.openide.filesystems.FileLock;
@@ -63,33 +64,12 @@ class MavenOptionController extends OptionsPanelController {
             setts = MavenSettingsSingleton.getInstance().createUserSettingsModel();
         }
         getPanel().applyValues(setts);
-        SettingsXpp3Writer swriter = new SettingsXpp3Writer();
-        Writer wr = null;
-        FileLock lock = null;
         try {
             File userDir = MavenSettingsSingleton.getInstance().getM2UserDir();
-            File settingsFile = new File(userDir, "settings.xml");
-            if (!settingsFile.exists()) {
-                settingsFile.getParentFile().mkdirs();
-                settingsFile.createNewFile();
-            }
-            FileObject fo = FileUtil.toFileObject(settingsFile);
-            OutputStream str;
-            if (fo != null) {
-                lock = fo.lock();
-                str = fo.getOutputStream(lock);
-            } else {
-                str = new FileOutputStream(settingsFile);
-            }
-            wr = new OutputStreamWriter(str);
-            swriter.write(wr, setts);
+            WriterUtils.writeSettingsModel(FileUtil.toFileObject(userDir), setts);
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {
-            IOUtil.close(wr);
-            if (lock != null) {
-                lock.releaseLock();
-            }
         }
     }
     
