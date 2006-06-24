@@ -13,4 +13,17 @@
         </folder>
     </folder>
 </folder>
+
+    <folder name="Editors">
+        <folder name="text">
+            <folder name="xml">
+                <folder name="HyperlinkProviders">
+                    <file name="MavenHyperlinkProvider.instance">
+                        <attr name="instanceClass" stringvalue="org.codehaus.mevenide.hyperlinks.HyperlinkProviderImpl"/>
+                        <attr name="instanceOf" stringvalue="org.netbeans.lib.editor.hyperlink.spi.HyperlinkProvider"/>
+                    </file>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
 </filesystem>
