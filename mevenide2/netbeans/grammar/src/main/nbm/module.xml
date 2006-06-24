@@ -23,6 +23,18 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-awt</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-editor-lib</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-editor</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-loaders</id>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-nodes</id>
             <type>spec</type>
         </dependency>
