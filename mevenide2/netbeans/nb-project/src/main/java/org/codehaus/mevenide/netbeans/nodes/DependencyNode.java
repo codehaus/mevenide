@@ -23,6 +23,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -30,8 +31,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
@@ -42,13 +45,20 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Exclusion;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -83,7 +93,7 @@ public class DependencyNode extends AbstractNode {
     private PropertyChangeListener listener;
     private ChangeListener listener2;
     
-
+    
     
     /**
      *@param lookup - expects instance of MavenProject, DependencyPOMChange
@@ -110,8 +120,8 @@ public class DependencyNode extends AbstractNode {
             };
             //TODO check if this one is a performance bottleneck.
             MavenFileOwnerQueryImpl.getInstance().addChangeListener(
-                        WeakListeners.change(listener2, 
-                                             MavenFileOwnerQueryImpl.getInstance()));
+                    WeakListeners.change(listener2,
+                    MavenFileOwnerQueryImpl.getInstance()));
         }
         setDisplayName(createName());
         setIconBase();
@@ -136,7 +146,7 @@ public class DependencyNode extends AbstractNode {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyJar.gif"); //NOI18N
         } else {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.gif"); //NOI18N
-        }        
+        }
     }
     
     private boolean isJarDependency() {
@@ -148,7 +158,7 @@ public class DependencyNode extends AbstractNode {
             return false;
         }
         URI uri = art.getFile().toURI();
-//        URI  rootUri = project.getRepositoryRoot().getURL().toURI(); 
+//        URI  rootUri = project.getRepositoryRoot().getURL().toURI();
 //        URI uri = rootUri.create(rootUri.toString() + "/" + project.getArtifactRelativeRepositoryPath(art));
         Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
         return depPrj != null;
@@ -188,7 +198,7 @@ public class DependencyNode extends AbstractNode {
             act.setEnabled(true);
         }
         
-//        acts.add(new EditAction());                
+//        acts.add(new EditAction());
 //        acts.add(RemoveDepAction.get(RemoveDepAction.class));
         acts.add(new DownloadJavadocAndSourcesAction());
         if (!hasJavadocInRepository()) {
@@ -196,6 +206,11 @@ public class DependencyNode extends AbstractNode {
         }
         if (!hasSourceInRepository()) {
             acts.add(new InstallLocalSourcesAction());
+        }
+        if (isTransitive()) {
+            acts.add(new ExcludeTransitiveAction());
+        } else {
+            acts.add(new RemoveDependencyAction());
         }
         acts.add(null);
         acts.add(PropertiesAction.get(PropertiesAction.class));
@@ -348,11 +363,11 @@ public class DependencyNode extends AbstractNode {
             }
             return retValue;
         } else {
-            return Utilities.mergeImages(retValue, 
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
-                        0,0);
+            return Utilities.mergeImages(retValue,
+                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
+                    0,0);
         }
-    }    
+    }
     
     public Component getCustomizer() {
         return null;
@@ -415,7 +430,158 @@ public class DependencyNode extends AbstractNode {
         public void run() {
             downloadJavadocSources(EmbedderFactory.getOnlineEmbedder());
         }
-
+    }
+    
+    private class RemoveDependencyAction extends AbstractAction {
+        public RemoveDependencyAction() {
+            putValue(Action.NAME, "Remove Dependency");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            NotifyDescriptor nd = new NotifyDescriptor.Confirmation("Are you sure you want to remove the dependency " + art.getGroupId() + ":" + art.getArtifactId() + "?", "Confirm");
+            nd.setOptionType(NotifyDescriptor.YES_NO_OPTION);
+            Object ret = DialogDisplayer.getDefault().notify(nd);
+            if (ret != NotifyDescriptor.YES_OPTION) {
+                return;
+            }
+            
+            MavenProject mproject = project.getOriginalMavenProject();
+            boolean found = false;
+            while (mproject != null) {
+                if (mproject.getDependencies() != null) {
+                    Iterator it = mproject.getDependencies().iterator();
+                    while (it.hasNext()) {
+                        Dependency dep = (Dependency) it.next();
+                        if (   art.getArtifactId().equals(dep.getArtifactId())
+                        && art.getGroupId().equals(dep.getGroupId())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (found) {
+                    break;
+                }
+                mproject = mproject.getParent();
+            }
+            if (mproject == null) {
+                //how come..
+                StatusDisplayer.getDefault().setStatusText("Was not able to locate the dependency in POM file(s). Ignoring...");
+                return;
+            }
+            if (mproject != project.getOriginalMavenProject()) {
+                //TODO warn that we are to modify the parent pom.
+                nd = new NotifyDescriptor.Confirmation("The dependency is specified in parent POM. A change there can infuence other projects as well. Proceed?", "Dependency in Parent POM");
+                nd.setOptionType(NotifyDescriptor.YES_NO_OPTION);
+                ret = DialogDisplayer.getDefault().notify(nd);
+                if (ret != NotifyDescriptor.YES_OPTION) {
+                    return;
+                }
+            }
+            try {
+                File fil = mproject.getFile();
+                Model model = EmbedderFactory.getProjectEmbedder().readModel(fil);
+                Iterator it = model.getDependencies().iterator();
+                while (it.hasNext()) {
+                    Dependency dep = (Dependency) it.next();
+                    if (   art.getArtifactId().equals(dep.getArtifactId())
+                    && art.getGroupId().equals(dep.getGroupId())) {
+                        model.removeDependency(dep);
+                        break;
+                    }
+                }
+                WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
+                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (MavenEmbedderException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (XmlPullParserException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+    
+    private class ExcludeTransitiveAction extends AbstractAction  {
+        public ExcludeTransitiveAction() {
+            putValue(Action.NAME, "Exclude Dependency");
+        }
+        
+        public void actionPerformed(ActionEvent event) {
+            try {
+                List trail = art.getDependencyTrail();
+                String str = (String)trail.get(1);
+                StringTokenizer tok = new StringTokenizer(str, ":");
+                String groupId = tok.nextToken();
+                String artifactId = tok.nextToken();
+                File fil = DependencyNode.this.project.getPOMFile();
+                Model model = EmbedderFactory.getProjectEmbedder().readModel(fil);
+                Dependency dep = null;
+                if (model.getDependencies() != null) {
+                    Iterator it = model.getDependencies().iterator();
+                    while (it.hasNext()) {
+                        Dependency dependency = (Dependency) it.next();
+                        if (groupId.equals(dependency.getGroupId()) && artifactId.equals(dependency.getArtifactId())) {
+                            dep = dependency;
+                            break;
+                        }
+                    }
+                }
+                if (dep == null) {
+                    // now check the active profiles for the dependency..
+                    List profileNames = new ArrayList();
+                    Iterator it = project.getOriginalMavenProject().getActiveProfiles().iterator();
+                    while (it.hasNext()) {
+                        Profile prof = (Profile) it.next();
+                        profileNames.add(prof.getId());
+                    }
+                    it = model.getProfiles().iterator();
+                    while (it.hasNext()) {
+                        Profile profile = (Profile) it.next();
+                        if (profileNames.contains(profile.getId())) {
+                            List lst = profile.getDependencies();
+                            if (lst != null) {
+                                Iterator it2 = lst.iterator();
+                                while (it2.hasNext()) {
+                                    Dependency dependency = (Dependency) it2.next();
+                                    if (groupId.equals(dependency.getGroupId()) && artifactId.equals(dependency.getArtifactId())) {
+                                        dep = dependency;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+                if (dep == null) {
+                    dep = new Dependency();
+                    dep.setArtifactId(artifactId);
+                    dep.setGroupId(groupId);
+                    dep.setType(tok.nextToken());
+                    dep.setVersion(tok.nextToken());
+                    model.addDependency(dep);
+                }
+                Exclusion exclude = new Exclusion();
+                exclude.setArtifactId(art.getArtifactId());
+                exclude.setGroupId(art.getGroupId());
+                dep.addExclusion(exclude);
+                WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
+                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (XmlPullParserException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            } catch (MavenEmbedderException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
     }
     
     private class InstallLocalArtifactAction extends AbstractAction implements RunConfig {
@@ -429,7 +595,7 @@ public class DependencyNode extends AbstractNode {
                 putValue("FileToInstall", fil);
                 MavenJavaExecutor exec = new MavenJavaExecutor(this);
                 ExecutorTask task = ExecutionEngine.getDefault().execute("Install", exec, exec.getInputOutput());
-        
+                
                 task.addTaskListener(new TaskListener() {
                     public void taskFinished(Task task2) {
 //                        project.firePropertyChange(NbMavenProject.PROP_PROJECT);
@@ -437,23 +603,23 @@ public class DependencyNode extends AbstractNode {
                 });
             }
         }
-
+        
         public File getExecutionDirectory() {
             return project.getPOMFile().getParentFile();
         }
-
+        
         public NbMavenProject getProject() {
             return project;
         }
-
+        
         public List getGoals() {
             return Collections.singletonList("install:install-file");
         }
-
+        
         public String getExecutionName() {
             return "install-artifact";
         }
-
+        
         public Properties getProperties() {
             Properties props = new Properties();
             props.put("artifactId", art.getArtifactId());
@@ -467,19 +633,19 @@ public class DependencyNode extends AbstractNode {
             
             return props;
         }
-
+        
         public Boolean isShowDebug() {
             return null;
         }
-
+        
         public Boolean isShowError() {
             return null;
         }
-
+        
         public Boolean isOffline() {
             return null;
         }
-
+        
         public List getActiveteProfiles() {
             return Collections.emptyList();
         }
@@ -513,7 +679,7 @@ public class DependencyNode extends AbstractNode {
     }
     
     private class InstallLocalSourcesAction extends AbstractAction implements Runnable {
-
+        
         private File source;
         public InstallLocalSourcesAction() {
             putValue(Action.NAME, "Add local sources");
@@ -543,9 +709,9 @@ public class DependencyNode extends AbstractNode {
 //        public EditAction() {
 //            putValue(Action.NAME, "Edit...");
 //        }
-//        
+//
 //        public void actionPerformed(ActionEvent event) {
-//            
+//
 //            DependencyEditor ed = new DependencyEditor(project, change);
 //            DialogDescriptor dd = new DialogDescriptor(ed, "Edit Dependency");
 //            Object ret = DialogDisplayer.getDefault().notify(dd);
@@ -563,7 +729,7 @@ public class DependencyNode extends AbstractNode {
 //            }
 //        }
 //    }
-//    
+//
     private class ViewJavadocAction extends AbstractAction {
         public ViewJavadocAction() {
             putValue(Action.NAME, "View Javadoc");
@@ -572,17 +738,17 @@ public class DependencyNode extends AbstractNode {
         public void actionPerformed(ActionEvent event) {
             File javadoc = getJavadocFile();
             if (javadoc.exists()) {
-            try {
-                URL url = javadoc.toURI().toURL();
-                if (FileUtil.isArchiveFile(url)) {
-                    URL archUrl = FileUtil.getArchiveRoot(url);
-                    String path = archUrl.toString() + "apidocs/index.html";
-                    URL link = new URL(path);
-                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+                try {
+                    URL url = javadoc.toURI().toURL();
+                    if (FileUtil.isArchiveFile(url)) {
+                        URL archUrl = FileUtil.getArchiveRoot(url);
+                        String path = archUrl.toString() + "apidocs/index.html";
+                        URL link = new URL(path);
+                        HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+                    }
+                } catch (MalformedURLException e) {
+                    ErrorManager.getDefault().notify(e);
                 }
-            } catch (MalformedURLException e) {
-                ErrorManager.getDefault().notify(e);
-            }
             }
         }
     }
