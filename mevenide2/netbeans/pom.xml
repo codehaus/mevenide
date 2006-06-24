@@ -27,8 +27,8 @@
       <pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mevenide.plugins</groupId>
-                <artifactId>maven-nbm-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
                 <version>LATEST</version>
                 <extensions>true</extensions>
                 <configuration>
@@ -70,9 +70,11 @@
             <url>http://208.44.201.216:18080/maven</url>
             <releases>
                 <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>
     </repositories>

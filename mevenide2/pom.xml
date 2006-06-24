@@ -109,20 +109,36 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+        <repository>
+            <id>codehaus</id>
+            <name>Mevenide's M2 repo</name>
+            <url>http://repository.codehaus.org</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
         <!-- required for webdav plugin, as it isn't released yet -->
         <!-- FIXME remove when plugin released -->
-        <repository>
+        <!--repository>
             <id>apache-snapshots</id>
             <name>Snapshot repository</name>
             <url>http://people.apache.org/maven-snapshot-repository/</url>
-        </repository>
+        </repository-->
     </repositories>
     
     <pluginRepositories>
-        <pluginRepository>
+        <!--pluginRepository>
             <id>mevenide-plugins</id>
             <name>Mevenide's M2 plugins</name>
             <url>http://mevenide.codehaus.org/m2-repository</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository-->
+        <pluginRepository>
+            <id>codehaus-plugins</id>
+            <name>codehaus repository</name>
+            <url>http://repository.codehaus.org</url>
             <snapshots>
                 <updatePolicy>never</updatePolicy>
             </snapshots>
