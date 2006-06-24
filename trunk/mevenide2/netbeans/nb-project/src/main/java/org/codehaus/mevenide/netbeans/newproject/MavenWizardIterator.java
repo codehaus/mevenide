@@ -205,7 +205,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
             task.result();
         } finally {
             if (oldUserdir == null) {
-                System.clearProperty("user.dir");
+                System.getProperties().remove("user.dir");
             } else {
                 System.setProperty("user.dir", oldUserdir);
             }

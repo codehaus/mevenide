@@ -647,7 +647,7 @@ public class DependencyNode extends AbstractNode {
         }
         
         public List getActiveteProfiles() {
-            return Collections.emptyList();
+            return Collections.EMPTY_LIST;
         }
         
     }
