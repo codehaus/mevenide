@@ -176,7 +176,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
             // in netbeans.
             if (basedir == null) {
-                System.clearProperty("basedir");
+                System.getProperties().remove("basedir");
             } else {
                 System.setProperty("basedir", basedir);
             }
