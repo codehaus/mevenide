@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>1.2</version>
+    <version>1.3-SNAPSHOT</version>
   </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>grammar</artifactId>
     <packaging>nbm</packaging>
-    <version>2.1</version>
+    <version>2.2-SNAPSHOT</version>
     <name>Netbeans Maven2 code completion support</name>
     <url>http://mevenide.codehaus.org</url>
     <description>Code completion support for Maven2 related files, like pom.xml, settings.xml, assembly descriptor etc.</description>
@@ -69,7 +69,7 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
-            <version>2.1.1</version>
+            <version>2.2-SNAPSHOT</version>
         </dependency>
         
         <dependency>
