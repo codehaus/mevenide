@@ -33,7 +33,7 @@ import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 
 /**
- *
+ * adds hyperlinking support to pom.xml files..
  * @author mkleint
  */
 public class HyperlinkProviderImpl implements HyperlinkProvider {
@@ -60,7 +60,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
             if (previous != null && previous.getImage().equals(">")) {
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
-                if (fo.getFileObject(token.getImage()) != null) {
+                if (getPath(fo, token.getImage()) != null) {
                     return true;
                 } 
             }
@@ -95,7 +95,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
             if (previous != null && previous.getImage().equals(">")) {
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
-                if (fo.getFileObject(token.getImage()) != null) {
+                if (getPath(fo, token.getImage()) != null) {
                     return new int[] {token.getOffset(), token.getNext().getOffset()};
                 } 
             }
@@ -131,8 +131,8 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 if (previous.getPrevious().getImage().equals("<module")) {
                     path = path + "/pom.xml";
                 }
-                if (fo.getFileObject(path) != null) {
-                    FileObject file = fo.getFileObject(path);
+                if (getPath(fo, path) != null) {
+                    FileObject file = getPath(fo, path);
                     DataObject dobj;
                     try {
                         dobj = DataObject.find(file);
@@ -164,6 +164,18 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
     private FileObject getProjectDir(Document doc) {
         DataObject dObject = NbEditorUtilities.getDataObject(doc);
         return dObject.getPrimaryFile().getParent();
+    }
+    
+    private FileObject getPath(FileObject parent, String path) {
+        // TODO more substitutions necessary probably..
+        if (path.startsWith("${basedir}/")) {
+            path = path.substring("${basedir}/".length());
+        }
+        while (path.startsWith("../") && parent.getParent() != null) {
+            path = path.substring("../".length());
+            parent = parent.getParent();
+        }
+        return parent.getFileObject(path);
     }
 
     private boolean isPomFile(Document doc) {
