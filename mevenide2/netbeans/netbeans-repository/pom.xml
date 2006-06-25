@@ -50,6 +50,13 @@
             <url>http://people.apache.org/maven-snapshot-repository/</url>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache-snapshots</id>
+            <name>Snapshot repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository/</url>
+        </pluginRepository>
+    </pluginRepositories>
     <build>
             <plugins>
                 <plugin>
