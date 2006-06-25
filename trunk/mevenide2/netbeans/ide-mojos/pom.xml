@@ -86,7 +86,7 @@
                     <target>1.4</target>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.2</version>
@@ -96,22 +96,38 @@
                         <goals>
                             <goal>deploy</goal>
                         </goals>
+                        <configuration>
+                            <repositoryId>temporary</repositoryId>
+                        </configuration>
                     </execution>
                 </executions>
-            </plugin>
+                <configuration>
+                    <repositoryId>mevenide-upload</repositoryId>
+                </configuration>
+            </plugin-->
         </plugins>
     </build>
     <distributionManagement>
-        <repository>
+        <!--repository>
             <id>temporary</id>
             <name>Build temporary repository</name>
             <url>file://${basedir}/target/m2-repository</url>
-        </repository>
-        <!--repository>
-            <id>mevenide</id>
-            <name>Mevenide's private repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-repository</url>
         </repository-->
+        <repository>
+            <id>mevenide-upload</id>
+            <name>Mevenide Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/mevenide/</url>
+        </repository>
+        <snapshotRepository>
+            <id>mevenide-snapshots-upload</id>
+            <name>Mevenide Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/mevenide/</url>
+        </snapshotRepository>
+        <site>
+            <id>mevenide-site-upload</id>
+            <name>Mevenide Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
+        </site>
     </distributionManagement>
     
     <repositories>
@@ -119,7 +135,12 @@
             <id>netbeans</id>
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://208.44.201.216:18080/maven</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
             <snapshots>
+                <enabled>false</enabled>
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </repository>

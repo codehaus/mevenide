@@ -13,7 +13,7 @@
    </dependencies> 
    <nbmResources>
        <nbmResource>
-           <baseDirectory>../ide-mojos/target</baseDirectory>
+           <baseDirectory>target/nbrepo-assembly</baseDirectory>
            <includes>
                <include>m2-repository/**</include>
            </includes>
