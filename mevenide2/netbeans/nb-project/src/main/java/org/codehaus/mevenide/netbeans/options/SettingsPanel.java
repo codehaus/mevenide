@@ -19,8 +19,11 @@ package org.codehaus.mevenide.netbeans.options;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import javax.swing.JFileChooser;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
+import org.openide.filesystems.FileUtil;
 
 /**
  * The visual panel that displays in the Options dialog. Some properties
@@ -255,6 +258,11 @@ public class SettingsPanel extends javax.swing.JPanel {
         lblLocalRepository.setText("Local Repository :");
 
         btnLocalRepository.setText("Browse...");
+        btnLocalRepository.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLocalRepositoryActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -306,9 +314,30 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(lblLocalRepository)
                     .add(btnLocalRepository)
                     .add(txtLocalRepository, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(102, Short.MAX_VALUE))
+                .addContainerGap(108, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void btnLocalRepositoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalRepositoryActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
+        chooser.setDialogTitle("Select Local Repository Location");
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        String path = txtLocalRepository.getText();
+        if (path.trim().length() == 0) {
+            path = new File(System.getProperty("user.home"), ".m2").getAbsolutePath();
+        }
+        if (path.length() > 0) {
+            File f = new File(path);
+            if (f.exists()) {
+                chooser.setSelectedFile(f);
+            }
+        }
+        if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(this)) {
+            File projectDir = chooser.getSelectedFile();
+            txtLocalRepository.setText(FileUtil.normalizeFile(projectDir).getAbsolutePath());
+        }
+    }//GEN-LAST:event_btnLocalRepositoryActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -397,17 +426,17 @@ public class SettingsPanel extends javax.swing.JPanel {
         MavenExecutionSettings.getDefault().setFailureBehaviour(failureBehaviour);
         changed = false;
     }
-
+    
     boolean hasValidValues() {
         return true;
     }
-
+    
     boolean hasChangedValues() {
         return changed;
     }
     
     private class ActionListenerImpl implements ActionListener {
-
+        
         public void actionPerformed(ActionEvent e) {
             changed = true;
         }
