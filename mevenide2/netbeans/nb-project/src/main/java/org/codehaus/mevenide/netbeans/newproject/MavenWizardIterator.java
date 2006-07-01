@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -40,7 +42,10 @@ import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
@@ -50,7 +55,12 @@ import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
+/**
+ *
+ *@author mkleint
+ */
 public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterator {
     
     private static final long serialVersionUID = 1L;
@@ -80,36 +90,114 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
     }
     
     public Set/*<FileObject>*/ instantiate() throws IOException {
-        Set resultSet = new LinkedHashSet();
-        File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
-        dirF.getParentFile().mkdirs();
         
-        String art = (String)wiz.getProperty("artifactId");
-        String ver = (String)wiz.getProperty("version");
-        String gr = (String)wiz.getProperty("groupId");
-        String pack = (String)wiz.getProperty("package");
-        Archetype archetype = (Archetype)wiz.getProperty("archetype");
-        
-        runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
-        
-        FileObject template = Templates.getTemplate(wiz);
-        FileObject dir = FileUtil.toFileObject(dirF);
-        // Always open top dir as a project:
-        resultSet.add(dir);
-        // Look for nested projects to open as well:
-        Enumeration e = dir.getFolders(true);
-        while (e.hasMoreElements()) {
-            FileObject subfolder = (FileObject) e.nextElement();
-            if (ProjectManager.getDefault().isProject(subfolder)) {
-                resultSet.add(subfolder);
-            }
-        }
-        
-        File parent = dirF.getParentFile();
+        final File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
+        final File parent = dirF.getParentFile();
         if (parent != null && parent.exists()) {
             ProjectChooser.setProjectsFolder(parent);
         }
         
+        Set resultSet = new LinkedHashSet();
+        File root = new File(System.getProperty("java.io.tmpdir"));
+        int index = 0;
+        File dir = new File(root, "tempmavenproject" + index);
+        while (dir.exists()) {
+            index = index + 1;
+            dir = new File(root, "tempmavenproject" + index);
+        }
+        boolean isPosted = true;
+        File tempPomFile = null;
+        if (dir.mkdir()) {
+            dir.deleteOnExit();
+            tempPomFile = new File(dir, "pom.xml.temp");
+            tempPomFile.createNewFile();
+            tempPomFile.deleteOnExit();
+            resultSet.add(FileUtil.toFileObject(dir));
+        } else {
+            isPosted = false;
+        }
+        final File fTempFile = tempPomFile;
+        final boolean fIsPosted = isPosted;
+        final FileObject fTtemplate = Templates.getTemplate(wiz);
+        final String art = (String)wiz.getProperty("artifactId");
+        final String ver = (String)wiz.getProperty("version");
+        final String gr = (String)wiz.getProperty("groupId");
+        final String pack = (String)wiz.getProperty("package");
+        final Archetype archetype = (Archetype)wiz.getProperty("archetype");
+        Runnable create = new Runnable() {
+            public void run() {
+                Set resultSet = new LinkedHashSet();
+                dirF.getParentFile().mkdirs();
+                
+                
+                runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
+                
+                // Always open top dir as a project:
+                FileObject fDir = FileUtil.toFileObject(dirF);
+                if (fIsPosted) {
+                    try {
+                        Project project = ProjectManager.getDefault().findProject(fDir);
+                        if (project != null) {
+                            resultSet.add(project);
+                        }
+                    } catch (IllegalArgumentException ex) {
+                        ex.printStackTrace();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else {
+                    resultSet.add(fDir);
+                }
+                // Look for nested projects to open as well:
+                Enumeration e = fDir.getFolders(true);
+                while (e.hasMoreElements()) {
+                    FileObject subfolder = (FileObject) e.nextElement();
+                    if (ProjectManager.getDefault().isProject(subfolder)) {
+                        if (fIsPosted) {
+                            try {
+                                Project project = ProjectManager.getDefault().findProject(subfolder);
+                                if (project != null) {
+                                    resultSet.add(project);
+                                }
+                            } catch (IllegalArgumentException ex) {
+                                ex.printStackTrace();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        } else {
+                            resultSet.add(subfolder);
+                        }
+                    }
+                }
+                if (fIsPosted) {
+                    final Project[] prjs = (Project[])resultSet.toArray(new Project[resultSet.size()]);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            OpenProjects.getDefault().open(prjs, true);
+                            OpenProjects.getDefault().setMainProject(prjs[0]);
+                            FileObject temp = FileUtil.toFileObject(fTempFile.getParentFile());
+                            try {
+                                Project oldprj = ProjectManager.getDefault().findProject(temp);
+                                if (oldprj != null) {
+                                    OpenProjects.getDefault().close(new Project[] {oldprj});
+                                }
+                                fTempFile.delete();
+                                fTempFile.getParentFile().delete();
+                            } catch (IllegalArgumentException ex) {
+                                ex.printStackTrace();
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            }
+        };
+        if (fIsPosted) {
+            RequestProcessor.getDefault().post(create);
+        } else {
+            create.run();
+        }
         return resultSet;
     }
     
