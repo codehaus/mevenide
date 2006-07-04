@@ -39,7 +39,7 @@ public class MavenExecutionSettings extends SystemOption {
     protected void initialize() {
         super.initialize();
         setChecksumPolicy(null);
-        setPluginUpdatePolicy(null);
+        setPluginUpdatePolicy(Boolean.FALSE);
         setShowDebug(false);
         setShowErrors(false);
         setFailureBehaviour(MavenExecutionRequest.REACTOR_FAIL_FAST);
