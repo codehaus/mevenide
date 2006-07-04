@@ -92,12 +92,21 @@ public final class MavenQueryProvider extends GrammarQueryManager {
             File file = FileUtil.toFile(env.getFileObject());
             Project owner = FileOwnerQuery.getOwner(env.getFileObject());
             if (owner instanceof NbMavenProject) {
+                if ("src/main/resources/META-INF/archetype.xml".equals(FileUtil.getRelativePath(owner.getProjectDirectory(), env.getFileObject()))) {
+                    return new MavenArchetypeGrammar(env);
+                }
                 //TODO also locate by namespace??
                 NbMavenProject mProject = (NbMavenProject)owner;
                 String desc = PluginPropertyUtils.getPluginProperty(mProject, 
                         "org.apache.maven.plugins", 
                         "maven-assembly-plugin", 
-                        "descriptor", null);
+                        "descriptor", "assembly");
+                if (desc == null) {
+                    desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                            "org.apache.maven.plugins", 
+                            "maven-assembly-plugin", 
+                            "descriptor", "directory");
+                }
                 if (desc != null) {
                     URI uri = FileUtilities.getDirURI(mProject.getProjectDirectory(), desc);
                     if (uri != null && new File(uri).equals(file)) {
@@ -105,9 +114,15 @@ public final class MavenQueryProvider extends GrammarQueryManager {
                     }
                 }
                 desc = PluginPropertyUtils.getPluginProperty(mProject, 
-                        "org.codehaus.mevenide.plugins", 
-                        "maven-nbm-plugin", 
+                        "org.codehaus.mojo", 
+                        "nbm-maven-plugin", 
                         "descriptor", "jar");
+                if (desc == null) {
+                    desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                            "org.codehaus.mevenide.plugins", 
+                            "maven-nbm-plugin", 
+                            "descriptor", "jar");
+                }
                 if (desc != null) {
                     URI uri = FileUtilities.getDirURI(mProject.getProjectDirectory(), desc);
                     if (uri != null && new File(uri).equals(file)) {
