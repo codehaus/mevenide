@@ -20,12 +20,16 @@ package org.codehaus.mevenide.netbeans.newproject;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.tree.TreeSelectionModel;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.WizardDescriptor;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -145,7 +149,25 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomActionPerformed
-// TODO add your handling code here:
+        CustomArchetypePanel panel = new CustomArchetypePanel();
+        DialogDescriptor dd = new DialogDescriptor(panel, "Specify archetype details");
+        Object ret = DialogDisplayer.getDefault().notify(dd);
+        if (ret == NotifyDescriptor.OK_OPTION) {
+            Childs childs = (Childs)manager.getRootContext().getChildren();
+            Archetype arch = new Archetype();
+            arch.setArtifactId(panel.getArtifactId());
+            arch.setGroupId(panel.getGroupId());
+            arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion());
+            arch.setName("Custom archetype - " + panel.getArtifactId());
+            childs.addArchetype(arch);
+            //HACK - the added one will be last..
+            Node[] list =  getExplorerManager().getRootContext().getChildren().getNodes();
+            try {
+                getExplorerManager().setSelectedNodes(new Node[] {list[list.length - 1]});
+            } catch (PropertyVetoException ex) {
+                ex.printStackTrace();
+            }
+        }
     }//GEN-LAST:event_btnCustomActionPerformed
     
     
@@ -188,7 +210,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
 
     boolean valid(WizardDescriptor wizardDescriptor) {
-        return manager.getSelectedNodes().length > 0;
+        boolean isSelected = manager.getSelectedNodes().length > 0;
+        return isSelected;
     }
     private void updateDescription() {
         Node[] nds = manager.getSelectedNodes();
@@ -215,6 +238,12 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         
         public void removeNotify() {
             setKeys(Collections.EMPTY_LIST);
+        }
+        
+        public void addArchetype(Archetype arch) {
+            keys.add(arch);
+            setKeys(keys);
+            refresh();
         }
         
         public Node[] createNodes(Object key) {
