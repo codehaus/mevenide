@@ -36,6 +36,8 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private int type;
 
     private String lastProjectName = "";
+
+    private boolean changedPackage = false;
     
     /** Creates new form PanelProjectLocationVisual */
     public BasicPanelVisual(BasicWizardPanel panel) {
@@ -368,6 +370,16 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                 (txtArtifactId.getText().trim().length() == 0 || lastProjectName.equals(txtArtifactId.getText().trim()))) {
             txtArtifactId.setText(projectNameTextField.getText());
             lastProjectName = projectNameTextField.getText().trim();
+        }
+        
+        if (!changedPackage && (projectNameTextField.getDocument() == doc || txtGroupId.getDocument() == doc)) {
+            txtPackage.getDocument().removeDocumentListener(this);
+            txtPackage.setText(txtGroupId.getText() + "." + projectNameTextField.getText());
+            txtPackage.getDocument().addDocumentListener(this);
+        }
+        
+        if (txtPackage.getDocument() == doc) {
+            changedPackage = txtPackage.getText().trim().length() != 0;
         }
         
         panel.fireChangeEvent(); // Notify that the panel changed
