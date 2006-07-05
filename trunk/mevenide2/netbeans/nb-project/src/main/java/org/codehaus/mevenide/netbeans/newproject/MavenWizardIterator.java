@@ -280,7 +280,9 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
         props.setProperty("artifactId", art);
         props.setProperty("groupId", gr);
         props.setProperty("version", ver);
-        props.setProperty("package", pack);
+        if (pack != null && pack.trim().length() > 0) {
+            props.setProperty("packageName", pack);
+        }
         config.setProperties(props);
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
