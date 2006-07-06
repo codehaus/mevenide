@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -186,9 +187,31 @@ public class MavenProjectNode extends AbstractNode {
     }
 
     public String getShortDescription() {
-        return "<html><i>Location:</i><b> " + project.getProjectDirectory().getPath() + "</b><br>" + 
-                //TODO escape the short description
-                "<p><i>Description:</i> " + project.getShortDescription() + "</p></html>";
+        StringBuffer buf = new StringBuffer();
+        buf.append("<html><i>Location:</i><b> ").append(project.getProjectDirectory().getPath()).append("</b><br>");
+        buf.append("<i>GroupId:</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br>");
+        buf.append("<i>ArtifactId:</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br>");
+        buf.append("<i>Version:</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br>");
+        //TODO escape the short description
+        buf.append("<i>Description:</i> ").append(breakPerLine(project.getShortDescription(), "Description:".length())).append("</html>");
+        return buf.toString();
+    }
+
+    private String breakPerLine(String string, int start) {
+        StringBuffer buf = new StringBuffer();
+        StringTokenizer tok = new StringTokenizer(string, " ", true);
+        int charCount = start;
+        while (tok.hasMoreTokens()) {
+            String token = tok.nextToken();
+            charCount = charCount + token.length();
+            if (charCount > 50) {
+                charCount = 0;
+                buf.append("<br/>");
+            }
+            buf.append(token);
+        }
+        return buf.toString();
+        
     }
     
     private class CloseSuprojectsAction extends AbstractAction {
