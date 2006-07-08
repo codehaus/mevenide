@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.manager.DefaultWagonManager;
@@ -52,6 +53,8 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
     
     private DefaultWagonManager original;
     
+    private List letGoes = new ArrayList();
+    
     /** Creates a new instance of NbWagonManager */
     public NbWagonManager() {
         original = new DefaultWagonManager();
@@ -60,11 +63,43 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
     public Wagon getWagon(String protocol) throws UnsupportedProtocolException {
         return original.getWagon(protocol);
     }
+    //MEVENIDE-422
+    public void letGoThrough(Artifact artifact) {
+        synchronized (letGoes) {
+            letGoes.add(artifact);
+        }
+    }
+    
+    //MEVENIDE-422
+    public void cleanLetGone(Artifact artifact) {
+        synchronized (letGoes) {
+            letGoes.remove(artifact);
+        }
+    }
 
     public void getArtifact(Artifact artifact, List remoteRepositories) throws TransferFailedException, ResourceDoesNotExistException {
 //        System.out.println("getArtifact1 =" + artifact);
-        artifact.setResolved(true);
-//        original.getArtifact(artifact, remoteRepositories);
+        boolean cont;
+        synchronized (letGoes) {
+            cont = letGoes.contains(artifact);
+        }
+        if (cont) {
+//            System.out.println("downloading=" + artifact);
+            try {
+                original.getArtifact(artifact, remoteRepositories);
+            } catch (TransferFailedException exc) {
+                //ignore, we will just pretend it didn't happen.
+                artifact.setResolved(true);
+            } catch (ResourceDoesNotExistException exc) {
+                //ignore, we will just pretend it didn't happen.
+                artifact.setResolved(true);
+            }
+            synchronized (letGoes) {
+                letGoes.remove(artifact);
+            }
+        } else {
+            artifact.setResolved(true);
+        }
     }
 
     public void getArtifact(Artifact artifact, ArtifactRepository repository) throws TransferFailedException, ResourceDoesNotExistException {
@@ -153,12 +188,12 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
     public void enableLogging(Logger logger ) {
         super.enableLogging(logger);
         original.enableLogging(logger);
-        
     }
 
     public Wagon getWagon(Repository repository) throws UnsupportedProtocolException, WagonConfigurationException {
         return original.getWagon(repository);
     }
+
 
 
     
