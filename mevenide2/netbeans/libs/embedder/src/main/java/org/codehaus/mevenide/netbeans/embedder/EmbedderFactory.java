@@ -87,6 +87,7 @@ public class EmbedderFactory {
             embedder.setInteractiveMode(false);
             embedder.setAlignWithUserInstallation(true);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
+            embedder.setLogger(new NullEmbedderLogger());
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
             
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
