@@ -25,10 +25,12 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.model.Build;
@@ -48,9 +50,9 @@ import org.openide.filesystems.URLMapper;
  * SourceForBinary and JavadocForBinary query impls.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementation, 
-                                                      JavadocForBinaryQueryImplementation {
-                                                          
+public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementation,
+        JavadocForBinaryQueryImplementation {
+    
     private NbMavenProject project;
     private HashMap map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
@@ -59,10 +61,15 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         map = new HashMap();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                Iterator it = map.values().iterator();
-                while (it.hasNext()) {
-                    BinResult res = (BinResult)it.next();
-                    res.fireChanged();
+                synchronized (map) {
+                    Iterator it = map.entrySet().iterator();
+                    while (it.hasNext()) {
+                        Map.Entry ent = (Map.Entry)it.next();
+                        BinResult res = (BinResult)ent.getValue();
+                        if (!Arrays.equals(res.getCached(), res.getRoots())) {
+                            res.fireChanged();
+                        }
+                    }
                 }
             }
         });
@@ -76,28 +83,27 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * </p>
      * @param binaryRoot the class path root of Java class files
      * @return a list of source roots; may be empty but not null
-     */   
+     */
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
-        SourceForBinaryQuery.Result toReturn = (SourceForBinaryQuery.Result)map.get(url);
-        if (toReturn != null) {
+        synchronized (map) {
+            SourceForBinaryQuery.Result toReturn = (SourceForBinaryQuery.Result)map.get(url.toString());
+            if (toReturn != null) {
+                return toReturn;
+            }
+            if (url.getProtocol().equals("jar") && checkURL(url) != -1) { //NOI18N
+                toReturn = new BinResult(url);
+            }
+            if (url.getProtocol().equals("file")) { //NOI18N
+                int result = checkURL(url);
+                if (result == 1 || result == 0) {
+                    toReturn = new BinResult(url);
+                }
+            }
+            if (toReturn != null) {
+                map.put(url.toString(), toReturn);
+            }
             return toReturn;
         }
-        if (url.getProtocol().equals("jar") && checkURL(url) != -1) { //NOI18N
-            toReturn = new BinResult(url);
-        }
-        if (url.getProtocol().equals("file")) { //NOI18N
-            int result = checkURL(url);
-            if (result == 1) {
-                toReturn = new BinResult(url);
-            }
-            if (result == 0) {
-                toReturn = new BinResult(url);
-            }
-        }
-        if (toReturn != null) {
-            map.put(url, toReturn);
-        }
-        return toReturn;
     }
     
     /**
@@ -111,7 +117,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * @param binaryRoot the class path root of Java class files
      * @return a result object encapsulating the roots and permitting changes to
      *         be listened to, or null if the binary root is not recognized
-     */    
+     */
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
         if (checkURL(url) != -1) {
             return new DocResult(url);
@@ -181,7 +187,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         URI[] genRoots = project.getGeneratedSourceRoots();
         for (int i = 0; i < genRoots.length; i++) {
-            FileObject fo = FileUtil.toFileObject(new File(genRoots[i]));
+            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(genRoots[i])));
             if (fo != null) {
                 toReturn.add(fo);
             }
@@ -202,26 +208,27 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
     }
-
+    
     
     private URL[] getJavadocRoot() {
         //TODO?
         return new URL[0];
-    }    
+    }
     
     
     private class BinResult implements SourceForBinaryQuery.Result  {
-       private URL url;
-       private List listeners;
-       private FileObject[] results;
+        private URL url;
+        private List listeners;
+        private FileObject[] results;
+        private FileObject[] cached = null;
+        
         public BinResult(URL urlParam) {
             url = urlParam;
             listeners = new ArrayList();
         }
         
-       
-       public FileObject[] getRoots() {
-           int xxx = checkURL(url);
+        public FileObject[] getRoots() {
+            int xxx = checkURL(url);
             if (xxx == 0) {
                 results = getSrcRoot();
             } else if (xxx == 1) {
@@ -230,67 +237,72 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 results = new FileObject[0];
             }
 //            System.out.println("src bin result for =" + url + " length=" + results.length);
+            cached = results;
             return results;
-       }
-       
-       public void addChangeListener(ChangeListener changeListener) {
-           synchronized (listeners) {
-               listeners.add(changeListener);
-           }
-       }
-       
-       public void removeChangeListener(ChangeListener changeListener) {
-           synchronized (listeners) {
-               listeners.remove(changeListener);
-           }
-       }
-       
-       void fireChanged() {
-           List lists = new ArrayList();
-           synchronized(listeners) {
-               lists.addAll(listeners);
-           }
-           Iterator it = lists.iterator();
-           while (it.hasNext()) {
-               ChangeListener listen = (ChangeListener)it.next();
-               listen.stateChanged(new ChangeEvent(this));
-           }
-       }
-       
-   }
-
+        }
+        
+        public FileObject[] getCached() {
+            return cached;
+        }
+        
+        public void addChangeListener(ChangeListener changeListener) {
+            synchronized (listeners) {
+                listeners.add(changeListener);
+            }
+        }
+        
+        public void removeChangeListener(ChangeListener changeListener) {
+            synchronized (listeners) {
+                listeners.remove(changeListener);
+            }
+        }
+        
+        void fireChanged() {
+            List lists = new ArrayList();
+            synchronized(listeners) {
+                lists.addAll(listeners);
+            }
+            Iterator it = lists.iterator();
+            while (it.hasNext()) {
+                ChangeListener listen = (ChangeListener)it.next();
+                listen.stateChanged(new ChangeEvent(this));
+            }
+        }
+        
+    }
+    
     private class DocResult implements JavadocForBinaryQuery.Result  {
-       private URL url;
-       private URL[] results;
-       private List listeners;
-       
+        private URL url;
+        private URL[] results;
+        private List listeners;
+        
         public DocResult(URL urlParam) {
             url = urlParam;
             listeners = new ArrayList();
         }
-       public void addChangeListener(ChangeListener changeListener) {
-           synchronized (listeners) {
-               listeners.add(changeListener);
-           }
-       }
-       
-       public void removeChangeListener(ChangeListener changeListener) {
-           synchronized (listeners) {
-               listeners.remove(changeListener);
-           }
-       }
-       
-       void fireChanged() {
-           List lists = new ArrayList();
-           synchronized(listeners) {
-               lists.addAll(listeners);
-           }
-           Iterator it = lists.iterator();
-           while (it.hasNext()) {
-               ChangeListener listen = (ChangeListener)it.next();
-               listen.stateChanged(new ChangeEvent(this));
-           }
-       }
+        public void addChangeListener(ChangeListener changeListener) {
+            synchronized (listeners) {
+                listeners.add(changeListener);
+            }
+        }
+        
+        public void removeChangeListener(ChangeListener changeListener) {
+            synchronized (listeners) {
+                listeners.remove(changeListener);
+            }
+        }
+        
+        void fireChanged() {
+            List lists = new ArrayList();
+            synchronized(listeners) {
+                lists.addAll(listeners);
+            }
+            Iterator it = lists.iterator();
+            while (it.hasNext()) {
+                ChangeListener listen = (ChangeListener)it.next();
+                listen.stateChanged(new ChangeEvent(this));
+            }
+        }
         
         public java.net.URL[] getRoots() {
             if (checkURL(url) != -1) {
@@ -301,6 +313,6 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             return results;
         }
         
-   }
+    }
     
 }
