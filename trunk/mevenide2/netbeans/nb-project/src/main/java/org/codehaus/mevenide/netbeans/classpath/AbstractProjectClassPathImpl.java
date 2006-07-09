@@ -116,7 +116,8 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                 // if file does not exist (e.g. build/classes folder
                 // was not created yet) then corresponding File will
                 // not be ended with slash. Fix that.
-                if (pieces[i].toString().toLowerCase().endsWith(".jar")) {
+                if (pieces[i].toString().toLowerCase().endsWith(".jar") 
+                 || pieces[i].toString().toLowerCase().endsWith(".ejb3")) {
                     entry = FileUtil.getArchiveRoot(pieces[i].toURL());
                 } else {
                     entry = pieces[i].toURL();
@@ -125,13 +126,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                     }
                 }
                 if (entry != null) {
-                    File checkFile = new File(pieces[i]);
-                    if (checkFile.exists()) {
-                        result.add(ClassPathSupport.createResource(entry));
-                    } else {
-//                        logger.debug("pointing to non-existing resource=" + checkFile);
-                        result.add(ClassPathSupport.createResource(entry));
-                    }
+                    result.add(ClassPathSupport.createResource(entry));
                 }
             } catch (MalformedURLException mue) {
                 ErrorManager.getDefault().notify(mue);
