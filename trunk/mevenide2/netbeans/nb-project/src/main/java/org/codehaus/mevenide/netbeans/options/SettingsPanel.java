@@ -323,6 +323,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
         chooser.setDialogTitle("Select Local Repository Location");
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setFileHidingEnabled(false);
         String path = txtLocalRepository.getText();
         if (path.trim().length() == 0) {
             path = new File(System.getProperty("user.home"), ".m2").getAbsolutePath();
