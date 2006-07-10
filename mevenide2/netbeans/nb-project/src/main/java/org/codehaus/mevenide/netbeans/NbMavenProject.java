@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -43,6 +44,7 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Profile;
+import org.apache.maven.model.Resource;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
@@ -309,6 +311,20 @@ public final class NbMavenProject implements Project {
        File fil = new File(uri);
        return fil.toURI();
     }
+   
+   public URI[] getResources(boolean test) {
+       List toRet = new ArrayList();
+       List res = test ? getOriginalMavenProject().getTestResources() : getOriginalMavenProject().getResources();
+       Iterator it = res.iterator();
+       while (it.hasNext()) {
+           Resource elem = (Resource) it.next();
+           URI uri = FileUtilities.getDirURI(getProjectDirectory(), elem.getDirectory());
+           if (new File(uri).exists()) {
+               toRet.add(uri);
+           }
+       }
+       return (URI[])toRet.toArray(new URI[toRet.size()]);
+   }
    
    
    
