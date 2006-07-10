@@ -192,6 +192,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 toReturn.add(fo);
             }
         }
+        URI[] res = project.getResources(false);
+        for (int i = 0; i < res.length; i++) {
+            FileObject fo = FileUtil.toFileObject(new File(res[i]));
+            if (fo != null) {
+                toReturn.add(fo);
+            }
+        }
         return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
     }
     
@@ -202,6 +209,13 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         while (it.hasNext()) {
             String item = (String)it.next();
             FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(item)));
+            if (fo != null) {
+                toReturn.add(fo);
+            }
+        }
+        URI[] res = project.getResources(true);
+        for (int i = 0; i < res.length; i++) {
+            FileObject fo = FileUtil.toFileObject(new File(res[i]));
             if (fo != null) {
                 toReturn.add(fo);
             }
