@@ -203,7 +203,9 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
 
     void store(WizardDescriptor d) {
-        d.putProperty("archetype", manager.getSelectedNodes()[0].getValue("archetype"));
+        if (manager.getSelectedNodes().length > 0) {
+            d.putProperty("archetype", manager.getSelectedNodes()[0].getValue("archetype"));
+        }
     }
 
     void validate(WizardDescriptor wizardDescriptor) {
