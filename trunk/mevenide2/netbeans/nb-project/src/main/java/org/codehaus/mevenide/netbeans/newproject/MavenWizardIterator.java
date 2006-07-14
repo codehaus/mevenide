@@ -134,38 +134,41 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
                 
                 // Always open top dir as a project:
                 FileObject fDir = FileUtil.toFileObject(dirF);
-                if (fIsPosted) {
-                    try {
-                        Project project = ProjectManager.getDefault().findProject(fDir);
-                        if (project != null) {
-                            resultSet.add(project);
-                        }
-                    } catch (IllegalArgumentException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                } else {
-                    resultSet.add(fDir);
-                }
-                // Look for nested projects to open as well:
-                Enumeration e = fDir.getFolders(true);
-                while (e.hasMoreElements()) {
-                    FileObject subfolder = (FileObject) e.nextElement();
-                    if (ProjectManager.getDefault().isProject(subfolder)) {
-                        if (fIsPosted) {
-                            try {
-                                Project project = ProjectManager.getDefault().findProject(subfolder);
-                                if (project != null) {
-                                    resultSet.add(project);
-                                }
-                            } catch (IllegalArgumentException ex) {
-                                ex.printStackTrace();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
+                if (fDir != null) {
+                    // the archetype generation didn't fail.
+                    if (fIsPosted) {
+                        try {
+                            Project project = ProjectManager.getDefault().findProject(fDir);
+                            if (project != null) {
+                                resultSet.add(project);
                             }
-                        } else {
-                            resultSet.add(subfolder);
+                        } catch (IllegalArgumentException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        resultSet.add(fDir);
+                    }
+                    // Look for nested projects to open as well:
+                    Enumeration e = fDir.getFolders(true);
+                    while (e.hasMoreElements()) {
+                        FileObject subfolder = (FileObject) e.nextElement();
+                        if (ProjectManager.getDefault().isProject(subfolder)) {
+                            if (fIsPosted) {
+                                try {
+                                    Project project = ProjectManager.getDefault().findProject(subfolder);
+                                    if (project != null) {
+                                        resultSet.add(project);
+                                    }
+                                } catch (IllegalArgumentException ex) {
+                                    ex.printStackTrace();
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
+                                }
+                            } else {
+                                resultSet.add(subfolder);
+                            }
                         }
                     }
                 }
@@ -173,8 +176,10 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
                     final Project[] prjs = (Project[])resultSet.toArray(new Project[resultSet.size()]);
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
-                            OpenProjects.getDefault().open(prjs, true);
-                            OpenProjects.getDefault().setMainProject(prjs[0]);
+                            if (prjs.length > 0) {
+                                OpenProjects.getDefault().open(prjs, true);
+                                OpenProjects.getDefault().setMainProject(prjs[0]);
+                            }
                             FileObject temp = FileUtil.toFileObject(fTempFile.getParentFile());
                             try {
                                 Project oldprj = ProjectManager.getDefault().findProject(temp);
