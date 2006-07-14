@@ -277,7 +277,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
         config.setActiveteProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
         config.setExecutionName("Project Creation");
-        config.setGoals(Collections.singletonList("archetype:create"));
+        config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create"));
         Properties props = new Properties();
         props.setProperty("archetypeArtifactId", arch.getArtifactId());
         props.setProperty("archetypeGroupId", arch.getGroupId());
