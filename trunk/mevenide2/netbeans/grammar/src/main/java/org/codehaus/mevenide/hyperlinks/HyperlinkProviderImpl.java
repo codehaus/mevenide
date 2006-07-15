@@ -184,6 +184,9 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
             // is that enough?
             return true;
         }
+        if ("settings.xml".equals(dObject.getPrimaryFile().getNameExt()) && ".m2".equals(dObject.getPrimaryFile().getParent().getNameExt())) {
+            return true;
+        }
         return false;
     }
     
