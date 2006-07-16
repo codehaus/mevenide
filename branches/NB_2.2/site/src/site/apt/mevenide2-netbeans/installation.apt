@@ -1,0 +1,20 @@
+Installation 
+
+  [New update Available - version 2.1] 
+There is a new version of maven2 support available. If you installed 2.0 or 2.0.1, then the easiest way it to upgrade through the Update Center.
+The supported and tested version of Netbeans is 5.0, later version should work as well.
+
+  [This is BETA software] 
+The current versions are of beta quality. There can be bugs, unfinished or completely missing features.
+
+* Instructions 
+
+  * The support for Maven2 only works in <<Netbeans 5.0>> and later builds. No support for 4.1 and older versions is planned currently.
+
+  * It doesn't require Maven2 to be installed on your machine. if it's there though, the IDE will share the settings. The Maven Embedder that ships with Mevenide is of version 2.1 snapshot, with additional not yet integrated patches.
+
+  * To install,
+
+    * download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.1.zip}release 2.1 zip}}. It contains multiple NBM files (netbeans module file).
+
+    * Start up Netbeans and select the Tools/Update Center menu item. In the appearing dialog, select the "Install Manually downloaded Modules" checkbox. In the next panel, add all the nbm files from the zip file. (Multiselection works in the filechooser). Finish the wizard and install the modules.

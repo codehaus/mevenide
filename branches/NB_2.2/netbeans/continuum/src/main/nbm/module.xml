@@ -1,0 +1,58 @@
+<nbm>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.continuum/1</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+   <dependencies>
+        <dependency>
+            <id>org.netbeans.api:org-jdesktop-layout</id>
+            <type>spec</type>
+        </dependency>        
+        <dependency>
+            <id>org.codehaus.mevenide:continuum-rpc</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-util</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-io</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-dialogs</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-options</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-explorer</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-nodes</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-windows</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-options-api</id>
+            <type>spec</type>
+            <explicitValue>org.netbeans.modules.options.api/0-1 &gt; 1.3.1</explicitValue>
+        </dependency>
+       
+      <dependency>
+          <id>commons-logging:commons-logging</id>
+	  <type>spec</type>
+          <explicitValue>org.netbeans.libs.commons_logging/1 &gt; 1.0</explicitValue>
+      </dependency>
+   </dependencies> 
+</nbm>
