@@ -37,29 +37,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-    <!--distributionManagement>
-        <repository>
-            <id>temporary</id>
-            <name>Build temporary repository</name>
-            <url>file://${basedir}/../target/m2-repository</url>
-        </repository>
-    </distributionManagement-->
-    <!--build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.1</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build-->
     <reporting>
         <plugins>
             <plugin>
