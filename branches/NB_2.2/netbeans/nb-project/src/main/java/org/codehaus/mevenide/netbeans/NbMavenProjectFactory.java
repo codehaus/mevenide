@@ -27,6 +27,7 @@ import org.apache.maven.project.MavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectManager;
+import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ProjectFactory;
 import org.netbeans.spi.project.ProjectState;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
@@ -122,7 +123,10 @@ public class NbMavenProjectFactory implements ProjectFactory
 
         public Lookup getLookup() {
             if (look == null) {
-                look = Lookups.singleton(this);
+                look = Lookups.fixed(new Object[] {
+                    this, 
+                    new NullActionProvider()
+                });
             }
             return look;
         }
@@ -163,6 +167,20 @@ public class NbMavenProjectFactory implements ProjectFactory
 
         public Node findPath(Node root, Object target) {
             return null;
+        }
+        
+    }
+    
+    private static class NullActionProvider implements ActionProvider {
+        public String[] getSupportedActions() {
+            return new String[0];
+        }
+
+        public void invokeAction(String command, Lookup context) throws IllegalArgumentException {
+        }
+
+        public boolean isActionEnabled(String command, Lookup context) throws IllegalArgumentException {
+            return false;
         }
         
     }
