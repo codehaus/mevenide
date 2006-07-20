@@ -8,6 +8,9 @@
 
 Netbeans Module plugin
 
+  [This plugin moved to the mojo project]
+ Please check the {{{http://mojo.codehaus.org/nbm-maven-plugin}Mojo}} site for later versions.
+
  This m2 plugin is able to create Netbeans module artifacts. It registers a new packaging type "nbm". Any project with
 this packaging willbe automatically turned into a netbeans module. Additionally it allows to create clusters of modules and to generate
 an autoupdate site content. 

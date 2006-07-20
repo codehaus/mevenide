@@ -9,7 +9,7 @@
   <artifactId>maven-nbm-plugin</artifactId>
   <packaging>maven-plugin</packaging>
   <name>Maven NBM Plugin</name>
-  <description>Maven plugin for creating Netbeans Modules</description>
+  <description>Maven plugin for creating Netbeans Modules, MOVED to http://mojo.codehaus.org/nbm-maven-plugin, the Mojo project.</description>
   <version>2.1.1</version>
   <inceptionYear>2005</inceptionYear>
   <build>

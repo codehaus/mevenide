@@ -74,24 +74,44 @@
         <url>http://www.codehaus.org/</url>
     </organization>
     <distributionManagement>
-        <site>
-            <id>site</id>
-            <name>Mevenide Website</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/m2-site</url>
-        </site>
         <repository>
-            <id>mevenide</id>
-            <name>Mevenide's repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/repository</url>
+            <id>mevenide-upload</id>
+            <name>Mevenide Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/mevenide/</url>
         </repository>
         <snapshotRepository>
-            <id>snapshots</id>
-            <name>Mevenide's snapshot repository</name>
-            <url>scp://beaver.codehaus.org/home/projects/mevenide/snapshot-repository</url>
+            <id>mevenide-snapshots-upload</id>
+            <name>Mevenide Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/mevenide/</url>
         </snapshotRepository>
+        <site>
+            <id>mevenide-site-upload</id>
+            <name>Mevenide Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
+        </site>
     </distributionManagement>
+    <repositories>
+        <repository>
+            <id>codehaus</id>
+            <name>Mevenide's M2 repo</name>
+            <url>http://repository.codehaus.org</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    
     <modules>
         <module>maven-nbm-plugin</module>
         <module>maven-archetype-nbm</module>
     </modules>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-1</version>
+            </extension>
+        </extensions>
+    </build>
 </project>
