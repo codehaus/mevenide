@@ -47,7 +47,15 @@
         <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
     </file>
   </folder>
+  
+    <folder name="Maven2Templates">
+        <file name="profiles.xml" url="profiles.xml">
+            <attr name="template" boolvalue="true"/>
+        </file>
+    </folder>
+  
     <folder name="Templates">
+            
         <folder name="Project">
             <folder name="Maven2">
                 <file name="Archetypes">

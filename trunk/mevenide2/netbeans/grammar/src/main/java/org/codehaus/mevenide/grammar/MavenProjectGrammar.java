@@ -28,19 +28,36 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.repository.indexing.ArtifactRepositoryIndex;
+import org.apache.maven.repository.indexing.RepositoryIndex;
+import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
+import org.apache.maven.repository.indexing.RepositoryIndexSearchHit;
+import org.apache.maven.repository.indexing.query.AndQueryTerm;
+import org.apache.maven.repository.indexing.query.CompoundQuery;
+import org.apache.maven.repository.indexing.query.Query;
+import org.apache.maven.repository.indexing.query.SinglePhraseQuery;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyElement;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
+import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.Document;
@@ -89,7 +106,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ? hintCtx.getParentNode().getParentNode().getParentNode().getPreviousSibling()
                 : hintCtx.getParentNode().getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
-            PluginInfoHolder info = findPluginInfo(previous, embedder, true);
+            ArtifactInfoHolder info = findPluginInfo(previous, embedder, true);
             Document pluginDoc = loadDocument(info, embedder);
             if (pluginDoc != null) {
                 return collectPluginParams(pluginDoc, hintCtx);
@@ -98,8 +115,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return Collections.EMPTY_LIST;
     }
     
-    private PluginInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder, boolean checkLocalRepo) {
-        PluginInfoHolder holder = new PluginInfoHolder();
+    private ArtifactInfoHolder findArtifactInfo(Node previous) {
+        ArtifactInfoHolder holder = new ArtifactInfoHolder();
         while (previous != null) {
             if (previous instanceof org.w3c.dom.Element) {
                 org.w3c.dom.Element el = (org.w3c.dom.Element)previous;
@@ -118,6 +135,11 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             previous = previous.getPreviousSibling();
         }
+        return holder;
+    }
+    
+    private ArtifactInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder, boolean checkLocalRepo) {
+        ArtifactInfoHolder holder = findArtifactInfo(previous);
         if (holder.getGroupId() == null) {
             holder.setGroupId("org.apache.maven.plugins");
         }
@@ -181,8 +203,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
 
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
-        if ("/project/build/plugins/plugin/executions/execution/goals/goal".equals(path) ||
-            "/project/build/pluginManagement/plugins/plugin/executions/execution/goals/goal".equals(path)) {
+        if (path.endsWith("executions/execution/goals/goal")) {
             Node previous;
             // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
             if (virtualTextCtx.getCurrentPrefix().length() == 0) {
@@ -192,14 +213,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             previous = previous.getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
-            PluginInfoHolder info = findPluginInfo(previous, embedder, true);
+            ArtifactInfoHolder info = findPluginInfo(previous, embedder, true);
             Document pluginDoc = loadDocument(info, embedder);
             if (pluginDoc != null) {
                 return collectGoals(pluginDoc, virtualTextCtx);
             }
         }
-        if ("/project/build/plugins/plugin/executions/execution/phase".equals(path) ||
-            "/project/build/pluginManagement/plugins/plugin/executions/execution/phase".equals(path)) {
+        if (path.endsWith("executions/execution/phase")) {
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             try {
                 List phases = embedder.getLifecyclePhases();
@@ -208,11 +228,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ex.printStackTrace();
             }
         }
-        if ("/project/dependencies/dependency/version".equals(path) ||
-            "/project/dependencyManagement/dependencies/dependency/version".equals(path) || 
-            "/project/build/plugins/plugin/version".equals(path) ||
-            "/project/build/pluginManagement/plugins/plugin/version".equals(path) || 
-            "/project/parent/version".equals(path)) {
+        if (path.endsWith("dependencies/dependency/version") ||
+            path.endsWith("plugins/plugin/version") ||
+            path.endsWith("/project/parent/version")) {
             
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
@@ -222,7 +240,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             } else {
                 previous = virtualTextCtx.getParentNode().getPreviousSibling();
             }
-            PluginInfoHolder hold = findPluginInfo(previous, null, false);
+            ArtifactInfoHolder hold = findPluginInfo(previous, null, false);
             if (hold.getGroupId() != null && hold.getArtifactId() != null) {
                 File lev1 = new File(EmbedderFactory.getOnlineEmbedder().getLocalRepository().getBasedir(), hold.getGroupId().replace('.', File.separatorChar));
                 File dir = new File(lev1, hold.getArtifactId());
@@ -248,34 +266,105 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(elems);
             }
         }
-        if ("/project/dependencyManagement/dependencies/dependency/scope".equals(path) ||
-            "/project/dependencies/dependency/scope".equals(path)) {
+        if ("/project/dependencies/dependency/groupId".equals(path) ||
+            "/project/dependencyManagement/dependencies/dependency/groupId".equals(path) ||
+             "/project/build/pluginManagement/plugins/plugin/dependencies/dependency/groupId".equals(path)) {
+            try {
+                Set elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
+                Iterator it = elems.iterator();
+                ArrayList texts = new ArrayList();
+                while (it.hasNext()) {
+                    String elem = (String) it.next();
+                    texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                }
+                return Collections.enumeration(texts);
+            } catch (RepositoryIndexSearchException ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (path.endsWith("plugins/plugin/groupId")) {
+            try {
+                Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                Iterator it = elems.iterator();
+                ArrayList texts = new ArrayList();
+                while (it.hasNext()) {
+                    String elem = (String) it.next();
+                    texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                }
+                return Collections.enumeration(texts);
+            } catch (RepositoryIndexSearchException ex) {
+                ex.printStackTrace();
+            }
+        }
+        if (path.endsWith("dependencies/dependency/artifactId")) {
+            //poor mans solution, just check local repository for possible versions..
+            // in future would be nice to include remote repositories somehow..
+            Node previous;
+            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+                previous = virtualTextCtx.getPreviousSibling();
+            } else {
+                previous = virtualTextCtx.getParentNode().getPreviousSibling();
+            }
+            ArtifactInfoHolder hold = findArtifactInfo(previous);
+            if (hold.getGroupId() != null) {
+                try {
+                    Set elems = CustomQueries.retrieveArtifactIdForGroupId(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    Iterator it = elems.iterator();
+                    ArrayList texts = new ArrayList();
+                    while (it.hasNext()) {
+                        String elem = (String) it.next();
+                        texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                    }
+                    return Collections.enumeration(texts);
+                } catch (RepositoryIndexSearchException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        if (path.endsWith("plugins/plugin/artifactId")) {
+            //poor mans solution, just check local repository for possible versions..
+            // in future would be nice to include remote repositories somehow..
+            Node previous;
+            if (virtualTextCtx.getCurrentPrefix().length() == 0) {
+                previous = virtualTextCtx.getPreviousSibling();
+            } else {
+                previous = virtualTextCtx.getParentNode().getPreviousSibling();
+            }
+            ArtifactInfoHolder hold = findArtifactInfo(previous);
+            if (hold.getGroupId() != null) {
+                try {
+                    Set elems = CustomQueries.retrievePluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    Iterator it = elems.iterator();
+                    ArrayList texts = new ArrayList();
+                    while (it.hasNext()) {
+                        String elem = (String) it.next();
+                        texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                    }
+                    return Collections.enumeration(texts);
+                } catch (RepositoryIndexSearchException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        
+        if (path.endsWith("dependencies/dependency/scope")) {
             return super.createTextValueList(SCOPES, virtualTextCtx);
         }
-        if ("/project/profiles/profile/repositories/repository/releases/updatePolicy".equals(path) ||
-            "/project/profiles/profile/repositories/repository/snapshots/updatePolicy".equals(path) ||
-            "/project/profiles/profile/pluginRepositories/pluginRepository/releases/updatePolicy".equals(path) ||
-            "/project/profiles/profile/pluginRepositories/pluginRepository/snapshots/updatePolicy".equals(path) ||
-            "/project/repositories/repository/releases/updatePolicy".equals(path) ||
-            "/project/repositories/repository/snapshots/updatePolicy".equals(path) ||
-            "/project/pluginRepositories/pluginRepository/releases/updatePolicy".equals(path) ||
-            "/project/pluginRepositories/pluginRepository/snapshots/updatePolicy".equals(path)) {
+        if (path.endsWith("repositories/repository/releases/updatePolicy") ||
+            path.endsWith("repositories/repository/snapshots/updatePolicy") ||
+            path.endsWith("pluginRepositories/pluginRepository/releases/updatePolicy") ||
+            path.endsWith("pluginRepositories/pluginRepository/snapshots/updatePolicy")) {
             return super.createTextValueList(MavenSettingsGrammar.UPDATE_POLICIES, virtualTextCtx);
         }
-        if ("/project/profiles/profile/repositories/repository/releases/checksumPolicy".equals(path) ||
-            "/project/profiles/profile/repositories/repository/snapshots/checksumPolicy".equals(path) ||
-            "/project/profiles/profile/pluginRepositories/pluginRepository/releases/checksumPolicy".equals(path) ||
-            "/project/profiles/profile/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path) ||
-            "/project/repositories/repository/releases/checksumPolicy".equals(path) ||
-            "/project/repositories/repository/snapshots/checksumPolicy".equals(path) ||
-            "/project/pluginRepositories/pluginRepository/releases/checksumPolicy".equals(path) ||
-            "/project/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path)) {
+        if (path.endsWith("repository/releases/checksumPolicy") ||
+            path.endsWith("repository/snapshots/checksumPolicy") ||
+            path.endsWith("pluginRepository/releases/checksumPolicy") ||
+            path.endsWith("pluginRepository/snapshots/checksumPolicy")) {
             return super.createTextValueList(MavenSettingsGrammar.CHECKSUM_POLICIES, virtualTextCtx);
         }
-        if ("/project/profiles/profile/repositories/repository/layout".equals(path) ||
-            "/project/profiles/profile/pluginRepositories/pluginRepository/layout".equals(path) ||
-            "/project/repositories/repository/releases/layout".equals(path) ||
-            "/project/pluginRepositories/pluginRepository/layout".equals(path)) {
+        if (path.endsWith("repositories/repository/layout") ||
+            path.endsWith("pluginRepositories/pluginRepository/layout") ||
+            path.endsWith("distributionManagement/repository/layout")) {
             return super.createTextValueList(MavenSettingsGrammar.LAYOUTS, virtualTextCtx);
         }
         
@@ -301,7 +390,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return null;
     }
 
-    private Document loadDocument(PluginInfoHolder info, MavenEmbedder embedder) {
+    private Document loadDocument(ArtifactInfoHolder info, MavenEmbedder embedder) {
         if (info.getArtifactId() != null && info.getGroupId() != null && info.getVersion() != null) {
             Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar");
             String repopath = embedder.getLocalRepository().pathOf(art);
@@ -352,7 +441,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
 
     
-    private static class PluginInfoHolder  {
+    private static class ArtifactInfoHolder  {
         private String artifactId;
         private String groupId;
         private String version;

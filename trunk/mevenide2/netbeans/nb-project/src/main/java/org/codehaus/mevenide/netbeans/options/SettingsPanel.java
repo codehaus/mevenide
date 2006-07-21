@@ -21,9 +21,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
+import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.repository.indexing.ArtifactRepositoryIndex;
+import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.apache.maven.settings.Settings;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.RequestProcessor;
 
 /**
  * The visual panel that displays in the Options dialog. Some properties
@@ -64,6 +74,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbNoPluginUpdate.addActionListener(listener);
         rbPluginNone.addActionListener(listener);
         rbPluginUpdate.addActionListener(listener);
+        comIndex.addActionListener(listener);
     }
     
     private void initValues() {
@@ -74,6 +85,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbPluginRegistry.setSelected(false);
         rbFailFast.setSelected(true);
         rbChecksumNone.setSelected(true);
+        comIndex.setSelectedIndex(0);
     }
     
     /** This method is called from within the constructor to
@@ -105,6 +117,9 @@ public class SettingsPanel extends javax.swing.JPanel {
         lblLocalRepository = new javax.swing.JLabel();
         txtLocalRepository = new javax.swing.JTextField();
         btnLocalRepository = new javax.swing.JButton();
+        lblIndex = new javax.swing.JLabel();
+        comIndex = new javax.swing.JComboBox();
+        btnIndex = new javax.swing.JButton();
 
         cbOffline.setText("Work Offline");
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -161,7 +176,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbChecksumStrict)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbChecksumLax, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         pnlPlugins.setBorder(javax.swing.BorderFactory.createTitledBorder("Plugin Update Policy"));
@@ -264,6 +279,17 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        lblIndex.setText("Index :");
+
+        comIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Once a week", "Once a day", "On every startup", "Never" }));
+
+        btnIndex.setText("Index Now");
+        btnIndex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIndexActionPerformed(evt);
+            }
+        });
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -286,11 +312,21 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(lblLocalRepository)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(lblIndex)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(comIndex, 0, 174, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnLocalRepository)))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(btnLocalRepository)
+                            .add(btnIndex))))
                 .addContainerGap())
         );
+
+        layout.linkSize(new java.awt.Component[] {btnIndex, btnLocalRepository}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
@@ -314,9 +350,35 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(lblLocalRepository)
                     .add(btnLocalRepository)
                     .add(txtLocalRepository, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(108, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblIndex)
+                    .add(comIndex, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnIndex))
+                .addContainerGap(78, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndexActionPerformed
+        btnIndex.setEnabled(false);
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
+                File repo = new File(txtLocalRepository.getText().trim());
+                try {
+                    ind.updateIndex(false);
+                } catch (RepositoryIndexException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            btnIndex.setEnabled(true);
+                        }
+                    });
+                }
+            }
+        });
+    }//GEN-LAST:event_btnIndexActionPerformed
     
     private void btnLocalRepositoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalRepositoryActionPerformed
         JFileChooser chooser = new JFileChooser();
@@ -345,11 +407,14 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.ButtonGroup bgChecksums;
     private javax.swing.ButtonGroup bgFailure;
     private javax.swing.ButtonGroup bgPlugins;
+    private javax.swing.JButton btnIndex;
     private javax.swing.JButton btnLocalRepository;
     private javax.swing.JCheckBox cbDebug;
     private javax.swing.JCheckBox cbErrors;
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbPluginRegistry;
+    private javax.swing.JComboBox comIndex;
+    private javax.swing.JLabel lblIndex;
     private javax.swing.JLabel lblLocalRepository;
     private javax.swing.JPanel pnlChecksums;
     private javax.swing.JPanel pnlFail;
@@ -398,6 +463,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         } else {
             rbPluginNone.setSelected(true);
         }
+        comIndex.setSelectedIndex(MavenIndexSettings.getDefault().getIndexUpdateFrequency());
     }
     
     public void applyValues(Settings sett) {
@@ -425,6 +491,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         failureBehaviour = rbFailEnd.isSelected() ? MavenExecutionRequest.REACTOR_FAIL_AT_END : failureBehaviour;
         failureBehaviour = rbFailNever.isSelected() ? MavenExecutionRequest.REACTOR_FAIL_NEVER : failureBehaviour;
         MavenExecutionSettings.getDefault().setFailureBehaviour(failureBehaviour);
+        MavenIndexSettings.getDefault().setIndexUpdateFrequency(comIndex.getSelectedIndex());
         changed = false;
     }
     

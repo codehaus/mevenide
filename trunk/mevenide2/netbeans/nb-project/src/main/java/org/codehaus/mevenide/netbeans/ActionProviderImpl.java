@@ -19,6 +19,8 @@ package org.codehaus.mevenide.netbeans;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.apache.maven.repository.indexing.RepositoryIndexException;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
@@ -96,6 +98,13 @@ public class ActionProviderImpl implements ActionProvider {
         task.addTaskListener(new TaskListener() {
             public void taskFinished(Task task2) {
                 project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
+                try {
+                    index.updateIndexWithArtifacts(project.getOriginalMavenProject().getDependencyArtifacts());
+                    //TODO add project's own artifact??
+                } catch (RepositoryIndexException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }

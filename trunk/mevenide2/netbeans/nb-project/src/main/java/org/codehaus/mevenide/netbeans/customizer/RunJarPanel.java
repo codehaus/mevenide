@@ -40,7 +40,12 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.cookies.SourceCookie;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.src.ClassElement;
 
 /**
  * panel for displaying the Run Jar project related properties..
@@ -163,6 +168,7 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
         lblMainClass.setText("Main Class:");
 
         btnMainClass.setText("Browse...");
+        btnMainClass.setEnabled(false);
         btnMainClass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMainClassActionPerformed(evt);
@@ -390,5 +396,23 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
     private javax.swing.JTextField txtWorkDir;
     // End of variables declaration//GEN-END:variables
 
-    
+    private static boolean hasMain(FileObject f) {
+        SourceCookie c;
+        try {
+            c = (SourceCookie) DataObject.find(f).getCookie(SourceCookie.class);
+        } catch (DataObjectNotFoundException x) {
+            x.printStackTrace();
+            return false;
+        }
+        if (c == null) {
+            return false;
+        }
+        ClassElement[] els = c.getSource().getClasses();
+        for (int i = 0; i < els.length; i++) {
+            if (els[i].hasMainMethod()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
