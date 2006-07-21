@@ -485,7 +485,7 @@ public class DependencyNode extends AbstractNode {
                 while (it.hasNext()) {
                     Dependency dep = (Dependency) it.next();
                     if (   art.getArtifactId().equals(dep.getArtifactId())
-                    && art.getGroupId().equals(dep.getGroupId())) {
+                        && art.getGroupId().equals(dep.getGroupId())) {
                         model.removeDependency(dep);
                         break;
                     }

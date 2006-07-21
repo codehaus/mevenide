@@ -12,6 +12,9 @@
    </libraries>
    <dependencies>
       <dependency>
+          <id>org.codehaus.mevenide:indexer</id>
+      </dependency>
+      <dependency>
           <id>org.codehaus.mevenide:run-jar-bridge</id>
 	  <type>spec</type>
       </dependency>

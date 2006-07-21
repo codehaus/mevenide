@@ -23,8 +23,11 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.tree.TreeSelectionModel;
 import org.openide.DialogDescriptor;
@@ -189,7 +192,26 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     public void run() {
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(ArchetypeProvider.class));
         Iterator it = res.allInstances().iterator();
-        List archetypes = new ArrayList();
+        TreeSet archetypes = new TreeSet(
+        new Comparator() {
+            public int compare(Object o1, Object o2) {
+                Archetype ar1 = (Archetype)o1;
+                Archetype ar2 = (Archetype)o2;
+                int gr = ar1.getGroupId().trim().compareTo(ar2.getGroupId().trim());
+                if (gr != 0) {
+                    return 1;
+                }
+                int ar = ar1.getArtifactId().trim().compareTo(ar2.getArtifactId().trim());
+                if (ar != 0) {
+                    return 1;
+                }
+                return (ar1.getVersion().trim().compareTo(ar2.getVersion().trim()) != 0 ?  1 : 0); 
+                
+            }
+            public boolean equals(Object obj) {
+                return false;
+            }
+        });
         while (it.hasNext()) {
             ArchetypeProvider provider = (ArchetypeProvider)it.next();
             archetypes.addAll(provider.getArchetypes());
@@ -230,8 +252,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
     
     private static class Childs extends Children.Keys {
-        private List keys;
-        public Childs(List keys) {
+        private Set keys;
+        public Childs(Set keys) {
             this.keys = keys;
         }
         public void addNotify() {

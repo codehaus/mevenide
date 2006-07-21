@@ -45,8 +45,7 @@ public class MavenExecutionSettingsBeanInfo extends SimpleBeanInfo {
             useRegistry.setDisplayName ("usePluginRegistry"); //NOI18N
             useRegistry.setHidden(true);
             
-            
-            return new PropertyDescriptor[] { showDebug, showError, checksum, updates, failure, useRegistry };
+            return new PropertyDescriptor[] { showDebug, showError, checksum, updates, failure, useRegistry};
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

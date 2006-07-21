@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.nodes;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -31,10 +32,14 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.repository.indexing.RepositoryIndexException;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
+import org.codehaus.plexus.PlexusContainerException;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
@@ -324,7 +329,6 @@ class DependenciesNode extends AbstractNode {
             tc.requestActive();
         }
     }
-    
     
     private static class DependenciesComparator implements Comparator {
         public int compare(Object o1, Object o2) {

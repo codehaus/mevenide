@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.options;
 
+import java.util.Date;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
@@ -35,6 +36,7 @@ public class MavenExecutionSettings extends SystemOption {
     public static final String PROP_USE_REGISTRY = "usePluginRegistry"; //NOI18N
     
     private static final long serialVersionUID = -4857548487373437L;
+
     
     protected void initialize() {
         super.initialize();
@@ -105,5 +107,6 @@ public class MavenExecutionSettings extends SystemOption {
     public void setUsePluginRegistry(boolean usePluginRegistry) {
         putProperty(PROP_USE_REGISTRY, Boolean.valueOf(usePluginRegistry), true);
     }
+    
     
 }

@@ -17,18 +17,25 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
+import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
@@ -41,15 +48,29 @@ import org.openide.nodes.Node;
  * @author Milos Kleint
  */
 public class ProjectFilesNode extends AbstractNode {
+    
+    private NbMavenProject project;
     /** Creates a new instance of ProjectFilesNode */
     public ProjectFilesNode(NbMavenProject project) {
         super(new ProjectFilesChildren(project));
         setName("projectfiles"); //NOI18N
         setDisplayName("Project Files");
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif");
+        this.project = project;
     }
     
-   private static class ProjectFilesChildren extends Children.Keys implements PropertyChangeListener {
+    public Action[] getActions(boolean context) {
+        Collection col = new ArrayList();
+        if (project.getProjectDirectory().getFileObject("profiles.xml") == null) {
+            col.add(new AddProfileXmlAction());
+        };
+        if (! new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml").exists()) {
+            col.add(new AddSettingsXmlAction());
+        };
+        return (Action[])col.toArray(new Action[col.size()]);
+    }
+    
+    private static class ProjectFilesChildren extends Children.Keys implements PropertyChangeListener {
         private NbMavenProject project;
         private FileChangeAdapter fileChangeListener;
         
@@ -121,41 +142,76 @@ public class ProjectFilesNode extends AbstractNode {
             keys.add(new FileWrapper("User settings", new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")));
             setKeys(keys);
         }
-    }    
-   
-   private static class FileWrapper {
-       private File loc;
-       private String display;
-       public FileWrapper(String displayName, File file) {
-           display = displayName;
-           loc = file;
-       }
-
-       public boolean equals(Object obj) {
-           return loc.equals(obj);
-       }
-
-       public int hashCode() {
-           return loc.hashCode();
-       }
-       
-       public File getFile() {
-           return loc;
-       }
-       
-       public String getText() {
-           return display;
-       }
-       
-   }
-   
-   private static class MyFilterNode extends FilterNode {
-       public MyFilterNode(Node original, String dn) {
-           super(original);
-           disableDelegation(DELEGATE_GET_DISPLAY_NAME | DELEGATE_SET_DISPLAY_NAME);
-           setDisplayName(dn);
-       }
-   }
-   
+    }
+    
+    private static class FileWrapper {
+        private File loc;
+        private String display;
+        public FileWrapper(String displayName, File file) {
+            display = displayName;
+            loc = file;
+        }
+        
+        public boolean equals(Object obj) {
+            return loc.equals(obj);
+        }
+        
+        public int hashCode() {
+            return loc.hashCode();
+        }
+        
+        public File getFile() {
+            return loc;
+        }
+        
+        public String getText() {
+            return display;
+        }
+        
+    }
+    
+    private static class MyFilterNode extends FilterNode {
+        public MyFilterNode(Node original, String dn) {
+            super(original);
+            disableDelegation(DELEGATE_GET_DISPLAY_NAME | DELEGATE_SET_DISPLAY_NAME);
+            setDisplayName(dn);
+        }
+    }
+    
+    private class AddProfileXmlAction extends AbstractAction {
+        AddProfileXmlAction() {
+            putValue(Action.NAME, "Create profiles file");
+        }
+        public void actionPerformed(ActionEvent e) {
+            try {
+                DataFolder folder = DataFolder.findFolder(project.getProjectDirectory());
+                // path to template...
+                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/profiles.xml");
+                DataObject dobj = DataObject.find(temp);
+                DataObject newOne = dobj.createFromTemplate(folder);
+                OpenCookie cook = (OpenCookie)newOne.getCookie(OpenCookie.class);
+                if (cook != null) {
+                    cook.open();
+                }
+                
+            } catch (DataObjectNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+    }
+    
+    private class AddSettingsXmlAction extends AbstractAction {
+        AddSettingsXmlAction() {
+            putValue(Action.NAME, "Create settings file");
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+        }
+        
+    }
+    
     
 }
