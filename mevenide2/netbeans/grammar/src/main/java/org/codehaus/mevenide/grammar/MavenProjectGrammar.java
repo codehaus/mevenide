@@ -266,9 +266,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(elems);
             }
         }
-        if ("/project/dependencies/dependency/groupId".equals(path) ||
-            "/project/dependencyManagement/dependencies/dependency/groupId".equals(path) ||
-             "/project/build/pluginManagement/plugins/plugin/dependencies/dependency/groupId".equals(path)) {
+        if (path.endsWith("dependencies/dependency/groupId")) {
             try {
                 Set elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
