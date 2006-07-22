@@ -18,9 +18,15 @@
 package org.codehaus.mevenide.grammar;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
+import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
+import org.codehaus.mevenide.indexer.CustomQueries;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -87,6 +93,21 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
             "/settings/profiles/profile/pluginRepositories/pluginRepository/layout".equals(path)) {
             return super.createTextValueList(LAYOUTS, virtualTextCtx);
         }
+        if (path.endsWith("pluginGroups/pluginGroup")) {
+            try {
+                Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                Iterator it = elems.iterator();
+                ArrayList texts = new ArrayList();
+                while (it.hasNext()) {
+                    String elem = (String) it.next();
+                    texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                }
+                return Collections.enumeration(texts);
+            } catch (RepositoryIndexSearchException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
         return null;
     }
 
