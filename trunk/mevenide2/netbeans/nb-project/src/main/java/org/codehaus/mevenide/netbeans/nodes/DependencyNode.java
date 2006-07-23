@@ -44,7 +44,6 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
@@ -66,7 +65,6 @@ import org.openide.NotifyDescriptor;
 import org.openide.actions.PropertiesAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
-import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
@@ -597,9 +595,7 @@ public class DependencyNode extends AbstractNode {
             File fil = InstallPanel.showInstallDialog(DependencyNode.this.art);
             if (fil != null) {
                 putValue("FileToInstall", fil);
-                MavenJavaExecutor exec = new MavenJavaExecutor(this);
-                ExecutorTask task = ExecutionEngine.getDefault().execute("Install", exec, exec.getInputOutput());
-                
+                ExecutorTask task = MavenJavaExecutor.executeMaven("Install", this);
                 task.addTaskListener(new TaskListener() {
                     public void taskFinished(Task task2) {
 //                        project.firePropertyChange(NbMavenProject.PROP_PROJECT);
