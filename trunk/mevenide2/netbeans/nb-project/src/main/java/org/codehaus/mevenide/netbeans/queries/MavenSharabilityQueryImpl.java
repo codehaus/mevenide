@@ -57,7 +57,7 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         }
         MavenProject proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
-        File target = new File(build.getOutputDirectory());
+        File target = new File(build.getDirectory());
         if (target.equals(file) || file.getAbsolutePath().startsWith(target.getAbsolutePath())) {
             return false;
         }
