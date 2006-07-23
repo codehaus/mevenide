@@ -57,6 +57,8 @@
     <folder name="Templates">
             
         <folder name="Project">
+            <attr name="J2EE/Maven2" boolvalue="true"/>
+            <attr name="Maven2/APISupport" boolvalue="true"/>
             <folder name="Maven2">
                 <file name="Archetypes">
                     <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
