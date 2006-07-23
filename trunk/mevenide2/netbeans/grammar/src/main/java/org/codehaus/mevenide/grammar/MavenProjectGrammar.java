@@ -276,7 +276,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
-            } catch (RepositoryIndexSearchException ex) {
+            } catch (IOException ex) {
                 ex.printStackTrace();
             }
         }
@@ -314,7 +314,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                         texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                     }
                     return Collections.enumeration(texts);
-                } catch (RepositoryIndexSearchException ex) {
+                } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             }
