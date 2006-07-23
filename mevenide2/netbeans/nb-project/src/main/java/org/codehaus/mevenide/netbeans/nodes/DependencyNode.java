@@ -176,7 +176,11 @@ public class DependencyNode extends AbstractNode {
     }
     
     public String getHtmlDisplayName() {
-        return "<html>" + getDisplayName() + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>";
+        String version = "";
+        if (art.isSnapshot() && art.getVersion().indexOf("SNAPSHOT") < 0) {
+            version = " <b>[" + art.getVersion() + "]</b>";
+        }
+        return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>";
     }
     
     private String createName() {
