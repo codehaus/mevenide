@@ -16,11 +16,20 @@
  */
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.awt.event.ActionEvent;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.WeakHashMap;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ImageIcon;
 import org.apache.maven.SettingsConfigurationException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
@@ -37,10 +46,11 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
-import org.openide.ErrorManager;
+import org.openide.execution.ExecutionEngine;
+import org.openide.execution.ExecutorTask;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Cancellable;
-import org.openide.util.RequestProcessor;
+import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 
@@ -52,20 +62,70 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     
     private RunConfig config;
     private InputOutput io;
+    private ReRunWithDebug rerun;
     
-    public MavenJavaExecutor(RunConfig conf) {
+    /**
+     * All tabs which were used for some process which has now ended.
+     * These are closed when you start a fresh process.
+     * Map from tab to tab display name.
+     */
+    private static final Map freeTabs = new WeakHashMap();
+    
+    
+    private MavenJavaExecutor(RunConfig conf) {
         config = conf;
     }
     
+    /**
+     *  execute maven build in netbeans execution engine.
+     */
+    public static ExecutorTask executeMaven(String runtimeName, RunConfig config) {
+        MavenJavaExecutor exec = new MavenJavaExecutor(config);
+        return executeMavenImpl(runtimeName, exec);
+    }
+    
+    private static ExecutorTask executeMavenImpl(String runtimeName, MavenJavaExecutor exec) {
+        return ExecutionEngine.getDefault().execute(runtimeName, exec, exec.getInputOutput());
+    }
+    
     private InputOutput createInputOutput() {
-        InputOutput newio = IOProvider.getDefault().getIO(config.getExecutionName(), false);
-        newio.setErrSeparated(false);
-        try {
-            newio.getOut().reset();
-        } catch (IOException exc) {
-            ErrorManager.getDefault().notify(exc);
+        synchronized (freeTabs) {
+            Iterator it = freeTabs.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry entry = (Map.Entry)it.next();
+                InputOutput free = (InputOutput)entry.getKey();
+                Iterator vals = ((Collection)entry.getValue()).iterator();
+                String freeName = (String)vals.next();
+                ReRunWithDebug action = (ReRunWithDebug)vals.next();
+                if (io == null && freeName.equals(config.getExecutionName())) {
+                    // Reuse it.
+                    io = free;
+                    rerun = action;
+                    action.setConfig(config);
+                    try {
+                        io.getOut().reset();
+                        io.getErr().reset();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    // useless: io.flushReader();
+                } else {
+                    // Discard it.
+                    free.closeInputOutput();
+                }
+            }
+            freeTabs.clear();
         }
-        return newio;
+        //                }
+        if (io == null) {
+            rerun = new ReRunWithDebug();
+            Action[] actions = new Action[] {
+                rerun
+            };
+            io = IOProvider.getDefault().getIO(config.getExecutionName(), actions);
+            rerun.setConfig(config);
+        }
+        return io;
     }
     
     /**
@@ -87,9 +147,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     ex.printStackTrace();
                 }
             }
-//            ArtifactRepository netbeansRepo = null;
+            //            ArtifactRepository netbeansRepo = null;
             File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
-//            netbeansRepo = embedder.createRepository("file://" + repoRoot.getAbsolutePath(), "netbeansIDE-repo-internal");
+            //            netbeansRepo = embedder.createRepository("file://" + repoRoot.getAbsolutePath(), "netbeansIDE-repo-internal");
             Profile myProfile = new Profile();
             myProfile.setId("netbeans-public");
             Repository repo = new Repository();
@@ -106,8 +166,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
             
             Settings settings = embedder.buildSettings( userSettingsPath,
-                                                        globalSettingsPath, 
-                                                        MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
+                    globalSettingsPath,
+                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
             settings.addProfile(myProfile);
             settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
             //MEVENIDE-407
@@ -119,7 +179,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.addActiveProfiles(Collections.EMPTY_LIST).addInactiveProfiles(Collections.EMPTY_LIST);
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             req.addActiveProfiles(config.getActiveteProfiles());
-//            req.activateDefaultEventMonitor();
+            //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
                 settings.setOffline(config.isOffline().booleanValue());
             }
@@ -138,16 +198,16 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
             req.addEventMonitor(out);
             req.setTransferListener(out);
-//            req.setReactorActive(true);
-
+            //            req.setReactorActive(true);
+            
             req.setFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
-            boolean debug = config.isShowDebug() != null 
-                                ? config.isShowDebug().booleanValue()
-                                : MavenExecutionSettings.getDefault().isShowDebug();
-            req.setShowErrors(debug || (config.isShowError() != null 
+            boolean debug = config.isShowDebug() != null
+                    ? config.isShowDebug().booleanValue()
+                    : MavenExecutionSettings.getDefault().isShowDebug();
+            req.setShowErrors(debug || (config.isShowError() != null
                     ? config.isShowError().booleanValue()
                     : MavenExecutionSettings.getDefault().isShowErrors()));
             if (debug) {
@@ -160,13 +220,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setUpdateSnapshots(false);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
-//            ex.printStackTrace();
-//            ErrorManager.getDefault().notify(ex);
+            //            ex.printStackTrace();
+            //            ErrorManager.getDefault().notify(ex);
         } catch (MavenExecutionException ex) {
-//            ex.printStackTrace();
-//            ErrorManager.getDefault().notify(ex);
+            //            ex.printStackTrace();
+            //            ErrorManager.getDefault().notify(ex);
         } catch (SettingsConfigurationException ex) {
-//                ex.printStackTrace();
+            //                ex.printStackTrace();
         } catch (ThreadDeath death) {
             cancel();
             throw death;
@@ -180,15 +240,22 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             } else {
                 System.setProperty("basedir", basedir);
             }
+            rerun.setEnabled(true);
+            synchronized (freeTabs) {
+                Collection col = new ArrayList();
+                col.add(config.getExecutionName());
+                col.add(rerun);
+                freeTabs.put(ioput, col);
+            }
         }
     }
     
     public boolean cancel() {
-//        if (proces != null) {
-//            // this system out prints to output window..
-//            System.err.println("**User cancelled execution**");
-//            proces.destroy();
-//        }
+        //        if (proces != null) {
+        //            // this system out prints to output window..
+        //            System.err.println("**User cancelled execution**");
+        //            proces.destroy();
+        //        }
         return true;
     }
     
@@ -198,7 +265,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         return io;
     }
-
+    
     private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
         if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {
             JPDAStart start = new JPDAStart();
@@ -219,11 +286,39 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     buf.replace(index, index + replaceItem.length(), newItem);
                     index = buf.indexOf(replaceItem);
                 }
-//                System.out.println("setting property=" + key + "=" + buf.toString());
+                //                System.out.println("setting property=" + key + "=" + buf.toString());
                 config.getProperties().setProperty(key, buf.toString());
             }
             config.getProperties().put("jpda.address", val);
         }
     }
     
+    
+    
+    static class ReRunWithDebug extends AbstractAction {
+
+        private RunConfig config;
+        
+        public ReRunWithDebug() {
+            this.putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
+            putValue(Action.NAME, "Re-run with Debug messages on.");
+            putValue(Action.SHORT_DESCRIPTION, "Re-run with Debug messages on.");
+            setEnabled(false);
+        }
+        
+        void setConfig(RunConfig config) {
+            this.config = config;
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            setEnabled(false);
+            MavenJavaExecutor.executeMaven("Maven", new ProxyRunConfig(this.config) {
+                public Boolean isShowDebug() {
+                    return Boolean.TRUE;
+                }
+            });
+            //TODO the waiting on tasks won't work..
+        }
+        
+    }
 }

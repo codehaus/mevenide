@@ -35,7 +35,6 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
-import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
@@ -90,9 +89,7 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         // setup executor now..
-        MavenJavaExecutor exec = new MavenJavaExecutor(config);
-        ExecutorTask task = ExecutionEngine.getDefault().execute("Maven", exec, exec.getInputOutput());
-        //        RequestProcessor.getDefault().post();
+        ExecutorTask task = MavenJavaExecutor.executeMaven("Maven", config);
         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
