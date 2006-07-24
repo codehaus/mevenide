@@ -62,7 +62,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     
     private RunConfig config;
     private InputOutput io;
-    private ReRunWithDebug rerun;
+    private ReRunAction rerun;
+    private ReRunAction rerunDebug;
     
     /**
      * All tabs which were used for some process which has now ended.
@@ -96,12 +97,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 InputOutput free = (InputOutput)entry.getKey();
                 Iterator vals = ((Collection)entry.getValue()).iterator();
                 String freeName = (String)vals.next();
-                ReRunWithDebug action = (ReRunWithDebug)vals.next();
                 if (io == null && freeName.equals(config.getExecutionName())) {
                     // Reuse it.
                     io = free;
-                    rerun = action;
-                    action.setConfig(config);
+                    rerun = (ReRunAction)vals.next();
+                    rerunDebug = (ReRunAction)vals.next();
+                    rerun.setConfig(config);
+                    rerunDebug.setConfig(config);
                     try {
                         io.getOut().reset();
                         io.getErr().reset();
@@ -118,12 +120,15 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         //                }
         if (io == null) {
-            rerun = new ReRunWithDebug();
+            rerun = new ReRunAction(false);
+            rerunDebug = new ReRunAction(true);
             Action[] actions = new Action[] {
-                rerun
+                rerun, 
+                rerunDebug
             };
             io = IOProvider.getDefault().getIO(config.getExecutionName(), actions);
             rerun.setConfig(config);
+            rerunDebug.setConfig(config);
         }
         return io;
     }
@@ -133,6 +138,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
      */
     public void run() {
         InputOutput ioput = getInputOutput();
+        rerun.setEnabled(false);
+        rerunDebug.setEnabled(false);
         String basedir = System.getProperty("basedir");
         try {
             MavenEmbedder embedder;
@@ -241,10 +248,12 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 System.setProperty("basedir", basedir);
             }
             rerun.setEnabled(true);
+            rerunDebug.setEnabled(true);
             synchronized (freeTabs) {
                 Collection col = new ArrayList();
                 col.add(config.getExecutionName());
                 col.add(rerun);
+                col.add(rerunDebug);
                 freeTabs.put(ioput, col);
             }
         }
@@ -295,15 +304,19 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     
     
     
-    static class ReRunWithDebug extends AbstractAction {
-
+    static class ReRunAction extends AbstractAction {
         private RunConfig config;
+        private boolean debug;
         
-        public ReRunWithDebug() {
-            this.putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
-            putValue(Action.NAME, "Re-run with Debug messages on.");
-            putValue(Action.SHORT_DESCRIPTION, "Re-run with Debug messages on.");
+        public ReRunAction(boolean debug) {
+            this.debug  = debug;
+            this.putValue(Action.SMALL_ICON, debug ? 
+                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) :
+                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
+            putValue(Action.NAME, debug ? "Re-run with Debug messages on." : "Re-run the goals.");
+            putValue(Action.SHORT_DESCRIPTION, debug ? "Re-run with Debug messages on.": "Re-run the goals.");
             setEnabled(false);
+            
         }
         
         void setConfig(RunConfig config) {
@@ -311,12 +324,12 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         
         public void actionPerformed(ActionEvent e) {
-            setEnabled(false);
-            MavenJavaExecutor.executeMaven("Maven", new ProxyRunConfig(this.config) {
+            RunConfig newConfig = !debug ? config : new ProxyRunConfig(this.config) {
                 public Boolean isShowDebug() {
                     return Boolean.TRUE;
                 }
-            });
+            };
+            MavenJavaExecutor.executeMaven("Maven", newConfig);
             //TODO the waiting on tasks won't work..
         }
         
