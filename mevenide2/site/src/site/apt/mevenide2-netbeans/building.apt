@@ -4,7 +4,7 @@ Building Mevenide 2 for Netbeans
 
 * Prerequisites
 
-  * Make sure you've installed at least Maven 2.0.1
+  * Make sure you've installed at least Maven 2.0.4
 
   * Download and install Netbeans 5.0 final build.
 
@@ -25,7 +25,7 @@ Building Mevenide 2 for Netbeans
   * Checkout modules required for the Mevenide 2:
 
 +-------------------------------------------------------------------------------+
-svn co https://svn.codehaus.org/mevenide/trunk/mevenide2
+svn co http://svn.codehaus.org/mevenide/trunk/mevenide2
 +-------------------------------------------------------------------------------+
 
 * Building 

@@ -14,7 +14,17 @@ subcomponent <<mevenide2-netbeans>>.
 
   * Project dependencies resolved dynamically based on currently opened projects
 
-  * Download javadoc and sources for projects dependencies
+  * Create new projects from archetypes (Standard and Web Application, Mojo plugin)
+
+    Select which archetype 
+
+[../images/createWizard2.png]
+
+  * Show hierarchy between projects
+ 
+  Module graph :
+
+[../images/moduleGraph.png]
 
   * Show compile/runtime/test dependencies, both direct and transitive
   
@@ -40,24 +50,69 @@ subcomponent <<mevenide2-netbeans>>.
 
   * Plugin configuration parameter names. 
 
+   Completion for configuration :
+
 [../images/completion1.png]
 
   * Dependency scope values
   
   * Available versions for dependencies and plugins
 
+   Which version is available :
+  
 [../images/completion2.png]
 
-  * For assembly descriptors, suggest excludes/includes based on dependencies in the POM.
+  * For assembly descriptors,
+
+  Suggest excludes/includes based on dependencies in the POM :
 
 [../images/completion3.png]
 
-* Module/Dependency graph
+* Hyperlinking
+
+  The Maven POM file contains a lot of useful information but it's not always ready at hand. Why not have the URLs hyperlinked? It is possible with Netbeans.
+
+  * URLs : 
+
+    Pressing Ctrl with a cursor over http/https url, shows a hyperlink which opens a new browser window or tab with the specified url.
+    
+[../images/pomHyperlink1.png] URLs
+    
+  * Modules : 
+
+    The modules section of the pom can also turned into hyperlinks.
+
+[../images/pomHyperlink2.png]
+
+  * Configuration files : 
+
+    Permits to open in the editor other configuration files 
+
+[../images/pomHyperlink3.png]
+
+    Any other places where hyperlinks could be useful in the POM? 
+
+* Dependency management
  
-  * Show hierarchy between projects
- 
-[../images/moduleGraph.png]
- 
+  * Download javadoc and sources for projects dependencies
+
+  * Remove/exclude dependencies
+
+    Remove a provided project dependency 
+
+[../images/removeDependency.png]
+
+    Exclude a transitive inherited dependency 
+
+[../images/excludeDependency.png]
+
+  * Locally install artifact
+
+  It is possible to install manually jars or other artifacts in the maven local repository.
+
+[../images/installLocallyDependency.png]
+
+
   * Show dependency graph
  
 [../images/dependencyGraph.png]

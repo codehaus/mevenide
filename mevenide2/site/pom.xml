@@ -9,7 +9,7 @@
   <artifactId>site</artifactId>
   <packaging>pom</packaging>
   <name>Mevenide2 Site</name>
-  <description>Mevenide2 Documentation Site</description>
+  <description>Mevenide2 aims to provide IDE support for Maven2 build and project management tool. </description>
   <repositories>
       <repository>
           <id>mojo-snapshots</id>
