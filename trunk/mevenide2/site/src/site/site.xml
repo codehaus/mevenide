@@ -16,9 +16,10 @@
             <item name="Codehaus" href="http://www.codehaus.org/" />
             <item name="Maven 2.x" href="http://maven.apache.org/" />
             <item name="Netbeans" href="http://www.netbeans.org" />
-            <!-- item name="mevenide2-Netbeans" href="http://mevenide.codehaus.org/mevenide2-netbeans"/-->
+            <item name="Maven1 support" href="http://mevenide.codehaus.org"/>
         </links>
         <menu name="Mevenide2-Netbeans">  
+            <item name="Introduction" href="index.html"/>
             <item name="Features" href="mevenide2-netbeans/features.html"/>
             <item name="Installation" href="mevenide2-netbeans/installation.html"/>
             <item name="Building" href="mevenide2-netbeans/building.html"/>
