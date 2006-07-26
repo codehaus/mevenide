@@ -10,7 +10,7 @@
         <src>http://mevenide.codehaus.org/images/mevenide-simple-125x37.png</src>
         <href>http://mevenide.codehaus.org/</href>
     </bannerRight>
-
+    
     <body>
         <links>
             <item name="Codehaus" href="http://www.codehaus.org/" />
@@ -22,8 +22,13 @@
             <item name="Introduction" href="index.html"/>
             <item name="Features" href="mevenide2-netbeans/features.html"/>
             <item name="Installation" href="mevenide2-netbeans/installation.html"/>
+            <item name="Tutorials" href="mevenide2-netbeans/tutorials/index.html"/>
+        </menu>
+            
+        <menu name="Developers">
             <item name="Building" href="mevenide2-netbeans/building.html"/>
         </menu>
+        
         <!--menu name="Mevenide2Eclipse">  
         </menu-->
         <!--menu name="Mevenide2IntelliJ">  

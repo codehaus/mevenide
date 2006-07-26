@@ -1,0 +1,50 @@
+Hello World Application
+
+  This simple tutorial will show you how to create a simple application using mevenide2-netbeans. After the application will be created we will run it, into the Netbeans IDE.
+
+* Prerequisite
+
+  * {{{http://www.netbeans.org}Netbeans5.0}} or later installed
+
+  * {{{../installation.html}Mevenide2.2}} for Netbeans installed
+
+* The tutorial
+
+  [[1]] Select "File > New Project" menu item
+
+  [[2]] Choose the project
+
+  Select "archetypes" and click "Next".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldCreateWizard1.png]
+
+  [[3]] Choose the archetypes
+
+  Select "Quickstart project" and click "Next".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldCreateWizard2.png]
+
+  [[4]] Enter basic fields
+
+  Enter a correct name for the project and a correct package name and click "Finish".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldCreateWizard3.png]
+
+  [[5]] The project archetype is builded succesfully.
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWizardEnd.png]
+
+  [[6]] You can navigate to see the java source. Impressive, isn't it ?
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldSource.png]
+
+  [[7]] Rickt click on the project, select the "Properties" menu item, select the "Run" category and finally enter the main class name : "com.mycompany.helloworld.App" 
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldProjectProperties.png]
+
+  [[8]] This is the result :
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldAfterRun.png]
+
+
+
