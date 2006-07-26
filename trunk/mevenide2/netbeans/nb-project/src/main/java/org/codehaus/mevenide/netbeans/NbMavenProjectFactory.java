@@ -67,6 +67,13 @@ public class NbMavenProjectFactory implements ProjectFactory
         }
         
         File project = new File(projectDir, "pom.xml"); // NOI18N
+        if (project.isFile() && 
+            "archetype-resources".equalsIgnoreCase(projectDir.getName()) &&
+            "resources".equalsIgnoreCase(projectDir.getParentFile().getName())) {
+            //this is an archetype resource, happily ignore..
+            System.out.println("is archetype..");
+            return false;
+        }
         return project.isFile() &&  !"nbproject".equalsIgnoreCase(projectDir.getName()); //NOI18N
     }
     
@@ -92,6 +99,13 @@ public class NbMavenProjectFactory implements ProjectFactory
         }
         File projectDiskFile = FileUtil.toFile(projectFile);
         if (projectDiskFile == null)  {
+            return null;
+        }
+        if (projectDiskFile.isFile() && 
+            "archetype-resources".equalsIgnoreCase(fileObject.getName()) &&
+            "resources".equalsIgnoreCase(fileObject.getParent().getName())) {
+            //this is an archetype resource, happily ignore..
+            System.out.println("load is archetype..");
             return null;
         }
         try {
