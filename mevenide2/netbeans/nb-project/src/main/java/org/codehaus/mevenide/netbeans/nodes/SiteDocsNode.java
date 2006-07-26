@@ -63,7 +63,7 @@ class SiteDocsNode extends FilterNode {
             toReturn[0] = CommonProjectActions.newFileAction();
             toReturn[1] = null;
             NetbeansActionMapping mapp = new NetbeansActionMapping();
-            mapp.addGoal("site:site");
+            mapp.addGoal("site");
             toReturn[2] = impl.createCustomMavenAction("Generate Site", mapp);
             mapp = new NetbeansActionMapping();
             mapp.addGoal("site:deploy");
