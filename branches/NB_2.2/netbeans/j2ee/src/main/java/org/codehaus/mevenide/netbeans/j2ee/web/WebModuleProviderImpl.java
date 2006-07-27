@@ -71,6 +71,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER);
+        String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
             String inst = null;
@@ -82,12 +83,17 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                         break;
                     }
                 }
-                serverInstanceID = inst;
+                instanceFound = inst;
             }
         }
+        if (instanceFound == null) {
+            instanceFound = Deployment.getDefault().getDefaultServerInstanceID();
+        }
+        serverInstanceID = instanceFound;
         if (oldId != null) {
             fireServerChange(oldSer, getServerID());
         }
+        getConfigSupport().ensureConfigurationReady();
 //        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
 //        setContextPathImpl(val != null ? val : implementation.getContextPath());
     }
