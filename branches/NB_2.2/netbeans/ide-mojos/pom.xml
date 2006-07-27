@@ -24,7 +24,7 @@
         </notifiers>
     </ciManagement>
     <scm>
-        <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</connection>
+        <connection>scm:svn:http://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</connection>
         <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</developerConnection>
         <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2/netbeans/ide-mojos</url>
     </scm>
@@ -62,7 +62,7 @@
             </roles>
         </developer>
     </developers>
-    <profiles>
+    <!--profiles>
         <profile>
             <id>jdk142</id>
             <activation>
@@ -72,8 +72,8 @@
                 <java142.home>${java.home}/..</java142.home>
             </properties>
         </profile>
-    </profiles>
-    <build>
+    </profiles-->
+    <!--build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -86,27 +86,8 @@
                     <target>1.4</target>
                 </configuration>
             </plugin>
-            <!--plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.2</version>
-                <executions>
-                    <execution>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>deploy</goal>
-                        </goals>
-                        <configuration>
-                            <repositoryId>temporary</repositoryId>
-                        </configuration>
-                    </execution>
-                </executions>
-                <configuration>
-                    <repositoryId>mevenide-upload</repositoryId>
-                </configuration>
-            </plugin-->
         </plugins>
-    </build>
+    </build-->
     <distributionManagement>
         <repository>
             <id>mevenide-upload</id>
@@ -164,9 +145,8 @@
         <module>netbeans-run-plugin</module>
     </modules>
   
-    <properties>
-        <!--a fallback to make it work everywhere -->
+    <!--properties>
         <java142.home>${java.home}/..</java142.home>
-    </properties>
+    </properties-->
   
 </project>
