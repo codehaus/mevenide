@@ -79,6 +79,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel implements M2Custo
             }
         });
         initValues();
+        txtContextPath.setText(moduleProvider.getContextPath());
     }
     
     private void initValues() {
@@ -300,6 +301,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel implements M2Custo
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }
+        moduleProvider.setContextPath(txtContextPath.getText().trim());
     }
     
     
