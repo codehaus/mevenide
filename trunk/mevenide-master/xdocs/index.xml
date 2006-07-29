@@ -44,14 +44,14 @@
                         </li>
                         <li>
                             <a href="mevenide-netbeans-project/features.html" class="documentLink">NetBeans
-                                plugin</a>
+                                plugin</a> <b>NEW:</b> We also have <a href="m2-site/index.html" class="documentLink">Maven2 Support</a>.
                         </li>
                         <li>
                             <a href="mevenide-ui-jbuilder/features.html" class="documentLink">JBuilder plugin
                             </a>
                         </li>
                         <li>
-                            <a href="mevenide-idea/index.html" class="documentLink">IntelliJ IDEA plugin</a> (NEW!)
+                            <a href="mevenide-idea/index.html" class="documentLink">IntelliJ IDEA plugin</a>
                         </li>
                     </ul>
                 </p>

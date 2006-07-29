@@ -60,12 +60,6 @@
         		<li>Maven 1.0.2</li>
         	</ul>
 
-        <p>
-        <b>Note: </b>
-        The grammar module
-        (editor completion for maven xml files) in 1.0 release zip will work
-            with Netbeans 5.0 and later builds. To get it working with 4.1 you need the <a href="../nbm_release/mevenide-netbeans-grammar-0.6.1.nbm">old 4.1 mevenide-grammar nbm </a>.
-        </p>
       </div>
       <div id="plugin">
         <p>
@@ -76,8 +70,8 @@
   	<section name="NetBeans Maven2 Support">
       <div id="Maven2">
         <p>
-            An initial release of Maven2 support for Netbeans has been released. It can be used simultaneously with the Maven1 integration
-            or on it's own. See <a href="http://docs.codehaus.org/display/MEVENIDE/MevenideNetbeans2.0">available features and download instructions</a>
+            Maven2 support for Netbeans has been released. It can be used simultaneously with the Maven1 integration
+            or on it's own. See <a href="m2-site/index.html">Maven2 project page</a> for details.
             It works only in <b>Netbeans 5.0 and later builds</b>
         </p>
       </div>
