@@ -94,8 +94,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
             fireServerChange(oldSer, getServerID());
         }
         getConfigSupport().ensureConfigurationReady();
-//        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
-//        setContextPathImpl(val != null ? val : implementation.getContextPath());
+        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
+        setContextPathImpl(val != null ? val : implementation.getContextPath());
     }
     
     public WebModule findWebModule(FileObject fileObject) {
@@ -138,7 +138,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     public String getContextPath() {
         if(implementation.getDeploymentDescriptor() == null) {
-            return null;
+            return (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
         }
         return getConfigSupport().getWebContextRoot ();
     }
