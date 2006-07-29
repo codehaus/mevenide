@@ -24,6 +24,14 @@
           <url>http://snapshots.repository.codehaus.org</url>
       </pluginRepository>
   </pluginRepositories>
+    <distributionManagement>
+        <site>
+            <id>mevenide-site-upload</id>
+            <name>Mevenide Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
+        </site>
+    </distributionManagement>
+  
   <build>
       <plugins>
           <plugin>
