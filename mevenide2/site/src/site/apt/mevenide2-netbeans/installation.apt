@@ -28,7 +28,7 @@ Installation
 
   [[3]] Enter "Mevenide2 Update Center" for the object name
 
-  [[4]] Copy/paste the following URL in "Server URL" field : {{{http://mevenide.codehaus.org/nbm_release2/NBM_Autoupdate.xml}http://mevenide.codehaus.org/nbm_release2/NBM_Autoupdate.xml}}
+  [[4]] Copy/paste the following URL in "Server URL" field : {{{http://mevenide.codehaus.org/nbm_release2/NBM_AutoUpdate.xml}http://mevenide.codehaus.org/nbm_release2/NBM_AutoUpdate.xml}}
 
 [../images/updateCenter2.png]
 
