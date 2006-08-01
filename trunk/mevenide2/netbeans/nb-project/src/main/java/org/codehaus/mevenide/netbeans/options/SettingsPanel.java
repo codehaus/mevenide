@@ -25,7 +25,6 @@ import javax.swing.SwingUtilities;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.repository.indexing.ArtifactRepositoryIndex;
 import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
