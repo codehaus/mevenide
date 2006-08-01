@@ -62,6 +62,7 @@
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
+     <module>nb-repo-browser</module>
   </modules>
     <repositories>
         <repository>

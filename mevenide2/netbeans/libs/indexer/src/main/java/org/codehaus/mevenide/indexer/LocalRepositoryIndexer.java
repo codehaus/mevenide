@@ -24,23 +24,24 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import org.apache.lucene.index.Term;
+import org.apache.lucene.search.TermQuery;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.MavenProjectBuilder;
-import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.repository.discovery.ArtifactDiscoverer;
-import org.apache.maven.repository.indexing.ArtifactRepositoryIndex;
-import org.apache.maven.repository.indexing.PomRepositoryIndex;
-import org.apache.maven.repository.indexing.RepositoryIndex;
+import org.apache.maven.repository.discovery.DiscovererException;
+import org.apache.maven.repository.indexing.RepositoryArtifactIndex;
+import org.apache.maven.repository.indexing.RepositoryArtifactIndexFactory;
 import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
-import org.apache.maven.repository.indexing.RepositoryIndexSearcher;
-import org.apache.maven.repository.indexing.RepositoryIndexingFactory;
-import org.apache.maven.repository.indexing.query.Query;
+import org.apache.maven.repository.indexing.lucene.LuceneQuery;
+import org.apache.maven.repository.indexing.record.RepositoryIndexRecordFactory;
+import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
+import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.PlexusContainerException;
@@ -51,6 +52,8 @@ import org.netbeans.api.progress.ProgressHandleFactory;
 
 /**
  * a wrapper for things dealing with local repository search..
+ * 
+ * //TODO make sure to get means of figuring if it's save to query the index, disallowing when index is being rebuilt.
  * @author mkleint
  */
 public class LocalRepositoryIndexer {
@@ -58,24 +61,24 @@ public class LocalRepositoryIndexer {
     private static LocalRepositoryIndexer instance;
     
     private Embedder embedder;
-    private RepositoryIndexingFactory indexFactory;
+    private RepositoryArtifactIndexFactory indexFactory;
     private ArtifactDiscoverer discoverer;
-    private RepositoryIndexSearcher searcher;
-    private ArtifactRepositoryIndex defaultIndex;
-    private PomRepositoryIndex defaultPomIndex;
-    private MavenProjectBuilder projectBuilder;
+    private RepositoryArtifactIndex defaultIndex;
+    private ArtifactRepository repository;
+    private RepositoryIndexRecordFactory recordFactory;
+    private ArtifactFactory artifactFactory;
     
     /** Creates a new instance of LocalRepositoryIndexer */
     private LocalRepositoryIndexer() throws PlexusContainerException, ComponentLookupException, MavenEmbedderException, RepositoryIndexException {
         embedder = new Embedder();
         ClassWorld world = new ClassWorld();
         embedder.start( world );
-        indexFactory = (RepositoryIndexingFactory) embedder.lookup(RepositoryIndexingFactory.ROLE);
+        indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene");
         discoverer = (ArtifactDiscoverer) embedder.lookup(ArtifactDiscoverer.ROLE, "default" );
-        searcher = (RepositoryIndexSearcher) embedder.lookup(RepositoryIndexSearcher.ROLE, "complete");
-        defaultIndex = createIndex(EmbedderFactory.getProjectEmbedder().getLocalRepository());
-        defaultPomIndex = createPomIndex(EmbedderFactory.getProjectEmbedder().getLocalRepository());
-        projectBuilder = (MavenProjectBuilder) embedder.lookup(MavenProjectBuilder.ROLE);
+        repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
+        defaultIndex = createIndex();
+        recordFactory = (RepositoryIndexRecordFactory)embedder.lookup(RepositoryIndexRecordFactory.ROLE, "standard");
+        artifactFactory = (ArtifactFactory)embedder.lookup(ArtifactFactory.ROLE);
     }
     
     public static synchronized LocalRepositoryIndexer getInstance() {
@@ -96,21 +99,12 @@ public class LocalRepositoryIndexer {
         return instance;
     }
     
-    private ArtifactRepositoryIndex createIndex(ArtifactRepository repo) throws RepositoryIndexException {
-        File basedir = new File(repo.getBasedir());
+    private RepositoryArtifactIndex createIndex() throws RepositoryIndexException {
+        File basedir = new File(repository.getBasedir());
         if (!basedir.exists()) {
             basedir.mkdirs();
         }
-        ArtifactRepositoryIndex index = indexFactory.createArtifactRepositoryIndex(new File(basedir, ".index"), repo);
-        return index;
-    }
-    
-    private PomRepositoryIndex createPomIndex(ArtifactRepository repo) throws RepositoryIndexException {
-        File basedir = new File(repo.getBasedir());
-        if (!basedir.exists()) {
-            basedir.mkdirs();
-        }
-        PomRepositoryIndex index = indexFactory.createPomRepositoryIndex(new File(basedir, ".pomindex"), repo);
+        RepositoryArtifactIndex index = indexFactory.createStandardIndex(new File(basedir, ".index"), repository);
         return index;
     }
     
@@ -119,80 +113,79 @@ public class LocalRepositoryIndexer {
         try {
             handle.start();
             handle.progress("Discovering artifacts...");
-            List artifacts = discoverer.discoverArtifacts( defaultIndex.getRepository(), null, updateSnapshots );
-            doUpdate(defaultIndex, defaultPomIndex, handle, artifacts);
+            List artifacts = discoverer.discoverArtifacts(repository, "update", null, updateSnapshots);
+            System.out.println("discovered=" + artifacts.size());
+            doUpdate(defaultIndex, handle, artifacts);
             MavenIndexSettings.getDefault().setLastIndexUpdate(new Date());
+        } catch (DiscovererException ex) {
+            //TODO
+            ex.printStackTrace();
         } finally {
             handle.finish();
         }
     }
     
-    private void doUpdate(ArtifactRepositoryIndex index, PomRepositoryIndex pomIndex, ProgressHandle handle, Collection artifacts) throws RepositoryIndexException {
+    private void doUpdate(RepositoryArtifactIndex index, ProgressHandle handle, Collection artifacts) throws RepositoryIndexException {
         int size = artifacts.size();
-        handle.switchToDeterminate(size + (size / 5));
-        MavenXpp3Reader reader = new MavenXpp3Reader();
+        handle.switchToDeterminate(size);
         int count = 0;
         for ( Iterator i = artifacts.iterator(); i.hasNext(); ) {
             Artifact artifact = (Artifact) i.next();
             count++;
             handle.progress("Indexing " + count + " out of " + size, count);
-            index.indexArtifact( artifact );
-            if ("pom".equals(artifact.getType())) {
-//                InputStreamReader rr = null;
-                try {
-                    
-//                    rr = new InputStreamReader(new FileInputStream(artifact.getFile()));
-//                    EmbedderFactory.getProjectEmbedder().readModel(artifact.getFile());
-//                    Model mdl = reader.read(rr, true);
-                    MavenProject prj = projectBuilder.buildFromRepository(artifact, Collections.EMPTY_LIST, index.getRepository());
-                    Model mdl = prj.getModel();
-                    //maven-clean-plugin 2.1 ??
-                    if (mdl.getGroupId() == null || mdl.getArtifactId() == null ||
-                        mdl.getVersion() == null || mdl.getPackaging() == null) {
-                        System.out.println("excluding=" + mdl.getId());
-                        continue;
-                    }
-                    if (mdl.getPackaging().equals("maven-plugin")) {
-                        System.out.println("mdl=" + mdl.getId() + " gr=" + mdl.getGroupId());
-                    }
-                    pomIndex.indexPom(mdl);
-                } catch (RepositoryIndexException ex) {
-                    ex.printStackTrace();
-                } catch (ProjectBuildingException ex) {
-                    System.out.println("bad pom.." + artifact.getFile());
-                    ex.printStackTrace();
-                } finally {
-//                    IOUtil.close(rr);
-                }
-            }
+            index.indexRecords(Collections.singletonList(recordFactory.createRecord(artifact)));
         }
-        handle.progress("Optimizing index...", count + (size / 10));
-        index.optimize();
-        pomIndex.optimize();
-        
     }
     
     public void updateIndexWithArtifacts(Collection artifacts) throws RepositoryIndexException {
         ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository index update");
         try {
             handle.start();
-            doUpdate(defaultIndex, defaultPomIndex, handle, artifacts);
+//TODO            doUpdate(defaultIndex, handle, artifacts);
         } finally {
             handle.finish();
         }
     }
     
-    public List searchIndex(RepositoryIndex index, Query query) throws RepositoryIndexSearchException {
-        return searcher.search(query, index);
+    public List searchIndex(RepositoryArtifactIndex index, LuceneQuery query) throws RepositoryIndexSearchException {
+        return index.search(query);
     }
     
 
-    public ArtifactRepositoryIndex getDefaultIndex() {
+    public RepositoryArtifactIndex getDefaultIndex() {
         //TODO this needs to update everytime the settings.xml file changes..
         return defaultIndex;
     }
     
-    public PomRepositoryIndex getDefaultPomIndex() {
-        return defaultPomIndex;
+    public File getDefaultIndexLocation() {
+        return new File(repository.getBasedir(), ".index");
     }
+    
+    /**
+     * returns a list of Artifacts that are archetypes.
+     *  @returns Set of StandardArtifactIndexRecord instances
+     */
+    public List retrievePossibleArchetypes() throws RepositoryIndexSearchException {
+        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.TYPE, "maven-archetype"));
+        LuceneQuery q = new LuceneQuery(tq);
+        return searchIndex(getDefaultIndex(), q);
+//        Iterator it = lst.iterator();
+//        Set elems = new TreeSet();
+//        System.out.println("set size = " + lst.size());
+//        while (it.hasNext()) {
+//            StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
+//            if (elem.getClassifier() != null) {
+//                elems.add(artifactFactory.createArtifactWithClassifier(elem.getGroupId(), 
+//                                                                       elem.getArtifactId(), 
+//                                                                       elem.getVersion(), 
+//                                                                       elem.getType(), 
+//                                                                       elem.getClassifier()));
+//            } else {
+//                elems.add(artifactFactory.createArtifact(elem.getGroupId(), elem.getArtifactId(),
+//                                                         elem.getVersion(), Artifact.SCOPE_RUNTIME, elem.getType()));
+//            }
+//        }
+//        return elems;
+    }
+    
 }

@@ -10,7 +10,7 @@
         <library>org.apache.maven.repository:maven-repository-utils</library>
         <library>org.apache.maven.repository:maven-repository-indexer</library>
         <library>org.apache.maven.repository:maven-repository-discovery</library>
-        <library>lucene:lucene</library>
+        <library>org.apache.lucene:lucene-core</library>
     </libraries>
     <dependencies>
         <dependency>

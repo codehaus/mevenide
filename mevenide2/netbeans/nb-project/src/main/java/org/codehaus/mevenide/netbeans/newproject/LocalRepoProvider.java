@@ -29,7 +29,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
+import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
@@ -46,46 +48,15 @@ public class LocalRepoProvider implements ArchetypeProvider {
     public List getArchetypes() {
         List lst = new ArrayList();
         try {
-            Iterator it = CustomQueries.retrievePossibleArchetypes().iterator();
+            Iterator it = LocalRepositoryIndexer.getInstance().retrievePossibleArchetypes().iterator();
             while (it.hasNext()) {
-                Artifact art = (Artifact) it.next();
+                StandardArtifactIndexRecord art = (StandardArtifactIndexRecord) it.next();
                 Archetype arch = new Archetype();
                 arch.setArtifactId(art.getArtifactId());
                 arch.setGroupId(art.getGroupId());
                 arch.setVersion(art.getVersion());
-                JarFile fil = null;
-                InputStream str = null;
-                try {
-                    fil = new JarFile(art.getFile());
-                    JarEntry entry = fil.getJarEntry("META-INF/maven/" + art.getGroupId() + "/" + art.getArtifactId() + "/pom.xml");
-                    if (entry != null) {
-                        str = fil.getInputStream(entry);
-                        MavenXpp3Reader reader = new MavenXpp3Reader();
-                        Model mdl = reader.read(new InputStreamReader(str));
-                        arch.setName(mdl.getName());
-                        arch.setDescription(mdl.getDescription());
-                    } else {
-                        arch.setName(art.getId());
-                        arch.setDescription(art.getId());
-                    }
-                } catch (IOException exc) {
-                    exc.printStackTrace();
-                    arch.setName(art.getId());
-                    arch.setDescription(art.getId());
-                } catch (XmlPullParserException ex) {
-                    ex.printStackTrace();
-                    arch.setName(art.getId());
-                    arch.setDescription(art.getId());
-                } finally {
-                    IOUtil.close(str);
-                    if (fil != null) {
-                        try {
-                            fil.close();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                }
+                arch.setName(art.getProjectName());
+                arch.setDescription(art.getProjectDescription());
                 lst.add(arch);
             }
         } catch (RepositoryIndexSearchException ex) {
