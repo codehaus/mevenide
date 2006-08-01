@@ -98,7 +98,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
         }
         
         Set resultSet = new LinkedHashSet();
-        File root = new File(System.getProperty("java.io.tmpdir"));
+        File root = FileUtil.normalizeFile(new File(System.getProperty("java.io.tmpdir")));
         int index = 0;
         File dir = new File(root, "tempmavenproject" + index);
         while (dir.exists()) {
