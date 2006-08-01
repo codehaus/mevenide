@@ -59,7 +59,7 @@ public class MavenIndexSettings extends SystemOption {
 
     
     public void setIndexUpdateFrequency(int fr) {
-        putProperty(PROP_INDEX_FREQ, Integer.valueOf(fr), true);
+        putProperty(PROP_INDEX_FREQ, new Integer(fr), true);
     }
     
     public int getIndexUpdateFrequency() {
