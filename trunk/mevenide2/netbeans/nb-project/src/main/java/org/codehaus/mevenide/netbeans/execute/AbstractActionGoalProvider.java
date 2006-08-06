@@ -78,7 +78,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                     replaceMap.put("className", fos[0].getName());
                     replaceMap.put("packageClassName", (FileUtil.getRelativePath(grp[i].getRootFolder(),
                             fos[0].getParent())
-                            + fos[0].getName()).replace('/','.'));
+                            + "." + fos[0].getName()).replace('/','.'));
                     break;
                 }
             }
