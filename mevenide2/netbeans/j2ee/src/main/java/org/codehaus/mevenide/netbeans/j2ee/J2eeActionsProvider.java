@@ -18,8 +18,10 @@
 package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.io.InputStream;
+import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 
 /**
  * j2ee specific defaults for project running and debugging..
@@ -30,6 +32,12 @@ public class J2eeActionsProvider extends AbstractActionGoalProvider {
     /** Creates a new instance of J2eeActionsProvider */
     public J2eeActionsProvider() {
     }
+    
+    public Action[] createPopupActions(NbMavenProject project) {
+        //TODO verify 
+        return new Action[0];
+    }
+    
     
     public InputStream getActionDefinitionStream() {
         String path = "/org/codehaus/mevenide/netbeans/j2ee/webActionMappings.xml";
