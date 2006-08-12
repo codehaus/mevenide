@@ -312,6 +312,18 @@ public final class NbMavenProject implements Project {
        return fil.toURI();
     }
    
+   public URI getEarAppDirectory() {
+       //TODO hack, should be supported somehow to read this..
+       String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
+                                              "maven-ear-plugin", 
+                                              "earSourceDirectory", 
+                                              "ear");
+       prop = prop == null ? "src/main/application" : prop;
+       URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
+       File fil = new File(uri);
+       return fil.toURI();
+    }
+   
    public URI[] getResources(boolean test) {
        List toRet = new ArrayList();
        List res = test ? getOriginalMavenProject().getTestResources() : getOriginalMavenProject().getResources();
