@@ -40,6 +40,9 @@ import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
@@ -271,15 +274,22 @@ class DependenciesNode extends AbstractNode {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
                     Node[] nds = getChildren().getNodes();
+                    ProgressContributor[] contribs = new ProgressContributor[nds.length];
+                    for (int i = 0; i < nds.length; i++) {
+                        contribs[i] = AggregateProgressFactory.createProgressContributor("multi-" + i);
+                    }
+                    AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", 
+                            contribs, null, null);
+                    handle.start();
                     for (int i = 0; i < nds.length; i++) {
                         if (nds[i] instanceof DependencyNode) {
                             DependencyNode nd = (DependencyNode)nds[i];
                             if (!nd.hasJavadocInRepository() || !nd.hasSourceInRepository()) {
-                                nd.downloadJavadocSources(online);
+                                nd.downloadJavadocSources(online, contribs[i]);
                             }
                         }
                     }
-                    StatusDisplayer.getDefault().setStatusText("Done retrieving javadocs and sources from remote repositories.");
+                    handle.finish();
                 }
             });
         }
@@ -301,12 +311,15 @@ class DependenciesNode extends AbstractNode {
                     } catch (ArtifactNotFoundException ex) {
                         ex.printStackTrace();
                         ok = false;
+                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
                     } catch (ArtifactResolutionException ex) {
                         ex.printStackTrace();
                         ok = false;
+                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
                     } catch (ProjectBuildingException ex) {
                         ex.printStackTrace();
                         ok = false;
+                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
                     }
                     if (ok) {
                         StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");

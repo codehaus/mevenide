@@ -58,6 +58,9 @@ import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -275,8 +278,10 @@ public class DependencyNode extends AbstractNode {
         return getSourceFile().exists();
     }
     
-    void downloadJavadocSources(MavenEmbedder online) {
+    void downloadJavadocSources(MavenEmbedder online, ProgressContributor progress) {
+        progress.start(3);
         if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
+            progress.finish();
             return;
         }
         Artifact javadoc = project.getEmbedder().createArtifactWithClassifier(
@@ -292,16 +297,16 @@ public class DependencyNode extends AbstractNode {
                 art.getType(),
                 "sources");
         try {
-            StatusDisplayer.getDefault().setStatusText("Checking Javadoc for " + art.getId());
+            progress.progress("Checking Javadoc for " + art.getId(), 1);
             online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
-            StatusDisplayer.getDefault().setStatusText("Checking Sources for " + art.getId());
+            progress.progress("Checking Sources for " + art.getId(), 2);
             online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
         } catch (ArtifactNotFoundException ex) {
-            ex.printStackTrace();
+            // just ignore..ex.printStackTrace();
         } catch (ArtifactResolutionException ex) {
-            ex.printStackTrace();
+            // just ignore..ex.printStackTrace();
         } finally {
-            StatusDisplayer.getDefault().setStatusText("");
+            progress.finish();
         }
         refreshNode();
     }
@@ -430,7 +435,11 @@ public class DependencyNode extends AbstractNode {
         }
         
         public void run() {
-            downloadJavadocSources(EmbedderFactory.getOnlineEmbedder());
+            ProgressContributor contrib = AggregateProgressFactory.createProgressContributor("single"); //NOI18N
+            AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", new ProgressContributor[] {contrib}, null, null);
+            handle.start();
+            downloadJavadocSources(EmbedderFactory.getOnlineEmbedder(), contrib);
+            handle.finish();
         }
     }
     
