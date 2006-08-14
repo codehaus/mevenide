@@ -85,14 +85,13 @@ public class VersionNode extends AbstractNode {
         }
 
         public void actionPerformed(ActionEvent e) {
-            QueryParser parser = new QueryParser("content", new SimpleAnalyzer());
             String query = StandardIndexRecordFields.GROUPID + ":" + groupId + " " + 
-                                   StandardIndexRecordFields.ARTIFACTID + ":" + artifactId + " " + 
-                                   StandardIndexRecordFields.VERSION + ":" + version.toString();
+                           StandardIndexRecordFields.ARTIFACTID + ":" + artifactId + " " + 
+                           StandardIndexRecordFields.VERSION + ":" + version.toString();
             System.out.println("query =" + query);
             LuceneQuery lq;
             try {
-                lq = new LuceneQuery(parser.parse(query));
+                lq = new LuceneQuery(LocalRepositoryIndexer.parseQuery(query));
                 List docs = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), lq);
                 StandardArtifactIndexRecord record = (StandardArtifactIndexRecord) docs.iterator().next();
                 System.out.println("-----------------------------------------------------------------------");

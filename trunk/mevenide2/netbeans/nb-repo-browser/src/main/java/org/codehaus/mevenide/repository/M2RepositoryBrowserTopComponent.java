@@ -18,9 +18,14 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.BorderLayout;
+import java.awt.Insets;
 import java.io.Serializable;
 import javax.swing.ActionMap;
+import javax.swing.ImageIcon;
 import javax.swing.text.DefaultEditorKit;
+import org.codehaus.mevenide.repository.search.SearchAction;
+import org.codehaus.mevenide.repository.search.SearchPanel;
+import org.openide.DialogDescriptor;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
@@ -36,7 +41,7 @@ import org.openide.windows.WindowManager;
 /**
  * Top component which displays something.
  */
-final class M2RepositoryBrowserTopComponent extends TopComponent implements ExplorerManager.Provider {
+public final class M2RepositoryBrowserTopComponent extends TopComponent implements ExplorerManager.Provider {
     
     private static M2RepositoryBrowserTopComponent instance;
     /** path to the icon used by the component and its open action */
@@ -47,6 +52,12 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
     private BeanTreeView btv;
 
     private ExplorerManager manager;
+    
+    private boolean searchMode = false;
+
+    private SearchPanel searchPanel;
+
+    private DialogDescriptor searchDD;
     
     private M2RepositoryBrowserTopComponent() {
         initComponents();
@@ -63,6 +74,14 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
         map.put("delete", ExplorerUtils.actionDelete(manager, true));
         associateLookup(ExplorerUtils.createLookup(manager, map));
         pnlExplorer.add(btv, BorderLayout.CENTER);
+        btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/find.gif")));
+        btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.gif")));
+        btnSearch.setText(null);
+        btnSearch.setToolTipText("Search in Maven repository");
+        btnBack.setText(null);
+        btnBack.setToolTipText("Return back to browse mode");
+        btnBack.setMargin(new Insets(1,1,1,1));
+        btnSearch.setMargin(new Insets(1,1,1,1));
     }
     
     public ExplorerManager getExplorerManager() {
@@ -76,13 +95,25 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        lblPattern = new javax.swing.JLabel();
-        txtPattern = new javax.swing.JTextField();
+        btnSearch = new javax.swing.JButton();
         pnlExplorer = new javax.swing.JPanel();
+        btnBack = new javax.swing.JButton();
 
-        org.openide.awt.Mnemonics.setLocalizedText(lblPattern, "Filter:");
+        org.openide.awt.Mnemonics.setLocalizedText(btnSearch, "Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
 
         pnlExplorer.setLayout(new java.awt.BorderLayout());
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnBack, "Back to browse");
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -90,10 +121,10 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(lblPattern)
+                .add(btnBack)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(txtPattern, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(btnSearch)
+                .addContainerGap(178, Short.MAX_VALUE))
             .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -101,18 +132,34 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(lblPattern)
-                    .add(txtPattern, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(btnSearch)
+                    .add(btnBack))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 263, Short.MAX_VALUE))
+                .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+            searchMode = false;
+            checkMode();
+            searchPanel = null;
+            searchDD = null;
+    }//GEN-LAST:event_btnBackActionPerformed
+
+    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
+        if (searchPanel != null && searchDD != null) {
+            ((SearchAction)SearchAction.get(SearchAction.class)).performAction(searchDD, searchPanel);
+        } else {
+            SearchAction.get(SearchAction.class).actionPerformed(null);
+        }
+        
+    }//GEN-LAST:event_btnSearchActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel lblPattern;
+    private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JPanel pnlExplorer;
-    private javax.swing.JTextField txtPattern;
     // End of variables declaration//GEN-END:variables
     
     /**
@@ -151,12 +198,10 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
     }
     
     public void componentOpened() {
-        // TODO add custom code on component opening
-        manager.setRootContext(createRootNode());
+        checkMode();
     }
     
     public void componentClosed() {
-        // TODO add custom code on component closing
         manager.setRootContext(new AbstractNode(Children.LEAF));
     }
     
@@ -166,6 +211,17 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
     
     protected void componentDeactivated() {
         ExplorerUtils.activateActions(manager, false);
+    }
+    
+    private void checkMode() {
+        btnBack.setVisible(searchMode);
+        if (!searchMode) {
+            manager.setRootContext(createRootNode());
+//            btnSearch.setText("Search");
+        } else {
+//            btnSearch.setText("Back to browse");
+        }
+                
     }
     
     public boolean requestFocusInWindow() {
@@ -188,7 +244,18 @@ final class M2RepositoryBrowserTopComponent extends TopComponent implements Expl
     }
 
     private Node createRootNode() {
-        return new AbstractNode(new GroupIdListChildren(txtPattern));
+        return new AbstractNode(new GroupIdListChildren());
+    }
+
+    public void showSearchResults(Node root) {
+        manager.setRootContext(root);
+        searchMode = true;
+        checkMode();
+    }
+
+    public void setSearchDialogCache(DialogDescriptor dd, SearchPanel panel) {
+        searchDD = dd;
+        searchPanel = panel;
     }
     
     final static class ResolvableHelper implements Serializable {
