@@ -19,14 +19,20 @@
 package org.codehaus.mevenide.indexer;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.SimpleAnalyzer;
+import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.MultiFieldQueryParser;
+import org.apache.lucene.queryParser.ParseException;
+import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -40,7 +46,6 @@ import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
 import org.apache.maven.repository.indexing.lucene.LuceneQuery;
 import org.apache.maven.repository.indexing.record.RepositoryIndexRecordFactory;
-import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
 import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -67,6 +72,19 @@ public class LocalRepositoryIndexer {
     private ArtifactRepository repository;
     private RepositoryIndexRecordFactory recordFactory;
     private ArtifactFactory artifactFactory;
+    
+    private static final String[] ALL_FIELDS = new String[] {
+        StandardIndexRecordFields.ARTIFACTID,
+        StandardIndexRecordFields.BASE_VERSION,
+        StandardIndexRecordFields.CLASSES,
+        StandardIndexRecordFields.CLASSIFIER, 
+        StandardIndexRecordFields.FILES,
+        StandardIndexRecordFields.GROUPID, 
+        StandardIndexRecordFields.PACKAGING, 
+        StandardIndexRecordFields.PROJECT_DESCRIPTION,
+        StandardIndexRecordFields.PROJECT_NAME,
+        StandardIndexRecordFields.TYPE
+    };
     
     /** Creates a new instance of LocalRepositoryIndexer */
     private LocalRepositoryIndexer() throws PlexusContainerException, ComponentLookupException, MavenEmbedderException, RepositoryIndexException {
@@ -104,7 +122,7 @@ public class LocalRepositoryIndexer {
         if (!basedir.exists()) {
             basedir.mkdirs();
         }
-        RepositoryArtifactIndex index = indexFactory.createStandardIndex(new File(basedir, ".index"), repository);
+        RepositoryArtifactIndex index = indexFactory.createStandardIndex(new File(basedir, ".index"));
         return index;
     }
     
@@ -127,14 +145,18 @@ public class LocalRepositoryIndexer {
     
     private void doUpdate(RepositoryArtifactIndex index, ProgressHandle handle, Collection artifacts) throws RepositoryIndexException {
         int size = artifacts.size();
-        handle.switchToDeterminate(size);
+        handle.switchToDeterminate(size + 1);
         int count = 0;
+        Collection records = new ArrayList(artifacts.size());
         for ( Iterator i = artifacts.iterator(); i.hasNext(); ) {
             Artifact artifact = (Artifact) i.next();
             count++;
-            handle.progress("Indexing " + count + " out of " + size, count);
-            index.indexRecords(Collections.singletonList(recordFactory.createRecord(artifact)));
+            handle.progress("Recording " + count + " out of " + size, count);
+            records.add(recordFactory.createRecord(artifact));
         }
+        handle.switchToIndeterminate();
+        handle.progress("Indexing");
+        index.indexRecords(records);
     }
     
     public void updateIndexWithArtifacts(Collection artifacts) throws RepositoryIndexException {
@@ -160,6 +182,21 @@ public class LocalRepositoryIndexer {
     public File getDefaultIndexLocation() {
         return new File(repository.getBasedir(), ".index");
     }
+    
+    public static Query parseQuery(String parse) throws ParseException {
+        //simpleanalyzer seems to wreak havoc in non-tokenized fields..
+        Analyzer anal = new WhitespaceAnalyzer();
+        // ?? contents??
+        QueryParser parser = new QueryParser("contents", anal);
+        return parser.parse(parse);
+    }
+    
+    public static Query parseMultiFieldQuery(String parse) throws ParseException {
+        Analyzer anal = new WhitespaceAnalyzer();
+        MultiFieldQueryParser parser = new MultiFieldQueryParser(ALL_FIELDS, anal);
+        return parser.parse(parse);
+    }
+    
     
     /**
      * returns a list of Artifacts that are archetypes.

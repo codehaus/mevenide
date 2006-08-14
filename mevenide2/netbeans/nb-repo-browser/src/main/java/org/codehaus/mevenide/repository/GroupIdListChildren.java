@@ -20,13 +20,8 @@ package org.codehaus.mevenide.repository;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.JTextField;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 
@@ -36,54 +31,22 @@ import org.openide.nodes.Node;
  */
 public class GroupIdListChildren extends Children.Keys {
 
-    private JTextField filter;
-    private String currFilter;
     private List keys;
-    private DocumentListener documentLister;
     
     /** Creates a new instance of GroupIdListChildren */
-    public GroupIdListChildren(JTextField field) {
-        filter = field;
-        currFilter = filter.getText().trim();
-        documentLister = new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                checkCurrentFilter();
-            }
-            public void insertUpdate(DocumentEvent e) {
-                checkCurrentFilter();
-            }
-            public void removeUpdate(DocumentEvent e) {
-                checkCurrentFilter();
-            }
-        };
+    public GroupIdListChildren() {
     }
 
     protected Node[] createNodes(Object key) {
         String groupId = (String)key;
-        if (groupId.startsWith(currFilter)) {
-            return new Node[] { new GroupIdNode(groupId) };
-        }
-        return new Node[0];
+        return new Node[] { new GroupIdNode(groupId) };
     }
     
-    private void checkCurrentFilter() {
-        String oldFilter = currFilter;
-        currFilter = filter.getText().trim();
-        Iterator it = keys.iterator();
-        while (it.hasNext()) {
-            String elem = (String) it.next();
-            if (elem.startsWith(oldFilter) != elem.startsWith(currFilter)) {
-                refreshKey(elem);
-            }
-        }
-    }
-
     protected void addNotify() {
         super.addNotify();
         try {
             keys = new ArrayList(CustomQueries.enumerateGroupIds());
             setKeys(keys);
-            filter.getDocument().addDocumentListener(documentLister);
         } catch (IOException ex) {
             ex.printStackTrace();
             keys = new ArrayList();
@@ -94,7 +57,6 @@ public class GroupIdListChildren extends Children.Keys {
     protected void removeNotify() {
         super.removeNotify();
         keys = Collections.EMPTY_LIST;
-        filter.getDocument().removeDocumentListener(documentLister);
         setKeys(Collections.EMPTY_LIST);
     }
     

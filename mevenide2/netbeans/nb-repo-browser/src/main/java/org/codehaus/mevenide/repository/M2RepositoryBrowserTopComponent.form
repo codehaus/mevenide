@@ -15,10 +15,10 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lblPattern" min="-2" max="-2" attributes="0"/>
+              <Component id="btnBack" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="txtPattern" pref="329" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btnSearch" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="178" max="32767" attributes="0"/>
           </Group>
           <Component id="pnlExplorer" alignment="0" pref="400" max="32767" attributes="0"/>
       </Group>
@@ -28,26 +28,35 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="lblPattern" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtPattern" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnSearch" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnBack" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="pnlExplorer" pref="263" max="32767" attributes="0"/>
+              <Component id="pnlExplorer" pref="257" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="lblPattern">
+    <Component class="javax.swing.JButton" name="btnSearch">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Filter:"/>
+        <Property name="text" type="java.lang.String" value="Search"/>
       </Properties>
-    </Component>
-    <Component class="javax.swing.JTextField" name="txtPattern">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSearchActionPerformed"/>
+      </Events>
     </Component>
     <Container class="javax.swing.JPanel" name="pnlExplorer">
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
     </Container>
+    <Component class="javax.swing.JButton" name="btnBack">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Back to browse"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBackActionPerformed"/>
+      </Events>
+    </Component>
   </SubComponents>
 </Form>
