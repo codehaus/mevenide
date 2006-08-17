@@ -27,6 +27,7 @@ import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileSystem;
 
 /**
  *
@@ -69,81 +70,91 @@ public class WriterUtils {
             
         }
     }
-
-    public static void writeProfilesModel(FileObject pomDir, ProfilesRoot profilesRoot) throws IOException {
-        InputStream inStr = null;
-        FileLock lock = null;
-        OutputStream outStr = null;
-        OutputStreamWriter wr = null;
-        try {
-            Document doc;
-            FileObject fo = pomDir.getFileObject("profiles.xml");
-            if (fo == null) {
-                fo = pomDir.createData("profiles.xml");
-                doc = factory.document(factory.element("profilesXml"));
-            } else {
-                //TODO..
-                inStr = fo.getInputStream();
-                SAXBuilder builder = new SAXBuilder();
-                doc = builder.build(inStr);
-                inStr.close();
-                inStr = null;
+    
+    public static void writeProfilesModel(final FileObject pomDir, final ProfilesRoot profilesRoot) throws IOException {
+        pomDir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
+            public void run() throws IOException {
+                InputStream inStr = null;
+                FileLock lock = null;
+                OutputStream outStr = null;
+                OutputStreamWriter wr = null;
+                try {
+                    Document doc;
+                    FileObject fo = pomDir.getFileObject("profiles.xml");
+                    if (fo == null) {
+                        fo = pomDir.createData("profiles.xml");
+                        doc = factory.document(factory.element("profilesXml"));
+                    } else {
+                        //TODO..
+                        inStr = fo.getInputStream();
+                        SAXBuilder builder = new SAXBuilder();
+                        doc = builder.build(inStr);
+                        inStr.close();
+                        inStr = null;
+                    }
+                    lock = fo.lock();
+                    //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
+                    ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
+                    outStr = fo.getOutputStream(lock);
+                    //            writer.write(wr, profilesRoot);
+                    writer.write(profilesRoot, doc, outStr);
+                    //            outStr.close();
+                    //            outStr = null;
+                } catch (JDOMException exc){
+                    exc.printStackTrace();
+                    throw (IOException) new IOException("Cannot parse the profiles.xml by JDOM.").initCause(exc);
+                } finally {
+                    IOUtil.close(inStr);
+                    IOUtil.close(wr);
+                    if (lock != null) {
+                        lock.releaseLock();
+                    }
+                    
+                }
             }
-            lock = fo.lock();
-            //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
-            ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
-            outStr = fo.getOutputStream(lock);
-//            writer.write(wr, profilesRoot);
-            writer.write(profilesRoot, doc, outStr);
-//            outStr.close();
-//            outStr = null;
-        } catch (JDOMException exc){
-            exc.printStackTrace();
-            throw (IOException) new IOException("Cannot parse the profiles.xml by JDOM.").initCause(exc);
-        } finally {
-            IOUtil.close(inStr);
-            IOUtil.close(wr);
-            if (lock != null) {
-                lock.releaseLock();
-            }
-            
-        }
+        });
     }
     
-    public static void writeSettingsModel(FileObject m2dir, Settings settings) throws IOException {
-        InputStream inStr = null;
-        FileLock lock = null;
-        OutputStream outStr = null;
-        try {
-            Document doc;
-            FileObject fo = m2dir.getFileObject("settings.xml");
-            if (fo == null) {
-                fo = m2dir.createData("settings.xml");
-                doc = factory.document(factory.element("settings"));
-            } else {
-                //TODO..
-                inStr = fo.getInputStream();
-                SAXBuilder builder = new SAXBuilder();
-                doc = builder.build(inStr);
-                inStr.close();
-                inStr = null;
+    public static void writeSettingsModel(final FileObject m2dir, final Settings settings) throws IOException {
+        m2dir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
+            public void run() throws IOException {
+                InputStream inStr = null;
+                FileLock lock = null;
+                OutputStream outStr = null;
+                
+                try {
+                    Document doc;
+                    
+                    FileObject fo = m2dir.getFileObject("settings.xml");
+                    if (fo == null) {
+                        fo = m2dir.createData("settings.xml");
+                        doc = factory.document(factory.element("settings"));
+                    } else {
+                        //TODO..
+                        inStr = fo.getInputStream();
+                        SAXBuilder builder = new SAXBuilder();
+                        doc = builder.build(inStr);
+                        inStr.close();
+                        inStr = null;
+                    }
+                    lock = fo.lock();
+                    
+                    SettingsJDOMWriter writer = new SettingsJDOMWriter();
+                    outStr = fo.getOutputStream(lock);
+                    writer.write(settings, doc, outStr);
+                } catch (JDOMException exc){
+                    exc.printStackTrace();
+                    throw (IOException) new IOException("Cannot parse the settings.xml by JDOM.").initCause(exc);
+                } finally {
+                    IOUtil.close(inStr);
+                    IOUtil.close(outStr);
+                    if (lock != null) {
+                        lock.releaseLock();
+                    }
+                }
             }
-            lock = fo.lock();
-            
-            SettingsJDOMWriter writer = new SettingsJDOMWriter();
-            outStr = fo.getOutputStream(lock);
-            writer.write(settings, doc, outStr);
-        } catch (JDOMException exc){
-            exc.printStackTrace();
-            throw (IOException) new IOException("Cannot parse the settings.xml by JDOM.").initCause(exc);
-        } finally {
-            IOUtil.close(inStr);
-            IOUtil.close(outStr);
-            if (lock != null) {
-                lock.releaseLock();
-            }
-            
-        }
+        });
+        
     }
     
 }
