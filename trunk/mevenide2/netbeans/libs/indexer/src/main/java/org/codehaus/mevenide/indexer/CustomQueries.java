@@ -176,15 +176,20 @@ public class CustomQueries {
                 Document doc = indexReader.document( i );
                 if ( doc.getField( StandardIndexRecordFields.GROUPID ).stringValue().equals( groupId ) &&
                         doc.getField( StandardIndexRecordFields.ARTIFACTID ).stringValue().equals( artifactId ) ) {
-                    // DefaultArtifactVersion is used for correct ordering
-                    versions.add( new DefaultArtifactVersion( doc.getField( StandardIndexRecordFields.VERSION ).stringValue() ) );
+                    versions.add(doc.getField( StandardIndexRecordFields.VERSION ).stringValue());
                 }
             }
         } finally {
             indexReader.close();
         }
         
-        List sortedVersions = new ArrayList( versions );
+        // DefaultArtifactVersion is used for correct ordering
+        Iterator it = versions.iterator();
+        List sortedVersions = new ArrayList();
+        while (it.hasNext()) {
+            String elem = (String) it.next();
+            sortedVersions.add(new DefaultArtifactVersion(elem));
+        }
         Collections.sort( sortedVersions );
         return sortedVersions;
     }
