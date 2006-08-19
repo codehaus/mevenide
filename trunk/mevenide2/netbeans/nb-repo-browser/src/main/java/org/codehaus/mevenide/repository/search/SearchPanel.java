@@ -39,11 +39,11 @@ public class SearchPanel extends javax.swing.JPanel {
     
     LuceneQuery createLuceneQuery() throws ParseException {
         StringBuffer buff = new StringBuffer();
-        appendField(buff, StandardIndexRecordFields.GROUPID, txtGroupId, true);
-        appendField(buff, StandardIndexRecordFields.ARTIFACTID, txtArtifactId, true);
+        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, txtGroupId, false);
+        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, txtArtifactId, false);
         appendField(buff, StandardIndexRecordFields.PROJECT_NAME, txtName, false);
         appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, txtDescription, false);
-        appendField(buff, StandardIndexRecordFields.PACKAGING, txtPackaging, true);
+        appendField(buff, StandardIndexRecordFields.PACKAGING, txtPackaging, false);
         appendField(buff, StandardIndexRecordFields.CLASSES, txtClasses, false);
         
         if (txtAny.getText().trim().length() > 0) {
@@ -168,7 +168,7 @@ public class SearchPanel extends javax.swing.JPanel {
     private void appendField(StringBuffer buff, String field, JTextField txtField, boolean escape) {
         StringTokenizer tokenizer = new StringTokenizer(txtField.getText().trim());
         while (tokenizer.hasMoreTokens()) {
-            buff.append(" ").append(field).append(":").append(escape ? QueryParser.escape(tokenizer.nextToken()) : tokenizer.nextToken());
+            buff.append(" +").append(field).append(":\"").append(escape ? QueryParser.escape(tokenizer.nextToken()) : tokenizer.nextToken()).append("\"");
         }
     }
     
