@@ -206,7 +206,7 @@ public class MavenProjectNode extends AbstractNode {
             charCount = charCount + token.length();
             if (charCount > 50) {
                 charCount = 0;
-                buf.append("<br/>");
+                buf.append("<br>");
             }
             buf.append(token);
         }
