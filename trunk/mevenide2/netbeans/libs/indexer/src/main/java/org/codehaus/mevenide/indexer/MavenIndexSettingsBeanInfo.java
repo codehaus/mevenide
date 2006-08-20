@@ -32,8 +32,11 @@ public class MavenIndexSettingsBeanInfo extends SimpleBeanInfo {
             PropertyDescriptor lastIndexUpdate = new PropertyDescriptor ("lastIndexUpdate", MavenIndexSettings.class); //NOI18N
             lastIndexUpdate.setDisplayName ("lastIndexUpdate"); //NOI18N
             lastIndexUpdate.setHidden(true);
+            PropertyDescriptor collectedRepositories = new PropertyDescriptor ("collectedReposAsStrings", MavenIndexSettings.class, "getCollectedReposAsStrings", "setCollectedReposAsStrings"); //NOI18N
+            collectedRepositories.setDisplayName ("collectedReposAsStrings"); //NOI18N
+            collectedRepositories.setHidden(true);
             
-            return new PropertyDescriptor[] { indexUpdateFrequency, lastIndexUpdate };
+            return new PropertyDescriptor[] { indexUpdateFrequency, lastIndexUpdate, collectedRepositories };
         } catch (IntrospectionException ie) {
             ErrorManager.getDefault().notify(ie);
             return new PropertyDescriptor[0];

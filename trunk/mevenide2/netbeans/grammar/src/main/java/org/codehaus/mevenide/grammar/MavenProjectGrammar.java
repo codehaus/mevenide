@@ -44,6 +44,7 @@ import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyElement;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.Document;
@@ -350,6 +351,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             path.endsWith("pluginRepositories/pluginRepository/layout") ||
             path.endsWith("distributionManagement/repository/layout")) {
             return super.createTextValueList(MavenSettingsGrammar.LAYOUTS, virtualTextCtx);
+        }
+        if (path.endsWith("repositories/repository/url") ||
+            path.endsWith("pluginRepositories/pluginRepository/url") ||
+            path.endsWith("distributionManagement/repository/url")) {
+            List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
+            String[] strs = (String[])lst.toArray(new String[lst.size()]);
+            return super.createTextValueList(strs, virtualTextCtx);
         }
         
         if ("/project/modules/module".equals(path)) {
