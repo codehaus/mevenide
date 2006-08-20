@@ -178,6 +178,7 @@ public class EmbedderFactory {
         
         MavenEmbedder embedder = new MavenEmbedder();
         ClassWorld world = new ClassWorld();
+        File rootPackageFolder = FileUtil.normalizeFile(InstalledFileLocator.getDefault().locate("maven2/rootpackage", null, false));
         // kind of separation layer between the netbeans classloading world and maven classworld.
         try {
             ClassRealm nbRealm = world.newRealm("netbeans", loader);
@@ -193,9 +194,13 @@ public class EmbedderFactory {
             // from netbeans allow just Lookup and the mevenide bridges
             plexusRealm.importFrom(nbRealm.getId(), "org.openide.util");
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.bridges");
+            //hack to enable reports, default package is EVIL!
+            plexusRealm.addConstituent(rootPackageFolder.toURI().toURL());
         } catch (NoSuchRealmException ex) {
             ex.printStackTrace();
         } catch (DuplicateRealmException ex) {
+            ex.printStackTrace();
+        } catch (MalformedURLException ex) {
             ex.printStackTrace();
         }
         embedder.setClassWorld(world);

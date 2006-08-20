@@ -30,6 +30,7 @@
            <includes>
                <include>maven2/settings.xml</include>
                <include>maven2/plugin-registry.xml</include>
+               <include>maven2/rootpackage/default-report.xml</include>
            </includes>
        </nbmResource>
    </nbmResources>
