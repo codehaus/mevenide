@@ -17,10 +17,16 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.repository.indexing.RepositoryIndexException;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
-import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.indexer.*;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.modules.ModuleInstall;
 import org.openide.util.RequestProcessor;
 
@@ -32,29 +38,28 @@ public class ModInstall extends ModuleInstall {
     
     private static int MILIS_IN_SEC = 1000;
     private static int MILIS_IN_MIN = MILIS_IN_SEC * 60;
+    private transient PropertyChangeListener projectsListener;
     /** Creates a new instance of ModInstall */
     public ModInstall() {
     }
     
     public void restored() {
         super.restored();
+        projectsListener = new OpenProjectsListener();
+        OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
         int freq = MavenIndexSettings.getDefault().getIndexUpdateFrequency();
         if (freq != MavenIndexSettings.FREQ_NEVER) {
             boolean run = false;
             if (freq == MavenIndexSettings.FREQ_STARTUP) {
-                System.out.println("to be run on startup");
                 run = true;
             } else if (freq == MavenIndexSettings.FREQ_ONCE_DAY && checkDiff(86400000L)) {
-                System.out.println("to be run daily");
                 run = true;
             }  else if (freq == MavenIndexSettings.FREQ_ONCE_WEEK && checkDiff(604800000L)) {
-                System.out.println("to be run weekly");
                 run = true;
             }
             if (run) {
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
-                        System.out.println("running indexing..");
                         try {
                             LocalRepositoryIndexer.getInstance().updateIndex(false);
                         } catch (RepositoryIndexException ex) {
@@ -71,6 +76,42 @@ public class ModInstall extends ModuleInstall {
         Date now = new Date();
         long diff = now.getTime() - date.getTime();
         return  (diff < 0 || diff > amount);
+    }
+
+    public void uninstalled() {
+        super.uninstalled();
+        if (projectsListener != null) {
+            OpenProjects.getDefault().removePropertyChangeListener(projectsListener);
+        }
+    }
+    
+    private static class OpenProjectsListener implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent evt) {
+            List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
+            boolean added = false;
+            Project[] prjs = OpenProjects.getDefault().getOpenProjects();
+            for (int i = 0; i < prjs.length; i++) {
+                NbMavenProject mavProj = (NbMavenProject)prjs[i].getLookup().lookup(NbMavenProject.class);
+                if (mavProj != null) {
+                    List repos = mavProj.getOriginalMavenProject().getRemoteArtifactRepositories();
+                    if (repos != null) {
+                        Iterator it = repos.iterator();
+                        while (it.hasNext()) {
+                            ArtifactRepository rep = (ArtifactRepository) it.next();
+                            String url = rep.getUrl();
+                            if (!lst.contains(url)) {
+                                lst.add(url);
+                                added = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (added) {
+                MavenIndexSettings.getDefault().setCollectedRepositories(lst);
+            }
+        }
+        
     }
     
 }

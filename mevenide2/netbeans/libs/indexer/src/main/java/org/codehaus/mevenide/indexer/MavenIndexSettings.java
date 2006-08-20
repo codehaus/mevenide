@@ -17,11 +17,12 @@
 
 package org.codehaus.mevenide.indexer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
-import org.apache.maven.execution.MavenExecutionRequest;
+import java.util.List;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
 
 /**
  * a netbeans settings for global options that cannot be put into the settings file.
@@ -30,6 +31,7 @@ import org.openide.util.NbBundle;
 public class MavenIndexSettings extends SystemOption {
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
+    public static final String PROP_COLLECTED = "collectedReposAsStrings"; //NOI18N
     
     public static final int FREQ_ONCE_WEEK = 0;
     public static final int FREQ_ONCE_DAY = 1;
@@ -43,6 +45,7 @@ public class MavenIndexSettings extends SystemOption {
         super.initialize();
         setIndexUpdateFrequency(FREQ_ONCE_WEEK);
         setLastIndexUpdate(new Date(0));
+        setCollectedRepositories(new ArrayList());
     }
     
     public String displayName() {
@@ -72,6 +75,22 @@ public class MavenIndexSettings extends SystemOption {
     
     public void setLastIndexUpdate(Date date) {
         putProperty(PROP_LAST_INDEX_UPDATE, date, true);
+    }
+
+    public  void setCollectedRepositories(List repos) {
+        setCollectedReposAsStrings((String[])repos.toArray(new String[repos.size()]));
+    }
+    
+    public void setCollectedReposAsStrings(String[] repos) {
+        putProperty(PROP_COLLECTED, repos, true);
+    }
+    
+    public String[] getCollectedReposAsStrings() {
+        return (String[])getProperty(PROP_COLLECTED);
+    }
+    
+    public List getCollectedRepositories() {
+        return new ArrayList(Arrays.asList(getCollectedReposAsStrings()));
     }
     
 }
