@@ -61,6 +61,7 @@ import org.w3c.dom.NodeList;
 
 /**
  * xml completion grammar based on xsd, additionally allowing more to be added.
+ * @author Milos Kleint
  */
 public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     

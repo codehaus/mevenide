@@ -27,6 +27,7 @@ import java.util.Set;
 import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -89,10 +90,17 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
             "/settings/profiles/profile/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path)) {
             return super.createTextValueList(CHECKSUM_POLICIES, virtualTextCtx);
         }
-        if ("/settings/profiles/profile/repositories/repository/layout".equals(path) ||
-            "/settings/profiles/profile/pluginRepositories/pluginRepository/layout".equals(path)) {
+        if (path.endsWith("repository/layout") ||
+            path.endsWith("pluginRepository/layout")) {
             return super.createTextValueList(LAYOUTS, virtualTextCtx);
         }
+        if (path.endsWith("repositories/repository/url") ||
+            path.endsWith("pluginRepositories/pluginRepository/url")) {
+            List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
+            String[] strs = (String[])lst.toArray(new String[lst.size()]);
+            return super.createTextValueList(strs, virtualTextCtx);
+        }
+        
         if (path.endsWith("pluginGroups/pluginGroup")) {
             try {
                 Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
