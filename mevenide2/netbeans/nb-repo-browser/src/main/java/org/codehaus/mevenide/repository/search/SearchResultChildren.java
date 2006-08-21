@@ -29,6 +29,7 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.RepositoryUtils;
+import org.codehaus.mevenide.repository.VersionNode;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -67,7 +68,7 @@ public class SearchResultChildren extends Children.Keys {
                 hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
             }
         }
-        return new Node[] { new ResultNode(record, hasJavadoc, hasSources) };
+        return new Node[] { new VersionNode(record, hasJavadoc, hasSources) };
     }
     
     
@@ -92,74 +93,5 @@ public class SearchResultChildren extends Children.Keys {
         super.removeNotify();
         setKeys(Collections.EMPTY_LIST);
     }
-    
-    private class ResultNode extends AbstractNode {
-        private StandardArtifactIndexRecord record;
-        private boolean sources;
-        private boolean javadoc;
-        
-        public ResultNode(StandardArtifactIndexRecord rec, boolean hasJavadoc, boolean hasSources) {
-            super(Children.LEAF);
-            record = rec;
-            javadoc = hasJavadoc;
-            sources = hasSources;
-            setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion());
-            setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
-        }
-        
-        public Action[] getActions(boolean context) {
-            Action[] retValue;
-            
-            retValue = new Action[] {
-                new ShowRecordAction(record)
-            };
-            return retValue;
-        }
-        
-        public java.awt.Image getIcon(int param) {
-            java.awt.Image retValue = super.getIcon(param);
-            if (javadoc) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/repository/DependencyJavadocIncluded.png"),
-                        12, 12);
-            }
-            if (sources) {
-                retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/repository/DependencySrcIncluded.png"),
-                        12, 8);
-            }
-            return retValue;
-            
-        }
-    }
-    
-    
-    private static class ShowRecordAction extends AbstractAction {
-        
-        private StandardArtifactIndexRecord record;
-        ShowRecordAction(StandardArtifactIndexRecord record) {
-            putValue(Action.NAME, "Show record");
-            this.record = record;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            System.out.println("-----------------------------------------------------------------------");
-            System.out.println("groupId:" + record.getGroupId());
-            System.out.println("artifactId:" + record.getArtifactId());
-            System.out.println("version:" + record.getVersion());
-            System.out.println("packaging:" + record.getPackaging() + "-");
-            System.out.println("type:" + record.getType() + "-");
-            System.out.println("name:" + record.getProjectName());
-            System.out.println("description:" + record.getProjectDescription());
-            System.out.println("filename:" + record.getFilename());
-            System.out.println("repository:" + record.getRepository());
-            try {
-                Artifact art = RepositoryUtils.createArtifact(record, EmbedderFactory.getProjectEmbedder().getLocalRepository());
-            } catch (MavenEmbedderException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-    
     
 }

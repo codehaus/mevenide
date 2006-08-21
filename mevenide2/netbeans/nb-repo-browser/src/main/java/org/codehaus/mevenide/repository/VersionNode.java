@@ -18,6 +18,9 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.AbstractAction;
@@ -31,6 +34,9 @@ import org.apache.maven.repository.indexing.lucene.LuceneQuery;
 import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
 import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.openide.ErrorManager;
+import org.openide.awt.HtmlBrowser;
+import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.Utilities;
@@ -41,9 +47,6 @@ import org.openide.util.Utilities;
  */
 public class VersionNode extends AbstractNode {
     
-    private String artifactId;
-    private String groupId;
-    private DefaultArtifactVersion version;
     private StandardArtifactIndexRecord record;
     private Artifact artifact;
     private boolean hasJavadoc;
@@ -54,25 +57,19 @@ public class VersionNode extends AbstractNode {
         super(Children.LEAF);
         setName(version.toString());
         setDisplayName(version.toString());
-        artifactId = artifact;
-        groupId = group;
-        this.version = version;
         
-        String query = "+" + StandardIndexRecordFields.GROUPID_EXACT + ":\"" + groupId + "\" +" +
-                StandardIndexRecordFields.ARTIFACTID_EXACT + ":\"" + artifactId + "\" +" +
+        String query = "+" + StandardIndexRecordFields.GROUPID_EXACT + ":\"" + group + "\" +" +
+                StandardIndexRecordFields.ARTIFACTID_EXACT + ":\"" + artifact + "\" +" +
                 StandardIndexRecordFields.VERSION_EXACT + ":\"" + version.toString() + "\"";
-        System.out.println("query=" + query);
         hasSources = false;
         hasJavadoc = false;
         LuceneQuery lq;
         try {
             lq = new LuceneQuery(LocalRepositoryIndexer.parseQuery(query));
             List docs = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), lq);
-            System.out.println("returned =" + docs.size());
             Iterator it = docs.iterator();
             while (it.hasNext()) {
                 StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
-                System.out.println("elem=" + elem.getGroupId() + ":" + elem.getArtifactId());
                 hasSources = hasSources || "sources".equals(elem.getClassifier());
                 hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
                 if (record == null || elem.getClassifier() == null) {
@@ -89,6 +86,19 @@ public class VersionNode extends AbstractNode {
             ex.printStackTrace();
         }
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
+    }
+    
+    /**
+     * version node instance created from search results..
+     */
+    
+    public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source) {
+        super(Children.LEAF);
+        hasJavadoc = javadoc;
+        hasSources = source;
+        this.record = record;
+        setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
+        setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion());
     }
     
     public Action[] getActions(boolean context) {
@@ -131,6 +141,10 @@ public class VersionNode extends AbstractNode {
         return buffer.toString();
     }
     
+    private File getJavadocFile() {
+        return null;
+    }
+    
     
     private class ShowRecordAction extends AbstractAction {
         ShowRecordAction() {
@@ -150,6 +164,31 @@ public class VersionNode extends AbstractNode {
             }
         }
     }
+    
+    private class ViewJavadocAction extends AbstractAction {
+        public ViewJavadocAction() {
+            putValue(Action.NAME, "View Javadoc");
+            setEnabled(hasJavadoc);
+        }
+        public void actionPerformed(ActionEvent event) {
+            File javadoc = getJavadocFile();
+            if (javadoc.exists()) {
+                try {
+                    URL url = javadoc.toURI().toURL();
+                    if (FileUtil.isArchiveFile(url)) {
+                        URL archUrl = FileUtil.getArchiveRoot(url);
+                        String path = archUrl.toString() + "apidocs/index.html";
+                        URL link = new URL(path);
+                        HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+                    }
+                } catch (MalformedURLException e) {
+                    ErrorManager.getDefault().notify(e);
+                }
+            }
+        }
+        
+    }
+    
     
     
 }
