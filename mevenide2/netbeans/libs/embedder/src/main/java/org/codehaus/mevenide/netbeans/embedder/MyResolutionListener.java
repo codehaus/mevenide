@@ -27,97 +27,103 @@ import org.apache.maven.artifact.versioning.VersionRange;
  */
 public class MyResolutionListener implements ResolutionListener {
     
-    private ResolutionListener listener;
+    private static ThreadLocal listener = new ThreadLocal();
     /** Creates a new instance of MyResolutionListener */
     public MyResolutionListener() {
-//        System.out.println("my resolutionlistener created");
-        EmbedderFactory.setProjectResolutionListener(this);
-        
     }
     
-    public void setDelegateResolutionListener(ResolutionListener listen) {
-        listener = listen;
+    public static void setDelegateResolutionListener(ResolutionListener listen) {
+        listener.set(listen);
     }
     
-    public void clearDelegateResolutionListener() {
-        setDelegateResolutionListener(null);
+    public static void clearDelegateResolutionListener() {
+        listener.remove();
+    }
+    
+    private ResolutionListener getDelegate() {
+        Object ret = listener.get();
+        if (ret != null) {
+            return (ResolutionListener)ret;
+        }
+        return null;
     }
     
     public void  testArtifact(Artifact node) {
-        if (listener != null) {
-            listener.testArtifact(node);
+        if (getDelegate() != null) {
+            getDelegate().testArtifact(node);
         }
 //        System.out.println("testArtifact" + node);
     }
 
     public void  startProcessChildren( Artifact artifact ) {
-        if (listener != null) {
-            listener.startProcessChildren(artifact);
+        if (getDelegate() != null) {
+            getDelegate().startProcessChildren(artifact);
         }
 //        System.out.println("startProcessChildren" + artifact);
     }
 
     public void  endProcessChildren( Artifact artifact ){
-        if (listener != null) {
-            listener.endProcessChildren(artifact);
+        if (getDelegate() != null) {
+            getDelegate().endProcessChildren(artifact);
         }
 //        System.out.println("endProcessChildren" + artifact);
     }
 
     public void  includeArtifact( Artifact artifact ){
-        if (listener != null) {
-            listener.includeArtifact(artifact);
+        if (getDelegate() != null) {
+            getDelegate().includeArtifact(artifact);
         }
 //        System.out.println("includeArtifact" + artifact);
     }
 
     public void  omitForNearer( Artifact omitted, Artifact kept ) {
-        if (listener != null) {
-            listener.omitForNearer(omitted, kept);
+        if (getDelegate() != null) {
+            getDelegate().omitForNearer(omitted, kept);
         }
 //        System.out.println("omitted.. kept" + kept);
     }
 
     public void  updateScope( Artifact artifact, String scope ){
-        if (listener != null) {
-            listener.updateScope(artifact, scope);
+        if (getDelegate() != null) {
+            getDelegate().updateScope(artifact, scope);
         }
 //        System.out.println("update scope");
     }
 
     public void  manageArtifact( Artifact artifact, Artifact replacement ){
-        if (listener != null) {
-            listener.manageArtifact(artifact, replacement);
+        if (getDelegate() != null) {
+            getDelegate().manageArtifact(artifact, replacement);
         }
 //        System.out.println("MANAGE Artifact=" + artifact + " replacement=" + replacement);
     }
 
     public void  omitForCycle( Artifact artifact ){
-        if (listener != null) {
-            listener.omitForCycle(artifact);
+        if (getDelegate() != null) {
+            getDelegate().omitForCycle(artifact);
         }
 //        System.out.println("omit cycle" + artifact);
     }
 
     public void  updateScopeCurrentPom( Artifact artifact, String scope ){
-        if (listener != null) {
-            listener.updateScopeCurrentPom(artifact, scope);
+        if (getDelegate() != null) {
+            getDelegate().updateScopeCurrentPom(artifact, scope);
         }
 //        System.out.println("update scope");
     }
 
     public void  selectVersionFromRange( Artifact artifact ){
-        if (listener != null) {
-            listener.selectVersionFromRange(artifact);
+        if (getDelegate() != null) {
+            getDelegate().selectVersionFromRange(artifact);
         }
 //        System.out.println("select version");
     }
 
     public void  restrictRange( Artifact artifact, Artifact replacement, VersionRange newRange ){
-        if (listener != null) {
-            listener.restrictRange(artifact, replacement, newRange);
+        if (getDelegate() != null) {
+            getDelegate().restrictRange(artifact, replacement, newRange);
         }
 //        System.out.println("restrict range");
     }
+
     
 }
