@@ -33,6 +33,7 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.MyResolutionListener;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.graph.api.model.GraphEvent;
@@ -80,7 +81,7 @@ public class GraphDocumentFactory {
         GraphDocument doc = new GraphDocument();
         GraphResolutionListener listener = new GraphResolutionListener();
         try {
-            EmbedderFactory.getProjectResolutionListener().setDelegateResolutionListener(listener);
+            MyResolutionListener.setDelegateResolutionListener(listener);
             EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(project.getPOMFile());
         } catch (ArtifactNotFoundException ex) {
             ex.printStackTrace();
@@ -94,7 +95,7 @@ public class GraphDocumentFactory {
             System.out.println("throwable=" + ex.getClass());
             ex.printStackTrace();
         } finally {
-            EmbedderFactory.getProjectResolutionListener().clearDelegateResolutionListener();
+            MyResolutionListener.clearDelegateResolutionListener();
             doc.addComponents(GraphEvent.create((GraphNode[])listener.getNodes().toArray(new GraphNode[listener.getNodes().size()]),
                     (GraphLink[])listener.getLinks().toArray(new GraphLink[listener.getLinks().size()])));
             return doc;

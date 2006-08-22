@@ -62,23 +62,11 @@ public class EmbedderFactory {
     private static MavenEmbedder project;
     private static MavenEmbedder online;
     
-    private static MyResolutionListener listener;
     private static SettingsFileListener fileListener = new SettingsFileListener();
     
     /** Creates a new instance of EmbedderFactory */
     public EmbedderFactory() {
     }
-    
-    static void setProjectResolutionListener(MyResolutionListener list) {
-        listener = list;
-    }
-    
-    public static MyResolutionListener getProjectResolutionListener() {
-        // better be right than sorry..
-        if (listener == null) throw new IllegalStateException("Cannot retrieve the listener, the project embedder wasn't run yet..");
-        return listener;
-    }
-    
     public synchronized static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
         // let there always be just one embedder, otherwise the resolution listener hack stops working..
         if (project == null) {
