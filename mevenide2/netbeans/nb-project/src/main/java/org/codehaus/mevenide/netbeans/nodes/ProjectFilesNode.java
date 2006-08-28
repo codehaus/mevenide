@@ -29,6 +29,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.openide.cookies.EditCookie;
 import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
@@ -189,9 +190,9 @@ public class ProjectFilesNode extends AbstractNode {
                 FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/profiles.xml");
                 DataObject dobj = DataObject.find(temp);
                 DataObject newOne = dobj.createFromTemplate(folder);
-                OpenCookie cook = (OpenCookie)newOne.getCookie(OpenCookie.class);
+                EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
                 if (cook != null) {
-                    cook.open();
+                    cook.edit();
                 }
                 
             } catch (DataObjectNotFoundException ex) {
@@ -209,6 +210,22 @@ public class ProjectFilesNode extends AbstractNode {
         }
         
         public void actionPerformed(ActionEvent e) {
+            try {
+                DataFolder folder = DataFolder.findFolder(project.getProjectDirectory());
+                // path to template...
+                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml");
+                DataObject dobj = DataObject.find(temp);
+                DataObject newOne = dobj.createFromTemplate(folder);
+                EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
+                if (cook != null) {
+                    cook.edit();
+                }
+                
+            } catch (DataObjectNotFoundException ex) {
+                ex.printStackTrace();
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         
     }
