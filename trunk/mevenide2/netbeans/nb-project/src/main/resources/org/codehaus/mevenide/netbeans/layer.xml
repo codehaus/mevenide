@@ -52,6 +52,9 @@
         <file name="profiles.xml" url="profiles.xml">
             <attr name="template" boolvalue="true"/>
         </file>
+        <file name="settings.xml" url="settings.xml">
+            <attr name="template" boolvalue="true"/>
+        </file>
     </folder>
   
     <folder name="Templates">
