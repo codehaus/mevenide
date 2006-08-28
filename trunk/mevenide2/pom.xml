@@ -29,24 +29,29 @@
     </scm>
     <mailingLists>
         <mailingList>
-            <name>Development List</name>
-            <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
-            <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
-            <post>dev@mevenide.codehaus.org</post>
-            <archive>http://archive.mevenide.codehaus.org/dev/</archive>
+            <name>Announcements List - low traffic</name>
+            <subscribe>http://xircles.codehaus.org/projects/mevenide/lists</subscribe>
+            <unsubscribe>http://xircles.codehaus.org/projects/mevenide/lists</unsubscribe>
+            <archive>http://www.nabble.com/mevenide---announce-f11961.html</archive>
         </mailingList>
         <mailingList>
             <name>User List</name>
-            <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
-            <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <subscribe>http://xircles.codehaus.org/projects/mevenide/lists</subscribe>
+            <unsubscribe>http://xircles.codehaus.org/projects/mevenide/lists</unsubscribe>
             <post>user@mevenide.codehaus.org</post>
-            <archive>http://archive.mevenide.codehaus.org/user/</archive>
+            <archive>http://www.nabble.com/mevenide---user-f11959.html</archive>
         </mailingList>
         <mailingList>
-            <name>Commits List</name>
-            <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
-            <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
-            <archive>http://archive.mevenide.codehaus.org/scm/</archive>
+            <name>Development List</name>
+            <subscribe>http://xircles.codehaus.org/projects/mevenide/lists</subscribe>
+            <unsubscribe>http://xircles.codehaus.org/projects/mevenide/lists</unsubscribe>
+            <post>dev@mevenide.codehaus.org</post>
+            <archive>http://www.nabble.com/mevenide---dev-f11960.html</archive>
+        </mailingList>
+        <mailingList>
+            <name>Commitlogs List</name>
+            <subscribe>http://xircles.codehaus.org/projects/mevenide/lists</subscribe>
+            <unsubscribe>http://xircles.codehaus.org/projects/mevenide/lists</unsubscribe>
         </mailingList>
     </mailingLists>
   
