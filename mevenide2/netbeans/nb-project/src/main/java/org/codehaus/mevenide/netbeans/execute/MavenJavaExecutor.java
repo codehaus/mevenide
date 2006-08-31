@@ -225,6 +225,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
             }
             req.setUpdateSnapshots(false);
+            IOBridge.pushSystemInOutErr(out);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
             //            ex.printStackTrace();
@@ -238,6 +239,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             cancel();
             throw death;
         } finally {
+            IOBridge.restoreSystemInOutErr();
             ioput.getOut().close();
             ioput.getErr().close();
             //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
