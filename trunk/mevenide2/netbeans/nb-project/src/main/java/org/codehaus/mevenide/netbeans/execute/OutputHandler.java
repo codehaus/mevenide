@@ -17,7 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -32,6 +37,7 @@ import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.openide.util.Lookup;
+import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
 
@@ -45,9 +51,10 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     
     private InputOutput inputOutput;
     
-    private OutputWriter stdOut;
+    private OutputWriter stdOut, stdErr;
     
-    private OutputWriter stdErr;
+    private StreamBridge out, err;
+    
     
     private int threshold = MavenEmbedderLogger.LEVEL_INFO;
     
@@ -274,12 +281,12 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         String line = visitor.getLine() == null ? input : visitor.getLine();
         if (visitor.getOutputListener() != null) {
             try {
-                writer.println("[" + levelText + "]" + line, visitor.getOutputListener(), visitor.isImportant());
+                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         } else {
-            writer.println("[" + levelText + "]" + line);
+            writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line);
         }
     }
     
@@ -344,6 +351,150 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         } else {
             writer.println(visitor.getLine());
         }
+    }
+
+    PrintStream getErr() {
+        if (err == null) {
+            err =  new StreamBridge(stdErr);
+        }
+        return err;
+    }
+
+    InputStream getIn() {
+        return null;
+    }
+
+    PrintStream getOut() {
+        if (out == null) {
+            out = new StreamBridge(stdOut);
+        }
+        return out;
+    }
+    
+    private class StreamBridge extends PrintStream {
+        StringBuffer buff = new StringBuffer();
+        private OutputWriter writer;
+        public StreamBridge(OutputWriter wr) {
+            super(new NullOutputStream());
+            writer = wr;
+        }
+        
+        public void flush() {
+            if (buff.length() > 0) {
+                doPrint();
+            }
+        }
+        
+        public void print(long l) {
+            buff.append(l);
+        }
+        
+        public void print(char[] s) {
+            buff.append(s);
+        }
+        
+        public void print(int i) {
+            buff.append(i);
+        }
+        
+        public void print(boolean b) {
+            buff.append(b);
+        }
+        
+        public void print(char c) {
+            buff.append(c);
+        }
+        
+        public void print(float f) {
+            buff.append(f);
+        }
+        
+        public void print(double d) {
+            buff.append(d);
+        }
+        
+        public void print(Object obj) {
+            buff.append(obj.toString());
+        }
+        
+        public void print(String s) {
+            buff.append(s);
+        }
+        
+        public void println(double x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println(Object x) {
+            buff.append(x.toString());
+            doPrint();
+        }
+        
+        public void println(float x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println(int x) {
+            buff.append(x);
+            doPrint();
+        }
+
+        public void println(char x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println(boolean x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println(String x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println(char[] x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void println() {
+            doPrint();
+        }
+        
+        public void println(long x) {
+            buff.append(x);
+            doPrint();
+        }
+        
+        public void write(int b) {
+            buff.append((char)b);
+        }
+        
+        public void write(byte[] b) throws IOException {
+            write(b, 0, b.length);
+        }
+        
+        public void write(byte[] b, int off, int len) {
+            ByteArrayInputStream bais = new ByteArrayInputStream(b, off, len);
+            Reader read = new InputStreamReader(bais);
+            try {
+                while (read.ready()) {
+                    buff.append((char)read.read());
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        
+        private void doPrint() {
+            processMultiLine(buff.toString(), writer, "");
+            buff.setLength(0);
+        }
+        
     }
     
 }
