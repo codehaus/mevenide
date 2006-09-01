@@ -657,6 +657,29 @@ public final class NbMavenProject implements Project {
             "Templates/Other/Folder" // NOI18N
         };
         
+        private static final String[] ALL_TYPES = new String[] {
+            "java-classes",         // NOI18N
+            "java-main-class",      // NOI18N
+            "java-forms",           // NOI18N
+            "java-beans",           // NOI18N
+            "j2ee-types",           // NOI18N                    
+            "gui-java-application", // NOI18N
+            "java-beans",           // NOI18N
+            "oasis-XML-catalogs",   // NOI18N
+            "XML",                  // NOI18N
+            "ant-script",           // NOI18N
+            "ant-task",             // NOI18N
+            "web-services",         // NOI18N
+            "web-service-clients",  // NOI18N
+            "wsdl",                 // NOI18N
+            "servlet-types",        // NOI18N
+            "web-types",            // NOI18N
+            "junit",                // NOI18N
+            // "MIDP",              // NOI18N
+            "simple-files",         // NOI18N
+            "ear-types",            // NOI18N
+        };
+        
         private NbMavenProject project;
         
         RecommendedTemplatesImpl(NbMavenProject proj) {
@@ -681,8 +704,16 @@ public final class NbMavenProject implements Project {
             if ("pom".equals(packaging)) {
                 return POM_APPLICATION_TYPES;
             }
+            if ("jar".equals(packaging)) {
+                return JAR_APPLICATION_TYPES;
+            }
             //NBM also fall under this I guess..
-            return JAR_APPLICATION_TYPES;
+            if ("nbm".equals(packaging)) {
+                return JAR_APPLICATION_TYPES;
+            }
+            
+            // If packaging is unknown, any type of sources is recommanded.
+            return ALL_TYPES;
         }
         
         public String[] getPrivilegedTemplates() {
