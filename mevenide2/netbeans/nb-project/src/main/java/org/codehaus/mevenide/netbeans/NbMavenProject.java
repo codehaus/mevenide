@@ -713,6 +713,8 @@ public final class NbMavenProject implements Project {
             }
             
             // If packaging is unknown, any type of sources is recommanded.
+            //TODO in future we probably can try to guess based on what plugins are 
+            // defined in the lifecycle. 
             return ALL_TYPES;
         }
         
