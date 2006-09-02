@@ -45,7 +45,10 @@ import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.modules.InstalledFileLocator;
@@ -106,7 +109,6 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     rerunDebug.setConfig(config);
                     try {
                         io.getOut().reset();
-                        io.getErr().reset();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
@@ -189,6 +191,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
                 settings.setOffline(config.isOffline().booleanValue());
+            } else {
+                config.setOffline(Boolean.valueOf(settings.isOffline()));
             }
             req.setSettings(settings);
             req.setGoals(config.getGoals());
@@ -211,12 +215,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
-            boolean debug = config.isShowDebug() != null
-                    ? config.isShowDebug().booleanValue()
-                    : MavenExecutionSettings.getDefault().isShowDebug();
-            req.setShowErrors(debug || (config.isShowError() != null
-                    ? config.isShowError().booleanValue()
-                    : MavenExecutionSettings.getDefault().isShowErrors()));
+            boolean debug = config.isShowDebug();
+            req.setShowErrors(debug || config.isShowError());
             if (debug) {
                 req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
                 out.setThreshold(MavenEmbedderLogger.LEVEL_DEBUG);
@@ -224,7 +224,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_INFO);
                 out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
             }
-            req.setUpdateSnapshots(false);
+            req.setUpdateSnapshots(config.isUpdateSnapshots());
+            req.setRecursive(config.isRecursive());
             IOBridge.pushSystemInOutErr(out);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
@@ -315,8 +316,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             this.putValue(Action.SMALL_ICON, debug ? 
                 new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) :
                 new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
-            putValue(Action.NAME, debug ? "Re-run with Debug messages on." : "Re-run the goals.");
-            putValue(Action.SHORT_DESCRIPTION, debug ? "Re-run with Debug messages on.": "Re-run the goals.");
+            putValue(Action.NAME, debug ? "Re-run with different parameters" : "Re-run the goals.");
+            putValue(Action.SHORT_DESCRIPTION, debug ? "Re-run with different parameters": "Re-run the goals.");
             setEnabled(false);
             
         }
@@ -326,12 +327,23 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
         
         public void actionPerformed(ActionEvent e) {
-            RunConfig newConfig = !debug ? config : new ProxyRunConfig(this.config) {
-                public Boolean isShowDebug() {
-                    return Boolean.TRUE;
+            if (debug) {
+                RunGoalsPanel pnl = new RunGoalsPanel();
+                DialogDescriptor dd = new DialogDescriptor(pnl, "Run Maven");
+                pnl.readConfig(config);
+                Object retValue = DialogDisplayer.getDefault().notify(dd);
+                if (retValue == DialogDescriptor.OK_OPTION) {
+                    BeanRunConfig newConfig = new BeanRunConfig();
+                    newConfig.setExecutionDirectory(config.getExecutionDirectory());
+                    newConfig.setExecutionName(config.getExecutionName());
+                    newConfig.setProject(config.getProject());
+                    pnl.applyValues(newConfig);
+                    MavenJavaExecutor.executeMaven("Maven", newConfig);
                 }
-            };
-            MavenJavaExecutor.executeMaven("Maven", newConfig);
+            } else {
+                RunConfig newConfig = config;
+                MavenJavaExecutor.executeMaven("Maven", newConfig);
+            }
             //TODO the waiting on tasks won't work..
         }
         

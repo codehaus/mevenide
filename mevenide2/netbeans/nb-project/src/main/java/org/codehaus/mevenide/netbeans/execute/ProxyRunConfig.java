@@ -47,11 +47,11 @@ public class ProxyRunConfig implements RunConfig {
         return delegate.getProperties();
     }
 
-    public Boolean isShowDebug() {
+    public boolean isShowDebug() {
         return delegate.isShowDebug();
     }
 
-    public Boolean isShowError() {
+    public boolean isShowError() {
         return delegate.isShowError();
     }
 
@@ -61,6 +61,18 @@ public class ProxyRunConfig implements RunConfig {
 
     public List getActiveteProfiles() {
         return delegate.getActiveteProfiles();
+    }
+
+    public boolean isRecursive() {
+        return delegate.isRecursive();
+    }
+
+    public boolean isUpdateSnapshots() {
+        return delegate.isUpdateSnapshots();
+    }
+    
+    public void setOffline(Boolean off) {
+        delegate.setOffline(off);
     }
     
 }

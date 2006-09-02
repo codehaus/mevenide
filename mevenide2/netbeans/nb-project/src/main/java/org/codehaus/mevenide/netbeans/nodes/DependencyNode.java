@@ -53,6 +53,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
+import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
@@ -595,7 +596,7 @@ public class DependencyNode extends AbstractNode {
         
     }
     
-    private class InstallLocalArtifactAction extends AbstractAction implements RunConfig {
+    private class InstallLocalArtifactAction extends AbstractAction {
         public InstallLocalArtifactAction() {
             putValue(Action.NAME, "Manually install artifact");
         }
@@ -604,7 +605,23 @@ public class DependencyNode extends AbstractNode {
             File fil = InstallPanel.showInstallDialog(DependencyNode.this.art);
             if (fil != null) {
                 putValue("FileToInstall", fil);
-                ExecutorTask task = MavenJavaExecutor.executeMaven("Install", this);
+                BeanRunConfig brc = new BeanRunConfig();
+                brc.setExecutionDirectory(project.getPOMFile().getParentFile());
+                brc.setProject(project);
+                brc.setGoals(Collections.singletonList("install:install-file"));
+                brc.setExecutionName("install-artifact");
+                Properties props = new Properties();
+                props.put("artifactId", art.getArtifactId());
+                props.put("groupId", art.getGroupId());
+                props.put("version", art.getVersion());
+                props.put("packaging", art.getType());
+                File file = (File)getValue("FileToInstall");
+                props.put("file", file.getAbsolutePath());
+                props.put("generatePom", "false");
+                brc.setProperties(props);
+                brc.setActiveteProfiles(Collections.EMPTY_LIST);
+                
+                ExecutorTask task = MavenJavaExecutor.executeMaven("Install", brc);
                 task.addTaskListener(new TaskListener() {
                     public void taskFinished(Task task2) {
 //                        project.firePropertyChange(NbMavenProject.PROP_PROJECT);
@@ -612,53 +629,6 @@ public class DependencyNode extends AbstractNode {
                 });
             }
         }
-        
-        public File getExecutionDirectory() {
-            return project.getPOMFile().getParentFile();
-        }
-        
-        public NbMavenProject getProject() {
-            return project;
-        }
-        
-        public List getGoals() {
-            return Collections.singletonList("install:install-file");
-        }
-        
-        public String getExecutionName() {
-            return "install-artifact";
-        }
-        
-        public Properties getProperties() {
-            Properties props = new Properties();
-            props.put("artifactId", art.getArtifactId());
-            props.put("groupId", art.getGroupId());
-            props.put("version", art.getVersion());
-            props.put("packaging", art.getType());
-            File file = (File)getValue("FileToInstall");
-            props.put("file", file.getAbsolutePath());
-            props.put("generatePom", "false");
-//            props.put("pomFile", );
-            
-            return props;
-        }
-        
-        public Boolean isShowDebug() {
-            return null;
-        }
-        
-        public Boolean isShowError() {
-            return null;
-        }
-        
-        public Boolean isOffline() {
-            return null;
-        }
-        
-        public List getActiveteProfiles() {
-            return Collections.EMPTY_LIST;
-        }
-        
     }
     
     private class InstallLocalJavadocAction extends AbstractAction implements Runnable {
