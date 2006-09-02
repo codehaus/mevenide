@@ -60,10 +60,14 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
     public EarModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         earimpl = new EarImpl(project);
-        loadPersistedServerId();
+        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
+        loadPersistedServerId(true);
+    }
+    
+    public void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -93,18 +97,18 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
         if (oldId != null) {
             fireServerChange(oldSer, getServerID());
         }
-        getConfigSupport().ensureConfigurationReady();
+        if (ensureReady) {
+            getConfigSupport().ensureConfigurationReady();
+        }
     }
     
     public Ear findEar(FileObject file) {
-        System.out.println("findEar called");
         Project proj = FileOwnerQuery.getOwner(file);
         if (proj != null) {
             proj = (Project)proj.getLookup().lookup(NbMavenProject.class);
         }
         if (proj != null && project == proj) {
             if (earimpl != null && earimpl.isValid()) {
-                System.out.println("-> found ear");
                 return EjbJarFactory.createEar(earimpl);
             }
         }

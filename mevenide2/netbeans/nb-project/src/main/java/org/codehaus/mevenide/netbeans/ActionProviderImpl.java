@@ -17,15 +17,16 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
+import org.codehaus.mevenide.netbeans.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
@@ -83,9 +84,13 @@ public class ActionProviderImpl implements ActionProvider {
         LifecycleManager.getDefault().saveAll();
         
         // check the prerequisites
-        JarPackagingRunChecker jar = new JarPackagingRunChecker();
-        if (!jar.checkRunConfig(action, config)) {
-            return;
+        Lookup.Result result = config.getProject().getLookup().lookup(new Lookup.Template(PrerequisitesChecker.class));
+        Iterator it = result.allInstances().iterator();
+        while (it.hasNext()) {
+            PrerequisitesChecker elem = (PrerequisitesChecker) it.next();
+            if (!elem.checkRunConfig(action, config)) {
+                return;
+            }
         }
         
         // setup executor now..

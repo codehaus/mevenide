@@ -42,6 +42,7 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
     public Lookup createMavenLookup(NbMavenProject project) {
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
+        ic.add(new J2EEPrerequisitesChecker());
         return new Provider(project, ic);
     }
     
@@ -55,6 +56,7 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
             project = proj;
             content = cont;
             checkJ2ee();
+            project.addPropertyChangeListener(this);
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
