@@ -47,23 +47,24 @@ public class TestOutputListenerProviderTest extends TestCase {
         provider.sequenceStart("mojo-execute#surefire:test", visitor);
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("[INFO] Setting reports dir: /home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target/surefire-reports", visitor);
+        provider.processLine("Surefire report directory: /home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target/surefire-reports", visitor);
         assertNull(visitor.getOutputListener());
         assertEquals(provider.outputDir, "/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target/surefire-reports");
         visitor.resetVisitor();
-        provider.processLine("[surefire] Running org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest", visitor);
+        provider.processLine("Running org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest", visitor);
         assertEquals(provider.runningTestClass, "org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest");
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("[surefire] Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.038 sec", visitor);
+        provider.processLine("Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.038 sec", visitor);
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("[surefire] Running org.codehaus.mevenide.netbeans.execute.OutputHandlerTest", visitor);
+        provider.processLine("Running org.codehaus.mevenide.netbeans.execute.OutputHandlerTest", visitor);
         assertEquals(provider.runningTestClass, "org.codehaus.mevenide.netbeans.execute.OutputHandlerTest");
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("[surefire] Tests run: 1, Failures: 1, Errors: 0, Time elapsed: 0.014 sec <<<<<<<< FAILURE !! ", visitor);
+        provider.processLine("Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec <<< FAILURE!        ", visitor);
         assertNotNull(visitor.getOutputListener());
         provider.sequenceFail("mojo-execute#surefire:test", visitor);
+        
     }
 }

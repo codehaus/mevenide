@@ -62,10 +62,10 @@ public class TestOutputListenerProvider implements OutputProcessor {
     
     /** Creates a new instance of TestOutputListenerProvider */
     public TestOutputListenerProvider(NbMavenProject proj) {
-        failSeparatePattern = Pattern.compile("\\[surefire\\] Tests run.*[<]* FAILURE [!]*[\\s]*"); //NOI18N
-        failInlinedPattern = Pattern.compile("\\[surefire\\] .*\\(.*\\).*[<]* FAILURE[!]*"); //NOI18N
-        runningPattern = Pattern.compile("\\[surefire\\] Running (.*)"); //NOI18N
-        outDirPattern = Pattern.compile("\\[INFO\\] Setting reports dir\\: (.*)"); //NOI18N
+        failSeparatePattern = Pattern.compile("Tests run.*[<]* FAILURE[!]*[\\s]*"); //NOI18N
+        failInlinedPattern = Pattern.compile(".*\\(.*\\).*[<]* FAILURE[!]*"); //NOI18N
+        runningPattern = Pattern.compile("Running (.*)"); //NOI18N
+        outDirPattern = Pattern.compile("Surefire report directory\\: (.*)"); //NOI18N
         project = proj;
     }
     
@@ -129,21 +129,23 @@ public class TestOutputListenerProvider implements OutputProcessor {
             String replace = testname.replace('.', '/');
             File testFile = new File(testDir, replace + ".java"); //NOI18N
             FileObject fo = FileUtil.toFileObject(testFile);
-//            String repDir = project.getPropertyResolver().getResolvedValue("maven.test.reportsDirectory"); //NOI18N
-//            if (repDir == null) {
-//                StatusDisplayer.getDefault().setStatusText("Maven: Cannot resolve property maven.test.reportsDirectory.");
-//                logger.error("Cannot resolve property maven.test.reportsDirectory.");
-//                return;
-//            }
-//            File dir = new File(repDir);
-//            if (dir.exists()) {
-//                File testResult = new File(dir, "TEST-" + testname + ".txt");
-//                FileObject fo2 = FileUtil.toFileObject(testResult);
-//                if (fo != null) {
-//                    String nm = testname.lastIndexOf('.') > -1 ? testname.substring(testname.lastIndexOf('.')) : testname;
-//                    openLog(fo2, "Test " + nm, fo);
-//                }
-//            }
+            FileObject outDir;
+            if (outputDir != null) {
+                outDir = FileUtil.toFileObject(new File(outputDir));
+            } else {
+                //TODO how to report..
+                return;
+            }
+            outDir.refresh();
+            FileObject report = outDir.getFileObject(testname + ".txt");
+            if (report != null) {
+                String nm = testname.lastIndexOf('.') > -1 
+                        ? testname.substring(testname.lastIndexOf('.')) 
+                        : testname;
+                openLog(report, nm, fo);
+            } else {
+                //TODO how to report..
+            }
         }
         
         /** Called when a line is cleared from the buffer of known lines.
