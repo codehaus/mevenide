@@ -63,10 +63,13 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
-        loadPersistedServerId();
+        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
+        loadPersistedServerId(true);
+    }
+    public void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -93,9 +96,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         if (oldId != null) {
             fireServerChange(oldSer, getServerID());
         }
-        getConfigSupport().ensureConfigurationReady();
-        val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
-        setContextPathImpl(val != null ? val : implementation.getContextPath());
+        if (ensureReady) {
+            getConfigSupport().ensureConfigurationReady();
+            val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
+            setContextPathImpl(val != null ? val : implementation.getContextPath());
+        }
     }
     
     public WebModule findWebModule(FileObject fileObject) {

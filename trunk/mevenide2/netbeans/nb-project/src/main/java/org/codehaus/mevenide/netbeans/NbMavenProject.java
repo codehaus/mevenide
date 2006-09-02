@@ -50,6 +50,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
@@ -405,6 +406,7 @@ public final class NbMavenProject implements Project {
             new MavenSourcesImpl(this), 
             new RecommendedTemplatesImpl(this),
             new MavenSourceLevelImpl(this), 
+            new JarPackagingRunChecker(),
             
             new UserActionGoalProvider(this)
                     

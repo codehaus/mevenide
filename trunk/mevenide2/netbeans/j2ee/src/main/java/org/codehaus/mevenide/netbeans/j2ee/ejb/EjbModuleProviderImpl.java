@@ -52,10 +52,14 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     public EjbModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         ejbimpl = new EjbJarImpl(project);
-        loadPersistedServerId();
+        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
+        loadPersistedServerId(true);
+    }
+    
+    public void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -84,7 +88,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         }
         serverInstanceID = instanceFound;
         System.out.println("server instance=" + serverInstanceID);
-        if (oldSer != null && serverInstanceID != null) {
+        if (oldSer != null && serverInstanceID != null && ensureReady) {
             getConfigSupport().ensureConfigurationReady();
         }
         if (oldId != null) {
