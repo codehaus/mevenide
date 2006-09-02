@@ -30,79 +30,18 @@ import org.openide.filesystems.FileUtil;
  * run configuration backed up by model
  * @author mkleint
  */
-public final class ModelRunConfig implements RunConfig {
+public final class ModelRunConfig extends BeanRunConfig {
     
     private NetbeansActionMapping model;
     
-    private NbMavenProject project;
-
-    private Boolean showError;
-
-    private Boolean showDebug;
-    
-    private Boolean offline;
-    
-    private List profiles;
-    
     /** Creates a new instance of ModelRunConfig */
     public ModelRunConfig(NbMavenProject proj, NetbeansActionMapping mod) {
-        project = proj;
         model = mod;
-        profiles = new ArrayList();
+        setProject(proj);
+        setExecutionName(proj.getName());
+        setProperties(model.getProperties());
+        setGoals(model.getGoals());
+        setExecutionDirectory(FileUtil.toFile(proj.getProjectDirectory()));
     }
-    
-    public File getExecutionDirectory() {
-        return FileUtil.toFile(project.getProjectDirectory());
-    }
-    
-    public NbMavenProject getProject() {
-        return project;
-    }
-    
-    public List getGoals() {
-        Iterator it = model.getGoals().iterator();
-        while (it.hasNext()) {
-            String elem = (String)it.next();
-        }
-        return model.getGoals();
-    }
-    
-    public String getExecutionName() {
-        return project.getName();
-    }
-    
-    public Properties getProperties() {
-        return model.getProperties();
-    }
-    
-    public Boolean isShowDebug() {
-        return showDebug;
-    }
-
-    public Boolean isShowError() {
-        return showError;
-    }
-
-    public void setShowError(Boolean showError) {
-        this.showError = showError;
-    }
-
-    public void setShowDebug(Boolean showDebug) {
-        this.showDebug = showDebug;
-    }
-
-    public Boolean isOffline() {
-        return offline;
-    }
-
-    public void setOffline(Boolean offline) {
-        this.offline = offline;
-    }
-    
-    public List getActiveteProfiles() {
-        return profiles;
-    }
-
-
     
 }

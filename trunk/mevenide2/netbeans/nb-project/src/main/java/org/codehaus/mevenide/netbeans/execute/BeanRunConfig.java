@@ -17,9 +17,11 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 
 /**
  *
@@ -32,10 +34,13 @@ public class BeanRunConfig implements RunConfig {
     private List goals;
     private String executionName;
     private Properties properties = new Properties();
-    private Boolean showDebug;
-    private Boolean showError;
+    private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
+    private boolean showError = MavenExecutionSettings.getDefault().isShowErrors();
     private Boolean offline;
-    private List activeteProfiles;
+    private List activeteProfiles = Collections.emptyList();
+    private boolean updateSnapshots = false;
+    private boolean recursive = true;
+    
     /** Creates a new instance of BeanRunConfig */
     public BeanRunConfig() {
     }
@@ -80,19 +85,19 @@ public class BeanRunConfig implements RunConfig {
         this.properties = properties;
     }
 
-    public Boolean isShowDebug() {
+    public boolean isShowDebug() {
         return showDebug;
     }
 
-    public void setShowDebug(Boolean showDebug) {
+    public void setShowDebug(boolean showDebug) {
         this.showDebug = showDebug;
     }
 
-    public Boolean isShowError() {
+    public boolean isShowError() {
         return showError;
     }
 
-    public void setShowError(Boolean showError) {
+    public void setShowError(boolean showError) {
         this.showError = showError;
     }
 
@@ -110,5 +115,21 @@ public class BeanRunConfig implements RunConfig {
 
     public void setActiveteProfiles(List activeteProfiles) {
         this.activeteProfiles = activeteProfiles;
+    }
+
+    public boolean isRecursive() {
+        return recursive;
+    }
+    
+    public void setRecursive(boolean rec) {
+        recursive = rec;
+    }
+
+    public boolean isUpdateSnapshots() {
+        return updateSnapshots;
+    }
+    
+    public void setUpdateSnapshots(boolean set) {
+        updateSnapshots = set;
     }
 }

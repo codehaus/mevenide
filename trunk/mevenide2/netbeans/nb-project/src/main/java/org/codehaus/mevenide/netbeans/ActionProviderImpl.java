@@ -156,6 +156,7 @@ public class ActionProviderImpl implements ActionProvider {
             pnl.readMapping(mapping, project.getOriginalMavenProject(), project.getAvailableProfiles(), maps);
             pnl.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
             pnl.setOffline(MavenSettingsSingleton.getInstance().createUserSettingsModel().isOffline());
+            pnl.setRecursive(true);
             Object retValue = DialogDisplayer.getDefault().notify(dd);
             if (retValue == DialogDescriptor.OK_OPTION) {
                 pnl.applyValues(mapping);
@@ -166,7 +167,9 @@ public class ActionProviderImpl implements ActionProvider {
                 ActionToGoalUtils.writeMappingsToFileAttributes(project.getProjectDirectory(), maps);
                 ModelRunConfig rc = new ModelRunConfig(project, mapping);
                 rc.setOffline(Boolean.valueOf(pnl.isOffline()));
-                rc.setShowDebug(Boolean.valueOf(pnl.isShowDebug()));
+                rc.setShowDebug(pnl.isShowDebug());
+                rc.setRecursive(pnl.isRecursive());
+                rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
                 runGoal("custom", Lookup.EMPTY, rc);
             }
         }

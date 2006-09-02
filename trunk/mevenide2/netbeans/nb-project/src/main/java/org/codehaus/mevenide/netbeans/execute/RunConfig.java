@@ -38,11 +38,17 @@ public interface RunConfig {
 
     Properties getProperties();
     
-    Boolean isShowDebug();
+    boolean isShowDebug();
     
-    Boolean isShowError();
+    boolean isShowError();
     
     Boolean isOffline();
+    
+    void setOffline(Boolean bool);
+    
+    boolean isRecursive();
+    
+    boolean isUpdateSnapshots();
 
     List getActiveteProfiles();
 

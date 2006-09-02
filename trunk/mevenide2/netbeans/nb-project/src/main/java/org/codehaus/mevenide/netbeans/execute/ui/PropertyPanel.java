@@ -46,6 +46,24 @@ public class PropertyPanel extends javax.swing.JPanel {
         txtValue.setText(value);
     }
     
+    void removeFromView() {
+        removed = true;
+        setVisible(false);
+        getParent().invalidate();
+        getParent().repaint();
+    }
+    
+    void readdToView() {
+        removed = false;
+        setVisible(true);
+        getParent().invalidate();
+        getParent().repaint();
+    }
+    
+    void setPropertyValue(String string) {
+        txtValue.setText(string);
+    }
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -92,11 +110,9 @@ public class PropertyPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-        removed = true;
-        setVisible(false);
-        getParent().invalidate();
-        getParent().repaint();
+        removeFromView();
     }//GEN-LAST:event_btnRemoveActionPerformed
+
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

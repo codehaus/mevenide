@@ -62,8 +62,22 @@ public final class ActionToGoalUtils {
                 if (bld != null) {
                     String goal = bld.getDefaultGoal();
                     if (goal != null && goal.trim().length() > 0) {
-                        return new DefaultGoalRunConfig((ActionProvider.COMMAND_REBUILD.equals(action) ? "clean " : "") + goal, 
-                                                         project);
+                        BeanRunConfig brc = new BeanRunConfig();
+                        brc.setExecutionDirectory(FileUtil.toFile(project.getProjectDirectory()));
+                        brc.setProject(project);
+                        StringTokenizer tok = new StringTokenizer(goal, " ", false);
+                        List toRet = new ArrayList();
+                        while (tok.hasMoreTokens()) {
+                            toRet.add(tok.nextToken());
+                        }
+                        if (ActionProvider.COMMAND_REBUILD.equals(action)) {
+                            toRet.add(0, "clean");
+                        }
+                        brc.setGoals(toRet);
+                        brc.setExecutionName(project.getName());
+                        brc.setProperties(new Properties());
+                        brc.setActiveteProfiles(Collections.EMPTY_LIST);
+                        return brc;
                     }
                 }
             }
@@ -162,58 +176,5 @@ public final class ActionToGoalUtils {
             }
         }
     }
-    
-    private static class DefaultGoalRunConfig implements RunConfig {
-
-        private NbMavenProject project;
-        private String goals;
-        
-        public DefaultGoalRunConfig(String goals, NbMavenProject proj) {
-            project = proj;
-            this.goals = goals;
-        }
-        
-        public File getExecutionDirectory() {
-            return FileUtil.toFile(project.getProjectDirectory());
-        }
-    
-        public NbMavenProject getProject() {
-            return project;
-        }
-
-        public List getGoals() {
-            StringTokenizer tok = new StringTokenizer(goals, " ", false);
-            List toRet = new ArrayList();
-            while (tok.hasMoreTokens()) {
-                toRet.add(tok.nextToken());
-            }
-            return toRet;
-        }
-
-        public String getExecutionName() {
-            return project.getName();
-        }
-
-        public Properties getProperties() {
-            return new Properties();
-        }
-
-        public Boolean isShowDebug() {
-            return null;
-        }
-
-        public Boolean isShowError() {
-            return null;
-        }
-
-        public Boolean isOffline() {
-            return null;
-        }
-
-        public List getActiveteProfiles() {
-            return Collections.EMPTY_LIST;
-        }
-        
-    }
-    
 }
+
