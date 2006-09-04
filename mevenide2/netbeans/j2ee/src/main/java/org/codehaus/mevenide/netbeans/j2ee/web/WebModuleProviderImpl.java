@@ -69,7 +69,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     public void loadPersistedServerId() {
         loadPersistedServerId(true);
     }
-    public void loadPersistedServerId(boolean ensureReady) {
+    
+    private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -90,7 +91,10 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
             }
         }
         if (instanceFound == null) {
-            instanceFound = Deployment.getDefault().getDefaultServerInstanceID();
+            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.WAR});
+            if (ids != null && ids.length > 0) {
+                instanceFound = ids[0];
+            }
         }
         serverInstanceID = instanceFound;
         if (oldId != null) {
@@ -214,6 +218,13 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
             }
         }
         return super.getServerID();
+    }
+
+    public FileObject[] getSourceRoots() {
+        FileObject[] retValue;
+        
+        retValue = super.getSourceRoots();
+        return retValue;
     }
 
     
