@@ -88,7 +88,11 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
                 }
                 lastInstance = new EjbModuleProviderImpl(project);
                 content.add(lastInstance);
-            } else if (lastInstance != null) {
+            } else if (lastInstance != null && !(
+                    "war".equals(packaging) || 
+                    "ejb".equals(packaging) || 
+                    "ear".equals(packaging)))
+            {
                 content.remove(lastInstance);
                 lastInstance = null;
             }
