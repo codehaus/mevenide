@@ -71,7 +71,7 @@ public class EmbedderFactory {
         // let there always be just one embedder, otherwise the resolution listener hack stops working..
         if (project == null) {
             MavenEmbedder embedder = new MavenEmbedder();
-            embedder.setOffline(true);
+            embedder.setOffline(false);
             embedder.setInteractiveMode(false);
             embedder.setAlignWithUserInstallation(true);
             embedder.setClassLoader(EmbedderFactory.class.getClassLoader());
