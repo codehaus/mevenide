@@ -26,6 +26,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
+import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.schema2beans.BaseBean;
@@ -48,6 +49,9 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     private NbMavenProject project;
     
     private String url = "";
+
+    private boolean inplace = false;
+    
     public WebModuleImpl(NbMavenProject proj) {
         project = proj;
     }
@@ -58,6 +62,13 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
             return root.getFileObject("WEB-INF");
         }
         return null;
+    }
+    
+    /**
+     * to be used to denote that a war:inplace goal is used to build the web app.
+     */
+    public void setWarInplace(boolean inplace) {
+        this.inplace = inplace;
     }
     
     public String getJ2eePlatformVersion() {
@@ -79,7 +90,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     }
     
     public FileObject getDocumentBase() {
-        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+        Sources srcs = ProjectUtils.getSources(project);
         SourceGroup[] grp = srcs.getSourceGroups(MavenSourcesImpl.TYPE_DOC_ROOT);
         if (grp.length > 0) {
             return grp[0].getRootFolder();
@@ -134,7 +145,6 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     }
     
     public String getUrl() {
-        System.out.println("get url=" + url);
         return url;
     }
     
@@ -167,16 +177,21 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     }
     
     public FileObject getContentDirectory() throws IOException {
-        MavenProject proj = project.getOriginalMavenProject();
-        String finalName = proj.getBuild().getFinalName();
-        String loc = proj.getBuild().getDirectory();
-        File fil = FileUtil.normalizeFile(new File(loc, finalName));
-//        System.out.println("get content=" + fil);
-        FileObject fo = FileUtil.toFileObject(fil);
+        FileObject fo;
+        if (inplace) {
+            fo = getDocumentBase();
+        } else {
+            MavenProject proj = project.getOriginalMavenProject();
+            String finalName = proj.getBuild().getFinalName();
+            String loc = proj.getBuild().getDirectory();
+            File fil = FileUtil.normalizeFile(new File(loc, finalName));
+    //        System.out.println("get content=" + fil);
+            fo = FileUtil.toFileObject(fil);
+        } 
         if (fo != null) {
             fo.refresh();
         }
-        return FileUtil.toFileObject(fil);
+        return fo;
     }
     
     public BaseBean getDeploymentDescriptor(String string) {
