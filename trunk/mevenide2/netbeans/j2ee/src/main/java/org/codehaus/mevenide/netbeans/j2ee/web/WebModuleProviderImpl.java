@@ -22,12 +22,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.URI;
+import java.util.ArrayList;
 import org.apache.maven.model.Model;
+import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
+import org.netbeans.modules.j2ee.deployment.common.api.SourceFileMap;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
@@ -220,13 +227,32 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return super.getServerID();
     }
 
+    /**
+     *  Returns list of root directories for source files including configuration files.
+     *  Examples: file objects for src/java, src/conf.  
+     *  Note: 
+     *  If there is a standard configuration root, it should be the first one in
+     *  the returned list.
+     */
+    
     public FileObject[] getSourceRoots() {
-        FileObject[] retValue;
-        
-        retValue = super.getSourceRoots();
-        return retValue;
+        ArrayList toRet = new ArrayList();
+        Sources srcs = ProjectUtils.getSources(project);
+        SourceGroup[] webs = srcs.getSourceGroups(MavenSourcesImpl.TYPE_DOC_ROOT);
+        if (webs != null) {
+            for (int i = 0; i < webs.length; i++) {
+                toRet.add(webs[i].getRootFolder());
+            }
+        }
+        SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        if (grps != null) {
+            for (int i = 0; i < grps.length; i++) {
+                toRet.add(grps[i].getRootFolder());
+            }
+        }
+        return (FileObject[])toRet.toArray(new FileObject[toRet.size()]);
     }
-
+    
     
     // TODO
     private class ModuleChangeReporterImpl implements ModuleChangeReporter {
