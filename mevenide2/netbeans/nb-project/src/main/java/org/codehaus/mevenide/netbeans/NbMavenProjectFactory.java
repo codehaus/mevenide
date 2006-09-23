@@ -96,7 +96,7 @@ public class NbMavenProjectFactory implements ProjectFactory
             return null;
             
         }
-        File projectDiskFile = FileUtil.toFile(projectFile);
+        File projectDiskFile = FileUtil.normalizeFile(FileUtil.toFile(projectFile));
         if (projectDiskFile == null)  {
             return null;
         }
@@ -108,9 +108,7 @@ public class NbMavenProjectFactory implements ProjectFactory
         }
         try {
             NbMavenProject proj =  new NbMavenProject(projectFile, projectDiskFile);
-            // if MavenProject instance cannot be read, just kick it..
-            MavenProject mavproj = proj.getOriginalMavenProject();
-            return mavproj == null ? null : proj;
+            return proj;
         } catch (Exception exc) {
             ErrorManager.getDefault().getInstance(NbMavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
             return null;
