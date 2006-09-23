@@ -31,6 +31,7 @@
                <include>maven2/settings.xml</include>
                <include>maven2/plugin-registry.xml</include>
                <include>maven2/rootpackage/default-report.xml</include>
+               <include>maven2/fallback_pom.xml</include>
            </includes>
        </nbmResource>
    </nbmResources>
