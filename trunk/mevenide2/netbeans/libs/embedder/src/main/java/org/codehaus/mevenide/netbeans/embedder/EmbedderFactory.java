@@ -67,8 +67,15 @@ public class EmbedderFactory {
     /** Creates a new instance of EmbedderFactory */
     public EmbedderFactory() {
     }
+    
+    /**
+     * embedder seems to cache some values..
+     */ 
+    public synchronized static void resetProjectEmbedder() {
+        project = null;
+    }
+    
     public synchronized static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
-        // let there always be just one embedder, otherwise the resolution listener hack stops working..
         if (project == null) {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
