@@ -101,8 +101,8 @@ public final class ProblemReporter implements Comparator {
     public int compare(Object o1, Object o2) {
         assert o1 instanceof ProblemReport;
         assert o2 instanceof ProblemReport;
-        int ret = Integer.valueOf(((ProblemReport)o1).getSeverityLevel()).compareTo(
-                Integer.valueOf(((ProblemReport)o2).getSeverityLevel()));
+        int ret = new Integer(((ProblemReport)o1).getSeverityLevel()).compareTo(
+                new Integer(((ProblemReport)o2).getSeverityLevel()));
         if (ret != 0) {
             return ret;
         }
