@@ -37,7 +37,7 @@ public class BeanRunConfig implements RunConfig {
     private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
     private boolean showError = MavenExecutionSettings.getDefault().isShowErrors();
     private Boolean offline;
-    private List activeteProfiles = Collections.emptyList();
+    private List activeteProfiles = Collections.EMPTY_LIST;
     private boolean updateSnapshots = false;
     private boolean recursive = true;
     
