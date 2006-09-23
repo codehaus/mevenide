@@ -32,6 +32,9 @@ public class PluginPropertyUtils {
      */
     public static String getPluginProperty(NbMavenProject project, String groupId, String artifactId, String property, String goal) {
         String toRet = null;
+        if (project.getOriginalMavenProject().getBuildPlugins() == null) {
+            return toRet;
+        }
         Iterator it = project.getOriginalMavenProject().getBuildPlugins().iterator();
         while (it.hasNext()) {
             Plugin plug = (Plugin)it.next();
