@@ -36,6 +36,7 @@ import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.OverConstrainedVersionException;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  *
@@ -46,6 +47,7 @@ public class NbArtifact implements Artifact {
     private Artifact original;
     private static Map cache = new HashMap();
     private boolean fakesSystem = false;
+    private boolean fakePom = false;
     private File originalSystemFile;
     
     public static synchronized File getCachedPom(String id) {
@@ -97,13 +99,15 @@ public class NbArtifact implements Artifact {
         if ("pom".equals(getType()) && isResolved()) {
             if (original.getFile() != null && !original.getFile().exists()) {
                 File orig = NbArtifact.getCachedPom(getId());
+                originalSystemFile = original.getFile();
                 if (orig != null) {
                     original.setFile(orig);
                 } else {
+                    PrintWriter writer = null;
                     try {
                         File temp = File.createTempFile("mevenide", "pom");
                         temp.deleteOnExit();
-                        PrintWriter writer = new PrintWriter(new FileOutputStream(temp));
+                        writer = new PrintWriter(new FileOutputStream(temp));
                         writer.println("<project>");
                         writer.println("<modelVersion>4.0.0</modelVersion>");
                         writer.println("<packaging>pom</packaging>");
@@ -118,8 +122,11 @@ public class NbArtifact implements Artifact {
                         ex.printStackTrace();
                     } catch (IOException io) {
                         io.printStackTrace();
+                    } finally {
+                        IOUtil.close(writer);
                     }
                 }
+                fakePom = true;
             }
         }
         if (Artifact.SCOPE_SYSTEM.equals(getScope())) {
@@ -136,13 +143,7 @@ public class NbArtifact implements Artifact {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 } finally {
-                    try {
-                        if(out != null) {
-                            out.close();
-                        }
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
+                    IOUtil.close(out);
                 }
                 if (tempSystemFile != null) {
                     originalSystemFile = systemFile;
@@ -153,12 +154,18 @@ public class NbArtifact implements Artifact {
                 }
             }
         }
-        
         return original.getFile();
     }
     
+    /** before calling this method, call getFile()
+     */
     public boolean isFakedSystemDependency() {
         return fakesSystem;
+    }
+    /** before calling this method, call getFile()
+     */
+    public boolean isFakedPomDependency() {
+        return fakePom;
     }
     
     public File getNonFakedFile() {
