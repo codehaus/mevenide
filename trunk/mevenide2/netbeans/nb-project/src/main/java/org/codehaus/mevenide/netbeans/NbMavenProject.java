@@ -50,6 +50,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
+import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
@@ -65,6 +66,7 @@ import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.ErrorManager;
 import org.openide.filesystems.*;
+import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -96,6 +98,7 @@ public final class NbMavenProject implements Project {
     private Updater updater3;
     private Sources sources;
     private MavenProject project;
+    private ProblemReporter problemReporter;
 
     private Info projectInfo;
 
@@ -113,6 +116,7 @@ public final class NbMavenProject implements Project {
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
+        problemReporter = new ProblemReporter();
     }
     
     public File getPOMFile() {
@@ -143,14 +147,26 @@ public final class NbMavenProject implements Project {
                 try {
                     project = getEmbedder().readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
-                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
+                        "Artifact Resolution problem",
+                            ex.getMessage(), null);
+                    problemReporter.addReport(report);
+//                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
-                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
+                        "Artifact Not found",
+                            ex.getMessage(), null);
+                    problemReporter.addReport(report);
+//                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 }
             } catch (ProjectBuildingException ex) {
-                ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
+                        "Cannot load project properly",
+                        ex.getMessage(), null);
+                problemReporter.addReport(report);
+//                ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                 try {
                     project = new MavenProject(getEmbedder().readModel(projectFile));
                 } catch (FileNotFoundException ex2) {
@@ -159,6 +175,13 @@ public final class NbMavenProject implements Project {
                     ex2.printStackTrace();
                 } catch (XmlPullParserException ex2) {
                     ex2.printStackTrace();
+                } finally {
+                    File fallback = InstalledFileLocator.getDefault().locate("maven2/fallback_pom.xml", null, false);
+                    try {
+                        project = getEmbedder().readProject(fallback);
+                    } catch (Exception x) {
+                        // oh well..
+                    }
                 }
 //            } catch (MavenEmbedderException exc) {
 //                exc.printStackTrace();
@@ -177,8 +200,14 @@ public final class NbMavenProject implements Project {
             oldProject = project;
             project = null;
             projectInfo.reset();
+            problemReporter.clearReports();
             support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));
+            doBaseProblemChecks();
         }
+    }
+    
+    void doBaseProblemChecks() {
+        problemReporter.doBaseProblemChecks(this, project);
     }
     
     public String getDisplayName() {
@@ -407,7 +436,7 @@ public final class NbMavenProject implements Project {
             new RecommendedTemplatesImpl(this),
             new MavenSourceLevelImpl(this), 
             new JarPackagingRunChecker(),
-            
+            problemReporter,
             new UserActionGoalProvider(this)
                     
         });
@@ -458,7 +487,13 @@ public final class NbMavenProject implements Project {
         public String getDisplayName() {
             String toReturn = NbMavenProject.this.getOriginalMavenProject().getName();
             if (toReturn == null) {
-                toReturn = "<No name defined>";
+                String grId = NbMavenProject.this.getOriginalMavenProject().getGroupId();
+                String artId = NbMavenProject.this.getOriginalMavenProject().getArtifactId();
+                if (grId != null && artId != null) {
+                    toReturn = grId + ":" + artId;
+                } else {
+                    toReturn = "Maven project at " + NbMavenProject.this.getProjectDirectory().getPath(); 
+                }
             }
             toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")";
             return toReturn;
@@ -489,6 +524,21 @@ public final class NbMavenProject implements Project {
     private static final String[] USER_DIR_FILES = new String[] {
         "settings.xml"
     };
+
+//MEVENIDE-448 seems to help against creation of duplicate project instances
+// no idea why, it's supposed to be ProjectManager job.. maybe related to 
+// maven impl of SubProjectProvider or FileOwnerQueryImplementation
+//TODO need to investigate why it's like that..
+    public int hashCode() {
+        return getProjectDirectory().hashCode() * 13;
+    }
+
+    public boolean equals(Object obj) {
+        if (obj instanceof Project) {
+            return getProjectDirectory().equals(((Project)obj).getProjectDirectory());
+        }
+        return false;
+    }
 
     
     private class Updater implements FileChangeListener {
@@ -750,6 +800,7 @@ public final class NbMavenProject implements Project {
         }
         
         public void actionPerformed(java.awt.event.ActionEvent event) {
+            EmbedderFactory.resetProjectEmbedder();
             NbMavenProject.this.firePropertyChange(PROP_PROJECT);
         }
         

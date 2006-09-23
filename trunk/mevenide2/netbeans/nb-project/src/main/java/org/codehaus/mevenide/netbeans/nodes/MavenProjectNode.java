@@ -25,24 +25,41 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JSeparator;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.apache.maven.BuildFailureException;
+import org.apache.maven.lifecycle.LifecycleExecutionException;
+import org.apache.maven.plugin.MojoExecution;
+import org.apache.maven.plugin.PluginNotFoundException;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.ProblemReport;
+import org.codehaus.mevenide.netbeans.ProblemReporter;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.problems.ProblemsPanel;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.actions.FindAction;
 import org.openide.actions.ToolsAction;
@@ -55,6 +72,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.loaders.FolderLookup;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
+import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
 
 
@@ -68,6 +86,7 @@ public class MavenProjectNode extends AbstractNode {
      private NbMavenProject project;
      private ProjectInformation info;
      private Image icon;
+     private ProblemReporter reporter;
      public MavenProjectNode( Lookup lookup, NbMavenProject proj) {
         super(new MavenProjectChildren(proj), lookup);
         this.project = proj;
@@ -79,6 +98,19 @@ public class MavenProjectNode extends AbstractNode {
             }
         });
 //        setIconBase("org/mevenide/netbeans/projects/resources/MavenIcon");
+        reporter = (ProblemReporter)proj.getLookup().lookup(ProblemReporter.class);
+        reporter.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        fireIconChange();
+                        fireOpenedIconChange();
+                        fireDisplayNameChange(null, getDisplayName());
+                        fireShortDescriptionChange(null, getShortDescription());
+                    }
+                });
+            }
+        });
     }
     
     
@@ -96,6 +128,9 @@ public class MavenProjectNode extends AbstractNode {
         } catch (FileStateInvalidException e) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
         }
+        if (reporter.getReports().size() > 0) {
+            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);
+        }
         return img;
     }
     
@@ -108,6 +143,9 @@ public class MavenProjectNode extends AbstractNode {
             img = fo.getFileSystem().getStatus().annotateIcon(img, param, Collections.singleton(fo));
         } catch (FileStateInvalidException e) {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+        if (reporter.getReports().size() > 0) {
+            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);
         }
         return img;
     }
@@ -140,6 +178,7 @@ public class MavenProjectNode extends AbstractNode {
         }
 //        lst.add(new RunGoalsAction(project));
         lst.add(new LifecyclePopupAction(project));
+//        lst.add(new LifecycleMapTest());
         lst.add(provider.createCustomMavenAction("Run Custom Goals...", new NetbeansActionMapping()));
         // separator
         lst.add(null);
@@ -180,6 +219,9 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(null);
         lst.add(SystemAction.get(ToolsAction.class));
         lst.add(null);
+        if (reporter.getReports().size() > 0) {
+            lst.add(new ShowProblemsAction());
+        }
         
         lst.add(CommonProjectActions.customizeProjectAction());
         
@@ -193,7 +235,17 @@ public class MavenProjectNode extends AbstractNode {
         buf.append("<i>ArtifactId:</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br>");
         buf.append("<i>Version:</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br>");
         //TODO escape the short description
-        buf.append("<i>Description:</i> ").append(breakPerLine(project.getShortDescription(), "Description:".length())).append("</html>");
+        buf.append("<i>Description:</i> ").append(breakPerLine(project.getShortDescription(), "Description:".length()));
+        if (reporter.getReports().size() > 0) {
+            buf.append("<br><b>Problems:</b><br><ul>");
+            Iterator it = reporter.getReports().iterator();
+            while (it.hasNext()) {
+                ProblemReport elem = (ProblemReport) it.next();
+                buf.append("<li>" + elem.getShortDescription() + "</li>");
+            }
+            buf.append("</ul>");
+        }
+        buf.append("</html>");
         return buf.toString();
     }
 
@@ -227,4 +279,55 @@ public class MavenProjectNode extends AbstractNode {
         }
     }
 
+//    private class LifecycleMapTest extends AbstractAction {
+//        public LifecycleMapTest() {
+//            putValue(Action.NAME, "Lifecycle map test.");
+//        }
+//
+//        public void actionPerformed(ActionEvent e) {
+//            try {
+//                Map map = EmbedderFactory.getOnlineEmbedder().getLifecycleMappings(
+//                        EmbedderFactory.getOnlineEmbedder().readProject(project.getPOMFile()), "default", "install");
+//                Iterator it = map.entrySet().iterator();
+//                while (it.hasNext()) {
+//                    Map.Entry elem = (Map.Entry) it.next();
+//                    System.out.println("elem=" + elem.getKey());
+//                    List mojos = (List)elem.getValue();
+//                    Iterator it2 = mojos.iterator();
+//                    while (it2.hasNext()) {
+//                        MojoExecution exec = (MojoExecution) it2.next();
+//                        System.out.println(" value=" + exec.getExecutionId() + " " + exec.getMojoDescriptor().getFullGoalName());
+//                        System.out.println(" config =" + exec.getConfiguration());
+//                    }
+//                }
+//            } catch (PluginNotFoundException ex) {
+//                ex.printStackTrace();
+//            } catch (BuildFailureException ex) {
+//                ex.printStackTrace();
+//            } catch (ProjectBuildingException ex) {
+//                ex.printStackTrace();
+//            } catch (LifecycleExecutionException ex) {
+//                ex.printStackTrace();
+//            }
+//            
+//        }
+//    }
+    
+    private class ShowProblemsAction extends AbstractAction {
+        
+        public ShowProblemsAction() {
+            putValue(Action.NAME, "Show and Resolve Problems...");
+        }
+        
+        public void actionPerformed(ActionEvent arg0) {
+            JButton butt = new JButton();
+            ProblemsPanel panel = new ProblemsPanel(reporter);
+            panel.setActionButton(butt);
+            DialogDescriptor dd = new DialogDescriptor(panel, "Show Problems");
+            dd.setOptions(new Object[] { butt, "Close" });
+            dd.setClosingOptions(new Object[] {"Close"});
+            dd.setModal(false);
+            DialogDisplayer.getDefault().notify(dd);
+        }
+    };
 }

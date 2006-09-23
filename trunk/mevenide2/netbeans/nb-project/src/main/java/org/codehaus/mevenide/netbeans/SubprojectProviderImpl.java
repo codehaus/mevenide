@@ -127,8 +127,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             FileObject projectDir = FileUtil.toFileObject(projectFile);
             if (projectDir != null) {
                 try {
-                    Project proj = ProjectManager.getDefault().findProject(projectDir);
-                    return proj;
+                    return ProjectManager.getDefault().findProject(projectDir);
                 } catch (IOException exc) {
                     ErrorManager.getDefault().notify(exc);
                 }
