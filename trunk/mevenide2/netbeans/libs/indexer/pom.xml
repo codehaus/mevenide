@@ -23,6 +23,13 @@
       </plugin>
     </plugins>
   </build>
+  <repositories>
+      <repository>
+          <!-- needed to get plexus container snapshot-->
+          <id>codehaus.snapshots</id>
+          <url>http://snapshots.repository.codehaus.org</url>
+      </repository>
+  </repositories>
   <dependencies>
     <dependency>
         <groupId>org.apache.maven.archiva</groupId>
