@@ -137,7 +137,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 MavenProject proj = project.getOriginalMavenProject();
                 if (proj != null) {
                     Build build = proj.getBuild();
-                    if (build != null) {
+                    if (build != null && build.getOutputDirectory() != null) {
                         File src = FileUtil.normalizeFile(new File(build.getOutputDirectory()));
                         URL srcUrl = src.toURI().toURL();
                         if  (!srcUrl.toExternalForm().endsWith("/")) {
