@@ -17,9 +17,9 @@
 
 package org.codehaus.mevenide.repository;
 
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 /**

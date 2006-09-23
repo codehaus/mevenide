@@ -17,23 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.newproject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
-import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
-import org.codehaus.mevenide.indexer.CustomQueries;
+import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
-import org.codehaus.plexus.util.IOUtil;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 
 /**
  *

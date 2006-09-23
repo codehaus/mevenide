@@ -32,6 +32,7 @@ public class MavenIndexSettings extends SystemOption {
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
     public static final String PROP_COLLECTED = "collectedReposAsStrings"; //NOI18N
+    public static final String PROP_SNAPSHOTS = "includeSnapshots"; //NOI18N
     
     public static final int FREQ_ONCE_WEEK = 0;
     public static final int FREQ_ONCE_DAY = 1;
@@ -40,12 +41,14 @@ public class MavenIndexSettings extends SystemOption {
     
     private static final long serialVersionUID = -4857548487373437L;
 
+
     
     protected void initialize() {
         super.initialize();
         setIndexUpdateFrequency(FREQ_ONCE_WEEK);
         setLastIndexUpdate(new Date(0));
         setCollectedRepositories(new ArrayList());
+        setIncludeSnapshots(true);
     }
     
     public String displayName() {
@@ -91,6 +94,14 @@ public class MavenIndexSettings extends SystemOption {
     
     public List getCollectedRepositories() {
         return new ArrayList(Arrays.asList(getCollectedReposAsStrings()));
+    }
+
+    public boolean isIncludeSnapshots() {
+        return ((Boolean)getProperty(PROP_SNAPSHOTS)).booleanValue();
+    }
+
+    public void setIncludeSnapshots(boolean includeSnapshots) {
+        putProperty(PROP_SNAPSHOTS, new Boolean(includeSnapshots), true);
     }
     
 }

@@ -21,12 +21,10 @@ package org.codehaus.mevenide.indexer;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.MultiFieldQueryParser;
@@ -34,24 +32,28 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
+import org.apache.maven.archiva.discoverer.ArtifactDiscoverer;
+import org.apache.maven.archiva.discoverer.DiscovererException;
+import org.apache.maven.archiva.discoverer.filter.AcceptAllArtifactFilter;
+import org.apache.maven.archiva.discoverer.filter.SnapshotArtifactFilter;
+import org.apache.maven.archiva.indexer.RepositoryArtifactIndex;
+import org.apache.maven.archiva.indexer.RepositoryArtifactIndexFactory;
+import org.apache.maven.archiva.indexer.RepositoryIndexException;
+import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
+import org.apache.maven.archiva.indexer.record.RepositoryIndexRecordFactory;
+import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.repository.discovery.ArtifactDiscoverer;
-import org.apache.maven.repository.discovery.DiscovererException;
-import org.apache.maven.repository.indexing.RepositoryArtifactIndex;
-import org.apache.maven.repository.indexing.RepositoryArtifactIndexFactory;
-import org.apache.maven.repository.indexing.RepositoryIndexException;
-import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
-import org.apache.maven.repository.indexing.lucene.LuceneQuery;
-import org.apache.maven.repository.indexing.record.RepositoryIndexRecordFactory;
-import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.codehaus.plexus.embed.Embedder;
+import org.codehaus.plexus.embed.EmbedderException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 
@@ -87,7 +89,7 @@ public class LocalRepositoryIndexer {
     };
     
     /** Creates a new instance of LocalRepositoryIndexer */
-    private LocalRepositoryIndexer() throws PlexusContainerException, ComponentLookupException, MavenEmbedderException, RepositoryIndexException {
+    private LocalRepositoryIndexer() throws  EmbedderException, ComponentLookupException, PlexusContainerException, MavenEmbedderException, RepositoryIndexException {
         embedder = new Embedder();
         ClassWorld world = new ClassWorld();
         embedder.start( world );
@@ -103,14 +105,8 @@ public class LocalRepositoryIndexer {
         if (instance == null) {
             try {
                 instance = new LocalRepositoryIndexer();
-            } catch (PlexusContainerException ex) {
+            } catch (Exception ex) {
                 //TODO exception handling..
-                ex.printStackTrace();
-            } catch (RepositoryIndexException ex) {
-                ex.printStackTrace();
-            } catch (MavenEmbedderException ex) {
-                ex.printStackTrace();
-            } catch (ComponentLookupException ex) {
                 ex.printStackTrace();
             }
         }
@@ -126,13 +122,18 @@ public class LocalRepositoryIndexer {
         return index;
     }
     
-    public void updateIndex(boolean updateSnapshots) throws RepositoryIndexException {
+    public void updateIndex() throws RepositoryIndexException {
         ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository indexing");
         try {
             handle.start();
             handle.progress("Discovering artifacts...");
-            List artifacts = discoverer.discoverArtifacts(repository, "update", null, updateSnapshots);
-            System.out.println("discovered=" + artifacts.size());
+            ArtifactFilter filter;
+            if (MavenIndexSettings.getDefault().isIncludeSnapshots()) {
+                filter = new AcceptAllArtifactFilter();
+            } else {
+                filter = new SnapshotArtifactFilter();
+            }
+            List artifacts = discoverer.discoverArtifacts(repository,  null, filter);
             doUpdate(defaultIndex, handle, artifacts);
             MavenIndexSettings.getDefault().setLastIndexUpdate(new Date());
         } catch (DiscovererException ex) {
@@ -153,9 +154,13 @@ public class LocalRepositoryIndexer {
             count++;
             handle.progress("Recording " + count + " out of " + size, count);
             records.add(recordFactory.createRecord(artifact));
+            if (count % 200 == 0) {
+                handle.progress("Indexing...");
+                index.indexRecords(records);
+                records.clear();
+            }
         }
-        handle.switchToIndeterminate();
-        handle.progress("Indexing");
+        handle.progress("Indexing...");
         index.indexRecords(records);
     }
     

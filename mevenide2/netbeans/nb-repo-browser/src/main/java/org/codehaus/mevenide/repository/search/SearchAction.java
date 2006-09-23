@@ -2,7 +2,7 @@ package org.codehaus.mevenide.repository.search;
 
 import java.util.List;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.repository.M2RepositoryBrowserTopComponent;
 import org.openide.DialogDescriptor;

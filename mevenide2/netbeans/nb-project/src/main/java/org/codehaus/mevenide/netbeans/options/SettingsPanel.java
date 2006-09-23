@@ -22,15 +22,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
-import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.RequestProcessor;
 
@@ -64,6 +60,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbOffline.addActionListener(listener);
         cbErrors.addActionListener(listener);
         cbPluginRegistry.addActionListener(listener);
+        cbSnapshots.addActionListener(listener);
         rbChecksumLax.addActionListener(listener);
         rbChecksumNone.addActionListener(listener);
         rbChecksumStrict.addActionListener(listener);
@@ -85,6 +82,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbFailFast.setSelected(true);
         rbChecksumNone.setSelected(true);
         comIndex.setSelectedIndex(0);
+        cbSnapshots.setSelected(true);
     }
     
     /** This method is called from within the constructor to
@@ -94,6 +92,7 @@ public class SettingsPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         bgChecksums = new javax.swing.ButtonGroup();
         bgPlugins = new javax.swing.ButtonGroup();
         bgFailure = new javax.swing.ButtonGroup();
@@ -119,6 +118,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         lblIndex = new javax.swing.JLabel();
         comIndex = new javax.swing.JComboBox();
         btnIndex = new javax.swing.JButton();
+        cbSnapshots = new javax.swing.JCheckBox();
 
         cbOffline.setText("Work Offline");
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -137,6 +137,7 @@ public class SettingsPanel extends javax.swing.JPanel {
 
         pnlChecksums.setBorder(javax.swing.BorderFactory.createTitledBorder("Checksum policy"));
         pnlChecksums.setOpaque(false);
+
         bgChecksums.add(rbChecksumStrict);
         rbChecksumStrict.setText("Strict (Fail)");
         rbChecksumStrict.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -175,11 +176,12 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbChecksumStrict)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbChecksumLax, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pnlPlugins.setBorder(javax.swing.BorderFactory.createTitledBorder("Plugin Update Policy"));
         pnlPlugins.setOpaque(false);
+
         bgPlugins.add(rbPluginUpdate);
         rbPluginUpdate.setText("Check For Updates");
         rbPluginUpdate.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -218,11 +220,12 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbPluginUpdate)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbNoPluginUpdate)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         pnlFail.setBorder(javax.swing.BorderFactory.createTitledBorder("Multiproject build fail policy"));
         pnlFail.setOpaque(false);
+
         bgFailure.add(rbFailFast);
         rbFailFast.setText("Stop at first failure");
         rbFailFast.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -261,7 +264,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbFailEnd)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbFailNever)
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         cbPluginRegistry.setText("Use plugin registry");
@@ -289,6 +292,10 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         });
 
+        cbSnapshots.setText("Include Snapshots");
+        cbSnapshots.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbSnapshots.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -312,11 +319,13 @@ public class SettingsPanel extends javax.swing.JPanel {
                         .add(lblLocalRepository)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
                                 .add(lblIndex)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(comIndex, 0, 174, Short.MAX_VALUE))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE))
+                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                                    .add(cbSnapshots)
+                                    .add(comIndex, 0, 174, Short.MAX_VALUE))))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                             .add(btnLocalRepository)
@@ -354,7 +363,9 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(lblIndex)
                     .add(comIndex, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(btnIndex))
-                .addContainerGap(78, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbSnapshots)
+                .addContainerGap(57, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -365,7 +376,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
                 File repo = new File(txtLocalRepository.getText().trim());
                 try {
-                    ind.updateIndex(false);
+                    ind.updateIndex();
                 } catch (RepositoryIndexException ex) {
                     ex.printStackTrace();
                 } finally {
@@ -412,6 +423,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox cbErrors;
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbPluginRegistry;
+    private javax.swing.JCheckBox cbSnapshots;
     private javax.swing.JComboBox comIndex;
     private javax.swing.JLabel lblIndex;
     private javax.swing.JLabel lblLocalRepository;
@@ -438,6 +450,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
         cbErrors.putClientProperty("wasSelected", Boolean.valueOf(cbErrors.isSelected()));
         cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
+        cbSnapshots.setSelected(MavenIndexSettings.getDefault().isIncludeSnapshots());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();
         if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(failureBehaviour)) {
             rbFailFast.setSelected(true);
@@ -491,6 +504,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         failureBehaviour = rbFailNever.isSelected() ? MavenExecutionRequest.REACTOR_FAIL_NEVER : failureBehaviour;
         MavenExecutionSettings.getDefault().setFailureBehaviour(failureBehaviour);
         MavenIndexSettings.getDefault().setIndexUpdateFrequency(comIndex.getSelectedIndex());
+        MavenIndexSettings.getDefault().setIncludeSnapshots(cbSnapshots.isSelected());
         changed = false;
     }
     

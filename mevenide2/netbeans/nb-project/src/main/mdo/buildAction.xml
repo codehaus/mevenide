@@ -35,6 +35,29 @@
                     <!--required>true</required-->
                 </field>
                 <field>
+                    <name>displayName</name>
+                    <version>1.0.0+</version>
+                    <type>String</type>
+                </field>
+                <field>
+                    <name>debug</name>
+                    <version>1.1.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>false</defaultValue>
+                </field>
+                <field>
+                    <name>online</name>
+                    <version>1.1.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>true</defaultValue>
+                </field>
+                <field>
+                    <name>recursive</name>
+                    <version>1.0.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>true</defaultValue>
+                </field>
+                <field>
                     <name>packagings</name>
                     <version>1.0.0+</version>
                     <description>Packaging types that this action mapping works for. * for any.</description>
