@@ -25,18 +25,18 @@
   </build>
   <dependencies>
     <dependency>
-        <groupId>org.apache.maven.repository</groupId>
-        <artifactId>maven-repository-indexer</artifactId>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-indexer</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.maven.repository</groupId>
-        <artifactId>maven-repository-discovery</artifactId>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-discoverer</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
-        <groupId>org.apache.maven.repository</groupId>
-        <artifactId>maven-repository-utils</artifactId>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-utils</artifactId>
         <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>

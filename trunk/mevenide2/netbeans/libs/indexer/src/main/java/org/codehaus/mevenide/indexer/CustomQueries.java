@@ -20,29 +20,21 @@ package org.codehaus.mevenide.indexer;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.jar.JarFile;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
-import org.apache.maven.artifact.Artifact;
+import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.model.Model;
-import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
-import org.apache.maven.repository.indexing.lucene.LuceneQuery;
-import org.apache.maven.repository.indexing.query.Query;
-import org.apache.maven.repository.indexing.query.SingleTermQuery;
-import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
-import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 /**
  *

@@ -17,23 +17,14 @@
 
 package org.codehaus.mevenide.repository.search;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.repository.indexing.record.StandardArtifactIndexRecord;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.repository.RepositoryUtils;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.repository.VersionNode;
-import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Utilities;
 
 /**
  *

@@ -22,8 +22,8 @@ import javax.swing.JTextField;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.apache.maven.repository.indexing.lucene.LuceneQuery;
-import org.apache.maven.repository.indexing.record.StandardIndexRecordFields;
+import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
+import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 
 /**

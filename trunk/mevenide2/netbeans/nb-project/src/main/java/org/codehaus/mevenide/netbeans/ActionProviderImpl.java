@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.apache.maven.repository.indexing.RepositoryIndexException;
+import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;

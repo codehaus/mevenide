@@ -22,8 +22,8 @@ import java.beans.PropertyChangeListener;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.repository.indexing.RepositoryIndexException;
 import org.codehaus.mevenide.indexer.*;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -61,12 +61,12 @@ public class ModInstall extends ModuleInstall {
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
                         try {
-                            LocalRepositoryIndexer.getInstance().updateIndex(false);
+                            LocalRepositoryIndexer.getInstance().updateIndex();
                         } catch (RepositoryIndexException ex) {
                             ex.printStackTrace();
                         }
                     }
-                }, MILIS_IN_MIN * 3);
+                }, MILIS_IN_MIN * 2);
             }
         }
     }

@@ -95,18 +95,15 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
-        btnSearch = new javax.swing.JButton();
-        pnlExplorer = new javax.swing.JPanel();
-        btnBack = new javax.swing.JButton();
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnSearch, "Search");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
+        pnlExplorer = new javax.swing.JPanel();
+        jToolBar1 = new javax.swing.JToolBar();
+        btnBack = new javax.swing.JButton();
+        btnSearch = new javax.swing.JButton();
 
         pnlExplorer.setLayout(new java.awt.BorderLayout());
+
+        jToolBar1.setFloatable(false);
 
         org.openide.awt.Mnemonics.setLocalizedText(btnBack, "Back to browse");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
@@ -114,28 +111,29 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
                 btnBackActionPerformed(evt);
             }
         });
+        jToolBar1.add(btnBack);
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnSearch, "Search");
+        btnSearch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSearchActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnSearch);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(btnBack)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnSearch)
-                .addContainerGap(178, Short.MAX_VALUE))
+            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
             .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(btnSearch)
-                    .add(btnBack))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE))
+                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(pnlExplorer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -159,6 +157,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnlExplorer;
     // End of variables declaration//GEN-END:variables
     

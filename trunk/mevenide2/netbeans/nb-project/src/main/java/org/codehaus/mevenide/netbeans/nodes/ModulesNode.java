@@ -116,7 +116,7 @@ public class ModulesNode extends AbstractNode {
                 if (fo != null) {
                     try {
                         Project prj = ProjectManager.getDefault().findProject(fo);
-                        if (prj instanceof NbMavenProject) {
+                        if (prj != null && prj.getLookup().lookup(NbMavenProject.class) != null) {
                             modules.add(prj);
                         }
                     } catch (IllegalArgumentException ex) {

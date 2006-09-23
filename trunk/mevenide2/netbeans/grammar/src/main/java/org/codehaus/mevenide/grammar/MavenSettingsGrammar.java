@@ -24,7 +24,7 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.maven.repository.indexing.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;

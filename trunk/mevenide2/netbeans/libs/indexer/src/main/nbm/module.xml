@@ -7,9 +7,9 @@
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
     <libraries>
-        <library>org.apache.maven.repository:maven-repository-utils</library>
-        <library>org.apache.maven.repository:maven-repository-indexer</library>
-        <library>org.apache.maven.repository:maven-repository-discovery</library>
+        <library>org.apache.maven.archiva:archiva-utils</library>
+        <library>org.apache.maven.archiva:archiva-indexer</library>
+        <library>org.apache.maven.archiva:archiva-discoverer</library>
         <library>org.apache.lucene:lucene-core</library>
     </libraries>
     <dependencies>
