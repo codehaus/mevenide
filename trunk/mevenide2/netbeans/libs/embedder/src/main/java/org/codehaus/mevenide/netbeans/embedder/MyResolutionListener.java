@@ -37,7 +37,8 @@ public class MyResolutionListener implements ResolutionListener {
     }
     
     public static void clearDelegateResolutionListener() {
-        listener.remove();
+        // 1.5 equivalent is remove()
+        listener.set(null);
     }
     
     private ResolutionListener getDelegate() {
