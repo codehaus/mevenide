@@ -101,7 +101,10 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnBack = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
 
+        setLayout(new java.awt.BorderLayout());
+
         pnlExplorer.setLayout(new java.awt.BorderLayout());
+        add(pnlExplorer, java.awt.BorderLayout.CENTER);
 
         jToolBar1.setFloatable(false);
 
@@ -121,20 +124,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         });
         jToolBar1.add(btnSearch);
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(jToolBar1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-            .add(pnlExplorer, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(jToolBar1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 25, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .add(pnlExplorer, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-        );
+        add(jToolBar1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
