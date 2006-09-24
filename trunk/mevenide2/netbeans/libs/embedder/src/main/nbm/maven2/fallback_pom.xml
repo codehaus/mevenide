@@ -5,5 +5,5 @@
     <artifactId>error</artifactId>
     <packaging>unknown</packaging>
     <version>unknown</version>
-    <name>&gt;Badly formed Maven project&lt;</name>
+    <name>&lt;Badly formed Maven project&gt;</name>
 </project>

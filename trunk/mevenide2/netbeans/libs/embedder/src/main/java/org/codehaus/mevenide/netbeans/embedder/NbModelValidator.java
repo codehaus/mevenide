@@ -21,27 +21,57 @@ import org.apache.maven.project.validation.ModelValidator;
  */
 public class NbModelValidator implements ModelValidator {
     
-    private static HashMap map = new HashMap();
-    DefaultModelValidator original;
+    private static ThreadLocal listener = new ThreadLocal();
     
     /** Creates a new instance of NbModelValidator */
     public NbModelValidator() {
-        original = new DefaultModelValidator();
     }
     
-    public ModelValidationResult getResultFor(String id) {
-        synchronized (map) {
-            return (ModelValidationResult)map.get(id);
-        }
+    /**
+     * use in the IDE environment to set the validator into the embedder
+     */
+    public static void setDelegateValidator(ModelValidator listen) {
+        listener.set(listen);
     }
-
-    public ModelValidationResult validate(Model model) {
-        ModelValidationResult result = new ModelValidationResult();
-        ModelValidationResult orig = original.validate(model);
-        synchronized (map) {
-            map.put(model.getId(), orig);
+    
+    public static void clearModelValidator() {
+        // 1.5 equivalent is remove()
+        listener.set(null);
+    }
+    
+    private ModelValidator getDelegate() {
+        Object ret = listener.get();
+        if (ret != null) {
+            return (ModelValidator)ret;
         }
-        return result;
+        return null;
+    }
+    
+    public ModelValidationResult validate(Model model) {
+        if (getDelegate() != null) {
+            return getDelegate().validate(model);
+        }
+        return new DefaultModelValidator().validate(model);
+    }
+    
+    public static class Delegate implements ModelValidator {
+        
+        ModelValidationResult result;
+        DefaultModelValidator original;
+        
+        public Delegate() {
+            original = new DefaultModelValidator();
+        }
+        
+        public ModelValidationResult getValidationResult() {
+            return result;
+        }
+        
+        public ModelValidationResult validate(Model model) {
+            ModelValidationResult orig = original.validate(model);
+            result = orig;
+            return orig;
+        }
     }
     
 }
