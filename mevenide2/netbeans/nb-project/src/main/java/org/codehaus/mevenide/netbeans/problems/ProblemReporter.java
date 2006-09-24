@@ -15,9 +15,10 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans;
+package org.codehaus.mevenide.netbeans.problems;
 
 import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,8 +36,11 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.validation.ModelValidationResult;
+import org.codehaus.mevenide.netbeans.*;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.embedder.NbModelValidator;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -50,10 +54,12 @@ import org.openide.loaders.DataObjectNotFoundException;
 public final class ProblemReporter implements Comparator {
     private List listeners = new ArrayList();
     private Set reports;
+    private NbMavenProject nbproject;
     
     /** Creates a new instance of ProblemReporter */
-    ProblemReporter() {
+    public ProblemReporter(NbMavenProject proj) {
         reports = new TreeSet(this);
+        nbproject = proj;
     }
     
     public void addChangeListener(ChangeListener list) {
@@ -110,17 +116,30 @@ public final class ProblemReporter implements Comparator {
         
     }
     
+    public void addValidatorReports(NbModelValidator.Delegate validator) {
+        ModelValidationResult res = validator.getValidationResult();
+        if (res == null) {
+            return;
+        }
+        List messages = validator.getValidationResult().getMessages();
+        if (messages != null && messages.size() > 0) {
+            ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                    "Project model validation failed.", validator.getValidationResult().render("\n"), new OpenPomAction(nbproject));
+            addReport(report);
+        }
+    }
     
-    public void doBaseProblemChecks(NbMavenProject nbproject, MavenProject project) {
+    public void doBaseProblemChecks(MavenProject project) {
         //TODO.. non existing dependencies, not declared app server/j2se platform etc..
         if (project != null) {
             MavenProject parent = project;
             while (parent != null) {
-                checkParent(parent, nbproject);
+                checkParent(parent);
                 parent = parent.getParent();
             }
             List compileArts = project.getTestArtifacts();
             if (compileArts != null) {
+                List missingJars = new ArrayList();
                 Iterator it = compileArts.iterator();
                 while (it.hasNext()) {
                     NbArtifact art = (NbArtifact) it.next();
@@ -132,23 +151,39 @@ public final class ProblemReporter implements Comparator {
                                 "Please check that the path is absolute and points to an existing binary.", new OpenPomAction(nbproject));
                         addReport(report);
                     } else if (art.getFile() == null || !art.getFile().exists()) {
-                        //TODO create a correction action for this.
-                        ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                                "Some dependency artifacts are not in local repository. Code completion is affected.",
-                                "Your project has dependencies that are not resolved locally. Code completion" +
-                                " in the ide will not include classes from these dependencies and their transitive dependencies neither." +
-                                "Please download the dependencies, or install them locally, if not available remotely.", null);
-                        addReport(report);
+                        missingJars.add(art);
                     }
                 }
+                if (missingJars.size() > 0) {
+                    //TODO create a correction action for this.
+                    Iterator it2 = missingJars.iterator();
+                    String mess = "";
+                    while (it2.hasNext()) {
+                        Artifact ar = (Artifact)it2.next();
+                        mess = mess + ar.getId() + "\n";
+                    }
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
+                            "Some dependency artifacts are not in local repository.",
+                            "Your project has dependencies that are not resolved locally. Code completion" +
+                            " in the ide will not include classes from these dependencies" +
+                            "and their transitive dependencies neither (unless they are among the opened projects)." +
+                            "Please download the dependencies, or install them manually, if not available remotely.\n\n" +
+                            "The artifacts are:\n" + mess, null);
+                    addReport(report);
+                }
+                
             }
         }
     }
     
-    private void checkParent(final MavenProject project, NbMavenProject nbproj) {
+    private void checkParent(final MavenProject project) {
         Artifact art = project.getParentArtifact();
         if (art != null && art instanceof NbArtifact) {
             
+            File parent = project.getParent().getFile();
+            if (parent != null && parent.exists()) {
+                return;
+            }
             NbArtifact nbart = (NbArtifact)art;
             try {
                 // shouldnot be necessary after update to maven embedder sources 20/9/2006 and later.
@@ -167,14 +202,14 @@ public final class ProblemReporter implements Comparator {
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
                         "Parent pom file is not accessible. Project might be inproperly setup.",
                         "The parent pom with id " + nbart.getId() + " was not found in sources or local repository. Please check that <relativePath> tag is correct is present, the version of parent pom in sources matches the version defined. " +
-                        "If parent is only available thought remote repository, please check that the repository hosting it is defined in the current pom.", new OpenPomAction(nbproj));
+                        "If parent is only available thought remote repository, please check that the repository hosting it is defined in the current pom.", new OpenPomAction(nbproject));
                 addReport(report);
             }
         }
     }
     
     static class OpenPomAction extends AbstractAction {
-
+        
         private NbMavenProject project;
         OpenPomAction(NbMavenProject proj) {
             putValue(Action.NAME, "Open pom.xml");

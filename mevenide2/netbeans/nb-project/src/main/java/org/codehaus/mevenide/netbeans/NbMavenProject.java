@@ -51,8 +51,12 @@ import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.embedder.NbModelValidator;
+import org.codehaus.mevenide.netbeans.embedder.NbModelValidator.Delegate;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
+import org.codehaus.mevenide.netbeans.problems.ProblemReport;
+import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSourceLevelImpl;
@@ -99,12 +103,12 @@ public final class NbMavenProject implements Project {
     private Sources sources;
     private MavenProject project;
     private ProblemReporter problemReporter;
-
+    
     private Info projectInfo;
-
+    
     private MavenProject oldProject;
     
-    /** 
+    /**
      * Creates a new instance of MavenProject, should never be called by user code.
      * but only by MavenProjectFactory!!!
      */
@@ -116,7 +120,7 @@ public final class NbMavenProject implements Project {
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
-        problemReporter = new ProblemReporter();
+        problemReporter = new ProblemReporter(this);
     }
     
     public File getPOMFile() {
@@ -143,48 +147,55 @@ public final class NbMavenProject implements Project {
      */
     public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
+            NbModelValidator.Delegate validator = new NbModelValidator.Delegate();
+            NbModelValidator.setDelegateValidator(validator);
             try {
                 try {
                     project = getEmbedder().readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
-                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
-                        "Artifact Resolution problem",
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                            "Artifact Resolution problem",
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
-//                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                    //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
-                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
-                        "Artifact Not found",
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                            "Artifact Not Found",
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
-//                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
+                    //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 }
             } catch (ProjectBuildingException ex) {
-                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
-                        "Cannot load project properly",
-                        ex.getMessage(), null);
-                problemReporter.addReport(report);
-//                ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
-                try {
-                    project = new MavenProject(getEmbedder().readModel(projectFile));
-                } catch (FileNotFoundException ex2) {
-                    ex2.printStackTrace();
-                } catch (IOException ex2) {
-                    ex2.printStackTrace();
-                } catch (XmlPullParserException ex2) {
-                    ex2.printStackTrace();
-                } finally {
-                    File fallback = InstalledFileLocator.getDefault().locate("maven2/fallback_pom.xml", null, false);
+                //igonre if the problem is in the project validation codebase, we handle that later..
+                if (validator.getValidationResult() == null || validator.getValidationResult().getMessageCount() == 0) {
+                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                            "Cannot load project properly",
+                            ex.getMessage(), null);
+                    problemReporter.addReport(report);
+                }
+            } finally {
+                problemReporter.addValidatorReports(validator);
+                NbModelValidator.clearModelValidator();
+                if (project == null) {
                     try {
-                        project = getEmbedder().readProject(fallback);
-                    } catch (Exception x) {
-                        // oh well..
+                        project = new MavenProject(getEmbedder().readModel(projectFile));
+                    } catch (FileNotFoundException ex2) {
+                        ex2.printStackTrace();
+                    } catch (IOException ex2) {
+                        ex2.printStackTrace();
+                    } catch (XmlPullParserException ex2) {
+                        ex2.printStackTrace();
+                    } finally {
+                        File fallback = InstalledFileLocator.getDefault().locate("maven2/fallback_pom.xml", null, false);
+                        try {
+                            project = getEmbedder().readProject(fallback);
+                        } catch (Exception x) {
+                            // oh well..
+                        }
                     }
                 }
-//            } catch (MavenEmbedderException exc) {
-//                exc.printStackTrace();
             }
             if (project == null && oldProject != null) {
                 project = oldProject;
@@ -207,7 +218,7 @@ public final class NbMavenProject implements Project {
     }
     
     void doBaseProblemChecks() {
-        problemReporter.doBaseProblemChecks(this, project);
+        problemReporter.doBaseProblemChecks(project);
     }
     
     public String getDisplayName() {
@@ -247,7 +258,7 @@ public final class NbMavenProject implements Project {
         }
         return icon;
     }
-        
+    
     public String getName() {
         String toReturn = null;
         MavenProject pr = getOriginalMavenProject();
@@ -259,7 +270,7 @@ public final class NbMavenProject implements Project {
         }
         return toReturn;
     }
-
+    
     /**
      * TODO move elsewhere?
      */
@@ -293,7 +304,7 @@ public final class NbMavenProject implements Project {
     }
     
     public String getArtifactRelativeRepositoryPath(Artifact artifact) {
-//        embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
+        //        embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
         String toRet = getEmbedder().getLocalRepository().pathOf(artifact);
         //TODO this is more or less a hack..
         // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
@@ -309,114 +320,114 @@ public final class NbMavenProject implements Project {
         throw new IllegalStateException("Cannot start the embedder.");
     }
     
-   
-
-   public URI[] getGeneratedSourceRoots() {
-       //TODO more or less a hack.. should be better supported by embedder itself.
-       URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources");
-       File fil = new File(uri);
-       if (fil.exists()) {
-           File[] fils = fil.listFiles(new FileFilter() {
-               public boolean accept(File pathname) {
-                   return pathname.isDirectory();
-               }
-           });
-           URI[] uris = new URI[fils.length];
-           for (int i = 0; i < fils.length; i++) {
-               uris[i] = fils[i].toURI();
-           }
-           return uris;
-       }
-       return new URI[0];
-   }
-
-   public URI getWebAppDirectory() {
-       //TODO hack, should be supported somehow to read this..
-       String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
-                                              "maven-war-plugin", 
-                                              "warSourceDirectory", 
-                                              "war");
-       prop = prop == null ? "src/main/webapp" : prop;
-       URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
-       File fil = new File(uri);
-       return fil.toURI();
+    
+    
+    public URI[] getGeneratedSourceRoots() {
+        //TODO more or less a hack.. should be better supported by embedder itself.
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources");
+        File fil = new File(uri);
+        if (fil.exists()) {
+            File[] fils = fil.listFiles(new FileFilter() {
+                public boolean accept(File pathname) {
+                    return pathname.isDirectory();
+                }
+            });
+            URI[] uris = new URI[fils.length];
+            for (int i = 0; i < fils.length; i++) {
+                uris[i] = fils[i].toURI();
+            }
+            return uris;
+        }
+        return new URI[0];
     }
-   
-   public URI getEarAppDirectory() {
-       //TODO hack, should be supported somehow to read this..
-       String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
-                                              "maven-ear-plugin", 
-                                              "earSourceDirectory", 
-                                              "ear");
-       prop = prop == null ? "src/main/application" : prop;
-       URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
-       File fil = new File(uri);
-       return fil.toURI();
+    
+    public URI getWebAppDirectory() {
+        //TODO hack, should be supported somehow to read this..
+        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
+                "maven-war-plugin",
+                "warSourceDirectory",
+                "war");
+        prop = prop == null ? "src/main/webapp" : prop;
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
+        File fil = new File(uri);
+        return fil.toURI();
     }
-   
-   public URI[] getResources(boolean test) {
-       List toRet = new ArrayList();
-       List res = test ? getOriginalMavenProject().getTestResources() : getOriginalMavenProject().getResources();
-       Iterator it = res.iterator();
-       while (it.hasNext()) {
-           Resource elem = (Resource) it.next();
-           URI uri = FileUtilities.getDirURI(getProjectDirectory(), elem.getDirectory());
-           if (new File(uri).exists()) {
-               toRet.add(uri);
-           }
-       }
-       return (URI[])toRet.toArray(new URI[toRet.size()]);
-   }
-   
-   
-   
-   public File[] getOtherRoots(boolean test) {
-       URI uri = FileUtilities.getDirURI(getProjectDirectory(), test ? "src/test" : "src/main");
-       File fil = new File(uri);
-       if (fil.exists()) {
-           return fil.listFiles(new FilenameFilter() {
-               public boolean accept(File dir, String name) {
-                   //TODO most probably a performance bottleneck of sorts..
-                   FileObject fo = FileUtil.toFileObject(new File(dir, name));
-                   return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo);
-               }
-           });
-       }
-       return new File[0];
-   }
-   
-   /**
-    * gets a set of profile ids accessible to the project, is rather slow as it reloads the files all over again.
-    */
-   
-   
-   public Set getAvailableProfiles() {
-       Set profiles = new HashSet();
-       profiles.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().getProfilesAsMap().keySet());
-       Iterator it = getOriginalMavenProject().getModel().getProfiles().iterator();
-       while (it.hasNext()) {
-           Profile prof = (Profile)it.next();
-           profiles.add(prof.getId());
-       }
-       it = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
-       while (it.hasNext()) {
-           org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile)it.next();
-           profiles.add(prof.getId());
-       }
-       return profiles;
-   }
-   
+    
+    public URI getEarAppDirectory() {
+        //TODO hack, should be supported somehow to read this..
+        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
+                "maven-ear-plugin",
+                "earSourceDirectory",
+                "ear");
+        prop = prop == null ? "src/main/application" : prop;
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
+        File fil = new File(uri);
+        return fil.toURI();
+    }
+    
+    public URI[] getResources(boolean test) {
+        List toRet = new ArrayList();
+        List res = test ? getOriginalMavenProject().getTestResources() : getOriginalMavenProject().getResources();
+        Iterator it = res.iterator();
+        while (it.hasNext()) {
+            Resource elem = (Resource) it.next();
+            URI uri = FileUtilities.getDirURI(getProjectDirectory(), elem.getDirectory());
+            if (new File(uri).exists()) {
+                toRet.add(uri);
+            }
+        }
+        return (URI[])toRet.toArray(new URI[toRet.size()]);
+    }
+    
+    
+    
+    public File[] getOtherRoots(boolean test) {
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), test ? "src/test" : "src/main");
+        File fil = new File(uri);
+        if (fil.exists()) {
+            return fil.listFiles(new FilenameFilter() {
+                public boolean accept(File dir, String name) {
+                    //TODO most probably a performance bottleneck of sorts..
+                    FileObject fo = FileUtil.toFileObject(new File(dir, name));
+                    return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo);
+                }
+            });
+        }
+        return new File[0];
+    }
+    
+    /**
+     * gets a set of profile ids accessible to the project, is rather slow as it reloads the files all over again.
+     */
+    
+    
+    public Set getAvailableProfiles() {
+        Set profiles = new HashSet();
+        profiles.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().getProfilesAsMap().keySet());
+        Iterator it = getOriginalMavenProject().getModel().getProfiles().iterator();
+        while (it.hasNext()) {
+            Profile prof = (Profile)it.next();
+            profiles.add(prof.getId());
+        }
+        it = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
+        while (it.hasNext()) {
+            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile)it.next();
+            profiles.add(prof.getId());
+        }
+        return profiles;
+    }
+    
     public synchronized Lookup getLookup() {
         if (lookup == null) {
             lookup = createBasicLookup();
             // now in the creation of extended lookup by MavenLookupProvider
-            // it can happen that someone is using the project's lookup to find some 
+            // it can happen that someone is using the project's lookup to find some
             // basic stuff. That would create a cycle..
             // obviously one cannot call getlookup() in the basic lookup setup..
             lookup = createCompleteLookups();
         }
         return lookup;
-    }   
+    }
     private Lookup createBasicLookup() {
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
@@ -430,11 +441,11 @@ public final class NbMavenProject implements Project {
             new ClassPathProviderImpl(this),
             new MavenSharabilityQueryImpl(this),
             new MavenTestForSourceImpl(this),
-////            new MavenFileBuiltQueryImpl(this),
+            ////            new MavenFileBuiltQueryImpl(this),
             new SubprojectProviderImpl(this),
-            new MavenSourcesImpl(this), 
+            new MavenSourcesImpl(this),
             new RecommendedTemplatesImpl(this),
-            new MavenSourceLevelImpl(this), 
+            new MavenSourceLevelImpl(this),
             new JarPackagingRunChecker(),
             problemReporter,
             new UserActionGoalProvider(this)
@@ -462,7 +473,7 @@ public final class NbMavenProject implements Project {
         return look;
     }
     
-   // Private innerclasses ----------------------------------------------------
+    // Private innerclasses ----------------------------------------------------
     
     private final class Info implements ProjectInformation {
         
@@ -492,7 +503,7 @@ public final class NbMavenProject implements Project {
                 if (grId != null && artId != null) {
                     toReturn = grId + ":" + artId;
                 } else {
-                    toReturn = "Maven project at " + NbMavenProject.this.getProjectDirectory().getPath(); 
+                    toReturn = "Maven project at " + NbMavenProject.this.getProjectDirectory().getPath();
                 }
             }
             toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")";
@@ -515,8 +526,8 @@ public final class NbMavenProject implements Project {
             pcs.removePropertyChangeListener(listener);
         }
         
-    }    
- 
+    }
+    
     // needs to be binary sorted;
     private static final String[] DEFAULT_FILES = new String[] {
         "pom.xml"
@@ -524,26 +535,25 @@ public final class NbMavenProject implements Project {
     private static final String[] USER_DIR_FILES = new String[] {
         "settings.xml"
     };
-
-//MEVENIDE-448 seems to help against creation of duplicate project instances
-// no idea why, it's supposed to be ProjectManager job.. maybe related to 
-// maven impl of SubProjectProvider or FileOwnerQueryImplementation
-//TODO need to investigate why it's like that..
+    
+    //MEVENIDE-448 seems to help against creation of duplicate project instances
+    // no idea why, it's supposed to be ProjectManager job.. maybe related to
+    // maven impl of SubProjectProvider or FileOwnerQueryImplementation
+    //TODO need to investigate why it's like that..
     public int hashCode() {
         return getProjectDirectory().hashCode() * 13;
     }
-
+    
     public boolean equals(Object obj) {
         if (obj instanceof Project) {
             return getProjectDirectory().equals(((Project)obj).getProjectDirectory());
         }
         return false;
     }
-
     
     private class Updater implements FileChangeListener {
         
-//        private FileObject fileObject;
+        //        private FileObject fileObject;
         private boolean isFolder;
         private String[] filesToWatch;
         Updater(boolean folder) {
@@ -597,11 +607,11 @@ public final class NbMavenProject implements Project {
     
     /**
      * TODO maybe make somehow extensible from other modules?
-    */
+     */
     
-    private static final class RecommendedTemplatesImpl 
-                        implements RecommendedTemplates, PrivilegedTemplates {
-    
+    private static final class RecommendedTemplatesImpl
+            implements RecommendedTemplates, PrivilegedTemplates {
+        
         
         private static final String[] EAR_TYPES = new String[] {
             "XML",            //NOPMD      // NOI18N
@@ -635,14 +645,14 @@ public final class NbMavenProject implements Project {
             
             "Templates/J2EE/Session", // NOI18N
             "Templates/J2EE/Entity",  // NOI18N
-            "Templates/J2EE/RelatedCMP", // NOI18N                    
+            "Templates/J2EE/RelatedCMP", // NOI18N
             "Templates/J2EE/Message", //NOI18N
             "Templates/WebServices/WebService", // NOI18N
             "Templates/WebServices/MessageHandler", // NOI18N
             "Templates/Classes/Class.java" // NOI18N
         };
-
-        private static final String[] WEB_TYPES = new String[] { 
+        
+        private static final String[] WEB_TYPES = new String[] {
             "java-classes",         // NOI18N
             "java-main-class",      // NOI18N
             "java-beans",           // NOI18N
@@ -655,11 +665,11 @@ public final class NbMavenProject implements Project {
             "web-services",         // NOI18N
             "web-service-clients",  // NOI18N
             "wsdl",                 // NOI18N
-            "j2ee-types",           // NOI18N                    
+            "j2ee-types",           // NOI18N
             "junit",                // NOI18N
             "simple-files"          // NOI18N
         };
-
+        
         private static final String[] WEB_PRIVILEGED_NAMES = new String[] {
             "Templates/JSP_Servlet/JSP.jsp",            // NOI18N
             "Templates/JSP_Servlet/Html.html",          // NOI18N
@@ -667,11 +677,11 @@ public final class NbMavenProject implements Project {
             "Templates/Classes/Class.java",             // NOI18N
             "Templates/Classes/Package",                // NOI18N
             "Templates/WebServices/WebService",         // NOI18N
-            "Templates/WebServices/WebServiceClient",   // NOI18N                    
+            "Templates/WebServices/WebServiceClient",   // NOI18N
             "Templates/Other/Folder",                   // NOI18N
         };
         
-        private static final String[] JAR_APPLICATION_TYPES = new String[] { 
+        private static final String[] JAR_APPLICATION_TYPES = new String[] {
             "java-classes",         // NOI18N
             "java-main-class",      // NOI18N
             "java-forms",           // NOI18N
@@ -696,10 +706,10 @@ public final class NbMavenProject implements Project {
             "Templates/Classes/Interface.java", // NOI18N
             "Templates/GUIForms/JPanel.java", // NOI18N
             "Templates/GUIForms/JFrame.java", // NOI18N
-            "Templates/WebServices/WebServiceClient"   // NOI18N                    
+            "Templates/WebServices/WebServiceClient"   // NOI18N
         };
         
-        private static final String[] POM_APPLICATION_TYPES = new String[] { 
+        private static final String[] POM_APPLICATION_TYPES = new String[] {
             "XML",                  // NOI18N
             "simple-files"          // NOI18N
         };
@@ -714,7 +724,7 @@ public final class NbMavenProject implements Project {
             "java-main-class",      // NOI18N
             "java-forms",           // NOI18N
             "java-beans",           // NOI18N
-            "j2ee-types",           // NOI18N                    
+            "j2ee-types",           // NOI18N
             "gui-java-application", // NOI18N
             "java-beans",           // NOI18N
             "oasis-XML-catalogs",   // NOI18N
@@ -765,8 +775,8 @@ public final class NbMavenProject implements Project {
             }
             
             // If packaging is unknown, any type of sources is recommanded.
-            //TODO in future we probably can try to guess based on what plugins are 
-            // defined in the lifecycle. 
+            //TODO in future we probably can try to guess based on what plugins are
+            // defined in the lifecycle.
             return ALL_TYPES;
         }
         
@@ -792,7 +802,7 @@ public final class NbMavenProject implements Project {
             return JAR_PRIVILEGED_NAMES;
         }
         
-    }   
+    }
     
     private class RefreshAction extends AbstractAction {
         public RefreshAction() {

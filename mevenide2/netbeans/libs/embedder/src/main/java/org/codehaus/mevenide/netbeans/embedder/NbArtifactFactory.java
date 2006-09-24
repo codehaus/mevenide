@@ -18,10 +18,12 @@
 package org.codehaus.mevenide.netbeans.embedder;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.factory.DefaultArtifactFactory;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
@@ -44,55 +46,79 @@ public class NbArtifactFactory implements ArtifactFactory, Contextualizable {
     }
 
     public Artifact createArtifact(String groupId, String artifactId, String version, String scope, String type) {
-        return createFromOriginal(original.createArtifact(groupId, artifactId, version, scope, type));
+        return createFromOriginal(original.createArtifact(checkValue(groupId), checkValue(artifactId), checkVersion(version), scope, type));
     }
 
     public Artifact createArtifactWithClassifier(String groupId, String artifactId, String version, String type, String classifier) {
-        return createFromOriginal(original.createArtifactWithClassifier(groupId, artifactId, version, type, classifier));
+        return createFromOriginal(original.createArtifactWithClassifier(checkValue(groupId), checkValue(artifactId), checkVersion(version), type, classifier));
     }
 
     public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope) {
-        return createFromOriginal(original.createDependencyArtifact(groupId, artifactId, versionRange, type, classifier, scope));
+        return createFromOriginal(original.createDependencyArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange), type, classifier, scope));
     }
 
     public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, boolean optional) {
-        return createFromOriginal(original.createDependencyArtifact(groupId, artifactId, versionRange, type, classifier, scope, optional));
+        return createFromOriginal(original.createDependencyArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange), type, classifier, scope, optional));
     }
 
     public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope) {
-        return createFromOriginal(original.createDependencyArtifact(groupId, artifactId, versionRange, type, classifier, scope, inheritedScope));
+        return createFromOriginal(original.createDependencyArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange), type, classifier, scope, inheritedScope));
     }
 
     public Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional) {
-        return createFromOriginal(original.createDependencyArtifact(groupId, artifactId, versionRange, type, classifier, scope, inheritedScope, optional));
+        return createFromOriginal(original.createDependencyArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange), type, classifier, scope, inheritedScope, optional));
     }
 
     public Artifact createBuildArtifact(String groupId, String artifactId, String version, String packaging) {
-        return createFromOriginal(original.createBuildArtifact(groupId, artifactId, version, packaging));
+        return createFromOriginal(original.createBuildArtifact(checkValue(groupId), checkValue(artifactId), checkVersion(version), packaging));
     }
 
     public Artifact createProjectArtifact(String groupId, String artifactId, String version) {
-        return createFromOriginal(original.createProjectArtifact(groupId, artifactId, version));
+        return createFromOriginal(original.createProjectArtifact(checkValue(groupId), checkValue(artifactId), checkVersion(version)));
     }
 
     public Artifact createParentArtifact(String groupId, String artifactId, String version) {
-        return createFromOriginal(original.createParentArtifact(groupId, artifactId, version));
+        return createFromOriginal(original.createParentArtifact(checkValue(groupId), checkValue(artifactId), checkVersion(version)));
     }
 
     public Artifact createPluginArtifact(String groupId, String artifactId, VersionRange versionRange) {
-        return createFromOriginal(original.createPluginArtifact(groupId, artifactId, versionRange));
+        return createFromOriginal(original.createPluginArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange)));
     }
 
     public Artifact createProjectArtifact(String groupId, String artifactId, String version, String scope) {
-        return createFromOriginal(original.createProjectArtifact(groupId, artifactId, version, scope));
+        return createFromOriginal(original.createProjectArtifact(checkValue(groupId), checkValue(artifactId), checkVersion(version), scope));
     }
 
     public Artifact createExtensionArtifact(String groupId, String artifactId, VersionRange versionRange) {
-        return createFromOriginal(original.createExtensionArtifact(groupId, artifactId, versionRange));
+        return createFromOriginal(original.createExtensionArtifact(checkValue(groupId), checkValue(artifactId), checkVersionRange(versionRange)));
     }
 
     public void contextualize(Context context) throws ContextException {
         setField("artifactHandlerManager", artifactHandlerManager);
+    }
+    
+    // this method bypasses DefaultArtifact's validateIdentity() method
+    private String checkValue(String in) {
+        if (in == null || in.trim().length() == 0) {
+            return "error";
+        }
+        return in;
+    }
+    
+    // this method bypasses DefaultArtifact's validateIdentity() method
+    private String checkVersion(String value) {
+        if (value == null) {
+            return "unknown";
+        }
+        return value;
+    }
+    
+    // this method bypasses DefaultArtifact's validateIdentity() method
+    private VersionRange checkVersionRange(VersionRange range) {
+        if (range == null) {
+            return VersionRange.createFromVersion("unknown");
+        }
+        return range;
     }
     
     private Artifact createFromOriginal(Artifact orig) {
@@ -117,6 +143,5 @@ public class NbArtifactFactory implements ArtifactFactory, Contextualizable {
             ex.printStackTrace();
         }
     }
-
     
 }

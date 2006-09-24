@@ -33,8 +33,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.codehaus.mevenide.netbeans.ProblemReport;
-import org.codehaus.mevenide.netbeans.ProblemReporter;
+import org.codehaus.mevenide.netbeans.problems.ProblemReport;
+import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 
 /**
  *
