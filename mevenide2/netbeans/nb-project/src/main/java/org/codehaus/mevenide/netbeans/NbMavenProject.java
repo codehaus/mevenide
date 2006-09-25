@@ -45,14 +45,13 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Resource;
+import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
-import org.codehaus.mevenide.netbeans.embedder.NbModelValidator;
-import org.codehaus.mevenide.netbeans.embedder.NbModelValidator.Delegate;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
@@ -147,8 +146,6 @@ public final class NbMavenProject implements Project {
      */
     public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
-            NbModelValidator.Delegate validator = new NbModelValidator.Delegate();
-            NbModelValidator.setDelegateValidator(validator);
             try {
                 try {
                     project = getEmbedder().readProjectWithDependencies(projectFile);
@@ -167,17 +164,16 @@ public final class NbMavenProject implements Project {
                     //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 }
+            } catch (InvalidProjectModelException exc) {
+                //validation failure..
+                problemReporter.addValidatorReports(exc);
             } catch (ProjectBuildingException ex) {
                 //igonre if the problem is in the project validation codebase, we handle that later..
-                if (validator.getValidationResult() == null || validator.getValidationResult().getMessageCount() == 0) {
-                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
                             "Cannot load project properly",
-                            ex.getMessage(), null);
-                    problemReporter.addReport(report);
-                }
+                        ex.getMessage(), null);
+                problemReporter.addReport(report);
             } finally {
-                problemReporter.addValidatorReports(validator);
-                NbModelValidator.clearModelValidator();
                 if (project == null) {
                     try {
                         project = new MavenProject(getEmbedder().readModel(projectFile));

@@ -115,8 +115,6 @@ public class EmbedderFactory {
                         desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                         desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbWagonManager");
                         
-                        desc = plexusContainer.getComponentDescriptor(ModelValidator.ROLE);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbModelValidator");
                     } catch (ComponentRepositoryException ex) {
                         ex.printStackTrace();
                     }
