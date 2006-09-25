@@ -125,10 +125,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private int getType(FileObject file) {
         if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots()) ||
-            isChildOf(file, project.getGeneratedSourceRoots())) {
+            isChildOf(file, project.getGeneratedSourceRoots()) ||
+            isChildOf(file, project.getResources(false))) {
             return TYPE_SRC;
         }
-        if (isChildOf(file, project.getOriginalMavenProject().getTestCompileSourceRoots())) {
+        if (isChildOf(file, project.getOriginalMavenProject().getTestCompileSourceRoots()) ||
+            isChildOf(file, project.getResources(true))) {
             return TYPE_TESTSRC;
         }
 //        // cactus is also a test source..
