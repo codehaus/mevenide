@@ -35,12 +35,12 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
 import org.codehaus.mevenide.netbeans.*;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
-import org.codehaus.mevenide.netbeans.embedder.NbModelValidator;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -116,15 +116,15 @@ public final class ProblemReporter implements Comparator {
         
     }
     
-    public void addValidatorReports(NbModelValidator.Delegate validator) {
-        ModelValidationResult res = validator.getValidationResult();
+    public void addValidatorReports(InvalidProjectModelException exc) {
+        ModelValidationResult res = exc.getValidationResult();
         if (res == null) {
             return;
         }
-        List messages = validator.getValidationResult().getMessages();
+        List messages = exc.getValidationResult().getMessages();
         if (messages != null && messages.size() > 0) {
             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                    "Project model validation failed.", validator.getValidationResult().render("\n"), new OpenPomAction(nbproject));
+                    "Project model validation failed.", exc.getValidationResult().render("\n"), new OpenPomAction(nbproject));
             addReport(report);
         }
     }
@@ -207,16 +207,34 @@ public final class ProblemReporter implements Comparator {
             }
         }
     }
+
     
     static class OpenPomAction extends AbstractAction {
         
         private NbMavenProject project;
-        OpenPomAction(NbMavenProject proj) {
+        private String filepath;
+        
+        private OpenPomAction() {
             putValue(Action.NAME, "Open pom.xml");
+        }
+        
+        OpenPomAction(NbMavenProject proj) {
+            this();
             project = proj;
         }
+        
+        OpenPomAction(NbMavenProject project, String filePath) {
+            this(project);
+            filepath = filePath;
+        }
+        
         public void actionPerformed(ActionEvent e) {
-            FileObject fo = FileUtil.toFileObject(project.getPOMFile());
+            FileObject fo = null;
+            if (filepath != null) {
+                fo = FileUtil.toFileObject(FileUtil.normalizeFile(new File(filepath)));
+            } else {
+                fo = FileUtil.toFileObject(project.getPOMFile());
+            }
             if (fo != null) {
                 try {
                     DataObject dobj = DataObject.find(fo);
