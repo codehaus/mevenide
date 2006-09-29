@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -132,8 +133,17 @@ class MavenProjectChildren extends Children.Keys {
             list.add(KEY_SITE);
         }
         list.add(KEY_DEPENDENCIES);
-        list.add(KEY_TEST_DEPENDENCIES);
-        list.add(KEY_RUNTIME_DEPENDENCIES);
+        MavenProject orig = project.getOriginalMavenProject();
+        List runtimes = new ArrayList(orig.getRuntimeArtifacts());
+        runtimes.removeAll(orig.getCompileArtifacts());
+        if (runtimes.size() > 0) {
+            list.add(KEY_RUNTIME_DEPENDENCIES);
+        }
+        List tests = new ArrayList(orig.getTestArtifacts());
+        tests.removeAll(orig.getRuntimeArtifacts());
+        if (tests.size() > 0) {
+            list.add(KEY_TEST_DEPENDENCIES);
+        }
         if ("pom".equals(project.getOriginalMavenProject().getPackaging())) {
             list.add(KEY_MODULES);
         }
