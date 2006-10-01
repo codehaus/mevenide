@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
     <artifactId>autoupdate</artifactId>
     <packaging>nbm</packaging>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
     <name>Netbeans Maven2 autoupdate site</name>
     <description>Autoupdate server for Mevenide 2.0, the support for Maven2.</description>
     <dependencies>
