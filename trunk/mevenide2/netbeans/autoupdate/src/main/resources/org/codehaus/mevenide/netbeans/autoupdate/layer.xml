@@ -5,6 +5,8 @@
   <folder name="Services">
     <folder name="AutoupdateType">
       <attr name="autoupdate_xml_type_2.settings/" boolvalue="true" />
+      <!-- hide stuff from extraupdatecenters -->
+      <file name="maven2.settings_hidden"/>
       <file name="mevenide2_server.settings" url="mevenide_autoupdate.xml">
         <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.autoupdate.Bundle"/>
         <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/autoupdate/updateAction.gif"/-->
