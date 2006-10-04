@@ -20,6 +20,9 @@ package org.codehaus.mevenide.netbeans.nodes;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -30,15 +33,23 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
+import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
+import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -91,8 +102,8 @@ class DependenciesNode extends AbstractNode {
     
     public Action[] getActions(boolean context) {
         return new Action[] { 
-//                              new AddDependencyAction(),
-//                              null,
+                              new AddDependencyAction(),
+                              null,
 //                              new DownloadAction(),
                               new ResolveDepsAction(),
                               new DownloadJavadocSrcAction(),
@@ -159,67 +170,56 @@ class DependenciesNode extends AbstractNode {
         }
     }
     
-//    private class AddDependencyAction extends AbstractAction {
-//        public AddDependencyAction() {
-//            putValue(Action.NAME, "Add Dependency...");
-//        }
-//        public void actionPerformed(ActionEvent event) {
-//            DependencyPOMChange change = DependencyPOMChange.createChangeInstance(null, 
-//                    OriginChange.LOCATION_POM, new HashMap(), 
-//                    LocationComboFactory.createPOMChange(project, false), false);
-//            DependencyEditor ed = new DependencyEditor(project, change);
-//            DialogDescriptor dd = new DialogDescriptor(ed, "Add Dependency");
-//            Object ret = DialogDisplayer.getDefault().notify(dd);
-//            if (ret == NotifyDescriptor.OK_OPTION) {
-//                HashMap props = ed.getProperties();
-//                MavenSettings.getDefault().checkDependencyProperties(props.keySet());
-//                change.setNewValues(ed.getValues(), props);
-//                IContentProvider pr = change.getChangedContent();
-//                String artifactId = pr.getValue("artifactId");
-//                String groupId = pr.getValue("groupId");
-//                String type = pr.getValue("type");
-//                List changes = new ArrayList();//DependencyNode.createChangeInstancesList(project, new HashMap());
-//                changes.addAll(((DependenciesChildren)getChildren()).deps);
-//                Iterator it = changes.iterator();
-//                boolean reused = false;
-//                while (it.hasNext()) {
-//                    DependencyPOMChange element = (DependencyPOMChange)it.next();
-//                    IContentProvider prov = element.getChangedContent();
-//                    String depArtifactId = prov.getValue("artifactId");
-//                    String depGroupId = prov.getValue("groupId");
-//                    String depId = prov.getValue("id");
-//                    String depType = prov.getValue("type");
-//                    if (((   artifactId.equals(depArtifactId)  
-//                          && groupId.equals(depGroupId))
-//                       || (   artifactId.equals(groupId)  
-//                           && artifactId.equals(depId))
-//                        ) && (type.equals(depType) || (type.equals("jar") && depType == null))) 
-//                    {
-//                        NotifyDescriptor d2 = new NotifyDescriptor.Confirmation(
-//                                "The project already has a dependency with '" + groupId + ":" + artifactId + "' id. Replace it?",
-//                                "Dependency conflict", 
-//                                NotifyDescriptor.YES_NO_OPTION,
-//                                NotifyDescriptor.QUESTION_MESSAGE);
-//                        Object ret2 = DialogDisplayer.getDefault().notify(d2);
-//                        if (ret2 != NotifyDescriptor.YES_OPTION) {
-//                            return;
-//                        }
-//                        element.setNewValues(ed.getValues(), props);
-//                        reused = true;
-//                    }
-//                }
-//                if (!reused) {
-//                    changes.add(change);
-//                }
-//                try {
-//                    NbProjectWriter writer = new NbProjectWriter(project);
-//                    writer.applyChanges(changes);
-//                } catch (Exception exc) {
-//                    ErrorManager.getDefault().notify(ErrorManager.USER, exc);
-//                }
-//            }
-//        }
-//    }
+    private class AddDependencyAction extends AbstractAction {
+        public AddDependencyAction() {
+            putValue(Action.NAME, "Add Dependency...");
+        }
+        public void actionPerformed(ActionEvent event) {
+            AddDependencyPanel pnl = new AddDependencyPanel();
+        
+            DialogDescriptor dd = new DialogDescriptor(pnl, "Add Dependency");
+            dd.setClosingOptions(new Object[] {
+                pnl.getOkButton(),
+                DialogDescriptor.CLOSED_OPTION
+            });
+            dd.setOptions(new Object[] {
+                pnl.getOkButton(),
+                DialogDescriptor.CLOSED_OPTION
+            });
+            Object ret = DialogDisplayer.getDefault().notify(dd);
+            if (pnl.getOkButton() == ret) {
+                MavenXpp3Reader reader = new MavenXpp3Reader();
+                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+                Model model = null;
+                InputStreamReader read = null;
+                try {
+                    InputStream in = fo.getInputStream();
+                    //TODO encoding..
+                    read = new InputStreamReader(in, "UTF-8");
+                    model = reader.read(read, false);
+                } catch (Exception oi) {
+                    oi.printStackTrace();
+                } finally {
+                    IOUtil.close(read);   
+                }
+                if (model != null) {
+                    System.out.println("writing model..");
+                    Dependency dep = new Dependency();
+                    dep.setArtifactId(pnl.getArtifactId());
+                    dep.setGroupId(pnl.getGroupId());
+                    dep.setVersion(pnl.getVersion());
+                    dep.setScope(pnl.getScope());
+                    model.addDependency(dep);
+                    try {
+                        WriterUtils.writePomModel(fo, model);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+    }
+    
 //    
 //    private class DownloadAction extends AbstractAction {
 //
