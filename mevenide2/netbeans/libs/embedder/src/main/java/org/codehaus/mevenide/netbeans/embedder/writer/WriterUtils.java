@@ -1,10 +1,18 @@
-/*
- * WriterUtils.java
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Created on February 21, 2006, 4:37 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.embedder.writer;
@@ -25,13 +33,14 @@ import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 
 /**
  *
- * @author mkleint
+ * @author mkleint@codehaus.org
  */
 public class WriterUtils {
     
@@ -44,7 +53,7 @@ public class WriterUtils {
     public static void writePomModel(FileObject pom, Model newModel) throws IOException {
         InputStream inStr = null;
         FileLock lock = null;
-        OutputStream outStr = null;
+        OutputStreamWriter outStr = null;
         try {
             inStr = pom.getInputStream();
             SAXBuilder builder = new SAXBuilder();
@@ -54,8 +63,9 @@ public class WriterUtils {
             lock = pom.lock();
             //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
             MavenJDOMWriter writer = new MavenJDOMWriter();
-            outStr = pom.getOutputStream(lock);
-            writer.write(newModel, doc, outStr);
+            outStr = new OutputStreamWriter(pom.getOutputStream(lock), "UTF-8");
+            Format form = Format.getRawFormat().setEncoding("UTF-8");
+            writer.write(newModel, doc, outStr, form);
             outStr.close();
             outStr = null;
         } catch (JDOMException exc){
@@ -76,8 +86,7 @@ public class WriterUtils {
             public void run() throws IOException {
                 InputStream inStr = null;
                 FileLock lock = null;
-                OutputStream outStr = null;
-                OutputStreamWriter wr = null;
+                OutputStreamWriter outStr = null;
                 try {
                     Document doc;
                     FileObject fo = pomDir.getFileObject("profiles.xml");
@@ -95,9 +104,10 @@ public class WriterUtils {
                     lock = fo.lock();
                     //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
                     ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
-                    outStr = fo.getOutputStream(lock);
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), "UTF-8");
+                    Format form = Format.getRawFormat().setEncoding("UTF-8");
                     //            writer.write(wr, profilesRoot);
-                    writer.write(profilesRoot, doc, outStr);
+                    writer.write(profilesRoot, doc, outStr, form);
                     //            outStr.close();
                     //            outStr = null;
                 } catch (JDOMException exc){
@@ -105,7 +115,7 @@ public class WriterUtils {
                     throw (IOException) new IOException("Cannot parse the profiles.xml by JDOM.").initCause(exc);
                 } finally {
                     IOUtil.close(inStr);
-                    IOUtil.close(wr);
+                    IOUtil.close(outStr);
                     if (lock != null) {
                         lock.releaseLock();
                     }
@@ -120,7 +130,7 @@ public class WriterUtils {
             public void run() throws IOException {
                 InputStream inStr = null;
                 FileLock lock = null;
-                OutputStream outStr = null;
+                OutputStreamWriter outStr = null;
                 
                 try {
                     Document doc;
@@ -140,8 +150,9 @@ public class WriterUtils {
                     lock = fo.lock();
                     
                     SettingsJDOMWriter writer = new SettingsJDOMWriter();
-                    outStr = fo.getOutputStream(lock);
-                    writer.write(settings, doc, outStr);
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), "UTF-8");
+                    Format form = Format.getRawFormat().setEncoding("UTF-8");
+                    writer.write(settings, doc, outStr, form);
                 } catch (JDOMException exc){
                     exc.printStackTrace();
                     throw (IOException) new IOException("Cannot parse the settings.xml by JDOM.").initCause(exc);
