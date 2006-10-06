@@ -63,8 +63,9 @@ public class WriterUtils {
             lock = pom.lock();
             //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
             MavenJDOMWriter writer = new MavenJDOMWriter();
-            outStr = new OutputStreamWriter(pom.getOutputStream(lock), "UTF-8");
-            Format form = Format.getRawFormat().setEncoding("UTF-8");
+            String encoding = newModel.getModelEncoding() != null ? newModel.getModelEncoding() : "UTF-8";
+            outStr = new OutputStreamWriter(pom.getOutputStream(lock), encoding);
+            Format form = Format.getRawFormat().setEncoding(encoding);
             writer.write(newModel, doc, outStr, form);
             outStr.close();
             outStr = null;
@@ -104,8 +105,9 @@ public class WriterUtils {
                     lock = fo.lock();
                     //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
                     ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
-                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), "UTF-8");
-                    Format form = Format.getRawFormat().setEncoding("UTF-8");
+                    String encoding = profilesRoot.getModelEncoding() != null ? profilesRoot.getModelEncoding() : "UTF-8";
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
+                    Format form = Format.getRawFormat().setEncoding(encoding);
                     //            writer.write(wr, profilesRoot);
                     writer.write(profilesRoot, doc, outStr, form);
                     //            outStr.close();
@@ -150,8 +152,9 @@ public class WriterUtils {
                     lock = fo.lock();
                     
                     SettingsJDOMWriter writer = new SettingsJDOMWriter();
-                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), "UTF-8");
-                    Format form = Format.getRawFormat().setEncoding("UTF-8");
+                    String encoding = settings.getModelEncoding() != null ? settings.getModelEncoding() : "UTF-8";
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
+                    Format form = Format.getRawFormat().setEncoding(encoding);
                     writer.write(settings, doc, outStr, form);
                 } catch (JDOMException exc){
                     exc.printStackTrace();
