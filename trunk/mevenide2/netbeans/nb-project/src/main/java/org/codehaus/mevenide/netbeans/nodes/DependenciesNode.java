@@ -180,11 +180,11 @@ class DependenciesNode extends AbstractNode {
             DialogDescriptor dd = new DialogDescriptor(pnl, "Add Dependency");
             dd.setClosingOptions(new Object[] {
                 pnl.getOkButton(),
-                DialogDescriptor.CLOSED_OPTION
+                DialogDescriptor.CANCEL_OPTION
             });
             dd.setOptions(new Object[] {
                 pnl.getOkButton(),
-                DialogDescriptor.CLOSED_OPTION
+                DialogDescriptor.CANCEL_OPTION
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (pnl.getOkButton() == ret) {
@@ -203,7 +203,6 @@ class DependenciesNode extends AbstractNode {
                     IOUtil.close(read);   
                 }
                 if (model != null) {
-                    System.out.println("writing model..");
                     Dependency dep = new Dependency();
                     dep.setArtifactId(pnl.getArtifactId());
                     dep.setGroupId(pnl.getGroupId());
