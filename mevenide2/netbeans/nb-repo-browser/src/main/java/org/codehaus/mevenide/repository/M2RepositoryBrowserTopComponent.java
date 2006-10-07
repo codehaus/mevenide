@@ -22,7 +22,12 @@ import java.awt.Insets;
 import java.io.Serializable;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
+import org.apache.maven.archiva.indexer.RepositoryIndexException;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
 import org.openide.DialogDescriptor;
@@ -34,6 +39,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import org.openide.windows.WindowManager;
@@ -76,12 +82,18 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         pnlExplorer.add(btv, BorderLayout.CENTER);
         btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/find.gif")));
         btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.gif")));
+        btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refresh.png")));
         btnSearch.setText(null);
-        btnSearch.setToolTipText("Search in Maven repository");
         btnBack.setText(null);
-        btnBack.setToolTipText("Return back to browse mode");
+        btnIndex.setText(null);
         btnBack.setMargin(new Insets(1,1,1,1));
         btnSearch.setMargin(new Insets(1,1,1,1));
+        btnIndex.setMargin(new Insets(1,1,1,1));
+        LocalRepositoryIndexer.getInstance().addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                checkMode();
+            }
+        });
     }
     
     public ExplorerManager getExplorerManager() {
@@ -100,6 +112,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         jToolBar1 = new javax.swing.JToolBar();
         btnBack = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
+        btnIndex = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -108,7 +121,8 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 
         jToolBar1.setFloatable(false);
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnBack, "Back to browse");
+        btnBack.setText("Back to browse");
+        btnBack.setToolTipText("Return back to browse mode");
         btnBack.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnBackActionPerformed(evt);
@@ -116,7 +130,8 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         });
         jToolBar1.add(btnBack);
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnSearch, "Search");
+        btnSearch.setText("Search");
+        btnSearch.setToolTipText("Search Local Repository");
         btnSearch.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSearchActionPerformed(evt);
@@ -124,8 +139,38 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         });
         jToolBar1.add(btnSearch);
 
+        btnIndex.setText("Index");
+        btnIndex.setToolTipText("Reindex local repository");
+        btnIndex.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnIndexActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnIndex);
+
         add(jToolBar1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndexActionPerformed
+        btnIndex.setEnabled(false);
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
+                try {
+                    ind.updateIndex();
+                } catch (RepositoryIndexException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            btnIndex.setEnabled(true);
+                        }
+                    });
+                }
+            }
+        });
+
+    }//GEN-LAST:event_btnIndexActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
             searchMode = false;
@@ -146,6 +191,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnIndex;
     private javax.swing.JButton btnSearch;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnlExplorer;

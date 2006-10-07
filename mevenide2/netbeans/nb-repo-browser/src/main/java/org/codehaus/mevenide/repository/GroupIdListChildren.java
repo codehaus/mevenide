@@ -22,38 +22,52 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 
 /**
  *
  * @author mkleint
  */
 public class GroupIdListChildren extends Children.Keys {
-
+    
+    private static final Object LOADING = new Object();
     private List keys;
     
     /** Creates a new instance of GroupIdListChildren */
     public GroupIdListChildren() {
     }
-
+    
     protected Node[] createNodes(Object key) {
+        if (LOADING == key) {
+            AbstractNode nd = new AbstractNode(Children.LEAF);
+            nd.setName("Loading");
+            nd.setDisplayName("Loading Index...");
+            return new Node[] { nd };
+        }
         String groupId = (String)key;
         return new Node[] { new GroupIdNode(groupId) };
     }
     
     protected void addNotify() {
         super.addNotify();
-        try {
-            keys = new ArrayList(CustomQueries.enumerateGroupIds());
-            setKeys(keys);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            keys = new ArrayList();
-            setKeys(Collections.EMPTY_LIST);
-        }
+        setKeys(Collections.singletonList(LOADING));
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                try {
+                    keys = new ArrayList(CustomQueries.enumerateGroupIds());
+                    setKeys(keys);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    keys = new ArrayList();
+                    setKeys(Collections.EMPTY_LIST);
+                }
+            }
+        });
     }
-
+    
     protected void removeNotify() {
         super.removeNotify();
         keys = Collections.EMPTY_LIST;
