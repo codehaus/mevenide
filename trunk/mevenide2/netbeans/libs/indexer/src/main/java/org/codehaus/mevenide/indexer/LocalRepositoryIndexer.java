@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.WhitespaceAnalyzer;
 import org.apache.lucene.index.Term;
@@ -56,6 +58,7 @@ import org.codehaus.plexus.embed.Embedder;
 import org.codehaus.plexus.embed.EmbedderException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.Cancellable;
 
 /**
  * a wrapper for things dealing with local repository search..
@@ -74,6 +77,8 @@ public class LocalRepositoryIndexer {
     private ArtifactRepository repository;
     private RepositoryIndexRecordFactory recordFactory;
     private ArtifactFactory artifactFactory;
+    private List listeners = new ArrayList();
+    private boolean doCancel = false;
     
     private static final String[] ALL_FIELDS = new String[] {
         StandardIndexRecordFields.ARTIFACTID,
@@ -113,6 +118,26 @@ public class LocalRepositoryIndexer {
         return instance;
     }
     
+    public synchronized void addChangeListener(ChangeListener list) {
+        listeners.add(list);
+    }
+    
+    public synchronized void removeChangeListener(ChangeListener list) {
+        listeners.remove(list);
+    }
+    
+    private void fireStateChanged() {
+       List lists = new ArrayList();
+       synchronized (this) {
+           lists.addAll(listeners);
+       }
+       Iterator it = lists.iterator();
+       while (it.hasNext()) {
+           ChangeListener elem = (ChangeListener) it.next();
+           elem.stateChanged(new ChangeEvent(this));
+       }
+    }
+    
     private RepositoryArtifactIndex createIndex() throws RepositoryIndexException {
         File basedir = new File(repository.getBasedir());
         if (!basedir.exists()) {
@@ -123,7 +148,12 @@ public class LocalRepositoryIndexer {
     }
     
     public void updateIndex() throws RepositoryIndexException {
-        ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository indexing");
+        ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository indexing", new Cancellable() {
+            public boolean cancel() {
+                doCancel = true;
+                return true;
+            }
+        });
         try {
             handle.start();
             handle.progress("Discovering artifacts...");
@@ -142,6 +172,7 @@ public class LocalRepositoryIndexer {
         } finally {
             handle.finish();
         }
+        fireStateChanged();
     }
     
     private void doUpdate(RepositoryArtifactIndex index, ProgressHandle handle, Collection artifacts) throws RepositoryIndexException {
@@ -158,6 +189,10 @@ public class LocalRepositoryIndexer {
                 handle.progress("Indexing...");
                 index.indexRecords(records);
                 records.clear();
+            }
+            if (doCancel) {
+                doCancel = false;
+                return;
             }
         }
         handle.progress("Indexing...");
