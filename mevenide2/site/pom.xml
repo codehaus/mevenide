@@ -40,16 +40,27 @@
               <version>1.0-SNAPSHOT</version>
               <executions>
                   <execution>
-                      <id>site</id>
+                      <id>analytics</id>
                       <phase>site</phase>
                       <goals>
                           <goal>inject</goal>
                       </goals>
+                      <configuration>
+                          <id>UA-128621-1</id>
+                      </configuration>
+                  </execution>
+                  <execution>
+                      <id>paypal</id>
+                      <phase>site</phase>
+                      <goals>
+                          <goal>postprocess</goal>
+                      </goals>
+                      <configuration>
+                          <token>DONATE_PAYPAL_PLACEHOLDER</token>
+                          <replaceContent>${basedir}/src/resources/paypal.snippet</replaceContent>
+                      </configuration>
                   </execution>
               </executions>
-              <configuration>
-                  <id>UA-128621-1</id>
-              </configuration>
           </plugin>
       </plugins>
   </build>
