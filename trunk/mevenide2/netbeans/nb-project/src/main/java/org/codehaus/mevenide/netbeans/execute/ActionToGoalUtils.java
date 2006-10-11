@@ -99,14 +99,20 @@ public final class ActionToGoalUtils {
         UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         na = user.getMappingForAction(action, project);
         if (na == null) {
-            Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-            Iterator it = res.allInstances().iterator();
-            while (it.hasNext()) {
-                AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
-                na = add.getMappingForAction(action, project);
-                if (na != null) {
-                    break;
-                }
+            na = getDefaultMapping(action, project);
+        }
+        return na;
+    }
+    
+    public static NetbeansActionMapping getDefaultMapping(String action, NbMavenProject project) {
+        NetbeansActionMapping na = null;
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
+        Iterator it = res.allInstances().iterator();
+        while (it.hasNext()) {
+            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+            na = add.getMappingForAction(action, project);
+            if (na != null) {
+                break;
             }
         }
         return na;

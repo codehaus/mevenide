@@ -211,6 +211,7 @@
                         <goals>
                             <goal>java</goal>
                             <goal>xpp3-reader</goal>
+                            <goal>jdom-writer</goal>
                             <goal>xpp3-writer</goal>
                         </goals>
                     </execution>

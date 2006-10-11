@@ -126,9 +126,16 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 null,
                 null);
         
+        ProjectCustomizer.Category mapp = ProjectCustomizer.Category.create(
+                M2CustomizerPanelProvider.PANEL_MAPPING, 
+                "Action Mappings", 
+                null,
+                null);
+        
         categories = new ProjectCustomizer.Category[] {
             basic,
-            run
+            run, 
+            mapp
         };
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());

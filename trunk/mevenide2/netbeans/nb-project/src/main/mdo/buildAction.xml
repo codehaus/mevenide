@@ -32,7 +32,7 @@
                     <name>actionName</name>
                     <version>1.0.0+</version>
                     <type>String</type>
-                    <!--required>true</required-->
+                    <required>true</required>
                 </field>
                 <field>
                     <name>displayName</name>
