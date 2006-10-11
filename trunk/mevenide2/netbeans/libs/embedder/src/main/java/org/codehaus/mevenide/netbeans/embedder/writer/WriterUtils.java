@@ -61,7 +61,6 @@ public class WriterUtils {
             inStr.close();
             inStr = null;
             lock = pom.lock();
-            //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
             MavenJDOMWriter writer = new MavenJDOMWriter();
             String encoding = newModel.getModelEncoding() != null ? newModel.getModelEncoding() : "UTF-8";
             outStr = new OutputStreamWriter(pom.getOutputStream(lock), encoding);
@@ -103,15 +102,11 @@ public class WriterUtils {
                         inStr = null;
                     }
                     lock = fo.lock();
-                    //TODO make it the careful MavenMkleintWriter after it's capable to write everything..
                     ProfilesJDOMWriter writer = new ProfilesJDOMWriter();
                     String encoding = profilesRoot.getModelEncoding() != null ? profilesRoot.getModelEncoding() : "UTF-8";
                     outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
                     Format form = Format.getRawFormat().setEncoding(encoding);
-                    //            writer.write(wr, profilesRoot);
                     writer.write(profilesRoot, doc, outStr, form);
-                    //            outStr.close();
-                    //            outStr = null;
                 } catch (JDOMException exc){
                     exc.printStackTrace();
                     throw (IOException) new IOException("Cannot parse the profiles.xml by JDOM.").initCause(exc);

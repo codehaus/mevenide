@@ -42,6 +42,7 @@ public final class ModelRunConfig extends BeanRunConfig {
         setProperties(model.getProperties());
         setGoals(model.getGoals());
         setExecutionDirectory(FileUtil.toFile(proj.getProjectDirectory()));
+        setRecursive(mod.isRecursive());
     }
     
 }
