@@ -19,12 +19,27 @@
 package org.codehaus.mevenide.netbeans;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.jdom.NetbeansBuildActionJDOMWriter;
+import org.codehaus.plexus.util.IOUtil;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.JDOMFactory;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
@@ -217,5 +232,48 @@ public final class FileUtilities {
        return getDirURI(FileUtil.toFile(root), path);
    }
     
+   
+   public static void writeNbActionsModel(final FileObject pomDir, final ActionToGoalMapping mapping) throws IOException {
+        pomDir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
+            public void run() throws IOException {
+                JDOMFactory factory = new DefaultJDOMFactory();
+                
+                InputStream inStr = null;
+                FileLock lock = null;
+                OutputStreamWriter outStr = null;
+                try {
+                    Document doc;
+                    FileObject fo = pomDir.getFileObject(UserActionGoalProvider.FILENAME);
+                    if (fo == null) {
+                        fo = pomDir.createData(UserActionGoalProvider.FILENAME);
+                        doc = factory.document(factory.element("actions"));
+                    } else {
+                        //TODO..
+                        inStr = fo.getInputStream();
+                        SAXBuilder builder = new SAXBuilder();
+                        doc = builder.build(inStr);
+                        inStr.close();
+                        inStr = null;
+                    }
+                    lock = fo.lock();
+                    NetbeansBuildActionJDOMWriter writer = new NetbeansBuildActionJDOMWriter();
+                    String encoding = mapping.getModelEncoding() != null ? mapping.getModelEncoding() : "UTF-8";
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
+                    Format form = Format.getRawFormat().setEncoding(encoding);
+                    writer.write(mapping, doc, outStr, form);
+                } catch (JDOMException exc){
+                    throw (IOException) new IOException("Cannot parse the nbactions.xml by JDOM.").initCause(exc);
+                } finally {
+                    IOUtil.close(inStr);
+                    IOUtil.close(outStr);
+                    if (lock != null) {
+                        lock.releaseLock();
+                    }
+                    
+                }
+            }
+        });
+    }
+   
     
 }

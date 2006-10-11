@@ -35,13 +35,16 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.jdom.NetbeansBuildActionJDOMWriter;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
+import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.ProjectUtils;
@@ -184,30 +187,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
 //        
 //    }
     
-    private void writeNbActions(FileObject projectDir, ActionToGoalMapping actionToGoalMapping) throws IOException {
-        NetbeansBuildActionXpp3Writer wr = new NetbeansBuildActionXpp3Writer();
-        FileObject fo = projectDir.getFileObject(UserActionGoalProvider.FILENAME);
-        if (actionToGoalMapping.getActions().size() == 0) {
-            if (fo != null) {
-                fo.delete();
-            }
-            return;
-        }
-        if (fo == null) {
-            fo = projectDir.createData(UserActionGoalProvider.FILENAME);
-        }
-        FileLock lock = fo.lock();
-        Writer writer = null;
-        try {
-            writer = new OutputStreamWriter(fo.getOutputStream(lock));
-            wr.write(writer, actionToGoalMapping);
-        } finally {
-            IOUtil.close(writer);
-            lock.releaseLock();
-        }
-    }
-    
-    
     private class PanelProvider implements ProjectCustomizer.CategoryComponentProvider {
         
         private JPanel EMPTY_PANEL = new JPanel();
@@ -261,7 +240,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                         public void run() throws IOException {
                             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
                             WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
-                            writeNbActions(project.getProjectDirectory(), handle.getActionMappings());
+                            FileUtilities.writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
                         }
                     });
                     handle.fireActionPerformed();

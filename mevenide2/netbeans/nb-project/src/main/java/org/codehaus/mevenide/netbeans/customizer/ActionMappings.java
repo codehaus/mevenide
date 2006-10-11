@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.customizer;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
@@ -48,6 +50,8 @@ public class ActionMappings extends javax.swing.JPanel {
     private GoalsListener goalsListener;
     private ProfilesListener profilesListener;
     private PropertiesListener propertiesListener;
+    private TestListener testListener;
+    private RecursiveListener recursiveListener;
     
     /** Creates new form ActionMappings */
     public ActionMappings(ModelHandle hand, NbMavenProject proj) {
@@ -71,6 +75,8 @@ public class ActionMappings extends javax.swing.JPanel {
         goalsListener = new GoalsListener();
         profilesListener = new ProfilesListener();
         propertiesListener = new PropertiesListener();
+        recursiveListener = new RecursiveListener();
+        testListener = new TestListener();
         FocusListener focus = new FocusListener() {
             public void focusGained(FocusEvent e) {
                 if (e.getComponent() == txtGoals) {
@@ -81,7 +87,9 @@ public class ActionMappings extends javax.swing.JPanel {
                 }
                 if (e.getComponent() == txtProperties) {
                     lblHint.setText("<html>A space-separated list of properties to set during execution in the form &lt;key&gt;=\"&lt;value&gt;\". " +
-                            "If value doesn't contain whitespace, \" can be omited.</html>");
+                            "If value doesn't contain whitespace, \" can be omited.<br>" +
+                            "" + 
+                            "</html>");
                 }
             }
             public void focusLost(FocusEvent e) {
@@ -245,17 +253,28 @@ public class ActionMappings extends javax.swing.JPanel {
                 txtGoals.setEditable(true);
                 txtProperties.setEditable(true);
                 txtProfiles.setEditable(true);
+                cbSkipTests.setEnabled(true);
+
                 txtGoals.getDocument().removeDocumentListener(goalsListener);
                 txtProfiles.getDocument().removeDocumentListener(profilesListener);
                 txtProperties.getDocument().removeDocumentListener(propertiesListener);
+                cbRecursively.removeActionListener(recursiveListener);
+                cbSkipTests.removeActionListener(testListener);
                 
                 txtGoals.setText(createSpaceSeparatedList(mapp.getGoals()));
                 txtProfiles.setText(createSpaceSeparatedList(mapp.getActivatedProfiles()));
                 txtProperties.setText(createPropertiesList(mapp.getProperties()));
+                if ("pom".equals(handle.getProject().getPackaging())) {
+                    cbRecursively.setEnabled(true);
+                    cbRecursively.setSelected(mapp.isRecursive());
+                }
+                cbSkipTests.setSelected(checkPropertiesList(mapp.getProperties()));
                 
                 txtGoals.getDocument().addDocumentListener(goalsListener);
                 txtProfiles.getDocument().addDocumentListener(profilesListener);
                 txtProperties.getDocument().addDocumentListener(propertiesListener);
+                cbRecursively.addActionListener(recursiveListener);
+                cbSkipTests.addActionListener(testListener);
                 updateColor(wr);
             } else {
                 clearFields();
@@ -336,6 +355,8 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProperties.setEditable(false);
         txtProfiles.setEditable(false);
         updateColor(null);
+        cbRecursively.setEnabled(false);
+        cbSkipTests.setEnabled(false);
     }
     
     private void updateColor(MappingWrapper wr) {
@@ -351,14 +372,32 @@ public class ActionMappings extends javax.swing.JPanel {
             Iterator it = properties.keySet().iterator();
             while (it.hasNext()) {
                 String elem = (String) it.next();
-                String val = properties.getProperty(elem);
-                if (val.indexOf(" ") > -1) {
-                    val = "\"" + val + "\"";
+                if (!"maven.test.skip".equals(elem)) {
+                    String val = properties.getProperty(elem);
+                    if (val.indexOf(" ") > -1) {
+                        val = "\"" + val + "\"";
+                    }
+                    str = str + elem + "=" + val + " ";
                 }
-                str = str + elem + "=" + val + " ";
             }
         }
         return str;
+    }
+
+    private boolean checkPropertiesList(Properties properties) {
+        boolean skip = false;
+        if (properties != null) {
+            Iterator it = properties.keySet().iterator();
+            while (it.hasNext()) {
+                String elem = (String) it.next();
+                if ("maven.test.skip".equals(elem)) {
+                    String val = properties.getProperty(elem);
+                    skip = Boolean.valueOf(val).booleanValue();
+                    break;
+                }
+            }
+        }
+        return skip;
     }
     
     
@@ -377,6 +416,25 @@ public class ActionMappings extends javax.swing.JPanel {
     private javax.swing.JTextField txtProfiles;
     private javax.swing.JTextField txtProperties;
     // End of variables declaration//GEN-END:variables
+
+        private void writeProperties(final NetbeansActionMapping mapp) {
+            String text = txtProperties.getText();
+            Splitter split = new Splitter(text);
+            String tok = split.nextPair();
+            Properties props = new Properties();
+            while (tok != null) {
+                String[] prp = StringUtils.split(tok, "=", 2);
+                if (prp.length == 2) {
+                    props.setProperty(prp[0], prp[1]);
+                }
+                tok = split.nextPair();
+            }
+            if (cbSkipTests.isSelected()) {
+                props.setProperty("maven.test.skip", "true");
+            }
+            mapp.setProperties(props);
+        }
+    
     
     private class MappingWrapper {
         private NetbeansActionMapping mapping;
@@ -497,22 +555,53 @@ public class ActionMappings extends javax.swing.JPanel {
         protected MappingWrapper doUpdate() {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
-                String text = txtProperties.getText();
                 NetbeansActionMapping mapp = wr.getMapping();
-                Splitter split = new Splitter(text);
-                String tok = split.nextPair();
-                Properties props = new Properties();
-                while (tok != null) {
-                    String[] prp = StringUtils.split(tok, "=", 2);
-                    if (prp.length == 2) {
-                        props.setProperty(prp[0], prp[1]);
-                    }
-                    tok = split.nextPair();
-                }
-                mapp.setProperties(props);
+                writeProperties(mapp);
             }
             return wr;
         }
+
+    }
+    
+    private class TestListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            MappingWrapper map = (MappingWrapper)lstMappings.getSelectedValue();
+            if (map != null) {
+                if (!map.isUserDefined()) {
+                    NetbeansActionMapping mapping = map.getMapping();
+                    if (mapping == null) {
+                        mapping = new NetbeansActionMapping();
+                        mapping.setActionName(map.getActionName());
+                    }
+                    handle.getActionMappings().addAction(mapping);
+                    map.setUserDefined(true);
+                    updateColor(map);
+                }
+                writeProperties(map.getMapping());
+            }
+        }
+        
+    }
+    
+    private class RecursiveListener implements ActionListener {
+        public void actionPerformed(ActionEvent e) {
+            MappingWrapper map = (MappingWrapper)lstMappings.getSelectedValue();
+            if (map != null) {
+                if (!map.isUserDefined()) {
+                    NetbeansActionMapping mapping = map.getMapping();
+                    if (mapping == null) {
+                        mapping = new NetbeansActionMapping();
+                        mapping.setActionName(map.getActionName());
+                    }
+                    
+                    handle.getActionMappings().addAction(mapping);
+                    map.setUserDefined(true);
+                    updateColor(map);
+                }
+                map.getMapping().setRecursive(cbRecursively.isSelected());
+            }
+        }
+        
     }
     
     private class Splitter {
