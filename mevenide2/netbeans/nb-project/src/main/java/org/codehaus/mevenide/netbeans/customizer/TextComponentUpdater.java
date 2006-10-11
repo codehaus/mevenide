@@ -31,8 +31,8 @@ import javax.swing.text.JTextComponent;
  * @author mkleint
  */
 public abstract class TextComponentUpdater implements DocumentListener, AncestorListener {
-    private static Color INHERITED = new Color(254, 255, 200);
-    private static Color DEFAULT = UIManager.getColor("TextField.background");
+    public static Color INHERITED = new Color(254, 255, 200);
+    public static Color DEFAULT = UIManager.getColor("TextField.background");
     
     private JTextComponent component;
     

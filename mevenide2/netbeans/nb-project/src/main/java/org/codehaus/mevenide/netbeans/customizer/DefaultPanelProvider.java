@@ -41,6 +41,9 @@ public class DefaultPanelProvider implements M2CustomizerPanelProvider {
                 return new RunJarPanel(handle, project);
             }
         }
+        if (M2CustomizerPanelProvider.PANEL_MAPPING.equals(category.getName())) {
+            return new ActionMappings(handle, project);
+        }
         return null;
     }
     

@@ -31,6 +31,8 @@ import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 public interface M2CustomizerPanelProvider {
     public static final String PANEL_RUN = "RUN";
     public static final String PANEL_BASIC = "BASIC";
+    public static final String PANEL_MAPPING = "MAPPING";
+    
     /**
      * Provide additional Lookup context for the given maven project.
      * @returns a Lookup instance or null.
