@@ -355,6 +355,10 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
         return false;
     }
 
+    //55 only..
+//    public void addCarModule(Car car) {
+//    }
+
     
     
     // inspired by netbeans' webmodule codebase, not really sure what is the point

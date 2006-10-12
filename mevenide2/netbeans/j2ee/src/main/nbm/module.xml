@@ -55,6 +55,9 @@
             <id>org.netbeans.api:org-netbeans-modules-java-project</id>
             <type>spec</type>
         </dependency>
+        <dependency>        
+          <id>org.netbeans.api:org-netbeans-modules-project-ant</id>
+        </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-dd</id>
             <type>spec</type>

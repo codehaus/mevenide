@@ -290,6 +290,11 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
         return false;
     }
 
+    //55 only..
+//    public MetadataUnit getMetadataUnit() {
+//        return null;
+//    }
+
     //TODO
     private class EjbChange implements EjbChangeDescriptor {
         public boolean ejbsChanged() {
