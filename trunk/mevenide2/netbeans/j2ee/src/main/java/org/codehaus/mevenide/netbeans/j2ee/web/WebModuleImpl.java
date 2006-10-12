@@ -22,10 +22,12 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
+import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
@@ -33,6 +35,7 @@ import org.netbeans.modules.schema2beans.BaseBean;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
+import org.netbeans.spi.project.support.ant.SourcesHelper;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.netbeans.api.project.SourceGroup;
@@ -223,6 +226,20 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     
     public void removeVersionListener(J2eeModule.VersionListener versionListener) {
         System.out.println("removing version listener");
+    }
+
+    //55 only..
+    //TODO this probably also adds test sources.. is that correct?
+    public FileObject[] getJavaSources() {
+        Sources srcs = ProjectUtils.getSources(project);
+        SourceGroup[] gr = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        List toRet = new ArrayList();
+        if (gr != null) {
+            for (int i = 0; i < gr.length; i++) {
+                toRet.add(gr[i].getRootFolder());
+            }
+        }
+        return (FileObject[])toRet.toArray(new FileObject[toRet.size()]);
     }
     
     
