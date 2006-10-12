@@ -22,7 +22,9 @@ import org.codehaus.mevenide.netbeans.AdditionalM2LookupProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
+import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
+import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
@@ -51,6 +53,7 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
         private InstanceContent content;
         private String lastType = "jar";
         private Object lastInstance = null;
+        private CopyOnSave copyOnSave;
         public Provider(NbMavenProject proj, InstanceContent cont) {
             super(cont);
             project = proj;
@@ -70,12 +73,27 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
             if (packaging == null) {
                 packaging = "jar";
             }
+            if (copyOnSave != null && !"war".equals(packaging)) {
+                try {
+                    copyOnSave.cleanup();
+                } catch (FileStateInvalidException ex) {
+                    ex.printStackTrace();
+                }
+                copyOnSave = null;
+            }
             if ("war".equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance != null) {
                     content.remove(lastInstance);
                 }
-                lastInstance = new WebModuleProviderImpl(project);
+                WebModuleProviderImpl prov = new WebModuleProviderImpl(project);
+                lastInstance = prov;
                 content.add(lastInstance);
+                copyOnSave = new CopyOnSave(project, prov);
+                try {
+                    copyOnSave.initialize();
+                } catch (FileStateInvalidException ex) {
+                    ex.printStackTrace();
+                }
             } else if ("ear".equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance != null) {
                     content.remove(lastInstance);
