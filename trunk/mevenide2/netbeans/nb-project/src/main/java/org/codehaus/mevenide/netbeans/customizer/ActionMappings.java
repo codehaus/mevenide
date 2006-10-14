@@ -23,6 +23,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,6 +57,9 @@ public class ActionMappings extends javax.swing.JPanel {
     /** Creates new form ActionMappings */
     public ActionMappings(ModelHandle hand, NbMavenProject proj) {
         initComponents();
+        btnAdd.setVisible(false);
+        btnRemove.setText("Reset");
+        
         project = proj;
         handle = hand;
         titles.put(ActionProvider.COMMAND_BUILD, "Build project");
@@ -99,6 +103,7 @@ public class ActionMappings extends javax.swing.JPanel {
         txtGoals.addFocusListener(focus);
         txtProfiles.addFocusListener(focus);
         txtProperties.addFocusListener(focus);
+        clearFields();
     }
     
     /** This method is called from within the constructor to
@@ -249,36 +254,32 @@ public class ActionMappings extends javax.swing.JPanel {
         } else {
             MappingWrapper wr = (MappingWrapper)obj;
             NetbeansActionMapping mapp = wr.getMapping();
-            if (mapp != null) {
-                txtGoals.setEditable(true);
-                txtProperties.setEditable(true);
-                txtProfiles.setEditable(true);
-                cbSkipTests.setEnabled(true);
-
-                txtGoals.getDocument().removeDocumentListener(goalsListener);
-                txtProfiles.getDocument().removeDocumentListener(profilesListener);
-                txtProperties.getDocument().removeDocumentListener(propertiesListener);
-                cbRecursively.removeActionListener(recursiveListener);
-                cbSkipTests.removeActionListener(testListener);
-                
-                txtGoals.setText(createSpaceSeparatedList(mapp.getGoals()));
-                txtProfiles.setText(createSpaceSeparatedList(mapp.getActivatedProfiles()));
-                txtProperties.setText(createPropertiesList(mapp.getProperties()));
-                if ("pom".equals(handle.getProject().getPackaging())) {
-                    cbRecursively.setEnabled(true);
-                    cbRecursively.setSelected(mapp.isRecursive());
-                }
-                cbSkipTests.setSelected(checkPropertiesList(mapp.getProperties()));
-                
-                txtGoals.getDocument().addDocumentListener(goalsListener);
-                txtProfiles.getDocument().addDocumentListener(profilesListener);
-                txtProperties.getDocument().addDocumentListener(propertiesListener);
-                cbRecursively.addActionListener(recursiveListener);
-                cbSkipTests.addActionListener(testListener);
-                updateColor(wr);
-            } else {
-                clearFields();
+            txtGoals.setEditable(true);
+            txtProperties.setEditable(true);
+            txtProfiles.setEditable(true);
+            cbSkipTests.setEnabled(true);
+            
+            txtGoals.getDocument().removeDocumentListener(goalsListener);
+            txtProfiles.getDocument().removeDocumentListener(profilesListener);
+            txtProperties.getDocument().removeDocumentListener(propertiesListener);
+            cbRecursively.removeActionListener(recursiveListener);
+            cbSkipTests.removeActionListener(testListener);
+            
+            txtGoals.setText(createSpaceSeparatedList(mapp != null ? mapp.getGoals() : Collections.EMPTY_LIST));
+            txtProfiles.setText(createSpaceSeparatedList(mapp != null ? mapp.getActivatedProfiles() : Collections.EMPTY_LIST));
+            txtProperties.setText(createPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
+            if ("pom".equals(handle.getProject().getPackaging())) {
+                cbRecursively.setEnabled(true);
+                cbRecursively.setSelected(mapp != null ? mapp.isRecursive() : true);
             }
+            cbSkipTests.setSelected(checkPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
+            
+            txtGoals.getDocument().addDocumentListener(goalsListener);
+            txtProfiles.getDocument().addDocumentListener(profilesListener);
+            txtProperties.getDocument().addDocumentListener(propertiesListener);
+            cbRecursively.addActionListener(recursiveListener);
+            cbSkipTests.addActionListener(testListener);
+            updateColor(wr);
         }
     }//GEN-LAST:event_lstMappingsValueChanged
     
@@ -505,6 +506,7 @@ public class ActionMappings extends javax.swing.JPanel {
                     if (mapping == null) {
                         mapping = new NetbeansActionMapping();
                         mapping.setActionName(map.getActionName());
+                        map.setMapping(mapping);
                     }
                     handle.getActionMappings().addAction(mapping);
                     map.setUserDefined(true);
