@@ -40,8 +40,9 @@ public class JavaOutputListenerProvider implements OutputProcessor {
     
     /** Creates a new instance of TestOutputListenerProvider */
     public JavaOutputListenerProvider(NbMavenProject proj) {
-		//[javac] required because of forked compilation
-        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)");
+        //[javac] required because of forked compilation
+        //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
+        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL);
         project = proj;
     }
     
