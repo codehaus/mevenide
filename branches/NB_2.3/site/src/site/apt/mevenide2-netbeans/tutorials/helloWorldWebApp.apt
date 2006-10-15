@@ -1,0 +1,61 @@
+Hello World Web Application
+
+  This simple tutorial will show you how to create a simple web application using mevenide2-netbeans. After the application will be created, we will run it using the Bundled Tomcat server launched by Netbeans IDE, and seen the result in your favourite browser.
+
+  For convenience reason, we use here the Bundled Tomcat Server provided by default in Netbeans, but, it is possible to use other web containers.
+
+* Prerequisite
+
+  * {{{http://www.netbeans.org}Netbeans5.0}} or later installed
+
+  * {{{../installation.html}Mevenide2.2}} for Netbeans installed
+
+* The tutorial
+
+  [[1]] Select "File > New Project" menu item
+
+  [[2]] Choose the project
+
+  Select "archetypes" and click "Next".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldCreateWizard1.png]
+
+  [[3]] Choose the archetypes
+
+  Select "Simple webapp project" and click "Next".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWebAppCreateWizard2.png]
+
+  [[4]] Enter basic fields
+
+  Enter a correct name for the project and click "Finish".
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWebAppCreateWizard3.png]
+
+  Yes, "helloWorldWebApp" can be an appropriate name for our web application.
+
+  [[5]] The project archetype is builded succesfully. And you can navigate to see the jsp source
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWebAppSource.png]
+
+  You can find the webapp structure in the "projects" tab.
+
+  [[6]] Rickt click on the project, select the "Run" menu item. That will launch the Bundled Tomcat Server and deploy the Webapp.
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWebAppMonitor.png]
+
+    Here you can use the HTTPMonitor, which helps to see the communication between the client browser and the Bundled Tomcat Server.
+
+  [[8]] You can watch the result in the browser:
+
+[../../images/mevenide2-netbeans/tutorials/helloWorldWebAppInMozilla.png]
+
+  [[9]] Now developments are finished, we want to generate a Web Archive (.war)
+
+  Rickt click on the project, select the "Build" menu item. It will generate in the target folder the war artifact, <<<helloWorldWebApp.war>>>
+
+
+* To conclude 
+
+  Is there a simpler manner to begin in web application development ? 
+
