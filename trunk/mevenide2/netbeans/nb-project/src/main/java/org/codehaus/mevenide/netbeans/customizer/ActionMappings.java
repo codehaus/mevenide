@@ -57,6 +57,7 @@ public class ActionMappings extends javax.swing.JPanel {
     /** Creates new form ActionMappings */
     public ActionMappings(ModelHandle hand, NbMavenProject proj) {
         initComponents();
+        //temporary
         btnAdd.setVisible(false);
         btnRemove.setText("Reset");
         
@@ -92,7 +93,13 @@ public class ActionMappings extends javax.swing.JPanel {
                 if (e.getComponent() == txtProperties) {
                     lblHint.setText("<html>A space-separated list of properties to set during execution in the form &lt;key&gt;=\"&lt;value&gt;\". " +
                             "If value doesn't contain whitespace, \" can be omited.<br>" +
-                            "" + 
+                            "Additional supported variables include (useful mainly for Run/Debug/Test Single) :" +
+                            "<ul>" +
+                            "<li><b>className</b> name of selected class eg. String</li>" +
+                            "<li><b>classNameWithExtension</b> name of selected class with extension, eg. String.java</li>" +
+                            "<li><b>packageClassName</b> name of selected class with package name, eg. java.lang.String</li>" +
+                            "<li><b>webpagePath</b> relative path of selected webpage document within src/main/webapp </li>" +
+                            "</ul>" + 
                             "</html>");
                 }
             }
