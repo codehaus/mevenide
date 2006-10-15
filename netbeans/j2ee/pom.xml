@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>1.4-SNAPSHOT</version>
+    <version>1.4</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>2.3-SNAPSHOT</version>
+    <version>2.3</version>
     <name>Netbeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
@@ -16,12 +16,12 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-mvn-embedder</artifactId>
-            <version>2.3-SNAPSHOT</version>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
-            <version>2.3-SNAPSHOT</version>
+            <version>2.3</version>
             <type>jar</type>
         </dependency>
         <dependency>
