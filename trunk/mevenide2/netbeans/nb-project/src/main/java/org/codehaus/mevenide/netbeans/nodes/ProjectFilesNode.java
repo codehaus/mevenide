@@ -211,7 +211,15 @@ public class ProjectFilesNode extends AbstractNode {
         
         public void actionPerformed(ActionEvent e) {
             try {
-                DataFolder folder = DataFolder.findFolder(project.getProjectDirectory());
+                File fil = MavenSettingsSingleton.getInstance().getM2UserDir();
+                if (!fil.exists()) {
+                    fil.mkdirs();
+                    FileObject fo = FileUtil.toFileObject(fil.getParentFile());
+                    if (fo != null) {
+                        fo.refresh();
+                    }
+                }
+                DataFolder folder = DataFolder.findFolder(FileUtil.toFileObject(fil));
                 // path to template...
                 FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml");
                 DataObject dobj = DataObject.find(temp);
