@@ -73,20 +73,21 @@ public class Archetype {
     }
     
     public int hashCode() {
-        return getGroupId().hashCode() + 10 * getArtifactId().hashCode() + 22 * getVersion().hashCode();
+        return getGroupId().trim().hashCode() + 13 * getArtifactId().trim().hashCode() + 23 * getVersion().trim().hashCode();
     }
     
     public boolean equals(Object obj) {
         Archetype ar1 = (Archetype)obj;
-        int gr = ar1.getGroupId().trim().compareTo(getGroupId().trim());
-        if (gr != 0) {
+        boolean gr = ar1.getGroupId().trim().equals(getGroupId().trim());
+        if (!gr) {
             return false;
         }
-        int ar = ar1.getArtifactId().trim().compareTo(getArtifactId().trim());
-        if (ar != 0) {
+        boolean ar = ar1.getArtifactId().trim().equals(getArtifactId().trim());
+        if (!ar) {
             return false;
         }
-        return ar1.getVersion().trim().equals(getVersion().trim());
+        boolean ver =  ar1.getVersion().trim().equals(getVersion().trim());
+        return ver;
     }
     
 }

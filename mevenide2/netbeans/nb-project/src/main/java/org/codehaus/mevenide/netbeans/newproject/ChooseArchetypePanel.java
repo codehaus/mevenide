@@ -192,29 +192,16 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     public void run() {
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(ArchetypeProvider.class));
         Iterator it = res.allInstances().iterator();
-        TreeSet archetypes = new TreeSet(
-        new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Archetype ar1 = (Archetype)o1;
-                Archetype ar2 = (Archetype)o2;
-                int gr = ar1.getGroupId().trim().compareTo(ar2.getGroupId().trim());
-                if (gr != 0) {
-                    return 1;
-                }
-                int ar = ar1.getArtifactId().trim().compareTo(ar2.getArtifactId().trim());
-                if (ar != 0) {
-                    return 1;
-                }
-                return (ar1.getVersion().trim().compareTo(ar2.getVersion().trim()) != 0 ?  1 : 0); 
-                
-            }
-            public boolean equals(Object obj) {
-                return false;
-            }
-        });
+        List archetypes = new ArrayList();
         while (it.hasNext()) {
             ArchetypeProvider provider = (ArchetypeProvider)it.next();
-            archetypes.addAll(provider.getArchetypes());
+            Iterator it2 = provider.getArchetypes().iterator();
+            while (it2.hasNext()) {
+                Object obj = it2.next();
+                if (!archetypes.contains(obj)) {
+                    archetypes.add(obj);
+                }
+            }
         }
         Childs childs = new Childs(archetypes);
         AbstractNode root = new AbstractNode(childs);
@@ -241,7 +228,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         Node[] nds = manager.getSelectedNodes();
         if (nds.length > 0) {
             Archetype arch = (Archetype)((AbstractNode)nds[0]).getValue("archetype");
-            taDescription.setText("Name: " + arch.getName() + 
+            taDescription.setText("Name: " + (arch.getName() != null ? arch.getName() : arch.getArtifactId()) + 
                                   "\nDescription: " + arch.getDescription() + 
                                   "\n\nGroupId: " + arch.getGroupId() + 
                                   "\nArtifactId: " + arch.getArtifactId() + 
@@ -252,8 +239,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
     
     private static class Childs extends Children.Keys {
-        private Set keys;
-        public Childs(Set keys) {
+        private List keys;
+        public Childs(List keys) {
             this.keys = keys;
         }
         public void addNotify() {
@@ -273,8 +260,9 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         public Node[] createNodes(Object key) {
             Archetype arch = (Archetype)key;
             AbstractNode nd = new AbstractNode(Children.LEAF);
-            nd.setName(arch.getName());
-            nd.setDisplayName(arch.getName());
+            String dn = arch.getName() == null ? arch.getArtifactId() : arch.getName();
+            nd.setName(dn);
+            nd.setDisplayName(dn);
             nd.setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif");
             nd.setValue("archetype", arch);
             return new Node[] { nd };
