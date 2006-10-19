@@ -36,6 +36,9 @@ import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.execution.ExecutorTask;
 import org.openide.util.Lookup;
 import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
@@ -60,6 +63,13 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     
     private HashMap processors;
     private OutputVisitor visitor;
+
+    private ProgressHandle handle;
+
+    private boolean doCancel = false;
+
+    private ExecutorTask task;
+    
     private Set currentProcessors;
     
     private ProgressTransferListener downloadProgress;
@@ -80,9 +90,10 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         stdOut = std;
     }
     
-    public OutputHandler(InputOutput io, NbMavenProject proj)    {
+    public OutputHandler(InputOutput io, NbMavenProject proj, ProgressHandle hand)    {
         this();
         inputOutput = io;
+        handle = hand;
         stdOut = inputOutput.getOut();
         stdErr = inputOutput.getErr();
         
@@ -165,6 +176,10 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
             // sections and compare to the list of getRegisteredOutputSequences fo each of the
             // processors in set..
             currentProcessors.removeAll(set);
+        }
+        if (doCancel) {
+            assert task != null;
+            task.stop();
         }
     }
     
@@ -369,6 +384,11 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
             out = new StreamBridge(stdOut);
         }
         return out;
+    }
+
+    void requestCancel(ExecutorTask task) {
+        doCancel = true;
+        this.task = task;
     }
     
     private class StreamBridge extends PrintStream {

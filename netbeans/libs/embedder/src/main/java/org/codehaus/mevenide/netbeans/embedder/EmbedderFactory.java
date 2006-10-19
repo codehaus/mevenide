@@ -86,6 +86,7 @@ public class EmbedderFactory {
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
             
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+            //TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
@@ -142,6 +143,7 @@ public class EmbedderFactory {
             ClassLoader ldr = Thread.currentThread().getContextClassLoader();
             
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+            //TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
@@ -201,6 +203,7 @@ public class EmbedderFactory {
         ClassLoader ldr = Thread.currentThread().getContextClassLoader();
         
         MavenEmbedRequest req = new DefaultMavenEmbedRequest();
+        //TODO remove explicit activation
         req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
         File userLoc = new File(System.getProperty("user.home"), ".m2");
         File userSettingsPath = new File(userLoc, "settings.xml");
