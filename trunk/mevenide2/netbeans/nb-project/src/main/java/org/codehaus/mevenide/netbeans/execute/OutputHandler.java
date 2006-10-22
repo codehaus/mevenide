@@ -280,7 +280,7 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         if (input == null) {
             return;
         }
-        String[] strs = input.split("\n");
+        String[] strs = input.split(System.getProperty("line.separator"));
         for (int i = 0; i < strs.length; i++) {
             processLine(strs[i], writer, levelText);
         }
@@ -293,15 +293,17 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
             OutputProcessor proc = (OutputProcessor)it.next();
             proc.processLine(input, visitor);
         }
-        String line = visitor.getLine() == null ? input : visitor.getLine();
-        if (visitor.getOutputListener() != null) {
-            try {
-                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant());
-            } catch (IOException ex) {
-                ex.printStackTrace();
+        if (!visitor.isLineSkipped()) {
+            String line = visitor.getLine() == null ? input : visitor.getLine();
+            if (visitor.getOutputListener() != null) {
+                try {
+                    writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant());
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else {
+                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line);
             }
-        } else {
-            writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line);
         }
     }
     
