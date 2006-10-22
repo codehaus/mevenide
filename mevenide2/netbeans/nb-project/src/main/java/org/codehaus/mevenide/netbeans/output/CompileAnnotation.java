@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
@@ -58,14 +57,12 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
         }
     }
     
-    private NbMavenProject project;
     private File clazzfile;
     private int lineNum;
     private String text;
     
-    public CompileAnnotation(NbMavenProject proj, String clazz, String line, String textAnn) {
+    public CompileAnnotation(String clazz, String line, String textAnn) {
         clazzfile = new File(clazz + ".java");
-        project = proj;
         text = textAnn;
         try {
             lineNum = Integer.parseInt(line);

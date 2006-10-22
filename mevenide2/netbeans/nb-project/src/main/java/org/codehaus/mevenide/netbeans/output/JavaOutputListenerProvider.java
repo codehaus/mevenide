@@ -52,7 +52,7 @@ public class JavaOutputListenerProvider implements OutputProcessor {
                 String clazz = match.group(1);
                 String lineNum = match.group(2);
                 String text = match.group(4);
-                visitor.setOutputListener(new CompileAnnotation(project, clazz, lineNum, 
+                visitor.setOutputListener(new CompileAnnotation(clazz, lineNum, 
                         text), text.indexOf("[deprecation]") < 0);
             }
     }
