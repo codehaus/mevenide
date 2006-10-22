@@ -51,10 +51,21 @@ public class TestOutputListenerProviderTest extends TestCase {
         assertNull(visitor.getOutputListener());
         assertEquals(provider.outputDir, "/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target/surefire-reports");
         visitor.resetVisitor();
+        
+        provider.processLine("Setting reports dir: /home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target2/surefire-reports", visitor);
+        assertNull(visitor.getOutputListener());
+        assertEquals(provider.outputDir, "/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/target2/surefire-reports");
+        visitor.resetVisitor();
+        
         provider.processLine("Running org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest", visitor);
         assertEquals(provider.runningTestClass, "org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest");
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
+        provider.processLine("[surefire] Running org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest", visitor);
+        assertEquals(provider.runningTestClass, "org.codehaus.mevenide.netbeans.output.JavaOutputListenerProviderTest");
+        assertNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        
         provider.processLine("Tests run: 1, Failures: 0, Errors: 0, Time elapsed: 0.038 sec", visitor);
         assertNull(visitor.getOutputListener());
         visitor.resetVisitor();
@@ -64,6 +75,22 @@ public class TestOutputListenerProviderTest extends TestCase {
         visitor.resetVisitor();
         provider.processLine("Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec <<< FAILURE!        ", visitor);
         assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        provider.processLine("Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec \r\r\t\n\r\n<<< FAILURE!        ", visitor);
+        assertNotNull(visitor.getOutputListener());
+        
+        //behaviour on windows...
+        visitor.resetVisitor();
+        provider.processLine("[surefire] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec", visitor);
+        assertNull(visitor.getOutputListener());
+        assertTrue(visitor.isLineSkipped());
+        visitor.resetVisitor();
+        provider.processLine(" <<< FAILURE !!", visitor);
+        assertNotNull(visitor.getOutputListener());
+        assertEquals(visitor.getLine(), "[surefire] Tests run: 1, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.057 sec <<< FAILURE !!");
+        assertFalse(visitor.isLineSkipped());
+        visitor.resetVisitor();
+        
         provider.sequenceFail("mojo-execute#surefire:test", visitor);
         
     }

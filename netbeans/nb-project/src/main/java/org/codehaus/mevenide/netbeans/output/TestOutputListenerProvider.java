@@ -26,8 +26,11 @@ import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
+import org.codehaus.mevenide.netbeans.execute.IOBridge;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.openide.ErrorManager;
 import org.openide.awt.StatusDisplayer;
 import org.openide.cookies.EditorCookie;
@@ -52,20 +55,25 @@ public class TestOutputListenerProvider implements OutputProcessor {
         "mojo-execute#surefire:test" //NOI18N
     };
     private Pattern failSeparatePattern;
-    private Pattern failInlinedPattern;
+    private Pattern failWindowsPattern1;
+    private Pattern failWindowsPattern2;
     private Pattern outDirPattern;
+    private Pattern outDirPattern2;
     private Pattern runningPattern;
     
     private NbMavenProject project;
     String outputDir;
     String runningTestClass;
+    private String delayedLine;
     
     /** Creates a new instance of TestOutputListenerProvider */
     public TestOutputListenerProvider(NbMavenProject proj) {
-        failSeparatePattern = Pattern.compile("Tests run.*[<]* FAILURE[!]*[\\s]*"); //NOI18N
-        failInlinedPattern = Pattern.compile(".*\\(.*\\).*[<]* FAILURE[!]*"); //NOI18N
-        runningPattern = Pattern.compile("Running (.*)"); //NOI18N
-        outDirPattern = Pattern.compile("Surefire report directory\\: (.*)"); //NOI18N
+        failSeparatePattern = Pattern.compile("(?:\\[surefire\\] )?Tests run.*[<]* FAILURE[!]*[\\s]*", Pattern.DOTALL); //NOI18N
+        failWindowsPattern1 = Pattern.compile("(?:\\[surefire\\] )?Tests run.*", Pattern.DOTALL); //NOI18N
+        failWindowsPattern2 = Pattern.compile(".*[<]* FAILURE [!]*.*", Pattern.DOTALL); //NOI18N
+        runningPattern = Pattern.compile("(?:\\[surefire\\] )?Running (.*)", Pattern.DOTALL); //NOI18N
+        outDirPattern = Pattern.compile("Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
+        outDirPattern2 = Pattern.compile("Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N
         project = proj;
     }
     
@@ -74,23 +82,43 @@ public class TestOutputListenerProvider implements OutputProcessor {
     }
     
     public void processLine(String line, OutputVisitor visitor) {
-        if (outputDir == null) {
-            Matcher match = outDirPattern.matcher(line);
+        if (delayedLine != null) {
+            Matcher match = failWindowsPattern2.matcher(line);
             if (match.matches()) {
-                outputDir = match.group(1);
+                visitor.setOutputListener(new TestOutputListener(runningTestClass, outputDir), true);
+                visitor.setLine(delayedLine + line);
+                delayedLine = null;
                 return;
             }
+            delayedLine = null;
         }
-        Matcher match = runningPattern.matcher(line);
+        Matcher match = outDirPattern.matcher(line);
+        if (match.matches()) {
+            outputDir = match.group(1);
+            return;
+        }
+        match = outDirPattern2.matcher(line);
+        if (match.matches()) {
+            outputDir = match.group(1);
+            return;
+        }
+        match = runningPattern.matcher(line);
         if (match.matches()) {
             runningTestClass = match.group(1);
             return;
         }
-        
         match = failSeparatePattern.matcher(line);
         if (match.matches()) {
-            visitor.setOutputListener(new TestOutputListener(project, runningTestClass, outputDir), true);
+            visitor.setOutputListener(new TestOutputListener(runningTestClass, outputDir), true);
+            return;
         }
+        match = failWindowsPattern1.matcher(line);
+        if (match.matches()) {
+            //we should not get here but possibly can on windows..
+            visitor.skipLine();
+            delayedLine = line;
+        }
+        
     }
     
     public String[] getRegisteredOutputSequences() {
@@ -107,12 +135,10 @@ public class TestOutputListenerProvider implements OutputProcessor {
     }
     
     private static class TestOutputListener implements OutputListener {
-        private NbMavenProject project;
         private String testname;
         private String outputDir;
-        public TestOutputListener(NbMavenProject proj, String test, String outDir) {
+        public TestOutputListener(String test, String outDir) {
             testname = test;
-            project = proj;
             outputDir = outDir;
         }
         /** Called when a line is selected.
@@ -125,10 +151,6 @@ public class TestOutputListenerProvider implements OutputProcessor {
          * @param ev the event describing the line
          */
         public void outputLineAction(OutputEvent ev) {
-            File testDir = new File(project.getOriginalMavenProject().getBuild().getTestSourceDirectory());
-            String replace = testname.replace('.', '/');
-            File testFile = new File(testDir, replace + ".java"); //NOI18N
-            FileObject fo = FileUtil.toFileObject(testFile);
             FileObject outDir;
             if (outputDir != null) {
                 outDir = FileUtil.toFileObject(new File(outputDir));
@@ -138,13 +160,22 @@ public class TestOutputListenerProvider implements OutputProcessor {
             }
             outDir.refresh();
             FileObject report = outDir.getFileObject(testname + ".txt");
-            if (report != null) {
-                String nm = testname.lastIndexOf('.') > -1 
-                        ? testname.substring(testname.lastIndexOf('.')) 
-                        : testname;
-                openLog(report, nm, fo);
-            } else {
-                //TODO how to report..
+            Project prj = FileOwnerQuery.getOwner(outDir);
+            if (prj != null) {
+                NbMavenProject nbprj = (NbMavenProject)prj.getLookup().lookup(NbMavenProject.class);
+                File testDir = new File(nbprj.getOriginalMavenProject().getBuild().getTestSourceDirectory());
+                String replace = testname.replace('.', File.separatorChar);
+                File testFile = new File(testDir, replace + ".java"); //NOI18N
+                FileObject fo = FileUtil.toFileObject(testFile);
+
+                if (report != null) {
+                    String nm = testname.lastIndexOf('.') > -1 
+                            ? testname.substring(testname.lastIndexOf('.')) 
+                            : testname;
+                    openLog(report, nm, fo);
+                } else {
+                    //TODO how to report..
+                }
             }
         }
         
