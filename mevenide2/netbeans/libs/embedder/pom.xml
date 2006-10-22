@@ -44,7 +44,7 @@
         <pluginRepository>
             <id>codehaus.snapshots</id>
             <name>repository to get a modello plugin snapshop</name>
-            <url>http://snapshots.repository.codehaus.org</url>
+                <url>http://snapshots.repository.codehaus.org</url>
         </pluginRepository>
     </pluginRepositories>
     <build>
@@ -56,7 +56,7 @@
             <plugin>
                 <groupId>org.codehaus.modello</groupId>
                 <artifactId>modello-maven-plugin</artifactId>
-                <version>1.0-alpha-12-20061004.185924-1</version>
+                <version>1.0-alpha-12-20061022.181312-2</version>
                 <executions>
                     <execution>
                         <id>model</id>
