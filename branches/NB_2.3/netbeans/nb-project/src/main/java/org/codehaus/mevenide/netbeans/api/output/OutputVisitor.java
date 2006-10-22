@@ -30,6 +30,7 @@ public final class OutputVisitor {
     private Action successAction;
     private boolean important;
     private String line;
+    private boolean skipLine = false;
     
     /**
      * property for success Action. Holds question text.
@@ -54,6 +55,7 @@ public final class OutputVisitor {
         successAction = null;
         important = false;
         line = null;
+        skipLine = false;
     }
     
 
@@ -110,6 +112,12 @@ public final class OutputVisitor {
         this.line = line;
     }
 
+    public void skipLine() {
+        skipLine = true;
+    }
     
+    public boolean isLineSkipped() {
+        return skipLine;
+    }
     
 }
