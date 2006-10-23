@@ -8,7 +8,7 @@ Installation
 
 * Install using the zip file
 
-    [[1]] download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.2.zip}release 2.2 zip}}. It contains multiple NBM files (netbeans module file).
+    [[1]] download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.3.zip}release 2.3 zip}}. It contains multiple NBM files (netbeans module file).
 
     [[2]] Select the Tools/Update Center menu item. In the appearing dialog, select the "Install Manually downloaded Modules" checkbox. 
 
