@@ -96,7 +96,7 @@ subcomponent <<mevenide2-netbeans>>.
  
   * Download javadoc and sources for projects dependencies
 
-  * Remove/exclude dependencies
+  * Add/Remove/Exclude dependencies
 
     Remove a provided project dependency 
 

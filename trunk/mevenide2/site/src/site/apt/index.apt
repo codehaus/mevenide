@@ -2,25 +2,39 @@ Introduction
 
     Mevenide2-Netbeans is a Netbeans plugin which integrate all the maven2 project management possibilities into Netbeans.
 
-* Version 2.2 released
+* Version 2.3 released
 
-    It is the first stable release of Mevenide2 for Netbeans. 
+    It is the second stable release of Mevenide2 for Netbeans. 
 
-    * Some features have been added :
+    * Features that were added :
 
-      [[1]] Create new projects from archetypes (Standard and Web Application, Mojo plugin)
+      [[1]] Improved, more reliable project loading, reports problems now.
 
-      [[2]] Hyperlinking in POMs (Project Object Model)
+      [[2]] IDE Action-Maven goal mappings now editable from project customizer
 
-      [[3]] Manually installing dependency artifacts, their javadocs/sources.
+      [[3]] Local repository indexing added, one can 
 
-      [[4]] Dependency removal/transitive dependency exclusion from project view.
+            * browse 
+
+            * search
+
+            * add dependency
+
+            * vastly improved completion in pom.xml
+
+            * any existing project archetypes get listed
+
+      [[4]] IDE Action-Maven goal mappings now editable from project customizer
+ 
+      [[5]] Webapp hot deploy, changed jsp files get deployed live.
+      
+      [[6]] Can stop, rerun build, failed tests hyperlinked form output window.
 
     * Bugs fixed for previous version, implemented features : {{{http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&mode=hide&sorter/order=ASC&sorter/field=priority&pid=10480&fixfor=12561}List of issues}}
 
 * Download
 
-    * Download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.2.zip}latest version}} in zip format.
+    * Download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.3.zip}latest version}} in zip format.
 
     * Folow the {{{mevenide2-netbeans/installation.html}Installation}} instructions.
     
