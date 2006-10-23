@@ -10,9 +10,7 @@ Introduction
 
       [[1]] Improved, more reliable project loading, reports problems now.
 
-      [[2]] IDE Action-Maven goal mappings now editable from project customizer
-
-      [[3]] Local repository indexing added, one can 
+      [[2]] Local repository indexing added, one can easily
 
             * browse 
 
@@ -20,17 +18,17 @@ Introduction
 
             * add dependency
 
-            * vastly improved completion in pom.xml
+            * use vastly improved completion in pom.xml
 
-            * any existing project archetypes get listed
+            * any existing project archetypes get listed in project creation wizard
 
-      [[4]] IDE Action-Maven goal mappings now editable from project customizer
+      [[3]] IDE Action-Maven goal mappings now editable from project customizer
  
-      [[5]] Webapp hot deploy, changed jsp files get deployed live.
+      [[4]] Webapp hot deploy, changed jsp files get deployed live.
       
-      [[6]] Can stop, rerun build, failed tests hyperlinked form output window.
+      [[5]] Can stop, re-run build, failed tests hyperlinked from output window.
 
-    * Bugs fixed for previous version, implemented features : {{{http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&mode=hide&sorter/order=ASC&sorter/field=priority&pid=10480&fixfor=12561}List of issues}}
+    * Bugs fixed for previous version, implemented features : {{{http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&pid=10480&fixfor=12780&sorter/field=priority&sorter/order=ASC}List of issues}}
 
 * Download
 
