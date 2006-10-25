@@ -58,6 +58,7 @@ import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.netbeans.spi.project.ui.support.ProjectSensitiveActions;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -156,14 +157,15 @@ public class MavenProjectNode extends AbstractNode {
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         lst.add(CommonProjectActions.newFileAction());
         lst.add(null);
-        lst.add(provider.createBasicMavenAction("Build", ActionProvider.COMMAND_BUILD));
-        lst.add(provider.createBasicMavenAction("Rebuild", ActionProvider.COMMAND_REBUILD));
-        lst.add(provider.createBasicMavenAction("Clean", ActionProvider.COMMAND_CLEAN));
-        lst.add(provider.createBasicMavenAction("Generate Javadoc", "javadoc"));
+    
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_BUILD, "Build", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, "Rebuild", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_CLEAN, "Clean", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", "Generate Javadoc", null));
         lst.add(null);
-        lst.add(provider.createBasicMavenAction("Run", ActionProvider.COMMAND_RUN));
-        lst.add(provider.createBasicMavenAction("Debug", ActionProvider.COMMAND_DEBUG));
-        lst.add(provider.createBasicMavenAction("Test", ActionProvider.COMMAND_TEST));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_RUN, "Run", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, "Debug", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, "Test", null));
         lst.add(null);
 //        if (isMultiproject) {
 //            lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
