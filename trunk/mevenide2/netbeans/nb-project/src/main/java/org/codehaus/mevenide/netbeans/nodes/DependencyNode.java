@@ -622,11 +622,6 @@ public class DependencyNode extends AbstractNode {
                 brc.setActiveteProfiles(Collections.EMPTY_LIST);
                 
                 ExecutorTask task = MavenJavaExecutor.executeMaven("Install", brc);
-                task.addTaskListener(new TaskListener() {
-                    public void taskFinished(Task task2) {
-//                        project.firePropertyChange(NbMavenProject.PROP_PROJECT);
-                    }
-                });
             }
         }
     }
