@@ -31,6 +31,7 @@ import org.apache.maven.embedder.MavenEmbedRequest;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
+import org.apache.maven.lifecycle.LifecycleExecutor;
 import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
 import org.apache.maven.project.validation.ModelValidator;
 import org.codehaus.classworlds.ClassRealm;
@@ -41,6 +42,9 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.component.repository.ComponentDescriptor;
 import org.codehaus.plexus.component.repository.ComponentRequirement;
 import org.codehaus.plexus.component.repository.exception.ComponentRepositoryException;
+import org.codehaus.plexus.configuration.PlexusConfiguration;
+import org.codehaus.plexus.configuration.PlexusConfigurationException;
+import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileAttributeEvent;
 import org.openide.filesystems.FileChangeAdapter;
@@ -189,6 +193,8 @@ public class EmbedderFactory {
             // from netbeans allow just Lookup and the mevenide bridges
             plexusRealm.importFrom(nbRealm.getId(), "org.openide.util");
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.bridges");
+            //have custom lifecycle executor to collect all projects in reactor..
+            plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.netbeans.embedder.exec");
             //hack to enable reports, default package is EVIL!
             plexusRealm.addConstituent(rootPackageFolder.toURI().toURL());
         } catch (NoSuchRealmException ex) {
@@ -210,6 +216,23 @@ public class EmbedderFactory {
         File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
         req.setUserSettingsFile(userSettingsPath);
         req.setGlobalSettingsFile(globalSettingsPath);
+        
+        req.setConfigurationCustomizer(new ContainerCustomizer() {
+            public void customize(PlexusContainer plexusContainer) {
+                //have custom lifecycle executor to collect all projects in reactor..
+                ComponentDescriptor desc = plexusContainer.getComponentDescriptor(LifecycleExecutor.ROLE);
+                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor");
+                try {
+                    PlexusConfiguration oldConf = desc.getConfiguration();
+                    XmlPlexusConfiguration conf = new XmlPlexusConfiguration(oldConf.getName());
+                    copyConfig(oldConf, conf);
+                    desc.setConfiguration(conf);
+                } catch (PlexusConfigurationException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+        
         try {
             embedder.start(req);
         } catch (MavenEmbedderException e) {
@@ -220,6 +243,25 @@ public class EmbedderFactory {
         }
         return embedder;
         
+    }
+    
+    private static void copyConfig(PlexusConfiguration old, XmlPlexusConfiguration conf) throws PlexusConfigurationException {
+        conf.setValue(old.getValue());
+        String[] attrNames = old.getAttributeNames();
+        if (attrNames != null && attrNames.length > 0) {
+            for (int i = 0; i < attrNames.length; i++) {
+                conf.setAttribute(attrNames[i], old.getAttribute(attrNames[i]));
+            }
+        }
+        if ("lifecycle".equals(conf.getName())) {
+            conf.setAttribute("implementation", "org.apache.maven.lifecycle.Lifecycle");
+        }
+        for (int i = 0; i < old.getChildCount(); i++) {
+            PlexusConfiguration oldChild = old.getChild(i);
+            XmlPlexusConfiguration newChild = new XmlPlexusConfiguration(oldChild.getName());
+            conf.addChild(newChild);
+            copyConfig(oldChild, newChild);
+        }
     }
     
     private static class SettingsFileListener extends FileChangeAdapter {

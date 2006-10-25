@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.WeakHashMap;
@@ -45,16 +46,22 @@ import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Cancellable;
 import org.openide.util.Utilities;
@@ -288,6 +295,22 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 col.add(rerunDebug);
                 col.add(stop);
                 freeTabs.put(ioput, col);
+            }
+            List fireList = MyLifecycleExecutor.getAffectedProjects();
+            Iterator it = fireList.iterator();
+            while (it.hasNext()) {
+                File elem = (File) it.next();
+                FileObject fo = FileUtil.toFileObject(elem);
+                if (fo != null) {
+                    //TODO have the firing based on open projects only..
+                    Project prj = FileOwnerQuery.getOwner(fo);
+                    if (prj != null) {
+                        NbMavenProject nbprj = (NbMavenProject)prj.getLookup().lookup(NbMavenProject.class);
+                        if (nbprj != null) {
+                            nbprj.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                        }
+                    }
+                }
             }
         }
     }
