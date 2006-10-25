@@ -32,14 +32,17 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.execution.ExecutorTask;
+import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -127,21 +130,41 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     
-    private final class BasicAction extends AbstractAction {
+    private final static class BasicAction extends AbstractAction implements ContextAwareAction {
         private String actionid;
-        
+        private Lookup context;
+        private ActionProviderImpl provider;
         
         private BasicAction(String name, String act) {
             actionid = act;
             putValue(Action.NAME, name);
         }
         
+        private BasicAction(String name, String act, Lookup context) {
+            this(name, act);
+            Lookup.Result res = context.lookup(new Lookup.Template(Project.class));
+            if (res.allItems().size() == 1) {
+                Project project = (Project)context.lookup(Project.class);
+                this.context = project.getLookup();
+                provider = (ActionProviderImpl)this.context.lookup(ActionProviderImpl.class);
+            }
+        }
+        
         public void actionPerformed(java.awt.event.ActionEvent e) {
-            ActionProviderImpl.this.invokeAction(actionid, ActionProviderImpl.this.project.getLookup());
+            if (provider != null) {
+                provider.invokeAction(actionid, context);
+            }
         }
 
         public boolean isEnabled() {
-            return ActionProviderImpl.this.isActionEnabled(actionid, ActionProviderImpl.this.project.getLookup());
+            if (provider != null) {
+                return provider.isActionEnabled(actionid, provider.project.getLookup());
+            }
+            return false;
+        }
+
+        public Action createContextAwareInstance(Lookup actionContext) {
+            return new BasicAction((String)getValue(Action.NAME), actionid, actionContext);
         }
     }
     
