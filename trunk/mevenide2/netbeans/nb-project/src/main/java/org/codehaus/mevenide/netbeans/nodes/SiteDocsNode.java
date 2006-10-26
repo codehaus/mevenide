@@ -16,14 +16,12 @@
  */
 package org.codehaus.mevenide.netbeans.nodes;
 
-import java.io.File;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;

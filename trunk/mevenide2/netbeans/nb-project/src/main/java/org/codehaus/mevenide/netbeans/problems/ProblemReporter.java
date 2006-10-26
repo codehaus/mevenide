@@ -38,7 +38,7 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
-import org.codehaus.mevenide.netbeans.*;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.openide.cookies.EditCookie;

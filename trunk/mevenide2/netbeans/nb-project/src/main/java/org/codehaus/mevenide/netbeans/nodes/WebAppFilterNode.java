@@ -21,7 +21,6 @@ import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;

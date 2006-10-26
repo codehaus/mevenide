@@ -17,11 +17,9 @@
 
 package org.codehaus.mevenide.netbeans.options;
 
-import java.util.Date;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.openide.options.SystemOption;
 import org.openide.util.HelpCtx;
-import org.openide.util.NbBundle;
 
 /**
  * a netbeans settings for global options that cannot be put into the settings file.

@@ -34,8 +34,6 @@ import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.schema2beans.BaseBean;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
-import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
-import org.netbeans.spi.project.support.ant.SourcesHelper;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.netbeans.api.project.SourceGroup;

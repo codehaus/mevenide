@@ -17,11 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.openide.filesystems.FileUtil;

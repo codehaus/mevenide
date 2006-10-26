@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.problems;
 
 import java.awt.Component;
 import java.awt.event.ActionEvent;
-import java.lang.Boolean;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -27,7 +26,6 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;

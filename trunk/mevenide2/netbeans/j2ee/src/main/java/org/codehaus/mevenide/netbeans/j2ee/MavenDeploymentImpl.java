@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.j2ee;
 
-import java.io.File;
 import java.net.URL;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;

@@ -17,8 +17,6 @@
 package org.codehaus.mevenide.netbeans.j2ee.ear;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -30,16 +28,11 @@ import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModuleContainer;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeAppProvider;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
-import org.netbeans.modules.j2ee.ejbjar.EarAccessor;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
-import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
-import org.netbeans.modules.schema2beans.BaseBean;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 

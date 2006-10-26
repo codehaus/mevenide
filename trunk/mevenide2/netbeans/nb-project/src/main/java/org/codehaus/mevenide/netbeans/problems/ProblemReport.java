@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.netbeans.problems;
 
 import javax.swing.Action;
-import org.codehaus.mevenide.netbeans.*;
 
 /**
  *

@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.netbeans.options;
 
 import org.netbeans.spi.options.AdvancedOption;
-import org.netbeans.spi.options.OptionsCategory;
 import org.netbeans.spi.options.OptionsPanelController;
 
 /**

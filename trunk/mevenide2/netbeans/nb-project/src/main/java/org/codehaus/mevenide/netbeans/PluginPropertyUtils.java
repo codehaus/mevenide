@@ -12,7 +12,6 @@ package org.codehaus.mevenide.netbeans;
 import java.util.Iterator;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
-import org.apache.maven.plugin.lifecycle.Execution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 /**

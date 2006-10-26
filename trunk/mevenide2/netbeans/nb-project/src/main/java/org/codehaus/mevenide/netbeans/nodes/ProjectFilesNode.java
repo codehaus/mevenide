@@ -30,7 +30,6 @@ import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.openide.cookies.EditCookie;
-import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;

@@ -51,7 +51,6 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
-import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
@@ -99,12 +98,9 @@ public final class NbMavenProject implements Project {
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
-    private Sources sources;
     private MavenProject project;
     private ProblemReporter problemReporter;
-    
     private Info projectInfo;
-    
     private MavenProject oldProject;
     
     /**
