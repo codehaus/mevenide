@@ -42,7 +42,6 @@ import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
-import org.openide.util.lookup.Lookups;
 
 /**
  *

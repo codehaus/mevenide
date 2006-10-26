@@ -37,7 +37,6 @@ import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Lookup;
 import org.openide.util.io.NullOutputStream;
