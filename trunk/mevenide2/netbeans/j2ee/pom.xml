@@ -27,92 +27,92 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-api-ejbmodule</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-web-webmodule</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-project</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-dd</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2eeserver</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger-jpda</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-schema2beans</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-jdesktop-layout</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
         </dependency>  
       <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
         <dependency>

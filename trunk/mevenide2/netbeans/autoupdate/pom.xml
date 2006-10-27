@@ -15,7 +15,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-autoupdate</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
     </dependencies>
