@@ -17,20 +17,20 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor-lib</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-editor</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         
@@ -38,20 +38,20 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-enumerations</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
 
@@ -75,14 +75,14 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-nodes</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
             <type>jar</type>
         </dependency>
         
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
-            <version>RELEASE50</version>
+            <version>${netbeans.release}</version>
         </dependency>               
     </dependencies>
     
