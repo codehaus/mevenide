@@ -1,0 +1,93 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.codehaus.mevenide</groupId>
+        <artifactId>netbeans</artifactId>
+        <version>1.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>netbeans-repository</artifactId>
+    <packaging>nbm</packaging>
+    <version>2.4-SNAPSHOT</version>
+    <name>Maven2 Netbeans repository</name>
+    <description>Maven2 repository for netbeans specific plugin artifacts, is used from the UI, plugin require running Netbeans.</description>
+
+    <dependencies>
+        <!-- mark as dependency to get it built before the nbm gets packaged-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-deploy-plugin</artifactId>
+            <version>1.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- mark as dependency to get it built before the nbm gets packaged-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-debugger-plugin</artifactId>
+            <version>1.2.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-run-plugin</artifactId>
+            <version>1.1.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <!-- have this one as dependency because we want this project to load eagerly 
+                 when nb-project is loaded-->
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-project</artifactId>
+            <version>2.4-SNAPSHOT</version>
+            <scope>runtime</scope>
+        </dependency>
+    </dependencies>
+    <repositories>
+        <!-- need the latest of assembly plugin..-->
+        <repository>
+            <id>apache-snapshots</id>
+            <name>Snapshot repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>apache-snapshots</id>
+            <name>Snapshot repository</name>
+            <url>http://people.apache.org/maven-snapshot-repository</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>nbm-maven-plugin</artifactId>
+                    <version>LATEST</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <descriptor>src/main/nbm/module.xml</descriptor>
+                        <keystorealias>mevenide2</keystorealias>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2-20061003.213644-24</version>
+                    <executions>
+                        <execution>
+                            <id>repo</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>directory-inline</goal>
+                            </goals>
+                            <configuration>
+                                <descriptor>src/main/assembly/dep.xml</descriptor>
+                                <finalName>nbrepo-assembly</finalName>
+                                <appendAssemblyId>false</appendAssemblyId>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+    </build>
+</project>
