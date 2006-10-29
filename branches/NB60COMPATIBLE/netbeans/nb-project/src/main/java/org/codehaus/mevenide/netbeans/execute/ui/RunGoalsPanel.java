@@ -45,15 +45,15 @@ import org.openide.util.Utilities;
 public class RunGoalsPanel extends javax.swing.JPanel {
     
     private int gridRow = 0;
-    private List propertyList;
-    private List historyMappings;
+    private List<PropertyPanel> propertyList;
+    private List<NetbeansActionMapping> historyMappings;
     private int historyIndex = 0;
     
     /** Creates new form RunGoalsPanel */
     public RunGoalsPanel() {
         initComponents();
-        propertyList = new ArrayList();
-        historyMappings = new ArrayList();
+        propertyList = new ArrayList<PropertyPanel>();
+        historyMappings = new ArrayList<NetbeansActionMapping>();
         btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png")));
         btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png")));
     }
@@ -154,9 +154,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         mapp.setGoals(lst.size() > 0 ? lst : null);
         
         mapp.getProperties().clear();
-        Iterator it = propertyList.iterator();
-        while (it.hasNext()) {
-            PropertyPanel panl = (PropertyPanel)it.next();
+        for (PropertyPanel panl : propertyList) {
             if (!panl.isRemoved()) {
                 mapp.getProperties().setProperty(panl.getPropertyKey(), panl.getPropertyValue());
             }
@@ -179,9 +177,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
         rc.setGoals(lst.size() > 0 ? lst : Collections.singletonList("install"));
         Properties props = new Properties();
-        Iterator it = propertyList.iterator();
-        while (it.hasNext()) {
-            PropertyPanel panl = (PropertyPanel)it.next();
+        for (PropertyPanel panl : propertyList) {
             if (!panl.isRemoved()) {
                 props.setProperty(panl.getPropertyKey(), panl.getPropertyValue());
             }
@@ -344,9 +340,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     private void cbSkipTestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSkipTestsActionPerformed
         if (cbSkipTests.isSelected()) {
-            Iterator it = propertyList.iterator();
-            while (it.hasNext()) {
-                PropertyPanel elem = (PropertyPanel) it.next();
+            for (PropertyPanel elem : propertyList) {
                 if ("maven.test.skip".equals(elem.getPropertyKey())) {
                     elem.readdToView();
                     elem.setPropertyValue("true");
@@ -355,9 +349,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
             addPropertyPanel("maven.test.skip", "true", false);
         } else {
-            Iterator it = propertyList.iterator();
-            while (it.hasNext()) {
-                PropertyPanel elem = (PropertyPanel) it.next();
+            for (PropertyPanel elem : propertyList) {
                 if ("maven.test.skip".equals(elem.getPropertyKey())) {
                     elem.removeFromView();
                 }
@@ -383,7 +375,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         gridRow = 0;
         propertyList.clear();
         historyIndex = historyIndex + step;
-        readMapping((NetbeansActionMapping)historyMappings.get(historyIndex));
+        readMapping(historyMappings.get(historyIndex));
         btnPrev.setEnabled(historyIndex != 0);
         btnNext.setEnabled(historyIndex != (historyMappings.size() - 1));
     }
