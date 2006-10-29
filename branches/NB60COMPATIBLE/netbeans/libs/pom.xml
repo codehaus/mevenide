@@ -14,7 +14,7 @@
   <inceptionYear>2005</inceptionYear>
   <modules>
      <module>embedder</module>
-     <module>continuum-rpc</module>
+     <!--module>continuum-rpc</module-->
      <module>indexer</module>
   </modules>
 </project>
