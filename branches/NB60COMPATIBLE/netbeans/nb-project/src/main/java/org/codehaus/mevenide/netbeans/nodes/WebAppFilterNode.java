@@ -92,17 +92,17 @@ class WebAppFilterNode extends FilterNode {
             project = proj;
         }
         
-        protected Node[] createNodes(Object obj) {
-            DataObject dobj = (DataObject)((Node)obj).getLookup().lookup(DataObject.class);
+        protected Node[] createNodes(Node obj) {
+            DataObject dobj = (DataObject)obj.getLookup().lookup(DataObject.class);
         
             if (dobj != null) {
                 if (!VisibilityQuery.getDefault().isVisible(dobj.getPrimaryFile())) {
                     return new Node[0];
                 }
-                Node n = new WebAppFilterNode(project, (Node)obj, root, false);
+                Node n = new WebAppFilterNode(project, obj, root, false);
                 return new Node[] {n};
             }
-            Node origos = (Node)obj;
+            Node origos = obj;
             return new Node[] { origos.cloneNode() };
         }        
     }    
