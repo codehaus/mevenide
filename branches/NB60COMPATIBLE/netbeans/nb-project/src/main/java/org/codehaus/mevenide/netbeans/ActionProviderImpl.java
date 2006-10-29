@@ -141,9 +141,9 @@ public class ActionProviderImpl implements ActionProvider {
         
         private BasicAction(String name, String act, Lookup context) {
             this(name, act);
-            Lookup.Result res = context.lookup(new Lookup.Template(Project.class));
+            Lookup.Result<Project> res = context.lookup(new Lookup.Template<Project>(Project.class));
             if (res.allItems().size() == 1) {
-                Project project = (Project)context.lookup(Project.class);
+                Project project = context.lookup(Project.class);
                 this.context = project.getLookup();
                 provider = (ActionProviderImpl)this.context.lookup(ActionProviderImpl.class);
             }

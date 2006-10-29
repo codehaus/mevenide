@@ -21,7 +21,7 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 public class PluginPropertyUtils {
     
     /** Creates a new instance of PluginPropertyUtils */
-    public PluginPropertyUtils() {
+    private PluginPropertyUtils() {
     }
     
     
@@ -34,15 +34,13 @@ public class PluginPropertyUtils {
         if (project.getOriginalMavenProject().getBuildPlugins() == null) {
             return toRet;
         }
-        Iterator it = project.getOriginalMavenProject().getBuildPlugins().iterator();
-        while (it.hasNext()) {
-            Plugin plug = (Plugin)it.next();
+        for (Object obj : project.getOriginalMavenProject().getBuildPlugins()) {
+            Plugin plug = (Plugin)obj;
             if (artifactId.equals(plug.getArtifactId()) &&
                    groupId.equals(plug.getGroupId())) {
                 if (plug.getExecutions() != null) {
-                    Iterator it2 = plug.getExecutions().iterator();
-                    while (it2.hasNext()) {
-                        PluginExecution exe = (PluginExecution)it2.next();
+                    for (Object obj2 : plug.getExecutions()) {
+                        PluginExecution exe = (PluginExecution)obj2;
                         if (exe.getGoals().contains(goal)) {
                             toRet = checkConfiguration(exe.getConfiguration(), property);
                             if (toRet != null) {

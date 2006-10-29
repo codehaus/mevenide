@@ -65,9 +65,9 @@ public class MavenSourcesImpl implements Sources {
     public static final String TYPE_WEB_INF="web_inf"; //NOI18N
     
     private NbMavenProject project;
-    private List listeners;
+    private List<ChangeListener> listeners;
     
-    private Map javaGroup;
+    private Map<String, SourceGroup> javaGroup;
     private SourceGroup genSrcGroup;
     private SourceGroup webDocSrcGroup;
     
@@ -77,8 +77,8 @@ public class MavenSourcesImpl implements Sources {
     /** Creates a new instance of MavenSourcesImpl */
     public MavenSourcesImpl(NbMavenProject proj) {
         project = proj;
-        listeners = new ArrayList();
-        javaGroup = new TreeMap();
+        listeners = new ArrayList<ChangeListener>();
+        javaGroup = new TreeMap<String, SourceGroup>();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 checkChanges(true);
@@ -128,14 +128,12 @@ public class MavenSourcesImpl implements Sources {
     }
     
     private void fireChange() {
-        List currList;
+        List<ChangeListener> currList;
         synchronized (listeners) {
-            currList = new ArrayList(listeners);
+            currList = new ArrayList<ChangeListener>(listeners);
         }
-        Iterator it = currList.iterator();
         ChangeEvent event = new ChangeEvent(this);
-        while (it.hasNext()) {
-            ChangeListener list = (ChangeListener)it.next();
+        for (ChangeListener list : currList) {
             list.stateChanged(event);
         }
     }
@@ -157,14 +155,14 @@ public class MavenSourcesImpl implements Sources {
             return new SourceGroup[] { GenericSources.group(project, project.getProjectDirectory(), NAME_PROJECTROOT, "Project Root", null, null) };
         }
         if (JavaProjectConstants.SOURCES_TYPE_JAVA.equals(str)) {
-            List toReturn = new ArrayList();
+            List<SourceGroup> toReturn = new ArrayList<SourceGroup>();
             synchronized (lock) {
                 // don't fire event synchronously..
                 checkChanges(false);
                 toReturn.addAll(javaGroup.values());
             }
             SourceGroup[] grp = new SourceGroup[toReturn.size()];
-            grp = (SourceGroup[])toReturn.toArray(grp);
+            grp = toReturn.toArray(grp);
             return grp;
         }
         if (TYPE_GEN_SOURCES.equals(str)) {
@@ -194,16 +192,16 @@ public class MavenSourcesImpl implements Sources {
         if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
             // TODO not all these are probably resources.. maybe need to split in 2 groups..
             boolean test = TYPE_TEST_RESOURCES.equals(str);
-            List toReturn = new ArrayList();
+            List<SourceGroup> toReturn = new ArrayList<SourceGroup>();
             File[] roots = project.getOtherRoots(test);
-            for (int i = 0; i < roots.length; i++) {
-                FileObject folder = FileUtil.toFileObject(roots[i]);
+            for (File f : roots) {
+                FileObject folder = FileUtil.toFileObject(f);
                 if (folder != null) {
                     toReturn.add(new OtherGroup(project, folder, "Resource" + (test ? "Test":"Main") + folder.getNameExt(), folder.getName()));
                 }
             }
             SourceGroup[] grp = new SourceGroup[toReturn.size()];
-            grp = (SourceGroup[])toReturn.toArray(grp);
+            grp = toReturn.toArray(grp);
             return grp;
         }
 //        logger.warn("unknown source type=" + str);
@@ -214,7 +212,7 @@ public class MavenSourcesImpl implements Sources {
      * consult the SourceGroup cache, return true if anything changed..
      */
     private boolean checkJavaGroupCache(FileObject root, String name, String displayName) {
-        SourceGroup group = (SourceGroup)javaGroup.get(name);
+        SourceGroup group = javaGroup.get(name);
         if (root == null && group != null) {
             javaGroup.remove(name);
             return true;

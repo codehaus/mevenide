@@ -44,12 +44,10 @@ import org.openide.util.lookup.Lookups;
  * factory of maven projects
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class NbMavenProjectFactory implements ProjectFactory
-{
+public class NbMavenProjectFactory implements ProjectFactory {
     
     /** Creates a new instance of NbMavenProjectFactory */
-    public NbMavenProjectFactory()
-    {
+    public NbMavenProjectFactory() {
     }
     
     public boolean isProject(FileObject fileObject)
@@ -66,8 +64,8 @@ public class NbMavenProjectFactory implements ProjectFactory
         
         File project = new File(projectDir, "pom.xml"); // NOI18N
         if (project.isFile() && 
-            "archetype-resources".equalsIgnoreCase(projectDir.getName()) &&
-            "resources".equalsIgnoreCase(projectDir.getParentFile().getName())) {
+            "archetype-resources".equalsIgnoreCase(projectDir.getName()) && //NOI18N
+            "resources".equalsIgnoreCase(projectDir.getParentFile().getName())) { //NOI18N
             //this is an archetype resource, happily ignore..
             return false;
         }
@@ -79,7 +77,7 @@ public class NbMavenProjectFactory implements ProjectFactory
         if (FileUtil.toFile(fileObject) == null) {
             return null;
         }
-        if ("nbproject".equalsIgnoreCase(fileObject.getName())) {
+        if ("nbproject".equalsIgnoreCase(fileObject.getName())) { //NOI18N
             return null;
         }
 //        if (fileObject.getFileObject("project.xml") != null) {
@@ -99,8 +97,8 @@ public class NbMavenProjectFactory implements ProjectFactory
             return null;
         }
         if (projectDiskFile.isFile() && 
-            "archetype-resources".equalsIgnoreCase(fileObject.getName()) &&
-            "resources".equalsIgnoreCase(fileObject.getParent().getName())) {
+            "archetype-resources".equalsIgnoreCase(fileObject.getName()) && //NOI18N
+            "resources".equalsIgnoreCase(fileObject.getParent().getName())) { //NOI18N
             //this is an archetype resource, happily ignore..
             return null;
         }
@@ -140,7 +138,7 @@ public class NbMavenProjectFactory implements ProjectFactory
         }
 
         public String getName() {
-            return "temp-project";
+            return "temp-project"; //NOI18N
         }
 
         public String getDisplayName() {
@@ -148,7 +146,7 @@ public class NbMavenProjectFactory implements ProjectFactory
         }
 
         public Icon getIcon() {
-            return new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif"));
+            return new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif")); //NOI18N
         }
 
         public Project getProject() {
@@ -167,7 +165,7 @@ public class NbMavenProjectFactory implements ProjectFactory
                     return "<i>" + getDisplayName() + "</i>";
                 }
             };
-            nd.setName("temp-project");
+            nd.setName("temp-project"); //NOI18N
             nd.setDisplayName("Creating Maven Project from Archetype...");
             nd.setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2TempIcon.png");
             return nd;

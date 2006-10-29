@@ -47,12 +47,12 @@ import org.openide.util.WeakListeners;
 public class SubprojectProviderImpl implements SubprojectProvider {
     
     private NbMavenProject project;
-    private List listeners;
+    private List<ChangeListener> listeners;
     private ChangeListener listener2;
     /** Creates a new instance of SubprojectProviderImpl */
     public SubprojectProviderImpl(NbMavenProject proj) {
         project = proj;
-        listeners = new ArrayList();
+        listeners = new ArrayList<ChangeListener>();
         proj.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 fireChange();
@@ -70,7 +70,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     
     
     public Set getSubprojects() {
-        Set projects = new HashSet();
+        Set<Project> projects = new HashSet<Project>();
         File basedir = FileUtil.toFile(project.getProjectDirectory());
         addProjectModules(basedir, projects, project.getOriginalMavenProject().getModules());
         addOpenedCandidates(projects);
@@ -78,19 +78,14 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         return projects;
     }
     
-    private void addOpenedCandidates(Set resultset) {
-        Set opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
-        List compileArtifacts = project.getOriginalMavenProject().getCompileArtifacts();
-        List artPaths = new ArrayList();
-        Iterator itz = compileArtifacts.iterator();
-        while (itz.hasNext()) {
-            Artifact ar = (Artifact)itz.next();
+    private void addOpenedCandidates(Set<Project> resultset) {
+        Set<NbMavenProject> opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
+        List<Artifact> compileArtifacts = project.getOriginalMavenProject().getCompileArtifacts();
+        List<String> artPaths = new ArrayList<String>();
+        for (Artifact ar : compileArtifacts) {
             artPaths.add(project.getArtifactRelativeRepositoryPath(ar));
         }
-        
-        Iterator itx = opened.iterator();
-        while (itx.hasNext()) {
-            NbMavenProject prj = (NbMavenProject)itx.next();
+        for (NbMavenProject prj : opened) {
             String prjpath = prj.getArtifactRelativeRepositoryPath();
             if (artPaths.contains(prjpath)) {
                 resultset.add(prj);
@@ -98,7 +93,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
         }
     }
     
-    private void addProjectModules(File basedir, Set resultset, List modules) {
+    private void addProjectModules(File basedir, Set<Project> resultset, List modules) {
         if (modules == null || modules.size() == 0) {
             return;
         }
@@ -151,13 +146,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     }
     
     private void fireChange() {
-        List lists = new ArrayList();
+        List<ChangeListener> lists = new ArrayList<ChangeListener>();
         synchronized (this) {
             lists.addAll(listeners);
         }
-        Iterator it = lists.iterator();
-        while (it.hasNext()) {
-            ChangeListener listener = (ChangeListener)it.next();
+        for (ChangeListener listener : lists) {
             listener.stateChanged(new ChangeEvent(this));
         }
     }

@@ -358,7 +358,7 @@ public final class NbMavenProject implements Project {
     }
     
     public URI[] getResources(boolean test) {
-        List toRet = new ArrayList();
+        List<URI> toRet = new ArrayList<URI>();
         List res = test ? getOriginalMavenProject().getTestResources() : getOriginalMavenProject().getResources();
         Iterator it = res.iterator();
         while (it.hasNext()) {
@@ -368,7 +368,7 @@ public final class NbMavenProject implements Project {
                 toRet.add(uri);
             }
         }
-        return (URI[])toRet.toArray(new URI[toRet.size()]);
+        return toRet.toArray(new URI[toRet.size()]);
     }
     
     
@@ -394,16 +394,16 @@ public final class NbMavenProject implements Project {
     
     
     public Set getAvailableProfiles() {
-        Set profiles = new HashSet();
+        Set<String> profiles = new HashSet<String>();
         profiles.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().getProfilesAsMap().keySet());
-        Iterator it = getOriginalMavenProject().getModel().getProfiles().iterator();
+        Iterator<Profile> it = getOriginalMavenProject().getModel().getProfiles().iterator();
         while (it.hasNext()) {
-            Profile prof = (Profile)it.next();
+            Profile prof = it.next();
             profiles.add(prof.getId());
         }
-        it = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
-        while (it.hasNext()) {
-            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile)it.next();
+        Iterator<org.apache.maven.profiles.Profile> it2 = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
+        while (it2.hasNext()) {
+            org.apache.maven.profiles.Profile prof = it2.next();
             profiles.add(prof.getId());
         }
         return profiles;
