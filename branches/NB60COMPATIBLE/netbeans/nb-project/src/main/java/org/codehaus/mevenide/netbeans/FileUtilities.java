@@ -71,12 +71,12 @@ public final class FileUtilities {
         return null;
     }
     
-    public static FileObject[] convertStringsToFileObjects(List strings) {
+    public static FileObject[] convertStringsToFileObjects(List<String> strings) {
         FileObject[] fos = new FileObject[strings.size()];
         int index = 0;
-        Iterator it = strings.iterator();
+        Iterator<String> it = strings.iterator();
         while (it.hasNext()) {
-            String str = (String)it.next();
+            String str = it.next();
             File fil = new File(str);
             fil = FileUtil.normalizeFile(fil);
             fos[index] = FileUtil.toFileObject(fil);

@@ -35,17 +35,17 @@ import org.openide.util.actions.Presenter;
 public class LifecyclePopupAction extends AbstractAction implements Presenter.Popup {
 
     private NbMavenProject project;
-    private List phases;
+    private List<String> phases;
     private boolean loadingFailed = false;
     
     /** Creates a new instance of LifecyclePopupAction */
     public LifecyclePopupAction(NbMavenProject proj ) {
         project = proj;
         try {
-            phases = project.getEmbedder().getLifecyclePhases();
+            phases = new ArrayList<String>(project.getEmbedder().getLifecyclePhases());
         } catch (MavenEmbedderException ex) {
             ex.printStackTrace();
-            phases = new ArrayList();
+            phases = new ArrayList<String>();
             loadingFailed = true;
         }
         
@@ -62,9 +62,9 @@ public class LifecyclePopupAction extends AbstractAction implements Presenter.Po
                     
         } else {
             ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
-            Iterator it = phases.iterator(); 
+            Iterator<String> it = phases.iterator(); 
             while (it.hasNext()) {
-                String str = (String)it.next();
+                String str = it.next();
                 NetbeansActionMapping mapp = new NetbeansActionMapping();
                 mapp.addGoal(str);
                 menu.add(provider.createCustomMavenAction(str, mapp));
