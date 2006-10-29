@@ -29,6 +29,7 @@ import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
 import org.codehaus.plexus.util.StringInputStream;
+import org.netbeans.modules.j2ee.api.ejbjar.Car;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
@@ -355,9 +356,9 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
         return false;
     }
 
-    //55 only..
-//    public void addCarModule(Car car) {
-//    }
+    public void addCarModule(Car arg0) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     
     
@@ -424,6 +425,7 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
             return new String[0];
         }
     }
+    
     
 
 }

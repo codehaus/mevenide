@@ -36,6 +36,7 @@ import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
+import org.netbeans.modules.j2ee.metadata.MetadataUnit;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
 import org.netbeans.modules.schema2beans.BaseBean;
 import org.openide.ErrorManager;
@@ -291,9 +292,9 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
     }
 
     //55 only..
-//    public MetadataUnit getMetadataUnit() {
-//        return null;
-//    }
+    public MetadataUnit getMetadataUnit() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 
     //TODO
     private class EjbChange implements EjbChangeDescriptor {
@@ -358,6 +359,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
             return FileUtil.getRelativePath(root, f);
         }
     }
+    
     
     
 }
