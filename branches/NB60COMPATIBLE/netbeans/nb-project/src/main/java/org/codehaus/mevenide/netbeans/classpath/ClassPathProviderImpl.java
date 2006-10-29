@@ -103,7 +103,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
      * @param child fileobject for the child..
      * @param possibleParents List of Strings denoting files..
      */
-    private boolean isChildOf(FileObject child, List possibleParents) {
+    private boolean isChildOf(FileObject child, List<String> possibleParents) {
         FileObject[] dirs = FileUtilities.convertStringsToFileObjects(possibleParents);
         for (int i =0; i < dirs.length; i++) {
             if (dirs[i] != null  && dirs[i].isFolder() && (dirs[i].equals(child) || FileUtil.isParentOf(dirs[i], child))) {

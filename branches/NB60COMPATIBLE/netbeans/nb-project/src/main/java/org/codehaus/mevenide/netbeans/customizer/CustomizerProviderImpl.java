@@ -109,18 +109,18 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 M2CustomizerPanelProvider.PANEL_BASIC, 
                 "Basic", 
                 null,
-                null);
+                (ProjectCustomizer.Category[])null);
         ProjectCustomizer.Category run = ProjectCustomizer.Category.create(
                 M2CustomizerPanelProvider.PANEL_RUN, 
                 "Run", 
                 null,
-                null);
+                (ProjectCustomizer.Category[])null);
         
         ProjectCustomizer.Category mapp = ProjectCustomizer.Category.create(
                 M2CustomizerPanelProvider.PANEL_MAPPING, 
                 "Action Mappings", 
                 null,
-                null);
+                (ProjectCustomizer.Category[])null);
         
         categories = new ProjectCustomizer.Category[] {
             basic,
