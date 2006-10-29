@@ -23,7 +23,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -38,9 +37,9 @@ import org.w3c.dom.Node;
 
 public final class MavenQueryProvider extends GrammarQueryManager {
 
-    private List grammars;
+    private List<GrammarFactory> grammars;
     public MavenQueryProvider() {
-        grammars = new ArrayList();
+        grammars = new ArrayList<GrammarFactory>();
         // TODO make regitrable/pluggable somehow
         grammars.add(new DefaultGrammarFactory());
     }
@@ -48,7 +47,7 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     public Enumeration enabled(GrammarEnvironment ctx) {
         Enumeration en = ctx.getDocumentChildren();
         while (en.hasMoreElements()) {
-            Node next = (Node) en.nextElement();
+            Node next = (Node)en.nextElement();
             if (next.getNodeType() == next.ELEMENT_NODE) {
                 return Collections.enumeration(Collections.singletonList(next));
             }
@@ -61,9 +60,7 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     }
     
     public GrammarQuery getGrammar(GrammarEnvironment env) {
-        Iterator it = grammars.iterator();
-        while (it.hasNext()) {
-            GrammarFactory gr = (GrammarFactory)it.next();
+        for (GrammarFactory gr : grammars) {
             GrammarQuery query = gr.isSupported(env);
             if (query != null) {
                 return query;

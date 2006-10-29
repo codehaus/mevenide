@@ -74,7 +74,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     protected final NbMavenProject getOwnerProject() {
         Project proj = FileOwnerQuery.getOwner(environment.getFileObject());
         if (proj != null) {
-            return (NbMavenProject)proj.getLookup().lookup(NbMavenProject.class);
+            return proj.getLookup().lookup(NbMavenProject.class);
         }
         ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project.");
         return null;
@@ -106,10 +106,8 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     
     
     protected final org.jdom.Element findElement(org.jdom.Element parent, String name) {
-        List childs = parent.getChildren("element", parent.getNamespace());
-        Iterator it = childs.iterator();
-        while (it.hasNext()) {
-            org.jdom.Element el = (org.jdom.Element)it.next();
+        List<org.jdom.Element> childs = parent.getChildren("element", parent.getNamespace());
+        for (org.jdom.Element el : childs) {
             if (name.equals(el.getAttributeValue("name"))) {
                 return el;
             }
@@ -129,7 +127,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
 
     
     protected final org.jdom.Element findTypeContent(final String type, org.jdom.Element docRoot) {
-        List lst = docRoot.getContent(new Filter() {
+        List<org.jdom.Element> lst = docRoot.getContent(new Filter() {
             public boolean matches(Object match) {
                 if (match instanceof org.jdom.Element) {
                     org.jdom.Element el = (org.jdom.Element)match;
@@ -141,7 +139,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             }
         });
         if (lst.size() > 0) {
-            org.jdom.Element typeEl = (org.jdom.Element)lst.get(0);
+            org.jdom.Element typeEl = lst.get(0);
             return typeEl.getChild("all", docRoot.getNamespace());
         }
         return null;
@@ -158,31 +156,6 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         if (childRefAttr != null && childRefAttr.startsWith(matches)) {
             suggestions.add(new MyElement(childRefAttr));
         }
-    }
-    
-    private class RootDefinitionElementFilter extends ElementFilter {
-        private String text;
-        public RootDefinitionElementFilter(String name) {
-            text = name;
-        }
-        
-        public boolean matches(Object obj) {
-            boolean toReturn = super.matches(obj);
-            if (toReturn) {
-                org.jdom.Element el = (org.jdom.Element)obj;
-                toReturn = false;
-                if ("element".equals(el.getName())) {
-                    String elName = el.getAttributeValue("name");
-//                    logger.debug("it's name is=" + elName);
-                    if (elName != null && text.equals(elName)) {
-//                        logger.debug("including this one");
-                        toReturn = true;
-                    }
-                }
-            }
-            return toReturn;
-        }
-        
     }
     
     /**
@@ -236,10 +209,8 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
 
     
     protected final void processSequence(String matches, org.jdom.Element seqEl, Vector suggestions) {
-        List availables = seqEl.getContent(new DefinitionContentElementFilter());
-        Iterator availIt = availables.iterator();
-        while (availIt.hasNext()) {
-            org.jdom.Element childEl = (org.jdom.Element)availIt.next();
+        List<org.jdom.Element> availables = seqEl.getContent(new DefinitionContentElementFilter());
+        for (org.jdom.Element childEl : availables) {
             processElement(matches, childEl, suggestions);
         }
     }
@@ -283,17 +254,17 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         
         Node parentNode = virtualElementCtx.getParentNode();
         if (parentNode != null && schemaDoc != null) {
-            List parentNames = new ArrayList();
+            List<String> parentNames = new ArrayList<String>();
             while (parentNode != null & parentNode.getNodeName() != null) {
                 parentNames.add(0, parentNode.getNodeName());
                 parentNode = parentNode.getParentNode();
             }
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
-            Iterator it = parentNames.iterator();
+            Iterator<String> it = parentNames.iterator();
             String path = "";
             Vector toReturn = new Vector();
             while (it.hasNext() && schemaParent != null) {
-                String str = (String)it.next();
+                String str = it.next();
                 path = path + "/" + str;
                 org.jdom.Element el = findElement(schemaParent, str);
                 if (!it.hasNext()) {
@@ -345,7 +316,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     
     public Enumeration queryValues(HintContext virtualTextCtx) {
         Node parentNode = virtualTextCtx.getParentNode();
-        List parentNames = new ArrayList();
+        List<String> parentNames = new ArrayList<String>();
         if (virtualTextCtx.getCurrentPrefix().length() == 0) {
             parentNames.add(virtualTextCtx.getNodeName());
         }
@@ -355,10 +326,10 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
                 parentNode = parentNode.getParentNode();
             }
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
-            Iterator it = parentNames.iterator();
+            Iterator<String> it = parentNames.iterator();
             String path = "";
             while (it.hasNext() && schemaParent != null) {
-                String str = (String)it.next();
+                String str = it.next();
                 path = path + "/" + str;
                 org.jdom.Element el = findElement(schemaParent, str);
                 if (!it.hasNext()) {
@@ -391,9 +362,9 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
      */
     protected final Enumeration createTextValueList(String[] values, HintContext context) {
         Collection elems = new ArrayList();
-        for (int i = 0; i < values.length; i++) {
-            if (values[i].startsWith(context.getCurrentPrefix())) {
-                elems.add(new MyTextElement(values[i], context.getCurrentPrefix()));
+        for (String value :  values) {
+            if (value.startsWith(context.getCurrentPrefix())) {
+                elems.add(new MyTextElement(value, context.getCurrentPrefix()));
             }
         }
         return Collections.enumeration(elems);
