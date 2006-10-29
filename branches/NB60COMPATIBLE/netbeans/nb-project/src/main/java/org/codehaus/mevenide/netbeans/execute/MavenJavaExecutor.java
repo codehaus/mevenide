@@ -215,11 +215,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
             }
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-            // need to set some profiles or get NPE!
-            req.addActiveProfiles(Collections.EMPTY_LIST).addInactiveProfiles(Collections.EMPTY_LIST);
+            req.addActiveProfiles(config.getActiveteProfiles());
 			// TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
-            req.addActiveProfiles(config.getActiveteProfiles());
             //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
                 settings.setOffline(config.isOffline().booleanValue());
