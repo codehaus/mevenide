@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
@@ -37,7 +38,7 @@ public class BeanRunConfig implements RunConfig {
     private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
     private boolean showError = MavenExecutionSettings.getDefault().isShowErrors();
     private Boolean offline;
-    private List activeteProfiles = Collections.EMPTY_LIST;
+    private List activate = new ArrayList();
     private boolean updateSnapshots = false;
     private boolean recursive = true;
     
@@ -110,11 +111,12 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public List getActiveteProfiles() {
-        return activeteProfiles;
+        return activate;
     }
 
     public void setActiveteProfiles(List activeteProfiles) {
-        this.activeteProfiles = activeteProfiles;
+        activate = new ArrayList();
+        activate.addAll(activeteProfiles);
     }
 
     public boolean isRecursive() {
