@@ -45,13 +45,13 @@ import org.codehaus.plexus.util.IOUtil;
 public class NbArtifact implements Artifact {
     
     private Artifact original;
-    private static Map cache = new HashMap();
+    private static Map<String, File> cache = new HashMap<String, File>();
     private boolean fakesSystem = false;
     private boolean fakePom = false;
     private File originalSystemFile;
     
     public static synchronized File getCachedPom(String id) {
-        return (File)cache.get(id);
+        return cache.get(id);
     }
     
     public static synchronized void putCachedPom(String id, File fil) {

@@ -27,7 +27,7 @@ import org.apache.maven.artifact.versioning.VersionRange;
  */
 public class MyResolutionListener implements ResolutionListener {
     
-    private static ThreadLocal listener = new ThreadLocal();
+    private static ThreadLocal<ResolutionListener> listener = new ThreadLocal<ResolutionListener>();
     /** Creates a new instance of MyResolutionListener */
     public MyResolutionListener() {
     }
@@ -42,11 +42,7 @@ public class MyResolutionListener implements ResolutionListener {
     }
     
     private ResolutionListener getDelegate() {
-        Object ret = listener.get();
-        if (ret != null) {
-            return (ResolutionListener)ret;
-        }
-        return null;
+        return listener.get();
     }
     
     public void  testArtifact(Artifact node) {

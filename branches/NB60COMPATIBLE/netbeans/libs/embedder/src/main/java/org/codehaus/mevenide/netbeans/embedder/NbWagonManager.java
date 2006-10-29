@@ -53,7 +53,7 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
     
     private DefaultWagonManager original;
     
-    private List letGoes = new ArrayList();
+    private List<Artifact> letGoes = new ArrayList<Artifact>();
     
     /** Creates a new instance of NbWagonManager */
     public NbWagonManager() {

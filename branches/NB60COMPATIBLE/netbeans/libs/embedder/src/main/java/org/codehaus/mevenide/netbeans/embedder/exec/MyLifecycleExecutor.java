@@ -18,6 +18,7 @@
 
 package org.codehaus.mevenide.netbeans.embedder.exec;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,15 +60,14 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
 
     private Map phaseToLifecycleMap;
     
-    private static ThreadLocal reactorManager = new ThreadLocal();
+    private static ThreadLocal<ReactorManager> reactorManager = new ThreadLocal<ReactorManager>();
     
     public static List /*java.util.File*/ getAffectedProjects() {
-        Object obj = reactorManager.get();
-        if (obj instanceof ReactorManager) {
-            ReactorManager rm = (ReactorManager)obj;
+        ReactorManager rm = reactorManager.get();
+        if (rm != null) {
             List lst = rm.getSortedProjects();
             Iterator it = lst.iterator();
-            List toRet = new ArrayList();
+            List<File> toRet = new ArrayList<File>();
             while (it.hasNext()) {
                 MavenProject elem = (MavenProject) it.next();
                 toRet.add(elem.getFile());

@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import org.apache.maven.profiles.ProfilesRoot;
@@ -62,6 +61,7 @@ public class MavenSettingsSingleton {
      * way of retrieving/using them.
      * @deprecated rather not use, doesn't contain the global setting values
      */
+    @Deprecated
     public Settings getSettings() {
         //TODO need probably some kind of caching..
         Settings sets = createUserSettingsModel();
