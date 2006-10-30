@@ -52,18 +52,15 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         JavadocForBinaryQueryImplementation {
     
     private NbMavenProject project;
-    private HashMap map;
+    private HashMap<String, BinResult> map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(NbMavenProject proj) {
         project = proj;
-        map = new HashMap();
+        map = new HashMap<String, BinResult>();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 synchronized (map) {
-                    Iterator it = map.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry ent = (Map.Entry)it.next();
-                        BinResult res = (BinResult)ent.getValue();
+                    for (BinResult res : map.values()) {
                         if (!Arrays.equals(res.getCached(), res.getRoots())) {
                             res.fireChanged();
                         }
@@ -84,7 +81,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      */
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         synchronized (map) {
-            SourceForBinaryQuery.Result toReturn = (SourceForBinaryQuery.Result)map.get(url.toString());
+            BinResult toReturn = map.get(url.toString());
             if (toReturn != null) {
                 return toReturn;
             }
@@ -173,7 +170,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     }
     
     private FileObject[] getSrcRoot() {
-        Collection toReturn = new ArrayList();
+        Collection<FileObject> toReturn = new ArrayList<FileObject>();
         List srcRoots = project.getOriginalMavenProject().getCompileSourceRoots();
         Iterator it = srcRoots.iterator();
         while (it.hasNext()) {
@@ -197,11 +194,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 toReturn.add(fo);
             }
         }
-        return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
+        return toReturn.toArray(new FileObject[toReturn.size()]);
     }
     
     private FileObject[] getTestSrcRoot() {
-        Collection toReturn = new ArrayList();
+        Collection<FileObject> toReturn = new ArrayList<FileObject>();
         List srcRoots = project.getOriginalMavenProject().getTestCompileSourceRoots();
         Iterator it = srcRoots.iterator();
         while (it.hasNext()) {
@@ -218,25 +215,25 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                 toReturn.add(fo);
             }
         }
-        return (FileObject[])toReturn.toArray(new FileObject[toReturn.size()]);
+        return toReturn.toArray(new FileObject[toReturn.size()]);
     }
     
     
     private URL[] getJavadocRoot() {
-        //TODO?
+        //TODO shall we delegate to "possibly" generated javadoc in project or in site?
         return new URL[0];
     }
     
     
     private class BinResult implements SourceForBinaryQuery.Result  {
         private URL url;
-        private List listeners;
+        private List<ChangeListener> listeners;
         private FileObject[] results;
         private FileObject[] cached = null;
         
         public BinResult(URL urlParam) {
             url = urlParam;
-            listeners = new ArrayList();
+            listeners = new ArrayList<ChangeListener>();
         }
         
         public FileObject[] getRoots() {
@@ -270,13 +267,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         
         void fireChanged() {
-            List lists = new ArrayList();
+            List<ChangeListener> lists = new ArrayList<ChangeListener>();
             synchronized(listeners) {
                 lists.addAll(listeners);
             }
-            Iterator it = lists.iterator();
-            while (it.hasNext()) {
-                ChangeListener listen = (ChangeListener)it.next();
+            for (ChangeListener listen : lists) {
                 listen.stateChanged(new ChangeEvent(this));
             }
         }
@@ -286,11 +281,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     private class DocResult implements JavadocForBinaryQuery.Result  {
         private URL url;
         private URL[] results;
-        private List listeners;
+        private List<ChangeListener> listeners;
         
         public DocResult(URL urlParam) {
             url = urlParam;
-            listeners = new ArrayList();
+            listeners = new ArrayList<ChangeListener>();
         }
         public void addChangeListener(ChangeListener changeListener) {
             synchronized (listeners) {
@@ -305,13 +300,11 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         }
         
         void fireChanged() {
-            List lists = new ArrayList();
+            List<ChangeListener> lists = new ArrayList<ChangeListener>();
             synchronized(listeners) {
                 lists.addAll(listeners);
             }
-            Iterator it = lists.iterator();
-            while (it.hasNext()) {
-                ChangeListener listen = (ChangeListener)it.next();
+            for (ChangeListener listen : lists) {
                 listen.stateChanged(new ChangeEvent(this));
             }
         }

@@ -49,14 +49,14 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     private Set set;
     private Object lock = new Object();
     private Object cacheLock = new Object();
-    private List listeners;
+    private List<ChangeListener> listeners;
     private Set cachedProjects;
     private PropertyChangeListener projectListener;
     
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
         set = new HashSet();
-        listeners = new ArrayList();
+        listeners = new ArrayList<ChangeListener>();
         cachedProjects = null;
         projectListener = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -118,14 +118,12 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     private void fireChange() {
-        List lst = new ArrayList();
+        List<ChangeListener> lst = new ArrayList<ChangeListener>();
         synchronized (listeners) {
             lst.addAll(listeners);
         }
-        Iterator it = lst.iterator();
         ChangeEvent event = new ChangeEvent(this);
-        while (it.hasNext()) {
-            ChangeListener change = (ChangeListener)it.next();
+        for (ChangeListener change : lst) {
             change.stateChanged(event);
         }
     }
