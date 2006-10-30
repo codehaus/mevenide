@@ -62,7 +62,7 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
     
     private static ThreadLocal<ReactorManager> reactorManager = new ThreadLocal<ReactorManager>();
     
-    public static List /*java.util.File*/ getAffectedProjects() {
+    public static List<File> getAffectedProjects() {
         ReactorManager rm = reactorManager.get();
         if (rm != null) {
             List lst = rm.getSortedProjects();
@@ -96,7 +96,6 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
         DefaultLifecycleExecutor exec = new DefaultLifecycleExecutor();
         setVar(exec, pluginManager, "pluginManager");
         setVar(exec, extensionManager, "extensionManager");
-        System.out.println("setting lifecycle=" + lifecycles);
         setVar(exec, lifecycles, "lifecycles");
         setVar(exec, artifactHandlerManager, "artifactHandlerManager");
         setVar(exec, defaultReports, "defaultReports");
