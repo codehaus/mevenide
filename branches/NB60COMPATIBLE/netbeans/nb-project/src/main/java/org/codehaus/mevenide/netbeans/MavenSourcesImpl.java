@@ -23,7 +23,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -38,7 +37,6 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.support.GenericSources;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
@@ -61,15 +59,11 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
-    public static final String TYPE_DOC_ROOT="doc_root"; //NOI18N
-    public static final String TYPE_WEB_INF="web_inf"; //NOI18N
-    
     private NbMavenProject project;
     private List<ChangeListener> listeners;
     
     private Map<String, SourceGroup> javaGroup;
     private SourceGroup genSrcGroup;
-    private SourceGroup webDocSrcGroup;
     
     private Object lock = new Object();
     
@@ -186,9 +180,6 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         }
-        if (TYPE_DOC_ROOT.equals(str)) {
-            return createWebDocRoot();
-        }
         if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
             // TODO not all these are probably resources.. maybe need to split in 2 groups..
             boolean test = TYPE_TEST_RESOURCES.equals(str);
@@ -235,45 +226,6 @@ public class MavenSourcesImpl implements Sources {
         return changed;
     }
     
-    private SourceGroup[] createWebDocRoot() {
-        try {
-            FileObject folder = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
-            SourceGroup grp = null;
-            synchronized (lock) {
-                checkWebDocGroupCache(folder);
-                grp = webDocSrcGroup;
-            }
-            if (grp != null) {
-                return new SourceGroup[] {grp};
-            } else {
-                return new SourceGroup[0];
-            }
-        } catch (MalformedURLException exc) {
-            ErrorManager.getDefault().notify(exc);
-            return new SourceGroup[0];
-        }
-    }
-    
-    
-    
-    /**
-     * consult the SourceGroup cache, return true if anything changed..
-     */
-    private boolean checkWebDocGroupCache(FileObject root) {
-        if (root == null && webDocSrcGroup != null) {
-            webDocSrcGroup = null;
-            return true;
-        }
-        if (root == null) {
-            return false;
-        }
-        boolean changed = false;
-        if (webDocSrcGroup == null || !webDocSrcGroup.getRootFolder().equals(root)) {
-            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Pages", null, null);
-            changed = true;
-        }
-        return changed;
-    }
     
     /**
      * consult the SourceGroup cache, return true if anything changed..

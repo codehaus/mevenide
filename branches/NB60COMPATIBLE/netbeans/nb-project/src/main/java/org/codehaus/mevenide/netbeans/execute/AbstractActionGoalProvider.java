@@ -86,7 +86,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 replaceMap.put("classNameWithExtension", "");
                 replaceMap.put("className", "");
                 replaceMap.put("packageClassName", "");
-                grp = srcs.getSourceGroups(MavenSourcesImpl.TYPE_DOC_ROOT);
+                grp = srcs.getSourceGroups("doc_root"); //NOI18N J2EE
                 for (int i = 0; i < grp.length; i++) {
                     relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
                     if (relPath != null) {

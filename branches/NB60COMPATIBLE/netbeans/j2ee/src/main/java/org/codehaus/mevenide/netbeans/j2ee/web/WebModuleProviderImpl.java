@@ -20,8 +20,8 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
@@ -229,7 +229,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     public FileObject[] getSourceRoots() {
         ArrayList toRet = new ArrayList();
         Sources srcs = ProjectUtils.getSources(project);
-        SourceGroup[] webs = srcs.getSourceGroups(MavenSourcesImpl.TYPE_DOC_ROOT);
+        SourceGroup[] webs = srcs.getSourceGroups(J2eeMavenSourcesImpl.TYPE_DOC_ROOT);
         if (webs != null) {
             for (int i = 0; i < webs.length; i++) {
                 toRet.add(webs[i].getRootFolder());

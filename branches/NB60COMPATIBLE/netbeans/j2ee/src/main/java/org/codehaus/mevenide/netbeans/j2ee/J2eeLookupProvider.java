@@ -47,6 +47,7 @@ public class J2eeLookupProvider implements LookupProvider {
         InstanceContent ic = new InstanceContent();
         ic.add(new J2EEPrerequisitesChecker());
         ic.add(new J2eeRecoPrivTemplates(project));
+        ic.add(new J2eeMavenSourcesImpl(project));
         return new Provider(project, ic);
     }
     
