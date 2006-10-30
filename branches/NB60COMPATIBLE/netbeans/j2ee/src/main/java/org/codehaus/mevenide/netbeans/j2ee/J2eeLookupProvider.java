@@ -18,30 +18,31 @@ package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.codehaus.mevenide.netbeans.AdditionalM2LookupProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
+import org.netbeans.spi.project.LookupProvider;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.Lookups;
 
 /**
  * extending the default maven project lookup.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 
-public class J2eeLookupProvider implements AdditionalM2LookupProvider {
+public class J2eeLookupProvider implements LookupProvider {
     
     /** Creates a new instance of J2eeLookupProvider */
     public J2eeLookupProvider() {
     }
     
-    public Lookup createMavenLookup(NbMavenProject project) {
+    public Lookup createAdditionalLookup(Lookup baseLookup) {
+        NbMavenProject project = baseLookup.lookup(NbMavenProject.class);
+        assert project != null;
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         ic.add(new J2EEPrerequisitesChecker());
@@ -118,4 +119,5 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
         }
         
     }
+
 }
