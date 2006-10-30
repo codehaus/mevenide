@@ -20,7 +20,6 @@ import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -294,10 +293,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 col.add(stop);
                 freeTabs.put(ioput, col);
             }
-            List fireList = MyLifecycleExecutor.getAffectedProjects();
-            Iterator it = fireList.iterator();
-            while (it.hasNext()) {
-                File elem = (File) it.next();
+            EmbedderFactory.resetProjectEmbedder();
+            List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
+            for (File elem: fireList) {
                 FileObject fo = FileUtil.toFileObject(elem);
                 if (fo != null) {
                     //TODO have the firing based on open projects only..

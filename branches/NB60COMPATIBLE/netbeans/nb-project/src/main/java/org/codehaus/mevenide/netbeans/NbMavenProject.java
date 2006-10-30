@@ -394,16 +394,16 @@ public final class NbMavenProject implements Project {
     
     
     public Set getAvailableProfiles() {
-        Set<String> profiles = new HashSet<String>();
+        Set profiles = new HashSet();
         profiles.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().getProfilesAsMap().keySet());
-        Iterator<Profile> it = getOriginalMavenProject().getModel().getProfiles().iterator();
+        Iterator it = getOriginalMavenProject().getModel().getProfiles().iterator();
         while (it.hasNext()) {
-            Profile prof = it.next();
+            Profile prof = (Profile)it.next();
             profiles.add(prof.getId());
         }
-        Iterator<org.apache.maven.profiles.Profile> it2 = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
+        Iterator it2 = MavenSettingsSingleton.createProfilesModel(getProjectDirectory()).getProfiles().iterator();
         while (it2.hasNext()) {
-            org.apache.maven.profiles.Profile prof = it2.next();
+            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile)it2.next();
             profiles.add(prof.getId());
         }
         return profiles;
