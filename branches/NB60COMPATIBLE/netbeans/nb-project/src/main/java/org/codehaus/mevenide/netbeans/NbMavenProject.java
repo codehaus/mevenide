@@ -62,7 +62,6 @@ import org.codehaus.mevenide.netbeans.queries.MavenTestForSourceImpl;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
-import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
@@ -75,6 +74,7 @@ import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.netbeans.spi.project.support.LookupProviderSupport;
+import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 
 
 
@@ -437,8 +437,12 @@ public final class NbMavenProject implements Project {
             new MavenSourceLevelImpl(this),
             new JarPackagingRunChecker(),
             problemReporter,
-            new UserActionGoalProvider(this)
-                    
+            new UserActionGoalProvider(this),
+
+            // default mergers..        
+            UILookupMergerSupport.createPrivilegedTemplatesMerger(),
+            UILookupMergerSupport.createRecommendedTemplatesMerger(),
+            LookupProviderSupport.createSourcesMerger()        
         });
         return staticLookup;
     }
