@@ -41,6 +41,7 @@ import org.apache.maven.project.validation.ModelValidationResult;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -52,13 +53,13 @@ import org.openide.loaders.DataObjectNotFoundException;
  * @author mkleint
  */
 public final class ProblemReporter implements Comparator {
-    private List listeners = new ArrayList();
-    private Set reports;
+    private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
+    private Set<ProblemReport> reports;
     private NbMavenProject nbproject;
     
     /** Creates a new instance of ProblemReporter */
     public ProblemReporter(NbMavenProject proj) {
-        reports = new TreeSet(this);
+        reports = new TreeSet<ProblemReport>(this);
         nbproject = proj;
     }
     
@@ -77,7 +78,7 @@ public final class ProblemReporter implements Comparator {
     
     public void addReports(ProblemReport[] report) {
         for (int i = 0; i < report.length; i++) {
-            reports.add(report);
+            reports.add(report[i]);
         }
         fireChange();
     }
@@ -88,15 +89,13 @@ public final class ProblemReporter implements Comparator {
     }
     
     private void fireChange() {
-        Iterator it = listeners.iterator();
-        while (it.hasNext()) {
-            ChangeListener list = (ChangeListener) it.next();
+        for (ChangeListener list : listeners) {
             list.stateChanged(new ChangeEvent(this));
         }
     }
     
     public Collection getReports() {
-        return new ArrayList(reports);
+        return new ArrayList<ProblemReport>(reports);
     }
     
     public void clearReports() {
@@ -214,12 +213,8 @@ public final class ProblemReporter implements Comparator {
         private NbMavenProject project;
         private String filepath;
         
-        private OpenPomAction() {
-            putValue(Action.NAME, "Open pom.xml");
-        }
-        
         OpenPomAction(NbMavenProject proj) {
-            this();
+            putValue(Action.NAME, "Open pom.xml");
             project = proj;
         }
         
