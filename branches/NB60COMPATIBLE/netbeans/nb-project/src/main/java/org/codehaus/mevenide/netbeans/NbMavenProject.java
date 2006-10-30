@@ -578,82 +578,8 @@ public final class NbMavenProject implements Project {
         
     }
     
-    
-    /**
-     * TODO maybe make somehow extensible from other modules?
-     */
-    
     private static final class RecommendedTemplatesImpl
             implements RecommendedTemplates, PrivilegedTemplates {
-        
-        
-        private static final String[] EAR_TYPES = new String[] {
-            "XML",            //NOPMD      // NOI18N
-            "ear-types",                 // NOI18N
-            "wsdl",          //NOPMD       // NOI18N
-            "simple-files"   //NOPMD       // NOI18N
-        };
-        
-        private static final String[] EAR_PRIVILEGED_NAMES = new String[] {
-            "Templates/XML/XMLWizard",
-            "Templates/Other/Folder"
-        };
-        
-        private static final String[] EJB_TYPES = new String[] {
-            "java-classes",         // NOI18N
-            "ejb-types",            // NOI18N
-            "web-services",         // NOI18N
-            "wsdl",                 // NOI18N
-            "j2ee-types",           // NOI18N
-            "java-beans",           // NOI18N
-            "java-main-class",      // NOI18N
-            "oasis-XML-catalogs",   // NOI18N
-            "XML",                  // NOI18N
-            "ant-script",           // NOI18N
-            "ant-task",             // NOI18N
-            "junit",                // NOI18N
-            "simple-files"          // NOI18N
-        };
-        
-        private static final String[] EJB_PRIVILEGED_NAMES = new String[] {
-            
-            "Templates/J2EE/Session", // NOI18N
-            "Templates/J2EE/Entity",  // NOI18N
-            "Templates/J2EE/RelatedCMP", // NOI18N
-            "Templates/J2EE/Message", //NOI18N
-            "Templates/WebServices/WebService", // NOI18N
-            "Templates/WebServices/MessageHandler", // NOI18N
-            "Templates/Classes/Class.java" // NOI18N
-        };
-        
-        private static final String[] WEB_TYPES = new String[] {
-            "java-classes",         // NOI18N
-            "java-main-class",      // NOI18N
-            "java-beans",           // NOI18N
-            "oasis-XML-catalogs",   // NOI18N
-            "XML",                  // NOI18N
-            "ant-script",           // NOI18N
-            "ant-task",             // NOI18N
-            "servlet-types",        // NOI18N
-            "web-types",            // NOI18N
-            "web-services",         // NOI18N
-            "web-service-clients",  // NOI18N
-            "wsdl",                 // NOI18N
-            "j2ee-types",           // NOI18N
-            "junit",                // NOI18N
-            "simple-files"          // NOI18N
-        };
-        
-        private static final String[] WEB_PRIVILEGED_NAMES = new String[] {
-            "Templates/JSP_Servlet/JSP.jsp",            // NOI18N
-            "Templates/JSP_Servlet/Html.html",          // NOI18N
-            "Templates/JSP_Servlet/Servlet.java",       // NOI18N
-            "Templates/Classes/Class.java",             // NOI18N
-            "Templates/Classes/Package",                // NOI18N
-            "Templates/WebServices/WebService",         // NOI18N
-            "Templates/WebServices/WebServiceClient",   // NOI18N
-            "Templates/Other/Folder",                   // NOI18N
-        };
         
         private static final String[] JAR_APPLICATION_TYPES = new String[] {
             "java-classes",         // NOI18N
@@ -716,10 +642,15 @@ public final class NbMavenProject implements Project {
             "ear-types",            // NOI18N
         };
         
+        private List<String> prohibited;
         private NbMavenProject project;
         
         RecommendedTemplatesImpl(NbMavenProject proj) {
             project = proj;
+            prohibited = new ArrayList<String>();
+            prohibited.add("ear");
+            prohibited.add("ejb");
+            prohibited.add("war");
         }
         
         public String[] getRecommendedTypes() {
@@ -728,15 +659,6 @@ public final class NbMavenProject implements Project {
                 packaging = "jar";
             }
             packaging = packaging.trim();
-            if ("ejb".equals(packaging)) {
-                return EJB_TYPES;
-            }
-            if ("ear".equals(packaging)) {
-                return EAR_TYPES;
-            }
-            if ("war".equals(packaging)) {
-                return WEB_TYPES;
-            }
             if ("pom".equals(packaging)) {
                 return POM_APPLICATION_TYPES;
             }
@@ -746,6 +668,10 @@ public final class NbMavenProject implements Project {
             //NBM also fall under this I guess..
             if ("nbm".equals(packaging)) {
                 return JAR_APPLICATION_TYPES;
+            }
+            
+            if (prohibited.contains(packaging)) {
+                return new String[0];
             }
             
             // If packaging is unknown, any type of sources is recommanded.
@@ -760,19 +686,12 @@ public final class NbMavenProject implements Project {
                 packaging = "jar";
             }
             packaging = packaging.trim();
-            if ("ejb".equals(packaging)) {
-                return EJB_PRIVILEGED_NAMES;
-            }
-            if ("ear".equals(packaging)) {
-                return EAR_PRIVILEGED_NAMES;
-            }
-            if ("war".equals(packaging)) {
-                return WEB_PRIVILEGED_NAMES;
-            }
             if ("pom".equals(packaging)) {
                 return POM_PRIVILEGED_NAMES;
             }
-            
+            if (prohibited.contains(packaging)) {
+                return new String[0];
+            }
             return JAR_PRIVILEGED_NAMES;
         }
         

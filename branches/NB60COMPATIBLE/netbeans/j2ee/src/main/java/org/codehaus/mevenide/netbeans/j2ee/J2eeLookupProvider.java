@@ -46,6 +46,7 @@ public class J2eeLookupProvider implements LookupProvider {
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         ic.add(new J2EEPrerequisitesChecker());
+        ic.add(new J2eeRecoPrivTemplates(project));
         return new Provider(project, ic);
     }
     
