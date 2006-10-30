@@ -41,9 +41,6 @@
           <id>org.netbeans.api:org-openide-modules</id>
       </dependency>
       <dependency>
-          <id>org.netbeans.api:org-openide-options</id>
-      </dependency>
-      <dependency>
           <id>org.netbeans.api:org-openide-execution</id>
       </dependency>
       <dependency>

@@ -17,15 +17,15 @@
 
 package org.codehaus.mevenide.netbeans.options;
 
+import java.util.prefs.Preferences;
 import org.apache.maven.execution.MavenExecutionRequest;
-import org.openide.options.SystemOption;
-import org.openide.util.HelpCtx;
+import org.openide.util.NbPreferences;
 
 /**
  * a netbeans settings for global options that cannot be put into the settings file.
  * @author mkleint
  */
-public class MavenExecutionSettings extends SystemOption {
+public class MavenExecutionSettings  {
     public static final String PROP_DEBUG = "showDebug"; // NOI18N
     public static final String PROP_ERRORS = "showErrors"; //NOI18N
     public static final String PROP_CHECKSUM_POLICY = "checksumPolicy"; //NOI18N
@@ -33,77 +33,85 @@ public class MavenExecutionSettings extends SystemOption {
     public static final String PROP_FAILURE_BEHAVIOUR = "failureBehaviour"; //NOI18N
     public static final String PROP_USE_REGISTRY = "usePluginRegistry"; //NOI18N
     
-    private static final long serialVersionUID = -4857548487373437L;
-
-    
-    protected void initialize() {
-        super.initialize();
-        setChecksumPolicy(null);
-        setPluginUpdatePolicy(Boolean.FALSE);
-        setShowDebug(false);
-        setShowErrors(false);
-        setFailureBehaviour(MavenExecutionRequest.REACTOR_FAIL_FAST);
-        setUsePluginRegistry(true);
-    }
-    
-    public String displayName() {
-        return "ExecutionSettings"; //NOI18N
-    }
-    
-    public HelpCtx getHelpCtx() {
-        return HelpCtx.DEFAULT_HELP;
-    }
+    private static final MavenExecutionSettings INSTANCE = new MavenExecutionSettings();
     
     public static MavenExecutionSettings getDefault() {
-        return (MavenExecutionSettings) findObject(MavenExecutionSettings.class, true);
+        return INSTANCE;
+    }
+    
+    protected final Preferences getPreferences() {
+        return NbPreferences.forModule(MavenExecutionSettings.class);
+    }
+    
+    protected final String putProperty(String key, String value) {
+        String retval = getProperty(key);
+        if (value != null) {
+            getPreferences().put(key, value);
+        } else {
+            getPreferences().remove(key);
+        }
+        return retval;
     }
 
+    protected final String getProperty(String key) {
+        return getPreferences().get(key, null);
+    }    
+    
+    private MavenExecutionSettings() {
+    }
+    
+
     public boolean isShowDebug() {
-        return ((Boolean)getProperty(PROP_DEBUG)).booleanValue();
+        return getPreferences().getBoolean(PROP_DEBUG, false);
     }
 
     public void setShowDebug(boolean showDebug) {
-        putProperty(PROP_DEBUG, Boolean.valueOf(showDebug), true);
+        getPreferences().putBoolean(PROP_DEBUG, showDebug);
     }
 
     public boolean isShowErrors() {
-        return ((Boolean)getProperty(PROP_ERRORS)).booleanValue();
+        return getPreferences().getBoolean(PROP_ERRORS, false);
     }
 
     public void setShowErrors(boolean showErrors) {
-        putProperty(PROP_ERRORS, Boolean.valueOf(showErrors), true);
+        getPreferences().putBoolean(PROP_ERRORS, showErrors);
     }
 
     public String getChecksumPolicy() {
-        return (String)getProperty(PROP_CHECKSUM_POLICY);
+        return getPreferences().get(PROP_CHECKSUM_POLICY, null);
     }
 
     public void setChecksumPolicy(String checksumPolicy) {
-        putProperty(PROP_CHECKSUM_POLICY, checksumPolicy, true);
+        putProperty(PROP_CHECKSUM_POLICY, checksumPolicy);
     }
 
     public Boolean getPluginUpdatePolicy() {
-        return (Boolean)getProperty(PROP_PLUGIN_POLICY);
+        String prop = getProperty(PROP_PLUGIN_POLICY);
+        return prop == null ? null : Boolean.parseBoolean(prop);
     }
 
     public void setPluginUpdatePolicy(Boolean pluginUpdatePolicy) {
-        putProperty(PROP_PLUGIN_POLICY, pluginUpdatePolicy, true);
+        if (pluginUpdatePolicy == null) {
+            getPreferences().remove(PROP_PLUGIN_POLICY);
+        } else {
+            putProperty(PROP_PLUGIN_POLICY, pluginUpdatePolicy.toString());
+        }
     }
 
     public String getFailureBehaviour() {
-        return (String)getProperty(PROP_FAILURE_BEHAVIOUR);
+        return getPreferences().get(PROP_FAILURE_BEHAVIOUR, MavenExecutionRequest.REACTOR_FAIL_FAST);
     }
 
     public void setFailureBehaviour(String failureBehaviour) {
-        putProperty(PROP_FAILURE_BEHAVIOUR, failureBehaviour, true);
+        putProperty(PROP_FAILURE_BEHAVIOUR, failureBehaviour);
     }
 
     public boolean isUsePluginRegistry() {
-        return ((Boolean)getProperty(PROP_USE_REGISTRY)).booleanValue();
+        return getPreferences().getBoolean(PROP_USE_REGISTRY, true);
     }
 
     public void setUsePluginRegistry(boolean usePluginRegistry) {
-        putProperty(PROP_USE_REGISTRY, Boolean.valueOf(usePluginRegistry), true);
+        getPreferences().putBoolean(PROP_USE_REGISTRY, usePluginRegistry);
     }
     
     
