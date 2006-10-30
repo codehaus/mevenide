@@ -51,10 +51,5 @@
         <artifactId>nb-mvn-embedder</artifactId>
         <version>2.4-SNAPSHOT</version>
     </dependency>
-    <dependency>
-        <groupId>org.netbeans.api</groupId>
-        <artifactId>org-openide-options</artifactId>
-        <version>${netbeans.release}</version>
-    </dependency>
   </dependencies>
 </project>

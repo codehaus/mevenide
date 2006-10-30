@@ -20,7 +20,7 @@
             <id>org.netbeans.api:org-netbeans-api-progress</id>
         </dependency>
         <dependency>
-            <id>org.netbeans.api:org-openide-options</id>
+            <id>org.netbeans.api:org-openide-util</id>
         </dependency>
     </dependencies> 
 </nbm>

@@ -20,15 +20,16 @@ package org.codehaus.mevenide.indexer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
-import org.openide.options.SystemOption;
-import org.openide.util.HelpCtx;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
 
 /**
- * a netbeans settings for global options that cannot be put into the settings file.
- * @author mkleint
+ * a netbeans settings for global options related to repository indexing and manamegent..
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenIndexSettings extends SystemOption {
+public class MavenIndexSettings {
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
     public static final String PROP_COLLECTED = "collectedReposAsStrings"; //NOI18N
@@ -39,69 +40,90 @@ public class MavenIndexSettings extends SystemOption {
     public static final int FREQ_STARTUP = 2;
     public static final int FREQ_NEVER = 3;
     
-    private static final long serialVersionUID = -4857548487373437L;
-
-
+    private static final MavenIndexSettings INSTANCE = new MavenIndexSettings();
     
-    protected void initialize() {
-        super.initialize();
-        setIndexUpdateFrequency(FREQ_ONCE_WEEK);
-        setLastIndexUpdate(new Date(0));
-        setCollectedRepositories(new ArrayList());
-        setIncludeSnapshots(true);
+    private MavenIndexSettings() {
     }
     
-    public String displayName() {
-        return "ExecutionSettings"; //NOI18N
+    private final Preferences getPreferences() {
+        return NbPreferences.forModule(MavenIndexSettings.class);
     }
     
-    public HelpCtx getHelpCtx() {
-        return HelpCtx.DEFAULT_HELP;
+    private final List<String> getStringList(String key) {
+        Preferences pref = getPreferences();
+        int count = 0;
+        String val = pref.get(key + "." + count, null);
+        List<String> toRet = new ArrayList<String>();
+        while (val != null) {
+            toRet.add(val);
+            count = count + 1;
+            val = pref.get(key + "." + count, null);
+        }
+        return toRet;
+    }
+    
+    private final void setStringList(String basekey, List<String> list) {
+        assert list != null;
+        Preferences pref = getPreferences();
+        int count = 0;
+        String key = basekey + "." + count;
+        String val = pref.get(key, null);
+        Iterator<String> it = list.iterator();
+        while (val != null || it.hasNext()) {
+            if (it.hasNext()) {
+                pref.put(key, it.next());
+            } else {
+                pref.remove(key);
+            }
+            count = count + 1;
+            key = basekey + "." + count;
+            val = pref.get(key, null);
+        }
     }
     
     public static MavenIndexSettings getDefault() {
-        return (MavenIndexSettings) findObject(MavenIndexSettings.class, true);
+        return INSTANCE;
     }
-
     
     public void setIndexUpdateFrequency(int fr) {
-        putProperty(PROP_INDEX_FREQ, new Integer(fr), true);
+        getPreferences().putInt(PROP_INDEX_FREQ, fr);
     }
     
     public int getIndexUpdateFrequency() {
-        return ((Integer)getProperty(PROP_INDEX_FREQ)).intValue();
+        return getPreferences().getInt(PROP_INDEX_FREQ, FREQ_ONCE_WEEK);
     }
 
     public Date getLastIndexUpdate() {
-        return (Date)getProperty(PROP_LAST_INDEX_UPDATE);
+        return new Date(getPreferences().getLong(PROP_LAST_INDEX_UPDATE, 0));
     }
     
     public void setLastIndexUpdate(Date date) {
-        putProperty(PROP_LAST_INDEX_UPDATE, date, true);
+        getPreferences().putLong(PROP_LAST_INDEX_UPDATE, date.getTime());
     }
 
-    public  void setCollectedRepositories(List repos) {
-        setCollectedReposAsStrings((String[])repos.toArray(new String[repos.size()]));
+    public  void setCollectedRepositories(List<String> repos) {
+        setStringList(PROP_COLLECTED, repos);
     }
     
     public void setCollectedReposAsStrings(String[] repos) {
-        putProperty(PROP_COLLECTED, repos, true);
+        setCollectedRepositories(Arrays.asList(repos));
     }
     
     public String[] getCollectedReposAsStrings() {
-        return (String[])getProperty(PROP_COLLECTED);
+        List<String> str = getCollectedRepositories();
+        return str.toArray(new String[str.size()]);
     }
     
-    public List getCollectedRepositories() {
-        return new ArrayList(Arrays.asList(getCollectedReposAsStrings()));
+    public List<String> getCollectedRepositories() {
+        return getStringList(PROP_COLLECTED);
     }
 
     public boolean isIncludeSnapshots() {
-        return ((Boolean)getProperty(PROP_SNAPSHOTS)).booleanValue();
+        return getPreferences().getBoolean(PROP_SNAPSHOTS, true);
     }
 
     public void setIncludeSnapshots(boolean includeSnapshots) {
-        putProperty(PROP_SNAPSHOTS, new Boolean(includeSnapshots), true);
+        getPreferences().putBoolean(PROP_SNAPSHOTS, includeSnapshots);
     }
     
 }
