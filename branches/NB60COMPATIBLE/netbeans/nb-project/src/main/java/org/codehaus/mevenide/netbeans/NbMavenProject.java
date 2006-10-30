@@ -74,6 +74,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.openide.util.lookup.ProxyLookup;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.netbeans.spi.project.support.LookupProviderSupport;
 
 
 
@@ -412,11 +413,7 @@ public final class NbMavenProject implements Project {
     public synchronized Lookup getLookup() {
         if (lookup == null) {
             lookup = createBasicLookup();
-            // now in the creation of extended lookup by MavenLookupProvider
-            // it can happen that someone is using the project's lookup to find some
-            // basic stuff. That would create a cycle..
-            // obviously one cannot call getlookup() in the basic lookup setup..
-            lookup = createCompleteLookups();
+            lookup = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-codehaus-mevenide-netbeans/Lookup");
         }
         return lookup;
     }
@@ -444,25 +441,6 @@ public final class NbMavenProject implements Project {
                     
         });
         return staticLookup;
-    }
-    
-    private Lookup createCompleteLookups() {
-        Collection toReturn = new ArrayList();
-        // add the static lookup that acts as complete instance as of now..
-        toReturn.add(lookup);
-        
-        Lookup.Template template = new Lookup.Template(AdditionalM2LookupProvider.class);
-        Lookup.Result result = Lookup.getDefault().lookup(template);
-        Collection col = result.allInstances();
-        Iterator it = col.iterator();
-        while (it.hasNext()) {
-            AdditionalM2LookupProvider prov = (AdditionalM2LookupProvider)it.next();
-            toReturn.add(prov.createMavenLookup(this));
-        }
-        Lookup[] lookups = new Lookup[toReturn.size()];
-        lookups = (Lookup[])toReturn.toArray(lookups);
-        ProxyLookup look = new ProxyLookup(lookups);
-        return look;
     }
     
     // Private innerclasses ----------------------------------------------------

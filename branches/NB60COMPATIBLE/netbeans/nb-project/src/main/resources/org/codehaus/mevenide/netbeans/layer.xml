@@ -66,5 +66,16 @@
             </folder>
         </folder>
     </folder>
+    
+    <folder name="Projects">
+        <folder name="org-codehaus-mevenide-netbeans">
+            <folder name="Nodes">
+            </folder>    
+            <folder name="Lookup">
+            </folder>    
+            <folder name="Customizer">
+            </folder>    
+        </folder>
+    </folder>
  
 </filesystem>
