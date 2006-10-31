@@ -16,11 +16,19 @@
  */
 package org.codehaus.mevenide.netbeans.output;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 
 
@@ -54,6 +62,26 @@ public class JavaOutputListenerProvider implements OutputProcessor {
                 String text = match.group(4);
                 visitor.setOutputListener(new CompileAnnotation(clazz, lineNum, 
                         text), text.indexOf("[deprecation]") < 0);
+                File clazzfile = new File(clazz + ".java");
+                FileObject file = FileUtil.toFileObject(FileUtil.normalizeFile(clazzfile));
+                String newclazz = clazz;
+                if (file != null) {
+                    Project prj = FileOwnerQuery.getOwner(file);
+                    if (prj != null) {
+                        Sources srcs = (Sources)prj.getLookup().lookup(Sources.class);
+                        if (srcs != null) {
+                            SourceGroup[] grp = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA); 
+                            for (int i = 0; i < grp.length; i++) {
+                                if (FileUtil.isParentOf(grp[i].getRootFolder(), file)) {
+                                    newclazz = FileUtil.getRelativePath(grp[i].getRootFolder(), file);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                line = line.replace(clazz, newclazz);
+                visitor.setLine(line);
             }
     }
 
