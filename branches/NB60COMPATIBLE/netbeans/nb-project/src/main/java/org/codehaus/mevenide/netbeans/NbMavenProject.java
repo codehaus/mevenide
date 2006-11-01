@@ -591,7 +591,7 @@ public final class NbMavenProject implements Project {
             "XML",                  // NOI18N
             "ant-script",           // NOI18N
             "ant-task",             // NOI18N
-            "web-service-clients",  // NOI18N
+//            "web-service-clients",  // NOI18N
             "wsdl",                 // NOI18N
             // "servlet-types",     // NOI18N
             // "web-types",         // NOI18N
@@ -605,8 +605,8 @@ public final class NbMavenProject implements Project {
             "Templates/Classes/Package", // NOI18N
             "Templates/Classes/Interface.java", // NOI18N
             "Templates/GUIForms/JPanel.java", // NOI18N
-            "Templates/GUIForms/JFrame.java", // NOI18N
-            "Templates/WebServices/WebServiceClient"   // NOI18N
+            "Templates/GUIForms/JFrame.java" // NOI18N
+//            "Templates/WebServices/WebServiceClient"   // NOI18N
         };
         
         private static final String[] POM_APPLICATION_TYPES = new String[] {
@@ -631,8 +631,8 @@ public final class NbMavenProject implements Project {
             "XML",                  // NOI18N
             "ant-script",           // NOI18N
             "ant-task",             // NOI18N
-            "web-services",         // NOI18N
-            "web-service-clients",  // NOI18N
+//            "web-services",         // NOI18N
+//            "web-service-clients",  // NOI18N
             "wsdl",                 // NOI18N
             "servlet-types",        // NOI18N
             "web-types",            // NOI18N

@@ -67,7 +67,7 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
                 "Templates/J2EE/Entity",  // NOI18N
                 "Templates/J2EE/RelatedCMP", // NOI18N
                 "Templates/J2EE/Message", //NOI18N
-                "Templates/WebServices/WebService", // NOI18N
+//                "Templates/WebServices/WebService", // NOI18N
                 "Templates/WebServices/MessageHandler", // NOI18N
                 "Templates/Classes/Class.java" // NOI18N
     };
@@ -82,8 +82,8 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
                 "ant-task",             // NOI18N
                 "servlet-types",        // NOI18N
                 "web-types",            // NOI18N
-                "web-services",         // NOI18N
-                "web-service-clients",  // NOI18N
+//                "web-services",         // NOI18N
+//                "web-service-clients",  // NOI18N
                 "wsdl",                 // NOI18N
                 "j2ee-types",           // NOI18N
                 "junit",                // NOI18N
@@ -96,8 +96,8 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
                 "Templates/JSP_Servlet/Servlet.java",       // NOI18N
                 "Templates/Classes/Class.java",             // NOI18N
                 "Templates/Classes/Package",                // NOI18N
-                "Templates/WebServices/WebService",         // NOI18N
-                "Templates/WebServices/WebServiceClient",   // NOI18N
+//                "Templates/WebServices/WebService",         // NOI18N
+//                "Templates/WebServices/WebServiceClient",   // NOI18N
                 "Templates/Other/Folder",                   // NOI18N
     };
     
