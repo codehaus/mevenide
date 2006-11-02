@@ -623,8 +623,8 @@ public final class NbMavenProject implements Project {
         
         private static final String[] EJB_TYPES = new String[] {
             "java-classes",         // NOI18N
-            "ejb-types",            // NOI18N
-            "web-services",         // NOI18N
+//            "ejb-types",            // NOI18N
+//            "web-services",         // NOI18N
             "wsdl",                 // NOI18N
             "j2ee-types",           // NOI18N
             "java-beans",           // NOI18N
@@ -639,12 +639,13 @@ public final class NbMavenProject implements Project {
         
         private static final String[] EJB_PRIVILEGED_NAMES = new String[] {
             
-            "Templates/J2EE/Session", // NOI18N
-            "Templates/J2EE/Entity",  // NOI18N
-            "Templates/J2EE/RelatedCMP", // NOI18N
-            "Templates/J2EE/Message", //NOI18N
+//            "Templates/J2EE/Session", // NOI18N
+//            "Templates/J2EE/Entity",  // NOI18N
+//            "Templates/J2EE/RelatedCMP", // NOI18N
+//            "Templates/J2EE/Message", //NOI18N
 //            "Templates/WebServices/WebService", // NOI18N
 //            "Templates/WebServices/MessageHandler", // NOI18N
+            "Templates/Classes/Package",                // NOI18N
             "Templates/Classes/Class.java" // NOI18N
         };
         
