@@ -13,7 +13,7 @@
         <packagings>
             <packaging>war</packaging>
             <packaging>ear</packaging>
-            <packaging>ejb</packaging>
+            <!--packaging>ejb</packaging-->
         </packagings>
         <goals>
             <goal>package</goal>
@@ -38,7 +38,7 @@
         <packagings>
             <packaging>war</packaging>
             <packaging>ear</packaging>
-            <packaging>ejb</packaging>
+            <!--packaging>ejb</packaging-->
         </packagings>
         <goals>
             <goal>package</goal>

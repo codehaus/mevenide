@@ -21,7 +21,6 @@ import javax.swing.JComponent;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.M2CustomizerPanelProvider;
 import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbRunCustomizerPanel;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebRunCustomizerPanel;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 
@@ -41,10 +40,10 @@ public class J2eePanelProvider implements M2CustomizerPanelProvider {
             "war".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
             return new WebRunCustomizerPanel(handle, project);
         }
-        if (M2CustomizerPanelProvider.PANEL_RUN.equals(category.getName()) && 
-            "ejb".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
-            return new EjbRunCustomizerPanel(handle, project);
-        }
+//        if (M2CustomizerPanelProvider.PANEL_RUN.equals(category.getName()) && 
+//            "ejb".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+//            return new EjbRunCustomizerPanel(handle, project);
+//        }
         return null;
     }
     
