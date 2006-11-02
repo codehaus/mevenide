@@ -54,7 +54,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
     
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
-        return (fo != null && fo.lastModified().after(lastModified));
+        return (fo == null || fo.lastModified().after(lastModified));
         
     }
 }
