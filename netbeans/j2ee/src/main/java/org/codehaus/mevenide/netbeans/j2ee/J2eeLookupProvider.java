@@ -21,14 +21,12 @@ import java.beans.PropertyChangeListener;
 import org.codehaus.mevenide.netbeans.AdditionalM2LookupProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
-import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
 import org.openide.util.lookup.InstanceContent;
-import org.openide.util.lookup.Lookups;
 
 /**
  * extending the default maven project lookup.
@@ -100,12 +98,13 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
                 }
                 lastInstance = new EarModuleProviderImpl(project);
                 content.add(lastInstance);
-            } else if ("ejb".equals(packaging) && !lastType.equals(packaging)) {
-                if (lastInstance != null) {
-                    content.remove(lastInstance);
-                }
-                lastInstance = new EjbModuleProviderImpl(project);
-                content.add(lastInstance);
+// MEVENIDE-452                
+//            } else if ("ejb".equals(packaging) && !lastType.equals(packaging)) {
+//                if (lastInstance != null) {
+//                    content.remove(lastInstance);
+//                }
+//                lastInstance = new EjbModuleProviderImpl(project);
+//                content.add(lastInstance);
             } else if (lastInstance != null && !(
                     "war".equals(packaging) || 
                     "ejb".equals(packaging) || 
