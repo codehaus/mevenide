@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.netbeans.spi.java.queries.UnitTestForSourceQueryImplementation;
+import org.netbeans.spi.java.queries.MultipleRootsUnitTestForSourceQueryImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 
@@ -30,7 +30,7 @@ import org.openide.filesystems.FileObject;
  * JUnit tests queries.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementation {
+public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQueryImplementation {
     
                                                           
     private NbMavenProject project;
@@ -40,12 +40,12 @@ public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementat
     }
 
 
-    public URL findUnitTest(FileObject fileObject) {
+    public URL[] findUnitTests(FileObject fileObject) {
         try {
             String str = project.getOriginalMavenProject().getBuild().getTestSourceDirectory();
             if (str != null) {
                 URI uri = new File(str).toURI();
-                return uri.toURL();
+                return new URL[] { uri.toURL() };
             }
         } catch (MalformedURLException exc) {
             ErrorManager.getDefault().notify(exc);
@@ -53,12 +53,12 @@ public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementat
         return null;
     }
 
-    public URL findSource(FileObject fileObject) {
+    public URL[] findSources(FileObject fileObject) {
         try {
             String str = project.getOriginalMavenProject().getBuild().getSourceDirectory();
             if (str != null) {
                 URI uri = new File(str).toURI();
-                return uri.toURL();
+                return new URL[] { uri.toURL() };
             }
         } catch (MalformedURLException exc) {
             ErrorManager.getDefault().notify(exc);
