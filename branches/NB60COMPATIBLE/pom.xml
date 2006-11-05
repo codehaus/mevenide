@@ -7,7 +7,7 @@
    <version>1.5-SNAPSHOT</version>
     <name>Maven2 support at Mevenide</name>
     <description>Maven2 support at Mevenide</description>
-    <url>http://mevenide.codehaus.org</url>
+    <url>http://mevenide.codehaus.org/m2-site/</url>
     <issueManagement>
         <system>jira</system>
         <url>http://jira.codehaus.org/browse/MEVENIDE</url>
