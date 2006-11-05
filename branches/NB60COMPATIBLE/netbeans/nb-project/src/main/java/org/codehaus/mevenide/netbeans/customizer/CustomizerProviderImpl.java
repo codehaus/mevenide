@@ -27,10 +27,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.codehaus.mevenide.netbeans.FileUtilities;
@@ -47,6 +44,7 @@ import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.util.lookup.Lookups;
 
 /**
  * maven implementation of CustomizerProvider, handles the general workflow,
@@ -56,12 +54,6 @@ import org.openide.util.Lookup;
 public class CustomizerProviderImpl implements CustomizerProvider {
     
     private final NbMavenProject project;
-    
-    private ProjectCustomizer.Category categories[];
-    private ProjectCustomizer.CategoryComponentProvider panelProvider;
-    
-    // Option indexes
-    private static final int OPTION_OK = 0;
     
     private ModelHandle handle;
     private List visitedPanels = new ArrayList();
@@ -84,7 +76,10 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         try {
             init();
             OptionListener listener = new OptionListener();
-            Dialog dialog = ProjectCustomizer.createCustomizerDialog( categories, panelProvider, preselectedCategory, listener, null );
+            Lookup context = Lookups.fixed(new Object[] { project, handle});
+            Dialog dialog = ProjectCustomizer.createCustomizerDialog("Projects/org-codehaus-mevenide-netbeans/Customizer",
+                                             context, 
+                                             preselectedCategory, listener, null );
             dialog.addWindowListener( listener );
             listener.setDialog(dialog);
             dialog.setTitle( MessageFormat.format(
@@ -105,98 +100,12 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     }
     
     private void init() throws XmlPullParserException, FileNotFoundException, IOException {
-        ProjectCustomizer.Category basic = ProjectCustomizer.Category.create(
-                M2CustomizerPanelProvider.PANEL_BASIC, 
-                "Basic", 
-                null,
-                (ProjectCustomizer.Category[])null);
-        ProjectCustomizer.Category run = ProjectCustomizer.Category.create(
-                M2CustomizerPanelProvider.PANEL_RUN, 
-                "Run", 
-                null,
-                (ProjectCustomizer.Category[])null);
-        
-        ProjectCustomizer.Category mapp = ProjectCustomizer.Category.create(
-                M2CustomizerPanelProvider.PANEL_MAPPING, 
-                "Action Mappings", 
-                null,
-                (ProjectCustomizer.Category[])null);
-        
-        categories = new ProjectCustomizer.Category[] {
-            basic,
-            run, 
-            mapp
-        };
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
         handle = new ModelHandle(model, prof, project.getOriginalMavenProject(), mapping);
-        panelProvider = new PanelProvider();
-        visitedPanels.clear();
     }
-
-    
-//    private Properties createPropsFromFileObject(FileObject projectDir) {
-//        Properties props = new Properties();
-//        Enumeration en = projectDir.getAttributes();
-//        while (en.hasMoreElements()) {
-//            String key = (String)en.nextElement();
-//            Object val = projectDir.getAttribute(key);
-//            if (val instanceof String) {
-//                props.setProperty(key, (String)val);
-//            }
-//        }
-//        return props;
-//    }
-    
-//    private void writeFileAttributes(FileObject projectDir, Properties newValues) throws IOException {
-//        Enumeration en = projectDir.getAttributes();
-//        List oldKeys = new ArrayList();
-//        while (en.hasMoreElements()) {
-//            String key = (String)en.nextElement();
-//            Object val = projectDir.getAttribute(key);
-//            if (val instanceof String) {
-//                oldKeys.add(key);
-//            }
-//        }
-//        Iterator it = newValues.entrySet().iterator();
-//        while (it.hasNext()) {
-//            Map.Entry elem = (Map.Entry) it.next();
-//            projectDir.setAttribute((String)elem.getKey(), elem.getValue());
-//            oldKeys.remove((String)elem.getKey());
-//        }
-//        it = oldKeys.iterator();
-//        while (it.hasNext()) {
-//            String elem = (String) it.next();
-//            projectDir.setAttribute(elem, null);
-//        }
-//        
-//    }
-    
-    private class PanelProvider implements ProjectCustomizer.CategoryComponentProvider {
-        
-        private JPanel EMPTY_PANEL = new JPanel();
-        
-        PanelProvider() {
-        }
-        
-        public JComponent create( ProjectCustomizer.Category category ) {
-            Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(M2CustomizerPanelProvider.class));
-            Iterator it = res.allInstances().iterator();
-            while (it.hasNext()) {
-                M2CustomizerPanelProvider prov = (M2CustomizerPanelProvider) it.next();
-                JComponent comp = prov.createPanel(handle, project, category);
-                if (comp != null) {
-                    visitedPanels.add(comp);
-                    return comp;
-                }
-            }
-            return EMPTY_PANEL;
-        }
-        
-    }
-    
     /** Listens to the actions on the Customizer's option buttons */
     private class OptionListener extends WindowAdapter implements ActionListener {
         private Dialog dialog;
@@ -215,14 +124,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
-                    Iterator it = visitedPanels.iterator();
-                    while (it.hasNext()) {
-                        Object obj = it.next();
-                        if (obj instanceof M2CustomizerPanelProvider.Panel) {
-                            M2CustomizerPanelProvider.Panel panel = (M2CustomizerPanelProvider.Panel)obj;
-                            panel.applyChanges();
-                        }
-                    }
+                    handle.fireActionPerformed();
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
                             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
@@ -230,7 +132,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                             FileUtilities.writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
                         }
                     });
-                    handle.fireActionPerformed();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                     //TODO

@@ -26,7 +26,6 @@ import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
-import org.codehaus.mevenide.netbeans.customizer.M2CustomizerPanelProvider;
 import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -39,7 +38,7 @@ import org.netbeans.spi.project.ActionProvider;
  *
  * @author  mkleint
  */
-public class WebRunCustomizerPanel extends javax.swing.JPanel implements M2CustomizerPanelProvider.Panel {
+public class WebRunCustomizerPanel extends javax.swing.JPanel {
     private NbMavenProject project;
     private ModelHandle handle;
     private WebModule module;
@@ -284,7 +283,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel implements M2Custo
         return false;
     }
 
-    public void applyChanges() {
+    void applyChanges() {
         String newUrl = txtRelativeUrl.getText().trim();
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {

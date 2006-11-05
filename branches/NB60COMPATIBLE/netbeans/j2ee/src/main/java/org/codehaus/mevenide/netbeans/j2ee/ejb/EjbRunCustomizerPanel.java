@@ -26,7 +26,6 @@ import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
-import org.codehaus.mevenide.netbeans.customizer.M2CustomizerPanelProvider;
 import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
@@ -37,7 +36,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
  *
  * @author  mkleint
  */
-public class EjbRunCustomizerPanel extends javax.swing.JPanel implements M2CustomizerPanelProvider.Panel {
+public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     private NbMavenProject project;
     private ModelHandle handle;
     private EjbJar module;
@@ -212,10 +211,6 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel implements M2Custo
         }
         return false;
     }
-
-    public void applyChanges() {
-    }
-    
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox comServer;

@@ -32,9 +32,12 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 
 /**
  *
- * @author mkleint
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
 public final class ModelHandle {
+    public static final String PANEL_RUN = "RUN";
+    static final String PANEL_BASIC = "BASIC";
+    static final String PANEL_MAPPING = "MAPPING";
 
     private Model model;
     private MavenProject project;
@@ -54,13 +57,15 @@ public final class ModelHandle {
     }
     
     /**
-     * action listeners are notified when the dialog is closed and values applied.
+     * action listeners are notified when the dialog is closed and values are to be applied 
+     * before the data is actually written
      */
     public void addActionListener(ActionListener listener) {
         listeners.add(listener);
     }
     /**
-     * action listeners are notified when the dialog is closed and values applied.
+     * action listeners are notified when the dialog is closed and values are to be applied 
+     * before the data is actually written
      */
     public void removeActionListener(ActionListener listener) {
         listeners.remove(listener);

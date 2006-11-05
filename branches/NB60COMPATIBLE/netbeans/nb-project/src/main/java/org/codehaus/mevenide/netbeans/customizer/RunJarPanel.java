@@ -32,7 +32,6 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -40,18 +39,13 @@ import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
-import org.openide.cookies.SourceCookie;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.loaders.DataObject;
-import org.openide.loaders.DataObjectNotFoundException;
-import org.openide.src.ClassElement;
 
 /**
  * panel for displaying the Run Jar project related properties..
- * @author  mkleint
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanelProvider.Panel {
+public class RunJarPanel extends javax.swing.JPanel {
 
     private static final String RUN_PARAMS = "netbeans.jar.run.params";
     private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams";
@@ -77,7 +71,6 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
     }
     
     private void initValues() {
-        ActionToGoalMapping mappings = handle.getActionMappings();
         run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project);
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
         isRunCompatible = checkMapping(run);
@@ -132,18 +125,6 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
             oldVMParams = "";
         }
         
-                                      
-//        listeners = new ArrayList();
-//        try {
-//            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId));
-//            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId));
-//            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion));
-//            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName));
-//            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging));
-//            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription));
-//        } catch (NoSuchMethodException ex) {
-//            ex.printStackTrace();
-//        }
     }
     
     /** This method is called from within the constructor to
@@ -267,7 +248,7 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
 // TODO add your handling code here:
     }//GEN-LAST:event_btnMainClassActionPerformed
 
-    public void applyChanges() {
+    void applyChanges() {
         String newMainClass = txtMainClass.getText().trim();
         if (!newMainClass.equals(oldMainClass)) {
             jarPlugin = checkJarPlugin(jarPlugin, newMainClass);
@@ -396,23 +377,4 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
     private javax.swing.JTextField txtWorkDir;
     // End of variables declaration//GEN-END:variables
 
-    private static boolean hasMain(FileObject f) {
-        SourceCookie c;
-        try {
-            c = (SourceCookie) DataObject.find(f).getCookie(SourceCookie.class);
-        } catch (DataObjectNotFoundException x) {
-            x.printStackTrace();
-            return false;
-        }
-        if (c == null) {
-            return false;
-        }
-        ClassElement[] els = c.getSource().getClasses();
-        for (int i = 0; i < els.length; i++) {
-            if (els[i].hasMainMethod()) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

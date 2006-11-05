@@ -74,6 +74,11 @@
             <folder name="Lookup">
             </folder>    
             <folder name="Customizer">
+                <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
             </folder>    
         </folder>
     </folder>

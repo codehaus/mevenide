@@ -6,7 +6,14 @@
         <folder name="org-codehaus-mevenide-netbeans">
             <folder name="Lookup">
                 <file name="org-codehaus-mevenide-netbeans-j2ee-J2eeLookupProvider.instance"/>
-            </folder>    
+            </folder>  
+            <folder name="Customizer">
+                <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-j2ee-ejb-EjbRunPanelProvider.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance/org-codehaus-mevenide-netbeans-j2ee-ejb-EjbRunPanelProvider.instance" boolvalue="true"/>
+                <attr name="org-codehaus-mevenide-netbeans-j2ee-ejb-EjbRunPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
+            </folder>
         </folder>
     </folder>
 </filesystem>
