@@ -75,6 +75,11 @@
                     <keystorealias>mevenide2</keystorealias>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.modello</groupId>
+                <artifactId>modello-maven-plugin</artifactId>
+                <version>1.0-alpha-12-20061102.173357-3</version>
+            </plugin>
         </plugins>
       </pluginManagement>
   </build>
