@@ -92,7 +92,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     
     private MavenJavaExecutor(RunConfig conf) {
         config = conf;
-        handle = ProgressHandleFactory.createHandle("Run Maven build", this);
+        handle = ProgressHandleFactory.createHandle("Build " + conf.getProject().getOriginalMavenProject().getArtifactId(), this);
     }
     
     /**
@@ -212,6 +212,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             //MEVENIDE-407
             if (settings.getLocalRepository() == null) {
                 settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+            }
+            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
+                //TODO
             }
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
             req.addActiveProfiles(config.getActiveteProfiles());

@@ -32,6 +32,7 @@ public class MavenExecutionSettings  {
     public static final String PROP_PLUGIN_POLICY = "pluginUpdatePolicy"; //NOI18N
     public static final String PROP_FAILURE_BEHAVIOUR = "failureBehaviour"; //NOI18N
     public static final String PROP_USE_REGISTRY = "usePluginRegistry"; //NOI18N
+    public static final String PROP_SYNCH_PROXY = "synchronizeProxySettings"; //NOI18N
     
     private static final MavenExecutionSettings INSTANCE = new MavenExecutionSettings();
     
@@ -114,5 +115,12 @@ public class MavenExecutionSettings  {
         getPreferences().putBoolean(PROP_USE_REGISTRY, usePluginRegistry);
     }
     
+    public void setSynchronizeProxy(boolean sync) {
+        getPreferences().putBoolean(PROP_SYNCH_PROXY, sync);
+    }
+    
+    public boolean isSynchronizeProxy() {
+        return getPreferences().getBoolean(PROP_SYNCH_PROXY, true);
+    }
     
 }
