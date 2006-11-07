@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
@@ -36,28 +34,21 @@ import javax.swing.JSeparator;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.maven.BuildFailureException;
-import org.apache.maven.lifecycle.LifecycleExecutionException;
-import org.apache.maven.plugin.MojoExecution;
-import org.apache.maven.plugin.PluginNotFoundException;
-import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
-
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.problems.ProblemsPanel;
-import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.netbeans.spi.project.ui.support.NodeFactorySupport;
 import org.netbeans.spi.project.ui.support.ProjectSensitiveActions;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -83,13 +74,12 @@ import org.openide.util.actions.SystemAction;
  */
 public class MavenProjectNode extends AbstractNode {
      
-     
      private NbMavenProject project;
      private ProjectInformation info;
      private Image icon;
      private ProblemReporter reporter;
-     public MavenProjectNode( Lookup lookup, NbMavenProject proj) {
-        super(new MavenProjectChildren(proj), lookup);
+     public MavenProjectNode(Lookup lookup, NbMavenProject proj) {
+        super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
         this.project = proj;
         info = (ProjectInformation)project.getLookup().lookup(ProjectInformation.class);
         project.addPropertyChangeListener(new PropertyChangeListener() {
