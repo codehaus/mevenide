@@ -26,7 +26,15 @@
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-dialogs</id>
-            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-queries</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-nodes</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-loaders</id>
         </dependency>
         <dependency>
             <id>org.codehaus.mevenide:nb-project</id>

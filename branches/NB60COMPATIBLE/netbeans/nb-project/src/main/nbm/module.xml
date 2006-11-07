@@ -39,6 +39,9 @@
           <id>org.netbeans.api:org-openide-io</id>
       </dependency>
       <dependency>
+          <id>org.netbeans.api:org-openide-nodes</id>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-openide-modules</id>
       </dependency>
       <dependency>

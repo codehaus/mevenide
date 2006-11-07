@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.netbeans.nodes;
+package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
 import javax.swing.Action;
@@ -32,7 +32,6 @@ import org.openide.util.Utilities;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class WebAppFilterNode extends FilterNode {
-    private NbMavenProject project;
     private boolean isTopLevelNode = false;
     
     WebAppFilterNode(NbMavenProject proj, Node orig, File root) {
@@ -42,7 +41,6 @@ class WebAppFilterNode extends FilterNode {
     private WebAppFilterNode(NbMavenProject proj, Node orig, File root, boolean isTopLevel) {
         super(orig, new WebAppFilterChildren(proj, orig, root));
         isTopLevelNode = isTopLevel;
-        project = proj;
     }
     
     public String getDisplayName() {
