@@ -165,6 +165,10 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
             currentProcessors.addAll(set);
         }
         processStart(getEventId(eventName, target), stdOut);
+        if (handle != null) {
+            // null in case of tests
+            handle.progress(target);
+        }
     }
     
     public void endEvent(String eventName, String target, long l)    {
