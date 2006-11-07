@@ -57,6 +57,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         initValues();
         listener = new ActionListenerImpl();
         cbDebug.addActionListener(listener);
+        cbSynchProxy.addActionListener(listener);
         cbOffline.addActionListener(listener);
         cbErrors.addActionListener(listener);
         cbPluginRegistry.addActionListener(listener);
@@ -74,6 +75,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     }
     
     private void initValues() {
+        cbSynchProxy.setSelected(true);
         cbDebug.setSelected(false);
         cbErrors.setSelected(false);
         cbOffline.setSelected(false);
@@ -119,6 +121,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         comIndex = new javax.swing.JComboBox();
         btnIndex = new javax.swing.JButton();
         cbSnapshots = new javax.swing.JCheckBox();
+        cbSynchProxy = new javax.swing.JCheckBox();
 
         cbOffline.setText("Work Offline");
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -296,6 +299,11 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbSnapshots.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSnapshots.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
+        cbSynchProxy.setText("Use IDE's proxy settings");
+        cbSynchProxy.setToolTipText("Use NetBeans Proxy settings in case Maven doesn't define any proxies in Maven's own setting file at ~/.m2/settings.xml");
+        cbSynchProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbSynchProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -305,11 +313,11 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                                .add(cbDebug)
-                                .add(cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .add(cbOffline))
-                            .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .add(cbOffline)
+                            .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(cbSynchProxy)
+                            .add(cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 255, Short.MAX_VALUE)
+                            .add(cbDebug))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(pnlPlugins, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -339,10 +347,12 @@ public class SettingsPanel extends javax.swing.JPanel {
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(layout.createSequentialGroup()
                         .add(cbOffline)
-                        .add(34, 34, 34)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(cbSynchProxy)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .add(cbDebug)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(cbErrors))
@@ -365,7 +375,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(btnIndex))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cbSnapshots)
-                .addContainerGap(57, Short.MAX_VALUE))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -424,6 +434,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbPluginRegistry;
     private javax.swing.JCheckBox cbSnapshots;
+    private javax.swing.JCheckBox cbSynchProxy;
     private javax.swing.JComboBox comIndex;
     private javax.swing.JLabel lblIndex;
     private javax.swing.JLabel lblLocalRepository;
@@ -445,6 +456,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     public void setValues(Settings sett) {
         changed = false;
         cbOffline.setSelected(sett.isOffline());
+        cbSynchProxy.setSelected(MavenExecutionSettings.getDefault().isSynchronizeProxy());
         cbPluginRegistry.setSelected(MavenExecutionSettings.getDefault().isUsePluginRegistry());
         txtLocalRepository.setText(sett.getLocalRepository());
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
@@ -488,6 +500,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         
         MavenExecutionSettings.getDefault().setUsePluginRegistry(cbPluginRegistry.isSelected());
         MavenExecutionSettings.getDefault().setShowDebug(cbDebug.isSelected());
+        MavenExecutionSettings.getDefault().setSynchronizeProxy(cbSynchProxy.isSelected());
         MavenExecutionSettings.getDefault().setShowErrors(cbErrors.isSelected());
         String checksums = null;
         checksums = rbChecksumStrict.isSelected() ? MavenExecutionRequest.CHECKSUM_POLICY_FAIL : checksums;
