@@ -25,7 +25,6 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
@@ -55,7 +54,6 @@ import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
-import org.codehaus.mevenide.netbeans.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -64,13 +62,14 @@ import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDisplayer;
-import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.PropertiesAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.URLMapper;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -78,8 +77,6 @@ import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
-import org.openide.util.Task;
-import org.openide.util.TaskListener;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
 
@@ -98,7 +95,7 @@ public class DependencyNode extends AbstractNode {
     
     
     /**
-     *@param lookup - expects instance of MavenProject, DependencyPOMChange
+     *@param lookup - expects instance of NbMavenProject, Artifact
      */
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
         super(Children.LEAF, lookup);
@@ -497,7 +494,7 @@ public class DependencyNode extends AbstractNode {
                 while (it.hasNext()) {
                     Dependency dep = (Dependency) it.next();
                     if (   art.getArtifactId().equals(dep.getArtifactId())
-                        && art.getGroupId().equals(dep.getGroupId())) {
+                    && art.getGroupId().equals(dep.getGroupId())) {
                         model.removeDependency(dep);
                         break;
                     }
@@ -711,17 +708,19 @@ public class DependencyNode extends AbstractNode {
         }
         public void actionPerformed(ActionEvent event) {
             File javadoc = getJavadocFile();
-            if (javadoc.exists()) {
-                try {
-                    URL url = javadoc.toURI().toURL();
-                    if (FileUtil.isArchiveFile(url)) {
-                        URL archUrl = FileUtil.getArchiveRoot(url);
-                        String path = archUrl.toString() + "apidocs/index.html";
-                        URL link = new URL(path);
-                        HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+            FileObject fo = FileUtil.toFileObject(javadoc);
+            if (fo != null) {
+                FileObject jarfo = FileUtil.getArchiveRoot(fo);
+                if (jarfo != null) {
+                    FileObject index = jarfo.getFileObject("apidocs/index.html");
+                    if (index == null) {
+                        index = jarfo.getFileObject("index.html");
                     }
-                } catch (MalformedURLException e) {
-                    ErrorManager.getDefault().notify(e);
+                    if (index == null) {
+                        index = jarfo;
+                    }
+                    URL link = URLMapper.findURL(index, URLMapper.EXTERNAL);
+                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
                 }
             }
         }
