@@ -436,6 +436,7 @@ public final class NbMavenProject implements Project {
             new JarPackagingRunChecker(),
             problemReporter,
             new UserActionGoalProvider(this),
+            new CPExtender(this),
 
             // default mergers..        
             UILookupMergerSupport.createPrivilegedTemplatesMerger(),

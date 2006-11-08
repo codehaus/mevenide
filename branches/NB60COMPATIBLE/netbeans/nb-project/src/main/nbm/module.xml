@@ -99,6 +99,9 @@
 	  <type>spec</type>
       </dependency>
       <dependency>
+          <id>org.netbeans.api:org-netbeans-modules-project-libraries</id>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-jdesktop-layout</id>
 	  <type>spec</type>
       </dependency>
