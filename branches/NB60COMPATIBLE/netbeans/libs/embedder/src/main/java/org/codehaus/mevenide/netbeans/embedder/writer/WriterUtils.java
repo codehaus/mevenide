@@ -19,10 +19,11 @@ package org.codehaus.mevenide.netbeans.embedder.writer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.jdom.MavenJDOMWriter;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.profiles.io.jdom.ProfilesJDOMWriter;
 import org.apache.maven.settings.Settings;
@@ -79,6 +80,23 @@ public class WriterUtils {
             }
             
         }
+    }
+    
+    public static Model loadModel(FileObject fo) {
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model = null;
+        InputStreamReader read = null;
+        try {
+            InputStream in = fo.getInputStream();
+            //TODO encoding..
+            read = new InputStreamReader(in, "UTF-8");
+            model = reader.read(read, false);
+        } catch (Exception oi) {
+            oi.printStackTrace();
+        } finally {
+            IOUtil.close(read);   
+        }
+        return model;
     }
     
     public static void writeProfilesModel(final FileObject pomDir, final ProfilesRoot profilesRoot) throws IOException {

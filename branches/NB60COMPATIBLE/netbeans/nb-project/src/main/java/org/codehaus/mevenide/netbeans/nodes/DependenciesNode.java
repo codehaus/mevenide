@@ -21,8 +21,6 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -35,14 +33,12 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
-import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
@@ -188,20 +184,8 @@ class DependenciesNode extends AbstractNode {
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (pnl.getOkButton() == ret) {
-                MavenXpp3Reader reader = new MavenXpp3Reader();
                 FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
-                Model model = null;
-                InputStreamReader read = null;
-                try {
-                    InputStream in = fo.getInputStream();
-                    //TODO encoding..
-                    read = new InputStreamReader(in, "UTF-8");
-                    model = reader.read(read, false);
-                } catch (Exception oi) {
-                    oi.printStackTrace();
-                } finally {
-                    IOUtil.close(read);   
-                }
+                Model model = WriterUtils.loadModel(fo);
                 if (model != null) {
                     Dependency dep = new Dependency();
                     dep.setArtifactId(pnl.getArtifactId());
