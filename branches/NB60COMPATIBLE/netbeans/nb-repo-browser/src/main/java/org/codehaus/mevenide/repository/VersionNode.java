@@ -160,6 +160,8 @@ public class VersionNode extends AbstractNode {
                 System.out.println("type:" + record.getType());
                 System.out.println("name:" + record.getProjectName());
                 System.out.println("description:" + record.getProjectDescription());
+                System.out.println("md5:" + record.getMd5Checksum());
+                System.out.println("sha1:" + record.getSha1Checksum());
             }
         }
     }
