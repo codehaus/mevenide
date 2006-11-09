@@ -73,9 +73,9 @@
         </dependency>  
         <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
         <dependency>
-            <groupId>org.jdesktop</groupId>
+            <groupId>net.java.dev.swing-layout</groupId>
             <artifactId>swing-layout</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>        
         <dependency>
             <groupId>org.netbeans.api</groupId>

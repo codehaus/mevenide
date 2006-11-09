@@ -85,12 +85,12 @@
             <type>jar</type>
         </dependency>
         
-        <dependency>
+        <!--dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-schema2beans</artifactId>
             <version>${netbeans.release}</version>
             <type>jar</type>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
@@ -116,9 +116,9 @@
         </dependency>  
       <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
         <dependency>
-            <groupId>org.jdesktop</groupId>
+            <groupId>net.java.dev.swing-layout</groupId>
             <artifactId>swing-layout</artifactId>
-            <version>1.0</version>
+            <version>1.0.1</version>
         </dependency>        
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
