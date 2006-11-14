@@ -32,6 +32,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarQueryManager;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.w3c.dom.Node;
 
@@ -72,22 +73,26 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     private static class DefaultGrammarFactory extends GrammarFactory {
         
         public GrammarQuery isSupported(GrammarEnvironment env) {
-            if (env.getFileObject().getNameExt().equals("pom.xml")) {
+            FileObject fo = env.getFileObject();
+            Project owner = FileOwnerQuery.getOwner(fo);
+            if (fo.getNameExt().equals("pom.xml") && 
+                owner.getProjectDirectory().equals(fo.getParent())) {
                 //TODO also locate by namespace??
                 return new MavenProjectGrammar(env);
             }
-            if (env.getFileObject().getNameExt().equals("settings.xml")) {
+            if (fo.getNameExt().equals("settings.xml") && 
+                fo.getParent() != null && ".m2".equalsIgnoreCase(fo.getParent().getNameExt())) {
                 //TODO also locate by namespace??
                 //TODO more proper condition
                 return new MavenSettingsGrammar(env);
             }
-            if (env.getFileObject().getNameExt().equals("profiles.xml")) {
+            if (fo.getNameExt().equals("profiles.xml") && 
+                owner.getProjectDirectory().equals(fo.getParent())) {
                 //TODO also locate by namespace??
                 //TODO more proper condition
                 return new MavenProfilesGrammar(env);
             }
-            File file = FileUtil.toFile(env.getFileObject());
-            Project owner = FileOwnerQuery.getOwner(env.getFileObject());
+            File file = FileUtil.toFile(fo);
             if (owner instanceof NbMavenProject) {
                 if ("src/main/resources/META-INF/archetype.xml".equals(FileUtil.getRelativePath(owner.getProjectDirectory(), env.getFileObject()))) {
                     return new MavenArchetypeGrammar(env);
