@@ -70,8 +70,10 @@ import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
+import org.openide.loaders.DataObject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
@@ -92,13 +94,27 @@ public class DependencyNode extends AbstractNode {
     private PropertyChangeListener listener;
     private ChangeListener listener2;
     
-    
+    public static Children createChildren(Lookup look, boolean longLiving) {
+        if (!longLiving) {
+            return Children.LEAF;
+        }
+        Artifact art = look.lookup(Artifact.class);
+        FileObject fo = FileUtil.toFileObject(art.getFile());
+        if (fo != null) {
+            try {
+                DataObject dobj = DataObject.find(fo);
+                return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
+            } catch (Exception e) {
+            }
+        }
+        return Children.LEAF;
+    }
     
     /**
      *@param lookup - expects instance of NbMavenProject, Artifact
      */
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
-        super(Children.LEAF, lookup);
+        super(createChildren(lookup, isLongLiving), lookup);
 //        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
         project = (NbMavenProject)lookup.lookup(NbMavenProject.class);
         art = (Artifact)lookup.lookup(Artifact.class);
@@ -712,9 +728,9 @@ public class DependencyNode extends AbstractNode {
             if (fo != null) {
                 FileObject jarfo = FileUtil.getArchiveRoot(fo);
                 if (jarfo != null) {
-                    FileObject index = jarfo.getFileObject("apidocs/index.html");
+                    FileObject index = jarfo.getFileObject("apidocs/index.html"); //NOI18N
                     if (index == null) {
-                        index = jarfo.getFileObject("index.html");
+                        index = jarfo.getFileObject("index.html"); //NOI18N
                     }
                     if (index == null) {
                         index = jarfo;
