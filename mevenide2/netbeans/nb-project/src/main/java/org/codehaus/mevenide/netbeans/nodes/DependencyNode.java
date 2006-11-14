@@ -98,7 +98,7 @@ public class DependencyNode extends AbstractNode {
         if (!longLiving) {
             return Children.LEAF;
         }
-        Artifact art = look.lookup(Artifact.class);
+        Artifact art = (Artifact)look.lookup(Artifact.class);
         FileObject fo = FileUtil.toFileObject(art.getFile());
         if (fo != null) {
             try {
