@@ -160,14 +160,19 @@ public class JPDAStart implements Runnable {
                 getLog().info("sourcepath=" + sourcePath);
                 getLog().info("jdkSources=" + jdkSourcePath);
                 
-                JPDADebugger.startListening(
-                        lc,
-                        args,
-                        new Object[] {properties} );
-            } catch (DebuggerStartException ex) {
-                getLog().error("Debugger start Ex", ex);
-                lock[1] = ex;
-//                org.openide.ErrorManager.getDefault().notify(ex);
+                final ListeningConnector flc = lc;
+                RequestProcessor.getDefault().post(new Runnable() {
+
+                    public void run() {
+                        try {
+                            JPDADebugger.startListening(flc, args,
+                                                        new Object[]{properties});
+                        }
+                        catch (DebuggerStartException ex) {
+                            getLog().error("Debugger Start Error", ex);
+                        }
+                    }
+                });
             } catch (java.io.IOException ioex) {
                 getLog().error("IO Error", ioex);
 //                org.openide.ErrorManager.getDefault().notify(ioex);
