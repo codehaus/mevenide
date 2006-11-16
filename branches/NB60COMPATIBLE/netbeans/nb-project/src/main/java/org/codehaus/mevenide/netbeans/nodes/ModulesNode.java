@@ -149,6 +149,10 @@ public class ModulesNode extends AbstractNode {
             return (Action[])lst.toArray(new Action[lst.size()]);
         }
         
+        public Action getPreferredAction() {
+            return new OpenProjectAction(project);
+        }
+        
         
     }
     
