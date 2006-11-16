@@ -92,7 +92,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     
     private MavenJavaExecutor(RunConfig conf) {
         config = conf;
-        handle = ProgressHandleFactory.createHandle("Build " + conf.getProject().getOriginalMavenProject().getArtifactId(), this);
+        String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
+                                                  "Execute Maven";  
+        handle = ProgressHandleFactory.createHandle(name, this);
     }
     
     /**
@@ -299,6 +301,10 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             EmbedderFactory.resetProjectEmbedder();
             List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
             for (File elem: fireList) {
+                if (elem == null) {
+                    // during archetype creation?
+                    continue;
+                }
                 FileObject fo = FileUtil.toFileObject(elem);
                 if (fo != null) {
                     //TODO have the firing based on open projects only..
