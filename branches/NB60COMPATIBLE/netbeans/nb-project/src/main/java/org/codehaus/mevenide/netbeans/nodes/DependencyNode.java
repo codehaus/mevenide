@@ -39,6 +39,7 @@ import javax.swing.Action;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.ArtifactUtils;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
@@ -192,7 +193,7 @@ public class DependencyNode extends AbstractNode {
     
     public String getHtmlDisplayName() {
         String version = "";
-        if (art.isSnapshot() && art.getVersion().indexOf("SNAPSHOT") < 0) {
+        if (ArtifactUtils.isSnapshot(art.getVersion()) && art.getVersion().indexOf("SNAPSHOT") < 0) {
             version = " <b>[" + art.getVersion() + "]</b>";
         }
         return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>";
