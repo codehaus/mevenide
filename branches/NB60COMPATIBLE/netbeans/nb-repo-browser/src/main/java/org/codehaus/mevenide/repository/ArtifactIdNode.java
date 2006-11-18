@@ -21,10 +21,10 @@ import java.io.IOException;
 import java.util.Collections;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -50,18 +50,26 @@ public class ArtifactIdNode extends AbstractNode {
         }
         
         protected Node[] createNodes(Object key) {
+            if (GroupIdListChildren.LOADING == key) {
+                return new Node[] { GroupIdListChildren.createLoadingNode() };
+            }
             DefaultArtifactVersion version = (DefaultArtifactVersion)key;
             return new Node[] { new VersionNode(groupId, artifactId, version) };
         }
         
         protected void addNotify() {
             super.addNotify();
-            try {
-                setKeys(CustomQueries.getVersions(groupId, artifactId));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                setKeys(Collections.EMPTY_LIST);
-            }
+            setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    try {
+                        setKeys(CustomQueries.getVersions(groupId, artifactId));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        setKeys(Collections.EMPTY_LIST);
+                    }
+                }
+            });
         }
         
         protected void removeNotify() {

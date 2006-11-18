@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -35,9 +34,12 @@ import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.openide.util.Mutex.ExceptionAction;
+import org.openide.util.MutexException;
 
 /**
- *
+ * custom queries into the local repo index.
+ * All run under read access mutex.
  * @author mkleint
  */
 public class CustomQueries {
@@ -46,13 +48,10 @@ public class CustomQueries {
     private CustomQueries() {
     }
     
-    public static Set retrieveGroupIds(String prefix) throws IOException {
-        
-        List lst = enumerateGroupIds();
-        Iterator it = lst.iterator();
-        Set elems = new TreeSet();
-        while (it.hasNext()) {
-            String id = (String)it.next();
+    public static Set<String> retrieveGroupIds(String prefix) throws IOException {
+        List<String> lst = enumerateGroupIds();
+        Set<String> elems = new TreeSet<String>();
+        for (String id : lst) {
             if (id.startsWith(prefix)) {
                 elems.add(id);
             }
@@ -60,12 +59,10 @@ public class CustomQueries {
         return elems;
     }
     
-    public static Set retrieveArtifactIdForGroupId(String groupId, String prefix) throws IOException {
-        List lst = getArtifacts(groupId);
-        Iterator it = lst.iterator();
-        Set elems = new TreeSet();
-        while (it.hasNext()) {
-            String art = (String)it.next();
+    public static Set<String> retrieveArtifactIdForGroupId(String groupId, String prefix) throws IOException {
+        List<String> lst = getArtifacts(groupId);
+        Set<String> elems = new TreeSet<String>();
+        for (String art : lst) {
             if (art.startsWith(prefix)) {
                 elems.add(art);
             }
@@ -73,14 +70,12 @@ public class CustomQueries {
         return elems;
     }
     
-    public static Set retrievePluginGroupIds(String prefix) throws RepositoryIndexSearchException {
+    public static Set<String> retrievePluginGroupIds(String prefix) throws RepositoryIndexSearchException {
         TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.TYPE, "maven-plugin"));
         LuceneQuery q = new LuceneQuery(tq);
-        List lst = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
-        Iterator it = lst.iterator();
-        Set elems = new TreeSet();
-        while (it.hasNext()) {
-            StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
+        List<StandardArtifactIndexRecord> lst = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+        Set<String> elems = new TreeSet<String>();
+        for (StandardArtifactIndexRecord elem : lst) {
             if (elem.getGroupId() != null && elem.getGroupId().startsWith(prefix)) {
                 elems.add(elem.getGroupId());
             }
@@ -88,14 +83,12 @@ public class CustomQueries {
         return elems;
     }
     
-    public static Set retrievePluginArtifactIds(String groupId, String prefix) throws RepositoryIndexSearchException {
+    public static Set<String> retrievePluginArtifactIds(String groupId, String prefix) throws RepositoryIndexSearchException {
         TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.TYPE, "maven-plugin"));
         LuceneQuery q = new LuceneQuery(tq);
-        List lst = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
-        Iterator it = lst.iterator();
-        Set elems = new TreeSet();
-        while (it.hasNext()) {
-            StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
+        List<StandardArtifactIndexRecord> lst = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+        Set<String> elems = new TreeSet<String>();
+        for (StandardArtifactIndexRecord elem : lst) {
             if (elem.getGroupId() != null && elem.getGroupId().equals(groupId) &&
                     elem.getArtifactId() != null && elem.getArtifactId().startsWith(prefix)) {
                 elems.add(elem.getArtifactId());
@@ -104,82 +97,126 @@ public class CustomQueries {
         return elems;
     }
     
-    public static List enumerateGroupIds()
-            throws IOException {
-        IndexReader indexReader = IndexReader.open( LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath() );
-        
-        Set groups = new HashSet();
-        
+    /**
+     * returns a list of Artifacts that are archetypes.
+     *  @returns Set of StandardArtifactIndexRecord instances
+     */
+    public static List<StandardArtifactIndexRecord> retrievePossibleArchetypes() throws RepositoryIndexSearchException {
+        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.TYPE, "maven-archetype"));
+        LuceneQuery q = new LuceneQuery(tq);
+        return LocalRepositoryIndexer.getInstance().searchIndex(
+                LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+    }
+    
+    
+    public static List<String> enumerateGroupIds() throws IOException {
+        Set<String> groups = new HashSet<String>();
         try {
-            for ( int i = 0; i < indexReader.numDocs(); i++ ) {
-                Document doc = indexReader.document( i );
-                Field fld = doc.getField( StandardIndexRecordFields.GROUPID );
-                if (fld != null) {
-                    groups.add( fld.stringValue() );
-                } else {
-                    System.out.println("no groupid field for " + doc.getField(StandardIndexRecordFields.FILENAME));
-                }
-            }
-        } finally {
-            indexReader.close();
+            groups = LocalRepositoryIndexer.MUTEX.readAccess(new ExceptionAction<Set<String>>() {
+
+             public Set<String> run() throws Exception {
+                 IndexReader indexReader = IndexReader.open(LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath());
+                 Set<String> groups = new HashSet<String>();
+
+                 try {
+                     for (int i = 0; i <
+                                     indexReader.numDocs(); i++) {
+                         Document doc = indexReader.document(i);
+                         Field fld = doc.getField(StandardIndexRecordFields.GROUPID);
+
+                         if (fld !=
+                             null) {
+                             groups.add(fld.stringValue());
+                         } else { //TODO??
+                             System.out.println("no groupid field for " +
+                                                doc.getField(StandardIndexRecordFields.FILENAME));
+                         }
+                     }
+                 }
+                 finally {
+                     indexReader.close();
+                 }
+                 return groups;
+             }
+         });
+        } catch (MutexException ex) {
+            throw (IOException)ex.getException();
         }
-        
-        List sortedGroups = new ArrayList( groups );
-        Collections.sort( sortedGroups );
+        List<String> sortedGroups = new ArrayList<String>(groups);
+        Collections.sort(sortedGroups);
         return sortedGroups;
     }
     
-    public static List getArtifacts( String groupId )
-            throws IOException {
-        
-        IndexReader indexReader = IndexReader.open( LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath() );
-        
-        Set artifactIds = new HashSet();
-        
+    public static List<String> getArtifacts( final String groupId ) throws IOException {
+        Set<String> artifactIds = new HashSet<String>();
         try {
-            for ( int i = 0; i < indexReader.numDocs(); i++ ) {
-                Document doc = indexReader.document( i );
-                Field fld = doc.getField( StandardIndexRecordFields.GROUPID );
-                if (fld != null) {
-                    if ( fld.stringValue().equals( groupId ) ) {
-                        artifactIds.add( doc.getField( StandardIndexRecordFields.ARTIFACTID ).stringValue() );
-                    }
-                } else {
-                    System.out.println("no groupid field for " + doc.getField(StandardIndexRecordFields.FILENAME));
-                }
-            }
-        } finally {
-            indexReader.close();
+            artifactIds = LocalRepositoryIndexer.MUTEX.readAccess(new ExceptionAction<Set<String>>() {
+              public Set<String> run() throws Exception {
+                  Set<String> artifactIds = new HashSet<String>();
+                  IndexReader indexReader = IndexReader.open(LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath());
+
+                  try {
+                      for (int i = 0; i <
+                                      indexReader.numDocs(); i++) {
+                          Document doc = indexReader.document(i);
+                          Field fld = doc.getField(StandardIndexRecordFields.GROUPID);
+
+                          if (fld !=
+                              null) {
+                              if (fld.stringValue().equals(groupId)) {
+                                  artifactIds.add(doc.getField(StandardIndexRecordFields.ARTIFACTID).stringValue());
+                              }
+                          } else {
+                              System.out.println("no groupid field for " +
+                                                 doc.getField(StandardIndexRecordFields.FILENAME));
+                          }
+                      }
+                  }
+                  finally {
+                      indexReader.close();
+                  }
+                  return artifactIds;
+              }
+          });
         }
-        
-        List sortedArtifactIds = new ArrayList( artifactIds );
-        Collections.sort( sortedArtifactIds );
+        catch (MutexException ex) {
+            throw (IOException)ex.getException();
+        };
+        List<String> sortedArtifactIds = new ArrayList<String>(artifactIds);
+        Collections.sort(sortedArtifactIds);
         return sortedArtifactIds;
     }
     
-    public static List getVersions( String groupId, String artifactId )
-            throws IOException {
-        IndexReader indexReader = IndexReader.open( LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath() );
-        
-        Set versions = new HashSet();
-        
+    public static List<DefaultArtifactVersion> getVersions( final String groupId, final String artifactId ) throws IOException {
+        Set<String> versions = new HashSet<String>();
         try {
-            for ( int i = 0; i < indexReader.numDocs(); i++ ) {
-                Document doc = indexReader.document( i );
-                if ( doc.getField( StandardIndexRecordFields.GROUPID ).stringValue().equals( groupId ) &&
-                        doc.getField( StandardIndexRecordFields.ARTIFACTID ).stringValue().equals( artifactId ) ) {
-                    versions.add(doc.getField( StandardIndexRecordFields.VERSION ).stringValue());
+            versions = LocalRepositoryIndexer.MUTEX.readAccess(new ExceptionAction<Set<String>>() {
+              public Set<String> run() throws Exception {
+                Set<String> versions = new HashSet<String>();
+                IndexReader indexReader = IndexReader.open( LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath() );
+
+
+                try {
+                    for ( int i = 0; i < indexReader.numDocs(); i++ ) {
+                        Document doc = indexReader.document( i );
+                        if ( doc.getField( StandardIndexRecordFields.GROUPID ).stringValue().equals( groupId ) &&
+                                doc.getField( StandardIndexRecordFields.ARTIFACTID ).stringValue().equals( artifactId ) ) {
+                            versions.add(doc.getField( StandardIndexRecordFields.VERSION ).stringValue());
+                        }
+                    }
+                } finally {
+                    indexReader.close();
                 }
-            }
-        } finally {
-            indexReader.close();
+                return versions;
+              }
+            });
         }
-        
+        catch (MutexException ex) {
+            throw (IOException)ex.getException();
+        };
         // DefaultArtifactVersion is used for correct ordering
-        Iterator it = versions.iterator();
-        List sortedVersions = new ArrayList();
-        while (it.hasNext()) {
-            String elem = (String) it.next();
+        List<DefaultArtifactVersion> sortedVersions = new ArrayList<DefaultArtifactVersion>();
+        for (String elem : versions) {
             sortedVersions.add(new DefaultArtifactVersion(elem));
         }
         Collections.sort( sortedVersions );

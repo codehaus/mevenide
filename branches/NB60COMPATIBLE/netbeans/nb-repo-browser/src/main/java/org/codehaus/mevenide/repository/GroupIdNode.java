@@ -24,6 +24,7 @@ import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -47,18 +48,26 @@ public class GroupIdNode extends AbstractNode {
         }
         
         protected Node[] createNodes(Object key) {
+            if (GroupIdListChildren.LOADING == key) {
+                return new Node[] { GroupIdListChildren.createLoadingNode() };
+            }
             String artifactId = (String)key;
             return new Node[] { new ArtifactIdNode(id, artifactId) };
         }
         
         protected void addNotify() {
             super.addNotify();
-            try {
-                setKeys(CustomQueries.getArtifacts(id));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                setKeys(Collections.EMPTY_LIST);
-            }
+            setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                try {
+                    setKeys(CustomQueries.getArtifacts(id));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    setKeys(Collections.EMPTY_LIST);
+                }
+                }
+            });
         }
         
         protected void removeNotify() {

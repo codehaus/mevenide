@@ -19,7 +19,6 @@ package org.codehaus.mevenide.repository;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
@@ -32,12 +31,18 @@ import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
+import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
-import org.openide.ErrorManager;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.awt.HtmlBrowser;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.URLMapper;
+import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.FilterNode;
 import org.openide.util.Utilities;
 
 /**
@@ -50,6 +55,26 @@ public class VersionNode extends AbstractNode {
     private Artifact artifact;
     private boolean hasJavadoc;
     private boolean hasSources;
+    
+    public static Children createChildren(StandardArtifactIndexRecord record) {
+        if (!"pom".equals(record.getType())) {
+            try {
+                Artifact art = RepositoryUtils.createArtifact(record,
+                        EmbedderFactory.getProjectEmbedder().getLocalRepository());
+                FileObject fo = FileUtil.toFileObject(art.getFile());
+            
+                if (fo != null) {
+                    DataObject dobj = DataObject.find(fo);
+                    return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
+                }
+            } catch (MavenEmbedderException ex) {
+                java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+                        ex.getMessage(), ex);
+            } catch (DataObjectNotFoundException e) {
+            }
+        }
+        return Children.LEAF;
+    }
     
     /** Creates a new instance of VersionNode */
     public VersionNode(String group, String artifact, DefaultArtifactVersion version) {
@@ -92,7 +117,7 @@ public class VersionNode extends AbstractNode {
      */
     
     public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source) {
-        super(Children.LEAF);
+        super(createChildren(record));
         hasJavadoc = javadoc;
         hasSources = source;
         this.record = record;
@@ -173,17 +198,19 @@ public class VersionNode extends AbstractNode {
         }
         public void actionPerformed(ActionEvent event) {
             File javadoc = getJavadocFile();
-            if (javadoc.exists()) {
-                try {
-                    URL url = javadoc.toURI().toURL();
-                    if (FileUtil.isArchiveFile(url)) {
-                        URL archUrl = FileUtil.getArchiveRoot(url);
-                        String path = archUrl.toString() + "apidocs/index.html";
-                        URL link = new URL(path);
-                        HtmlBrowser.URLDisplayer.getDefault().showURL(link);
+            FileObject fo = FileUtil.toFileObject(javadoc);
+            if (fo != null) {
+                FileObject jarfo = FileUtil.getArchiveRoot(fo);
+                if (jarfo != null) {
+                    FileObject index = jarfo.getFileObject("apidocs/index.html"); //NOI18N
+                    if (index == null) {
+                        index = jarfo.getFileObject("index.html"); //NOI18N
                     }
-                } catch (MalformedURLException e) {
-                    ErrorManager.getDefault().notify(e);
+                    if (index == null) {
+                        index = jarfo;
+                    }
+                    URL link = URLMapper.findURL(index, URLMapper.EXTERNAL);
+                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
                 }
             }
         }

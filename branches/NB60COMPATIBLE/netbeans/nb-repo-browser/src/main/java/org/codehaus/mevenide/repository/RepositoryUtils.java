@@ -17,9 +17,13 @@
 
 package org.codehaus.mevenide.repository;
 
+import java.io.File;
+import java.util.Collections;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 /**
@@ -34,23 +38,28 @@ public class RepositoryUtils {
     
     public static Artifact createArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo) {
         Artifact art;
+        
         if (record.getClassifier() != null) {
-            art = EmbedderFactory.getOnlineEmbedder().createArtifactWithClassifier(
-                    record.getGroupId(), 
-                    record.getArtifactId(), 
-                    record.getVersion(),
-                    record.getType(), 
-                    record.getClassifier());
-        } else {
-            art = EmbedderFactory.getOnlineEmbedder().createArtifact(
-                    record.getGroupId(),
+            art = EmbedderFactory.getOnlineEmbedder().createArtifactWithClassifier(record.getGroupId(),
                     record.getArtifactId(),
                     record.getVersion(),
-                    null, //scope
+                    record.getType(),
+                    record.getClassifier());
+        } else {
+            art = EmbedderFactory.getOnlineEmbedder().createArtifact(record.getGroupId(),
+                    record.getArtifactId(),
+                    record.getVersion(),
+                    null,
                     record.getType());
         }
-        art.setRepository(repo);
+        String localPath = repo.pathOf( art );
+        art.setFile( new File( repo.getBasedir(), localPath ) );
+        
         return art;
+        
+        
+        
+        
     }
     
 }

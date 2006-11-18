@@ -22,7 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.CustomQueries;
 
 /**
  *
@@ -37,7 +37,7 @@ public class LocalRepoProvider implements ArchetypeProvider {
     public List getArchetypes() {
         List lst = new ArrayList();
         try {
-            Iterator it = LocalRepositoryIndexer.getInstance().retrievePossibleArchetypes().iterator();
+            Iterator it = CustomQueries.retrievePossibleArchetypes().iterator();
             while (it.hasNext()) {
                 StandardArtifactIndexRecord art = (StandardArtifactIndexRecord) it.next();
                 Archetype arch = new Archetype();

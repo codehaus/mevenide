@@ -33,19 +33,24 @@ import org.openide.util.RequestProcessor;
  */
 public class GroupIdListChildren extends Children.Keys {
     
-    private static final Object LOADING = new Object();
+    static final Object LOADING = new Object();
+    
+    static Node createLoadingNode() {
+        AbstractNode nd = new AbstractNode(Children.LEAF);
+        nd.setName("Loading");
+        nd.setDisplayName("Loading...");
+        return nd;
+    }
     private List keys;
     
     /** Creates a new instance of GroupIdListChildren */
     public GroupIdListChildren() {
     }
     
+    
     protected Node[] createNodes(Object key) {
         if (LOADING == key) {
-            AbstractNode nd = new AbstractNode(Children.LEAF);
-            nd.setName("Loading");
-            nd.setDisplayName("Loading Index...");
-            return new Node[] { nd };
+            return new Node[] { createLoadingNode() };
         }
         String groupId = (String)key;
         return new Node[] { new GroupIdNode(groupId) };

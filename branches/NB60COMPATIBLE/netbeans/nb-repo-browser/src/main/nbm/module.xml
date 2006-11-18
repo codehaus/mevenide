@@ -33,6 +33,9 @@
             <id>org.netbeans.api:org-openide-dialogs</id>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-loaders</id>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-openide-actions</id>
         </dependency>
         <dependency>
