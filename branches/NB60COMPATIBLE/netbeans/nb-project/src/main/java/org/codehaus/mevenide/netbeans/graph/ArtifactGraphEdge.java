@@ -16,45 +16,17 @@
  */
 
 package org.codehaus.mevenide.netbeans.graph;
-import org.apache.maven.artifact.Artifact;
 
 /**
  *
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class ArtifactGraphNode {
-    private Artifact artifact;
-    //for the layout
-    double locX;
-    double locY;
-    double dispX;
-    double dispY;
-    private boolean fixed;
+public class ArtifactGraphEdge {
+    private String edge;
     
-    private boolean root;
-    /** Creates a new instance of ArtifactGraphNode */
-    public ArtifactGraphNode(Artifact art) {
-        artifact = art;
+    /** Creates a new instance of ArtifactGraphEdge */
+    public ArtifactGraphEdge(String edge) {
+        this.edge = edge;
     }
     
-    
-    Artifact getArtifact() {
-        return artifact;
-    }
-    
-    public void setRoot(boolean r) {
-        root = r;
-    }
-    
-    public boolean isRoot() {
-        return root;
-    }
-    
-    public void setFixed(boolean fixed) {
-        this.fixed = fixed;
-    }
-    
-    public boolean isFixed() {
-        return fixed;
-    }
 }

@@ -18,12 +18,11 @@
 
 package org.codehaus.mevenide.netbeans.graph;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -34,21 +33,11 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MyResolutionListener;
-import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectManager;
-import org.netbeans.graph.api.model.GraphEvent;
-import org.netbeans.graph.api.model.IGraphPort;
-import org.netbeans.graph.api.model.ability.IDirectionable;
-import org.netbeans.graph.api.model.builtin.GraphDocument;
-import org.netbeans.graph.api.model.builtin.GraphLink;
-import org.netbeans.graph.api.model.builtin.GraphNode;
-import org.netbeans.graph.api.model.builtin.GraphPort;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
+import org.netbeans.api.visual.graph.GraphScene;
 
 /**
  *
- * @author mkleint
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class GraphDocumentFactory {
     
@@ -60,26 +49,16 @@ public class GraphDocumentFactory {
      * create a graph document, recursively iterating through the projects' modules
      * declarations..
      */
-    static GraphDocument createModuleDocument(NbMavenProject project) {
-        GraphDocument doc = new GraphDocument();
-        GraphNode parentnode = new ProjectGraphNode(project);
-        doc.addComponents(GraphEvent.createSingle(parentnode));
-        GraphPort parentport = new GraphPort();
-        parentport.setSource(true);
-        parentport.setDirection(IDirectionable.RIGHT);
-        parentport.setPreferredOrderPosition(new Integer(IDirectionable.RIGHT));
-        parentnode.addPort(parentport);
-        parentnode.setDefaultPort(parentport);
-        createSubnodes(doc, parentport, project);
-        return doc;
+    static GraphScene createModuleDocument(NbMavenProject project) {
+        return null;
     }
     
     /**
      * creates a graph document for transitive dependencies
      */
-    static GraphDocument createDependencyDocument(NbMavenProject project) {
-        GraphDocument doc = new GraphDocument();
-        GraphResolutionListener listener = new GraphResolutionListener();
+    static DependencyGraphScene createDependencyDocument(NbMavenProject project) {
+        DependencyGraphScene scene = new DependencyGraphScene();
+        GraphResolutionListener listener = new GraphResolutionListener(scene);
         try {
             MyResolutionListener.setDelegateResolutionListener(listener);
             EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(project.getPOMFile());
@@ -96,173 +75,151 @@ public class GraphDocumentFactory {
             ex.printStackTrace();
         } finally {
             MyResolutionListener.clearDelegateResolutionListener();
-            doc.addComponents(GraphEvent.create((GraphNode[])listener.getNodes().toArray(new GraphNode[listener.getNodes().size()]),
-                    (GraphLink[])listener.getLinks().toArray(new GraphLink[listener.getLinks().size()])));
-            return doc;
+            return scene;
         }
     }
     
-    private static void createSubnodes(final GraphDocument doc, final GraphPort parentport, NbMavenProject prj) {
-        Iterator it = loadModules(prj).iterator();
-        while (it.hasNext()) {
-            NbMavenProject proj = (NbMavenProject)it.next();
-            GraphNode node = new ProjectGraphNode(proj);
-            doc.addComponents(GraphEvent.createSingle(node));
-            GraphPort port = new GraphPort();
-            port.setTarget(true);
-            port.setDirection(IDirectionable.LEFT);
-            // WTF is the order position and how it's calculated???
-            port.setPreferredOrderPosition(new Integer(8));
-            node.addPort(port);
-            GraphLink link = new GraphLink();
-            link.setSourcePort(parentport);
-            link.setTargetPort(port);
-            doc.addComponents(GraphEvent.createSingle(link));
-            if ("pom".equalsIgnoreCase(proj.getOriginalMavenProject().getPackaging())) {
-                GraphPort myparent = new GraphPort();
-                myparent.setSource(true);
-                myparent.setDirection(IDirectionable.RIGHT);
-                myparent.setPreferredOrderPosition(new Integer(0));
-                node.addPort(myparent);
-                node.setDefaultPort(myparent);
-                createSubnodes(doc, myparent, proj);
-            }
-        }
-    }
+//    private static void createSubnodes(final GraphDocument doc, final GraphPort parentport, NbMavenProject prj) {
+//        Iterator it = loadModules(prj).iterator();
+//        while (it.hasNext()) {
+//            NbMavenProject proj = (NbMavenProject)it.next();
+//            GraphNode node = new ProjectGraphNode(proj);
+//            doc.addComponents(GraphEvent.createSingle(node));
+//            GraphPort port = new GraphPort();
+//            port.setTarget(true);
+//            port.setDirection(IDirectionable.LEFT);
+//            // WTF is the order position and how it's calculated???
+//            port.setPreferredOrderPosition(new Integer(8));
+//            node.addPort(port);
+//            GraphLink link = new GraphLink();
+//            link.setSourcePort(parentport);
+//            link.setTargetPort(port);
+//            doc.addComponents(GraphEvent.createSingle(link));
+//            if ("pom".equalsIgnoreCase(proj.getOriginalMavenProject().getPackaging())) {
+//                GraphPort myparent = new GraphPort();
+//                myparent.setSource(true);
+//                myparent.setDirection(IDirectionable.RIGHT);
+//                myparent.setPreferredOrderPosition(new Integer(0));
+//                node.addPort(myparent);
+//                node.setDefaultPort(myparent);
+//                createSubnodes(doc, myparent, proj);
+//            }
+//        }
+//    }
     
     
     
-    private static Collection loadModules(NbMavenProject prj) {
-        Collection modules = new ArrayList();
-        File base = prj.getOriginalMavenProject().getBasedir();
-        for (Iterator it = prj.getOriginalMavenProject().getModules().iterator(); it.hasNext();) {
-            String elem = (String) it.next();
-            File projDir = FileUtil.normalizeFile(new File(base, elem));
-            FileObject fo = FileUtil.toFileObject(projDir);
-            if (fo != null) {
-                try {
-                    Project childproj = ProjectManager.getDefault().findProject(fo);
-                    if (childproj instanceof NbMavenProject) {
-                        modules.add(childproj);
-                    }
-                } catch (IllegalArgumentException ex) {
-                    ex.printStackTrace();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                //TODO broken module reference.. show as such..
-            }
-        }
-        return modules;
-    }
+//    private static Collection loadModules(NbMavenProject prj) {
+//        Collection modules = new ArrayList();
+//        File base = prj.getOriginalMavenProject().getBasedir();
+//        for (Iterator it = prj.getOriginalMavenProject().getModules().iterator(); it.hasNext();) {
+//            String elem = (String) it.next();
+//            File projDir = FileUtil.normalizeFile(new File(base, elem));
+//            FileObject fo = FileUtil.toFileObject(projDir);
+//            if (fo != null) {
+//                try {
+//                    Project childproj = ProjectManager.getDefault().findProject(fo);
+//                    if (childproj instanceof NbMavenProject) {
+//                        modules.add(childproj);
+//                    }
+//                } catch (IllegalArgumentException ex) {
+//                    ex.printStackTrace();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//            } else {
+//                //TODO broken module reference.. show as such..
+//            }
+//        }
+//        return modules;
+//    }
     
     
     private static class GraphResolutionListener implements ResolutionListener {
-        private ArrayList nodes;
-        private ArrayList links;
-        private ArrayList parentChain;
-        public GraphResolutionListener() {
-            nodes = new ArrayList();
-            links = new ArrayList();
-            parentChain = new ArrayList();
-            
-        }
+        private DependencyGraphScene scene;
+        private List<Artifact> parentChain;
+        private Map<Artifact, ArtifactGraphNode> cache = new HashMap<Artifact, ArtifactGraphNode>();
         
-        public List getNodes() {
-            return nodes;
-        }
-        
-        public List getLinks() {
-            return links;
-        }
-        
-        private ArtifactGraphNode findNode(Artifact art) {
-            Iterator it = nodes.iterator();
-            while (it.hasNext()) {
-                ArtifactGraphNode nd = (ArtifactGraphNode) it.next();
-                if (nd.getArtifact().equals(art)) {
-                    return nd;
-                }
-            }
-            return null;
+        public GraphResolutionListener(DependencyGraphScene sc) {
+            scene = sc;
+            parentChain = new ArrayList<Artifact>();
         }
         
         public void testArtifact(Artifact node) {
         }
         
         public void startProcessChildren(Artifact artifact) {
-            ArtifactGraphNode node = findNode(artifact);
-            parentChain.add(node);
-            node.createParentPort();
+            parentChain.add(artifact);
         }
         
         public void endProcessChildren(Artifact artifact) {
-            ArtifactGraphNode node = findNode(artifact);
-            parentChain.remove(node);
-            GraphPort port = node.getParentPort();
-            if (port.getLinks() == null || port.getLinks().length == 0) {
-                node.removeParentPort();
+            parentChain.remove(artifact);;
+        }
+        
+        private ArtifactGraphNode getNode(Artifact art) {
+            ArtifactGraphNode nd = cache.get(art);
+            if (nd == null) {
+                nd = new ArtifactGraphNode(art);
+                cache.put(art, nd);
             }
-            
+            return nd;
         }
         
         public void includeArtifact(Artifact artifact) {
-            ArtifactGraphNode node = (ArtifactGraphNode)findNode(artifact);
-            if (node == null) {
-                node = new ArtifactGraphNode(artifact);
-                nodes.add(node);
+            if (!scene.isNode(getNode(artifact))) {
+                scene.addNode(getNode(artifact));
             }
-            if (parentChain.size() != 0) {
-                if (node.getDistanceFromRoot() > parentChain.size()) {
-                    node.setDistanceFromRoot(parentChain.size());
-                }
-                GraphPort port = node.createChildPort();
-                ArtifactGraphNode parent = (ArtifactGraphNode)parentChain.get(parentChain.size() - 1);
-                GraphPort parentPort = parent.getParentPort();
-                GraphLink link = new GraphLink();
-                link.setSourcePort(parentPort);
-                link.setTargetPort(port);
-                link.setID(((ArtifactGraphNode)parent).getArtifact().getId() + ":" + artifact.getId());
-                link.setTooltipText(link.getID());
-                link.setDisplayName(link.getID());
-                links.add(link);
+            if (parentChain.size() > 0) {
+                Artifact parent = parentChain.get(parentChain.size() - 1);
+                String edge = parent.getId() + "--" + artifact.getId();
+                ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
+                scene.addEdge(ed);
+                scene.setEdgeTarget(ed, getNode(artifact));
+                scene.setEdgeSource(ed, getNode(parent));
             } else {
-                // for root, it's distance to itself is zero
-                node.setDistanceFromRoot(0);
+                getNode(artifact).setRoot(true);
             }
         }
         
         public void omitForNearer(Artifact omitted, Artifact kept) {
-            ArtifactGraphNode node = findNode(kept);
-            if (node == null) {
-                node = findNode(omitted);
-                node.setArtifact(kept);
+            if (!scene.isNode(getNode(kept))) {
+                scene.addNode(getNode(kept));
             }
-            GraphPort port = node.getChildPort();
-            ArtifactGraphNode parent = (ArtifactGraphNode)parentChain.get(parentChain.size() - 1);
-            GraphPort parentPort = parent.getParentPort();
-            GraphLink link = new GraphLink();
-//            link.setDisplayName("Omitted was " + omitted);
-            link.setID(((ArtifactGraphNode)parent).getArtifact().getId() + ":" + kept.getId());
-            link.setDisplayName(link.getID());
-            link.setTooltipText(link.getID());
-            link.setSourcePort(parentPort);
-            link.setTargetPort(port);
-            links.add(link);
+            if (parentChain.size() > 0) {
+                Artifact parent = parentChain.get(parentChain.size() - 1);
+                String edge = parent.getId() + "--" + omitted.getId() + "++" + omitted.hashCode();
+                ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
+                scene.addEdge(ed);
+                scene.setEdgeTarget(ed, getNode(kept));
+                scene.setEdgeSource(ed, getNode(parent));
+                //TODO mark the ommited..
+            } 
+            if (scene.isNode(getNode(omitted))) {
+                scene.removeNode(getNode(omitted));
+            }
         }
         
         public void updateScope(Artifact artifact, String scope) {
         }
         
         public void manageArtifact(Artifact artifact, Artifact replacement) {
-//            System.out.println("MANAGING=" + replacement);
-            ArtifactGraphNode node = (ArtifactGraphNode)findNode(artifact);
-//            System.out.println("artifact = " + artifact);
-            if (node == null) {
-                includeArtifact(replacement);
-            } else {
-                node.setArtifact(replacement);
+            System.out.println("manage=" + artifact);
+            if (!scene.isNode(getNode(replacement))) {
+                scene.addNode(getNode(replacement));
+            }
+            Collection<ArtifactGraphEdge> edges = scene.getEdges();
+            for (ArtifactGraphEdge edge : edges) {
+                if (getNode(artifact) == scene.getEdgeSource(edge)) {
+                    System.out.println("new source" + edge);
+                    scene.setEdgeSource(edge, getNode(replacement));
+                }
+                if (getNode(artifact) == scene.getEdgeTarget(edge)) {
+                    System.out.println("new target" + edge);
+                    scene.setEdgeTarget(edge, getNode(replacement));
+                }
+            }
+            if (scene.isNode(getNode(artifact))) {
+                scene.removeNode(getNode(artifact));
             }
         }
         

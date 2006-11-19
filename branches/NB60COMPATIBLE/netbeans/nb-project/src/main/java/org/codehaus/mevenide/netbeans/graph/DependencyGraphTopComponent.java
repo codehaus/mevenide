@@ -18,31 +18,12 @@
 package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.plexus.util.StringOutputStream;
-import org.netbeans.graph.api.GraphFactory;
-import org.netbeans.graph.api.control.builtin.DefaultViewController;
-import org.netbeans.graph.api.model.IGraphNode;
-import org.netbeans.graph.api.model.builtin.GraphDocument;
-import org.netbeans.graph.vmd.VMDSerializer;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
-import org.openide.xml.XMLUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * component showing graph of dependencies for a pom project.
@@ -53,9 +34,8 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     private NbMavenProject project;
     private JComponent view = null;
-    private DefaultViewController controller;
-    private MyGraphEventHandler handler;
-    private float zoom = 1;
+    private double zoom = 1;
+    private DependencyGraphScene scene;
     
     /** Creates new form ModulesGraphTopComponent */
     public DependencyGraphTopComponent(NbMavenProject proj) {
@@ -74,35 +54,22 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     protected void componentOpened() {
         super.componentOpened();
-        controller = new DefaultViewController();
-        GraphDocument doc = GraphDocumentFactory.createDependencyDocument(project);
-        handler = new MyGraphEventHandler(doc);
-        view = GraphFactory.createView(doc,
-                new DependencyDocumentRenderer("Transitive Dependencies for " + project.getDisplayName(), controller.getHelper()),
-                controller,
-                handler);
-        GraphFactory.layoutNodes(view);
-        loadDocument();
-        
+//        controller = new DefaultViewController();
+        scene = GraphDocumentFactory.createDependencyDocument(project);
+        JComponent sceneView = scene.getView ();
+        if (sceneView == null) {
+            sceneView = scene.createView ();
+        }
         JScrollPane pane = new JScrollPane();
-        pane.setViewportView(view);
+        pane.setViewportView(sceneView);
         add(pane, BorderLayout.CENTER);
-        IGraphNode[] nds = controller.getHelper().getNodes();
-        IGraphNode rootNode = null;
-        for (int i = 0; i < nds.length; i++) {
-            DependencyGraphNodeLayouter.IRootDistance dist = (DependencyGraphNodeLayouter.IRootDistance) nds[i].getLookup().lookup(DependencyGraphNodeLayouter.IRootDistance.class);
-            if (dist.getDistanceFromRoot() == 0) {
-                rootNode = nds[i];
-                break;
-            }
-        }
-        if (rootNode != null) {
-            Point point = controller.getHelper().getNodeLocation(rootNode);
-            Rectangle rect = new Rectangle(Math.max(0, point.x - 200), Math.max(0, point.y - 200), 400, 400);
-            pane.getViewport().scrollRectToVisible(rect);
-        }
+// instantiate particular layout e.g.: "new GridGraphLayout ();"
+//        TreeGraphLayout<Artifact, String> layout = new TreeGraphLayout<Artifact, String>(scene, 100, 100, 5, 50 , true);
+//        for (Artifact art : scene.getNodes()) {
+//            layout.layout(art);
+//        }
 
-        
+        scene.cleanLayout();
         revalidate();
         repaint();
         
@@ -117,6 +84,7 @@ public class DependencyGraphTopComponent extends TopComponent {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         jPanel1 = new javax.swing.JPanel();
         btnBigger = new javax.swing.JButton();
         btnSmaller = new javax.swing.JButton();
@@ -134,7 +102,6 @@ public class DependencyGraphTopComponent extends TopComponent {
                 btnBiggerActionPerformed(evt);
             }
         });
-
         jPanel1.add(btnBigger);
 
         btnSmaller.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/graph/zoomout.gif")));
@@ -143,7 +110,6 @@ public class DependencyGraphTopComponent extends TopComponent {
                 btnSmallerActionPerformed(evt);
             }
         });
-
         jPanel1.add(btnSmaller);
 
         btnSnap.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/graph/snap-to-grid.png")));
@@ -152,7 +118,6 @@ public class DependencyGraphTopComponent extends TopComponent {
                 btnSnapStateChanged(evt);
             }
         });
-
         jPanel1.add(btnSnap);
 
         btnSaveLayout.setText("Save layout");
@@ -161,7 +126,6 @@ public class DependencyGraphTopComponent extends TopComponent {
                 btnSaveLayoutActionPerformed(evt);
             }
         });
-
         jPanel1.add(btnSaveLayout);
 
         cbSelection.setSelected(true);
@@ -173,84 +137,89 @@ public class DependencyGraphTopComponent extends TopComponent {
                 cbSelectionStateChanged(evt);
             }
         });
-
         jPanel1.add(cbSelection);
 
         add(jPanel1, java.awt.BorderLayout.NORTH);
-
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSnapStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_btnSnapStateChanged
-        GraphFactory.setSnapToGrid(view, btnSnap.isSelected());
+//        GraphFactory.setSnapToGrid(view, btnSnap.isSelected());//GEN-HEADEREND:event_btnSnapStateChanged
     }//GEN-LAST:event_btnSnapStateChanged
 
     private void cbSelectionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbSelectionStateChanged
-        handler.setMultiSelect(cbSelection.isSelected());
+//        handler.setMultiSelect(cbSelection.isSelected());//GEN-HEADEREND:event_cbSelectionStateChanged
     }//GEN-LAST:event_cbSelectionStateChanged
 
     private void btnSaveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLayoutActionPerformed
-        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
-        VMDSerializer ser = new VMDSerializer();
-        ser.createStructure(controller.getHelper());
-        Node nd = ser.saveStructure(doc, "layout");
-        doc.getDocumentElement().appendChild(nd);
-        FileObject fo = project.getProjectDirectory();
-        StringOutputStream str = new StringOutputStream();
-        try {
-            XMLUtil.write(doc, str, "UTF-8");
-            str.close();
-            fo.setAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT, str.toString());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (str != null) {
-                try {
-                str.close();
-                } catch (IOException exc) {
-                    
-                }
-            }
-        }
+
+//        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);//GEN-HEADEREND:event_btnSaveLayoutActionPerformed
+//        VMDSerializer ser = new VMDSerializer();
+//        ser.createStructure(controller.getHelper());
+//        Node nd = ser.saveStructure(doc, "layout");
+//        doc.getDocumentElement().appendChild(nd);
+//        FileObject fo = project.getProjectDirectory();
+//        StringOutputStream str = new StringOutputStream();
+//        try {
+//            XMLUtil.write(doc, str, "UTF-8");
+//            str.close();
+//            fo.setAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT, str.toString());
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (str != null) {
+//                try {
+//                str.close();
+//                } catch (IOException exc) {
+//                    
+//                }
+//            }
+//        }
     }//GEN-LAST:event_btnSaveLayoutActionPerformed
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
-        zoom = zoom * (float)0.75;
-        GraphFactory.setZoom(view, zoom);
+        zoom = zoom * (double)0.75;
+        scene.setZoomFactor(zoom);
+        revalidate();
+        repaint();
+//        GraphFactory.setZoom(view, zoom);
     }//GEN-LAST:event_btnSmallerActionPerformed
     
     private void btnBiggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBiggerActionPerformed
-        zoom = zoom * (float)1.5;
-        GraphFactory.setZoom(view, zoom);
+        zoom = zoom * (double)1.5;
+        scene.setZoomFactor(zoom);
+        revalidate();
+        repaint();
+//        GraphFactory.setZoom(view, zoom);
 // TODO add your handling code here:
     }//GEN-LAST:event_btnBiggerActionPerformed
 
-    private void loadDocument() {
-        VMDSerializer ser = new VMDSerializer();
-        FileObject fo = project.getProjectDirectory();
-        String attrVal = (String)fo.getAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT);
-        if (attrVal != null) {
-            try {
-            Reader str = new StringReader(attrVal);
-            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
-            Node nd = doc.getDocumentElement().getFirstChild();
-            while (nd != null && !(nd instanceof Element)) {
-                nd = nd.getNextSibling();
-            }
-            if (nd == null) {
-                System.out.println("errror...");
-            } else {
-                ser.loadStructure(nd);
-                ser.useStructure(controller.getHelper());
-            }
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (SAXException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+//    private void loadDocument() {
+//        VMDSerializer ser = new VMDSerializer();
+//        FileObject fo = project.getProjectDirectory();
+//        String attrVal = (String)fo.getAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT);
+//        if (attrVal != null) {
+//            try {
+//            Reader str = new StringReader(attrVal);
+//            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
+//            Node nd = doc.getDocumentElement().getFirstChild();
+//            while (nd != null && !(nd instanceof Element)) {
+//                nd = nd.getNextSibling();
+//            }
+//            if (nd == null) {
+//                System.out.println("errror...");
+//            } else {
+//                ser.loadStructure(nd);
+//                ser.useStructure(controller.getHelper());
+//            }
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            } catch (SAXException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

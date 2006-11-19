@@ -18,29 +18,12 @@
 package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.BorderLayout;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.plexus.util.StringOutputStream;
-import org.netbeans.graph.api.GraphFactory;
-import org.netbeans.graph.api.control.builtin.DefaultViewController;
-import org.netbeans.graph.api.model.builtin.GraphDocument;
-import org.netbeans.graph.vmd.VMDDocumentRenderer;
-import org.netbeans.graph.vmd.VMDSerializer;
-import org.openide.filesystems.FileObject;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
-import org.openide.xml.XMLUtil;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
 /**
  * component showing graph of modules for a pom project.
@@ -51,8 +34,6 @@ public class ModulesGraphTopComponent extends TopComponent {
     
     private NbMavenProject project;
     private JComponent view = null;
-    private DefaultViewController controller;
-    private MyGraphEventHandler handler;
     private float zoom = 1;
     
     /** Creates new form ModulesGraphTopComponent */
@@ -72,17 +53,17 @@ public class ModulesGraphTopComponent extends TopComponent {
     
     protected void componentOpened() {
         super.componentOpened();
-        controller = new ModuleGraphController();
-        GraphDocument doc = GraphDocumentFactory.createModuleDocument(project);
-        handler = new MyGraphEventHandler(doc);
-        view = GraphFactory.createView(doc,
-                new VMDDocumentRenderer(),
-                controller,
-                handler);
-        GraphFactory.layoutNodes(view);
-        loadDocument();
+//        controller = new ModuleGraphController();
+//        GraphDocument doc = GraphDocumentFactory.createModuleDocument(project);
+//        handler = new MyGraphEventHandler(doc);
+//        view = GraphFactory.createView(doc,
+//                new VMDDocumentRenderer(),
+//                controller,
+//                handler);
+//        GraphFactory.layoutNodes(view);
+//        loadDocument();
         JScrollPane pane = new JScrollPane();
-        pane.setViewportView(view);
+//        pane.setViewportView(view);
         add(pane, BorderLayout.CENTER);
         revalidate();
         repaint();
@@ -161,76 +142,76 @@ public class ModulesGraphTopComponent extends TopComponent {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSnapStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_btnSnapStateChanged
-        GraphFactory.setSnapToGrid(view, btnSnap.isSelected());
+//        GraphFactory.setSnapToGrid(view, btnSnap.isSelected());//GEN-HEADEREND:event_btnSnapStateChanged
     }//GEN-LAST:event_btnSnapStateChanged
 
     private void cbSelectionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbSelectionStateChanged
-        handler.setMultiSelect(cbSelection.isSelected());
+//        handler.setMultiSelect(cbSelection.isSelected());//GEN-HEADEREND:event_cbSelectionStateChanged
     }//GEN-LAST:event_cbSelectionStateChanged
 
     private void btnSaveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLayoutActionPerformed
-        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);
-        VMDSerializer ser = new VMDSerializer();
-        ser.createStructure(controller.getHelper());
-        Node nd = ser.saveStructure(doc, "layout");
-        doc.getDocumentElement().appendChild(nd);
-        FileObject fo = project.getProjectDirectory();
-        StringOutputStream str = new StringOutputStream();
-        try {
-            XMLUtil.write(doc, str, "UTF-8");
-            str.close();
-            fo.setAttribute(ATTRIBUTE_MODULE_LAYOUT, str.toString());
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        } finally {
-            if (str != null) {
-                try {
-                str.close();
-                } catch (IOException exc) {
-                    
-                }
-            }
-        }
+//        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);//GEN-HEADEREND:event_btnSaveLayoutActionPerformed
+//        VMDSerializer ser = new VMDSerializer();
+//        ser.createStructure(controller.getHelper());
+//        Node nd = ser.saveStructure(doc, "layout");
+//        doc.getDocumentElement().appendChild(nd);
+//        FileObject fo = project.getProjectDirectory();
+//        StringOutputStream str = new StringOutputStream();
+//        try {
+//            XMLUtil.write(doc, str, "UTF-8");
+//            str.close();
+//            fo.setAttribute(ATTRIBUTE_MODULE_LAYOUT, str.toString());
+//        } catch (IOException ex) {
+//            ex.printStackTrace();
+//        } finally {
+//            if (str != null) {
+//                try {
+//                str.close();
+//                } catch (IOException exc) {
+//                    
+//                }
+//            }
+//        }
     }//GEN-LAST:event_btnSaveLayoutActionPerformed
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
         zoom = zoom * (float)0.75;
-        GraphFactory.setZoom(view, zoom);
+//        GraphFactory.setZoom(view, zoom);
     }//GEN-LAST:event_btnSmallerActionPerformed
     
     private void btnBiggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBiggerActionPerformed
         zoom = zoom * (float)1.5;
-        GraphFactory.setZoom(view, zoom);
+//        GraphFactory.setZoom(view, zoom);
 // TODO add your handling code here:
     }//GEN-LAST:event_btnBiggerActionPerformed
 
-    private void loadDocument() {
-        VMDSerializer ser = new VMDSerializer();
-        FileObject fo = project.getProjectDirectory();
-        String attrVal = (String)fo.getAttribute(ATTRIBUTE_MODULE_LAYOUT);
-        if (attrVal != null) {
-            try {
-            Reader str = new StringReader(attrVal);
-            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
-            Node nd = doc.getDocumentElement().getFirstChild();
-            while (nd != null && !(nd instanceof Element)) {
-                nd = nd.getNextSibling();
-            }
-            if (nd == null) {
-                System.out.println("errror...");
-            } else {
-                ser.loadStructure(nd);
-                ser.useStructure(controller.getHelper());
-            }
-            } catch (FileNotFoundException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (SAXException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+//    private void loadDocument() {
+//        VMDSerializer ser = new VMDSerializer();
+//        FileObject fo = project.getProjectDirectory();
+//        String attrVal = (String)fo.getAttribute(ATTRIBUTE_MODULE_LAYOUT);
+//        if (attrVal != null) {
+//            try {
+//            Reader str = new StringReader(attrVal);
+//            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
+//            Node nd = doc.getDocumentElement().getFirstChild();
+//            while (nd != null && !(nd instanceof Element)) {
+//                nd = nd.getNextSibling();
+//            }
+//            if (nd == null) {
+//                System.out.println("errror...");
+//            } else {
+//                ser.loadStructure(nd);
+//                ser.useStructure(controller.getHelper());
+//            }
+//            } catch (FileNotFoundException ex) {
+//                ex.printStackTrace();
+//            } catch (IOException ex) {
+//                ex.printStackTrace();
+//            } catch (SAXException ex) {
+//                ex.printStackTrace();
+//            }
+//        }
+//    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables

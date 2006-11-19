@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
@@ -37,18 +37,6 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger-jpda</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-graph</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-graph-vmd</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -125,24 +113,22 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-project</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>        
+        </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
             <version>${netbeans.release}</version>
         </dependency>        
-        
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-queries</artifactId>
@@ -152,7 +138,7 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-jdesktop-layout</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>  
+        </dependency>        
         <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
         <dependency>
             <groupId>net.java.dev.swing-layout</groupId>
@@ -163,8 +149,7 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-options-api</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
-        </dependency>
+        </dependency>  
         
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
@@ -173,13 +158,18 @@
         </dependency>
         
         <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-api-visual</artifactId>
+            <version>2.0-pre1</version>
+        </dependency>
+        
+        <dependency>
             <groupId>sun.jdk</groupId>
             <artifactId>tools</artifactId>
             <version>1.4.2</version>
             <scope>system</scope>
             <systemPath>${java142.home}/lib/tools.jar</systemPath>
-        </dependency>        
-        
+        </dependency>
     </dependencies>
     <profiles>
         <profile>

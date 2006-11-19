@@ -8,8 +8,7 @@
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
    <libraries>
-       <library>org.netbeans.api:org-netbeans-graph</library>
-       <library>org.netbeans.api:org-netbeans-graph-vmd</library>
+       <library>org.netbeans.api:org-netbeans-api-visual</library>
    </libraries>
    <dependencies>
       <dependency>
