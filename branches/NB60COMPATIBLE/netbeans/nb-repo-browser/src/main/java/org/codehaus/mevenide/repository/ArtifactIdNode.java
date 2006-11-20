@@ -17,14 +17,8 @@
 
 package org.codehaus.mevenide.repository;
 
-import java.io.IOException;
-import java.util.Collections;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
-import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.repository.search.SearchResultChildren;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -34,48 +28,10 @@ public class ArtifactIdNode extends AbstractNode {
     
     /** Creates a new instance of ArtifactIdNode */
     public ArtifactIdNode(String id, String art) {
-        super(new ArtifactChildren(id, art));
+        super(new SearchResultChildren(id, art));
         setName(art);
         setDisplayName(art);
     }
     
     
-    static class ArtifactChildren extends Children.Keys {
-        private String groupId;
-        private String artifactId;
-        /** Creates a new instance of GroupIdListChildren */
-        public ArtifactChildren(String group, String artifact) {
-            groupId = group;
-            artifactId = artifact;
-        }
-        
-        protected Node[] createNodes(Object key) {
-            if (GroupIdListChildren.LOADING == key) {
-                return new Node[] { GroupIdListChildren.createLoadingNode() };
-            }
-            DefaultArtifactVersion version = (DefaultArtifactVersion)key;
-            return new Node[] { new VersionNode(groupId, artifactId, version) };
-        }
-        
-        protected void addNotify() {
-            super.addNotify();
-            setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
-            RequestProcessor.getDefault().post(new Runnable() {
-                public void run() {
-                    try {
-                        setKeys(CustomQueries.getVersions(groupId, artifactId));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        setKeys(Collections.EMPTY_LIST);
-                    }
-                }
-            });
-        }
-        
-        protected void removeNotify() {
-            super.removeNotify();
-            setKeys(Collections.EMPTY_LIST);
-        }
-        
-    }
 }

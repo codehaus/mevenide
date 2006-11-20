@@ -17,14 +17,18 @@
 
 package org.codehaus.mevenide.repository.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.repository.GroupIdListChildren;
 import org.codehaus.mevenide.repository.VersionNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -32,26 +36,40 @@ import org.openide.nodes.Node;
  */
 public class SearchResultChildren extends Children.Keys {
     
-    private List keys;
+    private List<StandardArtifactIndexRecord> keys;
     
-    private ArrayList mainkeys;
+    private ArrayList<StandardArtifactIndexRecord> mainkeys;
     
-    private ArrayList attachedkeys;
+    private ArrayList<StandardArtifactIndexRecord> attachedkeys;
+    
+    private String artifactId;
+    private String groupId;
     
     /**
-     * Creates a new instance of SearchResultChildren
+     * Creates a new instance of SearchResultChildren from search results.
      */
-    public SearchResultChildren(List results) {
+    public SearchResultChildren(List<StandardArtifactIndexRecord> results) {
         keys = results;
     }
     
+    /**
+     * creates a new instance of SearchResultChildren from browsing interface
+     */
+    public SearchResultChildren(String groupId, String artifactId) {
+        this.groupId = groupId;
+        this.artifactId = artifactId;
+    }
+    
     protected Node[] createNodes(Object key) {
+        if (GroupIdListChildren.LOADING == key) {
+                return new Node[] { GroupIdListChildren.createLoadingNode() };
+        }
         StandardArtifactIndexRecord record = (StandardArtifactIndexRecord)key;
-        Iterator it = attachedkeys.iterator();
+        Iterator<StandardArtifactIndexRecord> it = attachedkeys.iterator();
         boolean hasSources = false;
         boolean hasJavadoc = false;
         while (it.hasNext() && (!hasJavadoc || !hasSources)) {
-            StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
+            StandardArtifactIndexRecord elem = it.next();
             if (elem.getGroupId().equals(record.getGroupId()) &&
                     elem.getArtifactId().equals(record.getArtifactId()) &&
                     elem.getVersion().equals(record.getVersion())) {
@@ -59,17 +77,32 @@ public class SearchResultChildren extends Children.Keys {
                 hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
             }
         }
-        return new Node[] { new VersionNode(record, hasJavadoc, hasSources) };
+        return new Node[] { new VersionNode(record, hasJavadoc, hasSources, groupId != null) };
     }
     
     
     protected void addNotify() {
         super.addNotify();
-        Iterator it = keys.iterator();
-        mainkeys = new ArrayList(keys.size());
-        attachedkeys = new ArrayList(keys.size());
-        while (it.hasNext()) {
-            StandardArtifactIndexRecord record = (StandardArtifactIndexRecord) it.next();
+        if (keys == null) {
+            setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    try {
+                        sortOutKeys(CustomQueries.getVersions(groupId, artifactId));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        setKeys(Collections.EMPTY_LIST);
+                    }
+                }
+            });
+        } else {
+            sortOutKeys(keys);
+        }
+    }
+    private void sortOutKeys(List<StandardArtifactIndexRecord> keys) {
+        mainkeys = new ArrayList<StandardArtifactIndexRecord>(keys.size());
+        attachedkeys = new ArrayList<StandardArtifactIndexRecord>(keys.size());
+        for (StandardArtifactIndexRecord record : keys) {
             if (record.getClassifier() != null && (record.getClassifier().equals("javadoc")
                     || record.getClassifier().equals("sources"))) {
                 attachedkeys.add(record);

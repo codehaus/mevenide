@@ -18,21 +18,12 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.event.ActionEvent;
-import java.io.File;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.List;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.awt.HtmlBrowser;
 import org.openide.filesystems.FileObject;
@@ -52,7 +43,6 @@ import org.openide.util.Utilities;
 public class VersionNode extends AbstractNode {
     
     private StandardArtifactIndexRecord record;
-    private Artifact artifact;
     private boolean hasJavadoc;
     private boolean hasSources;
     
@@ -77,58 +67,25 @@ public class VersionNode extends AbstractNode {
     }
     
     /** Creates a new instance of VersionNode */
-    public VersionNode(String group, String artifact, DefaultArtifactVersion version) {
-        super(Children.LEAF);
-        setName(version.toString());
-        setDisplayName(version.toString());
-        
-        String query = "+" + StandardIndexRecordFields.GROUPID_EXACT + ":\"" + group + "\" +" +
-                StandardIndexRecordFields.ARTIFACTID_EXACT + ":\"" + artifact + "\" +" +
-                StandardIndexRecordFields.VERSION_EXACT + ":\"" + version.toString() + "\"";
-        hasSources = false;
-        hasJavadoc = false;
-        LuceneQuery lq;
-        try {
-            lq = new LuceneQuery(LocalRepositoryIndexer.parseQuery(query));
-            List docs = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), lq);
-            Iterator it = docs.iterator();
-            while (it.hasNext()) {
-                StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
-                hasSources = hasSources || "sources".equals(elem.getClassifier());
-                hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
-                if (record == null || elem.getClassifier() == null) {
-                    if (!"sources".equals(elem.getClassifier()) && !"javadoc".equals(elem.getClassifier())) {
-                        record = elem;
-                    }
-                }
-            }
-        } catch (RepositoryIndexSearchException ex) {
-            // needs proper handling..
-            ex.printStackTrace();
-        } catch (ParseException ex) {
-            //very unprobable
-            ex.printStackTrace();
-        }
-        setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
-    }
-    
-    /**
-     * version node instance created from search results..
-     */
-    
-    public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source) {
+    public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source, boolean dispNameShort) {
         super(createChildren(record));
         hasJavadoc = javadoc;
         hasSources = source;
         this.record = record;
+        if (dispNameShort) {
+            setName(record.getVersion());
+            setDisplayName(record.getVersion());
+        } else {
+            setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion());
+        }
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
-        setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion());
     }
     
     public Action[] getActions(boolean context) {
         Action[] retValue;
         
         retValue = new Action[] {
+            new ViewJavadocAction(),
             new ShowRecordAction()
         };
         return retValue;
@@ -165,7 +122,15 @@ public class VersionNode extends AbstractNode {
         return buffer.toString();
     }
     
-    private File getJavadocFile() {
+    private FileObject getJavadocFile() {
+        try {
+            Artifact art = RepositoryUtils.createJavadocArtifact(record,
+                    EmbedderFactory.getProjectEmbedder().getLocalRepository());
+            return FileUtil.toFileObject(art.getFile());
+        } catch (MavenEmbedderException ex) {
+            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+                    ex.getMessage(), ex);
+        }
         return null;
     }
     
@@ -197,8 +162,7 @@ public class VersionNode extends AbstractNode {
             setEnabled(hasJavadoc);
         }
         public void actionPerformed(ActionEvent event) {
-            File javadoc = getJavadocFile();
-            FileObject fo = FileUtil.toFileObject(javadoc);
+            FileObject fo = getJavadocFile();
             if (fo != null) {
                 FileObject jarfo = FileUtil.getArchiveRoot(fo);
                 if (jarfo != null) {

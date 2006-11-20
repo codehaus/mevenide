@@ -33,9 +33,9 @@ import org.openide.util.RequestProcessor;
  */
 public class GroupIdListChildren extends Children.Keys {
     
-    static final Object LOADING = new Object();
+    public static final Object LOADING = new Object();
     
-    static Node createLoadingNode() {
+    public static Node createLoadingNode() {
         AbstractNode nd = new AbstractNode(Children.LEAF);
         nd.setName("Loading");
         nd.setDisplayName("Loading...");

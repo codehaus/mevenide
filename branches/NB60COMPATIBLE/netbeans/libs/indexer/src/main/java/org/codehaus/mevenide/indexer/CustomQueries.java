@@ -30,8 +30,12 @@ import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
+import org.apache.maven.archiva.indexer.lucene.LuceneIndexRecordConverter;
 import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
+import org.apache.maven.archiva.indexer.lucene.LuceneRepositoryArtifactIndexFactory;
+import org.apache.maven.archiva.indexer.lucene.LuceneStandardIndexRecordConverter;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecordFactory;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.openide.util.Mutex.ExceptionAction;
@@ -187,39 +191,44 @@ public class CustomQueries {
         return sortedArtifactIds;
     }
     
-    public static List<DefaultArtifactVersion> getVersions( final String groupId, final String artifactId ) throws IOException {
-        Set<String> versions = new HashSet<String>();
+    public static List<StandardArtifactIndexRecord> getVersions( final String groupId, final String artifactId ) throws IOException {
+        Set<StandardArtifactIndexRecord> versions = new HashSet<StandardArtifactIndexRecord>();
         try {
-            versions = LocalRepositoryIndexer.MUTEX.readAccess(new ExceptionAction<Set<String>>() {
-              public Set<String> run() throws Exception {
-                Set<String> versions = new HashSet<String>();
-                IndexReader indexReader = IndexReader.open( LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath() );
+            versions = LocalRepositoryIndexer.MUTEX.readAccess(new ExceptionAction<Set<StandardArtifactIndexRecord>>() {
 
+                public Set<StandardArtifactIndexRecord> run() throws Exception {
+                    Set<StandardArtifactIndexRecord> versions = new HashSet<StandardArtifactIndexRecord>();
+                    IndexReader indexReader = IndexReader.open(LocalRepositoryIndexer.getInstance().getDefaultIndexLocation().getAbsolutePath());
+                    LuceneStandardIndexRecordConverter conv = new LuceneStandardIndexRecordConverter();
 
-                try {
-                    for ( int i = 0; i < indexReader.numDocs(); i++ ) {
-                        Document doc = indexReader.document( i );
-                        if ( doc.getField( StandardIndexRecordFields.GROUPID ).stringValue().equals( groupId ) &&
-                                doc.getField( StandardIndexRecordFields.ARTIFACTID ).stringValue().equals( artifactId ) ) {
-                            versions.add(doc.getField( StandardIndexRecordFields.VERSION ).stringValue());
+                    try {
+                        for (int i = 0; i < indexReader.numDocs(); i++) {
+                            Document doc = indexReader.document(i);
+
+                            if (doc.getField(StandardIndexRecordFields.GROUPID).stringValue().equals(groupId) &&
+                                doc.getField(StandardIndexRecordFields.ARTIFACTID).stringValue().equals(artifactId)) {
+                                versions.add((StandardArtifactIndexRecord)conv.convert(doc));
+                            }
                         }
                     }
-                } finally {
-                    indexReader.close();
+                    finally {
+                        indexReader.close();
+                    }
+                    return versions;
                 }
-                return versions;
-              }
             });
         }
         catch (MutexException ex) {
             throw (IOException)ex.getException();
         };
-        // DefaultArtifactVersion is used for correct ordering
-        List<DefaultArtifactVersion> sortedVersions = new ArrayList<DefaultArtifactVersion>();
-        for (String elem : versions) {
-            sortedVersions.add(new DefaultArtifactVersion(elem));
-        }
-        Collections.sort( sortedVersions );
+        //TODO
+//        // DefaultArtifactVersion is used for correct ordering
+        List<StandardArtifactIndexRecord> sortedVersions = new ArrayList<StandardArtifactIndexRecord>();
+        sortedVersions.addAll(versions);
+//        for (String elem : versions) {
+//            sortedVersions.add(new DefaultArtifactVersion(elem));
+//        }
+//        Collections.sort( sortedVersions );
         return sortedVersions;
     }
     
