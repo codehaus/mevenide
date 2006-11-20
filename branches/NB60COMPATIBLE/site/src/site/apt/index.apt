@@ -1,10 +1,10 @@
 Introduction
 
-    Mevenide2-Netbeans is a Netbeans plugin which integrate all the maven2 project management possibilities into Netbeans.
+    Mevenide2-NetBeans is a NetBeans plugin which integrate all the maven2 project management possibilities into NetBeans.
 
 * Version 2.3 released - 23 Oct 2006
 
-    It is the second stable release of Mevenide2 for Netbeans. 
+    It is the second stable release of Mevenide2 for NetBeans. 
 
     * Features that were added :
 
@@ -36,7 +36,7 @@ Introduction
 
     * Folow the {{{mevenide2-netbeans/installation.html}Installation}} instructions.
     
-    * Note: If you installed any of the previous versions, just upgrade through the Netbeans AutoUpdate Center.
+    * Note: If you installed any of the previous versions, just upgrade through the NetBeans AutoUpdate Center.
 
 * Contribute
     

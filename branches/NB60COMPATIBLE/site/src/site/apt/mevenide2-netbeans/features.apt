@@ -70,7 +70,7 @@ subcomponent <<mevenide2-netbeans>>.
 
 * Hyperlinking
 
-  The Maven POM file contains a lot of useful information but it's not always ready at hand. Why not have the URLs hyperlinked? It is possible with Netbeans.
+  The Maven POM file contains a lot of useful information but it's not always ready at hand. Why not have the URLs hyperlinked? It is possible with NetBeans.
 
   * URLs : 
 

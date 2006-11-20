@@ -9,7 +9,7 @@
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>Netbeans Maven2 J2EE support</name>
+    <name>NetBeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
     <dependencies>

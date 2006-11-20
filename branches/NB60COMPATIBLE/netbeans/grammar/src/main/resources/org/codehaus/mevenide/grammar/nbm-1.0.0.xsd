@@ -3,13 +3,13 @@
   <xs:element name="nbm" type="NetbeansModule">
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
-      <xs:documentation source="description">Describes the layout, dependencies and packaging of a Netbeans module.</xs:documentation>
+      <xs:documentation source="description">Describes the layout, dependencies and packaging of a NetBeans module.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="NetbeansModule">
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
-      <xs:documentation source="description">Describes the layout, dependencies and packaging of a Netbeans module.</xs:documentation>
+      <xs:documentation source="description">Describes the layout, dependencies and packaging of a NetBeans module.</xs:documentation>
     </xs:annotation>
     <xs:all>
       <xs:element name="moduleType" minOccurs="0" type="xs:string" default="normal">
@@ -45,13 +45,13 @@
       <xs:element name="manifest" minOccurs="0" type="xs:string" default="src/main/nbm/manifest.mf">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">Location of the manifest file with Netbeans specific manifest entries.</xs:documentation>
+          <xs:documentation source="description">Location of the manifest file with NetBeans specific manifest entries.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="homepageUrl" minOccurs="0" type="xs:string">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">Homepage URL of the module. Is accessible from Netbeans UI upon installation, should point to place with additional information about the functionality. If not defined, it defaults to POM's url element.</xs:documentation>
+          <xs:documentation source="description">Homepage URL of the module. Is accessible from NetBeans UI upon installation, should point to place with additional information about the functionality. If not defined, it defaults to POM's url element.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="distributionUrl" minOccurs="0" type="xs:string">

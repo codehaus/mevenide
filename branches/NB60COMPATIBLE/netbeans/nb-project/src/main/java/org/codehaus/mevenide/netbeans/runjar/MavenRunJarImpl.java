@@ -36,7 +36,7 @@ import org.openide.windows.OutputWriter;
 
 public class MavenRunJarImpl implements MavenRunJar {
     
-    private static final RequestProcessor PROCESSOR = new RequestProcessor("Netbeans-Run-Plugin IO redirection", 5);
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("NetBeans-Run-Plugin IO redirection", 5);
     
     public MavenRunJarImpl() {
     }

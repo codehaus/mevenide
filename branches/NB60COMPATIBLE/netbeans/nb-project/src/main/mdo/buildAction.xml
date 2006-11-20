@@ -1,7 +1,7 @@
 <model>
     <id>netbeansbuildaction</id>
     <name>NetbeansBuildAction</name>
-    <description>Description of what gets executed during a Netbeans project build related action.</description>
+    <description>Description of what gets executed during a NetBeans project build related action.</description>
     <defaults>
         <default>
             <key>package</key>

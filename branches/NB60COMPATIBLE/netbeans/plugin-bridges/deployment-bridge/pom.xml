@@ -8,8 +8,8 @@
     <artifactId>deployment-bridge</artifactId>
     <packaging>nbm</packaging>
     <version>1.0</version>
-    <name>Netbeans Deployment Bridge</name>
-    <description>Bridging deployment functionality from Netbeans to Maven, allowing deployment from maven plugin.</description>
+    <name>NetBeans Deployment Bridge</name>
+    <description>Bridging deployment functionality from NetBeans to Maven, allowing deployment from maven plugin.</description>
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>

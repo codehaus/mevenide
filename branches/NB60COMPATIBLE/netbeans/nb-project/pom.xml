@@ -9,8 +9,8 @@
     <artifactId>nb-project</artifactId>
     <packaging>nbm</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>Netbeans Maven2 project support</name>
-    <description>Implementation of a Netbeans project backed by Maven2 POM files.</description>
+    <name>NetBeans Maven2 project support</name>
+    <description>Implementation of a NetBeans project backed by Maven2 POM files.</description>
 
     <dependencies>
         <dependency>

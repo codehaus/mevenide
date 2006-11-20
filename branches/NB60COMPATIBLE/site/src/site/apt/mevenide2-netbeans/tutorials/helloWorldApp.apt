@@ -1,12 +1,12 @@
 Hello World Application
 
-  This simple tutorial will show you how to create a simple application using mevenide2-netbeans. After the application will be created we will run it, into the Netbeans IDE.
+  This simple tutorial will show you how to create a simple application using mevenide2-netbeans. After the application will be created we will run it, into the NetBeans IDE.
 
 * Prerequisite
 
-  * {{{http://www.netbeans.org}Netbeans5.0}} or later installed
+  * {{{http://www.netbeans.org}NetBeans5.0}} or later installed
 
-  * {{{../installation.html}Mevenide2.3}} for Netbeans installed
+  * {{{../installation.html}Mevenide2.3}} for NetBeans installed
 
 * The tutorial
 

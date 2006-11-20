@@ -1,14 +1,14 @@
 Hello World Web Application
 
-  This simple tutorial will show you how to create a simple web application using mevenide2-netbeans. After the application will be created, we will run it using the Bundled Tomcat server launched by Netbeans IDE, and seen the result in your favourite browser.
+  This simple tutorial will show you how to create a simple web application using mevenide2-netbeans. After the application will be created, we will run it using the Bundled Tomcat server launched by NetBeans IDE, and seen the result in your favourite browser.
 
-  For convenience reason, we use here the Bundled Tomcat Server provided by default in Netbeans, but, it is possible to use other web containers.
+  For convenience reason, we use here the Bundled Tomcat Server provided by default in NetBeans, but, it is possible to use other web containers.
 
 * Prerequisite
 
-  * {{{http://www.netbeans.org}Netbeans5.0}} or later installed
+  * {{{http://www.netbeans.org}NetBeans5.0}} or later installed
 
-  * {{{../installation.html}Mevenide2.2}} for Netbeans installed
+  * {{{../installation.html}Mevenide2.3}} for NetBeans installed
 
 * The tutorial
 

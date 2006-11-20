@@ -8,8 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>netbeans</artifactId>
   <packaging>pom</packaging>
-  <name>Netbeans Support</name>
-  <description>Netbeans Support</description>
+  <name>NetBeans Support</name>
+  <description>NetBeans Support</description>
   <version>1.5-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <profiles>

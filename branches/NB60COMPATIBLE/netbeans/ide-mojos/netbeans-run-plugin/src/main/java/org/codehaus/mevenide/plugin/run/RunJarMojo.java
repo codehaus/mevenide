@@ -36,10 +36,10 @@ public class RunJarMojo extends AbstractRunMojo  {
     public void execute() throws MojoExecutionException, MojoFailureException {
         MavenRunJar runjar = (MavenRunJar)Lookup.getDefault().lookup(MavenRunJar.class);
         if (runjar == null) {
-            throw new MojoExecutionException("Not running within Netbeans, cannot lookup MavenRunJar instance");
+            throw new MojoExecutionException("Not running within NetBeans, cannot lookup MavenRunJar instance");
         }
         int retCode = runjar.runJarProject(project, getLog(), finalName, jarLocation,workDirectory, executable, parameters, jvmParameters, debugJvmParameters, true);
-        getLog().info("Exited with return code=" + retCode);
+        getLog().info("Exited with return code " + retCode);
     }
 
 }

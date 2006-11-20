@@ -9,7 +9,7 @@
     <artifactId>grammar</artifactId>
     <packaging>nbm</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>Netbeans Maven2 code completion support</name>
+    <name>NetBeans Maven2 code completion support</name>
     <url>http://mevenide.codehaus.org</url>
     <description>Code completion support for Maven2 related files, like pom.xml, settings.xml, assembly descriptor etc.</description>
 

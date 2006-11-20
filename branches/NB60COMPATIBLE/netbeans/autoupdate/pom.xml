@@ -9,7 +9,7 @@
     <artifactId>autoupdate</artifactId>
     <packaging>nbm</packaging>
     <version>1.2-SNAPSHOT</version>
-    <name>Netbeans Maven2 autoupdate site</name>
+    <name>NetBeans Maven2 autoupdate site</name>
     <description>Autoupdate server for Mevenide 2.0, the support for Maven2.</description>
     <dependencies>
         <dependency>

@@ -8,8 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>netbeans-libs</artifactId>
   <packaging>pom</packaging>
-  <name>libraries for Netbeans Support</name>
-  <description>libraries for Netbeans Support</description>
+  <name>libraries for NetBeans Support</name>
+  <description>libraries for NetBeans Support</description>
   <version>1.5-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <modules>

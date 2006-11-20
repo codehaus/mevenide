@@ -9,8 +9,8 @@
     <artifactId>netbeans-repository</artifactId>
     <packaging>nbm</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>Maven2 Netbeans repository</name>
-    <description>Maven2 repository for netbeans specific plugin artifacts, is used from the UI, plugin require running Netbeans.</description>
+    <name>Maven2 NetBeans repository</name>
+    <description>Maven2 repository for netbeans specific plugin artifacts, is used from the UI, plugin require running NetBeans.</description>
 
     <dependencies>
         <!-- mark as dependency to get it built before the nbm gets packaged-->

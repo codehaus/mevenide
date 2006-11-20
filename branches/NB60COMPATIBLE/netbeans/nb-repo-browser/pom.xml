@@ -9,7 +9,7 @@
     <artifactId>nb-repo-browser</artifactId>
     <packaging>nbm</packaging>
     <version>2.4-SNAPSHOT</version>
-    <name>Netbeans Maven2 repository browser</name>
+    <name>NetBeans Maven2 repository browser</name>
     <description>A browser component for browsing the maven2 repositories, with general search capabilities.</description>
 
     <dependencies>

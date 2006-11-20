@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>netbeans-deploy-plugin</artifactId>
     <packaging>maven-plugin</packaging>
-    <name>Maven2 Netbeans Deployment Plugin</name>
-    <description>Maven plugin for deployment within Netbeans IDE</description>
+    <name>Maven2 NetBeans Deployment Plugin</name>
+    <description>Maven plugin for deployment within NetBeans IDE</description>
     <version>1.2.2</version>
     <dependencies>
         <dependency>

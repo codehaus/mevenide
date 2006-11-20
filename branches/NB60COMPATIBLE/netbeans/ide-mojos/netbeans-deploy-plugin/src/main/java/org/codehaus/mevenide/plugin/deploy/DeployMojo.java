@@ -83,8 +83,8 @@ public class DeployMojo extends AbstractMojo {
         }
         MavenDeployment deployment = (MavenDeployment)Lookup.getDefault().lookup(MavenDeployment.class);
         if (deployment == null) {
-            getLog().error("Cannot lookup the Maven-Netbeans bridge for deployment.");
-            throw new MojoExecutionException("Cannot lookup the Maven-Netbeans bridge for deployment.");
+            getLog().error("Cannot lookup the Maven-NetBeans bridge for deployment.");
+            throw new MojoExecutionException("Cannot lookup the Maven-NetBeans bridge for deployment.");
         }
         deployment.doDeployment(project, getLog(), debugmode, clientUrlPart, clientModuleUri, forceRedeploy);
     }

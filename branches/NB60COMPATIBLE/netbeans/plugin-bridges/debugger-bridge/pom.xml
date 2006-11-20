@@ -8,8 +8,8 @@
     <artifactId>debugger-bridge</artifactId>
     <packaging>nbm</packaging>
     <version>1.0</version>
-    <name>Netbeans Debugger Bridge</name>
-    <description>Bridging debugger functionality from Netbeans to Maven, allowing to start debugging from maven plugin.</description>
+    <name>NetBeans Debugger Bridge</name>
+    <description>Bridging debugger functionality from NetBeans to Maven, allowing to start debugging from maven plugin.</description>
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>

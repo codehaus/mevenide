@@ -9,7 +9,7 @@
     <artifactId>continuum-rpc</artifactId>
     <packaging>nbm</packaging>
     <version>1.3-SNAPSHOT</version>
-    <name>Netbeans continuum client XML-RPC</name>
+    <name>NetBeans continuum client XML-RPC</name>
     <description>XML-RPC client code for accessing Apache Continuum servers</description>
     <url>http://mevenide.codehaus.org</url>
 

@@ -8,8 +8,8 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>netbeans-debugger-plugin</artifactId>
   <packaging>maven-plugin</packaging>
-  <name>Maven2 Netbeans Debugger Plugin</name>
-  <description>Maven plugin for debugging within Netbeans IDE</description>
+  <name>Maven2 NetBeans Debugger Plugin</name>
+  <description>Maven plugin for debugging within NetBeans IDE</description>
   <version>1.2.2</version>
   <dependencies>
       <dependency>

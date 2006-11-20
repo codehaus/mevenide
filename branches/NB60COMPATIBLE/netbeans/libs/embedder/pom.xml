@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>nb-mvn-embedder</artifactId>
   <packaging>nbm</packaging>
-  <name>Maven Embedder packaged as Netbeans library</name>
+  <name>Maven Embedder packaged as NetBeans library</name>
   <description>maven embedder library plus some additional hacks..</description>
   <version>2.4-SNAPSHOT</version>
   <dependencies>

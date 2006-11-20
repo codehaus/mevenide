@@ -2,7 +2,7 @@ Installation
 
 * Instructions 
 
-  * The support for Maven2 only works in <<Netbeans 5.0>> and later builds. No support for 4.1 and older versions is planned currently.
+  * The support for Maven2 only works in <<NetBeans 5.0, 5.5>> and later builds. No support for 4.1 and older versions is planned currently.
 
   * It doesn't require Maven2 to be installed on your machine. If it's there though, the IDE will share the settings. The Maven Embedder that ships with Mevenide is of version 2.1 snapshot, with additional not yet integrated patches.
 
@@ -18,7 +18,7 @@ Installation
 
     [[4]]Finish the wizard and install the modules.
 
-* Install using the Netbeans Update Center
+* Install using the NetBeans Update Center
 
   [[1]] Select "Tools > Options" menu item, click the "Advanced Options" button
 

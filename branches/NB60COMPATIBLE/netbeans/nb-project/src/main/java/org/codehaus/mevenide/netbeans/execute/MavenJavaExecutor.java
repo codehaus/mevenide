@@ -193,7 +193,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             RepositoryPolicy snap = new RepositoryPolicy();
             snap.setEnabled(false);
             repo.setSnapshots(snap);
-            repo.setName("Netbeans IDE internal Repository hosting plugins that are executable in Netbeans IDE only.");
+            repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");
             myProfile.addPluginRepository(repo);
             Activation act = new Activation();
             ActivationProperty prop = new ActivationProperty();

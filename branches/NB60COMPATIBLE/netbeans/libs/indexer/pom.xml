@@ -8,7 +8,7 @@
   <groupId>org.codehaus.mevenide</groupId>
   <artifactId>indexer</artifactId>
   <packaging>nbm</packaging>
-  <name>Maven Netbeans Module indexer</name>
+  <name>Maven NetBeans Module indexer</name>
   <version>1.1-SNAPSHOT</version>
   <build>
     <plugins>
