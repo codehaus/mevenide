@@ -46,14 +46,15 @@ import org.openide.windows.WindowManager;
 
 /**
  * Top component which displays something.
+ * @author mkleint
  */
 public final class M2RepositoryBrowserTopComponent extends TopComponent implements ExplorerManager.Provider {
     
     private static M2RepositoryBrowserTopComponent instance;
     /** path to the icon used by the component and its open action */
-    static final String ICON_PATH = "org/codehaus/mevenide/repository/RepoBrowser.png";
+    static final String ICON_PATH = "org/codehaus/mevenide/repository/RepoBrowser.png"; //NOI18N
     
-    private static final String PREFERRED_ID = "M2RepositoryBrowserTopComponent";
+    private static final String PREFERRED_ID = "M2RepositoryBrowserTopComponent"; //NOI18N
 
     private BeanTreeView btv;
 
@@ -67,8 +68,8 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     
     private M2RepositoryBrowserTopComponent() {
         initComponents();
-        setName(NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "CTL_M2RepositoryBrowserTopComponent"));
-        setToolTipText(NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "HINT_M2RepositoryBrowserTopComponent"));
+        setName(NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "CTL_M2RepositoryBrowserTopComponent")); //NOI18N
+        setToolTipText(NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "HINT_M2RepositoryBrowserTopComponent")); //NOI18N
         setIcon(Utilities.loadImage(ICON_PATH, true));
         btv = new BeanTreeView();
         btv.setRootVisible(false);
@@ -80,9 +81,9 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         map.put("delete", ExplorerUtils.actionDelete(manager, true));
         associateLookup(ExplorerUtils.createLookup(manager, map));
         pnlExplorer.add(btv, BorderLayout.CENTER);
-        btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/find.gif")));
-        btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.gif")));
-        btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refresh.png")));
+        btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/find.gif"))); //NOI18N
+        btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.gif"))); //NOI18N
+        btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refresh.png"))); //NOI18N
         btnSearch.setText(null);
         btnBack.setText(null);
         btnIndex.setText(null);
@@ -216,15 +217,15 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         TopComponent win = WindowManager.getDefault().findTopComponent(PREFERRED_ID);
         if (win == null) {
             ErrorManager.getDefault().log(ErrorManager.WARNING,
-                    "Cannot find MyWindow component. It will not be located properly in the window system.");
+                    "Cannot find MyWindow component. It will not be located properly in the window system."); //NOI18N
             return getDefault();
         }
         if (win instanceof M2RepositoryBrowserTopComponent) {
             return (M2RepositoryBrowserTopComponent)win;
         }
         ErrorManager.getDefault().log(ErrorManager.WARNING,
-                "There seem to be multiple components with the '" + PREFERRED_ID +
-                "' ID. That is a potential source of errors and unexpected behavior.");
+                "There seem to be multiple components with the '" + PREFERRED_ID + //NOI18N
+                "' ID. That is a potential source of errors and unexpected behavior."); //NOI18N
         return getDefault();
     }
     

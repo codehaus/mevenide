@@ -38,7 +38,7 @@ public class RepositoryUtils {
     }
     
     public static Artifact createJavadocArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo) {
-        return createArtifact(record, repo, "javadoc");
+        return createArtifact(record, repo, "javadoc"); //NOI18N
     }
     
     private static Artifact createArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo, String classifier) {

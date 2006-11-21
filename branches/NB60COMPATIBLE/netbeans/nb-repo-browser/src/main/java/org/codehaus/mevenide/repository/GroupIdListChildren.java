@@ -25,6 +25,7 @@ import org.codehaus.mevenide.indexer.CustomQueries;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -37,8 +38,8 @@ public class GroupIdListChildren extends Children.Keys {
     
     public static Node createLoadingNode() {
         AbstractNode nd = new AbstractNode(Children.LEAF);
-        nd.setName("Loading");
-        nd.setDisplayName("Loading...");
+        nd.setName("Loading"); //NOI18N
+        nd.setDisplayName(NbBundle.getMessage(GroupIdListChildren.class, "Node_Loading"));
         return nd;
     }
     private List keys;

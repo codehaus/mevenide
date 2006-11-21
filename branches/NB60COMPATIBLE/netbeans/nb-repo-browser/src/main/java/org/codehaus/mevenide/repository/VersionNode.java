@@ -34,6 +34,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
@@ -47,7 +48,7 @@ public class VersionNode extends AbstractNode {
     private boolean hasSources;
     
     public static Children createChildren(StandardArtifactIndexRecord record) {
-        if (!"pom".equals(record.getType())) {
+        if (!"pom".equals(record.getType())) { //NOI18N
             try {
                 Artifact art = RepositoryUtils.createArtifact(record,
                         EmbedderFactory.getProjectEmbedder().getLocalRepository());
@@ -58,7 +59,7 @@ public class VersionNode extends AbstractNode {
                     return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
                 }
             } catch (MavenEmbedderException ex) {
-                java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+                java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,//NOI18N
                         ex.getMessage(), ex);
             } catch (DataObjectNotFoundException e) {
             }
@@ -76,7 +77,7 @@ public class VersionNode extends AbstractNode {
             setName(record.getVersion());
             setDisplayName(record.getVersion());
         } else {
-            setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion());
+            setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion()); //NOI18N
         }
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
     }
@@ -95,12 +96,12 @@ public class VersionNode extends AbstractNode {
         java.awt.Image retValue = super.getIcon(param);
         if (hasJavadoc) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencyJavadocIncluded.png"),
+                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencyJavadocIncluded.png"),//NOI18N
                     12, 12);
         }
         if (hasSources) {
             retValue = Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencySrcIncluded.png"),
+                    Utilities.loadImage("org/codehaus/mevenide/repository/DependencySrcIncluded.png"),//NOI18N
                     12, 8);
         }
         return retValue;
@@ -110,13 +111,13 @@ public class VersionNode extends AbstractNode {
     public String getShortDescription() {
         StringBuffer buffer = new StringBuffer();
         if (record != null) {
-            buffer.append("<html>GroupId:<b>").append(record.getGroupId()).append("</b><p>");
-            buffer.append("ArtifactId:<b>").append(record.getArtifactId()).append("</b><p>");
-            buffer.append("Version:<b>").append(record.getVersion().toString()).append("</b><p>");
-            buffer.append("Packaging:<b>").append(record.getPackaging()).append("</b><p>");
-            buffer.append("Name:").append(record.getProjectName()).append("<p>");
-            buffer.append("Has Javadoc:").append(hasJavadoc ? "true" : "false").append("<p>");
-            buffer.append("Has Sources:").append(hasSources ? "true" : "false");
+            buffer.append("<html>").append(NbBundle.getMessage(VersionNode.class, "TXT_GroupId")).append("<b>").append(record.getGroupId()).append("</b><p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_ArtifactId")).append("<b>").append(record.getArtifactId()).append("</b><p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_Version")).append("<b>").append(record.getVersion().toString()).append("</b><p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_Packaging")).append("<b>").append(record.getPackaging()).append("</b><p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_Name")).append(record.getProjectName()).append("<p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_HasJavadoc")).append(hasJavadoc ? NbBundle.getMessage(VersionNode.class, "TXT_true") : NbBundle.getMessage(VersionNode.class, "TXT_false")).append("<p>");
+            buffer.append(NbBundle.getMessage(VersionNode.class, "TXT_HasSources")).append(hasSources ? NbBundle.getMessage(VersionNode.class, "TXT_true") : NbBundle.getMessage(VersionNode.class, "TXT_false"));
             buffer.append("</html>");
         }
         return buffer.toString();
@@ -128,7 +129,7 @@ public class VersionNode extends AbstractNode {
                     EmbedderFactory.getProjectEmbedder().getLocalRepository());
             return FileUtil.toFileObject(art.getFile());
         } catch (MavenEmbedderException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,//NOI18N
                     ex.getMessage(), ex);
         }
         return null;
@@ -137,7 +138,7 @@ public class VersionNode extends AbstractNode {
     
     private class ShowRecordAction extends AbstractAction {
         ShowRecordAction() {
-            putValue(Action.NAME, "Show record");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(VersionNode.class, "LBL_Show_record"));
         }
         
         public void actionPerformed(ActionEvent e) {
@@ -158,7 +159,7 @@ public class VersionNode extends AbstractNode {
     
     private class ViewJavadocAction extends AbstractAction {
         public ViewJavadocAction() {
-            putValue(Action.NAME, "View Javadoc");
+            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_Javadoc"));
             setEnabled(hasJavadoc);
         }
         public void actionPerformed(ActionEvent event) {

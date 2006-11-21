@@ -20,7 +20,6 @@ package org.codehaus.mevenide.repository;
 import java.io.IOException;
 import java.util.Collections;
 import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
