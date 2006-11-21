@@ -45,6 +45,7 @@ import org.apache.maven.archiva.indexer.record.RepositoryIndexRecordFactory;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.InvalidArtifactRTException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
@@ -204,7 +205,13 @@ public class LocalRepositoryIndexer {
             Artifact artifact = (Artifact) i.next();
             count++;
             handle.progress("Recording " + count + " out of " + size, count);
-            records.add(recordFactory.createRecord(artifact));
+            try {
+                records.add(recordFactory.createRecord(artifact));
+                
+            } catch (InvalidArtifactRTException e) {
+                //TODO.. some better handling..
+                e.printStackTrace();
+            }
             if (count % 200 == 0) {
                 handle.progress("Indexing...");
                 index.indexRecords(records);
