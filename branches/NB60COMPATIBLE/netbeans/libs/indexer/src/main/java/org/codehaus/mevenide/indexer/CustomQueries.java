@@ -131,7 +131,8 @@ public class CustomQueries {
                          if (fld !=
                              null) {
                              groups.add(fld.stringValue());
-                         } else { //TODO??
+                         } else { 
+                             //TODO??
                              System.out.println("no groupid field for " +
                                                 doc.getField(StandardIndexRecordFields.FILENAME));
                          }
@@ -171,6 +172,7 @@ public class CustomQueries {
                                   artifactIds.add(doc.getField(StandardIndexRecordFields.ARTIFACTID).stringValue());
                               }
                           } else {
+                              //TODO
                               System.out.println("no groupid field for " +
                                                  doc.getField(StandardIndexRecordFields.FILENAME));
                           }
