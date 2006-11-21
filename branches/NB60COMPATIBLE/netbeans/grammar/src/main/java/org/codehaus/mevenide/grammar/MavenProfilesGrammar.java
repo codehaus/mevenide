@@ -36,7 +36,7 @@ public class MavenProfilesGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/profiles-1.0.0.xsd");
+        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/profiles-1.0.0.xsd"); //NOI18N
     }
     
 

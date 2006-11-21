@@ -42,28 +42,28 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/nbm-1.0.0.xsd");
+        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/nbm-1.0.0.xsd"); //NOI18N
     }
     
 
     protected Enumeration getDynamicValueCompletion(String path, HintContext hintCtx, Element lowestParent) {
-        if ("/nbm/dependencies/dependency/type".equals(path)) {
+        if ("/nbm/dependencies/dependency/type".equals(path)) { //NOI18N
             return createTextValueList(new String[] {
-                "spec",
-                "impl",
-                "loose"
+                "spec", //NOI18N
+                "impl", //NOI18N
+                "loose" //NOI18N
                 }, hintCtx);
         }
-        if ("/nbm/moduleType".equals(path)) {
+        if ("/nbm/moduleType".equals(path)) { //NOI18N
             return createTextValueList(new String[] {
-                "normal",
-                "autoload",
-                "eager"
+                "normal", //NOI18N
+                "autoload", //NOI18N
+                "eager" //NOI18N
                 }, hintCtx);
             
         }
-        if ("/nbm/dependencies/dependency/id".equals(path) ||
-            "/nbm/libraries/library".equals(path)) {
+        if ("/nbm/dependencies/dependency/id".equals(path) || //NOI18N
+            "/nbm/libraries/library".equals(path)) { //NOI18N
             //TODO could be nice to filter out the dependencies that are already being used..
             List toRet = new ArrayList();
             NbMavenProject project = getOwnerProject();
@@ -71,7 +71,7 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
                 Iterator it = project.getOriginalMavenProject().getCompileDependencies().iterator();
                 while (it.hasNext()) {
                     Dependency elem = (Dependency) it.next();
-                    String str = elem.getGroupId() + ":" + elem.getArtifactId();
+                    String str = elem.getGroupId() + ":" + elem.getArtifactId(); //NOI18N
                     if (str.startsWith(hintCtx.getCurrentPrefix())) {
                         toRet.add(new MyTextElement(str, hintCtx.getCurrentPrefix()));
                     }

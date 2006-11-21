@@ -66,8 +66,8 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
             }
             // urls get opened..
             if (token.getImage() != null && 
-                    (token.getImage().startsWith("http://") ||
-                    (token.getImage().startsWith("https://")))) {
+                    (token.getImage().startsWith("http://") || //NOI18N
+                    (token.getImage().startsWith("https://")))) { //NOI18N
                 return true;
             }
         } catch (BadLocationException ex) {
@@ -100,8 +100,8 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 } 
             }
             if (token.getImage() != null && 
-                    (token.getImage().startsWith("http://") ||
-                    (token.getImage().startsWith("https://")))) {
+                    (token.getImage().startsWith("http://") || //NOI18N
+                    (token.getImage().startsWith("https://")))) { //NOI18N
                 return new int[] {token.getOffset(), token.getNext().getOffset()};
             }
         } catch (BadLocationException ex) {
@@ -128,8 +128,8 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
                 String path = token.getImage();
-                if (previous.getPrevious().getImage().equals("<module")) {
-                    path = path + "/pom.xml";
+                if (previous.getPrevious().getImage().equals("<module")) { //NOI18N
+                    path = path + "/pom.xml"; //NOI18N
                 }
                 if (getPath(fo, path) != null) {
                     FileObject file = getPath(fo, path);
@@ -168,11 +168,11 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
     
     private FileObject getPath(FileObject parent, String path) {
         // TODO more substitutions necessary probably..
-        if (path.startsWith("${basedir}/")) {
-            path = path.substring("${basedir}/".length());
+        if (path.startsWith("${basedir}/")) { //NOI18N
+            path = path.substring("${basedir}/".length()); //NOI18N
         }
-        while (path.startsWith("../") && parent.getParent() != null) {
-            path = path.substring("../".length());
+        while (path.startsWith("../") && parent.getParent() != null) { //NOI18N
+            path = path.substring("../".length()); //NOI18N
             parent = parent.getParent();
         }
         return parent.getFileObject(path);
@@ -180,11 +180,11 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
 
     private boolean isPomFile(Document doc) {
         DataObject dObject = NbEditorUtilities.getDataObject(doc);
-        if (dObject != null && "pom.xml".equalsIgnoreCase(dObject.getPrimaryFile().getNameExt())) {
+        if (dObject != null && "pom.xml".equalsIgnoreCase(dObject.getPrimaryFile().getNameExt())) { //NOI18N
             // is that enough?
             return true;
         }
-        if (dObject != null && "settings.xml".equals(dObject.getPrimaryFile().getNameExt()) && ".m2".equals(dObject.getPrimaryFile().getParent().getNameExt())) {
+        if (dObject != null && "settings.xml".equals(dObject.getPrimaryFile().getNameExt()) && ".m2".equals(dObject.getPrimaryFile().getParent().getNameExt())) { //NOI18N
             return true;
         }
         return false;

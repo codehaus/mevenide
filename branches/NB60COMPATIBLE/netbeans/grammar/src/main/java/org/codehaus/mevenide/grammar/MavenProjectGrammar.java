@@ -66,11 +66,11 @@ import org.w3c.dom.NodeList;
 public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     
             private static final String[] SCOPES = new String[] {
-                "compile",
-                "test",
-                "runtime",
-                "provided",
-                "system"
+                "compile", //NOI18N
+                "test", //NOI18N
+                "runtime", //NOI18N
+                "provided", //NOI18N
+                "system" //NOI18N
             };
     
     public MavenProjectGrammar(GrammarEnvironment env) {
@@ -78,19 +78,19 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/maven-4.0.0.xsd");
+        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/maven-4.0.0.xsd"); //NOI18N
     }
     
     protected List getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element parent) {
-        if ("/project/build/plugins/plugin/configuration".equals(path) ||
-            "/project/build/pluginManagement/plugins/plugin/configuration".equals(path) ||
-            "/project/build/plugins/plugin/executions/execution/configuration".equals(path) ||
-             "/project/build/pluginManagement/plugins/plugin/executions/execution/configuration".equals(path) ||
-             "/project/reporting/plugins/plugin/configuration".equals(path)
+        if ("/project/build/plugins/plugin/configuration".equals(path) || //NOI18N
+            "/project/build/pluginManagement/plugins/plugin/configuration".equals(path) || //NOI18N
+            "/project/build/plugins/plugin/executions/execution/configuration".equals(path) || //NOI18N
+             "/project/build/pluginManagement/plugins/plugin/executions/execution/configuration".equals(path) || //NOI18N
+             "/project/reporting/plugins/plugin/configuration".equals(path) //NOI18N
              ) {
             // assuming we have the configuration node as parent..
             // does not need to be true for complex stuff
-            Node previous = path.indexOf("execution") > 0
+            Node previous = path.indexOf("execution") > 0 //NOI18N
                 ? hintCtx.getParentNode().getParentNode().getParentNode().getPreviousSibling()
                 : hintCtx.getParentNode().getPreviousSibling();
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
@@ -110,13 +110,13 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 org.w3c.dom.Element el = (org.w3c.dom.Element)previous;
                 NodeList lst = el.getChildNodes();
                 if (lst.getLength() > 0) {
-                    if ("artifactId".equals(el.getNodeName())) {
+                    if ("artifactId".equals(el.getNodeName())) { //NOI18N
                         holder.setArtifactId(lst.item(0).getNodeValue());
                     }
-                    if ("groupId".equals(el.getNodeName())) {
+                    if ("groupId".equals(el.getNodeName())) { //NOI18N
                         holder.setGroupId(lst.item(0).getNodeValue());
                     }
-                    if ("version".equals(el.getNodeName())) {
+                    if ("version".equals(el.getNodeName())) { //NOI18N
                         holder.setVersion(lst.item(0).getNodeValue());
                     }
                 }
@@ -129,12 +129,12 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     private ArtifactInfoHolder findPluginInfo(Node previous, MavenEmbedder embedder, boolean checkLocalRepo) {
         ArtifactInfoHolder holder = findArtifactInfo(previous);
         if (holder.getGroupId() == null) {
-            holder.setGroupId("org.apache.maven.plugins");
+            holder.setGroupId("org.apache.maven.plugins"); //NOI18N
         }
-        if (checkLocalRepo && (holder.getVersion() == null || "LATEST".equals(holder.getVersion())) && holder.getArtifactId() != null && holder.getGroupId() != null) {
+        if (checkLocalRepo && (holder.getVersion() == null || "LATEST".equals(holder.getVersion())) && holder.getArtifactId() != null && holder.getGroupId() != null) { //NOI18N
             File lev1 = new File(embedder.getLocalRepository().getBasedir(), holder.getGroupId().replace('.', File.separatorChar));
             File dir = new File(lev1, holder.getArtifactId());
-            File fil = new File(dir, "maven-metadata-local.xml");
+            File fil = new File(dir, "maven-metadata-local.xml"); //NOI18N
             if (fil.exists()) {
                 MetadataXpp3Reader reader = new MetadataXpp3Reader();
                 try {
@@ -165,9 +165,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             public boolean matches(Object object) {
                 if (object instanceof Element) {
                     Element el = (Element)object;
-                    if ("parameter".equals(el.getName()) &&
-                            el.getParentElement() != null && "parameters".equals(el.getParentElement().getName()) &&
-                            el.getParentElement().getParentElement() != null && "mojo".equals(el.getParentElement().getParentElement().getName())) {
+                    if ("parameter".equals(el.getName()) && //NOI18N
+                            el.getParentElement() != null && "parameters".equals(el.getParentElement().getName()) && //NOI18N
+                            el.getParentElement().getParentElement() != null && "mojo".equals(el.getParentElement().getParentElement().getName())) { //NOI18N
                         return true;
                     }
                 }
@@ -178,9 +178,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         Collection params = new HashSet();
         while (it.hasNext()) {
             Element el = (Element)it.next();
-            String editable = el.getChildText("editable");
-            if ("true".equalsIgnoreCase(editable)) {
-                String name = el.getChildText("name");
+            String editable = el.getChildText("editable"); //NOI18N
+            if ("true".equalsIgnoreCase(editable)) { //NOI18N
+                String name = el.getChildText("name"); //NOI18N
                 if (name.startsWith(hintCtx.getCurrentPrefix()) && !params.contains(name)) {
                     params.add(name);
                     toReturn.add(new MyElement(name));
@@ -191,7 +191,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
     }
 
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
-        if (path.endsWith("executions/execution/goals/goal")) {
+        if (path.endsWith("executions/execution/goals/goal")) { //NOI18N
             Node previous;
             // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
             if (virtualTextCtx.getCurrentPrefix().length() == 0) {
@@ -207,7 +207,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return collectGoals(pluginDoc, virtualTextCtx);
             }
         }
-        if (path.endsWith("executions/execution/phase")) {
+        if (path.endsWith("executions/execution/phase")) { //NOI18N
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
             try {
                 List phases = embedder.getLifecyclePhases();
@@ -216,9 +216,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ex.printStackTrace();
             }
         }
-        if (path.endsWith("dependencies/dependency/version") ||
-            path.endsWith("plugins/plugin/version") ||
-            path.endsWith("/project/parent/version")) {
+        if (path.endsWith("dependencies/dependency/version") || //NOI18N
+            path.endsWith("plugins/plugin/version") || //NOI18N
+            path.endsWith("/project/parent/version")) { //NOI18N
             
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
@@ -254,7 +254,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(elems);
             }
         }
-        if (path.endsWith("dependencies/dependency/groupId")) {
+        if (path.endsWith("dependencies/dependency/groupId")) { //NOI18N
             try {
                 Set elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
@@ -268,7 +268,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ex.printStackTrace();
             }
         }
-        if (path.endsWith("plugins/plugin/groupId")) {
+        if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
             try {
                 Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
@@ -282,7 +282,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 ex.printStackTrace();
             }
         }
-        if (path.endsWith("dependencies/dependency/artifactId")) {
+        if (path.endsWith("dependencies/dependency/artifactId")) { //NOI18N
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
             Node previous;
@@ -307,7 +307,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 }
             }
         }
-        if (path.endsWith("plugins/plugin/artifactId")) {
+        if (path.endsWith("plugins/plugin/artifactId")) { //NOI18N
             //poor mans solution, just check local repository for possible versions..
             // in future would be nice to include remote repositories somehow..
             Node previous;
@@ -333,42 +333,42 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
         }
         
-        if (path.endsWith("dependencies/dependency/scope")) {
+        if (path.endsWith("dependencies/dependency/scope")) { //NOI18N
             return super.createTextValueList(SCOPES, virtualTextCtx);
         }
-        if (path.endsWith("repositories/repository/releases/updatePolicy") ||
-            path.endsWith("repositories/repository/snapshots/updatePolicy") ||
-            path.endsWith("pluginRepositories/pluginRepository/releases/updatePolicy") ||
-            path.endsWith("pluginRepositories/pluginRepository/snapshots/updatePolicy")) {
+        if (path.endsWith("repositories/repository/releases/updatePolicy") || //NOI18N
+            path.endsWith("repositories/repository/snapshots/updatePolicy") || //NOI18N
+            path.endsWith("pluginRepositories/pluginRepository/releases/updatePolicy") || //NOI18N
+            path.endsWith("pluginRepositories/pluginRepository/snapshots/updatePolicy")) { //NOI18N
             return super.createTextValueList(MavenSettingsGrammar.UPDATE_POLICIES, virtualTextCtx);
         }
-        if (path.endsWith("repository/releases/checksumPolicy") ||
-            path.endsWith("repository/snapshots/checksumPolicy") ||
-            path.endsWith("pluginRepository/releases/checksumPolicy") ||
-            path.endsWith("pluginRepository/snapshots/checksumPolicy")) {
+        if (path.endsWith("repository/releases/checksumPolicy") || //NOI18N
+            path.endsWith("repository/snapshots/checksumPolicy") || //NOI18N
+            path.endsWith("pluginRepository/releases/checksumPolicy") || //NOI18N
+            path.endsWith("pluginRepository/snapshots/checksumPolicy")) { //NOI18N
             return super.createTextValueList(MavenSettingsGrammar.CHECKSUM_POLICIES, virtualTextCtx);
         }
-        if (path.endsWith("repositories/repository/layout") ||
-            path.endsWith("pluginRepositories/pluginRepository/layout") ||
-            path.endsWith("distributionManagement/repository/layout")) {
+        if (path.endsWith("repositories/repository/layout") || //NOI18N
+            path.endsWith("pluginRepositories/pluginRepository/layout") || //NOI18N
+            path.endsWith("distributionManagement/repository/layout")) { //NOI18N
             return super.createTextValueList(MavenSettingsGrammar.LAYOUTS, virtualTextCtx);
         }
-        if (path.endsWith("repositories/repository/url") ||
-            path.endsWith("pluginRepositories/pluginRepository/url") ||
-            path.endsWith("distributionManagement/repository/url")) {
+        if (path.endsWith("repositories/repository/url") || //NOI18N
+            path.endsWith("pluginRepositories/pluginRepository/url") || //NOI18N
+            path.endsWith("distributionManagement/repository/url")) { //NOI18N
             List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
             String[] strs = (String[])lst.toArray(new String[lst.size()]);
             return super.createTextValueList(strs, virtualTextCtx);
         }
         
-        if ("/project/modules/module".equals(path)) {
+        if ("/project/modules/module".equals(path)) { //NOI18N
             FileObject fo = getEnvironment().getFileObject();
             if (fo != null) {
                 File dir = FileUtil.toFile(fo).getParentFile();  
             
                 File[] modules = dir.listFiles(new FileFilter() {
                     public boolean accept(File pathname) {
-                         return pathname.isDirectory() && new File(pathname, "pom.xml").exists();
+                         return pathname.isDirectory() && new File(pathname, "pom.xml").exists(); //NOI18N
                     }
                 });
                 Collection elems = new ArrayList();
@@ -392,7 +392,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             if (fil.exists()) {
                 try {
                     JarFile jf = new JarFile(fil);
-                    JarEntry entry = jf.getJarEntry("META-INF/maven/plugin.xml");
+                    JarEntry entry = jf.getJarEntry("META-INF/maven/plugin.xml"); //NOI18N
                     if (entry != null) {
                         InputStream str = jf.getInputStream(entry);
                         SAXBuilder builder = new SAXBuilder();
@@ -414,8 +414,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             public boolean matches(Object object) {
                 if (object instanceof Element) {
                     Element el = (Element)object;
-                    if ("goal".equals(el.getName()) &&
-                            el.getParentElement() != null && "mojo".equals(el.getParentElement().getName())) {
+                    if ("goal".equals(el.getName()) && //NOI18N
+                            el.getParentElement() != null && "mojo".equals(el.getParentElement().getName())) { //NOI18N
                         return true;
                     }
                 }

@@ -45,12 +45,12 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/assembly-1.0.0.xsd");
+        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/assembly-1.0.0.xsd"); //NOI18N
     }
     
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element element) {
-        if ("/assembly/dependencySets/dependencySet/includes/include".equals(path) ||
-            "/assembly/dependencySets/dependencySet/excludes/exclude".equals(path)) {
+        if ("/assembly/dependencySets/dependencySet/includes/include".equals(path) || //NOI18N
+            "/assembly/dependencySets/dependencySet/excludes/exclude".equals(path)) { //NOI18N
             //TODO could be nice to filter out the dependencies that are already being used..
             List toRet = new ArrayList();
             NbMavenProject project = getOwnerProject();
@@ -69,7 +69,7 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
                         org.w3c.dom.Element el = (org.w3c.dom.Element)previous;
                         NodeList lst = el.getChildNodes();
                         if (lst.getLength() > 0) {
-                            if ("scope".equals(el.getNodeName())) {
+                            if ("scope".equals(el.getNodeName())) { //NOI18N
                                 scope = lst.item(0).getNodeValue();
                                 break;
                             }
@@ -78,23 +78,23 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
                     previous = previous.getPreviousSibling();
                 }
                 if (scope == null) {
-                    scope = "runtime";
+                    scope = "runtime"; //NOI18N
                 }
                 scope = scope.trim();
                 Iterator it;
-                if ("runtime".equals(scope)) {
+                if ("runtime".equals(scope)) { //NOI18N
                     it = project.getOriginalMavenProject().getRuntimeDependencies().iterator();
-                } else if ("test".equals(scope)) {
+                } else if ("test".equals(scope)) { //NOI18N
                     it = project.getOriginalMavenProject().getTestDependencies().iterator();
-                } else if ("compile".equals(scope)) {
+                } else if ("compile".equals(scope)) { //NOI18N
                     it = project.getOriginalMavenProject().getCompileDependencies().iterator();
                 } else {
-                    ErrorManager.getDefault().log(ErrorManager.WARNING, "How to process includes/excludes for scope '" + scope + "'? Fallback to 'runtime'.");
+                    ErrorManager.getDefault().log(ErrorManager.WARNING, "How to process includes/excludes for scope '" + scope + "'? Fallback to 'runtime'."); //NOI18N
                     it = project.getOriginalMavenProject().getRuntimeDependencies().iterator();
                 }
                 while (it.hasNext()) {
                     Dependency elem = (Dependency) it.next();
-                    String str = elem.getGroupId() + ":" + elem.getArtifactId();
+                    String str = elem.getGroupId() + ":" + elem.getArtifactId(); //NOI18N
                     if (str.startsWith(virtualTextCtx.getCurrentPrefix())) {
                         toRet.add(new MyTextElement(str, virtualTextCtx.getCurrentPrefix()));
                     }

@@ -76,7 +76,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         if (proj != null) {
             return proj.getLookup().lookup(NbMavenProject.class);
         }
-        ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project.");
+        ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project."); //NOI18N
         return null;
     }
     
@@ -106,9 +106,9 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     
     
     protected final org.jdom.Element findElement(org.jdom.Element parent, String name) {
-        List<org.jdom.Element> childs = parent.getChildren("element", parent.getNamespace());
+        List<org.jdom.Element> childs = parent.getChildren("element", parent.getNamespace()); //NOI18N
         for (org.jdom.Element el : childs) {
-            if (name.equals(el.getAttributeValue("name"))) {
+            if (name.equals(el.getAttributeValue("name"))) { //NOI18N
                 return el;
             }
         }
@@ -117,9 +117,9 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
 
     
     protected final org.jdom.Element findNonTypedContent(org.jdom.Element root) {
-        org.jdom.Element complex = root.getChild("complexType", root.getNamespace());
+        org.jdom.Element complex = root.getChild("complexType", root.getNamespace()); //NOI18N
         if (complex != null) {
-            complex = complex.getChild("sequence", root.getNamespace());
+            complex = complex.getChild("sequence", root.getNamespace()); //NOI18N
         }
         return complex;
         
@@ -131,7 +131,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             public boolean matches(Object match) {
                 if (match instanceof org.jdom.Element) {
                     org.jdom.Element el = (org.jdom.Element)match;
-                    if ("complexType".equals(el.getName()) && type.equals(el.getAttributeValue("name"))) {
+                    if ("complexType".equals(el.getName()) && type.equals(el.getAttributeValue("name"))) { //NOI18N
                         return true;
                     }
                 }
@@ -140,7 +140,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         });
         if (lst.size() > 0) {
             org.jdom.Element typeEl = lst.get(0);
-            return typeEl.getChild("all", docRoot.getNamespace());
+            return typeEl.getChild("all", docRoot.getNamespace()); //NOI18N
         }
         return null;
     }
@@ -151,7 +151,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         String childRefAttr = childEl.getAttributeValue("ref"); //NOI18N
         if (childRefAttr == null) {
             // if ref not defined, go check name attribute..
-            childRefAttr = childEl.getAttributeValue("name");
+            childRefAttr = childEl.getAttributeValue("name"); //NOI18N
         }
         if (childRefAttr != null && childRefAttr.startsWith(matches)) {
             suggestions.add(new MyElement(childRefAttr));
@@ -261,27 +261,27 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             }
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
             Iterator<String> it = parentNames.iterator();
-            String path = "";
+            String path = ""; //NOI18N
             Vector toReturn = new Vector();
             while (it.hasNext() && schemaParent != null) {
                 String str = it.next();
-                path = path + "/" + str;
+                path = path + "/" + str; //NOI18N
                 org.jdom.Element el = findElement(schemaParent, str);
                 if (!it.hasNext()) {
                     toReturn.addAll(getDynamicCompletion(path, virtualElementCtx, el));
                 }
                 if (el != null) {
-                    String type = el.getAttributeValue("type");
+                    String type = el.getAttributeValue("type"); //NOI18N
                     if (type != null) {
                         schemaParent = findTypeContent(type, schemaDoc.getRootElement());
                         if (schemaParent == null) {
-                            System.err.println("no schema parent for " + str + " of type=" + el.getAttributeValue("type"));
+                            System.err.println("no schema parent for " + str + " of type " + el.getAttributeValue("type")); //NOI18N
                         }
                     } else {
                         schemaParent = findNonTypedContent(el);
                     }
                 } else {
-                    System.err.println("cannot find element=" + str);
+                    System.err.println("cannot find element=" + str); //NOI18N
                 }
             }
             if (schemaParent != null) {
@@ -327,10 +327,10 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
             }
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
             Iterator<String> it = parentNames.iterator();
-            String path = "";
+            String path = ""; //NOI18N
             while (it.hasNext() && schemaParent != null) {
                 String str = it.next();
-                path = path + "/" + str;
+                path = path + "/" + str; //NOI18N
                 org.jdom.Element el = findElement(schemaParent, str);
                 if (!it.hasNext()) {
                     Enumeration en = getDynamicValueCompletion(path, virtualTextCtx, el);
@@ -339,17 +339,17 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
                     }
                 }
                 if (el != null) {
-                    String type = el.getAttributeValue("type");
+                    String type = el.getAttributeValue("type"); //NOI18N
                     if (type != null) {
                         schemaParent = findTypeContent(type, schemaDoc.getRootElement());
                         if (schemaParent == null) {
-                            System.err.println("no schema parent for " + str + " of type=" + el.getAttributeValue("type"));
+                            System.err.println("no schema parent for " + str + " of type=" + el.getAttributeValue("type")); //NOI18N
                         }
                     } else {
                         schemaParent = findNonTypedContent(el);
                     }
                 } else {
-                    System.err.println("cannot find element=" + str);
+                    System.err.println("cannot find element=" + str); //NOI18N
                 }                
             }
         }

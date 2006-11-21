@@ -38,19 +38,19 @@ import org.netbeans.modules.xml.api.model.HintContext;
 public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
     
     public static final String[] UPDATE_POLICIES = new String[] {
-        "always",
-        "daily",
-        "never",
-        "interval:10",
-        "interval:60"
+        "always", //NOI18N
+        "daily", //NOI18N
+        "never", //NOI18N
+        "interval:10", //NOI18N
+        "interval:60" //NOI18N
     };
     public static final String[] CHECKSUM_POLICIES = new String[] {
-        "fail",
-        "warn"
+        "fail", //NOI18N
+        "warn" //NOI18N
     };
     public static final String[] LAYOUTS = new String[] {
-        "default",
-        "legacy"
+        "default", //NOI18N
+        "legacy" //NOI18N
     };
     
     public MavenSettingsGrammar(GrammarEnvironment env) {
@@ -58,12 +58,12 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
     }
     
     protected InputStream getSchemaStream() {
-        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/settings-1.0.0.xsd");
+        return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/settings-1.0.0.xsd"); //NOI18N
     }
     
 
     protected List getDynamicCompletion(String path, HintContext hintCtx, Element lowestParent) {
-        if ("/settings/proxies".equals(path)) {
+        if ("/settings/proxies".equals(path)) { //NOI18N
             // doesn't work!!!'
 //            if ("proxy".startsWith(hintCtx.getCurrentPrefix())) {
 //                ArrayList lst = new ArrayList();
@@ -78,30 +78,26 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
     
 
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
-        if ("/settings/profiles/profile/repositories/repository/releases/updatePolicy".equals(path) ||
-            "/settings/profiles/profile/repositories/repository/snapshots/updatePolicy".equals(path) ||
-            "/settings/profiles/profile/pluginRepositories/pluginRepository/releases/updatePolicy".equals(path) ||
-            "/settings/profiles/profile/pluginRepositories/pluginRepository/snapshots/updatePolicy".equals(path)) {
+        if (path.endsWith("releases/updatePolicy") || //NOI18N
+            path.endsWith("snapshots/updatePolicy")) { //NOI18N
             return super.createTextValueList(UPDATE_POLICIES, virtualTextCtx);
         }
-        if ("/settings/profiles/profile/repositories/repository/releases/checksumPolicy".equals(path) ||
-            "/settings/profiles/profile/repositories/repository/snapshots/checksumPolicy".equals(path) ||
-            "/settings/profiles/profile/pluginRepositories/pluginRepository/releases/checksumPolicy".equals(path) ||
-            "/settings/profiles/profile/pluginRepositories/pluginRepository/snapshots/checksumPolicy".equals(path)) {
+        if (path.endsWith("releases/checksumPolicy") || //NOI18N
+            path.endsWith("snapshots/checksumPolicy")) { //NOI18N
             return super.createTextValueList(CHECKSUM_POLICIES, virtualTextCtx);
         }
-        if (path.endsWith("repository/layout") ||
-            path.endsWith("pluginRepository/layout")) {
+        if (path.endsWith("repository/layout") || //NOI18N
+            path.endsWith("pluginRepository/layout")) { //NOI18N
             return super.createTextValueList(LAYOUTS, virtualTextCtx);
         }
-        if (path.endsWith("repositories/repository/url") ||
-            path.endsWith("pluginRepositories/pluginRepository/url")) {
+        if (path.endsWith("repositories/repository/url") || //NOI18N
+            path.endsWith("pluginRepositories/pluginRepository/url")) { //NOI18N
             List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
             String[] strs = (String[])lst.toArray(new String[lst.size()]);
             return super.createTextValueList(strs, virtualTextCtx);
         }
         
-        if (path.endsWith("pluginGroups/pluginGroup")) {
+        if (path.endsWith("pluginGroups/pluginGroup")) { //NOI18N
             try {
                 Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
