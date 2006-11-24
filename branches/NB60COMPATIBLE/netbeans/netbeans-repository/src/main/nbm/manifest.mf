@@ -1,2 +1,3 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/nbrepo/Bundle.properties
+OpenIDE-Module-Public-Packages: -
