@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.lucene.index.Term;
@@ -44,6 +45,7 @@ import org.netbeans.spi.java.project.classpath.ProjectClassPathExtender;
 import org.netbeans.spi.java.project.classpath.ProjectClassPathModifierImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.filesystems.Repository;
 import org.openide.filesystems.URLMapper;
 
 /**
@@ -54,6 +56,7 @@ import org.openide.filesystems.URLMapper;
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
 
     private NbMavenProject project;
+    private static final String MD5_ATTR = "MD5"; //NOI18N
     
     /** Creates a new instance of CPExtender */
     public CPExtender(NbMavenProject project) {
@@ -108,38 +111,27 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private boolean addArchiveFile(FileObject file, Model mdl, String scope) {
-        //TODO have some other means of figuring out the id..
-        // have a special register of id+md5 pairs for default libraries in nb
-        // eventually have the local repo populate from the netbeans install?
         try {
             Md5Digester digest = new Md5Digester();
-            String checksum = digest.calc(FileUtil.toFile(file));
-            //TODO before searching the index, check the checksums of existing dependencies, should be faster..
-            
-            LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
             //toLowercase() seems to be required, not sure why..
-            TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, checksum.toLowerCase()));
-            LuceneQuery q = new LuceneQuery(tq);
-            List lst = index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
-            Iterator it = lst.iterator();
-            if (it.hasNext()) {
-                StandardArtifactIndexRecord elem = (StandardArtifactIndexRecord) it.next();
-                System.out.println("elem=" + elem.getPrimaryKey());
-                List<Dependency> deps = mdl.getDependencies();
-                Dependency dep = new Dependency();
-                dep.setArtifactId(elem.getArtifactId());
-                dep.setGroupId(elem.getGroupId());
-                dep.setVersion(elem.getVersion());
-                dep.setType("jar");
+            String checksum = digest.calc(FileUtil.toFile(file)).toLowerCase();
+            Dependency dep = checkLayer(checksum);
+            //TODO before searching the index, check the checksums of existing dependencies, should be faster..
+            if (dep == null) {
+                dep = checkLocalRepo(checksum);
+            }
+            if (dep != null) {
                 if (scope != null) {
                     dep.setScope(scope);
                 }
+                List<Dependency> deps = mdl.getDependencies();
                 for (Dependency exist : deps) {
                     if (dep.getManagementKey().equals(exist.getManagementKey())) {
                         return true;
                     }
                 }
                 mdl.addDependency(dep);
+                //TODO not only check for the ids, but also copy the artifacts from netbeans to local repo
                 return true;
             }
         }
@@ -156,6 +148,40 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                                                              ex.getMessage(), ex);
         }
         return false;
+    }
+    
+    private Dependency checkLocalRepo(String checksum) throws RepositoryIndexSearchException {
+        LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
+        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, checksum));
+        LuceneQuery q = new LuceneQuery(tq);
+        List<StandardArtifactIndexRecord> lst = index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+        for (StandardArtifactIndexRecord elem : lst) {
+            Dependency dep = new Dependency();
+            dep.setArtifactId(elem.getArtifactId());
+            dep.setGroupId(elem.getGroupId());
+            dep.setVersion(elem.getVersion());
+            return dep;
+        }
+        return null;
+    }
+    
+    private Dependency checkLayer(String checksum) {
+        FileObject root = Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-codehaus-mevenide-netbeans/LibraryPOMs");
+        assert root != null;
+        Enumeration<? extends FileObject> objs = root.getData(true);
+        while (objs.hasMoreElements()) {
+            FileObject fo = objs.nextElement();
+            String md5 = (String)fo.getAttribute(MD5_ATTR);
+            if (checksum.equals(md5)) {
+                Model model = WriterUtils.loadModel(fo);
+                Dependency dep = new Dependency();
+                dep.setArtifactId(model.getArtifactId());
+                dep.setGroupId(model.getGroupId());
+                dep.setVersion(model.getVersion());
+                return dep;
+            }
+        }
+        return null;
     }
     
     public boolean addAntArtifact(AntArtifact arg0, URI arg1) throws IOException {

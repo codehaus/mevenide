@@ -90,7 +90,28 @@
                 <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
-            </folder>    
+            </folder>
+            <folder name="LibraryPOMs">
+                <folder name="swing-layout">
+                    <file name="swing-layout-1.0.1.pom" url="libraries/swing-layout-1.0.1.pom">
+                        <attr name="MD5" stringvalue="5deb85c331c5a75d2ea6182e22a7f191"/>
+                        <!--attr name="repository" stringvalue="http://xxxx"/-->
+                    </file>
+                </folder>    
+                <folder name="junit">
+                    <file name="junit-3.8.3.pom" url="libraries/junit-3.8.2.pom">
+                        <attr name="MD5" stringvalue="28e7eb9eeefe31a657c68755bfccc541"/>
+                    </file>
+                </folder>    
+                <folder name="jstl11">
+                    <file name="standard-1.1.2.pom" url="libraries/standard-1.1.2.pom">
+                        <attr name="MD5" stringvalue="65351d0487ad57edda9171bb3b46b98c"/>
+                    </file>
+                    <file name="jstl-1.1.2.pom" url="libraries/jstl-1.1.2.pom">
+                        <attr name="MD5" stringvalue="c2ced5f8505fe9d1cae685201e9cba07"/>
+                    </file>
+                </folder>
+            </folder>
         </folder>
     </folder>
  
