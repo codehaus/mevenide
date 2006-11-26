@@ -89,6 +89,10 @@ public final class NbMavenProject implements Project {
      * has changed.
      */
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
+    /**
+     * 
+     */
+    public static final String PROP_RESOURCE = "RESOURCES"; //NOI18N
     
     private FileObject fileObject;
     private File projectFile;
@@ -198,14 +202,20 @@ public final class NbMavenProject implements Project {
         return project;
     }
     
-    public void firePropertyChange(String property) {
+    public void fireProjectReload() {
         synchronized (support) {
             oldProject = project;
             project = null;
             projectInfo.reset();
             problemReporter.clearReports();
-            support.firePropertyChange(new PropertyChangeEvent(this, property, null, null));
+            support.firePropertyChange(new PropertyChangeEvent(this, PROP_PROJECT, null, null));
             doBaseProblemChecks();
+        }
+    }
+    
+    public void firePropertyChange(String property, Object oldValue, Object newValue) {
+        synchronized (support) {
+            support.firePropertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
         }
     }
     
@@ -440,7 +450,8 @@ public final class NbMavenProject implements Project {
             new MavenSourceLevelImpl(this),
             new JarPackagingRunChecker(),
             problemReporter,
-            new UserActionGoalProvider(this)
+            new UserActionGoalProvider(this),
+            ProjectURLWatcher.createWatcher(this)
                     
         });
         return staticLookup;
@@ -564,7 +575,7 @@ public final class NbMavenProject implements Project {
             if (!isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1)  {
-                    firePropertyChange(PROP_PROJECT);
+                    fireProjectReload();
                 }
             }
         }
@@ -575,7 +586,7 @@ public final class NbMavenProject implements Project {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
-                    firePropertyChange(PROP_PROJECT);
+                    fireProjectReload();
                 }
             }
         }
@@ -583,12 +594,12 @@ public final class NbMavenProject implements Project {
         public void fileDeleted(FileEvent fileEvent) {
             if (!isFolder) {
                 fileEvent.getFile().removeFileChangeListener(getFileUpdater());
-                firePropertyChange(PROP_PROJECT);
+                fireProjectReload();
             }
         }
         
         public void fileFolderCreated(FileEvent fileEvent) {
-            firePropertyChange(PROP_PROJECT);
+            fireProjectReload();
         }
         
         public void fileRenamed(FileRenameEvent fileRenameEvent) {
@@ -803,7 +814,7 @@ public final class NbMavenProject implements Project {
         
         public void actionPerformed(java.awt.event.ActionEvent event) {
             EmbedderFactory.resetProjectEmbedder();
-            NbMavenProject.this.firePropertyChange(PROP_PROJECT);
+            NbMavenProject.this.fireProjectReload();
         }
         
     }
