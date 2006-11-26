@@ -75,6 +75,14 @@ public class TestRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             File ass = (File)it.next();
             lst.add(ass.toURI());
         }
+        URI[] res = getMavenProject().getResources(false);
+        for (int i = 0; i < res.length; i++) {
+            lst.add(res[i]);
+        }
+        res = getMavenProject().getResources(true);
+        for (int i = 0; i < res.length; i++) {
+            lst.add(res[i]);
+        }
         
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
