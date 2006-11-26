@@ -56,7 +56,9 @@ public class J2eeMavenSourcesImpl implements Sources {
         listeners = new ArrayList<ChangeListener>();
         project.addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                checkChanges(true);
+                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                    checkChanges(true);
+                }
             }
         });
     }
