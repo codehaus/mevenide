@@ -69,7 +69,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = addLibrary(library, model, null);
         try {
             WriterUtils.writePomModel(pom, model);
-            project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            project.fireProjectReload();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -88,7 +88,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = addArchiveFile(file, model, null);
         try {
             WriterUtils.writePomModel(fo, model);
-            project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            project.fireProjectReload();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -211,7 +211,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         try {
             WriterUtils.writePomModel(pom, model);
-            project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            project.fireProjectReload();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -236,7 +236,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         try {
             WriterUtils.writePomModel(pom, model);
-            project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+            project.fireProjectReload();
         } catch (IOException ex) {
             ex.printStackTrace();
         }
