@@ -179,7 +179,7 @@ public class ModulesNode extends AbstractNode {
                         }
                     }
                     WriterUtils.writePomModel(FileUtil.toFileObject(parent.getPOMFile()), model);
-                    parent.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                    parent.fireProjectReload();
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 } catch (XmlPullParserException ex) {

@@ -516,8 +516,7 @@ public class DependencyNode extends AbstractNode {
                     }
                 }
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
-                
+                project.fireProjectReload();                
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (MavenEmbedderException ex) {
@@ -595,7 +594,7 @@ public class DependencyNode extends AbstractNode {
                 exclude.setGroupId(art.getGroupId());
                 dep.addExclusion(exclude);
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                project.fireProjectReload();
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (XmlPullParserException ex) {

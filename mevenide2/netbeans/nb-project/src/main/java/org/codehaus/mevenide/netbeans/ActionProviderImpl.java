@@ -101,7 +101,7 @@ public class ActionProviderImpl implements ActionProvider {
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
             public void taskFinished(Task task2) {
-                project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                project.fireProjectReload();
                 LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
                 try {
                     index.updateIndexWithArtifacts(project.getOriginalMavenProject().getDependencyArtifacts());
