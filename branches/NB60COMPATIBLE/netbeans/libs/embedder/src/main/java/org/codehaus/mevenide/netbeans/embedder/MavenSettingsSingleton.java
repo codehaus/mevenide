@@ -28,6 +28,7 @@ import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * a workaround for the fact that one cannot access the settings values the embedder is using.
@@ -53,7 +54,7 @@ public class MavenSettingsSingleton {
      * the location of ${user.home}/.m2
      */
     public File getM2UserDir() {
-        return new File(System.getProperty("user.home"), ".m2");
+        return FileUtil.normalizeFile(new File(System.getProperty("user.home"), ".m2"));
     }
     
     /**

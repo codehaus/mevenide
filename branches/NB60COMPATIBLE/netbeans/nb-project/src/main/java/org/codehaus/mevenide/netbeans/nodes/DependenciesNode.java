@@ -302,7 +302,7 @@ class DependenciesNode extends AbstractNode {
                     if (ok) {
                         StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
                     }
-                    project.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                    project.fireProjectReload();
                 }
             });
         }

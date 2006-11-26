@@ -312,7 +312,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     if (prj != null) {
                         NbMavenProject nbprj = (NbMavenProject)prj.getLookup().lookup(NbMavenProject.class);
                         if (nbprj != null) {
-                            nbprj.firePropertyChange(NbMavenProject.PROP_PROJECT);
+                            nbprj.fireProjectReload();
                         }
                     }
                 }

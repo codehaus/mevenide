@@ -39,6 +39,7 @@ public class ModInstall extends ModuleInstall {
     private static int MILIS_IN_SEC = 1000;
     private static int MILIS_IN_MIN = MILIS_IN_SEC * 60;
     private transient PropertyChangeListener projectsListener;
+    private transient FileSystemListener filesystemListener;
     /** Creates a new instance of ModInstall */
     public ModInstall() {
     }
@@ -46,6 +47,8 @@ public class ModInstall extends ModuleInstall {
     public void restored() {
         super.restored();
         projectsListener = new OpenProjectsListener();
+        filesystemListener = new FileSystemListener();
+        filesystemListener.attach();
         OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
         int freq = MavenIndexSettings.getDefault().getIndexUpdateFrequency();
         if (freq != MavenIndexSettings.FREQ_NEVER) {
@@ -82,6 +85,9 @@ public class ModInstall extends ModuleInstall {
         super.uninstalled();
         if (projectsListener != null) {
             OpenProjects.getDefault().removePropertyChangeListener(projectsListener);
+        }
+        if (filesystemListener != null) {
+            filesystemListener.detach();
         }
     }
     
