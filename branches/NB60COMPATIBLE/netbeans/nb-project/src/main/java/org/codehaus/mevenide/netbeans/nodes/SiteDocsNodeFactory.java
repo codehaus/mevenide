@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
@@ -68,15 +69,22 @@ public class SiteDocsNodeFactory implements NodeFactory {
             if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
+            if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName()) &&
+                    "src/site".equals(evt.getNewValue())) {
+                fireChange();
+            }
         }
         
         public void addNotify() {
             project.addPropertyChangeListener(this);
-            
+            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            watcher.addWatchedPath("src/site");
         }
         
         public void removeNotify() {
             project.removePropertyChangeListener(this);
+            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            watcher.removeWatchedPath("src/site");
         }
         
         private Node createSiteDocsNode() {
