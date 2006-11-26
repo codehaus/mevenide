@@ -58,7 +58,10 @@ public class RuntimeClassPathImpl extends AbstractProjectClassPathImpl {
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
         }
-        
+        URI[] res = getMavenProject().getResources(false);
+        for (int i = 0; i < res.length; i++) {
+            lst.add(res[i]);
+        }
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
         return uris;
