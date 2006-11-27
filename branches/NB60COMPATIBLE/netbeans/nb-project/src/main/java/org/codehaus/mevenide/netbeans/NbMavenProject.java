@@ -17,8 +17,8 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import java.awt.Image;
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
@@ -97,7 +97,6 @@ public final class NbMavenProject implements Project {
     private File projectFile;
     private Image icon;
     private Lookup lookup;
-    private PropertyChangeSupport support;
     private Updater updater1;
     private Updater updater2;
     private Updater updater3;
@@ -105,6 +104,31 @@ public final class NbMavenProject implements Project {
     private ProblemReporter problemReporter;
     private Info projectInfo;
     private MavenProject oldProject;
+    private ProjectURLWatcher watcher;
+    
+    
+    public static WatcherAccessor ACCESSOR = null;
+
+    static {
+        // invokes static initializer of ModelHandle.class
+        // that will assign value to the ACCESSOR field above
+        Class c = ProjectURLWatcher.class;
+        try {
+            Class.forName(c.getName(), true, c.getClassLoader());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }    
+    
+    
+    public static abstract class WatcherAccessor {
+        
+        public abstract ProjectURLWatcher createWatcher(NbMavenProject proj);
+        
+        public abstract void doFireReload(ProjectURLWatcher watcher);
+        
+        public abstract void checkFileObject(ProjectURLWatcher watcher, FileObject fo);
+    }
     
     /**
      * Creates a new instance of MavenProject, should never be called by user code.
@@ -112,31 +136,21 @@ public final class NbMavenProject implements Project {
      */
     public NbMavenProject(FileObject projectFO, File projectFile) throws Exception {
         this.projectFile = projectFile;
-        support = new PropertyChangeSupport(this);
         fileObject = projectFO;
         projectInfo = new Info();
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         problemReporter = new ProblemReporter(this);
+        watcher = ACCESSOR.createWatcher(this);
     }
     
     public File getPOMFile() {
         return projectFile;
     }
     
-    
-    
-    public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        synchronized (support) {
-            support.addPropertyChangeListener(propertyChangeListener);
-        }
-    }
-    
-    public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        synchronized (support) {
-            support.removePropertyChangeListener(propertyChangeListener);
-        }
+    public ProjectURLWatcher getProjectWatcher() {
+        return watcher;
     }
     
     /**
@@ -202,22 +216,13 @@ public final class NbMavenProject implements Project {
     }
     
     public void fireProjectReload() {
-        synchronized (support) {
-            oldProject = project;
-            project = null;
-            projectInfo.reset();
-            problemReporter.clearReports();
-            support.firePropertyChange(new PropertyChangeEvent(this, PROP_PROJECT, null, null));
-            doBaseProblemChecks();
-        }
+        oldProject = project;
+        project = null;
+        projectInfo.reset();
+        problemReporter.clearReports();
+        ACCESSOR.doFireReload(watcher);
+        doBaseProblemChecks();
     }
-    
-    public void firePropertyChange(String property, Object oldValue, Object newValue) {
-        synchronized (support) {
-            support.firePropertyChange(new PropertyChangeEvent(this, property, oldValue, newValue));
-        }
-    }
-    
     void doBaseProblemChecks() {
         problemReporter.doBaseProblemChecks(project);
     }
@@ -447,7 +452,7 @@ public final class NbMavenProject implements Project {
             problemReporter,
             new UserActionGoalProvider(this),
             new CPExtender(this),
-            ProjectURLWatcher.createWatcher(this),
+            watcher,
 
             // default mergers..        
             UILookupMergerSupport.createPrivilegedTemplatesMerger(),
@@ -556,7 +561,7 @@ public final class NbMavenProject implements Project {
             if (!isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1)  {
-                    fireProjectReload();
+                    ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
                 }
             }
         }
@@ -567,7 +572,7 @@ public final class NbMavenProject implements Project {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
-                    fireProjectReload();
+                    ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
                 }
             }
         }
@@ -575,12 +580,13 @@ public final class NbMavenProject implements Project {
         public void fileDeleted(FileEvent fileEvent) {
             if (!isFolder) {
                 fileEvent.getFile().removeFileChangeListener(getFileUpdater());
-                fireProjectReload();
+                    ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
             }
         }
         
         public void fileFolderCreated(FileEvent fileEvent) {
-            fireProjectReload();
+            //TODO possibly remove this fire.. watch for actual path..
+            ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
         }
         
         public void fileRenamed(FileRenameEvent fileRenameEvent) {
@@ -714,7 +720,7 @@ public final class NbMavenProject implements Project {
         
         public void actionPerformed(java.awt.event.ActionEvent event) {
             EmbedderFactory.resetProjectEmbedder();
-            NbMavenProject.this.fireProjectReload();
+            ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
         }
         
     }

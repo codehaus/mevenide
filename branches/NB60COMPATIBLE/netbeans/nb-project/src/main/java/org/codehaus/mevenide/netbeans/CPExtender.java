@@ -34,6 +34,7 @@ import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -69,7 +70,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = addLibrary(library, model, null);
         try {
             WriterUtils.writePomModel(pom, model);
-            project.fireProjectReload();
+            ProjectURLWatcher.fireMavenProjectReload(project);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -88,7 +89,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = addArchiveFile(file, model, null);
         try {
             WriterUtils.writePomModel(fo, model);
-            project.fireProjectReload();
+            ProjectURLWatcher.fireMavenProjectReload(project);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -211,7 +212,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         try {
             WriterUtils.writePomModel(pom, model);
-            project.fireProjectReload();
+            ProjectURLWatcher.fireMavenProjectReload(project);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -236,7 +237,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         try {
             WriterUtils.writePomModel(pom, model);
-            project.fireProjectReload();
+            ProjectURLWatcher.fireMavenProjectReload(project);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

@@ -29,12 +29,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
@@ -57,12 +57,14 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     public MavenForBinaryQueryImpl(NbMavenProject proj) {
         project = proj;
         map = new HashMap<String, BinResult>();
-        project.addPropertyChangeListener(new PropertyChangeListener() {
+        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                synchronized (map) {
-                    for (BinResult res : map.values()) {
-                        if (!Arrays.equals(res.getCached(), res.getRoots())) {
-                            res.fireChanged();
+                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                    synchronized (map) {
+                        for (BinResult res : map.values()) {
+                            if (!Arrays.equals(res.getCached(), res.getRoots())) {
+                                res.fireChanged();
+                            }
                         }
                     }
                 }

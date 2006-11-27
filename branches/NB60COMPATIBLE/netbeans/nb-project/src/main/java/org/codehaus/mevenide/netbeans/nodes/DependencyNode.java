@@ -50,6 +50,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -100,7 +101,7 @@ public class DependencyNode extends AbstractNode {
             return Children.LEAF;
         }
         Artifact art = look.lookup(Artifact.class);
-        FileObject fo = FileUtil.toFileObject(art.getFile());
+        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(art.getFile()));
         if (fo != null) {
             try {
                 DataObject dobj = DataObject.find(fo);
@@ -128,7 +129,7 @@ public class DependencyNode extends AbstractNode {
                     }
                 }
             };
-            project.addPropertyChangeListener(WeakListeners.propertyChange(listener, this));
+            ProjectURLWatcher.addPropertyChangeListener(project, WeakListeners.propertyChange(listener, this));
             listener2 = new ChangeListener() {
                 public void stateChanged(ChangeEvent event) {
                     refreshNode();
@@ -517,7 +518,7 @@ public class DependencyNode extends AbstractNode {
                     }
                 }
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                project.fireProjectReload();                
+                ProjectURLWatcher.fireMavenProjectReload(project);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (MavenEmbedderException ex) {
@@ -595,7 +596,7 @@ public class DependencyNode extends AbstractNode {
                 exclude.setGroupId(art.getGroupId());
                 dep.addExclusion(exclude);
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                project.fireProjectReload();
+                ProjectURLWatcher.fireMavenProjectReload(project);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (XmlPullParserException ex) {

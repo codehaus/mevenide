@@ -30,10 +30,10 @@ import java.util.Collections;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.net.MalformedURLException;
-import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 
@@ -44,13 +44,16 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     protected AbstractProjectClassPathImpl(NbMavenProject proj) {
         project = proj;
-        project.addPropertyChangeListener(new PropertyChangeListener() {
+        //TODO make weak or remove the listeners as well??
+        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                List newValues = getPath();
-                if (hasChanged(resources, newValues)) {
-                    List oldvalue = resources;
-                    resources = newValues;
-                    support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
+                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    List newValues = getPath();
+                    if (hasChanged(resources, newValues)) {
+                        List oldvalue = resources;
+                        resources = newValues;
+                        support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
+                    }
                 }
             }
         });

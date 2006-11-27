@@ -30,6 +30,7 @@ import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.SourceGroup;
@@ -73,9 +74,11 @@ public class MavenSourcesImpl implements Sources {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
         javaGroup = new TreeMap<String, SourceGroup>();
-        project.addPropertyChangeListener(new PropertyChangeListener() {
+        ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                checkChanges(true);
+                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                    checkChanges(true);
+                }
             }
         });
     }

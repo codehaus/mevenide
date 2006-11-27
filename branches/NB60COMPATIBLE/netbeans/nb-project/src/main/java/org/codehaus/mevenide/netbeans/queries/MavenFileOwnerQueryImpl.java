@@ -29,6 +29,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.FileOwnerQueryImplementation;
 import org.netbeans.spi.project.SubprojectProvider;
@@ -60,8 +61,10 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         cachedProjects = null;
         projectListener = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                synchronized (cacheLock) {
-                    cachedProjects = null;
+                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    synchronized (cacheLock) {
+                        cachedProjects = null;
+                    }
                 }
             }
         };
@@ -83,7 +86,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         synchronized (lock) {
             if (!set.contains(project)) {
                 set.add(project);
-                project.addPropertyChangeListener(projectListener);
+                ProjectURLWatcher.addPropertyChangeListener(project, projectListener);
             }
         }
         synchronized (cacheLock) {
@@ -96,7 +99,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         synchronized (lock) {
             if (set.contains(project)) {
                 set.remove(project);
-                project.removePropertyChangeListener(projectListener);
+                ProjectURLWatcher.removePropertyChangeListener(project, projectListener);
             }
         }
         synchronized (cacheLock) {

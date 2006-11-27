@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 
@@ -47,11 +48,10 @@ final class BootClassPathImpl implements ClassPathImplementation {
 
     public BootClassPathImpl (NbMavenProject proj) {
         project = proj;
-        project.addPropertyChangeListener(new PropertyChangeListener() {
-            public void propertyChange(PropertyChangeEvent evt) {
-            }
-        });
-        
+//        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
+//            public void propertyChange(PropertyChangeEvent evt) {
+//            }
+//        });
     }
 
     public synchronized java.util.List getResources() {

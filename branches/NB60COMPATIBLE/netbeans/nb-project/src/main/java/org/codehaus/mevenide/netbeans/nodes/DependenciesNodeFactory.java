@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
@@ -88,12 +89,11 @@ public class DependenciesNodeFactory implements NodeFactory {
         }
         
         public void addNotify() {
-            project.addPropertyChangeListener(this);
-            
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
         public void removeNotify() {
-            project.removePropertyChangeListener(this);
+            ProjectURLWatcher.removePropertyChangeListener(project, this);
         }
     }
 }

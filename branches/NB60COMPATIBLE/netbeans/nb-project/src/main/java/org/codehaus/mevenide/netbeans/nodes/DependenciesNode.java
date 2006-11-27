@@ -35,6 +35,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -139,13 +140,13 @@ class DependenciesNode extends AbstractNode {
         
         protected void addNotify() {
             super.addNotify();
-            project.addPropertyChangeListener(this);
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
             regenerateKeys();
         }
         
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
-            project.removePropertyChangeListener(this);
+            ProjectURLWatcher.removePropertyChangeListener(project, this);
             super.removeNotify();
         }
         
@@ -302,7 +303,7 @@ class DependenciesNode extends AbstractNode {
                     if (ok) {
                         StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
                     }
-                    project.fireProjectReload();
+                    ProjectURLWatcher.fireMavenProjectReload(project);
                 }
             });
         }

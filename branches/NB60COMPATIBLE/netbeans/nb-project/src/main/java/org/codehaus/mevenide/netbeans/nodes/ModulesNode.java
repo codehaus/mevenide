@@ -32,6 +32,7 @@ import javax.swing.Action;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.graph.ModulesGraphTopComponent;
@@ -77,21 +78,26 @@ public class ModulesNode extends AbstractNode {
     static class ModulesChildren extends Children.Keys {
         
         private NbMavenProject project;
+        private PropertyChangeListener listener;
         
         ModulesChildren(NbMavenProject proj) {
             project = proj;
-            project.addPropertyChangeListener(new PropertyChangeListener() {
+            listener = new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
-                    loadModules();
+                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                        loadModules();
+                    }
                 }
-            });
+            };
         }
         
         public void addNotify() {
             loadModules();
+            ProjectURLWatcher.addPropertyChangeListener(project, listener);
         }
         
         public void removeNotify() {
+            ProjectURLWatcher.removePropertyChangeListener(project, listener);
             setKeys(Collections.EMPTY_LIST);
         }
         
@@ -183,7 +189,7 @@ public class ModulesNode extends AbstractNode {
                         }
                     }
                     WriterUtils.writePomModel(FileUtil.toFileObject(parent.getPOMFile()), model);
-                    parent.fireProjectReload();
+                    ProjectURLWatcher.fireMavenProjectReload(parent);
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 } catch (XmlPullParserException ex) {

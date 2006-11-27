@@ -38,6 +38,7 @@ import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -82,10 +83,12 @@ public class MavenProjectNode extends AbstractNode {
         super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
         this.project = proj;
         info = (ProjectInformation)project.getLookup().lookup(ProjectInformation.class);
-        project.addPropertyChangeListener(new PropertyChangeListener() {
+        ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                fireDisplayNameChange(null, getDisplayName());
-                fireIconChange();
+                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                    fireDisplayNameChange(null, getDisplayName());
+                    fireIconChange();
+                }
             }
         });
 //        setIconBase("org/mevenide/netbeans/projects/resources/MavenIcon");

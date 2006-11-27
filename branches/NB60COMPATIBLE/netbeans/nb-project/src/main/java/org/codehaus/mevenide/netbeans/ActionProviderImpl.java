@@ -22,6 +22,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
@@ -101,7 +102,7 @@ public class ActionProviderImpl implements ActionProvider {
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
             public void taskFinished(Task task2) {
-                project.fireProjectReload();
+                ProjectURLWatcher.fireMavenProjectReload(project);
                 LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
                 try {
                     index.updateIndexWithArtifacts(project.getOriginalMavenProject().getDependencyArtifacts());

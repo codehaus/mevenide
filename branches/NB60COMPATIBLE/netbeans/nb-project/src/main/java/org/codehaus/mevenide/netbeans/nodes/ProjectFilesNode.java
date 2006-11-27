@@ -28,6 +28,7 @@ import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileChangeAdapter;
@@ -123,14 +124,14 @@ public class ProjectFilesNode extends AbstractNode {
         
         protected void addNotify() {
             super.addNotify();
-            project.addPropertyChangeListener(this);
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
             project.getProjectDirectory().addFileChangeListener(fileChangeListener);
             regenerateKeys();
         }
         
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
-            project.removePropertyChangeListener(this);
+            ProjectURLWatcher.removePropertyChangeListener(project, this);
             project.getProjectDirectory().removeFileChangeListener(fileChangeListener);
             super.removeNotify();
         }

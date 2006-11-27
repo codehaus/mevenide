@@ -9,6 +9,7 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -24,7 +25,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author mkleint
  */
-public class FileSystemListener implements FileChangeListener {
+class FileSystemListener implements FileChangeListener {
     /** Creates a new instance of FileSystemListener */
     FileSystemListener() {
     }
@@ -59,7 +60,7 @@ public class FileSystemListener implements FileChangeListener {
         if (prj != null) {
             ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
             if (watcher != null) {
-                watcher.checkFileObject(event.getFile());
+                NbMavenProject.ACCESSOR.checkFileObject (watcher, event.getFile());
             }
         }
     }

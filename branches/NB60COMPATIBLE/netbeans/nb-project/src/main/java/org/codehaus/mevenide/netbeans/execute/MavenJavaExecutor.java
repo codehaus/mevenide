@@ -45,7 +45,7 @@ import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
@@ -308,13 +308,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 FileObject fo = FileUtil.toFileObject(elem);
                 if (fo != null) {
                     //TODO have the firing based on open projects only..
-                    Project prj = FileOwnerQuery.getOwner(fo);
-                    if (prj != null) {
-                        NbMavenProject nbprj = (NbMavenProject)prj.getLookup().lookup(NbMavenProject.class);
-                        if (nbprj != null) {
-                            nbprj.fireProjectReload();
-                        }
-                    }
+                    ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
                 }
             }
         }

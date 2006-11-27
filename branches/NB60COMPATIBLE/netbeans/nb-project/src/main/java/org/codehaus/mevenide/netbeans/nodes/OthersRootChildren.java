@@ -24,6 +24,7 @@ import java.util.List;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.VisibilityQueryDataFilter;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.openide.loaders.DataFolder;
@@ -55,13 +56,13 @@ class OthersRootChildren extends Children.Keys {
     
     protected void addNotify() {
         super.addNotify();
-        project.addPropertyChangeListener(changeListener);
+        ProjectURLWatcher.addPropertyChangeListener(project, changeListener);
         regenerateKeys();
     }
     
     protected void removeNotify() {
         setKeys(Collections.EMPTY_SET);
-        project.removePropertyChangeListener(changeListener);
+        ProjectURLWatcher.removePropertyChangeListener(project, changeListener);
         super.removeNotify();
         
     }

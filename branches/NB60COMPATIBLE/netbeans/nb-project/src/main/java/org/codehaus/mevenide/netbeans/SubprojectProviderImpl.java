@@ -28,6 +28,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -53,9 +54,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     public SubprojectProviderImpl(NbMavenProject proj) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
-        proj.addPropertyChangeListener(new PropertyChangeListener() {
+        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                fireChange();
+                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    fireChange();
+                }
             }
         });
         listener2 = new ChangeListener() {
