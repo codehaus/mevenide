@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
-import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;

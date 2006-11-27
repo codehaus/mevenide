@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
 import java.io.File;
 import java.io.FileOutputStream;

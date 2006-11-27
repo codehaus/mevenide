@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.model.Model;

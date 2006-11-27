@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.customizer;
+package org.codehaus.mevenide.netbeans.api.customizer;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -28,16 +28,18 @@ import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 
 /**
- *
+ * ModelHandle instance is passed down to customizer panel providers in the context lookup.
+ * 
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public final class ModelHandle {
     public static final String PANEL_RUN = "RUN";
-    static final String PANEL_BASIC = "BASIC";
-    static final String PANEL_MAPPING = "MAPPING";
+    public static final String PANEL_BASIC = "BASIC";
+    public static final String PANEL_MAPPING = "MAPPING";
 
     private Model model;
     private MavenProject project;
@@ -47,8 +49,32 @@ public final class ModelHandle {
     private org.apache.maven.model.Profile publicProfile;
     private org.apache.maven.profiles.Profile privateProfile;
     
+    static {
+        AccessorImpl impl = new AccessorImpl();
+        impl.assign();
+    }
+    
+    
+    static class AccessorImpl extends CustomizerProviderImpl.ModelAccessor {
+        
+         public ModelHandle createHandle(Model model, ProfilesRoot prof,
+                                        MavenProject proj, ActionToGoalMapping mapp) {
+            return new ModelHandle(model, prof, proj, mapp);
+        }
+        
+         public void assign() {
+             if (CustomizerProviderImpl.ACCESSOR == null) {
+                 CustomizerProviderImpl.ACCESSOR = this;
+             }
+         }
+    
+        public void fireActionPerformed(ModelHandle handle) {
+            handle.fireActionPerformed();
+        }
+    }
+    
     /** Creates a new instance of ModelHandle */
-    ModelHandle(Model mdl, ProfilesRoot profile, MavenProject proj, ActionToGoalMapping mapping) {
+    private ModelHandle(Model mdl, ProfilesRoot profile, MavenProject proj, ActionToGoalMapping mapping) {
         model = mdl;
         project = proj;
         this.mapping = mapping;
@@ -71,10 +97,16 @@ public final class ModelHandle {
         listeners.remove(listener);
     }
     
+    /**
+     * pom.xml model
+     */ 
     public Model getPOMModel() {
         return model;
     }
     
+    /**
+     * profiles.xml model
+     */ 
     public ProfilesRoot getProfileModel() {
         return profiles;
     }
@@ -137,10 +169,17 @@ public final class ModelHandle {
         return privateProfile;
     }
     
+    /**
+     * the non changed (not-to-be-changed) instance of the complete project. 
+     * NOT TO BE CHANGED.
+     */ 
     public MavenProject getProject() {
         return project;
     }
     
+    /**
+     * action mapping model
+     */ 
     public ActionToGoalMapping getActionMappings() {
         return mapping;
     }

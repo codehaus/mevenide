@@ -16,11 +16,12 @@
  */
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;

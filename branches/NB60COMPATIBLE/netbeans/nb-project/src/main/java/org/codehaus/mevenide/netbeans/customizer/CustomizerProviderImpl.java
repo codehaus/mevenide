@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -104,7 +106,28 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-        handle = new ModelHandle(model, prof, project.getOriginalMavenProject(), mapping);
+        handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapping);
+    }
+    
+    public static ModelAccessor ACCESSOR = null;
+
+    static {
+        // invokes static initializer of ModelHandle.class
+        // that will assign value to the ACCESSOR field above
+        Class c = ModelHandle.class;
+        try {
+            Class.forName(c.getName(), true, c.getClassLoader());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }    
+    
+    
+    public static abstract class ModelAccessor {
+        
+        public abstract ModelHandle createHandle(Model model, ProfilesRoot prof, MavenProject proj, ActionToGoalMapping mapp);
+        
+        public abstract void fireActionPerformed(ModelHandle handle);
     }
     /** Listens to the actions on the Customizer's option buttons */
     private class OptionListener extends WindowAdapter implements ActionListener {
@@ -124,7 +147,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
-                    handle.fireActionPerformed();
+                    ACCESSOR.fireActionPerformed(handle);
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
                             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
