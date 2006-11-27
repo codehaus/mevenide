@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.StringTokenizer;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.openide.ErrorManager;
@@ -90,13 +91,13 @@ import org.openide.util.Lookup;
 
         public void initialize() throws FileStateInvalidException {
             smallinitialize();
-            project.addPropertyChangeListener (this);
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
             active = true;
         }
 
         public void cleanup() throws FileStateInvalidException {
             smallcleanup();
-            project.removePropertyChangeListener (this);
+            ProjectURLWatcher.removePropertyChangeListener(project, this);
             active = false;
         }
         

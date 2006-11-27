@@ -26,6 +26,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.support.GenericSources;
@@ -54,7 +55,7 @@ public class J2eeMavenSourcesImpl implements Sources {
     public J2eeMavenSourcesImpl(NbMavenProject proj) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
-        project.addPropertyChangeListener(new PropertyChangeListener() {
+        ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
                     checkChanges(true);

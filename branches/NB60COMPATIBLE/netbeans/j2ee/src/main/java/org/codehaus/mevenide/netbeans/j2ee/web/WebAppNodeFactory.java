@@ -25,6 +25,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.nodes.AbstractMavenNodeList;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
@@ -98,12 +99,11 @@ public class WebAppNodeFactory implements NodeFactory {
         }
         
         public void addNotify() {
-            project.addPropertyChangeListener(this);
-            
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
         public void removeNotify() {
-            project.removePropertyChangeListener(this);
+            ProjectURLWatcher.removePropertyChangeListener(project, this);
         }
         
     }

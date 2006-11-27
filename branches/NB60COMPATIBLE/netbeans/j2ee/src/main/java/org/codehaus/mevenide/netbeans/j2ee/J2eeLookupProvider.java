@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.j2ee;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
@@ -62,7 +63,7 @@ public class J2eeLookupProvider implements LookupProvider {
             project = proj;
             content = cont;
             checkJ2ee();
-            project.addPropertyChangeListener(this);
+            ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
