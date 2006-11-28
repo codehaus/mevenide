@@ -633,7 +633,7 @@ public class DependencyNode extends AbstractNode {
                 props.put("file", file.getAbsolutePath());
                 props.put("generatePom", "false");
                 brc.setProperties(props);
-                brc.setActiveteProfiles(Collections.EMPTY_LIST);
+                brc.setActivatedProfiles(Collections.EMPTY_LIST);
                 
                 ExecutorTask task = MavenJavaExecutor.executeMaven("Install", brc);
             }

@@ -219,7 +219,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 //TODO
             }
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-            req.addActiveProfiles(config.getActiveteProfiles());
+            req.addActiveProfiles(config.getActivatedProfiles());
 			// TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             //            req.activateDefaultEventMonitor();

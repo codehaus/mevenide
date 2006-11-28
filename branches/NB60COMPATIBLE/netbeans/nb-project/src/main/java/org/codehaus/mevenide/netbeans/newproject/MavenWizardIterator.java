@@ -261,7 +261,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
 
     private void runArchetype(File dirF, String gr, String art, String ver, String pack, Archetype arch) {
         BeanRunConfig config = new BeanRunConfig();
-        config.setActiveteProfiles(Collections.EMPTY_LIST);
+        config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
         config.setExecutionName("Project Creation");
         config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create"));

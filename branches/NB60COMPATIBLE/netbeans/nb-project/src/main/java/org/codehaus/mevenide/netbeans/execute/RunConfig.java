@@ -50,7 +50,7 @@ public interface RunConfig {
     
     boolean isUpdateSnapshots();
 
-    List getActiveteProfiles();
+    List getActivatedProfiles();
 
     
 }

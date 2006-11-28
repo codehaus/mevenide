@@ -75,7 +75,7 @@ public final class ActionToGoalUtils {
                         brc.setGoals(toRet);
                         brc.setExecutionName(project.getName());
                         brc.setProperties(new Properties());
-                        brc.setActiveteProfiles(Collections.EMPTY_LIST);
+                        brc.setActivatedProfiles(Collections.EMPTY_LIST);
                         return brc;
                     }
                 }

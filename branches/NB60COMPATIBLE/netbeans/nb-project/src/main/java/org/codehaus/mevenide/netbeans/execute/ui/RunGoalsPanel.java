@@ -105,7 +105,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         DefaultListSelectionModel sel = new DefaultListSelectionModel();
         sel.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         for (int i = 0; i < lstProfiles.getModel().getSize(); i++) {
-            if (config.getActiveteProfiles().contains(lstProfiles.getModel().getElementAt(i))) {
+            if (config.getActivatedProfiles().contains(lstProfiles.getModel().getElementAt(i))) {
                 sel.addSelectionInterval(i, i);
             }
         }
@@ -167,7 +167,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     }
     
     public void applyValues(BeanRunConfig rc) {
-        rc.setActiveteProfiles(lstProfiles.getSelectedValues() != null 
+        rc.setActivatedProfiles(lstProfiles.getSelectedValues() != null 
                 ? Arrays.asList(lstProfiles.getSelectedValues())
                 : Collections.EMPTY_LIST);
         StringTokenizer tok = new StringTokenizer(txtGoals.getText().trim());

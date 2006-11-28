@@ -18,7 +18,6 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -110,11 +109,11 @@ public class BeanRunConfig implements RunConfig {
         this.offline = offline;
     }
 
-    public List getActiveteProfiles() {
+    public List getActivatedProfiles() {
         return activate;
     }
 
-    public void setActiveteProfiles(List activeteProfiles) {
+    public void setActivatedProfiles(List activeteProfiles) {
         activate = new ArrayList();
         activate.addAll(activeteProfiles);
     }
