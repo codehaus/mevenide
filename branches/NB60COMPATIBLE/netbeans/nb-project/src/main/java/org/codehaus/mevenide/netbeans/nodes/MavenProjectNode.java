@@ -186,6 +186,8 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(CommonProjectActions.closeProjectAction());
         lst.add(null);
         lst.add(SystemAction.get(FindAction.class));
+        lst.add(null);
+        lst.add(CommonProjectActions.deleteProjectAction());
             
         try {
             FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("Projects/Actions"); // NOI18N

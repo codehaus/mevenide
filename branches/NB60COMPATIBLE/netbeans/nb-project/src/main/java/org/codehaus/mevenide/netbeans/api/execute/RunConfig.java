@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.execute;
+package org.codehaus.mevenide.netbeans.api.execute;
 
 import java.io.File;
 import java.util.List;

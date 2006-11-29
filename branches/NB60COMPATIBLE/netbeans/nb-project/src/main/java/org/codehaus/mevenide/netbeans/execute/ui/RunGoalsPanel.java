@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute.ui;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ import javax.swing.ImageIcon;
 import javax.swing.ListSelectionModel;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
-import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.openide.util.Utilities;

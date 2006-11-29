@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

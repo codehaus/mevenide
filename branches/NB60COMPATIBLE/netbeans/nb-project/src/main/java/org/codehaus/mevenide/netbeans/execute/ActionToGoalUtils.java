@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;

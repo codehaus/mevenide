@@ -17,11 +17,13 @@
 
 package org.codehaus.mevenide.netbeans.j2ee;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.execute.PrerequisitesChecker;
-import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleImpl;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;

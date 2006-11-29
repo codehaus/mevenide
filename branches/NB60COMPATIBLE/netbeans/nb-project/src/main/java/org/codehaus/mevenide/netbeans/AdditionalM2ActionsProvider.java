@@ -17,9 +17,10 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.openide.util.Lookup;
 

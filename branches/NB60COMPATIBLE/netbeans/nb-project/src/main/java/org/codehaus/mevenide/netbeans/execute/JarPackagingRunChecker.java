@@ -17,6 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
