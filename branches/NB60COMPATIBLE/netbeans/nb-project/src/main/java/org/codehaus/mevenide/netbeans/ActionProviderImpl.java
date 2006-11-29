@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
+import org.netbeans.spi.project.ui.support.DefaultProjectOperations;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
@@ -52,17 +53,20 @@ public class ActionProviderImpl implements ActionProvider {
     
     private NbMavenProject project;
     private static String[] supported = new String[] {
-        ActionProvider.COMMAND_BUILD,
-        ActionProvider.COMMAND_CLEAN,
-        ActionProvider.COMMAND_REBUILD,
+        COMMAND_BUILD,
+        COMMAND_CLEAN,
+        COMMAND_REBUILD,
         "javadoc", //NOI18N
-        ActionProvider.COMMAND_TEST,
-        ActionProvider.COMMAND_TEST_SINGLE,
-        ActionProvider.COMMAND_RUN,
-        ActionProvider.COMMAND_RUN_SINGLE,
-        ActionProvider.COMMAND_DEBUG,
-        ActionProvider.COMMAND_DEBUG_SINGLE,
-        ActionProvider.COMMAND_DEBUG_TEST_SINGLE
+        COMMAND_TEST,
+        COMMAND_TEST_SINGLE,
+        COMMAND_RUN,
+        COMMAND_RUN_SINGLE,
+        COMMAND_DEBUG,
+        COMMAND_DEBUG_SINGLE,
+        COMMAND_DEBUG_TEST_SINGLE,
+        
+        //operations
+        COMMAND_DELETE
     };
     
     
@@ -76,6 +80,11 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public void invokeAction(String action, Lookup lookup) {
+        if (COMMAND_DELETE.equals(action)) {
+            DefaultProjectOperations.performDefaultDeleteOperation(project);
+            return ;
+        }
+        
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         assert rc != null;
         runGoal(action, lookup, rc);
@@ -115,6 +124,9 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public boolean isActionEnabled(String action, Lookup lookup) {
+        if (COMMAND_DELETE.equals(action)) {
+            return true;
+        }
         //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over
         // again from each provider..
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);

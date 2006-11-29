@@ -71,6 +71,7 @@ import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.operations.DeleteOperationImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 
@@ -453,6 +454,9 @@ public final class NbMavenProject implements Project {
             new UserActionGoalProvider(this),
             new CPExtender(this),
             watcher,
+            
+            //operations
+            new DeleteOperationImpl(this),
 
             // default mergers..        
             UILookupMergerSupport.createPrivilegedTemplatesMerger(),
