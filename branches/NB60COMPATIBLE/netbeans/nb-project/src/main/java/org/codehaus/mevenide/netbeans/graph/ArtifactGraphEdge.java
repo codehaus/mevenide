@@ -29,4 +29,8 @@ public class ArtifactGraphEdge {
         this.edge = edge;
     }
     
+    public String toString() {
+        return edge;
+    }
+    
 }
