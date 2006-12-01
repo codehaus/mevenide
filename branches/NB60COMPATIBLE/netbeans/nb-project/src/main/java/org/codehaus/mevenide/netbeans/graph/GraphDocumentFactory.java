@@ -146,6 +146,7 @@ public class GraphDocumentFactory {
         }
         
         public void testArtifact(Artifact node) {
+            System.out.println("test artifact=" + node);
         }
         
         public void startProcessChildren(Artifact artifact) {
@@ -184,10 +185,22 @@ public class GraphDocumentFactory {
         public void omitForNearer(Artifact omitted, Artifact kept) {
             if (!scene.isNode(getNode(kept))) {
                 scene.addNode(getNode(kept));
+                Collection<ArtifactGraphEdge> edges = scene.getEdges();
+                for (ArtifactGraphEdge edge : edges) {
+                    if (getNode(omitted) == scene.getEdgeSource(edge)) {
+                        System.out.println("new source2" + edge);
+                        scene.setEdgeSource(edge, getNode(kept));
+                    }
+                    if (getNode(omitted) == scene.getEdgeTarget(edge)) {
+                        System.out.println("new target2" + edge);
+                        scene.setEdgeTarget(edge, getNode(kept));
+                    }
+                }
             }
             if (parentChain.size() > 0) {
                 Artifact parent = parentChain.get(parentChain.size() - 1);
-                String edge = parent.getId() + "--" + omitted.getId() + "++" + omitted.hashCode();
+                assert parent != null : "parent for kept=" + kept.getId();
+                String edge = parent.getId() + "--" + omitted.getId();
                 ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
                 scene.addEdge(ed);
                 scene.setEdgeTarget(ed, getNode(kept));
@@ -195,11 +208,13 @@ public class GraphDocumentFactory {
                 //TODO mark the ommited..
             } 
             if (scene.isNode(getNode(omitted))) {
+                System.out.println("ommiting =" + omitted);
                 scene.removeNode(getNode(omitted));
             }
         }
         
         public void updateScope(Artifact artifact, String scope) {
+            System.out.println("update scope");
         }
         
         public void manageArtifact(Artifact artifact, Artifact replacement) {
@@ -224,13 +239,22 @@ public class GraphDocumentFactory {
         }
         
         public void omitForCycle(Artifact artifact) {
-            System.out.println("OMIT for CYCLE "+ artifact);
+            Collection<ArtifactGraphEdge> edges = scene.getEdges();
+            for (ArtifactGraphEdge edge : edges) {
+                if (getNode(artifact) == scene.getEdgeSource(edge) || 
+                    getNode(artifact) == scene.getEdgeTarget(edge)) {
+                    scene.removeEdge(edge);
+                }
+            }
+            scene.removeNode(getNode(artifact));
         }
         
         public void updateScopeCurrentPom(Artifact artifact, String scope) {
+            System.out.println("update scope");
         }
         
         public void selectVersionFromRange(Artifact artifact) {
+            System.out.println("select version from range");
         }
         
         public void restrictRange(Artifact artifact, Artifact replacement, VersionRange newRange) {
