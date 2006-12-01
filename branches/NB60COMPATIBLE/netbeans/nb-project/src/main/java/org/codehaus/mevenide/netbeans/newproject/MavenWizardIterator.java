@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.netbeans.api.project.Project;
@@ -281,7 +282,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
         String oldUserdir = System.getProperty("user.dir");
         System.setProperty("user.dir", dirF.getAbsolutePath());
         try {
-            ExecutorTask task = MavenJavaExecutor.executeMaven("Maven", config);
+            ExecutorTask task = RunUtils.executeMaven("Maven", config);
             task.result();
         } finally {
             if (oldUserdir == null) {
@@ -292,6 +293,7 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
         }
         
     }
+    private Object RunUtilsls;
     
     
 }

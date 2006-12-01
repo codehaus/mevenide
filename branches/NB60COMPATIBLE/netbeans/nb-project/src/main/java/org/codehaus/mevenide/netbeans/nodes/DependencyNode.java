@@ -51,6 +51,7 @@ import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -635,7 +636,8 @@ public class DependencyNode extends AbstractNode {
                 brc.setProperties(props);
                 brc.setActivatedProfiles(Collections.EMPTY_LIST);
                 
-                ExecutorTask task = MavenJavaExecutor.executeMaven("Install", brc);
+                ExecutorTask task = RunUtils.executeMaven("Install", brc);
+                //TODO how to handle errors
             }
         }
     }

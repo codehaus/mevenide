@@ -29,6 +29,7 @@ import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -66,7 +67,10 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DEBUG_TEST_SINGLE,
         
         //operations
-        COMMAND_DELETE
+        COMMAND_DELETE, 
+        COMMAND_RENAME,
+        COMMAND_MOVE,
+        COMMAND_COPY
     };
     
     
@@ -82,6 +86,19 @@ public class ActionProviderImpl implements ActionProvider {
     public void invokeAction(String action, Lookup lookup) {
         if (COMMAND_DELETE.equals(action)) {
             DefaultProjectOperations.performDefaultDeleteOperation(project);
+            return ;
+        }
+        if (COMMAND_COPY.equals(action)) {
+            DefaultProjectOperations.performDefaultCopyOperation(project);
+            return ;
+        }
+        if (COMMAND_MOVE.equals(action)) {
+            DefaultProjectOperations.performDefaultMoveOperation(project);
+            return ;
+        }
+        
+        if (COMMAND_RENAME.equals(action)) {
+            DefaultProjectOperations.performDefaultRenameOperation(project, null);
             return ;
         }
         
@@ -106,7 +123,7 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         // setup executor now..
-        ExecutorTask task = MavenJavaExecutor.executeMaven("Maven", config);
+        ExecutorTask task = RunUtils.executeMaven("Maven", config);
         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
@@ -124,7 +141,10 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public boolean isActionEnabled(String action, Lookup lookup) {
-        if (COMMAND_DELETE.equals(action)) {
+        if (COMMAND_DELETE.equals(action) ||
+            COMMAND_RENAME.equals(action) ||
+            COMMAND_COPY.equals(action) ||
+            COMMAND_MOVE.equals(action)) {
             return true;
         }
         //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over

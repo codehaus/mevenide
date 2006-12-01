@@ -187,6 +187,9 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(null);
         lst.add(SystemAction.get(FindAction.class));
         lst.add(null);
+        lst.add(CommonProjectActions.renameProjectAction());
+        lst.add(CommonProjectActions.moveProjectAction());
+        lst.add(CommonProjectActions.copyProjectAction());
         lst.add(CommonProjectActions.deleteProjectAction());
             
         try {

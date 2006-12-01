@@ -14,6 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.codehaus.mevenide.netbeans.execute;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -47,6 +48,8 @@ import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
@@ -55,10 +58,8 @@ import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -91,25 +92,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     private ExecutorTask task;
     
     
-    private MavenJavaExecutor(RunConfig conf) {
+    public MavenJavaExecutor(RunConfig conf) {
         config = conf;
         String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
                                                   "Execute Maven";  
         handle = ProgressHandleFactory.createHandle(name, this);
-    }
-    
-    /**
-     *  execute maven build in netbeans execution engine.
-     */
-    public static ExecutorTask executeMaven(String runtimeName, RunConfig config) {
-        MavenJavaExecutor exec = new MavenJavaExecutor(config);
-        return executeMavenImpl(runtimeName, exec);
-    }
-    
-    private static ExecutorTask executeMavenImpl(String runtimeName, MavenJavaExecutor exec) {
-        ExecutorTask task =  ExecutionEngine.getDefault().execute(runtimeName, exec, exec.getInputOutput());
-        exec.setTask(task);
-        return task;
     }
     
     private InputOutput createInputOutput() {
@@ -356,7 +343,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
     }
 
-    private void setTask(ExecutorTask task) {
+    public void setTask(ExecutorTask task) {
         this.task = task;
     }
     
@@ -393,11 +380,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     newConfig.setExecutionName(config.getExecutionName());
                     newConfig.setProject(config.getProject());
                     pnl.applyValues(newConfig);
-                    MavenJavaExecutor.executeMaven("Maven", newConfig);
+                    RunUtils.executeMaven("Maven", newConfig);
                 }
             } else {
                 RunConfig newConfig = config;
-                MavenJavaExecutor.executeMaven("Maven", newConfig);
+                RunUtils.executeMaven("Maven", newConfig);
             }
             //TODO the waiting on tasks won't work..
         }
