@@ -61,8 +61,19 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     
     private void performLayout(boolean finish) {
         for (int i=0; i < iterations; i++ ) {
+            int repeats = 0;
+            while (true) {
+                
             for (ArtifactGraphNode n : scene.getNodes()) {
                 if (n.isFixed()) continue;
+//                if (i < iterations / 5) {
+//                    if (scene.findNodeEdges(n, false, true).size() == 1 
+//                       && scene.findNodeEdges(n, true, false).size() == 0) {
+//                        //for leaves, ignore repulsion first, to cause closer location to parent...
+//                        System.out.println("continue.." + n.getArtifact().getId());
+//                        continue;
+//                    }
+//                }
                 calcRepulsion(n);
             }
             for (ArtifactGraphEdge e : scene.getEdges()) {
@@ -72,7 +83,14 @@ public class FruchtermanReingoldLayout extends SceneLayout {
                 if (n.isFixed()) continue;
                 calcPositions(n);
             }
-            cool(i);
+            if (areAllFixed() || repeats > 2) {
+                doRelayoutNonFixed();
+                resetFixed();
+                cool(i);
+                break;
+            }
+            repeats = repeats + 1;
+            }
         }
         if (finish) {
             finish();
@@ -110,6 +128,7 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     }
     
     private void finish() {
+        System.out.println("finish called");
         for (ArtifactGraphNode n : scene.getNodes()) {
             Widget wid = scene.findWidget(n);
             Point point = new Point();
@@ -128,7 +147,9 @@ public class FruchtermanReingoldLayout extends SceneLayout {
         
         n.locX += xDisp;
         n.locY += yDisp;
-
+        if (isThereFreeSpaceNonFixedSpace(n)) {
+            n.setFixed(true);
+        }
 //        double x = n.locX;
 //        double y = n.locY;
 //        // don't let nodes leave the display
@@ -152,10 +173,11 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     public void calcAttraction(ArtifactGraphEdge e) {
         ArtifactGraphNode n1 = scene.getEdgeSource(e);
         ArtifactGraphNode n2 = scene.getEdgeTarget(e);
-        Widget wid1 = scene.findWidget(n1);
-        Rectangle rect1 = wid1.getBounds();
-        Widget wid2 = scene.findWidget(n2);
-        Rectangle rect2 = wid2.getBounds();
+        assert (n1 != null && n2 != null) : "wrong edge=" + e;
+//        Widget wid1 = scene.findWidget(n1);
+//        Rectangle rect1 = wid1.getBounds();
+//        Widget wid2 = scene.findWidget(n2);
+//        Rectangle rect2 = wid2.getBounds();
         
         double xDelta = n1.locX - n2.locX;
         double yDelta = n1.locX - n2.locY;
@@ -175,12 +197,12 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     public void calcRepulsion(ArtifactGraphNode n1) {
         n1.dispX = 0.0; 
         n1.dispY = 0.0;
-        Widget wid1 = scene.findWidget(n1);
-        Rectangle rect1 = wid1.getBounds();
+//        Widget wid1 = scene.findWidget(n1);
+//        Rectangle rect1 = wid1.getBounds();
 
         for (ArtifactGraphNode n2 : scene.getNodes()) {
-            Widget wid2 = scene.findWidget(n2);
-            Rectangle rect2 = wid1.getBounds();
+//            Widget wid2 = scene.findWidget(n2);
+//            Rectangle rect2 = wid1.getBounds();
             //TODO..
 //            if (n2.isFixed()) continue;
             if (n1 != n2) {
@@ -219,6 +241,8 @@ public class FruchtermanReingoldLayout extends SceneLayout {
             if (isThereFreeSpace(point, nd)) {
                 nd.locX = point.getX();
                 nd.locY = point.getY();
+                nd.dispX = 0;
+                nd.dispY = 0;
                 if (it.hasNext()) {
                     nd = it.next();
                 } else {
@@ -249,5 +273,76 @@ public class FruchtermanReingoldLayout extends SceneLayout {
         }
         return true;
     }
+
+    private boolean areAllFixed() {
+        for (ArtifactGraphNode nd : scene.getNodes()) {
+            if (!nd.isFixed()) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private void resetFixed() {
+        for (ArtifactGraphNode nd : scene.getNodes()) {
+            nd.setFixed(false);
+        }
+        scene.getRootArtifact().setFixed(true);
+    }
+    
+    private boolean isThereFreeSpaceNonFixedSpace(ArtifactGraphNode node) {
+        Rectangle bnds = scene.findWidget(node).getPreferredBounds();
+        Point pnt = new Point();
+        pnt.setLocation(node.locX, node.locY);
+        bnds = new Rectangle(pnt, bnds.getSize());
+        for (ArtifactGraphNode nd : scene.getNodes()) {
+            Rectangle bounds = scene.findWidget(nd).getPreferredBounds();
+            Point point = new Point();
+            point.setLocation(nd.locX, nd.locY);
+            bounds = new Rectangle(point, bounds.getSize());
+            if (nd.isFixed() && bnds.intersects((bounds))) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    private void doRelayoutNonFixed() {
+        for (ArtifactGraphNode node : scene.getNodes()) {
+            if (!node.isFixed()) {
+                relayoutNonFixed(node);
+            }
+        }
+    }
+    
+    private void relayoutNonFixed(ArtifactGraphNode node) {
+        Point masterPoint = new Point();
+        masterPoint.setLocation(node.locX, node.locY);
+        double r;
+        double theta;
+        double thetaStep = Math.PI / 5;
+        r = 30;
+        theta = 0;
+        node.setFixed(false);
+        while (true) {
+            AffineTransform tr = AffineTransform.getRotateInstance(theta);
+            Point2D d2point = tr.transform(new Point2D.Double((double)(0), (double)(r)), null);
+            Point point = new Point((int)d2point.getX() + masterPoint.x, (int)d2point.getY() + masterPoint.y);
+            node.locX = point.getX();
+            node.locY = point.getY();
+            if (isThereFreeSpaceNonFixedSpace(node)) {
+                node.setFixed(true);
+                return;
+            }
+            theta = theta + thetaStep;
+            if (theta > (Math.PI * 2 - Math.PI / 10)) {
+                r = r + 30;
+                theta = theta - Math.PI * 2;
+                thetaStep = thetaStep * 3 / 4; 
+            }
+        }
+        
+    }
+    
     
 } 
