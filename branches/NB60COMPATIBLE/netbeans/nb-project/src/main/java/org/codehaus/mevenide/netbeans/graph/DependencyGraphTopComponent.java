@@ -18,10 +18,15 @@
 package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.Rectangle;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.visual.widget.Scene.SceneListener;
+import org.netbeans.api.visual.widget.Widget;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
@@ -34,7 +39,6 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     private NbMavenProject project;
     private JComponent view = null;
-    private double zoom = 1;
     private DependencyGraphScene scene;
     
     /** Creates new form ModulesGraphTopComponent */
@@ -60,16 +64,54 @@ public class DependencyGraphTopComponent extends TopComponent {
         if (sceneView == null) {
             sceneView = scene.createView ();
         }
-        JScrollPane pane = new JScrollPane();
+        final JScrollPane pane = new JScrollPane();
         pane.setViewportView(sceneView);
         add(pane, BorderLayout.CENTER);
-// instantiate particular layout e.g.: "new GridGraphLayout ();"
-//        TreeGraphLayout<Artifact, String> layout = new TreeGraphLayout<Artifact, String>(scene, 100, 100, 5, 50 , true);
-//        for (Artifact art : scene.getNodes()) {
-//            layout.layout(art);
-//        }
-
         scene.cleanLayout();
+        
+        scene.addSceneListener(new SceneListener() {
+            public void sceneRepaint() {
+            }
+            public void sceneValidating() {
+            }
+            public void sceneValidated() {
+//                for (ArtifactGraphNode nd : scene.getNodes()) {
+//                    Widget wid = scene.findWidget(nd);
+//                    Rectangle sceneBounds = wid.convertLocalToScene(wid.getBounds());
+//                    if (rec == null) {
+//                        rec = sceneBounds;
+//                    } else {
+//                        rec.union(sceneBounds);
+//                    }
+//                }
+//                if (rec == null)
+//                    rec = new Rectangle ();
+//                rec.grow(rec.width / 10, rec.height /10);
+//                System.out.println("max rect=" + rec);
+//                
+                ArtifactGraphNode root = scene.getRootArtifact();
+                Widget rootWidget = scene.findWidget (root);
+                Rectangle rootSceneBounds = rootWidget.convertLocalToScene(rootWidget.getBounds());
+                System.out.println("view bounds to scroll0-" + rootWidget.getBounds());
+                System.out.println("view bounds to scroll1-" + rootSceneBounds);
+                Rectangle rootViewBounds = scene.convertSceneToView (rootSceneBounds);
+                scene.getView().scrollRectToVisible(rootViewBounds); 
+                System.out.println("view bounds to scroll2-" + rootViewBounds);
+
+////                Rectangle rec = scene.convertSceneToView(scene.getBounds());
+////                Rectangle viewBounds = scene.convertSceneToView (rec);
+////                Dimension viewportSize = pane.getViewport().getSize();
+////                System.out.println("view size=" + viewportSize);
+////                System.out.println("scene bounds=" + viewBounds);
+////                float zoomFactor = Math.max ((float) viewportSize.width / viewBounds.width,
+////                                             (float) viewportSize.height / viewBounds.height);                
+////                
+////                System.out.println("zoom factor is " + zoomFactor);
+////                scene.setZoomFactor(zoomFactor);
+//////                scene.getSceneAnimator().animateZoomFactor(zoomFactor);
+                scene.removeSceneListener (this);                
+            }
+        });
         revalidate();
         repaint();
         
@@ -88,9 +130,6 @@ public class DependencyGraphTopComponent extends TopComponent {
         jPanel1 = new javax.swing.JPanel();
         btnBigger = new javax.swing.JButton();
         btnSmaller = new javax.swing.JButton();
-        btnSnap = new javax.swing.JToggleButton();
-        btnSaveLayout = new javax.swing.JButton();
-        cbSelection = new javax.swing.JCheckBox();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -112,81 +151,18 @@ public class DependencyGraphTopComponent extends TopComponent {
         });
         jPanel1.add(btnSmaller);
 
-        btnSnap.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/graph/snap-to-grid.png")));
-        btnSnap.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                btnSnapStateChanged(evt);
-            }
-        });
-        jPanel1.add(btnSnap);
-
-        btnSaveLayout.setText("Save layout");
-        btnSaveLayout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveLayoutActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btnSaveLayout);
-
-        cbSelection.setSelected(true);
-        cbSelection.setText("Select With Direct Deps");
-        cbSelection.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        cbSelection.setMargin(new java.awt.Insets(0, 0, 0, 0));
-        cbSelection.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                cbSelectionStateChanged(evt);
-            }
-        });
-        jPanel1.add(cbSelection);
-
         add(jPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btnSnapStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_btnSnapStateChanged
-//        GraphFactory.setSnapToGrid(view, btnSnap.isSelected());//GEN-HEADEREND:event_btnSnapStateChanged
-    }//GEN-LAST:event_btnSnapStateChanged
-
-    private void cbSelectionStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_cbSelectionStateChanged
-//        handler.setMultiSelect(cbSelection.isSelected());//GEN-HEADEREND:event_cbSelectionStateChanged
-    }//GEN-LAST:event_cbSelectionStateChanged
-
-    private void btnSaveLayoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveLayoutActionPerformed
-
-//        Document doc = XMLUtil.createDocument("moduleLayout", null, null, null);//GEN-HEADEREND:event_btnSaveLayoutActionPerformed
-//        VMDSerializer ser = new VMDSerializer();
-//        ser.createStructure(controller.getHelper());
-//        Node nd = ser.saveStructure(doc, "layout");
-//        doc.getDocumentElement().appendChild(nd);
-//        FileObject fo = project.getProjectDirectory();
-//        StringOutputStream str = new StringOutputStream();
-//        try {
-//            XMLUtil.write(doc, str, "UTF-8");
-//            str.close();
-//            fo.setAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT, str.toString());
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//            if (str != null) {
-//                try {
-//                str.close();
-//                } catch (IOException exc) {
-//                    
-//                }
-//            }
-//        }
-    }//GEN-LAST:event_btnSaveLayoutActionPerformed
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
-        zoom = zoom * (double)0.75;
-        scene.setZoomFactor(zoom);
+        scene.setZoomFactor(scene.getZoomFactor() * 0.75);
         revalidate();
         repaint();
 //        GraphFactory.setZoom(view, zoom);
     }//GEN-LAST:event_btnSmallerActionPerformed
     
     private void btnBiggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBiggerActionPerformed
-        zoom = zoom * (double)1.5;
-        scene.setZoomFactor(zoom);
+        scene.setZoomFactor(scene.getZoomFactor() * 1.5);
         revalidate();
         repaint();
 //        GraphFactory.setZoom(view, zoom);
@@ -224,10 +200,7 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBigger;
-    private javax.swing.JButton btnSaveLayout;
     private javax.swing.JButton btnSmaller;
-    private javax.swing.JToggleButton btnSnap;
-    private javax.swing.JCheckBox cbSelection;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
     
