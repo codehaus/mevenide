@@ -36,7 +36,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
-import org.codehaus.mevenide.netbeans.LifecyclePopupAction;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
@@ -152,7 +151,7 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(null);
     
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_BUILD, "Build", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, "Rebuild", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, "Clean and Build", null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_CLEAN, "Clean", null));
         lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", "Generate Javadoc", null));
         lst.add(null);
@@ -171,8 +170,6 @@ public class MavenProjectNode extends AbstractNode {
             Action[] acts = act.createPopupActions(project);
             lst.addAll(Arrays.asList(acts));
         }
-//        lst.add(new RunGoalsAction(project));
-        lst.add(new LifecyclePopupAction(project));
 //        lst.add(new LifecycleMapTest());
         lst.add(provider.createCustomMavenAction("Run Custom Goals...", new NetbeansActionMapping()));
         // separator
