@@ -18,26 +18,14 @@
 
 package org.codehaus.mevenide.netbeans;
 
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectInformation;
-import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.ProjectFactory;
 import org.netbeans.spi.project.ProjectState;
-import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.util.Lookup;
-import org.openide.util.Utilities;
-import org.openide.util.lookup.Lookups;
 
 
 /**
@@ -55,11 +43,6 @@ public class NbMavenProjectFactory implements ProjectFactory {
         File projectDir = FileUtil.toFile(fileObject);
         if (projectDir == null) {
             return false;
-        }
-        
-        File newproject = new File(projectDir, "pom.xml.temp"); // NOI18N
-        if (newproject.isFile()) {
-            return true;
         }
         
         File project = new File(projectDir, "pom.xml"); // NOI18N
@@ -80,15 +63,8 @@ public class NbMavenProjectFactory implements ProjectFactory {
         if ("nbproject".equalsIgnoreCase(fileObject.getName())) { //NOI18N
             return null;
         }
-//        if (fileObject.getFileObject("project.xml") != null) {
-//            // for now maven 1 projects have precedence
-//            return null;
-//        }
         FileObject projectFile = fileObject.getFileObject("pom.xml"); //NOI18N
         if (projectFile == null || !projectFile.isData()) {
-            if (fileObject.getFileObject("pom.xml.temp") != null) {
-                return new TempProject(fileObject);
-            }
             return null;
             
         }
@@ -116,78 +92,4 @@ public class NbMavenProjectFactory implements ProjectFactory {
     }
     
     
-    private static class TempProject implements Project, ProjectInformation, LogicalViewProvider {
-
-        private Lookup look;
-        private FileObject dir;
-        public TempProject(FileObject fo) {
-            dir = fo;
-        }
-        public FileObject getProjectDirectory() {
-            return dir;
-        }
-
-        public Lookup getLookup() {
-            if (look == null) {
-                look = Lookups.fixed(new Object[] {
-                    this, 
-                    new NullActionProvider()
-                });
-            }
-            return look;
-        }
-
-        public String getName() {
-            return "temp-project"; //NOI18N
-        }
-
-        public String getDisplayName() {
-            return "Creating Maven Project from Archetype...";
-        }
-
-        public Icon getIcon() {
-            return new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif")); //NOI18N
-        }
-
-        public Project getProject() {
-            return this;
-        }
-
-        public void addPropertyChangeListener(PropertyChangeListener listener) {
-        }
-
-        public void removePropertyChangeListener(PropertyChangeListener listener) {
-        }
-
-        public Node createLogicalView() {
-            AbstractNode nd = new AbstractNode(Children.LEAF, Lookups.singleton(this)) {
-                public String getHtmlDisplayName() {
-                    return "<i>" + getDisplayName() + "</i>";
-                }
-            };
-            nd.setName("temp-project"); //NOI18N
-            nd.setDisplayName("Creating Maven Project from Archetype...");
-            nd.setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2TempIcon.png");
-            return nd;
-        }
-
-        public Node findPath(Node root, Object target) {
-            return null;
-        }
-        
-    }
-    
-    private static class NullActionProvider implements ActionProvider {
-        public String[] getSupportedActions() {
-            return new String[0];
-        }
-
-        public void invokeAction(String command, Lookup context) throws IllegalArgumentException {
-        }
-
-        public boolean isActionEnabled(String command, Lookup context) throws IllegalArgumentException {
-            return false;
-        }
-        
-    }
 }
