@@ -50,7 +50,7 @@ public class JPDAStart implements Runnable {
     /**
      * @parameter expression="${jpda.transport}"
      */
-    private String transport = "dt_socket";
+    private String transport = "dt_socket"; //NOI18N
     
     /**
      * @parameter expression="${project.artifactId}"
@@ -80,23 +80,23 @@ public class JPDAStart implements Runnable {
      */
     public String execute(NbMavenProject project) throws MojoExecutionException, MojoFailureException {
         this.project = project;
-        getLog().info("JPDA Listening Starting...");
+        getLog().info("JPDA Listening Starting..."); //NOI18N
         lock = new Object [2];
         synchronized (lock) {
-            getLog().debug("Entering synch lock");
+//            getLog().debug("Entering synch lock"); //NOI18N
             lock = new Object [2];
             synchronized (lock) {
-                getLog().debug("Entered synch lock");
+//                getLog().debug("Entered synch lock"); //NOI18N
                 RequestProcessor.getDefault().post(this);
                 try {
-                    getLog().debug("Entering wait");
+//                    getLog().debug("Entering wait"); //NOI18N
                     lock.wait();
-                    getLog().debug("Wait finished");
+//                    getLog().debug("Wait finished"); //NOI18N
                     if (lock [1] != null) {
                         throw new MojoExecutionException("", (Throwable) lock [1]);
                     }
                 } catch (InterruptedException e) {
-                    throw new MojoExecutionException("Interrupted.", e);
+                    throw new MojoExecutionException("Interrupted.", e); //NOI18N
                 }
             }
         }
@@ -120,7 +120,7 @@ public class JPDAStart implements Runnable {
                 }
                 if (lc == null) {
                     throw new RuntimeException
-                            ("No trasports named " + getTransport() + " found!");
+                            ("No trasports named " + getTransport() + " found!"); //NOI18N
                 }
                 // TODO: revisit later when http://developer.java.sun.com/developer/bugParade/bugs/4932074.html gets integrated into JDK
                 // This code parses the address string "HOST:PORT" to extract PORT and then point debugee to localhost:PORT
@@ -140,7 +140,7 @@ public class JPDAStart implements Runnable {
                     lock[0] = address;
                 }
                 getLog().info("JPDA Address: " + address);
-                getLog().info("Port=" + lock[0]);
+                getLog().info("Port:" + lock[0]);
                 
                 ClassPath sourcePath = Utils.createSourcePath(project, project.getOriginalMavenProject());
                 ClassPath jdkSourcePath = Utils.createJDKSourcePath(project);
@@ -157,8 +157,6 @@ public class JPDAStart implements Runnable {
                 properties.put("sourcepath", sourcePath);
                 properties.put("name", getName());
                 properties.put("jdksources", jdkSourcePath);
-                getLog().info("sourcepath=" + sourcePath);
-                getLog().info("jdkSources=" + jdkSourcePath);
                 
                 final ListeningConnector flc = lc;
                 RequestProcessor.getDefault().post(new Runnable() {
@@ -169,7 +167,7 @@ public class JPDAStart implements Runnable {
                                                         new Object[]{properties});
                         }
                         catch (DebuggerStartException ex) {
-                            getLog().error("Debugger Start Error", ex);
+                            getLog().error("Debugger Start Error", ex); //NOI18N
                         }
                     }
                 });
@@ -178,7 +176,7 @@ public class JPDAStart implements Runnable {
 //                org.openide.ErrorManager.getDefault().notify(ioex);
                 lock[1] = ioex;
             } catch (com.sun.jdi.connect.IllegalConnectorArgumentsException icaex) {
-                getLog().error("Illegal Connector", icaex);
+                getLog().error("Illegal Connector", icaex); //NOI18N
                 lock[1] = icaex;
             } finally {
                 lock.notify();
