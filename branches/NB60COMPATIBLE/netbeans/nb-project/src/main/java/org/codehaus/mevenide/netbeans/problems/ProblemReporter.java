@@ -123,7 +123,7 @@ public final class ProblemReporter implements Comparator {
         List messages = exc.getValidationResult().getMessages();
         if (messages != null && messages.size() > 0) {
             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                    "Project model validation failed.", exc.getValidationResult().render("\n"), new OpenPomAction(nbproject));
+                    org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_Project_validation."), exc.getValidationResult().render("\n"), new OpenPomAction(nbproject)); //NOI18N
             addReport(report);
         }
     }
@@ -145,9 +145,9 @@ public final class ProblemReporter implements Comparator {
                     if (art.getFile() != null && art.isFakedSystemDependency()) {
                         //TODO create a correction action for this.
                         ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                                "A 'system' scope dependency was not found. Code completion is affected. ",
-                                "There is a 'system' scoped dependency in the project but the path to the binary is not valid." +
-                                "Please check that the path is absolute and points to an existing binary.", new OpenPomAction(nbproject));
+                                org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_SystemScope"),
+                                org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_SystemScope"), 
+                                new OpenPomAction(nbproject));
                         addReport(report);
                     } else if (art.getFile() == null || !art.getFile().exists()) {
                         missingJars.add(art);
@@ -156,18 +156,15 @@ public final class ProblemReporter implements Comparator {
                 if (missingJars.size() > 0) {
                     //TODO create a correction action for this.
                     Iterator it2 = missingJars.iterator();
-                    String mess = "";
+                    String mess = ""; //NOI18N
                     while (it2.hasNext()) {
                         Artifact ar = (Artifact)it2.next();
-                        mess = mess + ar.getId() + "\n";
+                        mess = mess + ar.getId() + "\n"; //NOI18N
                     }
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                            "Some dependency artifacts are not in local repository.",
-                            "Your project has dependencies that are not resolved locally. Code completion" +
-                            " in the ide will not include classes from these dependencies" +
-                            "and their transitive dependencies neither (unless they are among the opened projects)." +
-                            "Please download the dependencies, or install them manually, if not available remotely.\n\n" +
-                            "The artifacts are:\n" + mess, null);
+                            org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_NonLocal"),
+                            org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_NonLocal", mess),
+                            null);
                     addReport(report);
                 }
                 
@@ -199,9 +196,9 @@ public final class ProblemReporter implements Comparator {
             if (nbart.getNonFakedFile() != null && !nbart.getNonFakedFile().exists()) {
                 //TODO create a correction action for this.
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                        "Parent pom file is not accessible. Project might be inproperly setup.",
-                        "The parent pom with id " + nbart.getId() + " was not found in sources or local repository. Please check that <relativePath> tag is correct is present, the version of parent pom in sources matches the version defined. " +
-                        "If parent is only available thought remote repository, please check that the repository hosting it is defined in the current pom.", new OpenPomAction(nbproject));
+                        org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_NoParent"),
+                        org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_NoParent", nbart.getId()),
+                        new OpenPomAction(nbproject));
                 addReport(report);
             }
         }
@@ -214,7 +211,7 @@ public final class ProblemReporter implements Comparator {
         private String filepath;
         
         OpenPomAction(NbMavenProject proj) {
-            putValue(Action.NAME, "Open pom.xml");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ACT_OpenPom"));
             project = proj;
         }
         

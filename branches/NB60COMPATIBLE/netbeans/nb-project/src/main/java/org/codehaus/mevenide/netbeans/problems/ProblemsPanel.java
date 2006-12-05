@@ -33,6 +33,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -128,14 +129,14 @@ public class ProblemsPanel extends javax.swing.JPanel {
         jScrollPane1.setViewportView(lstProblems);
 
         lblDescription.setLabelFor(taDescription);
-        lblDescription.setText("Description:"); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(lblDescription, org.openide.util.NbBundle.getMessage(ProblemsPanel.class, "LBL_Description")); // NOI18N
 
         taDescription.setColumns(20);
         taDescription.setRows(5);
         jScrollPane2.setViewportView(taDescription);
 
         jLabel1.setLabelFor(lstProblems);
-        jLabel1.setText("Problems:"); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ProblemsPanel.class, "LBL_Problems")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -180,7 +181,7 @@ public class ProblemsPanel extends javax.swing.JPanel {
         
         public NoopAction() {
             setEnabled(false);
-            putValue(Action.NAME, "Correct");
+            putValue(Action.NAME, NbBundle.getMessage(ProblemsPanel.class, "BTN_Correct"));
         }
         
         public void actionPerformed(ActionEvent e) {
