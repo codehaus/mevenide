@@ -1,14 +1,23 @@
-/*
- * FileSystemListener.java
+/* ==========================================================================
+ * Copyright 2005 Mevenide Team
  *
- * Created on November 24, 2006, 5:36 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans;
 
+import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -23,7 +32,7 @@ import org.openide.filesystems.FileUtil;
 
 /**
  *
- * @author mkleint
+ * @author mkleint@codehaus.org
  */
 class FileSystemListener implements FileChangeListener {
     /** Creates a new instance of FileSystemListener */
@@ -36,7 +45,7 @@ class FileSystemListener implements FileChangeListener {
             fo.getFileSystem().addFileChangeListener(this);
         }
         catch (FileStateInvalidException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            Logger.getLogger(FileSystemListener.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         };
         
@@ -50,7 +59,7 @@ class FileSystemListener implements FileChangeListener {
             }
         }
         catch (FileStateInvalidException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            Logger.getLogger(FileSystemListener.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         };
     }

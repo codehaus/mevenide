@@ -222,8 +222,8 @@ public final class FileUtilities {
     
    public static URI getDirURI(File root, String path) {
        String pth = path.trim();
-       pth = pth.replaceFirst("^\\./", "");
-       pth = pth.replaceFirst("^\\.\\\\", "");
+       pth = pth.replaceFirst("^\\./", ""); //NOI18N
+       pth = pth.replaceFirst("^\\.\\\\", ""); //NOI18N
        File src = FileUtilities.resolveFilePath(root, pth);
        return FileUtil.normalizeFile(src).toURI();
    }
@@ -246,7 +246,7 @@ public final class FileUtilities {
                     FileObject fo = pomDir.getFileObject(UserActionGoalProvider.FILENAME);
                     if (fo == null) {
                         fo = pomDir.createData(UserActionGoalProvider.FILENAME);
-                        doc = factory.document(factory.element("actions"));
+                        doc = factory.document(factory.element("actions")); //NOI18N
                     } else {
                         //TODO..
                         inStr = fo.getInputStream();
@@ -257,7 +257,7 @@ public final class FileUtilities {
                     }
                     lock = fo.lock();
                     NetbeansBuildActionJDOMWriter writer = new NetbeansBuildActionJDOMWriter();
-                    String encoding = mapping.getModelEncoding() != null ? mapping.getModelEncoding() : "UTF-8";
+                    String encoding = mapping.getModelEncoding() != null ? mapping.getModelEncoding() : "UTF-8"; //NOI18N
                     outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
                     Format form = Format.getRawFormat().setEncoding(encoding);
                     writer.write(mapping, doc, outStr, form);

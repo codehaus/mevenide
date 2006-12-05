@@ -19,9 +19,6 @@ package org.codehaus.mevenide.netbeans;
 
 import java.io.IOException;
 import java.io.StringReader;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import org.codehaus.plexus.util.StringOutputStream;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
@@ -51,7 +48,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public Element getConfigurationFragment(final String elementName, final String namespace, boolean shared) {
         if (shared) {
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace);
+            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
             return null;
         }
         return (Element)ProjectManager.mutex().readAccess(new Mutex.Action() {
@@ -74,7 +71,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public void putConfigurationFragment(final Element fragment, boolean shared) throws IllegalArgumentException {
         if (shared) {
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + fragment.getNodeName());
+            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + fragment.getNodeName()); //NOI18N
         }
         ProjectManager.mutex().writeAccess(new Mutex.Action() {
             public Object run() {
@@ -102,7 +99,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 
                 try {
                     StringOutputStream wr = new StringOutputStream();
-                    XMLUtil.write(doc, wr, "UTF-8");
+                    XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
                     project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -115,7 +112,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public boolean removeConfigurationFragment(final String elementName, final String namespace, boolean shared) throws IllegalArgumentException {
         if (shared) {
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace);
+            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
             return false;
         }
         return ((Boolean)ProjectManager.mutex().writeAccess(new Mutex.Action() {
@@ -141,7 +138,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 }
                 try {
                     StringOutputStream wr = new StringOutputStream();
-                    XMLUtil.write(doc, wr, "UTF-8");
+                    XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
                     project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -170,28 +167,4 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         }
         return result;
     }
-    
-    private static DocumentBuilder db;
-    
-    private static synchronized DocumentBuilder getBuilder() {
-        if (db == null) {
-            try {
-                db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            } catch (ParserConfigurationException e) {
-                throw new AssertionError(e);
-            }
-        }
-        return db;
-    }
-    
-//    private static Element cloneSafely(Element el) {
-//        // Using XMLUtil.createDocument is much too slow.
-//        synchronized (getBuilder()) {
-//            Document dummy = getBuilder().newDocument();
-//            return (Element) dummy.importNode(el, true);
-//        }
-//        
-//    }
-//
-    
 }

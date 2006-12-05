@@ -25,7 +25,6 @@ import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -43,6 +42,7 @@ import org.openide.LifecycleManager;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 
@@ -211,7 +211,7 @@ public class ActionProviderImpl implements ActionProvider {
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
             RunGoalsPanel pnl = new RunGoalsPanel();
-            DialogDescriptor dd = new DialogDescriptor(pnl, "Run Maven");
+            DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ActionProviderImpl.class, "TIT_Run_Maven"));
             ActionToGoalMapping maps = ActionToGoalUtils.readMappingsFromFileAttributes(project.getProjectDirectory());
             pnl.readMapping(mapping, project.getOriginalMavenProject(), project.getAvailableProfiles(), maps);
             pnl.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
@@ -230,7 +230,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setShowDebug(pnl.isShowDebug());
                 rc.setRecursive(pnl.isRecursive());
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
-                runGoal("custom", Lookup.EMPTY, rc);
+                runGoal("custom", Lookup.EMPTY, rc); //NOI18N
             }
         }
     }

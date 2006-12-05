@@ -165,14 +165,14 @@ public final class NbMavenProject implements Project {
                     project = getEmbedder().readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            "Artifact Resolution problem",
+                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
                     //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            "Artifact Not Found",
+                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
                     //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
@@ -184,7 +184,7 @@ public final class NbMavenProject implements Project {
             } catch (ProjectBuildingException ex) {
                 //igonre if the problem is in the project validation codebase, we handle that later..
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            "Cannot load project properly",
+                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Cannot_load_project_properly"),
                         ex.getMessage(), null);
                 problemReporter.addReport(report);
             } finally {
@@ -198,7 +198,7 @@ public final class NbMavenProject implements Project {
                     } catch (XmlPullParserException ex2) {
                         ex2.printStackTrace();
                     } finally {
-                        File fallback = InstalledFileLocator.getDefault().locate("maven2/fallback_pom.xml", null, false);
+                        File fallback = InstalledFileLocator.getDefault().locate("maven2/fallback_pom.xml", null, false); //NOI18N
                         try {
                             project = getEmbedder().readProject(fallback);
                         } catch (Exception x) {
@@ -231,7 +231,7 @@ public final class NbMavenProject implements Project {
     public String getDisplayName() {
         String displayName = projectInfo.getDisplayName();
         if (displayName == null) {
-            displayName = "<Maven2 project with no name>";
+            displayName = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "LBL_NoProjectName");
         }
         return displayName;
     }
@@ -242,7 +242,7 @@ public final class NbMavenProject implements Project {
             desc = getOriginalMavenProject().getDescription();
         }
         if (desc == null) {
-            desc = "A Maven2 based project";
+            desc = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "LBL_DefaultDescription");
         }
         return desc;
     }
@@ -261,7 +261,7 @@ public final class NbMavenProject implements Project {
     
     private Image getIcon() {
         if (icon == null) {
-            icon = Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif");
+            icon = Utilities.loadImage("org/codehaus/mevenide/netbeans/Maven2Icon.gif");//NOI18N
         }
         return icon;
     }
@@ -273,7 +273,7 @@ public final class NbMavenProject implements Project {
             toReturn = pr.getId();
         }
         if (toReturn == null) {
-            toReturn = getProjectDirectory().getName() + " <No Project ID>";
+            toReturn = getProjectDirectory().getName() + " <No Project ID>"; //NOI18N
         }
         return toReturn;
     }
@@ -301,7 +301,7 @@ public final class NbMavenProject implements Project {
         if (home == null) {
             //TODO this is a problem, probably UNC path on windows - MEVENIDE-380
             // some functionality won't work
-            ErrorManager.getDefault().log("Cannot convert home dir to FileObject, some functionality won't work. It's usually the case on Windows and UNC paths. The path is " + homeFile);
+            ErrorManager.getDefault().log("Cannot convert home dir to FileObject, some functionality won't work. It's usually the case on Windows and UNC paths. The path is " + homeFile); //NOI18N
         }
         return home;
     }
@@ -315,7 +315,7 @@ public final class NbMavenProject implements Project {
         String toRet = getEmbedder().getLocalRepository().pathOf(artifact);
         //TODO this is more or less a hack..
         // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
-        return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar";
+        return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar"; //NOI18N
     }
     
     public MavenEmbedder getEmbedder() {
@@ -324,14 +324,14 @@ public final class NbMavenProject implements Project {
         } catch (MavenEmbedderException ex) {
             ErrorManager.getDefault().notify(ex);
         }
-        throw new IllegalStateException("Cannot start the embedder.");
+        throw new IllegalStateException("Cannot start the embedder."); //NOI18N
     }
     
     
     
     public URI[] getGeneratedSourceRoots() {
         //TODO more or less a hack.. should be better supported by embedder itself.
-        URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources");
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), "target/generated-sources"); //NOI18N
         File fil = new File(uri);
         if (fil.exists()) {
             File[] fils = fil.listFiles(new FileFilter() {
@@ -350,11 +350,11 @@ public final class NbMavenProject implements Project {
     
     public URI getWebAppDirectory() {
         //TODO hack, should be supported somehow to read this..
-        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
-                "maven-war-plugin",
-                "warSourceDirectory",
-                "war");
-        prop = prop == null ? "src/main/webapp" : prop;
+        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins", //NOI18N
+                "maven-war-plugin", //NOI18N
+                "warSourceDirectory", //NOI18N
+                "war"); //NOI18N
+        prop = prop == null ? "src/main/webapp" : prop; //NOI18N
         URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
         File fil = new File(uri);
         return fil.toURI();
@@ -362,11 +362,11 @@ public final class NbMavenProject implements Project {
     
     public URI getEarAppDirectory() {
         //TODO hack, should be supported somehow to read this..
-        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins",
-                "maven-ear-plugin",
-                "earSourceDirectory",
-                "ear");
-        prop = prop == null ? "src/main/application" : prop;
+        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins", //NOI18N
+                "maven-ear-plugin", //NOI18N
+                "earSourceDirectory", //NOI18N
+                "ear"); //NOI18N
+        prop = prop == null ? "src/main/application" : prop; //NOI18N
         URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
         File fil = new File(uri);
         return fil.toURI();
@@ -389,14 +389,14 @@ public final class NbMavenProject implements Project {
     
     
     public File[] getOtherRoots(boolean test) {
-        URI uri = FileUtilities.getDirURI(getProjectDirectory(), test ? "src/test" : "src/main");
+        URI uri = FileUtilities.getDirURI(getProjectDirectory(), test ? "src/test" : "src/main"); //NOI18N
         File fil = new File(uri);
         if (fil.exists()) {
             return fil.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     //TODO most probably a performance bottleneck of sorts..
                     FileObject fo = FileUtil.toFileObject(new File(dir, name));
-                    return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo);
+                    return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo); //NOI18N
                 }
             });
         }
@@ -427,7 +427,7 @@ public final class NbMavenProject implements Project {
     public synchronized Lookup getLookup() {
         if (lookup == null) {
             lookup = createBasicLookup();
-            lookup = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-codehaus-mevenide-netbeans/Lookup");
+            lookup = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-codehaus-mevenide-netbeans/Lookup"); //NOI18N
         }
         return lookup;
     }
@@ -494,12 +494,12 @@ public final class NbMavenProject implements Project {
                 String grId = NbMavenProject.this.getOriginalMavenProject().getGroupId();
                 String artId = NbMavenProject.this.getOriginalMavenProject().getArtifactId();
                 if (grId != null && artId != null) {
-                    toReturn = grId + ":" + artId;
+                    toReturn = grId + ":" + artId; //NOI18N
                 } else {
-                    toReturn = "Maven project at " + NbMavenProject.this.getProjectDirectory().getPath();
+                    toReturn = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Maven_project_at", NbMavenProject.this.getProjectDirectory().getPath());
                 }
             }
-            toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")";
+            toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")"; //NOI18N
             return toReturn;
         }
         
@@ -523,10 +523,10 @@ public final class NbMavenProject implements Project {
     
     // needs to be binary sorted;
     private static final String[] DEFAULT_FILES = new String[] {
-        "pom.xml"
+        "pom.xml" //NOI18N
     };
     private static final String[] USER_DIR_FILES = new String[] {
-        "settings.xml"
+        "settings.xml" //NOI18N
     };
     
     //MEVENIDE-448 seems to help against creation of duplicate project instances
@@ -668,25 +668,25 @@ public final class NbMavenProject implements Project {
         RecommendedTemplatesImpl(NbMavenProject proj) {
             project = proj;
             prohibited = new ArrayList<String>();
-            prohibited.add("ear");
-            prohibited.add("ejb");
-            prohibited.add("war");
+            prohibited.add("ear"); //NOI18N
+            prohibited.add("ejb"); //NOI18N
+            prohibited.add("war"); //NOI18N
         }
         
         public String[] getRecommendedTypes() {
             String packaging = project.getOriginalMavenProject().getPackaging();
             if (packaging == null) {
-                packaging = "jar";
+                packaging = "jar"; //NOI18N
             }
             packaging = packaging.trim();
-            if ("pom".equals(packaging)) {
+            if ("pom".equals(packaging)) { //NOI18N
                 return POM_APPLICATION_TYPES;
             }
-            if ("jar".equals(packaging)) {
+            if ("jar".equals(packaging)) { //NOI18N
                 return JAR_APPLICATION_TYPES;
             }
             //NBM also fall under this I guess..
-            if ("nbm".equals(packaging)) {
+            if ("nbm".equals(packaging)) { //NOI18N
                 return JAR_APPLICATION_TYPES;
             }
             
@@ -703,10 +703,10 @@ public final class NbMavenProject implements Project {
         public String[] getPrivilegedTemplates() {
             String packaging = project.getOriginalMavenProject().getPackaging();
             if (packaging == null) {
-                packaging = "jar";
+                packaging = "jar"; //NOI18N
             }
             packaging = packaging.trim();
-            if ("pom".equals(packaging)) {
+            if ("pom".equals(packaging)) { //NOI18N
                 return POM_PRIVILEGED_NAMES;
             }
             if (prohibited.contains(packaging)) {
@@ -719,7 +719,7 @@ public final class NbMavenProject implements Project {
     
     private class RefreshAction extends AbstractAction {
         public RefreshAction() {
-            putValue(Action.NAME, "Reload Project");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
         }
         
         public void actionPerformed(java.awt.event.ActionEvent event) {

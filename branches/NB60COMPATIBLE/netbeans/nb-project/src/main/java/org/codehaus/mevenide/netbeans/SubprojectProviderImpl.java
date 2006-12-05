@@ -131,11 +131,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
                 }
             } else {
                 // HUH?
-                ErrorManager.getDefault().log("fileobject not found=" + dir );
+                ErrorManager.getDefault().log("fileobject not found=" + dir ); //NOI18N
             }
             
         } else {
-            ErrorManager.getDefault().log("project file not found=" + dir);
+            ErrorManager.getDefault().log("project file not found=" + dir); //NOI18N
         }
         return null;
     }

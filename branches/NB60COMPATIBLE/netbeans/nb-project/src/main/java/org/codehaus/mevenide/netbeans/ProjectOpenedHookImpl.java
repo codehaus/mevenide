@@ -43,7 +43,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         if (q != null) {
             q.addMavenProject(project);
         } else {
-            ErrorManager.getDefault().log("MavenFileOwnerQueryImpl not found..");
+            ErrorManager.getDefault().log("MavenFileOwnerQueryImpl not found..");  //NOI18N
         }
         // register project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
@@ -59,7 +59,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         if (q != null) {
             q.removeMavenProject(project);
         } else {
-            ErrorManager.getDefault().log("MavenFileOwnerQueryImpl not found..");
+            ErrorManager.getDefault().log("MavenFileOwnerQueryImpl not found.."); //NOI18N
         }
         detachUpdater();
         // unregister project's classpaths to GlobalPathRegistry
@@ -77,10 +77,10 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         FileObject fo = project.getProjectDirectory();
         FileObject userFo = project.getHomeDirectory();
         fo.addFileChangeListener(project.getProjectFolderUpdater());
-        FileObject xml = fo.getFileObject("pom.xml");
+        FileObject xml = fo.getFileObject("pom.xml"); //NOI18N
         if (userFo != null) {
             userFo.addFileChangeListener(project.getUserFolderUpdater());
-            FileObject prop = userFo.getFileObject("settings.xml");
+            FileObject prop = userFo.getFileObject("settings.xml"); //NOI18N
             if (prop != null) {
                 prop.addFileChangeListener(project.getFileUpdater());
             }
@@ -96,12 +96,12 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         fo.removeFileChangeListener(project.getProjectFolderUpdater());
         if (userFo != null) {
             userFo.removeFileChangeListener(project.getUserFolderUpdater());
-            FileObject prop = userFo.getFileObject("settings.xml");
+            FileObject prop = userFo.getFileObject("settings.xml"); //NOI18N
             if (prop != null) {
                 prop.removeFileChangeListener(project.getFileUpdater());
             }
         }
-        FileObject xml = fo.getFileObject("pom.xml");
+        FileObject xml = fo.getFileObject("pom.xml"); //NOI18N
         if (xml != null) {
             xml.removeFileChangeListener(project.getFileUpdater());
         }

@@ -41,6 +41,7 @@ import org.netbeans.spi.project.support.GenericSources;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
+import org.openide.util.NbBundle;
 
 import org.openide.util.RequestProcessor;
 
@@ -89,9 +90,9 @@ public class MavenSourcesImpl implements Sources {
             MavenProject mp = project.getOriginalMavenProject();
             if (mp != null) {
                 FileObject folder = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
-                changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, "Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_SOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Sources"));
                 folder = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
-                changed = changed | checkJavaGroupCache(folder, NAME_TESTSOURCE, "Test Sources");
+                changed = changed | checkJavaGroupCache(folder, NAME_TESTSOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Test_Sources"));
                 URI[] uris = project.getGeneratedSourceRoots();
                 if (uris.length > 0) {
                     try {
@@ -106,8 +107,8 @@ public class MavenSourcesImpl implements Sources {
                 changed = changed | checkGeneratedGroupCache(folder);
             } else {
                 changed = true;
-                checkJavaGroupCache(null, NAME_SOURCE, "Sources");
-                checkJavaGroupCache(null, NAME_TESTSOURCE, "Test Sources");
+                checkJavaGroupCache(null, NAME_SOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Sources"));
+                checkJavaGroupCache(null, NAME_TESTSOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Test_Sources"));
                 checkGeneratedGroupCache(null);
             }
         }
@@ -149,7 +150,7 @@ public class MavenSourcesImpl implements Sources {
     
     public SourceGroup[] getSourceGroups(String str) {
         if (Sources.TYPE_GENERIC.equals(str)) {
-            return new SourceGroup[] { GenericSources.group(project, project.getProjectDirectory(), NAME_PROJECTROOT, "Project Root", null, null) };
+            return new SourceGroup[] { GenericSources.group(project, project.getProjectDirectory(), NAME_PROJECTROOT, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Project_Root"), null, null) };
         }
         if (JavaProjectConstants.SOURCES_TYPE_JAVA.equals(str)) {
             List<SourceGroup> toReturn = new ArrayList<SourceGroup>();
@@ -191,7 +192,7 @@ public class MavenSourcesImpl implements Sources {
             for (File f : roots) {
                 FileObject folder = FileUtil.toFileObject(f);
                 if (folder != null) {
-                    toReturn.add(new OtherGroup(project, folder, "Resource" + (test ? "Test":"Main") + folder.getNameExt(), folder.getName()));
+                    toReturn.add(new OtherGroup(project, folder, "Resource" + (test ? "Test":"Main") + folder.getNameExt(), folder.getName())); //NOI18N
                 }
             }
             SourceGroup[] grp = new SourceGroup[toReturn.size()];
@@ -243,7 +244,7 @@ public class MavenSourcesImpl implements Sources {
         }
         boolean changed = false;
         if (genSrcGroup == null || !genSrcGroup.getRootFolder().equals(root)) {
-            genSrcGroup = GenericSources.group(project, root, NAME_GENERATED_SOURCE, "Generated Sources", null, null);
+            genSrcGroup = GenericSources.group(project, root, NAME_GENERATED_SOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Generated_Sources"), null, null);
             changed = true;
         }
         return changed;
@@ -266,7 +267,7 @@ public class MavenSourcesImpl implements Sources {
             rootFolder = rootFold;
             rootFile = FileUtil.toFile(rootFolder);
             name = nm;
-            displayName = displayNm != null ? displayNm : "<Root not defined>";
+            displayName = displayNm != null ? displayNm : NbBundle.getMessage(MavenSourcesImpl.class, "SG_Root_not_defined");
 //            icon = icn;
 //            openedIcon = opened;
         }

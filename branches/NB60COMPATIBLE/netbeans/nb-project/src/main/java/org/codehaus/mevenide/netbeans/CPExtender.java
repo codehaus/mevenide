@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2005 Mevenide Team
+ * Copyright 2006 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,8 @@ import java.net.URI;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.digest.DigesterException;
@@ -52,7 +52,7 @@ import org.openide.filesystems.URLMapper;
 /**
  * an implementation of ProjectClassPathModifierImplementation that tried to match 
  * maven dependencies to the way classpath items are added through this api.
- * @author mkleint
+ * @author mkleint@codehaus.org
  */
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
 
@@ -65,7 +65,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     public boolean addLibrary(Library library) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
+        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = addLibrary(library, model, null);
         try {
@@ -81,9 +81,9 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     public boolean addArchiveFile(FileObject arch) throws IOException {
         FileObject file = FileUtil.getArchiveFile(arch);
         if (file.isFolder()) {
-            throw new IOException("Cannot add folders to Maven projects as dependencies: " + file.getURL());
+            throw new IOException("Cannot add folders to Maven projects as dependencies: " + file.getURL()); //NOI18N
         }
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
         Model model = WriterUtils.loadModel(fo);
         assert model != null;
         boolean added = addArchiveFile(file, model, null);
@@ -104,7 +104,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             FileObject fo = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
             assert fo != null;
             if (fo.isFolder()) {
-                throw new IOException("Cannot add folders to Maven projects as dependencies: " + fo.getURL());
+                throw new IOException("Cannot add folders to Maven projects as dependencies: " + fo.getURL()); //NOI18N
             }
             added = added && addArchiveFile(fo, model, scope);
         }
@@ -137,15 +137,15 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             }
         }
         catch (RepositoryIndexSearchException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         }
         catch (NoSuchAlgorithmException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         }
         catch (DigesterException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,
+            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         }
         return false;
@@ -167,7 +167,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private Dependency checkLayer(String checksum) {
-        FileObject root = Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-codehaus-mevenide-netbeans/LibraryPOMs");
+        FileObject root = Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-codehaus-mevenide-netbeans/LibraryPOMs"); //NOI18N
         assert root != null;
         Enumeration<? extends FileObject> objs = root.getData(true);
         while (objs.hasMoreElements()) {
@@ -186,7 +186,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     public boolean addAntArtifact(AntArtifact arg0, URI arg1) throws IOException {
-        throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects.");
+        throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects."); //NOI18N
     }
     
     protected SourceGroup[] getExtensibleSourceGroups() {
@@ -203,10 +203,10 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     protected boolean addLibraries(Library[] libraries, SourceGroup grp, String type) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
+        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = libraries.length > 0;
-        String scope = type == ClassPath.EXECUTE ? "runtime" : null;
+        String scope = type == ClassPath.EXECUTE ? "runtime" : null; //NOI18N
         for (Library library : libraries) {
             added = added && addLibrary(library, model, scope);
         }
@@ -222,14 +222,14 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     protected boolean removeLibraries(Library[] arg0, SourceGroup arg1,
                                       String arg2) throws IOException,
                                                           UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");//NOI18N
     }
     
     protected boolean addRoots(URL[] urls, SourceGroup grp, String type) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
+        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = urls.length > 0;
-        String scope = type == ClassPath.EXECUTE ? "runtime" : null;
+        String scope = type == ClassPath.EXECUTE ? "runtime" : null;//NOI18N
         for (URL url : urls) {
             FileObject fo  = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
             assert fo != null;
@@ -246,12 +246,12 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     
     protected boolean removeRoots(URL[] arg0, SourceGroup arg1, String arg2) throws IOException,
                                                                                     UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");//NOI18N
     }
     
     protected boolean addAntArtifacts(AntArtifact[] arg0, URI[] arg1,
                                       SourceGroup arg2, String arg3) throws IOException {
-        throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects.");
+        throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects.");//NOI18N
     }
     
     protected boolean removeAntArtifacts(AntArtifact[] arg0, URI[] arg1,
