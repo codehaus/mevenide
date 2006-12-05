@@ -119,13 +119,15 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                 // if file does not exist (e.g. build/classes folder
                 // was not created yet) then corresponding File will
                 // not be ended with slash. Fix that.
-                if (pieces[i].toString().toLowerCase().endsWith(".jar") 
-                 || pieces[i].toString().toLowerCase().endsWith(".ejb3")) {
+                
+                //TODO what are all the extensions that get into classpath??
+                if (pieces[i].toString().toLowerCase().endsWith(".jar")  //NOI18N
+                 || pieces[i].toString().toLowerCase().endsWith(".ejb3")) {//NOI18N
                     entry = FileUtil.getArchiveRoot(pieces[i].toURL());
                 } else {
                     entry = pieces[i].toURL();
-                    if  (!entry.toExternalForm().endsWith("/")) {
-                        entry = new URL(entry.toExternalForm() + "/");
+                    if  (!entry.toExternalForm().endsWith("/")) { //NOI18N
+                        entry = new URL(entry.toExternalForm() + "/"); //NOI18N
                     }
                 }
                 if (entry != null) {
@@ -150,41 +152,4 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         }
     }
     
-    
-//    protected URI checkOneDependency(Dependency dep) {
-//        // for some reason non-typed dependencies are also added to classpath even though they don't match the 
-//        // isAddedToClassPath() check.
-//        if (dep.isAddedToClasspath() || dep.getType() == null) {
-//            // check override first
-//            URI uri;
-//            String path = JarOverrideReader2.getInstance().processOverride(dep,
-//                    getMavenProject().getPropertyResolver(),
-//                    getMavenProject().getLocFinder());
-//            if (path != null) {
-//                File file = FileUtil.normalizeFile(new File(path));
-//                uri = file.toURI();
-//            } else {
-//                uri = FileUtilities.getDependencyURI(dep, getMavenProject());
-//            }
-//            if (uri != null) {
-//                return uri;
-//            }
-//        } 
-//        return null;
-//    }    
-//    
-//    protected URI checkOneResource(Resource res) {
-//        String dir = res.getDirectory();
-//        File file = new File(getMavenProject().getPropertyResolver().resolveString(dir != null ? dir : "${basedir}"));
-//        // is the relative path check necessary?
-//        if (!file.exists()) {
-//            File basedir = FileUtil.toFile(getMavenProject().getProjectDirectory());
-//            file = new File(basedir, dir);
-//        }
-//        if (file.exists()) {
-//            file = FileUtil.normalizeFile(file);
-//            return file.toURI();
-//        }
-//        return null;
-//    }        
 }

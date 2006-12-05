@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 
@@ -83,7 +85,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     public ClassPath findClassPath(FileObject file, String type) {
         int fileType = getType(file);
         if (fileType != TYPE_SRC &&  fileType != TYPE_TESTSRC && fileType != TYPE_WEB) {
-            System.out.println(" bad type=" + type + " for " + file);
+            Logger.getLogger(ClassPathProviderImpl.class.getName()).log(Level.INFO, " bad type=" + type + " for " + file); //NOI18N
             return null;
         }
         if (type.equals(ClassPath.COMPILE)) {
@@ -133,30 +135,6 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             isChildOf(file, project.getResources(true))) {
             return TYPE_TESTSRC;
         }
-//        // cactus is also a test source..
-//        dir = FileUtilities.convertURItoFileObject(project.getCactusDirectory());
-//        if (dir != null && (dir.equals(file) || FileUtil.isParentOf(dir, file))) {
-//            return TYPE_TESTSRC;
-//        }
-//////        try {
-//////            if (isChildOf(file, project.getOriginalMavenProject().getCompileClasspathElements())) {
-//////                return TYPE_CLASS;
-//////            }
-//////        } catch (DependencyResolutionRequiredException ex) {
-//////            ex.printStackTrace();
-//////        }
-//////        project.getOriginalMavenProject().getArtifact().getFile();
-////////        dir = getBuildJar();
-////////        if (dir != null && (dir.equals(file))) {     //TODO When MasterFs check also isParentOf
-////////            return TYPE_ARTIFACT;
-////////        }
-//////        try {
-//////            if (isChildOf(file, project.getOriginalMavenProject().getTestClasspathElements())) {
-//////                return TYPE_TESTCLASS;
-//////            }
-//////        } catch (DependencyResolutionRequiredException ex) {
-//////            ex.printStackTrace();
-//////        }
         
         URI web = project.getWebAppDirectory();
         FileObject fo = FileUtil.toFileObject(new File(web));
@@ -225,7 +203,5 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         }
         return cp;
     }
-    
-    
 }
 
