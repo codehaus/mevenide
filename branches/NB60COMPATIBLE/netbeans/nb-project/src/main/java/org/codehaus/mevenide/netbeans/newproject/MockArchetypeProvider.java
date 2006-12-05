@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Archetype provider that lists the 3 basic ones to have something in the list
+ * when the user never used any archetypes before..
  * @author mkleint
  */
 public class MockArchetypeProvider implements ArchetypeProvider {
@@ -35,23 +36,23 @@ public class MockArchetypeProvider implements ArchetypeProvider {
         Archetype simple = new Archetype();
         simple.setArtifactId("maven-archetype-quickstart");
         simple.setGroupId("org.apache.maven.archetypes");
-        simple.setVersion("1.0-alpha-4");
-        simple.setName("Quickstart project");
-        simple.setDescription("The very basic setup.");
+        simple.setVersion("1.0");
+        simple.setName("Maven Quickstart Archetype");
+        simple.setDescription("An archetype which contains a sample Maven project.");
         toRet.add(simple);
         simple = new Archetype();
         simple.setArtifactId("maven-archetype-webapp");
         simple.setGroupId("org.apache.maven.archetypes");
-        simple.setVersion("1.0-alpha-4");
-        simple.setName("Simple webapp project");
-        simple.setDescription("The basic setup for a webapp project.");
+        simple.setVersion("1.0");
+        simple.setName("Maven Webapp Archetype");
+        simple.setDescription("An archetype which contains a sample Maven Webapp project");
         toRet.add(simple);
         simple = new Archetype();
         simple.setArtifactId("maven-archetype-mojo");
         simple.setGroupId("org.apache.maven.archetypes");
-        simple.setVersion("1.0-alpha-4");
-        simple.setName("Mojo (maven plugin) project");
-        simple.setDescription("The basic setup for a maven plugin project.");
+        simple.setVersion("1.0");
+        simple.setName("Maven Mojo Archetype");
+        simple.setDescription("An archetype which contains a sample Maven plugin.");
         toRet.add(simple);
         return toRet;
     }
