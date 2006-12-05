@@ -28,14 +28,11 @@ import java.util.NoSuchElementException;
 import java.util.Properties;
 import java.util.Set;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
-import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
-import org.netbeans.api.project.Project;
+import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.ProjectManager;
-import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
@@ -43,13 +40,12 @@ import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 
 /**
  *
  *@author mkleint
  */
-public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterator {
+public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiatingIterator {
     
     private static final long serialVersionUID = 1L;
     
@@ -78,120 +74,50 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
     }
     
     public Set/*<FileObject>*/ instantiate() throws IOException {
-        
-        final File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir"));
-        final File parent = dirF.getParentFile();
-        if (parent != null && parent.exists()) {
-            ProjectChooser.setProjectsFolder(parent);
-        }
-        
-        Set resultSet = new LinkedHashSet();
-        File root = FileUtil.normalizeFile(new File(System.getProperty("java.io.tmpdir")));
-        int index = 0;
-        File dir = new File(root, "tempmavenproject" + index);
-        while (dir.exists()) {
-            index = index + 1;
-            dir = new File(root, "tempmavenproject" + index);
-        }
-        boolean isPosted = true;
-        File tempPomFile = null;
-        if (dir.mkdir()) {
-            dir.deleteOnExit();
-            tempPomFile = new File(dir, "pom.xml.temp");
-            tempPomFile.createNewFile();
-            tempPomFile.deleteOnExit();
-            resultSet.add(FileUtil.toFileObject(dir));
-        } else {
-            isPosted = false;
-        }
-        final File fTempFile = tempPomFile;
-        final boolean fIsPosted = isPosted;
-        final FileObject fTtemplate = Templates.getTemplate(wiz);
-        final String art = (String)wiz.getProperty("artifactId");
-        final String ver = (String)wiz.getProperty("version");
-        final String gr = (String)wiz.getProperty("groupId");
-        final String pack = (String)wiz.getProperty("package");
-        final Archetype archetype = (Archetype)wiz.getProperty("archetype");
-        Runnable create = new Runnable() {
-            public void run() {
-                Set resultSet = new LinkedHashSet();
-                dirF.getParentFile().mkdirs();
-                
-                
-                runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
-                
-                // Always open top dir as a project:
-                FileObject fDir = FileUtil.toFileObject(dirF);
-                if (fDir != null) {
-                    // the archetype generation didn't fail.
-                    if (fIsPosted) {
-                        try {
-                            Project project = ProjectManager.getDefault().findProject(fDir);
-                            if (project != null) {
-                                resultSet.add(project);
-                            }
-                        } catch (IllegalArgumentException ex) {
-                            ex.printStackTrace();
-                        } catch (IOException ex) {
-                            ex.printStackTrace();
-                        }
-                    } else {
-                        resultSet.add(fDir);
+        assert false : "Cannot call this method if implements WizardDescriptor.ProgressInstantiatingIterator."; //NOI18N
+        return null;
+    }
+    
+    public Set instantiate(ProgressHandle handle) throws IOException {
+        try {
+            handle.start(4);
+            handle.progress(1);
+            final File dirF = FileUtil.normalizeFile((File) wiz.getProperty("projdir")); //NOI18N
+            final File parent = dirF.getParentFile();
+            if (parent != null && parent.exists()) {
+                ProjectChooser.setProjectsFolder(parent);
+            }
+            
+            Set resultSet = new LinkedHashSet();
+            final FileObject fTtemplate = Templates.getTemplate(wiz);
+            final String art = (String)wiz.getProperty("artifactId"); //NOI18N
+            final String ver = (String)wiz.getProperty("version"); //NOI18N
+            final String gr = (String)wiz.getProperty("groupId"); //NOI18N
+            final String pack = (String)wiz.getProperty("package"); //NOI18N
+            final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N
+            dirF.getParentFile().mkdirs();
+            
+            handle.progress("Processing Archetype", 2);
+            runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
+            handle.progress(3);
+            // Always open top dir as a project:
+            FileObject fDir = FileUtil.toFileObject(dirF);
+            if (fDir != null) {
+                // the archetype generation didn't fail.
+                resultSet.add(fDir);
+                // Look for nested projects to open as well:
+                Enumeration e = fDir.getFolders(true);
+                while (e.hasMoreElements()) {
+                    FileObject subfolder = (FileObject) e.nextElement();
+                    if (ProjectManager.getDefault().isProject(subfolder)) {
+                        resultSet.add(subfolder);
                     }
-                    // Look for nested projects to open as well:
-                    Enumeration e = fDir.getFolders(true);
-                    while (e.hasMoreElements()) {
-                        FileObject subfolder = (FileObject) e.nextElement();
-                        if (ProjectManager.getDefault().isProject(subfolder)) {
-                            if (fIsPosted) {
-                                try {
-                                    Project project = ProjectManager.getDefault().findProject(subfolder);
-                                    if (project != null) {
-                                        resultSet.add(project);
-                                    }
-                                } catch (IllegalArgumentException ex) {
-                                    ex.printStackTrace();
-                                } catch (IOException ex) {
-                                    ex.printStackTrace();
-                                }
-                            } else {
-                                resultSet.add(subfolder);
-                            }
-                        }
-                    }
-                }
-                if (fIsPosted) {
-                    final Project[] prjs = (Project[])resultSet.toArray(new Project[resultSet.size()]);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            if (prjs.length > 0) {
-                                OpenProjects.getDefault().open(prjs, true);
-                                OpenProjects.getDefault().setMainProject(prjs[0]);
-                            }
-                            FileObject temp = FileUtil.toFileObject(fTempFile.getParentFile());
-                            try {
-                                Project oldprj = ProjectManager.getDefault().findProject(temp);
-                                if (oldprj != null) {
-                                    OpenProjects.getDefault().close(new Project[] {oldprj});
-                                }
-                                fTempFile.delete();
-                                fTempFile.getParentFile().delete();
-                            } catch (IllegalArgumentException ex) {
-                                ex.printStackTrace();
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    });
                 }
             }
-        };
-        if (fIsPosted) {
-            RequestProcessor.getDefault().post(create);
-        } else {
-            create.run();
+            return resultSet;
+        } finally {
+            handle.finish();
         }
-        return resultSet;
     }
     
     public void initialize(WizardDescriptor wiz) {
@@ -219,8 +145,8 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
     }
     
     public void uninitialize(WizardDescriptor wiz) {
-        this.wiz.putProperty("projdir",null);
-        this.wiz.putProperty("name",null);
+        this.wiz.putProperty("projdir",null); //NOI18N
+        this.wiz.putProperty("name",null); //NOI18N
         this.wiz = null;
         panels = null;
     }
@@ -260,40 +186,38 @@ public class MavenWizardIterator implements WizardDescriptor.InstantiatingIterat
     public final void addChangeListener(ChangeListener l) {}
     public final void removeChangeListener(ChangeListener l) {}
 
-    private void runArchetype(File dirF, String gr, String art, String ver, String pack, Archetype arch) {
+    private int runArchetype(File dirF, String gr, String art, String ver, String pack, Archetype arch) {
         BeanRunConfig config = new BeanRunConfig();
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
         config.setExecutionName("Project Creation");
-        config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create"));
+        config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create")); //NOI18N
         Properties props = new Properties();
-        props.setProperty("archetypeArtifactId", arch.getArtifactId());
-        props.setProperty("archetypeGroupId", arch.getGroupId());
-        props.setProperty("archetypeVersion", arch.getVersion());
-        props.setProperty("artifactId", art);
-        props.setProperty("groupId", gr);
-        props.setProperty("version", ver);
+        props.setProperty("archetypeArtifactId", arch.getArtifactId()); //NOI18N
+        props.setProperty("archetypeGroupId", arch.getGroupId()); //NOI18N
+        props.setProperty("archetypeVersion", arch.getVersion()); //NOI18N
+        props.setProperty("artifactId", art); //NOI18N
+        props.setProperty("groupId", gr); //NOI18N
+        props.setProperty("version", ver); //NOI18N
         if (pack != null && pack.trim().length() > 0) {
-            props.setProperty("packageName", pack);
+            props.setProperty("packageName", pack); //NOI18N
         }
         config.setProperties(props);
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
-        String oldUserdir = System.getProperty("user.dir");
-        System.setProperty("user.dir", dirF.getAbsolutePath());
+        String oldUserdir = System.getProperty("user.dir"); //NOI18N
+        System.setProperty("user.dir", dirF.getAbsolutePath()); //NOI18N
         try {
-            ExecutorTask task = RunUtils.executeMaven("Maven", config);
-            task.result();
+            ExecutorTask task = RunUtils.executeMaven("Maven", config); //NOI18N
+            return task.result();
         } finally {
             if (oldUserdir == null) {
-                System.getProperties().remove("user.dir");
+                System.getProperties().remove("user.dir"); //NOI18N
             } else {
-                System.setProperty("user.dir", oldUserdir);
+                System.setProperty("user.dir", oldUserdir); //NOI18N
             }
         }
         
     }
-    private Object RunUtilsls;
-    
     
 }
