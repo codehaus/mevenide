@@ -37,9 +37,13 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public final class ModelHandle {
-    public static final String PANEL_RUN = "RUN";
-    public static final String PANEL_BASIC = "BASIC";
-    public static final String PANEL_MAPPING = "MAPPING";
+    public static final String PANEL_RUN = "RUN"; //NOI18N
+    public static final String PANEL_BASIC = "BASIC"; //NOI18N
+    public static final String PANEL_MAPPING = "MAPPING"; //NOI18N
+    
+    public static final String PROFILE_PUBLIC = "netbeans-public"; //NOI18N
+    public static final String PROFILE_PRIVATE = "netbeans-private"; //NOI18N
+    public static final String PROPERTY_PROFILE = "netbeans.execution"; //NOI18N
 
     private Model model;
     private MavenProject project;
@@ -118,7 +122,7 @@ public final class ModelHandle {
                 Iterator it = lst.iterator();
                 while (it.hasNext()) {
                     org.apache.maven.model.Profile profile = (org.apache.maven.model.Profile) it.next();
-                    if ("netbeans-public".equals(profile.getId())) {
+                    if (PROFILE_PUBLIC.equals(profile.getId())) {
                         publicProfile = profile;
                         break;
                     }
@@ -126,11 +130,11 @@ public final class ModelHandle {
             }
             if (publicProfile == null) {
                 publicProfile = new org.apache.maven.model.Profile();
-                publicProfile.setId("netbeans-public");
+                publicProfile.setId(PROFILE_PUBLIC);
                 Activation act = new Activation();
                 ActivationProperty prop = new ActivationProperty();
-                prop.setName("netbeans.execution");
-                prop.setValue("true");
+                prop.setName(PROPERTY_PROFILE);
+                prop.setValue("true"); //NOI18N
                 act.setProperty(prop);
                 publicProfile.setActivation(act);
                 publicProfile.setBuild(new BuildBase());
@@ -147,7 +151,7 @@ public final class ModelHandle {
                 Iterator it = lst.iterator();
                 while (it.hasNext()) {
                     org.apache.maven.profiles.Profile profile = (org.apache.maven.profiles.Profile) it.next();
-                    if ("netbeans-private".equals(profile.getId())) {
+                    if (PROFILE_PRIVATE.equals(profile.getId())) {
                         privateProfile = profile;
                         break;
                     }
@@ -155,11 +159,11 @@ public final class ModelHandle {
             }
             if (privateProfile == null) {
                 privateProfile = new org.apache.maven.profiles.Profile();
-                privateProfile.setId("netbeans-private");
+                privateProfile.setId(PROFILE_PRIVATE);
                 org.apache.maven.profiles.Activation act = new org.apache.maven.profiles.Activation();
                 org.apache.maven.profiles.ActivationProperty prop = new org.apache.maven.profiles.ActivationProperty();
-                prop.setName("netbeans.execution");
-                prop.setValue("true");
+                prop.setName(PROPERTY_PROFILE);
+                prop.setValue("true"); //NOI18N
                 act.setProperty(prop);
                 privateProfile.setActivation(act);
                 profiles.addProfile(privateProfile);
@@ -186,7 +190,7 @@ public final class ModelHandle {
 
     void fireActionPerformed() {
         Iterator it = listeners.iterator();
-        ActionEvent evnt = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "X");
+        ActionEvent evnt = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "X"); //NOI18N
         while (it.hasNext()) {
             ActionListener elem = (ActionListener) it.next();
             elem.actionPerformed(evnt);

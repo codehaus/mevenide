@@ -35,13 +35,13 @@ public final class OutputVisitor {
     /**
      * property for success Action. Holds question text.
      */
-    public static final String ACTION_QUESTION = "Question";
+    public static final String ACTION_QUESTION = "Question"; //NOI18N
     /**
      * property for success Action. Priority of the action.
      * From all collected actions one is used (the one with highest
      * priority).
      */
-    public static final String ACTION_PRIORITY = "Priority";
+    public static final String ACTION_PRIORITY = "Priority"; //NOI18N
     
     /** Creates a new instance of OutputVisitor */
     public OutputVisitor() {

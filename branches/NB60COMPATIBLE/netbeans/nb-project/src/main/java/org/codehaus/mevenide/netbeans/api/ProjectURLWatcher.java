@@ -144,7 +144,7 @@ public final class ProjectURLWatcher {
             ProjectURLWatcher watcher = ((NbMavenProject)prj).getProjectWatcher();
             watcher.addPropertyChangeListener(listener);
         } else {
-            assert false : "Attempted to add PropertyChangeListener to project " + prj;
+            assert false : "Attempted to add PropertyChangeListener to project " + prj; //NOI18N
         }
     }
     
@@ -154,7 +154,7 @@ public final class ProjectURLWatcher {
             ProjectURLWatcher watcher = ((NbMavenProject)prj).getProjectWatcher();
             watcher.removePropertyChangeListener(listener);
         } else {
-            assert false : "Attempted to remove PropertyChangeListener from project " + prj;
+            assert false : "Attempted to remove PropertyChangeListener from project " + prj; //NOI18N
         }
     }
     
