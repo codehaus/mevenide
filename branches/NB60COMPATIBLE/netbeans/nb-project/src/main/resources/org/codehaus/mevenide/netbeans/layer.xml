@@ -82,13 +82,13 @@
                 <file name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance" boolvalue="true"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance" boolvalue="true"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance"/>
             </folder>    
             <folder name="Lookup">
