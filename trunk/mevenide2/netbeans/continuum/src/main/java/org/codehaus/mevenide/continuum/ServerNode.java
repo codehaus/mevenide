@@ -84,11 +84,14 @@ public class ServerNode extends AbstractNode {
                             setKeys(Arrays.asList(reader.readProjects()));
                         } catch (IOException ex) {
                             ex.printStackTrace();
-                            setKeys(Collections.EMPTY_LIST);
+                            setKeys(Collections.singletonList(getDisplayableMessageFrom(ex)));
                         } catch (XmlRpcException ex) {
                             ex.printStackTrace();
-                            setKeys(Collections.EMPTY_LIST);
+                            setKeys(Collections.singletonList(getDisplayableMessageFrom(ex)));
                         }
+                    }
+                    private String getDisplayableMessageFrom(Exception ex) {
+                        return (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getName();
                     }
                 });
             }
