@@ -45,7 +45,7 @@ class WebAppFilterNode extends FilterNode {
     
     public String getDisplayName() {
         if (isTopLevelNode) {
-            return "WebApp Sources";
+            return org.openide.util.NbBundle.getMessage(WebAppFilterNode.class, "LBL_Web_Pages");
         }
         return super.getDisplayName();
         
@@ -65,7 +65,7 @@ class WebAppFilterNode extends FilterNode {
         java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), 
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
                                              8, 8);
         } 
         return retValue;
@@ -75,7 +75,7 @@ class WebAppFilterNode extends FilterNode {
         java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), 
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
                                              8, 8);
         } 
         return retValue;
