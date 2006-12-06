@@ -52,13 +52,13 @@ class WebAppFilterNode extends FilterNode {
     }
     
     public javax.swing.Action[] getActions(boolean param) {
-        if (isTopLevelNode) {
-            Action[] toReturn = new Action[1];
-            toReturn[0] = CommonProjectActions.newFileAction();
-            return toReturn;
-        } else {
+//        if (isTopLevelNode) {
+//            Action[] toReturn = new Action[1];
+//            toReturn[0] = CommonProjectActions.newFileAction();
+//            return toReturn;
+//        } else {
             return super.getActions(param);
-        }
+//        }
     }    
 
     public java.awt.Image getIcon(int param) {
