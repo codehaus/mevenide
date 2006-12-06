@@ -23,7 +23,6 @@ import java.util.List;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.openide.nodes.AbstractNode;
-import org.openide.util.Utilities;
 
 /**
  *
@@ -35,7 +34,7 @@ class OthersRootNode extends AbstractNode {
     OthersRootNode(NbMavenProject mavproject, boolean testResource) {
         super(new OthersRootChildren(mavproject, testResource));
         setName(testResource ? "OtherTestRoots" : "OtherRoots"); //NOI18N
-        setDisplayName(testResource ? "Other Test Roots" : "Other Roots");
+        setDisplayName(testResource ? "Other Test Sources" : "Other Sources");
         // can do so, since we depend on it..
 //        setIconBase("org/mevenide/netbeans/project/resources/defaultFolder"); //NOI18N
         project = mavproject;

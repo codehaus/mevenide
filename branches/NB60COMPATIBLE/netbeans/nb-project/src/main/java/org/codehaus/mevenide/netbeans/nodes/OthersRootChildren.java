@@ -71,7 +71,7 @@ class OthersRootChildren extends Children.Keys {
         List list = new ArrayList();
         Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
         if (srcs == null) {
-            throw new IllegalStateException("need Sources instance in lookup");
+            throw new IllegalStateException("need Sources instance in lookup"); //NOI18N
         }
         SourceGroup[] resgroup = srcs.getSourceGroups(test ? MavenSourcesImpl.TYPE_TEST_RESOURCES  
                                                            : MavenSourcesImpl.TYPE_RESOURCES);
