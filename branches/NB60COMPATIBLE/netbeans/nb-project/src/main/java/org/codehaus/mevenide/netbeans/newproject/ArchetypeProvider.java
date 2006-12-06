@@ -25,5 +25,5 @@ import java.util.List;
  */
 public interface ArchetypeProvider {
     
-    List getArchetypes();
+    List<Archetype> getArchetypes();
 }

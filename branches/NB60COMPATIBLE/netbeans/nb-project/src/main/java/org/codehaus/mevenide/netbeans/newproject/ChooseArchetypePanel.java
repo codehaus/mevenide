@@ -183,16 +183,13 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
     
     public void run() {
-        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(ArchetypeProvider.class));
-        Iterator it = res.allInstances().iterator();
-        List archetypes = new ArrayList();
-        while (it.hasNext()) {
-            ArchetypeProvider provider = (ArchetypeProvider)it.next();
+        Lookup.Result<ArchetypeProvider> res = Lookup.getDefault().lookup(new Lookup.Template<ArchetypeProvider>(ArchetypeProvider.class));
+        List<Archetype> archetypes = new ArrayList<Archetype>();
+        for (ArchetypeProvider provider : res.allInstances()) {
             Iterator it2 = provider.getArchetypes().iterator();
-            while (it2.hasNext()) {
-                Object obj = it2.next();
-                if (!archetypes.contains(obj)) {
-                    archetypes.add(obj);
+            for (Archetype ar : provider.getArchetypes()) {
+                if (!archetypes.contains(ar)) {
+                    archetypes.add(ar);
                 }
             }
         }
@@ -236,8 +233,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     }
     
     private static class Childs extends Children.Keys {
-        private List keys;
-        public Childs(List keys) {
+        private List<Archetype> keys;
+        public Childs(List<Archetype> keys) {
             this.keys = keys;
         }
         public void addNotify() {

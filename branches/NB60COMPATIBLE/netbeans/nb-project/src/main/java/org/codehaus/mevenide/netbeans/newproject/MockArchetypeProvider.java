@@ -31,8 +31,8 @@ public class MockArchetypeProvider implements ArchetypeProvider {
     public MockArchetypeProvider() {
     }
 
-    public List getArchetypes() {
-        List toRet = new ArrayList();
+    public List<Archetype> getArchetypes() {
+        List<Archetype> toRet = new ArrayList<Archetype>();
         Archetype simple = new Archetype();
         simple.setArtifactId("maven-archetype-quickstart");
         simple.setGroupId("org.apache.maven.archetypes");

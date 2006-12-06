@@ -34,12 +34,11 @@ public class LocalRepoProvider implements ArchetypeProvider {
     public LocalRepoProvider() {
     }
 
-    public List getArchetypes() {
-        List lst = new ArrayList();
+    public List<Archetype> getArchetypes() {
+        List<Archetype> lst = new ArrayList<Archetype>();
         try {
-            Iterator it = CustomQueries.retrievePossibleArchetypes().iterator();
-            while (it.hasNext()) {
-                StandardArtifactIndexRecord art = (StandardArtifactIndexRecord) it.next();
+            List<StandardArtifactIndexRecord> archs= CustomQueries.retrievePossibleArchetypes();
+            for (StandardArtifactIndexRecord art : archs) {
                 Archetype arch = new Archetype();
                 arch.setArtifactId(art.getArtifactId());
                 arch.setGroupId(art.getGroupId());
