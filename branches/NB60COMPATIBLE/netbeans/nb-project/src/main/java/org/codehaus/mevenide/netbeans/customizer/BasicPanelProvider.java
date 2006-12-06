@@ -36,7 +36,7 @@ public class BasicPanelProvider implements ProjectCustomizer.CompositeCategoryPr
     public Category createCategory(Lookup context) {
         return ProjectCustomizer.Category.create(
                 ModelHandle.PANEL_BASIC, 
-                "Basic", 
+                org.openide.util.NbBundle.getMessage(BasicPanelProvider.class, "TIT_Basic"), 
                 null,
                 (ProjectCustomizer.Category[])null);
     }

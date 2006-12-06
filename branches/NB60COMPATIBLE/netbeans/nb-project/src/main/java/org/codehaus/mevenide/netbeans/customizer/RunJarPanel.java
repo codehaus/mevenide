@@ -48,8 +48,8 @@ import org.openide.filesystems.FileUtil;
  */
 public class RunJarPanel extends javax.swing.JPanel {
 
-    private static final String RUN_PARAMS = "netbeans.jar.run.params";
-    private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams";
+    private static final String RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
+    private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams"; //NOI18N
     private ModelHandle handle;
     private NbMavenProject project;
     private NetbeansActionMapping run;
@@ -84,21 +84,21 @@ public class RunJarPanel extends javax.swing.JPanel {
             Iterator it = bld.getPlugins().iterator();
             while (it.hasNext()) {
                 Plugin elem = (Plugin)it.next();
-                if ("maven-jar-plugin".equals(elem.getArtifactId())) {
+                if ("maven-jar-plugin".equals(elem.getArtifactId())) { //NOI18N
                     jarPlugin = elem;
                 }
-                if ("maven-assembly-plugin".equals(elem.getArtifactId())) {
+                if ("maven-assembly-plugin".equals(elem.getArtifactId())) { //NOI18N
                     assemblyPlugin = elem;
                 }
             }
         }
         if (jarPlugin != null) {
             Xpp3Dom conf = (Xpp3Dom)jarPlugin.getConfiguration();
-            Xpp3Dom archive = conf.getChild("archive");
+            Xpp3Dom archive = conf.getChild("archive"); //NOI18N
             if (archive != null) {
-                Xpp3Dom manifest = archive.getChild("manifest");
+                Xpp3Dom manifest = archive.getChild("manifest"); //NOI18N
                 if (manifest != null) {
-                    Xpp3Dom mainClass = manifest.getChild("mainClass");
+                    Xpp3Dom mainClass = manifest.getChild("mainClass"); //NOI18N
                     if (mainClass != null) {
                         oldMainClass = mainClass.getValue();
                     }
@@ -109,7 +109,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         if (oldMainClass != null) {
             txtMainClass.setText(oldMainClass);
         } else {
-            oldMainClass = "";
+            oldMainClass = ""; //NOI18N
         }
         oldParams = isRunCompatible ? run.getProperties().getProperty(RUN_PARAMS) :
                                       debug.getProperties().getProperty(RUN_PARAMS);
@@ -118,12 +118,12 @@ public class RunJarPanel extends javax.swing.JPanel {
         if (oldParams != null) {
             txtArguments.setText(oldParams);
         } else {
-            oldParams = "";
+            oldParams = ""; //NOI18N
         }
         if (oldVMParams != null) {
             txtVMOptions.setText(oldVMParams);
         } else {
-            oldVMParams = "";
+            oldVMParams = ""; //NOI18N
         }
         
     }
@@ -135,6 +135,7 @@ public class RunJarPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblMainClass = new javax.swing.JLabel();
         txtMainClass = new javax.swing.JTextField();
         btnMainClass = new javax.swing.JButton();
@@ -147,9 +148,10 @@ public class RunJarPanel extends javax.swing.JPanel {
         txtVMOptions = new javax.swing.JTextField();
         lblHint = new javax.swing.JLabel();
 
-        lblMainClass.setText("Main Class:");
+        lblMainClass.setLabelFor(txtMainClass);
+        org.openide.awt.Mnemonics.setLocalizedText(lblMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_MainClass")); // NOI18N
 
-        btnMainClass.setText("Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnMainClass, "Browse...");
         btnMainClass.setEnabled(false);
         btnMainClass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,20 +159,23 @@ public class RunJarPanel extends javax.swing.JPanel {
             }
         });
 
-        lblArguments.setText("Arguments:");
+        lblArguments.setLabelFor(txtArguments);
+        org.openide.awt.Mnemonics.setLocalizedText(lblArguments, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_Arguments")); // NOI18N
 
-        lblWorkDir.setText("Working Directory:");
+        lblWorkDir.setLabelFor(txtWorkDir);
+        org.openide.awt.Mnemonics.setLocalizedText(lblWorkDir, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_WorkDir")); // NOI18N
 
-        btnWorkDir.setText("Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnWorkDir, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "BTN_Browse")); // NOI18N
         btnWorkDir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnWorkDirActionPerformed(evt);
             }
         });
 
-        lblVMOptions.setText("VM Options:");
+        lblVMOptions.setLabelFor(txtVMOptions);
+        org.openide.awt.Mnemonics.setLocalizedText(lblVMOptions, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_VMOptions")); // NOI18N
 
-        lblHint.setText("(e.g. -Xms10m)");
+        org.openide.awt.Mnemonics.setLocalizedText(lblHint, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_VMHint")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -234,11 +239,11 @@ public class RunJarPanel extends javax.swing.JPanel {
         chooser.setMultiSelectionEnabled(false);
         
         String workDir = txtWorkDir.getText();
-        if (workDir.equals("")) {
+        if (workDir.equals("")) { //NOI18N
             workDir = FileUtil.toFile(project.getProjectDirectory()).getAbsolutePath();
         }
         chooser.setSelectedFile(new File(workDir));
-        chooser.setDialogTitle("Select Working Directory");
+        chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "TIT_SelectWorkingDirectory"));
         if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(this)) { //NOI18N
             File file = FileUtil.normalizeFile(chooser.getSelectedFile());
             txtWorkDir.setText(file.getAbsolutePath());
@@ -283,7 +288,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         Iterator it = map.getGoals().iterator();
         while (it.hasNext()) {
             String goal = (String) it.next();
-            if (goal.indexOf("org.codehaus.mevenide:netbeans-run-plugin") > -1) {
+            if (goal.indexOf("org.codehaus.mevenide:netbeans-run-plugin") > -1) { //NOI18N
                 return true;
             }
         }
@@ -293,58 +298,58 @@ public class RunJarPanel extends javax.swing.JPanel {
     private Plugin checkJarPlugin(Plugin jarPlugin, String val) {
         if (jarPlugin == null) {
             jarPlugin = new Plugin();
-            jarPlugin.setArtifactId("maven-jar-plugin");
-            jarPlugin.setGroupId("org.apache.maven.plugins");
+            jarPlugin.setArtifactId("maven-jar-plugin"); //NOI18N
+            jarPlugin.setGroupId("org.apache.maven.plugins"); //NOI18N
             handle.getNetbeansPublicProfile().getBuild().addPlugin(jarPlugin);
         }
         if (jarPlugin.getConfiguration() == null) {
-            jarPlugin.setConfiguration(new Xpp3Dom("configuration"));
+            jarPlugin.setConfiguration(new Xpp3Dom("configuration")); //NOI18N
         }
         Xpp3Dom configuration = (Xpp3Dom) jarPlugin.getConfiguration();
-        Xpp3Dom manifest = getOrCreateXppDomChild(getOrCreateXppDomChild(configuration, "archive"), "manifest");
-        getOrCreateXppDomChild(manifest, "addClasspath").setValue("true");
-        getOrCreateXppDomChild(manifest, "classpathPrefix").setValue("lib");
-        getOrCreateXppDomChild(manifest, "mainClass").setValue(val);
+        Xpp3Dom manifest = getOrCreateXppDomChild(getOrCreateXppDomChild(configuration, "archive"), "manifest"); //NOI18N
+        getOrCreateXppDomChild(manifest, "addClasspath").setValue("true"); //NOI18N
+        getOrCreateXppDomChild(manifest, "classpathPrefix").setValue("lib"); //NOI18N
+        getOrCreateXppDomChild(manifest, "mainClass").setValue(val); //NOI18N
         return jarPlugin;
     }
 
     private Plugin checkAssemblyPlugin(Plugin assemblyPlugin) {
         if (assemblyPlugin == null) {
             assemblyPlugin = new Plugin();
-            assemblyPlugin.setArtifactId("maven-assembly-plugin");
-            assemblyPlugin.setGroupId("org.apache.maven.plugins");
+            assemblyPlugin.setArtifactId("maven-assembly-plugin"); //NOI18N
+            assemblyPlugin.setGroupId("org.apache.maven.plugins"); //NOI18N
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assemblyPlugin);
         }
-        PluginExecution exec = (PluginExecution)assemblyPlugin.getExecutionsAsMap().get("nb");
+        PluginExecution exec = (PluginExecution)assemblyPlugin.getExecutionsAsMap().get("nb"); //NOI18N
         if (exec == null) {
             exec = new PluginExecution();
-            exec.setId("nb");
+            exec.setId("nb"); //NOI18N
             assemblyPlugin.addExecution(exec);
         }
-        exec.setPhase("package");
-        exec.setGoals(Collections.singletonList("directory"));
+        exec.setPhase("package"); //NOI18N
+        exec.setGoals(Collections.singletonList("directory")); //NOI18N
         if (exec.getConfiguration() == null) {
-            exec.setConfiguration(new Xpp3Dom("configuration"));
+            exec.setConfiguration(new Xpp3Dom("configuration")); //NOI18N
         }
         Xpp3Dom configuration = (Xpp3Dom) exec.getConfiguration();
-        getOrCreateXppDomChild(configuration, "descriptor").setValue("${basedir}/src/main/assemblies/netbeans-run.xml");
-        getOrCreateXppDomChild(configuration, "finalName").setValue("executable");
-        File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies");
+        getOrCreateXppDomChild(configuration, "descriptor").setValue("${basedir}/src/main/assemblies/netbeans-run.xml"); //NOI18N
+        getOrCreateXppDomChild(configuration, "finalName").setValue("executable"); //NOI18N
+        File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies"); //NOI18N
         if (!assDir.exists()) {
             assDir.mkdirs();
         }
-        File assembly = new File(assDir, "netbeans-run.xml");
+        File assembly = new File(assDir, "netbeans-run.xml"); //NOI18N
         if (!assembly.exists()) {
             InputStream instr = null;
             OutputStream outstr = null;
             try {
                 assembly.createNewFile();
-                instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml");
+                instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml"); //NOI18N
                 outstr = new FileOutputStream(assembly);
                 IOUtil.copy(instr, outstr);
             } catch (IOException exc) {
                 ErrorManager.getDefault().notify(exc);
-                NotifyDescriptor nd = new NotifyDescriptor.Message("Cannot create assembly file at " + assembly);
+                NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "Err_CannotCreate", assembly));
                 DialogDisplayer.getDefault().notify(nd);
             } finally {
                 IOUtil.close(instr);

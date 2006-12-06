@@ -37,10 +37,10 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public Category createCategory(Lookup context) {
         NbMavenProject project = context.lookup(NbMavenProject.class);
-        if ("jar".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+        if ("jar".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) { //NOI18N
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
-                    "Run",
+                    org.openide.util.NbBundle.getMessage(RunJarPanelProvider.class, "TIT_Run"),
                     null,
                     (ProjectCustomizer.Category[])null);
         }

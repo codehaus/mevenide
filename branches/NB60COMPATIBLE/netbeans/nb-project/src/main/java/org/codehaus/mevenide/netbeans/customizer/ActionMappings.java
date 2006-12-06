@@ -39,6 +39,7 @@ import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -54,6 +55,7 @@ public class ActionMappings extends javax.swing.JPanel {
     private PropertiesListener propertiesListener;
     private TestListener testListener;
     private RecursiveListener recursiveListener;
+    public static final String PROP_SKIP_TEST="maven.test.skip"; //NOI18N
     
     /** Creates new form ActionMappings */
     public ActionMappings(ModelHandle hand, NbMavenProject proj) {
@@ -64,18 +66,18 @@ public class ActionMappings extends javax.swing.JPanel {
         
         project = proj;
         handle = hand;
-        titles.put(ActionProvider.COMMAND_BUILD, "Build project");
-        titles.put(ActionProvider.COMMAND_CLEAN, "Clean project");
-        titles.put(ActionProvider.COMMAND_COMPILE_SINGLE, "Compile file");
-        titles.put(ActionProvider.COMMAND_DEBUG, "Debug project");
-        titles.put(ActionProvider.COMMAND_DEBUG_SINGLE, "Debug file");
+        titles.put(ActionProvider.COMMAND_BUILD, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Build_project"));
+        titles.put(ActionProvider.COMMAND_CLEAN, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Clean_project"));
+        titles.put(ActionProvider.COMMAND_COMPILE_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Compile_file"));
+        titles.put(ActionProvider.COMMAND_DEBUG, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_project"));
+        titles.put(ActionProvider.COMMAND_DEBUG_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_file"));
         titles.put(ActionProvider.COMMAND_DEBUG_STEP_INTO, null);
-        titles.put(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, "Debug test");
-        titles.put(ActionProvider.COMMAND_REBUILD, "Clean and Build project");
-        titles.put(ActionProvider.COMMAND_RUN, "Run project");
-        titles.put(ActionProvider.COMMAND_RUN_SINGLE, "Run file");
-        titles.put(ActionProvider.COMMAND_TEST, "Test project");
-        titles.put(ActionProvider.COMMAND_TEST_SINGLE, "Test file");
+        titles.put(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Debug_test"));
+        titles.put(ActionProvider.COMMAND_REBUILD, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_ReBuild_project"));
+        titles.put(ActionProvider.COMMAND_RUN, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Run_project"));
+        titles.put(ActionProvider.COMMAND_RUN_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Run_file"));
+        titles.put(ActionProvider.COMMAND_TEST, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_project"));
+        titles.put(ActionProvider.COMMAND_TEST_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_file"));
         loadMappings();
         lstMappings.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         goalsListener = new GoalsListener();
@@ -86,26 +88,17 @@ public class ActionMappings extends javax.swing.JPanel {
         FocusListener focus = new FocusListener() {
             public void focusGained(FocusEvent e) {
                 if (e.getComponent() == txtGoals) {
-                    lblHint.setText("<html>A space-separated list of goals or phases to execute.</html>");
+                    lblHint.setText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.txtGoals.hint"));
                 }
                 if (e.getComponent() == txtProfiles) {
-                    lblHint.setText("<html>A space- or comma-separated list of profiles to activate during execution.</html>");
+                    lblHint.setText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActinMappings.txtProfiles.hint"));
                 }
                 if (e.getComponent() == txtProperties) {
-                    lblHint.setText("<html>A space-separated list of properties to set during execution in the form &lt;key&gt;=\"&lt;value&gt;\". " +
-                            "If value doesn't contain whitespace, \" can be omited.<br>" +
-                            "Additional supported variables include (useful mainly for Run/Debug/Test Single) :" +
-                            "<ul>" +
-                            "<li><b>className</b> name of selected class eg. String</li>" +
-                            "<li><b>classNameWithExtension</b> name of selected class with extension, eg. String.java</li>" +
-                            "<li><b>packageClassName</b> name of selected class with package name, eg. java.lang.String</li>" +
-                            "<li><b>webpagePath</b> relative path of selected webpage document within src/main/webapp </li>" +
-                            "</ul>" + 
-                            "</html>");
+                    lblHint.setText(NbBundle.getMessage(ActionMappings.class, "ActinMappings.txtProperties.hint"));
                 }
             }
             public void focusLost(FocusEvent e) {
-                lblHint.setText("");
+                lblHint.setText(""); //NOI18N
             }
         };
         txtGoals.addFocusListener(focus);
@@ -143,26 +136,26 @@ public class ActionMappings extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(lstMappings);
 
-        btnAdd.setText("Add Custom...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnAdd, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnAdd.text")); // NOI18N
 
-        btnRemove.setText("Remove/Reset");
+        org.openide.awt.Mnemonics.setLocalizedText(btnRemove, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnRemove.text")); // NOI18N
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRemoveActionPerformed(evt);
             }
         });
 
-        lblGoals.setText("Execute Goals:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblGoals, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblGoals.text")); // NOI18N
 
-        lblProfiles.setText("Activate Profiles:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblProfiles, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblProfiles.text")); // NOI18N
 
-        lblProperties.setText("Set Properties:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblProperties, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblProperties.text")); // NOI18N
 
-        cbRecursively.setText("Build Recursively (with modules)");
+        org.openide.awt.Mnemonics.setLocalizedText(cbRecursively, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbRecursively.text")); // NOI18N
         cbRecursively.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbRecursively.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        cbSkipTests.setText("Skip tests");
+        org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbSkipTests.text")); // NOI18N
         cbSkipTests.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -352,9 +345,9 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProfiles.getDocument().removeDocumentListener(profilesListener);
         txtProperties.getDocument().removeDocumentListener(propertiesListener);
         
-        txtGoals.setText("");
-        txtProfiles.setText("");
-        txtProperties.setText("");
+        txtGoals.setText(""); //NOI18N
+        txtProfiles.setText(""); //NOI18N
+        txtProperties.setText(""); //NOI18N
         
         txtGoals.getDocument().addDocumentListener(goalsListener);
         txtProfiles.getDocument().addDocumentListener(profilesListener);
@@ -381,12 +374,12 @@ public class ActionMappings extends javax.swing.JPanel {
             Iterator it = properties.keySet().iterator();
             while (it.hasNext()) {
                 String elem = (String) it.next();
-                if (!"maven.test.skip".equals(elem)) {
+                if (!PROP_SKIP_TEST.equals(elem)) {
                     String val = properties.getProperty(elem);
-                    if (val.indexOf(" ") > -1) {
-                        val = "\"" + val + "\"";
+                    if (val.indexOf(" ") > -1) { //NOI18N
+                        val = "\"" + val + "\""; //NOI18N
                     }
-                    str = str + elem + "=" + val + " ";
+                    str = str + elem + "=" + val + " "; //NOI18N
                 }
             }
         }
@@ -399,7 +392,7 @@ public class ActionMappings extends javax.swing.JPanel {
             Iterator it = properties.keySet().iterator();
             while (it.hasNext()) {
                 String elem = (String) it.next();
-                if ("maven.test.skip".equals(elem)) {
+                if (PROP_SKIP_TEST.equals(elem)) {
                     String val = properties.getProperty(elem);
                     skip = Boolean.valueOf(val).booleanValue();
                     break;
@@ -432,14 +425,14 @@ public class ActionMappings extends javax.swing.JPanel {
             String tok = split.nextPair();
             Properties props = new Properties();
             while (tok != null) {
-                String[] prp = StringUtils.split(tok, "=", 2);
+                String[] prp = StringUtils.split(tok, "=", 2); //NOI18N
                 if (prp.length == 2) {
                     props.setProperty(prp[0], prp[1]);
                 }
                 tok = split.nextPair();
             }
             if (cbSkipTests.isSelected()) {
-                props.setProperty("maven.test.skip", "true");
+                props.setProperty(PROP_SKIP_TEST, "true"); //NOI18N
             }
             mapp.setProperties(props);
         }
@@ -530,7 +523,7 @@ public class ActionMappings extends javax.swing.JPanel {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
                 String text = txtGoals.getText();
-                StringTokenizer tok = new StringTokenizer(text, " ");
+                StringTokenizer tok = new StringTokenizer(text, " "); //NOI18N
                 NetbeansActionMapping mapp = wr.getMapping();
                 List goals = new ArrayList();
                 while (tok.hasMoreTokens()) {
@@ -548,7 +541,7 @@ public class ActionMappings extends javax.swing.JPanel {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
                 String text = txtProfiles.getText();
-                StringTokenizer tok = new StringTokenizer(text, " ,");
+                StringTokenizer tok = new StringTokenizer(text, " ,"); //NOI18N
                 NetbeansActionMapping mapp = wr.getMapping();
                 List profs = new ArrayList();
                 while (tok.hasMoreTokens()) {
@@ -627,7 +620,7 @@ public class ActionMappings extends javax.swing.JPanel {
         private boolean escapeNext = false;
         
         Splitter(String line) {
-            this(line, new char[] { '"' }, '\\', ' ');
+            this(line, new char[] { '"' }, '\\', ' '); //NOI18N
         }
         
         private Splitter(String line, char[] quotes, char escape, char separator) {

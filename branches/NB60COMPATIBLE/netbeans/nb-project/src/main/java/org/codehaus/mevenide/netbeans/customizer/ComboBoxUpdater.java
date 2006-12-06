@@ -32,7 +32,7 @@ import javax.swing.event.AncestorListener;
  */
 public abstract class ComboBoxUpdater implements ActionListener, AncestorListener {
     private static Color INHERITED = new Color(254, 255, 200);
-    private static Color DEFAULT = UIManager.getColor("TextField.background");
+    private static Color DEFAULT = UIManager.getColor("TextField.background"); //NOI18N
     
     private JComboBox component;
     
@@ -52,7 +52,7 @@ public abstract class ComboBoxUpdater implements ActionListener, AncestorListene
         if (inherited) {
             inherited = false;
             component.setBackground(DEFAULT);
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
         }
         Object val = component.getSelectedItem();
         setValue(val == getDefaultValue() ? null : val);
@@ -86,16 +86,16 @@ public abstract class ComboBoxUpdater implements ActionListener, AncestorListene
     private void setComboValue(Object value, Object projectValue, JComboBox field) {
         if (value != null) {
             field.setSelectedItem(value);
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
             inherited = false;
         } else if (projectValue != null) {
             field.setSelectedItem(projectValue);
             field.setBackground(INHERITED);
-            component.setToolTipText("Value is inherited from parent POM.");
+            component.setToolTipText(org.openide.util.NbBundle.getMessage(ComboBoxUpdater.class, "HINT_inherited"));
             inherited = true;
         } else {
             field.setSelectedItem(field.getModel().getElementAt(0));
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
             inherited = false;
         }
     }

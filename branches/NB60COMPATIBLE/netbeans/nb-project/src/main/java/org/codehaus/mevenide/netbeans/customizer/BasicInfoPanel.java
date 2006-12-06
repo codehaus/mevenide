@@ -46,12 +46,12 @@ public class BasicInfoPanel extends javax.swing.JPanel {
         MavenProject project = handle.getProject().getParent();
         listeners = new ArrayList();
         try {
-            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId));
-            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId));
-            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion));
-            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName));
-            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging));
-            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription));
+            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription)); //NOI18N
         } catch (NoSuchMethodException ex) {
             ex.printStackTrace();
         }
@@ -64,6 +64,7 @@ public class BasicInfoPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblGroupId = new javax.swing.JLabel();
         txtGroupId = new javax.swing.JTextField();
         lblArtifactId = new javax.swing.JLabel();
@@ -79,17 +80,22 @@ public class BasicInfoPanel extends javax.swing.JPanel {
         taDescription = new javax.swing.JTextArea();
 
         lblGroupId.setLabelFor(txtGroupId);
-        lblGroupId.setText("Group Id:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblGroupId, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_GroupId")); // NOI18N
 
-        lblArtifactId.setText("Artifact Id:");
+        lblArtifactId.setLabelFor(txtArtifactId);
+        org.openide.awt.Mnemonics.setLocalizedText(lblArtifactId, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_ArtifactId")); // NOI18N
 
-        lblVersion.setText("Version:");
+        lblVersion.setLabelFor(txtVersion);
+        org.openide.awt.Mnemonics.setLocalizedText(lblVersion, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_Version")); // NOI18N
 
-        lblName.setText("Name:");
+        lblName.setLabelFor(txtName);
+        org.openide.awt.Mnemonics.setLocalizedText(lblName, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_Name")); // NOI18N
 
-        lblPackaging.setText("Packaging:");
+        lblPackaging.setLabelFor(txtPackaging);
+        org.openide.awt.Mnemonics.setLocalizedText(lblPackaging, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_Packaging")); // NOI18N
 
-        lblDescription.setText("Description:");
+        lblDescription.setLabelFor(taDescription);
+        org.openide.awt.Mnemonics.setLocalizedText(lblDescription, org.openide.util.NbBundle.getMessage(BasicInfoPanel.class, "LBL_Description")); // NOI18N
 
         taDescription.setColumns(20);
         taDescription.setRows(5);

@@ -1,10 +1,18 @@
-/*
- * ActionMappingsPanel.java
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Created on November 3, 2006, 10:01 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.customizer;
@@ -14,6 +22,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -28,7 +37,7 @@ public class ActionMappingsPanelProvider implements ProjectCustomizer.CompositeC
     public Category createCategory(Lookup context) {
         return ProjectCustomizer.Category.create(
                 ModelHandle.PANEL_MAPPING, 
-                "Action Mappings", 
+                NbBundle.getMessage(ActionMappingsPanelProvider.class, "TIT_Action_Mappings"), 
                 null,
                 (ProjectCustomizer.Category[])null);
     }

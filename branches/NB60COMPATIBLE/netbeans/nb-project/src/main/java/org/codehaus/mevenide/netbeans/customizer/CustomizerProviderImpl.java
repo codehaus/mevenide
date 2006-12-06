@@ -79,7 +79,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             init();
             OptionListener listener = new OptionListener();
             Lookup context = Lookups.fixed(new Object[] { project, handle});
-            Dialog dialog = ProjectCustomizer.createCustomizerDialog("Projects/org-codehaus-mevenide-netbeans/Customizer",
+            Dialog dialog = ProjectCustomizer.createCustomizerDialog("Projects/org-codehaus-mevenide-netbeans/Customizer", //NOI18N
                                              context, 
                                              preselectedCategory, listener, null );
             dialog.addWindowListener( listener );

@@ -32,7 +32,7 @@ import javax.swing.text.JTextComponent;
  */
 public abstract class TextComponentUpdater implements DocumentListener, AncestorListener {
     public static Color INHERITED = new Color(254, 255, 200);
-    public static Color DEFAULT = UIManager.getColor("TextField.background");
+    public static Color DEFAULT = UIManager.getColor("TextField.background"); //NOI18N
     
     private JTextComponent component;
     
@@ -52,7 +52,7 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
         if (inherited) {
             inherited = false;
             component.setBackground(DEFAULT);
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
         }
         setValue(component.getText().trim().length() == 0 ? null : component.getText());
         if (component.getText().trim().length() == 0) {
@@ -94,16 +94,16 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
     private void setTextFieldValue(String value, String projectValue, JTextComponent field) {
         if (value != null) {
             field.setText(value);
-            component.setToolTipText("");
+            component.setToolTipText("");//NOI18N
             inherited = false;
         } else if (projectValue != null) {
             field.setText(projectValue);
             field.setBackground(INHERITED);
-            component.setToolTipText("Value is inherited from parent POM.");
+            component.setToolTipText(org.openide.util.NbBundle.getMessage(TextComponentUpdater.class, "HINT_inherited"));
             inherited = true;
         } else {
-            field.setText("");
-            component.setToolTipText("");
+            field.setText(""); //NOI18N
+            component.setToolTipText(""); //NOI18N
             inherited = false;
         }
     }
