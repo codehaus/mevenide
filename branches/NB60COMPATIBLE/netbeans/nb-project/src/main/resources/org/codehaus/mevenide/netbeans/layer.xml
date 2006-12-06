@@ -64,6 +64,14 @@
                     <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/Maven2Icon.gif"/>
                     <attr name="template" boolvalue="true"/>
                 </file>
+                <attr name="Archetypes/Existing" boolvalue="true"/>
+                <file name="Existing">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
+                    <attr name="instantiatingIterator" methodvalue="org.codehaus.mevenide.netbeans.newproject.ExistingWizardIterator.createIterator"/>
+                    <attr name="instantiatingWizardURL" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/newproject/ExistingDescription.html"/>
+                    <attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/codehaus/mevenide/netbeans/Maven2Icon.gif"/>
+                    <attr name="template" boolvalue="true"/>
+                </file>
             </folder>
         </folder>
     </folder>
