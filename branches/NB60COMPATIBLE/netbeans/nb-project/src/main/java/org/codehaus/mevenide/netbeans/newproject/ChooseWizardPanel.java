@@ -44,7 +44,7 @@ public class ChooseWizardPanel implements WizardDescriptor.Panel,
     public Component getComponent() {
         if (component == null) {
             component = new ChooseArchetypePanel(this);
-            component.setName(NbBundle.getMessage(ChooseWizardPanel.class, "LBL_CreateProjectStep"));
+            component.setName(NbBundle.getMessage(ChooseWizardPanel.class, "TIT_CreateProjectStep"));
         }
         return component;
     }

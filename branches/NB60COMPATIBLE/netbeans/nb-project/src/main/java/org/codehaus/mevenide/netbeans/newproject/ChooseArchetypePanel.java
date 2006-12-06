@@ -54,6 +54,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         TreeView tv = new BeanTreeView();
         manager = new ExplorerManager();
         pnlView.add(tv, BorderLayout.CENTER);
+        tv.setBorder(jScrollPane1.getBorder());
         AbstractNode loading = new AbstractNode(Children.LEAF);
         tv.setDefaultActionAllowed(false);
         tv.setPopupAllowed(false);
@@ -82,6 +83,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblHint = new javax.swing.JLabel();
         pnlView = new javax.swing.JPanel();
         btnCustom = new javax.swing.JButton();
@@ -89,7 +91,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         taDescription = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
 
-        lblHint.setText("Please select a project archetype (template) you want to use");
+        lblHint.setLabelFor(pnlView);
+        lblHint.setText("Maven Archetypes:");
 
         pnlView.setLayout(new java.awt.BorderLayout());
 
@@ -100,7 +103,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             }
         });
 
-        taDescription.setBackground(javax.swing.UIManager.getDefaults().getColor("Label.background"));
+        taDescription.setBackground(new java.awt.Color(238, 238, 238));
         taDescription.setColumns(20);
         taDescription.setEditable(false);
         taDescription.setRows(5);
@@ -114,36 +117,30 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
-                    .add(lblHint)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 209, Short.MAX_VALUE)
-                        .add(btnCustom)))
+                .add(lblHint)
                 .addContainerGap())
+            .add(layout.createSequentialGroup()
+                .add(jLabel1)
+                .addContainerGap(424, Short.MAX_VALUE))
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(btnCustom))
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .addContainerGap()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(lblHint)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 18, Short.MAX_VALUE)
-                        .add(jLabel1)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
-                    .add(layout.createSequentialGroup()
+                        .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnCustom)
-                        .add(2, 2, 2)))
+                        .add(jLabel1))
+                    .add(btnCustom))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 103, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -156,7 +153,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             Archetype arch = new Archetype();
             arch.setArtifactId(panel.getArtifactId());
             arch.setGroupId(panel.getGroupId());
-            arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion());
+            arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N
             arch.setName("Custom archetype - " + panel.getArtifactId());
             childs.addArchetype(arch);
             //HACK - the added one will be last..
@@ -202,6 +199,10 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         Childs childs = new Childs(archetypes);
         AbstractNode root = new AbstractNode(childs);
         manager.setRootContext(root);
+        try {
+            manager.setSelectedNodes(new Node[] {root.getChildren().getNodes()[0]});
+        } catch (PropertyVetoException e) {
+        }
     }
 
     void read(WizardDescriptor wizardDescriptor) {
