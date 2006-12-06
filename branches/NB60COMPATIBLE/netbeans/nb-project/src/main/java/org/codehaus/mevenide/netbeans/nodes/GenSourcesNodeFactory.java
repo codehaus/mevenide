@@ -20,9 +20,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -35,10 +35,10 @@ import org.openide.nodes.Node;
  *
  * @author mkleint
  */
-public class SourcesNodeFactory implements NodeFactory {
+public class GenSourcesNodeFactory implements NodeFactory {
     
-    /** Creates a new instance of SourcesNodeFactory */
-    public SourcesNodeFactory() {
+    /** Creates a new instance of GenSourcesNodeFactory */
+    public GenSourcesNodeFactory() {
     }
     
     public NodeList createNodes(Project project) {
@@ -58,9 +58,9 @@ public class SourcesNodeFactory implements NodeFactory {
             if (srcs == null) {
                 throw new IllegalStateException("need Sources instance in lookup"); //NOI18N
             }
-            SourceGroup[] javagroup = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-            for (int i = 0; i < javagroup.length; i++) {
-                list.add(javagroup[i]);
+            SourceGroup[] gengroup = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
+            for (int i = 0; i < gengroup.length; i++) {
+                list.add(gengroup[i]);
             }
             return list;
         }

@@ -82,7 +82,9 @@
                 <file name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance" boolvalue="true"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance"/>
+                <attr name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance"/>
