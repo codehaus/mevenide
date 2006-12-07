@@ -15,16 +15,15 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.embedder;
+package org.codehaus.mevenide.netbeans.embedder.exec;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.maven.wagon.events.TransferEvent;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.resource.Resource;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 
 /**
  *
@@ -32,11 +31,30 @@ import org.netbeans.api.progress.ProgressHandleFactory;
  */
 public class ProgressTransferListener implements TransferListener {
     
-    private long lenght = 0;
-    private int count = 0;
-    private ProgressHandle handle;
+    private static ThreadLocal<Integer> lengthRef = new ThreadLocal<Integer>();
+    private static ThreadLocal<Integer> countRef = new ThreadLocal<Integer>();
+    private static ThreadLocal<ProgressContributor> contribRef = new ThreadLocal<ProgressContributor>();
+    private static ThreadLocal<AggregateProgressHandle> handleRef = new ThreadLocal<AggregateProgressHandle>();
     /** Creates a new instance of ProgressTransferListener */
     public ProgressTransferListener() {
+    }
+    
+    public static void setAggregateHandle(AggregateProgressHandle hndl) {
+        handleRef.set(hndl);
+    }
+    
+    public AggregateProgressHandle getHandle() {
+        if (handleRef.get() == null) {
+            handleRef.set(AggregateProgressFactory.createHandle("Fallback", new ProgressContributor[0], null, null));
+            handleRef.get().start();
+            //TODO just a fallback.. shall not happen..
+        }
+        return handleRef.get();
+    }
+    
+    public static void clearAggregateHandle() {
+        handleRef.remove();
+        contribRef.remove();
     }
     
     public void transferInitiated(TransferEvent transferEvent) {
@@ -47,37 +65,40 @@ public class ProgressTransferListener implements TransferListener {
         String name = (transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? 
                           "Downloading " : "Uploading ") 
                           + resName;
-        handle = ProgressHandleFactory.createHandle(name);
+        contribRef.set(AggregateProgressFactory.createProgressContributor(name));
     }
     
     public void transferStarted(TransferEvent transferEvent) {
         Resource res = transferEvent.getResource();
         int total = (int)Math.min((long)Integer.MAX_VALUE, res.getContentLength());
+        handleRef.get().addContributor(contribRef.get());
         if (total < 0) {
-            handle.start();
+            contribRef.get().start(0);
         } else {
-            handle.start(total);
+            contribRef.get().start(total);
         }
-        lenght = total;
-        count = 0;
-        handle.progress("Transfer Started...");
+        lengthRef.set(total);
+        countRef.set(0);
+        contribRef.get().progress("Transfer Started...");
     }
     
     public void transferProgress(TransferEvent transferEvent, byte[] b, int i) {
-        count = (int)Math.min((long)Integer.MAX_VALUE, (long)count + i);
-        if (lenght < 0) {
-            handle.progress("Transferring..");
+        countRef.set((int)Math.min((long)Integer.MAX_VALUE, (long)countRef.get() + i));
+        if (lengthRef.get() < 0) {
+            contribRef.get().progress("Transferring..");
         } else {
-            handle.progress("Transferred " + count, count);
+            contribRef.get().progress("Transferred " + countRef.get(), countRef.get());
         }
     }
     
     public void transferCompleted(TransferEvent transferEvent) {
-        handle.finish();
+        contribRef.get().finish();
+        contribRef.remove();
     }
     
     public void transferError(TransferEvent transferEvent) {
         transferCompleted(transferEvent);
+        //TODO some reporting??
     }
     
     public void debug(String string) {

@@ -30,6 +30,7 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.lifecycle.LifecycleExecutor;
 import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
+import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.classworlds.DuplicateRealmException;
@@ -146,6 +147,25 @@ public class EmbedderFactory {
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
             req.setUserSettingsFile(userSettingsPath);
             req.setGlobalSettingsFile(globalSettingsPath);
+            req.setConfigurationCustomizer(new ContainerCustomizer() {
+
+                public void customize(PlexusContainer plexusContainer) {
+                    try {
+                        ComponentDescriptor desc = new ComponentDescriptor();
+                        desc.setRole(TransferListener.class.getName());
+                        plexusContainer.addComponentDescriptor(desc);
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener");
+                        desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
+                        ComponentRequirement requirement = new ComponentRequirement();
+                        requirement.setRole(TransferListener.class.getName());
+                        desc.addRequirement(requirement);
+                    }
+                    catch (ComponentRepositoryException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+            
             try {
                 embedder.start(req);
             } catch (MavenEmbedderException e) {
@@ -222,6 +242,19 @@ public class EmbedderFactory {
                 } catch (PlexusConfigurationException ex) {
                     ex.printStackTrace();
                 }
+                try {
+                    desc = new ComponentDescriptor();
+                    desc.setRole(TransferListener.class.getName());
+                    plexusContainer.addComponentDescriptor(desc);
+                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener");
+                    desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
+                    ComponentRequirement requirement = new ComponentRequirement();
+                    requirement.setRole(TransferListener.class.getName());
+                    desc.addRequirement(requirement);
+                } catch (ComponentRepositoryException ex) {
+                    ex.printStackTrace();
+                }
+                
             }
         });
         

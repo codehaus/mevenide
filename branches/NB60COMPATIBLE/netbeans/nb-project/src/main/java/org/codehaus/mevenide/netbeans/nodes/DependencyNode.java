@@ -222,7 +222,7 @@ public class DependencyNode extends AbstractNode {
         
 //        acts.add(new EditAction());
 //        acts.add(RemoveDepAction.get(RemoveDepAction.class));
-        acts.add(new DownloadJavadocAndSourcesAction());
+//        acts.add(new DownloadJavadocAndSourcesAction());
         if (!hasJavadocInRepository()) {
             acts.add(new InstallLocalJavadocAction());
         }
@@ -295,29 +295,32 @@ public class DependencyNode extends AbstractNode {
         return getSourceFile().exists();
     }
     
-    void downloadJavadocSources(MavenEmbedder online, ProgressContributor progress) {
-        progress.start(3);
+    void downloadJavadocSources(MavenEmbedder online, ProgressContributor progress, boolean isjavadoc) {
+        progress.start(2);
         if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             progress.finish();
             return;
         }
-        Artifact javadoc = project.getEmbedder().createArtifactWithClassifier(
-                art.getGroupId(),
-                art.getArtifactId(),
-                art.getVersion(),
-                art.getType(),
-                "javadoc");
-        Artifact sources = project.getEmbedder().createArtifactWithClassifier(
-                art.getGroupId(),
-                art.getArtifactId(),
-                art.getVersion(),
-                art.getType(),
-                "sources");
         try {
-            progress.progress("Checking Javadoc for " + art.getId(), 1);
-            online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
-            progress.progress("Checking Sources for " + art.getId(), 2);
-            online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+            if (isjavadoc) {
+                Artifact javadoc = project.getEmbedder().createArtifactWithClassifier(
+                    art.getGroupId(),
+                    art.getArtifactId(),
+                    art.getVersion(),
+                    art.getType(),
+                    "javadoc");
+                progress.progress("Checking Javadoc for " + art.getId(), 1);
+                online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+            } else {
+                Artifact sources = project.getEmbedder().createArtifactWithClassifier(
+                    art.getGroupId(),
+                    art.getArtifactId(),
+                    art.getVersion(),
+                    art.getType(),
+                    "sources");
+                progress.progress("Checking Sources for " + art.getId(), 1);
+                online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
+            }
         } catch (ArtifactNotFoundException ex) {
             // just ignore..ex.printStackTrace();
         } catch (ArtifactResolutionException ex) {
@@ -442,23 +445,23 @@ public class DependencyNode extends AbstractNode {
     }
     
     
-    private class DownloadJavadocAndSourcesAction extends AbstractAction implements Runnable {
-        public DownloadJavadocAndSourcesAction() {
-            putValue(Action.NAME, "Download Javadoc & Source");
-        }
-        
-        public void actionPerformed(ActionEvent event) {
-            RequestProcessor.getDefault().post(this);
-        }
-        
-        public void run() {
-            ProgressContributor contrib = AggregateProgressFactory.createProgressContributor("single"); //NOI18N
-            AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", new ProgressContributor[] {contrib}, null, null);
-            handle.start();
-            downloadJavadocSources(EmbedderFactory.getOnlineEmbedder(), contrib);
-            handle.finish();
-        }
-    }
+//    private class DownloadJavadocAndSourcesAction extends AbstractAction implements Runnable {
+//        public DownloadJavadocAndSourcesAction() {
+//            putValue(Action.NAME, "Download Javadoc & Source");
+//        }
+//        
+//        public void actionPerformed(ActionEvent event) {
+//            RequestProcessor.getDefault().post(this);
+//        }
+//        
+//        public void run() {
+//            ProgressContributor contrib = AggregateProgressFactory.createProgressContributor("single"); //NOI18N
+//            AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", new ProgressContributor[] {contrib}, null, null);
+//            handle.start();
+//            downloadJavadocSources(EmbedderFactory.getOnlineEmbedder(), contrib);
+//            handle.finish();
+//        }
+//    }
     
     private class RemoveDependencyAction extends AbstractAction {
         public RemoveDependencyAction() {

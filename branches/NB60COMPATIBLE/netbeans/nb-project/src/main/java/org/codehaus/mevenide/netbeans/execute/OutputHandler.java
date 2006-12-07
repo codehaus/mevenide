@@ -23,20 +23,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.monitor.event.EventMonitor;
-import org.apache.maven.wagon.events.TransferEvent;
-import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
-import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
-import org.netbeans.api.progress.ProgressHandle;
+import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Lookup;
 import org.openide.util.io.NullOutputStream;
@@ -47,9 +49,7 @@ import org.openide.windows.OutputWriter;
  * handling of output coming from maven builds.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogger {
-    
-    private boolean failed = false;
+class OutputHandler implements EventMonitor, MavenEmbedderLogger {
     
     private InputOutput inputOutput;
     
@@ -63,7 +63,7 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     private HashMap processors;
     private OutputVisitor visitor;
 
-    private ProgressHandle handle;
+    private AggregateProgressHandle handle;
 
     private boolean doCancel = false;
 
@@ -71,13 +71,16 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
     
     private Set currentProcessors;
     
-    private ProgressTransferListener downloadProgress;
+    private List<ProgressContributor> progress = new ArrayList<ProgressContributor>();
+    private boolean isReactor = false;
+    private ProgressContributor cont;
+    private int total = 10;
+    private int count = 0;
     
     OutputHandler() {
         processors = new HashMap();
         currentProcessors = new HashSet();
         visitor = new OutputVisitor();
-        downloadProgress = new ProgressTransferListener();
     }
     
     /**
@@ -89,7 +92,7 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         stdOut = std;
     }
     
-    public OutputHandler(InputOutput io, NbMavenProject proj, ProgressHandle hand)    {
+    public OutputHandler(InputOutput io, NbMavenProject proj, AggregateProgressHandle hand)    {
         this();
         inputOutput = io;
         handle = hand;
@@ -148,10 +151,6 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         }
     }
     
-    public void transferProgress(TransferEvent transferEvent, byte[] b, int i)    {
-        downloadProgress.transferProgress(transferEvent, b, i);
-    }
-    
     private String getEventId(String eventName, String target) {
         if ("project-execute".equals(eventName)) {
             return eventName;
@@ -166,8 +165,38 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
         }
         processStart(getEventId(eventName, target), stdOut);
         if (handle != null) {
-            // null in case of tests
-            handle.progress(target);
+            if ("reactor-execute".equals(eventName)) { //NOI18N
+                isReactor = true;
+            }
+            if (isReactor && "project-execute".equals(eventName)) { //NOI18N
+                isReactor = false;
+                int bufferSize = MyLifecycleExecutor.getAffectedProjects().size();
+                for (int i = 0; i < bufferSize; i++) {
+                    ProgressContributor contr = AggregateProgressFactory. createProgressContributor("project" + i); //NOI18N
+                    handle.addContributor(contr);
+                    progress.add(contr);
+                }
+            }
+            if ("project-execute".equals(eventName)) { //NOI18N
+                if (progress.size() > 0) {
+                    cont = progress.remove(0);
+                    cont.start(1);
+                } else {
+                    cont = AggregateProgressFactory. createProgressContributor("project"); //NOI18N
+                }
+                // instead of one, possibly try to guess the number of steps in project build..
+                count = 0;
+                cont.start(total);
+            }
+            if ("mojo-execute".equals(eventName)) {
+                count = count + 1;
+                if (count < total) {
+                    cont.progress(target, count);
+                }
+            }
+        }
+        if (cont != null) {
+            cont.progress(target);
         }
     }
     
@@ -180,26 +209,14 @@ class OutputHandler implements EventMonitor, TransferListener, MavenEmbedderLogg
             // processors in set..
             currentProcessors.removeAll(set);
         }
+        if ("project-execute".equals(eventName) &&  cont != null) { //NOI18N
+            total = count;
+            cont.finish();
+        }
         if (doCancel) {
             assert task != null;
             task.stop();
         }
-    }
-    
-    public void transferStarted(TransferEvent transferEvent)    {
-        downloadProgress.transferStarted(transferEvent);
-    }
-    
-    public void transferInitiated(TransferEvent transferEvent)    {
-        downloadProgress.transferInitiated(transferEvent);
-    }
-    
-    public void transferError(TransferEvent transferEvent)    {
-        downloadProgress.transferError(transferEvent);
-    }
-    
-    public void transferCompleted(TransferEvent transferEvent)    {
-        downloadProgress.transferCompleted(transferEvent);
     }
     
     public void debug(String string) {

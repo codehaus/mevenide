@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.awt.event.ActionEvent;
 import java.io.*;
@@ -52,11 +53,14 @@ import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
-import org.netbeans.api.progress.ProgressHandle;
-import org.netbeans.api.progress.ProgressHandleFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
+import org.netbeans.api.progress.aggregate.ProgressMonitor;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -80,7 +84,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     private ReRunAction rerun;
     private ReRunAction rerunDebug;
     private StopAction stop;
-    private ProgressHandle handle;
+    private AggregateProgressHandle handle;
     private OutputHandler out;
     
     /**
@@ -96,7 +100,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         config = conf;
         String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
                                                   "Execute Maven";  
-        handle = ProgressHandleFactory.createHandle(name, this);
+        handle = AggregateProgressFactory.createHandle(name, new ProgressContributor[0], this, null);
+        ProgressContributor backupContrib = AggregateProgressFactory.createProgressContributor("backup");
+        handle.addContributor(backupContrib);
     }
     
     private InputOutput createInputOutput() {
@@ -159,6 +165,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         handle.start();
         try {
             MavenEmbedder embedder;
+            ProgressTransferListener.setAggregateHandle(handle);
             out = new OutputHandler(ioput, config.getProject(), handle);
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             if (config.getProject() != null) {
@@ -232,7 +239,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             }
             req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
             req.addEventMonitor(out);
-            req.setTransferListener(out);
+            req.setTransferListener(new ProgressTransferListener());
             //            req.setReactorActive(true);
             
             req.setFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
@@ -265,6 +272,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             throw death;
         } finally {
             handle.finish();
+            ProgressTransferListener.clearAggregateHandle();
             IOBridge.restoreSystemInOutErr();
             ioput.getOut().close();
             ioput.getErr().close();

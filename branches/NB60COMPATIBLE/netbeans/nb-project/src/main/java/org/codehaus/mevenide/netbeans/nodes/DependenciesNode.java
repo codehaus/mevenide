@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -37,7 +38,7 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
@@ -73,9 +74,9 @@ class DependenciesNode extends AbstractNode {
         super(new DependenciesChildren(mavproject, type));
         setName("Dependencies" + type); //NOI18N
         switch (type) {
-            case TYPE_COMPILE : setDisplayName("Dependencies"); break;
-            case TYPE_TEST : setDisplayName("Test Dependencies"); break;
-            case TYPE_RUNTIME : setDisplayName("Runtime Dependencies"); break;
+            case TYPE_COMPILE : setDisplayName("Libraries"); break;
+            case TYPE_TEST : setDisplayName("Test Libraries"); break;
+            case TYPE_RUNTIME : setDisplayName("Runtime Libraries"); break;
         }
         project = mavproject;
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/defaultFolder.gif"); //NOI18N
@@ -103,7 +104,8 @@ class DependenciesNode extends AbstractNode {
                               null,
 //                              new DownloadAction(),
                               new ResolveDepsAction(),
-                              new DownloadJavadocSrcAction(),
+                              new DownloadJavadocSrcAction(true),
+                              new DownloadJavadocSrcAction(false),
                               new ShowGraphAction()
         };
     }
@@ -169,12 +171,12 @@ class DependenciesNode extends AbstractNode {
     
     private class AddDependencyAction extends AbstractAction {
         public AddDependencyAction() {
-            putValue(Action.NAME, "Add Dependency...");
+            putValue(Action.NAME, "Add Library...");
         }
         public void actionPerformed(ActionEvent event) {
             AddDependencyPanel pnl = new AddDependencyPanel();
         
-            DialogDescriptor dd = new DialogDescriptor(pnl, "Add Dependency");
+            DialogDescriptor dd = new DialogDescriptor(pnl, "Add Library");
             dd.setClosingOptions(new Object[] {
                 pnl.getOkButton(),
                 DialogDescriptor.CANCEL_OPTION
@@ -185,7 +187,7 @@ class DependenciesNode extends AbstractNode {
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (pnl.getOkButton() == ret) {
-                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
                 Model model = WriterUtils.loadModel(fo);
                 if (model != null) {
                     Dependency dep = new Dependency();
@@ -204,48 +206,11 @@ class DependenciesNode extends AbstractNode {
         }
     }
     
-//    
-//    private class DownloadAction extends AbstractAction {
-//
-//        public DownloadAction() {
-//            putValue(Action.NAME, "Download missing dependencies");
-//        }
-//
-//        public void actionPerformed(ActionEvent evnt) {
-//            RequestProcessor.getDefault().post(new Runnable() {
-//                public void run() {
-//                    List lst = new ArrayList(((DependenciesChildren)getChildren()).deps);
-//                    Iterator it = lst.iterator();
-//                    boolean atLeastOneDownloaded = false;
-//                    while (it.hasNext()) {
-//                        DependencyPOMChange change = (DependencyPOMChange)it.next();
-//                        IRepositoryReader[] readers = RepositoryUtilities.createRemoteReaders(project.getPropertyResolver());
-//                        Dependency dep = DependencyNode.createDependencySnapshot(change.getChangedContent(), project.getPropertyResolver());
-//                        try {
-//                            boolean downloaded = RepositoryUtilities.downloadArtifact(readers, project, dep);
-//                            if (downloaded) {
-//                                atLeastOneDownloaded = true;
-//                            }
-//                        } catch (FileNotFoundException e) {
-//                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
-//                            + " is not available in repote repositories.");
-//                        } catch (Exception exc) {
-//                            StatusDisplayer.getDefault().setStatusText("Error downloading " 
-//                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());
-//                        }
-//                    }
-//                    if (atLeastOneDownloaded) {
-//                        project.firePropertyChange(MavenProject.PROP_PROJECT);
-//                    }
-//                }
-//            });
-//        }
-//        
-//    }
-//    
     private class DownloadJavadocSrcAction extends AbstractAction {
-        public DownloadJavadocSrcAction() {
-            putValue(Action.NAME, "Check repository(ies) for javadoc and sources");
+        private boolean javadoc;
+        public DownloadJavadocSrcAction(boolean javadoc) {
+            putValue(Action.NAME, javadoc ? "Download All Library Javadoc" : "Download All Library Sources");
+            this.javadoc = javadoc;
         }
         
         public void actionPerformed(ActionEvent evnt) {
@@ -257,14 +222,18 @@ class DependenciesNode extends AbstractNode {
                     for (int i = 0; i < nds.length; i++) {
                         contribs[i] = AggregateProgressFactory.createProgressContributor("multi-" + i);
                     }
-                    AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", 
+                    AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download " + (javadoc ? "Javadoc" : "Sources"), 
                             contribs, null, null);
                     handle.start();
                     for (int i = 0; i < nds.length; i++) {
                         if (nds[i] instanceof DependencyNode) {
                             DependencyNode nd = (DependencyNode)nds[i];
-                            if (!nd.hasJavadocInRepository() || !nd.hasSourceInRepository()) {
-                                nd.downloadJavadocSources(online, contribs[i]);
+                            if (javadoc && !nd.hasJavadocInRepository()) {
+                                nd.downloadJavadocSources(online, contribs[i], javadoc);
+                            } else if (!javadoc && !nd.hasSourceInRepository()) {
+                                nd.downloadJavadocSources(online, contribs[i], !javadoc);
+                            } else {
+                                contribs[i].finish();
                             }
                         }
                     }
@@ -276,17 +245,23 @@ class DependenciesNode extends AbstractNode {
 
     private class ResolveDepsAction extends AbstractAction {
         public ResolveDepsAction() {
-            putValue(Action.NAME, "Download Dependencies");
+            putValue(Action.NAME, "Download All Libraries");
         }
         
         public void actionPerformed(ActionEvent evnt) {
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle("Downloading Libraries", 
+                            new ProgressContributor[] {
+                                AggregateProgressFactory.createProgressContributor("zaloha") }, 
+                            null, null);
+                    
                     boolean ok = true; 
                     try {
-                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")), 
-                                                           new ProgressTransferListener());
+                        ProgressTransferListener.setAggregateHandle(hndl);
+                        hndl.start();
+                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml"))); //NOI18N
                     } catch (ArtifactNotFoundException ex) {
                         ex.printStackTrace();
                         ok = false;
@@ -299,6 +274,9 @@ class DependenciesNode extends AbstractNode {
                         ex.printStackTrace();
                         ok = false;
                         StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
+                    } finally {
+                        hndl.finish();
+                        ProgressTransferListener.clearAggregateHandle();
                     }
                     if (ok) {
                         StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
@@ -311,12 +289,12 @@ class DependenciesNode extends AbstractNode {
     
     private class ShowGraphAction extends AbstractAction {
         public ShowGraphAction() {
-            putValue(Action.NAME, "Show Dependency Graph");
+            putValue(Action.NAME, "Show Library Dependency Graph");
         }
 
         public void actionPerformed(ActionEvent e) {
             TopComponent tc = new DependencyGraphTopComponent(project);
-            WindowManager.getDefault().findMode("editor").dockInto(tc);
+            WindowManager.getDefault().findMode("editor").dockInto(tc); //NOI18N
             tc.open();
             tc.requestActive();
         }

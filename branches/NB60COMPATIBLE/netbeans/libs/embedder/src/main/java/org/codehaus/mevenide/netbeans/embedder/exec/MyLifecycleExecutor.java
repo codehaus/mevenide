@@ -60,10 +60,12 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
 
     private Map phaseToLifecycleMap;
     
-    private static ThreadLocal<ReactorManager> reactorManager = new ThreadLocal<ReactorManager>();
+    private static ThreadLocal<List<File>> fileList = new ThreadLocal<List<File>>();
     
     public static List<File> getAffectedProjects() {
-        ReactorManager rm = reactorManager.get();
+        return fileList.get() == null ? Collections.EMPTY_LIST : fileList.get();
+    }
+    public List<File> readAffectedProjects(ReactorManager rm) {
         if (rm != null) {
             List lst = rm.getSortedProjects();
             Iterator it = lst.iterator();
@@ -88,7 +90,7 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
     public void execute( MavenSession session, ReactorManager rm, EventDispatcher dispatcher )
         throws BuildFailureException, LifecycleExecutionException
     {
-        reactorManager.set(rm);
+        fileList.set(readAffectedProjects(rm));
         createExecutor().execute( session, rm, dispatcher);
     }
 

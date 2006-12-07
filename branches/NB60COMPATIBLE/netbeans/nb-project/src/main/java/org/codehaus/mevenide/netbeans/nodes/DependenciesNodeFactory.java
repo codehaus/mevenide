@@ -84,7 +84,7 @@ public class DependenciesNodeFactory implements NodeFactory {
             } else if (key == KEY_RUNTIME_DEPENDENCIES) {
                 return  new DependenciesNode(project, DependenciesNode.TYPE_RUNTIME);
             }
-            assert false: "Wrong key for Dependencies NodeFactory: " + key;
+            assert false: "Wrong key for Dependencies NodeFactory: " + key; //NOI18N
             return null;
         }
         
