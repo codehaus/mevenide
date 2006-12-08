@@ -24,9 +24,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,6 +43,7 @@ import javax.swing.PopupFactory;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
 
 /**
@@ -222,7 +223,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     
     private void populateGroupId() {
         try {
-            List lst = CustomQueries.enumerateGroupIds();
+            List<String> lst = CustomQueries.enumerateGroupIds();
             groupCompleter = new Completer(lst, txtGroupId);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -231,7 +232,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     
     private void populateArtifact() {
         try {
-            List lst = CustomQueries.getArtifacts(txtGroupId.getText().trim());
+            List<String> lst = CustomQueries.getArtifacts(txtGroupId.getText().trim());
             artifactCompleter.setList(lst);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -240,8 +241,15 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     
     private void populateVersion() {
         try {
-            List lst = CustomQueries.getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
-            versionCompleter.setList(lst);
+            List<StandardArtifactIndexRecord> lst = CustomQueries.getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
+            List<String> vers = new ArrayList<String>();
+            for (StandardArtifactIndexRecord rec : lst) {
+                if (!vers.contains(rec.getVersion())) {
+                    vers.add(rec.getVersion());
+                }
+            }
+            Collections.sort(vers);
+            versionCompleter.setList(vers);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
@@ -344,18 +352,20 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         }
         
         private void buildPopup() {
-            completionListModel.clear();
-            Iterator it = completions.iterator();
             pattern = Pattern.compile(field.getText().trim() + ".+");
-            while (it.hasNext()) {
+            int entryindex = 0;
+            for (Object completion : completions) {
                 // check if match
-                Object completion = it.next();
                 Matcher matcher = pattern.matcher(completion.toString());
                 if (matcher.matches()) {
-                    // add if match
-                    completionListModel.add(completionListModel.getSize(),
-                            completion);
-                } 
+                    if (!completionListModel.contains(completion)) {
+                        completionListModel.add(entryindex,
+                                completion);
+                    }
+                    entryindex++;
+                } else {
+                    completionListModel.removeElement(completion);
+                }
             }
         }
         
@@ -373,6 +383,9 @@ public class AddDependencyPanel extends javax.swing.JPanel {
             field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "hidepopup");
             field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "fill-in");
             popup.show();
+            if (completionList.getSelectedIndex() != -1) {
+                completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
+            }
         }
         
         private void hidePopup() {
