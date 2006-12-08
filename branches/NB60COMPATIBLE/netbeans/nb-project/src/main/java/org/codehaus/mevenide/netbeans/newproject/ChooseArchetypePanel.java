@@ -37,6 +37,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -47,11 +48,13 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     private ExplorerManager manager;
 
     private ChooseWizardPanel wizardPanel;
+    private static final String PROP_ARCHETYPE = "archetype"; //NOI18N
+    TreeView tv;
     /** Creates new form ChooseArchetypePanel */
     public ChooseArchetypePanel(ChooseWizardPanel wizPanel) {
         initComponents();
         this.wizardPanel = wizPanel;
-        TreeView tv = new BeanTreeView();
+        tv = new BeanTreeView();
         manager = new ExplorerManager();
         pnlView.add(tv, BorderLayout.CENTER);
         tv.setBorder(jScrollPane1.getBorder());
@@ -60,8 +63,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         tv.setPopupAllowed(false);
         tv.setRootVisible(false);
         tv.setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        loading.setName("loading");
-        loading.setDisplayName("Loading...");
+        loading.setName("loading"); //NOI18N
+        loading.setDisplayName(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Loading"));
         Children childs = new Children.Array();
         childs.add(new Node[] {loading});
         AbstractNode root = new AbstractNode(childs);
@@ -74,6 +77,11 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             }
         });
         updateDescription();
+    }
+    
+    public void addNotify() {
+        super.addNotify();
+        tv.requestFocusInWindow();
     }
     
     /** This method is called from within the constructor to
@@ -90,13 +98,14 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         jScrollPane1 = new javax.swing.JScrollPane();
         taDescription = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         lblHint.setLabelFor(pnlView);
-        lblHint.setText("Maven Archetypes:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblHint, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_MavenArchetype")); // NOI18N
 
         pnlView.setLayout(new java.awt.BorderLayout());
 
-        btnCustom.setText("Custom...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnCustom, "Custom...");
         btnCustom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCustomActionPerformed(evt);
@@ -110,43 +119,45 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         jScrollPane1.setViewportView(taDescription);
 
         jLabel1.setLabelFor(taDescription);
-        jLabel1.setText("Description:");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Description")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(jLabel2)
+            .add(lblHint)
             .add(layout.createSequentialGroup()
-                .add(lblHint)
-                .addContainerGap())
-            .add(layout.createSequentialGroup()
-                .add(jLabel1)
-                .addContainerGap(424, Short.MAX_VALUE))
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
+                .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 428, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnCustom))
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(jLabel1)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .add(jLabel2)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblHint)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 150, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(jLabel1))
-                    .add(btnCustom))
+                    .add(btnCustom)
+                    .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 139, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(jLabel1)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomActionPerformed
         CustomArchetypePanel panel = new CustomArchetypePanel();
-        DialogDescriptor dd = new DialogDescriptor(panel, "Specify archetype details");
+        DialogDescriptor dd = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_Archetype_details"));
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             Childs childs = (Childs)manager.getRootContext().getChildren();
@@ -154,7 +165,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             arch.setArtifactId(panel.getArtifactId());
             arch.setGroupId(panel.getGroupId());
             arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N
-            arch.setName("Custom archetype - " + panel.getArtifactId());
+            arch.setName(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Custom", panel.getArtifactId()));
             childs.addArchetype(arch);
             //HACK - the added one will be last..
             Node[] list =  getExplorerManager().getRootContext().getChildren().getNodes();
@@ -170,6 +181,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCustom;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblHint;
     private javax.swing.JPanel pnlView;
@@ -207,7 +219,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
 
     void store(WizardDescriptor d) {
         if (manager.getSelectedNodes().length > 0) {
-            d.putProperty("archetype", manager.getSelectedNodes()[0].getValue("archetype"));
+            d.putProperty(PROP_ARCHETYPE, manager.getSelectedNodes()[0].getValue(PROP_ARCHETYPE));
         }
     }
 
@@ -221,14 +233,17 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     private void updateDescription() {
         Node[] nds = manager.getSelectedNodes();
         if (nds.length > 0) {
-            Archetype arch = (Archetype)((AbstractNode)nds[0]).getValue("archetype");
-            taDescription.setText("Name: " + (arch.getName() != null ? arch.getName() : arch.getArtifactId()) + 
-                                  "\nDescription: " + arch.getDescription() + 
-                                  "\n\nGroupId: " + arch.getGroupId() + 
-                                  "\nArtifactId: " + arch.getArtifactId() + 
-                                  "\nVersion: " + arch.getVersion());
+            Archetype arch = (Archetype)((AbstractNode)nds[0]).getValue(PROP_ARCHETYPE);
+            taDescription.setText(NbBundle.getMessage(ChooseArchetypePanel.class, "MSG_Description", 
+                    new Object[] {
+                            (arch.getName() != null ? arch.getName() : arch.getArtifactId()),
+                             arch.getDescription(),
+                             arch.getGroupId(),
+                             arch.getArtifactId(),
+                             arch.getVersion()
+                    }));
         } else {
-            taDescription.setText("<No template selected>");
+            taDescription.setText(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "MSG_NoTemplate"));
         }
     }
     
@@ -257,8 +272,8 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             String dn = arch.getName() == null ? arch.getArtifactId() : arch.getName();
             nd.setName(dn);
             nd.setDisplayName(dn);
-            nd.setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif");
-            nd.setValue("archetype", arch);
+            nd.setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif"); //NOI18N
+            nd.setValue(PROP_ARCHETYPE, arch);
             return new Node[] { nd };
         }
     }

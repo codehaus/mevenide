@@ -97,7 +97,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N
             dirF.getParentFile().mkdirs();
             
-            handle.progress("Processing Archetype", 2);
+            handle.progress(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
             runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
             handle.progress(3);
             // Always open top dir as a project:
@@ -137,9 +137,9 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             if (c instanceof JComponent) { // assume Swing components
                 JComponent jc = (JComponent) c;
                 // Step #.
-                jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i));
+                jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i)); //NOI18N
                 // Step name (actually the whole list for reference).
-                jc.putClientProperty("WizardPanel_contentData", steps);
+                jc.putClientProperty("WizardPanel_contentData", steps); //NOI18N
             }
         }
     }
@@ -152,7 +152,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     }
     
     public String name() {
-        return MessageFormat.format("{0} of {1}",
+        return MessageFormat.format(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "NameFormat"),
                 new Object[] {new Integer(index + 1), new Integer(panels.length)});
     }
     
@@ -190,7 +190,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         BeanRunConfig config = new BeanRunConfig();
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
-        config.setExecutionName("Project Creation");
+        config.setExecutionName(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
         config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create")); //NOI18N
         Properties props = new Properties();
         props.setProperty("archetypeArtifactId", arch.getArtifactId()); //NOI18N
@@ -208,7 +208,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         String oldUserdir = System.getProperty("user.dir"); //NOI18N
         System.setProperty("user.dir", dirF.getAbsolutePath()); //NOI18N
         try {
-            ExecutorTask task = RunUtils.executeMaven("Maven", config); //NOI18N
+            ExecutorTask task = RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Maven"), config); //NOI18N
             return task.result();
         } finally {
             if (oldUserdir == null) {

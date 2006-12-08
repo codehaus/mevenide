@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.netbeans.newproject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;

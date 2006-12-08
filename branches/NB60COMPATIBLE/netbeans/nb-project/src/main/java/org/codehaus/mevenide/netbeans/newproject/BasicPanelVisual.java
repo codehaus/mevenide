@@ -30,7 +30,9 @@ import org.openide.filesystems.FileUtil;
 
 public class BasicPanelVisual extends JPanel implements DocumentListener {
     
-    public static final String PROP_PROJECT_NAME = "projectName";
+    public static final String PROP_PROJECT_NAME = "projectName"; //NOI18N
+    
+    private static final String ERROR_MSG = "WizardPanel_errorMessage"; //NOI18N
     
     private BasicWizardPanel panel;
     private int type;
@@ -84,12 +86,12 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         jLabel1 = new javax.swing.JLabel();
 
         projectNameLabel.setLabelFor(projectNameTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel, "Project &Name:");
+        org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_ProjectName")); // NOI18N
 
         projectLocationLabel.setLabelFor(projectLocationTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(projectLocationLabel, "Project &Location:");
+        org.openide.awt.Mnemonics.setLocalizedText(projectLocationLabel, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_ProjectLocation")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(browseButton, "Br&owse...");
+        org.openide.awt.Mnemonics.setLocalizedText(browseButton, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "BTN_Browse")); // NOI18N
         browseButton.setActionCommand("BROWSE");
         browseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -98,29 +100,29 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         });
 
         createdFolderLabel.setLabelFor(createdFolderTextField);
-        org.openide.awt.Mnemonics.setLocalizedText(createdFolderLabel, "Project &Folder:");
+        org.openide.awt.Mnemonics.setLocalizedText(createdFolderLabel, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_ProjectFolder")); // NOI18N
 
         createdFolderTextField.setEditable(false);
 
-        lblArtifactId.setLabelFor(txtGroupId);
-        org.openide.awt.Mnemonics.setLocalizedText(lblArtifactId, "Artifact Id:");
+        lblArtifactId.setLabelFor(txtArtifactId);
+        org.openide.awt.Mnemonics.setLocalizedText(lblArtifactId, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_ArtifactId")); // NOI18N
 
         txtArtifactId.setEditable(false);
 
-        lblGroupId.setLabelFor(txtArtifactId);
-        org.openide.awt.Mnemonics.setLocalizedText(lblGroupId, "Group Id:");
+        lblGroupId.setLabelFor(txtGroupId);
+        org.openide.awt.Mnemonics.setLocalizedText(lblGroupId, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_GroupId")); // NOI18N
 
         txtGroupId.setText("com.mycompany");
 
         lblVersion.setLabelFor(txtVersion);
-        org.openide.awt.Mnemonics.setLocalizedText(lblVersion, "Version:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblVersion, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_Version")); // NOI18N
 
         txtVersion.setText("1.0-SNAPSHOT");
 
         lblPackage.setLabelFor(txtPackage);
-        org.openide.awt.Mnemonics.setLocalizedText(lblPackage, "Package:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblPackage, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_Package")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, "(Optional)");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_Optional")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -190,10 +192,10 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     
     private void browseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_browseButtonActionPerformed
         String command = evt.getActionCommand();
-        if ("BROWSE".equals(command)) {
+        if ("BROWSE".equals(command)) { //NOI18N
             JFileChooser chooser = new JFileChooser();
             FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
-            chooser.setDialogTitle("Select Project Location");
+            chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "TIT_Select_Project_Location"));
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             String path = this.projectLocationTextField.getText();
             if (path.length() > 0) {
@@ -240,14 +242,14 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     boolean valid(WizardDescriptor wizardDescriptor) {
         
         if (projectNameTextField.getText().length() == 0) {
-            wizardDescriptor.putProperty("WizardPanel_errorMessage",
-                    "Project Name is not a valid folder name.");
+            wizardDescriptor.putProperty(ERROR_MSG,
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Name_is_not_valid"));
             return false; // Display name not specified
         }
         File f = FileUtil.normalizeFile(new File(projectLocationTextField.getText()).getAbsoluteFile());
         if (!f.isDirectory()) {
-            String message = "Project Folder is not a valid path.";
-            wizardDescriptor.putProperty("WizardPanel_errorMessage", message);
+            String message = org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
+            wizardDescriptor.putProperty(ERROR_MSG, message); //NOI18N
             return false;
         }
         final File destFolder = FileUtil.normalizeFile(new File(createdFolderTextField.getText()).getAbsoluteFile());
@@ -257,40 +259,40 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
             projLoc = projLoc.getParentFile();
         }
         if (projLoc == null || !projLoc.canWrite()) {
-            wizardDescriptor.putProperty("WizardPanel_errorMessage",
-                    "Project Folder cannot be created.");
+            wizardDescriptor.putProperty(ERROR_MSG, //NOI18N
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_cannot_be_created"));
             return false;
         }
         
         if (FileUtil.toFileObject(projLoc) == null) {
-            String message = "Project Folder is not a valid path.";
-            wizardDescriptor.putProperty("WizardPanel_errorMessage", message);
+            String message = org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
+            wizardDescriptor.putProperty(ERROR_MSG, message); //NOI18N
             return false;
         }
         
         File[] kids = destFolder.listFiles();
         if (destFolder.exists() && kids != null && kids.length > 0) {
             // Folder exists and is not empty
-            wizardDescriptor.putProperty("WizardPanel_errorMessage",
-                    "Project Folder already exists and is not empty.");
+            wizardDescriptor.putProperty(ERROR_MSG,
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_exists"));
             return false;
         }
         if (txtArtifactId.getText().trim().length() == 0) {
-            wizardDescriptor.putProperty("WizardPanel_errorMessage", 
-                    "Maven project requires defined artifactId.");
+            wizardDescriptor.putProperty(ERROR_MSG, 
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Require_artifactId"));
             return false;
         }
         if (txtGroupId.getText().trim().length() == 0) {
-            wizardDescriptor.putProperty("WizardPanel_errorMessage", 
-                    "Maven project requires defined groupId.");
+            wizardDescriptor.putProperty(ERROR_MSG, 
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_groupId"));
             return false;
         }
         if (txtVersion.getText().trim().length() == 0) {
-            wizardDescriptor.putProperty("WizardPanel_errorMessage", 
-                    "Maven project requires a version.");
+            wizardDescriptor.putProperty(ERROR_MSG, 
+                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_version"));
             return false;
         }
-        wizardDescriptor.putProperty("WizardPanel_errorMessage", "");
+        wizardDescriptor.putProperty(ERROR_MSG, "");
         return true;
     }
     
@@ -298,12 +300,12 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         String name = projectNameTextField.getText().trim();
         String folder = createdFolderTextField.getText().trim();
         
-        d.putProperty("projdir", new File(folder));
-        d.putProperty("name", name);
-        d.putProperty("artifactId", txtArtifactId.getText().trim());
-        d.putProperty("groupId", txtGroupId.getText().trim());
-        d.putProperty("version", txtVersion.getText().trim());
-        d.putProperty("package", txtPackage.getText().trim());
+        d.putProperty("projdir", new File(folder)); //NOI18N
+        d.putProperty("name", name); //NOI18N
+        d.putProperty("artifactId", txtArtifactId.getText().trim()); //NOI18N
+        d.putProperty("groupId", txtGroupId.getText().trim()); //NOI18N
+        d.putProperty("version", txtVersion.getText().trim()); //NOI18N
+        d.putProperty("package", txtPackage.getText().trim()); //NOI18N
     }
     
     void read(WizardDescriptor settings) {
@@ -315,9 +317,11 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         }
         this.projectLocationTextField.setText(projectLocation.getAbsolutePath());
         
-        String projectName = (String) settings.getProperty("name");
+        String projectName = (String) settings.getProperty("name"); //NOI18N
+
+        //TODO add the incremental name changes..
         if(projectName == null) {
-            projectName = "mavenproject";
+            projectName = "mavenproject"; //NOI18N
         }
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();
@@ -375,7 +379,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         
         if (!changedPackage && (projectNameTextField.getDocument() == doc || txtGroupId.getDocument() == doc)) {
             txtPackage.getDocument().removeDocumentListener(this);
-            txtPackage.setText(txtGroupId.getText() + "." + projectNameTextField.getText());
+            txtPackage.setText(txtGroupId.getText() + "." + projectNameTextField.getText()); //NOI18N
             txtPackage.getDocument().addDocumentListener(this);
         }
         

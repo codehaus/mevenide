@@ -37,22 +37,22 @@ public class MockArchetypeProvider implements ArchetypeProvider {
         simple.setArtifactId("maven-archetype-quickstart");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
-        simple.setName("Maven Quickstart Archetype");
-        simple.setDescription("An archetype which contains a sample Maven project.");
+        simple.setName(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "LBL_Maven_Quickstart_Archetype"));
+        simple.setDescription(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "HINT_MavenQuickStart"));
         toRet.add(simple);
         simple = new Archetype();
         simple.setArtifactId("maven-archetype-webapp");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
-        simple.setName("Maven Webapp Archetype");
-        simple.setDescription("An archetype which contains a sample Maven Webapp project");
+        simple.setName(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "LBL_Webapp_Archetype"));
+        simple.setDescription(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "HINT_Webapp_Archetype"));
         toRet.add(simple);
         simple = new Archetype();
         simple.setArtifactId("maven-archetype-mojo");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
-        simple.setName("Maven Mojo Archetype");
-        simple.setDescription("An archetype which contains a sample Maven plugin.");
+        simple.setName(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "LBL_Mojo_Archetype"));
+        simple.setDescription(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "HINT_Mojo_Archetype"));
         toRet.add(simple);
         return toRet;
     }

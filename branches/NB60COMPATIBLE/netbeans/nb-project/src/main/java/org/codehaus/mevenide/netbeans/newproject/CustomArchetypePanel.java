@@ -35,21 +35,30 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblGroupId = new javax.swing.JLabel();
         txtGroupId = new javax.swing.JTextField();
         lblArtifactId = new javax.swing.JLabel();
         txtArtifactId = new javax.swing.JTextField();
         lblVersion = new javax.swing.JLabel();
         txtVersion = new javax.swing.JTextField();
+        lblRepo = new javax.swing.JLabel();
+        txtRepo = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
 
         lblGroupId.setLabelFor(txtGroupId);
-        lblGroupId.setText("GroupId :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblGroupId, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_GroupId")); // NOI18N
 
         lblArtifactId.setLabelFor(txtArtifactId);
-        lblArtifactId.setText("ArtifactId :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblArtifactId, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_ArtifactId")); // NOI18N
 
         lblVersion.setLabelFor(txtVersion);
-        lblVersion.setText("Version :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblVersion, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_Version")); // NOI18N
+
+        lblRepo.setLabelFor(txtRepo);
+        org.openide.awt.Mnemonics.setLocalizedText(lblRepo, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_Repository")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_Optional")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -60,12 +69,15 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(lblGroupId)
                     .add(lblArtifactId)
-                    .add(lblVersion))
+                    .add(lblVersion)
+                    .add(lblRepo))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(txtVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                    .add(txtArtifactId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtGroupId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE))
+                    .add(jLabel1)
+                    .add(txtVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                    .add(txtArtifactId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtGroupId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                    .add(txtRepo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -83,17 +95,25 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblVersion)
                     .add(txtVersion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 20, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(lblRepo)
+                    .add(txtRepo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jLabel1))
         );
     }// </editor-fold>//GEN-END:initComponents
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
+    private javax.swing.JLabel lblRepo;
     private javax.swing.JLabel lblVersion;
     private javax.swing.JTextField txtArtifactId;
     private javax.swing.JTextField txtGroupId;
+    private javax.swing.JTextField txtRepo;
     private javax.swing.JTextField txtVersion;
     // End of variables declaration//GEN-END:variables
 
