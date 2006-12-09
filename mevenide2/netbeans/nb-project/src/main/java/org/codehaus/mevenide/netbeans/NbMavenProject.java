@@ -641,7 +641,8 @@ public final class NbMavenProject implements Project {
             "ant-script",           // NOI18N
             "ant-task",             // NOI18N
             "junit",                // NOI18N
-            "simple-files"          // NOI18N
+            "simple-files",         // NOI18N
+            "persistence",          // NOI18N
         };
         
         private static final String[] EJB_PRIVILEGED_NAMES = new String[] {
@@ -652,7 +653,9 @@ public final class NbMavenProject implements Project {
             "Templates/J2EE/Message", //NOI18N
 //            "Templates/WebServices/WebService", // NOI18N
 //            "Templates/WebServices/MessageHandler", // NOI18N
-            "Templates/Classes/Class.java" // NOI18N
+            "Templates/Classes/Class.java", // NOI18N
+            "Templates/Persistence/Entity.java", // NOI18N
+            "Templates/Persistence/RelatedCMP", // NOI18N                    
         };
         
         private static final String[] WEB_TYPES = new String[] {
@@ -700,7 +703,8 @@ public final class NbMavenProject implements Project {
             // "web-types",         // NOI18N
             "junit",                // NOI18N
             // "MIDP",              // NOI18N
-            "simple-files"          // NOI18N
+            "simple-files",          // NOI18N
+            "persistence"            // NOI18N
         };
         
         private static final String[] JAR_PRIVILEGED_NAMES = new String[] {
@@ -710,6 +714,8 @@ public final class NbMavenProject implements Project {
             "Templates/GUIForms/JPanel.java", // NOI18N
             "Templates/GUIForms/JFrame.java", // NOI18N
 //            "Templates/WebServices/WebServiceClient"   // NOI18N
+            "Templates/Persistence/Entity.java", // NOI18N
+            "Templates/Persistence/RelatedCMP", // NOI18N                    
         };
         
         private static final String[] POM_APPLICATION_TYPES = new String[] {
@@ -743,6 +749,7 @@ public final class NbMavenProject implements Project {
             // "MIDP",              // NOI18N
             "simple-files",         // NOI18N
             "ear-types",            // NOI18N
+            "persistence",          // NOI18N
         };
         
         private NbMavenProject project;
