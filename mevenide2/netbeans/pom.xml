@@ -63,6 +63,7 @@
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
      <module>nb-repo-browser</module>
+     <module>persistence</module>
   </modules>
     <repositories>
         <repository>

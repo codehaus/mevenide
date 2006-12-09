@@ -103,10 +103,6 @@
             <type>spec</type>
         </dependency>
         <dependency>
-            <id>org.netbeans.modules:org-netbeans-modules-j2ee-persistenceapi</id>
-            <type>impl</type>
-        </dependency>
-        <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-metadata</id>
             <type>spec</type>
         </dependency>
