@@ -84,6 +84,6 @@
       <!--a fallback to make it work everywhere -->
       <java142.home>${java.home}/..</java142.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE50</netbeans.release>
+       <netbeans.release>RELEASE55</netbeans.release>
   </properties>
 </project>
