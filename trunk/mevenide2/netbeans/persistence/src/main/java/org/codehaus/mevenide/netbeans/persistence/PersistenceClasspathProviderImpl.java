@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2006 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.netbeans.j2ee.persistence;
+package org.codehaus.mevenide.netbeans.persistence;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -22,7 +22,6 @@ import org.codehaus.mevenide.netbeans.AdditionalM2LookupProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
-import org.codehaus.mevenide.netbeans.j2ee.persistence.MavenPersistenceProvider;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.openide.filesystems.FileStateInvalidException;
@@ -54,7 +53,6 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
         private String lastType = "jar";
         private Object lastInstance = null;
         private CopyOnSave copyOnSave;
-        private boolean additionalProviderLoaded = false;
         
         public Provider(NbMavenProject proj, InstanceContent cont) {
             super(cont);
@@ -82,15 +80,6 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
                     ex.printStackTrace();
                 }
                 copyOnSave = null;
-            }
-            
-            // add Additional J2EE Providers
-            if (!additionalProviderLoaded)
-            {
-                MavenPersistenceProvider prov = new MavenPersistenceProvider(project);
-                content.add(prov);
-                
-                additionalProviderLoaded = true;
             }
             
             if ("war".equals(packaging) && !lastType.equals(packaging)) {

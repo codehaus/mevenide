@@ -125,11 +125,6 @@
             <artifactId>deployment-bridge</artifactId>
             <version>1.0</version>
         </dependency>        
-        <dependency>
-            <groupId>org.netbeans.modules</groupId>
-            <artifactId>org-netbeans-modules-j2ee-persistenceapi</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
     </dependencies>
     
     <build>
