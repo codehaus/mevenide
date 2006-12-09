@@ -73,6 +73,12 @@
                 <role>Mevenide2 Site creator</role>
             </roles>
         </contributor>
+        <contributor>
+            <name>Daniel Mohni</name>
+            <roles>
+                <role>Persistance support contribution</role>
+            </roles>
+        </contributor>
     </contributors>
     <dependencies>
         <dependency>
