@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.customizer;
 
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -362,10 +363,11 @@ public class ActionMappings extends javax.swing.JPanel {
     }
     
     private void updateColor(MappingWrapper wr) {
-        Color col = wr != null && wr.isUserDefined() ? TextComponentUpdater.DEFAULT : TextComponentUpdater.INHERITED;
-        txtGoals.setBackground(col);
-        txtProperties.setBackground(col);
-        txtProfiles.setBackground(col);
+        Font fnt = lblGoals.getFont();
+        fnt = fnt.deriveFont(wr != null && wr.isUserDefined() ? Font.BOLD : Font.PLAIN);
+        lblGoals.setFont(fnt);
+        lblProperties.setFont(fnt);
+        lblProfiles.setFont(fnt);
     }
     
     private String createPropertiesList(Properties properties) {

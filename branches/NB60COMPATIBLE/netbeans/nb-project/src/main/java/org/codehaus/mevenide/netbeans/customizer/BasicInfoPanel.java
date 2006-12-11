@@ -46,12 +46,12 @@ public class BasicInfoPanel extends javax.swing.JPanel {
         MavenProject project = handle.getProject().getParent();
         listeners = new ArrayList();
         try {
-            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId, lblGroupId)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId, lblArtifactId)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion, lblVersion)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName, lblName)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging, lblPackaging)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription, lblDescription)); //NOI18N
         } catch (NoSuchMethodException ex) {
             ex.printStackTrace();
         }

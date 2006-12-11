@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.customizer;
 
 import java.awt.Color;
+import java.awt.Font;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
@@ -31,17 +33,17 @@ import javax.swing.text.JTextComponent;
  * @author mkleint
  */
 public abstract class TextComponentUpdater implements DocumentListener, AncestorListener {
-    public static Color INHERITED = new Color(254, 255, 200);
-    public static Color DEFAULT = UIManager.getColor("TextField.background"); //NOI18N
     
     private JTextComponent component;
+    private JLabel label;
     
     private boolean inherited = false;
     
     /** Creates a new instance of TextComponentUpdater */
-    public TextComponentUpdater(JTextComponent comp) {
+    public TextComponentUpdater(JTextComponent comp, JLabel label) {
         component = comp;
         component.addAncestorListener(this);
+        this.label = label;
     }
     
     public abstract String getValue();
@@ -51,8 +53,9 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
     private void setModelValue() {
         if (inherited) {
             inherited = false;
-            component.setBackground(DEFAULT);
-            component.setToolTipText(""); //NOI18N
+//            component.setBackground(DEFAULT);
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
+            component.setToolTipText("");
         }
         setValue(component.getText().trim().length() == 0 ? null : component.getText());
         if (component.getText().trim().length() == 0) {
@@ -94,17 +97,22 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
     private void setTextFieldValue(String value, String projectValue, JTextComponent field) {
         if (value != null) {
             field.setText(value);
-            component.setToolTipText("");//NOI18N
+            component.setToolTipText("");
             inherited = false;
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
         } else if (projectValue != null) {
             field.setText(projectValue);
-            field.setBackground(INHERITED);
-            component.setToolTipText(org.openide.util.NbBundle.getMessage(TextComponentUpdater.class, "HINT_inherited"));
+            field.setSelectionEnd(projectValue.length());
+            field.setSelectionStart(0);
+//            field.setBackground(INHERITED);
+            label.setFont(label.getFont().deriveFont(Font.PLAIN));
+            component.setToolTipText("Value is inherited from parent POM.");
             inherited = true;
         } else {
-            field.setText(""); //NOI18N
-            component.setToolTipText(""); //NOI18N
+            field.setText("");
+            component.setToolTipText("");
             inherited = false;
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
         }
     }
     

@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.customizer;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
 
 /**
@@ -32,9 +33,9 @@ public class ReflectionTextComponentUpdater extends TextComponentUpdater {
     private Method defgetter;
     private Method modelsetter;
     /** Creates a new instance of ReflectionTextComponentUpdater */
-    public ReflectionTextComponentUpdater(String getter, String setter, Object model, Object defaults, JTextComponent field) 
+    public ReflectionTextComponentUpdater(String getter, String setter, Object model, Object defaults, JTextComponent field, JLabel label) 
                         throws NoSuchMethodException {
-        super(field);
+        super(field, label);
         this.model = model;
         this.defaults = defaults;
         modelgetter = model.getClass().getMethod(getter, new Class[0]);
