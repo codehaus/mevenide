@@ -379,9 +379,9 @@ public final class NbMavenProject implements Project {
         while (it.hasNext()) {
             Resource elem = (Resource) it.next();
             URI uri = FileUtilities.getDirURI(getProjectDirectory(), elem.getDirectory());
-            if (new File(uri).exists()) {
+//            if (new File(uri).exists()) {
                 toRet.add(uri);
-            }
+//            }
         }
         return toRet.toArray(new URI[toRet.size()]);
     }
