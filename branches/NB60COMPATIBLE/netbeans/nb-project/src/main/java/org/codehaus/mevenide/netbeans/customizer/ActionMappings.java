@@ -17,6 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import java.awt.Component;
+import javax.swing.JList;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Color;
 import java.awt.Font;
@@ -31,7 +33,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -40,6 +45,8 @@ import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
 
 /**
@@ -61,12 +68,9 @@ public class ActionMappings extends javax.swing.JPanel {
     /** Creates new form ActionMappings */
     public ActionMappings(ModelHandle hand, NbMavenProject proj) {
         initComponents();
-        //temporary
-        btnAdd.setVisible(false);
-        btnRemove.setText("Reset");
-        
         project = proj;
         handle = hand;
+        lstMappings.setCellRenderer(new Renderer());
         titles.put(ActionProvider.COMMAND_BUILD, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Build_project"));
         titles.put(ActionProvider.COMMAND_CLEAN, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Clean_project"));
         titles.put(ActionProvider.COMMAND_COMPILE_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Compile_file"));
@@ -129,6 +133,7 @@ public class ActionMappings extends javax.swing.JPanel {
         cbRecursively = new javax.swing.JCheckBox();
         cbSkipTests = new javax.swing.JCheckBox();
         lblHint = new javax.swing.JLabel();
+        lblMappings = new javax.swing.JLabel();
 
         lstMappings.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -138,6 +143,11 @@ public class ActionMappings extends javax.swing.JPanel {
         jScrollPane1.setViewportView(lstMappings);
 
         org.openide.awt.Mnemonics.setLocalizedText(btnAdd, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnAdd.text")); // NOI18N
+        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddActionPerformed(evt);
+            }
+        });
 
         org.openide.awt.Mnemonics.setLocalizedText(btnRemove, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnRemove.text")); // NOI18N
         btnRemove.addActionListener(new java.awt.event.ActionListener() {
@@ -162,32 +172,43 @@ public class ActionMappings extends javax.swing.JPanel {
 
         lblHint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
+        lblMappings.setLabelFor(lstMappings);
+        org.openide.awt.Mnemonics.setLocalizedText(lblMappings, "Ac&tions:");
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 388, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(lblMappings)
                     .add(layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 258, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(116, 116, 116)
+                        .add(cbRecursively, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(116, 116, 116)
+                        .add(cbSkipTests)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 573, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .add(116, 116, 116)
+                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))
+                    .add(lblGoals)
+                    .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(btnRemove)
-                            .add(btnAdd)))
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblGoals)
                             .add(lblProfiles)
                             .add(lblProperties))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                            .add(txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 272, Short.MAX_VALUE)
-                            .add(cbRecursively)
-                            .add(cbSkipTests))))
+                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                            .add(txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
+                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))))
+                .addContainerGap())
+            .add(layout.createSequentialGroup()
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(btnAdd)
+                    .add(btnRemove))
                 .addContainerGap())
         );
 
@@ -196,23 +217,24 @@ public class ActionMappings extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .add(lblMappings)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
                         .add(btnAdd)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnRemove))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnRemove)))
+                .add(10, 10, 10)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblGoals)
                     .add(txtGoals, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(12, 12, 12)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblProfiles)
                     .add(txtProfiles, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                .add(10, 10, 10)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblProperties)
                     .add(txtProperties, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -220,16 +242,35 @@ public class ActionMappings extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cbSkipTests)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
-                .addContainerGap())
+                .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .add(31, 31, 31))
         );
     }// </editor-fold>//GEN-END:initComponents
     
+private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
+    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine("Action Name:", "Enter action name");
+    Object ret = DialogDisplayer.getDefault().notify(nd);
+    if (ret == NotifyDescriptor.OK_OPTION) {
+        NetbeansActionMapping nam = new NetbeansActionMapping();
+        nam.setDisplayName(nd.getInputText());
+        nam.setActionName("CUSTOM-" + nd.getInputText()); //NOI18N
+        handle.getActionMappings().addAction(nam);
+        MappingWrapper wr = new MappingWrapper(nam);
+        wr.setUserDefined(true);
+        ((DefaultListModel)lstMappings.getModel()).addElement(wr);
+        lstMappings.setSelectedIndex(lstMappings.getModel().getSize() - 1);
+        lstMappings.ensureIndexIsVisible(lstMappings.getModel().getSize() - 1);
+    }
+}//GEN-LAST:event_btnAddActionPerformed
+
     private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
         Object obj = lstMappings.getSelectedValue();
         MappingWrapper wr = (MappingWrapper)obj;
         NetbeansActionMapping mapp = wr.getMapping();
         if (mapp != null) {
+            if (mapp.getActionName().startsWith("CUSTOM-")) {
+                ((DefaultListModel)lstMappings.getModel()).removeElement(wr);
+            }
             // try removing from model, if exists..
             List lst = handle.getActionMappings().getActions();
             if (lst != null) {
@@ -298,6 +339,18 @@ public class ActionMappings extends javax.swing.JPanel {
         addSingleAction(ActionProvider.COMMAND_DEBUG, user, model);
         addSingleAction(ActionProvider.COMMAND_DEBUG_SINGLE, user, model);
         addSingleAction(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, user, model);
+        List customs = user.getActionMappings().getActions();
+        if (customs != null) {
+            Iterator it = customs.iterator();
+            while (it.hasNext()) {
+                NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
+                if (elem.getActionName().startsWith("CUSTOM-")) {
+                    MappingWrapper wr = new MappingWrapper(elem);
+                    model.addElement(wr);
+                    wr.setUserDefined(true);
+                }
+            }
+        }
         lstMappings.setModel(model);
     }
     
@@ -387,7 +440,7 @@ public class ActionMappings extends javax.swing.JPanel {
         }
         return str;
     }
-
+    
     private boolean checkPropertiesList(Properties properties) {
         boolean skip = false;
         if (properties != null) {
@@ -413,6 +466,7 @@ public class ActionMappings extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblGoals;
     private javax.swing.JLabel lblHint;
+    private javax.swing.JLabel lblMappings;
     private javax.swing.JLabel lblProfiles;
     private javax.swing.JLabel lblProperties;
     private javax.swing.JList lstMappings;
@@ -420,24 +474,44 @@ public class ActionMappings extends javax.swing.JPanel {
     private javax.swing.JTextField txtProfiles;
     private javax.swing.JTextField txtProperties;
     // End of variables declaration//GEN-END:variables
-
-        private void writeProperties(final NetbeansActionMapping mapp) {
-            String text = txtProperties.getText();
-            Splitter split = new Splitter(text);
-            String tok = split.nextPair();
-            Properties props = new Properties();
-            while (tok != null) {
-                String[] prp = StringUtils.split(tok, "=", 2); //NOI18N
-                if (prp.length == 2) {
-                    props.setProperty(prp[0], prp[1]);
-                }
-                tok = split.nextPair();
+    
+    private void writeProperties(final NetbeansActionMapping mapp) {
+        String text = txtProperties.getText();
+        Splitter split = new Splitter(text);
+        String tok = split.nextPair();
+        Properties props = new Properties();
+        while (tok != null) {
+            String[] prp = StringUtils.split(tok, "=", 2); //NOI18N
+            if (prp.length == 2) {
+                props.setProperty(prp[0], prp[1]);
             }
-            if (cbSkipTests.isSelected()) {
-                props.setProperty(PROP_SKIP_TEST, "true"); //NOI18N
-            }
-            mapp.setProperties(props);
+            tok = split.nextPair();
         }
+        if (cbSkipTests.isSelected()) {
+            props.setProperty(PROP_SKIP_TEST, "true"); //NOI18N
+        }
+        mapp.setProperties(props);
+    }
+    
+    private static class Renderer extends DefaultListCellRenderer {
+        
+    
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int arg2, boolean arg3,
+                                                      boolean arg4) {
+            Component supers = super.getListCellRendererComponent(list, value, arg2, arg3, arg4);
+            if (supers instanceof JLabel && value instanceof MappingWrapper) {
+                MappingWrapper wr = (MappingWrapper)value;
+                JLabel lbl = (JLabel)supers;
+                if (wr.isUserDefined()) {
+                    lbl.setFont(lbl.getFont().deriveFont(Font.BOLD));
+                } else {
+                    lbl.setFont(lbl.getFont().deriveFont(Font.PLAIN));
+                }
+            }
+            return supers;
+        }
+}
     
     
     private class MappingWrapper {
@@ -565,7 +639,7 @@ public class ActionMappings extends javax.swing.JPanel {
             }
             return wr;
         }
-
+        
     }
     
     private class TestListener implements ActionListener {

@@ -13,33 +13,44 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="1" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="lblHint" alignment="0" pref="388" max="32767" attributes="0"/>
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jScrollPane1" pref="258" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnRemove" linkSize="1" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnAdd" linkSize="1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+          <Group type="102" attributes="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="lblMappings" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="116" pref="116" max="116" attributes="0"/>
+                      <Component id="cbRecursively" pref="652" max="32767" attributes="1"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="116" pref="116" max="116" attributes="0"/>
+                      <Component id="cbSkipTests" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace pref="573" max="32767" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="116" pref="116" max="116" attributes="0"/>
+                      <Component id="lblHint" pref="652" max="32767" attributes="0"/>
+                  </Group>
+                  <Component id="lblGoals" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblGoals" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblProfiles" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="lblProperties" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtGoals" alignment="0" pref="272" max="32767" attributes="0"/>
-                          <Component id="txtProfiles" alignment="0" pref="272" max="32767" attributes="0"/>
-                          <Component id="txtProperties" alignment="0" pref="272" max="32767" attributes="0"/>
-                          <Component id="cbRecursively" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbSkipTests" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="txtProfiles" alignment="0" pref="652" max="32767" attributes="2"/>
+                          <Component id="txtProperties" alignment="0" pref="652" max="32767" attributes="2"/>
+                          <Component id="txtGoals" alignment="0" pref="652" max="32767" attributes="2"/>
                       </Group>
                   </Group>
+              </Group>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <Component id="jScrollPane1" pref="638" max="32767" attributes="1"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="btnAdd" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRemove" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -48,37 +59,38 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
+              <Component id="lblMappings" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Component id="btnAdd" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblGoals" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtGoals" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblProfiles" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtProfiles" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblProperties" min="-2" max="-2" attributes="0"/>
-                  <Component id="txtProperties" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblProperties" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtProperties" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbRecursively" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbSkipTests" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="lblHint" pref="40" max="32767" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblHint" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -104,6 +116,9 @@
           <ResourceString bundle="org/codehaus/mevenide/netbeans/customizer/Bundle.properties" key="ActionMappings.btnAdd.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAddActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btnRemove">
       <Properties>
@@ -175,6 +190,14 @@
     <Component class="javax.swing.JLabel" name="lblHint">
       <Properties>
         <Property name="verticalAlignment" type="int" value="3"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblMappings">
+      <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="lstMappings"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Ac&amp;tions:"/>
       </Properties>
     </Component>
   </SubComponents>
