@@ -94,7 +94,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             final String ver = (String)wiz.getProperty("version"); //NOI18N
             final String gr = (String)wiz.getProperty("groupId"); //NOI18N
             final String pack = (String)wiz.getProperty("package"); //NOI18N
-            final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N
+            final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N<
             dirF.getParentFile().mkdirs();
             
             handle.progress(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
@@ -191,11 +191,15 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
         config.setExecutionName(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
+        //TODO externalize somehow to allow advanced users to change the value..
         config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create")); //NOI18N
         Properties props = new Properties();
         props.setProperty("archetypeArtifactId", arch.getArtifactId()); //NOI18N
         props.setProperty("archetypeGroupId", arch.getGroupId()); //NOI18N
         props.setProperty("archetypeVersion", arch.getVersion()); //NOI18N
+        if (arch.getRepository() != null) {
+            props.setProperty("remoteRepositories", arch.getRepository()); //NOI18N
+        }
         props.setProperty("artifactId", art); //NOI18N
         props.setProperty("groupId", gr); //NOI18N
         props.setProperty("version", ver); //NOI18N

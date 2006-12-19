@@ -165,7 +165,11 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             arch.setArtifactId(panel.getArtifactId());
             arch.setGroupId(panel.getGroupId());
             arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N
+            
             arch.setName(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Custom", panel.getArtifactId()));
+            if (panel.getRepository().length() != 0) {
+                arch.setRepository(panel.getRepository());
+            }
             childs.addArchetype(arch);
             //HACK - the added one will be last..
             Node[] list =  getExplorerManager().getRootContext().getChildren().getNodes();

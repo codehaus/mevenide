@@ -17,15 +17,21 @@
 
 package org.codehaus.mevenide.netbeans.newproject;
 
+import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.netbeans.TextValueCompleter;
+
 /**
  *
  * @author  mkleint
  */
 public class CustomArchetypePanel extends javax.swing.JPanel {
     
+    private TextValueCompleter completer;
     /** Creates new form CustomArchetypePanel */
     public CustomArchetypePanel() {
         initComponents();
+        completer = new TextValueCompleter(
+                MavenIndexSettings.getDefault().getCollectedRepositories(), txtRepo);
     }
     
     /** This method is called from within the constructor to
@@ -127,4 +133,9 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
     public String getVersion() {
         return txtVersion.getText().trim();
     }
+    
+    public String getRepository() {
+        return txtRepo.getText().trim();
+    }
+    
 }

@@ -28,6 +28,7 @@ public class Archetype {
     private String version;
     private String name;
     private String description;
+    private String repository;
     /** Creates a new instance of Archetype */
     public Archetype() {
     }
@@ -70,6 +71,20 @@ public class Archetype {
     
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    /**
+     * optional property.
+     */ 
+    public void setRepository(String repo) {
+        repository = repo;
+    }
+    
+    /**
+     * optional property.
+     */ 
+    public String getRepository() {
+        return repository;
     }
     
     public int hashCode() {
