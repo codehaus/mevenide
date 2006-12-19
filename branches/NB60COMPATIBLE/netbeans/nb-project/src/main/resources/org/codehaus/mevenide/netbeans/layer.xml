@@ -97,7 +97,10 @@
             </folder>    
             <folder name="Customizer">
                 <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance"/>
+                <!--attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance"/-->
                 <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
+                <!--attr name="org-codehaus-mevenide-netbeans-customizer-LibrariesProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/-->
                 <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
