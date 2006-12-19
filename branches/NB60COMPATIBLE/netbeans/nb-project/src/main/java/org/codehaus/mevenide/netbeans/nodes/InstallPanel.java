@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.nodes;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.Properties;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
@@ -25,9 +27,13 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.execution.ExecutorTask;
 import org.openide.util.HelpCtx;
 import org.openide.windows.WindowManager;
 
@@ -167,6 +173,27 @@ public class InstallPanel extends javax.swing.JPanel {
             return panel.getFile();
         }
         return null;
+    }
+    
+    public static void runInstallGoal(NbMavenProject project, File fil, Artifact art) {
+        BeanRunConfig brc = new BeanRunConfig();
+        brc.setExecutionDirectory(project.getPOMFile().getParentFile());
+        brc.setProject(project);
+        brc.setGoals(Collections.singletonList("install:install-file"));
+        brc.setExecutionName("install-artifact");
+        Properties props = new Properties();
+        props.put("artifactId", art.getArtifactId());
+        props.put("groupId", art.getGroupId());
+        props.put("version", art.getVersion());
+        props.put("packaging", art.getType());
+        props.put("file", fil.getAbsolutePath());
+        props.put("generatePom", "false");
+        brc.setProperties(props);
+        brc.setActivatedProfiles(Collections.EMPTY_LIST);
+        
+        ExecutorTask task = RunUtils.executeMaven("Install", brc);
+        //TODO how to handle errors
+        
     }
 
     private void addDocListener(DocumentListener documentListener) {

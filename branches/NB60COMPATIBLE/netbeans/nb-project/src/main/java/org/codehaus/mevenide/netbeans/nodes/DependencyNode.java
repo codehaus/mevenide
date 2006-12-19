@@ -154,9 +154,9 @@ public class DependencyNode extends AbstractNode {
     }
     
     private void setIconBase() {
-        if (isDependencyProjectOpen() && isTransitive()) {
+        if (longLiving && isDependencyProjectOpen() && isTransitive()) {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveMaven2Icon.gif"); //NOI18N
-        } else if (isDependencyProjectOpen()) {
+        } else if (longLiving && isDependencyProjectOpen()) {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif"); //NOI18N
         } else if (isTransitive()) {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveDependencyIcon.gif"); //NOI18N
@@ -260,7 +260,7 @@ public class DependencyNode extends AbstractNode {
         return false;
     }
     
-    private boolean isLocal() {
+    public boolean isLocal() {
         if (art instanceof NbArtifact) {
             NbArtifact nb = (NbArtifact)art;
             if (nb.isFakedSystemDependency()) {
@@ -274,14 +274,14 @@ public class DependencyNode extends AbstractNode {
         return (! Artifact.SCOPE_SYSTEM.equals(art.getScope())) &&  getJavadocFile().exists();
     }
     
-    private File getJavadocFile() {
+    public File getJavadocFile() {
         File artifact = art.getFile();
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
         return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");
     }
     
-    private File getSourceFile() {
+    public File getSourceFile() {
         File artifact = art.getFile();
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
@@ -331,7 +331,7 @@ public class DependencyNode extends AbstractNode {
         refreshNode();
     }
     
-    void downloadMainArtifact(MavenEmbedder online) {
+    public void downloadMainArtifact(MavenEmbedder online) {
         Artifact art2 = project.getEmbedder().createArtifactWithClassifier(
                 art.getGroupId(),
                 art.getArtifactId(),
@@ -620,27 +620,9 @@ public class DependencyNode extends AbstractNode {
         }
         
         public void actionPerformed(ActionEvent event) {
-            File fil = InstallPanel.showInstallDialog(DependencyNode.this.art);
+            File fil = InstallPanel.showInstallDialog(art);
             if (fil != null) {
-                putValue("FileToInstall", fil);
-                BeanRunConfig brc = new BeanRunConfig();
-                brc.setExecutionDirectory(project.getPOMFile().getParentFile());
-                brc.setProject(project);
-                brc.setGoals(Collections.singletonList("install:install-file"));
-                brc.setExecutionName("install-artifact");
-                Properties props = new Properties();
-                props.put("artifactId", art.getArtifactId());
-                props.put("groupId", art.getGroupId());
-                props.put("version", art.getVersion());
-                props.put("packaging", art.getType());
-                File file = (File)getValue("FileToInstall");
-                props.put("file", file.getAbsolutePath());
-                props.put("generatePom", "false");
-                brc.setProperties(props);
-                brc.setActivatedProfiles(Collections.EMPTY_LIST);
-                
-                ExecutorTask task = RunUtils.executeMaven("Install", brc);
-                //TODO how to handle errors
+                InstallPanel.runInstallGoal(project, fil, art);
             }
         }
     }
