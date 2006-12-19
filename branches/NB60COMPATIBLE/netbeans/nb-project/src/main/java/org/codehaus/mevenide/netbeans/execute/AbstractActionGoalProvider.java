@@ -53,7 +53,7 @@ import org.openide.util.Lookup;
  */
 public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsProvider {
     protected ActionToGoalMapping originalMappings;
-    private NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+    protected NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
     private NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
     /** Creates a new instance of DefaultActionProvider */
     public AbstractActionGoalProvider() {
@@ -230,7 +230,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     /**
      * takes the input stream and a map, and for each occurence of ${<mapKey>}, replaces it with map entry value..
      */
-    private Reader performDynamicSubstitutions(final Map replaceMap, final String in) throws IOException {
+    protected Reader performDynamicSubstitutions(final Map replaceMap, final String in) throws IOException {
         StringBuffer buf = new StringBuffer(in);
         Iterator it = replaceMap.entrySet().iterator();
         while (it.hasNext()) {

@@ -171,7 +171,7 @@ public class MavenProjectNode extends AbstractNode {
             lst.addAll(Arrays.asList(acts));
         }
 //        lst.add(new LifecycleMapTest());
-        lst.add(provider.createCustomMavenAction("Run Custom Goals...", new NetbeansActionMapping()));
+        lst.add(provider.createCustomPopupAction()); 
         // separator
         lst.add(null);
         lst.add(project.createRefreshAction());

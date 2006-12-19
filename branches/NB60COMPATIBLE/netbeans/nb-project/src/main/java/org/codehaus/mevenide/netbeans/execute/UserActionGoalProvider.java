@@ -18,9 +18,18 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -51,7 +60,40 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
         lastModified = new Date();
         return null;
     }
+
     
+   /**
+     * get custom action maven mapping configuration
+     * No replacements happen.
+     * The instances returned is always a new copy, can be modified or reused.
+     */
+    public NetbeansActionMapping[] getCustomMappings() {
+        NetbeansActionMapping[] fallbackActions = new NetbeansActionMapping[0];
+        
+        try {
+            List<NetbeansActionMapping> toRet = new ArrayList<NetbeansActionMapping>();
+            // just a converter for the To-Object reader..
+            Reader read = performDynamicSubstitutions(Collections.EMPTY_MAP, getRawMappingsAsString());
+            // basically doing a copy here..
+            ActionToGoalMapping mapping = reader.read(read);    
+            List lst = mapping.getActions();
+            if (lst != null) {
+                Iterator it = lst.iterator();
+                while(it.hasNext()) {
+                    NetbeansActionMapping mapp = (NetbeansActionMapping) it.next();
+                    if (mapp.getActionName().startsWith("CUSTOM-")) {
+                        toRet.add(mapp);
+                    }
+                }
+            }
+            return toRet.toArray(new NetbeansActionMapping[toRet.size()]);
+        } catch (XmlPullParserException ex) {
+            ex.printStackTrace();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        return fallbackActions;
+    }
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
         return (fo == null || fo.lastModified().after(lastModified));

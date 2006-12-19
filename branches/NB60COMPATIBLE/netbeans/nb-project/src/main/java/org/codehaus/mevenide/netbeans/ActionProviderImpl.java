@@ -20,6 +20,8 @@ package org.codehaus.mevenide.netbeans;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -45,6 +47,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
+import org.openide.util.actions.Presenter;
 
 /**
  *
@@ -161,6 +164,10 @@ public class ActionProviderImpl implements ActionProvider {
         return new CustomAction(name, mapping);
     }
     
+    public Action createCustomPopupAction() {
+        return new CustomPopupActions();
+    }
+    
     
     private final static class BasicAction extends AbstractAction implements ContextAwareAction {
         private String actionid;
@@ -172,13 +179,13 @@ public class ActionProviderImpl implements ActionProvider {
             putValue(Action.NAME, name);
         }
         
-        private BasicAction(String name, String act, Lookup context) {
+        private BasicAction(String name, String act, Lookup cntxt) {
             this(name, act);
-            Lookup.Result<Project> res = context.lookup(new Lookup.Template<Project>(Project.class));
+            Lookup.Result<Project> res = cntxt.lookup(new Lookup.Template<Project>(Project.class));
             if (res.allItems().size() == 1) {
-                Project project = context.lookup(Project.class);
+                Project project = cntxt.lookup(Project.class);
                 this.context = project.getLookup();
-                provider = (ActionProviderImpl)this.context.lookup(ActionProviderImpl.class);
+                provider = this.context.lookup(ActionProviderImpl.class);
             }
         }
         
@@ -232,6 +239,31 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
             }
+        }
+    }
+
+    private final class CustomPopupActions extends AbstractAction implements Presenter.Popup {
+        
+        private CustomPopupActions() {
+            putValue(Action.NAME, "Custom");
+        }
+        
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+        }
+    
+        public JMenuItem getPopupPresenter() {
+            //TODO have some caching/lazy construction strategy
+            JMenu menu = new JMenu("Custom");
+            NetbeansActionMapping[] maps = ActionToGoalUtils.getActiveCustomMappings(project);
+            for (int i = 0; i < maps.length; i++) {
+                NetbeansActionMapping mapp = maps[i];
+                Action act = createCustomMavenAction(mapp.getActionName(), mapp);
+                JMenuItem item = new JMenuItem(act);
+                item.setText(mapp.getDisplayName() == null ? mapp.getActionName() : mapp.getDisplayName());
+                menu.add(item);
+            }
+            menu.add(new JMenuItem(createCustomMavenAction("Goals...", new NetbeansActionMapping())));
+            return menu;
         }
     }
     

@@ -104,6 +104,13 @@ public final class ActionToGoalUtils {
         return na;
     }
     
+    public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
+        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        // no active custom mappings shall be in the default providers... just the nbactions.xml file counts
+        return user.getCustomMappings();
+    }
+    
+    
     public static NetbeansActionMapping getDefaultMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
@@ -134,6 +141,7 @@ public final class ActionToGoalUtils {
         //if not found, dd to the end.
         lst.add(action);
     }
+    
     
     /**
      * read the action mappings from the fileobject attribute "customActionMappings"
