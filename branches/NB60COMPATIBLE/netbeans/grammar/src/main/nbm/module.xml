@@ -27,6 +27,9 @@
             <id>org.netbeans.api:org-openide-awt</id>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-modules</id>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-netbeans-modules-editor-lib</id>
         </dependency>
         <dependency>
@@ -52,4 +55,13 @@
             <type>spec</type>
         </dependency>
     </dependencies> 
+   <nbmResources>
+       <nbmResource>
+           <baseDirectory>src/main/nbm</baseDirectory>
+           <includes>
+               <include>maven2/maven-plugins-xml.zip</include>
+           </includes>
+       </nbmResource>
+   </nbmResources>
+    
 </nbm>
