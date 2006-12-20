@@ -78,7 +78,7 @@
             <plugin>
                 <groupId>org.codehaus.modello</groupId>
                 <artifactId>modello-maven-plugin</artifactId>
-                <version>1.0-alpha-12-20061102.173357-3</version>
+                <version>1.0-alpha-14-20061220.202404-1</version>
             </plugin>
         </plugins>
       </pluginManagement>
