@@ -91,13 +91,12 @@ public class ProjectFilesNode extends AbstractNode {
         }
         
         protected Node[] createNodes(Object obj) {
-            FileWrapper wrap = (FileWrapper)obj;
-            File fil = wrap.getFile();
+            File fil = (File)obj;
             FileObject fo = FileUtil.toFileObject(fil);
             if (fo != null) {
                 try {
                     DataObject dobj = DataObject.find(fo);
-                    FilterNode node = new MyFilterNode(dobj.getNodeDelegate().cloneNode(), wrap.getText());
+                    FilterNode node = new FilterNode(dobj.getNodeDelegate().cloneNode());
                     return new Node[] { node };
                 } catch (DataObjectNotFoundException e) {
                 }
@@ -138,50 +137,16 @@ public class ProjectFilesNode extends AbstractNode {
         
         private void regenerateKeys() {
             Collection keys = new ArrayList();
-            keys.add(new FileWrapper("Project POM file", new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")));
-            keys.add(new FileWrapper("Project Profiles", new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")));
-            keys.add(new FileWrapper("User settings", new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")));
+            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml"));
+            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml"));
+            keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml"));
             setKeys(keys);
-        }
-    }
-    
-    private static class FileWrapper {
-        private File loc;
-        private String display;
-        public FileWrapper(String displayName, File file) {
-            display = displayName;
-            loc = file;
-        }
-        
-        public boolean equals(Object obj) {
-            return loc.equals(obj);
-        }
-        
-        public int hashCode() {
-            return loc.hashCode();
-        }
-        
-        public File getFile() {
-            return loc;
-        }
-        
-        public String getText() {
-            return display;
-        }
-        
-    }
-    
-    private static class MyFilterNode extends FilterNode {
-        public MyFilterNode(Node original, String dn) {
-            super(original);
-            disableDelegation(DELEGATE_GET_DISPLAY_NAME | DELEGATE_SET_DISPLAY_NAME);
-            setDisplayName(dn);
         }
     }
     
     private class AddProfileXmlAction extends AbstractAction {
         AddProfileXmlAction() {
-            putValue(Action.NAME, "Create profiles file");
+            putValue(Action.NAME, "Create profiles.xml");
         }
         public void actionPerformed(ActionEvent e) {
             try {
@@ -206,7 +171,7 @@ public class ProjectFilesNode extends AbstractNode {
     
     private class AddSettingsXmlAction extends AbstractAction {
         AddSettingsXmlAction() {
-            putValue(Action.NAME, "Create settings file");
+            putValue(Action.NAME, "Create settings.xml");
         }
         
         public void actionPerformed(ActionEvent e) {
