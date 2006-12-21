@@ -24,7 +24,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -34,6 +36,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.Metadata;
@@ -46,6 +50,7 @@ import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -56,6 +61,7 @@ import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.modules.InstalledFileLocator;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -245,22 +251,28 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                         return false;
                     }
                 });
-                Collection elems = new ArrayList();
+                Set<String> verStrings = new HashSet<String>();
                 for (int i = 0; i < versions.length; i++) {
                     if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        elems.add(new MyTextElement(versions[i].getName(), virtualTextCtx.getCurrentPrefix()));
+                        verStrings.add(versions[i].getName());
                     }
                 }
+                if (path.endsWith("plugins/plugin/version")) {
+                    verStrings.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginVersions(hold.getGroupId(), hold.getArtifactId())));
+                }
+                Collection elems = new ArrayList();
+                for (String vers : verStrings) {
+                    elems.add(new MyTextElement(vers, virtualTextCtx.getCurrentPrefix()));
+                }
+                
                 return Collections.enumeration(elems);
             }
         }
         if (path.endsWith("dependencies/dependency/groupId")) { //NOI18N
             try {
-                Set elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
-                Iterator it = elems.iterator();
+                Set<String> elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
                 ArrayList texts = new ArrayList();
-                while (it.hasNext()) {
-                    String elem = (String) it.next();
+                for (String elem : elems) {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
@@ -270,11 +282,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
             try {
-                Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
-                Iterator it = elems.iterator();
+                Set<String> elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
                 ArrayList texts = new ArrayList();
-                while (it.hasNext()) {
-                    String elem = (String) it.next();
+                for (String elem : elems) {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
@@ -319,11 +330,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
                 try {
-                    Set elems = CustomQueries.retrievePluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
-                    Iterator it = elems.iterator();
+                    Set<String> elems = CustomQueries.retrievePluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginArtifactIds(hold.getGroupId())));
                     ArrayList texts = new ArrayList();
-                    while (it.hasNext()) {
-                        String elem = (String) it.next();
+                    for (String elem : elems) {
                         texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                     }
                     return Collections.enumeration(texts);
@@ -385,6 +395,24 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
 
     private Document loadDocument(ArtifactInfoHolder info, MavenEmbedder embedder) {
         if (info.getArtifactId() != null && info.getGroupId() != null && info.getVersion() != null) {
+        
+            File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
+            assert expandedPath != null : "Shall have path expanded.."; //NOI18N
+            File folder = new File(expandedPath, info.getGroupId().replace('.', File.separatorChar));
+            File file = new File(folder, info.getArtifactId() + "-" + info.getVersion() + ".xml");
+            if (file.exists()) {
+                InputStream str = null;
+                try {
+                    str = new FileInputStream(file);
+                    SAXBuilder builder = new SAXBuilder();
+                    return builder.build(str);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    IOUtil.close(str);
+                }
+            }
+            
             Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar");
             String repopath = embedder.getLocalRepository().pathOf(art);
             
@@ -432,7 +460,83 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         return Collections.enumeration(toReturn);
     }
+    
+    private WeakReference<Set<String>> pluginGroupIdRef = null;
+    private Set<String> getCachedPluginGroupIds() {
+        Set<String> cached = pluginGroupIdRef != null ? pluginGroupIdRef.get() :null;
+        if (cached == null) {
+            File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
+            assert expandedPath != null : "Shall have path expanded.."; //NOI18N
+            cached = new HashSet<String>();
+            checkFolder(expandedPath, "", cached);
+            pluginGroupIdRef = new WeakReference<Set<String>>(cached);
+        }
+        return cached;
+    }
+    
+    private void checkFolder(File parent, String groupId, Set<String> list) {
+        File[] files = parent.listFiles();
+        boolean hasFile = false;
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            if (file.isDirectory()) {
+                String group = groupId + (groupId.length() == 0 ? "" : ".") + file.getName();
+                checkFolder(file, group, list);
+            }
+            if (file.isFile()) {
+                hasFile = true;
+            }
+        }
+        if (hasFile) {
+            list.add(groupId);
+        }
+    }
+    
+    private Set<String> getRelevant(String prefix, Set<String> list) {
+        Set<String> toRet = new HashSet<String>();
+        for (String val : list) {
+            if (val.startsWith(prefix)) {
+                toRet.add(val);
+            }
+        }
+        return toRet;
+    }
 
+    private Set<String> getCachedPluginArtifactIds(String groupId) {
+        File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
+        assert expandedPath != null : "Shall have path expanded.."; //NOI18N
+        File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
+        File[] files = folder.listFiles();
+        Set<String> toRet = new HashSet<String>();
+        Pattern patt = Pattern.compile("([a-zA-Z\\-]*)\\-[0-9]+(.*)");
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile()) {
+                Matcher match = patt.matcher(files[i].getName());
+                if (match.matches()) {
+                    toRet.add(match.group(1));
+                }
+            }
+        }
+        return toRet;
+    }
+    
+    private Set<String> getCachedPluginVersions(String groupId, String artifactId) {
+        File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
+        assert expandedPath != null : "Shall have path expanded.."; //NOI18N
+        File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
+        File[] files = folder.listFiles();
+        Set<String> toRet = new HashSet<String>();
+        for (int i = 0; i < files.length; i++) {
+            if (files[i].isFile() && files[i].getName().startsWith(artifactId)) {
+                String vers = files[i].getName().substring(artifactId.length() + 1);
+                if (vers.endsWith(".xml")) {
+                    vers = vers.substring(0, vers.length() - ".xml".length());
+                }
+                toRet.add(vers);
+            }
+        }
+        return toRet;
+    }
     
     private static class ArtifactInfoHolder  {
         private String artifactId;
