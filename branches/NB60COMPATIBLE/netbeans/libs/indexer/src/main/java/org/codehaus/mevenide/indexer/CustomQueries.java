@@ -28,16 +28,14 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
-import org.apache.maven.archiva.indexer.lucene.LuceneIndexRecordConverter;
 import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
-import org.apache.maven.archiva.indexer.lucene.LuceneRepositoryArtifactIndexFactory;
 import org.apache.maven.archiva.indexer.lucene.LuceneStandardIndexRecordConverter;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecordFactory;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.openide.util.Mutex.ExceptionAction;
 import org.openide.util.MutexException;
 
@@ -110,6 +108,15 @@ public class CustomQueries {
         LuceneQuery q = new LuceneQuery(tq);
         return LocalRepositoryIndexer.getInstance().searchIndex(
                 LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+    }
+    
+    public static List<StandardArtifactIndexRecord> getRecords(String groupId, String artifactId, String version) throws RepositoryIndexSearchException {
+        org.apache.lucene.search.BooleanQuery bq = new BooleanQuery();
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.GROUPID_EXACT, groupId)), BooleanClause.Occur.MUST));
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.ARTIFACTID_EXACT, artifactId)), BooleanClause.Occur.MUST));
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.VERSION_EXACT, version)), BooleanClause.Occur.MUST));
+        LuceneQuery q = new LuceneQuery(bq);
+        return  LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
     }
     
     

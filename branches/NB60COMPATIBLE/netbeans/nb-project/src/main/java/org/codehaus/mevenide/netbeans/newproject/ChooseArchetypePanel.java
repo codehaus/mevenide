@@ -21,11 +21,16 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -95,6 +100,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         lblHint = new javax.swing.JLabel();
         pnlView = new javax.swing.JPanel();
         btnCustom = new javax.swing.JButton();
+        btnRemove = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         taDescription = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
@@ -105,10 +111,17 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
 
         pnlView.setLayout(new java.awt.BorderLayout());
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnCustom, "Custom...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnCustom, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_AddArchetype")); // NOI18N
         btnCustom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnCustomActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnRemove, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_RemoveArchetype")); // NOI18N
+        btnRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRemoveActionPerformed(evt);
             }
         });
 
@@ -129,15 +142,21 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(jLabel2)
             .add(lblHint)
-            .add(layout.createSequentialGroup()
-                .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 428, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 440, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(btnCustom))
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(btnCustom)
+                    .add(btnRemove)))
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 550, Short.MAX_VALUE)
             .add(layout.createSequentialGroup()
                 .add(jLabel1)
                 .addContainerGap())
         );
+
+        layout.linkSize(new java.awt.Component[] {btnCustom, btnRemove}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
@@ -146,7 +165,10 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
                 .add(lblHint)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(btnCustom)
+                    .add(layout.createSequentialGroup()
+                        .add(btnCustom)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(btnRemove))
                     .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel1)
@@ -154,6 +176,28 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 124, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
+    Node[] nds = getExplorerManager().getSelectedNodes();
+    if (nds.length != 0) {
+        Archetype arch = (Archetype) nds[0].getValue(PROP_ARCHETYPE);
+        try {
+            List<StandardArtifactIndexRecord> rec = CustomQueries.getRecords(arch.getGroupId(), arch.getArtifactId(), arch.getVersion());
+            for (StandardArtifactIndexRecord record : rec) {
+                LocalRepositoryIndexer.getInstance().getDefaultIndex().deleteRecords(rec);
+            }
+            File path = new File(EmbedderFactory.getProjectEmbedder().getLocalRepositoryDirectory(),
+                    arch.getGroupId().replace('.', File.separatorChar) + File.separatorChar + arch.getArtifactId() 
+                  + File.separatorChar + arch.getVersion());
+            if (path.exists()) {
+                path.delete();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        ((Childs)getExplorerManager().getRootContext().getChildren()).removeArchetype(arch);
+    }
+}//GEN-LAST:event_btnRemoveActionPerformed
 
     private void btnCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomActionPerformed
         CustomArchetypePanel panel = new CustomArchetypePanel();
@@ -184,6 +228,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCustom;
+    private javax.swing.JButton btnRemove;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
@@ -266,6 +311,12 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         
         public void addArchetype(Archetype arch) {
             keys.add(arch);
+            setKeys(keys);
+            refresh();
+        }
+        
+        public void removeArchetype(Archetype arch) {
+            keys.remove(arch);
             setKeys(keys);
             refresh();
         }

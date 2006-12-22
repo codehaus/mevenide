@@ -15,12 +15,16 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
           <Component id="lblHint" min="-2" max="-2" attributes="0"/>
-          <Group type="102" alignment="0" attributes="0">
-              <Component id="pnlView" min="-2" pref="428" max="-2" attributes="2"/>
+          <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="-2" max="-2" attributes="0"/>
-              <Component id="btnCustom" min="-2" max="-2" attributes="0"/>
+              <Component id="pnlView" min="-2" pref="440" max="-2" attributes="2"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="btnCustom" linkSize="1" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnRemove" linkSize="1" min="-2" max="-2" attributes="0"/>
+              </Group>
           </Group>
-          <Component id="jScrollPane1" alignment="0" pref="526" max="32767" attributes="2"/>
+          <Component id="jScrollPane1" alignment="0" pref="550" max="32767" attributes="2"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -35,10 +39,14 @@
               <Component id="lblHint" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnCustom" min="-2" max="-2" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="btnCustom" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="btnRemove" min="-2" max="-2" attributes="0"/>
+                  </Group>
                   <Component id="pnlView" pref="156" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="124" max="-2" attributes="2"/>
@@ -63,10 +71,22 @@
     </Container>
     <Component class="javax.swing.JButton" name="btnCustom">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Custom..."/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/codehaus/mevenide/netbeans/newproject/Bundle.properties" key="LBL_AddArchetype" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCustomActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnRemove">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/codehaus/mevenide/netbeans/newproject/Bundle.properties" key="LBL_RemoveArchetype" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRemoveActionPerformed"/>
       </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="jScrollPane1">
