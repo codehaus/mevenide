@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.customizer;
 import java.awt.Component;
 import javax.swing.JList;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,21 +31,25 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
-import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.codehaus.mevenide.netbeans.GoalsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.TextValueCompleter;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -59,6 +62,7 @@ public class ActionMappings extends javax.swing.JPanel {
     private HashMap titles = new HashMap();
     
     private GoalsListener goalsListener;
+    private TextValueCompleter goalcompleter;
     private ProfilesListener profilesListener;
     private PropertiesListener propertiesListener;
     private TestListener testListener;
@@ -109,7 +113,25 @@ public class ActionMappings extends javax.swing.JPanel {
         txtGoals.addFocusListener(focus);
         txtProfiles.addFocusListener(focus);
         txtProperties.addFocusListener(focus);
+        
+        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " ");
         clearFields();
+    }
+    
+    public void addNotify() {
+        super.addNotify();
+        GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
+        if (provider != null) {
+            Set<String> strs = provider.getAvailableGoals();
+            try {
+                List<String> phases = EmbedderFactory.getProjectEmbedder().getLifecyclePhases();
+                strs.addAll(phases);
+            } catch (Exception e) {
+                // oh wel just ignore..
+                e.printStackTrace();
+            }
+            goalcompleter.setValueList(strs);
+        }
     }
     
     /** This method is called from within the constructor to

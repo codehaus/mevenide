@@ -1,10 +1,18 @@
-/*
- * TextValueCompleter.java
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Created on December 19, 2006, 8:08 AM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans;
@@ -16,6 +24,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.AbstractAction;
@@ -28,8 +37,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.event.CaretEvent;
+import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.codehaus.plexus.util.StringUtils;
 
 /**
  *
@@ -47,6 +59,8 @@ public class TextValueCompleter implements DocumentListener {
     private JScrollPane listScroller;
     private Popup popup;
     private JTextField field;
+    private String separators;
+    private CaretListener caretListener;
     
     public TextValueCompleter(Collection<String> completions, JTextField fld) {
         this.completions = completions;
@@ -57,6 +71,15 @@ public class TextValueCompleter implements DocumentListener {
                 hidePopup();
             }
         });
+        caretListener = new CaretListener() {
+            public void caretUpdate(CaretEvent arg0) {
+                // only consider caret updates if the popup window is visible
+                if (completionList.isDisplayable() && completionList.isVisible()) {
+                    buildAndShowPopup();
+                }
+            }
+        };
+        field.addCaretListener(caretListener);
         completionListModel = new DefaultListModel();
         completionList = new JList(completionListModel);
         completionList.setPrototypeCellValue("lets have it at least this wide and add some more just in case"); //NOI18N
@@ -64,7 +87,7 @@ public class TextValueCompleter implements DocumentListener {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     field.getDocument().removeDocumentListener(TextValueCompleter.this);
-                    field.setText(completionList.getSelectedValue().toString());
+                    applyCompletion(completionList.getSelectedValue().toString());
                     hidePopup();
                     field.getDocument().addDocumentListener(TextValueCompleter.this);
                 }
@@ -113,7 +136,7 @@ public class TextValueCompleter implements DocumentListener {
             public void actionPerformed(ActionEvent e) {
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
                 if (completionList.getSelectedValue() != null) {
-                    field.setText(completionList.getSelectedValue().toString());
+                    applyCompletion(completionList.getSelectedValue().toString());
                 }
                 hidePopup();
                 field.getDocument().addDocumentListener(TextValueCompleter.this);
@@ -131,8 +154,14 @@ public class TextValueCompleter implements DocumentListener {
         });
     }
     
+    public TextValueCompleter(Collection<String> completions, JTextField fld, String separators) {
+        this(completions, fld);
+        this.separators = separators;
+    }
+    
+    
     private void buildPopup() {
-        pattern = Pattern.compile(field.getText().trim() + ".+");
+        pattern = Pattern.compile(getCompletionPrefix() + ".+");
         int entryindex = 0;
         for (String completion : completions) {
             // check if match
@@ -146,6 +175,70 @@ public class TextValueCompleter implements DocumentListener {
             } else {
                 completionListModel.removeElement(completion);
             }
+        }
+    }
+    
+    private void applyCompletion(String completed) {
+        field.removeCaretListener(caretListener);
+        if (separators != null) {
+            int pos = field.getCaretPosition();
+            String currentText = field.getText();
+            StringTokenizer tok = new StringTokenizer(currentText, separators, true);
+            int count = 0;
+            String newValue = "";
+            while (tok.hasMoreTokens()) {
+                String token = tok.nextToken();
+                if (count + token.length() >= pos) {
+                    if (separators.indexOf(token.charAt(0)) != -1) {
+                        newValue = newValue + token;
+                    }
+                    newValue = newValue + completed;
+                    while (tok.hasMoreTokens()) {
+                        newValue = newValue + tok.nextToken();
+                    }
+                    field.setText(newValue);
+                    field.setCaretPosition(count + completed.length());
+                    field.addCaretListener(caretListener);
+                    return;
+                } else {
+                    count = count + token.length();
+                    newValue = newValue + token;
+                }
+            }
+            newValue = newValue + completed;
+            field.setText(newValue);
+            field.setCaretPosition(newValue.length());
+        } else {
+            field.setText(completed);
+        }
+        field.addCaretListener(caretListener);
+    }
+    
+    private String getCompletionPrefix() {
+        if (separators != null) {
+            int pos = field.getCaretPosition();
+            String currentText = field.getText();
+            StringTokenizer tok = new StringTokenizer(currentText, separators, true);
+            int count = 0;
+            String lastToken = "";
+            while (tok.hasMoreTokens()) {
+                String token = tok.nextToken();
+                if (count + token.length() >= pos) {
+                    if (separators.indexOf(token.charAt(0)) != -1) {
+                        return "";
+                    }
+                    return token.substring(0, pos - count);
+                } else {
+                    count = count + token.length();
+                    lastToken = token;
+                }
+            }
+            if (separators.indexOf(lastToken.charAt(0)) == -1) {
+                return lastToken;
+            }
+            return "";
+        } else {
+            return field.getText().trim();
         }
     }
     
@@ -183,9 +276,21 @@ public class TextValueCompleter implements DocumentListener {
     }
     
     // DocumentListener implementation
-    public void insertUpdate(DocumentEvent e) { buildAndShowPopup(); }
-    public void removeUpdate(DocumentEvent e) { buildAndShowPopup(); }
-    public void changedUpdate(DocumentEvent e) { buildAndShowPopup(); }
+    public void insertUpdate(DocumentEvent e) { 
+        if (field.isFocusOwner()) {
+            buildAndShowPopup(); 
+        }
+    }
+    public void removeUpdate(DocumentEvent e) { 
+        if (field.isFocusOwner() && completionList.isDisplayable() && completionList.isVisible()) {
+            buildAndShowPopup(); 
+        }
+    }
+    public void changedUpdate(DocumentEvent e) { 
+        if (field.isFocusOwner()) {
+            buildAndShowPopup(); 
+        }
+    }
     
     public void setValueList(Collection<String> values) {
         completions = values;
