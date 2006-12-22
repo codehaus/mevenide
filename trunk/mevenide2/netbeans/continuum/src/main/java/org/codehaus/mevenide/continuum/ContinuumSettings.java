@@ -36,12 +36,12 @@ public class ContinuumSettings extends SystemOption {
         setServers(new String[] {
             "http://maven.zones.apache.org:8000",
             "http://ci.codehaus.org:8000",
-            "http://localhost:8000"        
+//            "http://localhost:8000"        
         });
         setOutputs(new String[] {
             "http://maven.zones.apache.org:8080/continuum/servlet/browse",
             "http://ci.codehaus.org:8080/continuum/servlet/browse",        
-            "http://localhost:8080/continuum/servlet/browse"        
+//            "http://localhost:8080/continuum/servlet/browse"        
             
         });
     }
@@ -65,6 +65,33 @@ public class ContinuumSettings extends SystemOption {
     public void setServers(String[] repos) {
         putProperty(PROP_SERVERS, repos, true);
     }    
+    
+     public void addServer(String server) {
+        String[] oldServers = getServers();
+        String[] newServers = new String[oldServers.length+1];
+        System.arraycopy(oldServers, 0, newServers, 0, oldServers.length);
+        newServers[newServers.length -1] = server;
+        setServers(newServers);
+    }    
+    
+    public void removeServer(String server) {
+        String[] servers = getServers();
+        // copy paste from the code of ArrayList.remove(Object o)
+        int index = -1;
+        for (int i=0; i < servers.length; i++) {
+            if (servers[i].equals(server) )  {
+                index = i;
+                break;
+            }
+        }
+        int numMoved = servers.length - index - 1;
+	if (numMoved >= 0) {
+	    String[] newServers = new String[servers.length-1];
+            System.arraycopy(servers, 0, newServers, 0, index);
+            System.arraycopy(servers, index+1, newServers, index, numMoved);
+            setServers(newServers);
+        } 
+    }
     
     public String[] getOutputs() {
         return (String[])getProperty(PROP_OUTPUTS);
