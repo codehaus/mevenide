@@ -113,11 +113,11 @@ public class SingleServer extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     
-    String getURL() {
+    public String getURL() {
         return "http://" + txtServer.getText().trim() + (txtPort.getText().trim().length() > 0 ? (":" + txtPort.getText().trim()) : "");
     }
     
-    String getOutputURL() {
+    public String getOutputURL() {
         return "http://" + txtServer.getText().trim() + (txtPort2.getText().trim().length() > 0 ? (":" + txtPort2.getText().trim()) : "") + "/continuum/servlet/browse";
     }
     

@@ -24,13 +24,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.DefaultListModel;
-import javax.swing.JPanel;
 import javax.swing.ListSelectionModel;
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.maven.continuum.model.project.ProjectDependency;
 import org.apache.maven.continuum.model.project.ProjectDeveloper;
 import org.apache.maven.continuum.model.scm.ScmResult;
+import org.codehaus.mevenide.continuum.options.SingleServer;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
+import org.openide.NotifyDescriptor;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -105,7 +108,8 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         jPanel1.add(view);
         pnlDetails.setVisible(false);
         jButton1.setEnabled(false);
-        jButton2.setEnabled(false);
+        jButton1.setVisible(false);
+        jButton2.setEnabled(true);
     }
 
     /** This method is called from within the constructor to
@@ -153,7 +157,13 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
         jButton1.setText("Refresh");
         add(jButton1, new java.awt.GridBagConstraints());
 
-        jButton2.setText("Add Project...");
+        jButton2.setText("Add Server...");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         add(jButton2, new java.awt.GridBagConstraints());
 
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -339,7 +349,21 @@ final class ContinuumTopComponent extends TopComponent implements ExplorerManage
 
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        SingleServer ss = new SingleServer();
+        DialogDescriptor dd = new DialogDescriptor(ss, "Add Continuum server");
+        dd.setOptions(new Object [] {
+            NotifyDescriptor.OK_OPTION,
+            NotifyDescriptor.CANCEL_OPTION
+        });
+        Object ret = DialogDisplayer.getDefault().notify(dd);
+        if (ret == NotifyDescriptor.OK_OPTION) {
+            ContinuumSettings.getDefault().addServer(ss.getURL());
+//            ContinuumSettings.getDefault().addOutputServer(ss.getOutputURL()());
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

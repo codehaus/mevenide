@@ -17,11 +17,14 @@
 
 package org.codehaus.mevenide.continuum;
 
+import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.xmlrpc.XmlRpcException;
 import org.codehaus.mevenide.continuum.rpc.ProjectsReader;
@@ -43,6 +46,10 @@ public class ServerNode extends AbstractNode {
         setIconBaseWithExtension("org/codehaus/mevenide/continuum/ContinuumServer.png");
     }
     
+    public Action[] getActions(boolean b) {
+        Action[] retValue = { new RemoveAction(), new RefreshAction() };
+        return  retValue;
+    }
     
     private static class ServerChildren extends Children.Keys {
         private String url;
@@ -95,6 +102,28 @@ public class ServerNode extends AbstractNode {
                     }
                 });
             }
+        }
+        
+    }
+    
+    private class RemoveAction extends AbstractAction {
+        public RemoveAction() {
+            this.putValue(Action.NAME, "Remove");
+}
+        
+        public void actionPerformed(ActionEvent e) {            
+            ContinuumSettings.getDefault().removeServer(getName());
+        }
+        
+    }
+    
+    private class RefreshAction extends AbstractAction {
+        public RefreshAction() {
+            this.putValue(Action.NAME, "Refresh");
+        }
+        
+        public void actionPerformed(ActionEvent e) {            
+           setChildren(new ServerChildren(getName()));
         }
         
     }
