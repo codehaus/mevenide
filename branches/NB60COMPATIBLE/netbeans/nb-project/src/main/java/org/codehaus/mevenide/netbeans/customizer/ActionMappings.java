@@ -499,7 +499,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     
     private void writeProperties(final NetbeansActionMapping mapp) {
         String text = txtProperties.getText();
-        Splitter split = new Splitter(text);
+        PropertySplitter split = new PropertySplitter(text);
         String tok = split.nextPair();
         Properties props = new Properties();
         while (tok != null) {
@@ -705,73 +705,5 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         
     }
     
-    private class Splitter {
-        private String line;
-        private char[] quotes;
-        private char separator;
-        private boolean trim = true;
-        private char escape;
-        
-        private int location = 0;
-        private char quoteChar = 0;
-        private boolean inQuote = false;
-        private boolean escapeNext = false;
-        
-        Splitter(String line) {
-            this(line, new char[] { '"' }, '\\', ' '); //NOI18N
-        }
-        
-        private Splitter(String line, char[] quotes, char escape, char separator) {
-            this.line = line;
-            this.quotes = quotes;
-            this.separator = separator;
-            this.trim = trim;
-            this.escape = escape;
-        }
-        
-        
-        String nextPair() {
-            StringBuffer buffer = new StringBuffer();
-            if (location >= line.length()) {
-                return null;
-            }
-            //TODO should probably also handle (ignore) spaces before or after the = char somehow
-            while (location < line.length()
-                    && (line.charAt(location) != separator || inQuote || escapeNext)) {
-                char c = line.charAt(location);
-                
-                if (escapeNext) {
-                    buffer.append(c);
-                    escapeNext = false;
-                } else if (c == escape) {
-                    escapeNext = true;
-                } else if (inQuote) {
-                    if (c == quoteChar) {
-                        inQuote = false;
-                    } else {
-                        buffer.append(c);
-                    }
-                } else {
-                    if (isQuoteChar(c)) {
-                        inQuote = true;
-                        quoteChar = c;
-                    } else {
-                        buffer.append(c);
-                    }
-                }
-                location++;
-            }
-            location++;
-            return trim ? buffer.toString().trim() : buffer.toString();
-        }
-        
-        private boolean isQuoteChar(char c) {
-            for (int i = 0; i < quotes.length; i++) {
-                char quote = quotes[i];
-                if (c == quote) return true;
-            }
-            return false;
-        }
-    }
     
 }
