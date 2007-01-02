@@ -233,7 +233,7 @@ public class TextValueCompleter implements DocumentListener {
                     lastToken = token;
                 }
             }
-            if (separators.indexOf(lastToken.charAt(0)) == -1) {
+            if (lastToken.length() > 0 && separators.indexOf(lastToken.charAt(0)) == -1) {
                 return lastToken;
             }
             return "";
