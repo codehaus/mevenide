@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>2.4-SNAPSHOT</version>
+    <version>3.0-SNAPSHOT</version>
     <name>NetBeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
@@ -16,73 +16,62 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-mvn-embedder</artifactId>
-            <version>2.4-SNAPSHOT</version>
+            <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
-            <version>2.4-SNAPSHOT</version>
-            <type>jar</type>
+            <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-api-ejbmodule</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-projectapi</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-web-webmodule</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-project</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-dd</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2eeserver</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-java</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-platform</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-debugger-jpda</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         
         <!--dependency>
@@ -95,19 +84,16 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-filesystems</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.release}</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
@@ -123,7 +109,7 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>deployment-bridge</artifactId>
-            <version>1.0</version>
+            <version>${mevenide.nb.release}</version>
         </dependency>
     </dependencies>
     
