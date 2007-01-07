@@ -30,7 +30,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.GoalsProvider;
+import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;

@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans;
+package org.codehaus.mevenide.netbeans.api;
 
 import java.util.Set;
 
