@@ -16,7 +16,7 @@
       <profile>
           <id>experimental</id>
           <modules>
-             <module>j2ee</module>
+             <!--module>j2ee</module-->
              <module>nb-repo-browser</module>
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
@@ -84,7 +84,7 @@
      <module>libs</module>
      <!--module>continuum</module-->
      <module>grammar</module>
-     <!--module>j2ee</module-->
+     <module>j2ee</module>
      <module>autoupdate</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
