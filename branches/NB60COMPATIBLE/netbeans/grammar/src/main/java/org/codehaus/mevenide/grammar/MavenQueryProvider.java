@@ -25,8 +25,8 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
@@ -93,40 +93,40 @@ public final class MavenQueryProvider extends GrammarQueryManager {
                 return new MavenProfilesGrammar(env);
             }
             File file = FileUtil.toFile(fo);
-            if (owner instanceof NbMavenProject) {
+            if (owner.getLookup().lookup(ProjectURLWatcher.class) != null) {
+                // this check means it's a maven based project..
                 if ("src/main/resources/META-INF/archetype.xml".equals(FileUtil.getRelativePath(owner.getProjectDirectory(), env.getFileObject()))) { //NOI18N
                     return new MavenArchetypeGrammar(env);
                 }
                 //TODO also locate by namespace??
-                NbMavenProject mProject = (NbMavenProject)owner;
-                String desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                String desc = PluginPropertyUtils.getPluginProperty(owner, 
                         "org.apache.maven.plugins",  //NOI18N
                         "maven-assembly-plugin",  //NOI18N
                         "descriptor", "assembly"); //NOI18N
                 if (desc == null) {
-                    desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                    desc = PluginPropertyUtils.getPluginProperty(owner, 
                             "org.apache.maven.plugins",  //NOI18N
                             "maven-assembly-plugin",  //NOI18N
                             "descriptor", "directory"); //NOI18N
                 }
                 if (desc != null) {
-                    URI uri = FileUtilities.getDirURI(mProject.getProjectDirectory(), desc);
+                    URI uri = FileUtilities.getDirURI(owner.getProjectDirectory(), desc);
                     if (uri != null && new File(uri).equals(file)) {
                         return new MavenAssemblyGrammar(env);
                     }
                 }
-                desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                desc = PluginPropertyUtils.getPluginProperty(owner, 
                         "org.codehaus.mojo",  //NOI18N
                         "nbm-maven-plugin",  //NOI18N
                         "descriptor", "jar"); //NOI18N
                 if (desc == null) {
-                    desc = PluginPropertyUtils.getPluginProperty(mProject, 
+                    desc = PluginPropertyUtils.getPluginProperty(owner, 
                             "org.codehaus.mevenide.plugins",  //NOI18N
                             "maven-nbm-plugin",  //NOI18N
                             "descriptor", "jar"); //NOI18N
                 }
                 if (desc != null) {
-                    URI uri = FileUtilities.getDirURI(mProject.getProjectDirectory(), desc);
+                    URI uri = FileUtilities.getDirURI(owner.getProjectDirectory(), desc);
                     if (uri != null && new File(uri).equals(file)) {
                         return new MavenNbmGrammar(env);
                     }

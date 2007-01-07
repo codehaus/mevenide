@@ -24,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -61,19 +62,34 @@ public class Utils {
         return breakpoint;
     }
     
+    public static File[] convertStringsToNormalizedFiles(List strings) {
+        File[] fos = new File[strings.size()];
+        int index = 0;
+        Iterator it = strings.iterator();
+        while (it.hasNext()) {
+            String str = (String)it.next();
+            File fil = new File(str);
+            fil = FileUtil.normalizeFile(fil);
+            fos[index] = fil;
+            index++;
+        }
+        return fos;
+    }
+    
+    
     static ClassPath createSourcePath(Project proj, MavenProject mproject) {
         File[] roots;
         ClassPath cp;
         try {
             //TODO this ought to be really configurable based on what class gets debugged.
-            roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
+            roots = convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
         
-        roots = FileUtilities.convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
+        roots = convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(

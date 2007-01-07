@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
@@ -84,6 +85,16 @@ public final class ProjectURLWatcher {
         synchronized (support) {
             support.removePropertyChangeListener(propertyChangeListener);
         }
+    }
+    
+    /**
+     * Returns the current maven project model from the embedder.
+     * Should never be kept around for long but always reloaded from here, on 
+     * a project change the correct instance changes as the embedder reloads it.
+     * 
+     */ 
+    public MavenProject getMavenProject() {
+        return project.getOriginalMavenProject();
     }
     
     

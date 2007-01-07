@@ -24,8 +24,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -53,7 +53,7 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
             "/assembly/dependencySets/dependencySet/excludes/exclude".equals(path)) { //NOI18N
             //TODO could be nice to filter out the dependencies that are already being used..
             List toRet = new ArrayList();
-            NbMavenProject project = getOwnerProject();
+            MavenProject project = getMavenProject();
             if (project != null) {
                 Node previous;
                 // HACK.. if currentPrefix is zero length, the context is th element, otherwise it's the content inside
@@ -83,14 +83,14 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
                 scope = scope.trim();
                 Iterator it;
                 if ("runtime".equals(scope)) { //NOI18N
-                    it = project.getOriginalMavenProject().getRuntimeDependencies().iterator();
+                    it = project.getRuntimeDependencies().iterator();
                 } else if ("test".equals(scope)) { //NOI18N
-                    it = project.getOriginalMavenProject().getTestDependencies().iterator();
+                    it = project.getTestDependencies().iterator();
                 } else if ("compile".equals(scope)) { //NOI18N
-                    it = project.getOriginalMavenProject().getCompileDependencies().iterator();
+                    it = project.getCompileDependencies().iterator();
                 } else {
                     ErrorManager.getDefault().log(ErrorManager.WARNING, "How to process includes/excludes for scope '" + scope + "'? Fallback to 'runtime'."); //NOI18N
-                    it = project.getOriginalMavenProject().getRuntimeDependencies().iterator();
+                    it = project.getRuntimeDependencies().iterator();
                 }
                 while (it.hasNext()) {
                     Dependency elem = (Dependency) it.next();

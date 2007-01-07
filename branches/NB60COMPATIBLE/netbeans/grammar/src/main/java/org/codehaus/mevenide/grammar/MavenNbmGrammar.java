@@ -24,8 +24,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -65,10 +65,10 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
         if ("/nbm/dependencies/dependency/id".equals(path) || //NOI18N
             "/nbm/libraries/library".equals(path)) { //NOI18N
             //TODO could be nice to filter out the dependencies that are already being used..
-            List toRet = new ArrayList();
-            NbMavenProject project = getOwnerProject();
+            List<MyTextElement> toRet = new ArrayList<MyTextElement>();
+            MavenProject project = getMavenProject();
             if (project != null) {
-                Iterator it = project.getOriginalMavenProject().getCompileDependencies().iterator();
+                Iterator it = project.getCompileDependencies().iterator();
                 while (it.hasNext()) {
                     Dependency elem = (Dependency) it.next();
                     String str = elem.getGroupId() + ":" + elem.getArtifactId(); //NOI18N

@@ -27,7 +27,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.Icon;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.jdom.Document;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
@@ -71,10 +72,12 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         return environment;
     }
     
-    protected final NbMavenProject getOwnerProject() {
+    protected final MavenProject getMavenProject() {
         Project proj = FileOwnerQuery.getOwner(environment.getFileObject());
         if (proj != null) {
-            return proj.getLookup().lookup(NbMavenProject.class);
+            ProjectURLWatcher watch = proj.getLookup().lookup(ProjectURLWatcher.class);
+            assert watch != null;
+            return watch.getMavenProject();
         }
         ErrorManager.getDefault().log(ErrorManager.WARNING, "File " + environment.getFileObject() + " has maven2 code completion but doesn't belong to a maven2 project."); //NOI18N
         return null;

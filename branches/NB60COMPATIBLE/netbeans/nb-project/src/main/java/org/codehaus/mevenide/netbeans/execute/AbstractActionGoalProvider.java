@@ -24,9 +24,11 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
@@ -44,6 +46,7 @@ import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 
 /**
@@ -63,8 +66,23 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         return new Action[0];
     }
     
+    /**
+     * just gets the array of FOs from lookup.
+     */
+    private static FileObject[] extractFileObjectsfromLookup(Lookup lookup) {
+        List files = new ArrayList();
+        Iterator it = lookup.lookup(new Lookup.Template(DataObject.class)).allInstances().iterator();
+        while (it.hasNext()) {
+            DataObject d = (DataObject)it.next();
+            FileObject f = d.getPrimaryFile();
+            files.add(f);
+        }
+        return (FileObject[])files.toArray(new FileObject[files.size()]);
+    }
+    
+    
     public final RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup) {
-        FileObject[] fos = FileUtilities.extractFileObjectsfromLookup(lookup);
+        FileObject[] fos = extractFileObjectsfromLookup(lookup);
         String relPath = null;
         String group = null;
         HashMap replaceMap = new HashMap();

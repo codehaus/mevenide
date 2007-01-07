@@ -25,6 +25,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -38,11 +40,21 @@ import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.jdom.NetbeansBuildActionJDOMWriter;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
+import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jdom.DefaultJDOMFactory;
+import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.JDOMFactory;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.openide.filesystems.FileLock;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
@@ -152,7 +164,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                         public void run() throws IOException {
                             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
                             WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
-                            FileUtilities.writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
+                            writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
                         }
                     });
                 } catch (IOException ex) {
@@ -180,5 +192,47 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         public void showSubCategory(String name);
     }
     
+    
+   public static void writeNbActionsModel(final FileObject pomDir, final ActionToGoalMapping mapping) throws IOException {
+        pomDir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
+            public void run() throws IOException {
+                JDOMFactory factory = new DefaultJDOMFactory();
+                
+                InputStream inStr = null;
+                FileLock lock = null;
+                OutputStreamWriter outStr = null;
+                try {
+                    Document doc;
+                    FileObject fo = pomDir.getFileObject(UserActionGoalProvider.FILENAME);
+                    if (fo == null) {
+                        fo = pomDir.createData(UserActionGoalProvider.FILENAME);
+                        doc = factory.document(factory.element("actions")); //NOI18N
+                    } else {
+                        //TODO..
+                        inStr = fo.getInputStream();
+                        SAXBuilder builder = new SAXBuilder();
+                        doc = builder.build(inStr);
+                        inStr.close();
+                        inStr = null;
+                    }
+                    lock = fo.lock();
+                    NetbeansBuildActionJDOMWriter writer = new NetbeansBuildActionJDOMWriter();
+                    String encoding = mapping.getModelEncoding() != null ? mapping.getModelEncoding() : "UTF-8"; //NOI18N
+                    outStr = new OutputStreamWriter(fo.getOutputStream(lock), encoding);
+                    Format form = Format.getRawFormat().setEncoding(encoding);
+                    writer.write(mapping, doc, outStr, form);
+                } catch (JDOMException exc){
+                    throw (IOException) new IOException("Cannot parse the nbactions.xml by JDOM.").initCause(exc);
+                } finally {
+                    IOUtil.close(inStr);
+                    IOUtil.close(outStr);
+                    if (lock != null) {
+                        lock.releaseLock();
+                    }
+                    
+                }
+            }
+        });
+    }
     
 }

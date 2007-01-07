@@ -44,8 +44,6 @@ import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyElement;
-import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;

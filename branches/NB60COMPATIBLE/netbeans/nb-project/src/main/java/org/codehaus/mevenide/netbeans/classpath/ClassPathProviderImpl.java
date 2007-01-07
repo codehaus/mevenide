@@ -20,12 +20,12 @@ package org.codehaus.mevenide.netbeans.classpath;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.spi.java.classpath.ClassPathFactory;
 import org.netbeans.spi.java.classpath.ClassPathProvider;
@@ -106,7 +106,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
      * @param possibleParents List of Strings denoting files..
      */
     private boolean isChildOf(FileObject child, List<String> possibleParents) {
-        FileObject[] dirs = FileUtilities.convertStringsToFileObjects(possibleParents);
+        FileObject[] dirs = convertStringsToFileObjects(possibleParents);
         for (int i =0; i < dirs.length; i++) {
             if (dirs[i] != null  && dirs[i].isFolder() && (dirs[i].equals(child) || FileUtil.isParentOf(dirs[i], child))) {
                 return true;
@@ -124,6 +124,21 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         }
         return false;
     }
+    
+    public static FileObject[] convertStringsToFileObjects(List<String> strings) {
+        FileObject[] fos = new FileObject[strings.size()];
+        int index = 0;
+        Iterator<String> it = strings.iterator();
+        while (it.hasNext()) {
+            String str = it.next();
+            File fil = new File(str);
+            fil = FileUtil.normalizeFile(fil);
+            fos[index] = FileUtil.toFileObject(fil);
+            index++;
+        }
+        return fos;
+    }
+    
     
     private int getType(FileObject file) {
         if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots()) ||

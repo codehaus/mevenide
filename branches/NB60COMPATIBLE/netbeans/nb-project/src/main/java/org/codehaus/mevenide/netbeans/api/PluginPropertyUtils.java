@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -36,7 +37,9 @@ public class PluginPropertyUtils {
      * tried to figure out if the property of the given plugin is customized in the
      * current project and returns it's value if so, otherwise null
      */
-    public static String getPluginProperty(NbMavenProject project, String groupId, String artifactId, String property, String goal) {
+    public static String getPluginProperty(Project prj, String groupId, String artifactId, String property, String goal) {
+        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
+        assert project != null : "Requires a maven project instance"; //NOI18N
         String toRet = null;
         if (project.getOriginalMavenProject().getBuildPlugins() == null) {
             return toRet;
