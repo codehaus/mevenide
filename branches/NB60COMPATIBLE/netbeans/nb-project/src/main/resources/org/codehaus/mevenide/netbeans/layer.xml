@@ -97,10 +97,10 @@
             </folder>    
             <folder name="Customizer">
                 <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance"/>
-                <!--attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance"/-->
+                <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
-                <!--attr name="org-codehaus-mevenide-netbeans-customizer-LibrariesProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/-->
+                <attr name="org-codehaus-mevenide-netbeans-customizer-LibrariesProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
@@ -125,6 +125,10 @@
                         <attr name="MD5" stringvalue="c2ced5f8505fe9d1cae685201e9cba07"/>
                     </file>
                 </folder>
+            </folder>
+            <folder name="DependenciesActions">
+            </folder>
+            <folder name="DependencyActions">
             </folder>
         </folder>
     </folder>

@@ -23,7 +23,6 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Iterator;
-import org.codehaus.mevenide.netbeans.graph.ArtifactGraphNode;
 import org.netbeans.api.visual.layout.SceneLayout;
 import org.netbeans.api.visual.widget.Widget;
 

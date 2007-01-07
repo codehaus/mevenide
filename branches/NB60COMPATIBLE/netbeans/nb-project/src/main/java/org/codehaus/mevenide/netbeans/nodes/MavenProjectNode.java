@@ -189,8 +189,22 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(CommonProjectActions.copyProjectAction());
         lst.add(CommonProjectActions.deleteProjectAction());
             
+        loadLayerActions("Projects/Actions", lst);
+        lst.add(null);
+        lst.add(SystemAction.get(ToolsAction.class));
+        lst.add(null);
+        if (reporter.getReports().size() > 0) {
+            lst.add(new ShowProblemsAction());
+        }
+        
+        lst.add(CommonProjectActions.customizeProjectAction());
+        
+        return (Action[])lst.toArray(new Action[lst.size()]);
+    }
+    
+    public static void loadLayerActions(String path, ArrayList lst) {
         try {
-            FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource("Projects/Actions"); // NOI18N
+            FileObject fo = Repository.getDefault().getDefaultFileSystem().findResource(path); // NOI18N
             if (fo != null) {
                 DataObject dobj = DataObject.find(fo);
                 FolderLookup actionRegistry = new FolderLookup((DataFolder)dobj);
@@ -213,16 +227,6 @@ public class MavenProjectNode extends AbstractNode {
             // data folder for existing fileobject expected
             ErrorManager.getDefault().notify(ex);
         }
-        lst.add(null);
-        lst.add(SystemAction.get(ToolsAction.class));
-        lst.add(null);
-        if (reporter.getReports().size() > 0) {
-            lst.add(new ShowProblemsAction());
-        }
-        
-        lst.add(CommonProjectActions.customizeProjectAction());
-        
-        return (Action[])lst.toArray(new Action[lst.size()]);
     }
 
     public String getShortDescription() {

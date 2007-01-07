@@ -22,6 +22,7 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,7 +41,6 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
-import org.codehaus.mevenide.netbeans.graph.DependencyGraphTopComponent;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
@@ -56,8 +56,6 @@ import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * root node for dependencies in project's view.
@@ -71,7 +69,7 @@ class DependenciesNode extends AbstractNode {
     private NbMavenProject project;
     
     DependenciesNode(NbMavenProject mavproject, int type) {
-        super(new DependenciesChildren(mavproject, type));
+        super(new DependenciesChildren(mavproject, type), Lookups.fixed(mavproject));
         setName("Dependencies" + type); //NOI18N
         switch (type) {
             case TYPE_COMPILE : setDisplayName("Libraries"); break;
@@ -85,7 +83,7 @@ class DependenciesNode extends AbstractNode {
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
         retValue = Utilities.mergeImages(retValue,
-                Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"),
+                Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
                 8, 8);
         return retValue;
     }
@@ -93,21 +91,21 @@ class DependenciesNode extends AbstractNode {
     public java.awt.Image getOpenedIcon(int param) {
         java.awt.Image retValue = super.getOpenedIcon(param);
         retValue = Utilities.mergeImages(retValue,
-                Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"),
+                Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
                 8, 8);
         return retValue;
     }
     
     public Action[] getActions(boolean context) {
-        return new Action[] { 
-                              new AddDependencyAction(),
-                              null,
-//                              new DownloadAction(),
-                              new ResolveDepsAction(),
-                              new DownloadJavadocSrcAction(true),
-                              new DownloadJavadocSrcAction(false),
-                              new ShowGraphAction()
-        };
+        ArrayList<Action> toRet = new ArrayList<Action>();
+        toRet.add(new AddDependencyAction());
+        toRet.add(null);
+        toRet.add(new ResolveDepsAction());
+        toRet.add(new DownloadJavadocSrcAction(true));
+        toRet.add(new DownloadJavadocSrcAction(false));
+//        toRet.add(new ShowGraphAction());
+        MavenProjectNode.loadLayerActions("Projects/org-codehaus-mevenide-netbeans/DependenciesActions", toRet); //NOI18N
+        return toRet.toArray(new Action[toRet.size()]);
     }
     
     private NbMavenProject getProject() {
@@ -254,7 +252,7 @@ class DependenciesNode extends AbstractNode {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
                     AggregateProgressHandle hndl = AggregateProgressFactory.createHandle("Downloading Libraries", 
                             new ProgressContributor[] {
-                                AggregateProgressFactory.createProgressContributor("zaloha") }, 
+                                AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
                             null, null);
                     
                     boolean ok = true; 
@@ -286,20 +284,6 @@ class DependenciesNode extends AbstractNode {
             });
         }
     }  
-    
-    private class ShowGraphAction extends AbstractAction {
-        public ShowGraphAction() {
-            putValue(Action.NAME, "Show Library Dependency Graph");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            TopComponent tc = new DependencyGraphTopComponent(project);
-            WindowManager.getDefault().findMode("editor").dockInto(tc); //NOI18N
-            tc.open();
-            tc.requestActive();
-        }
-    }
-    
     private static class DependenciesComparator implements Comparator {
         public int compare(Object o1, Object o2) {
             Artifact art1 = (Artifact)o1;

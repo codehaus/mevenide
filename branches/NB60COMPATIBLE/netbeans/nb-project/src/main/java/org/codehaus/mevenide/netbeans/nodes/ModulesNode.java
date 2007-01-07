@@ -35,7 +35,6 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
-import org.codehaus.mevenide.netbeans.graph.ModulesGraphTopComponent;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -49,8 +48,6 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
-import org.openide.windows.TopComponent;
-import org.openide.windows.WindowManager;
 
 /**
  * display the modules for pom packaged project
@@ -70,7 +67,6 @@ public class ModulesNode extends AbstractNode {
 
     public Action[] getActions(boolean bool) {
         return new Action[] {
-            new ShowGraphAction()  
         };
     }
     
@@ -216,16 +212,4 @@ public class ModulesNode extends AbstractNode {
     }
     
     
-    private class ShowGraphAction extends AbstractAction {
-        public ShowGraphAction() {
-            putValue(Action.NAME, "Show Module Graph");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            TopComponent tc = new ModulesGraphTopComponent(project);
-            WindowManager.getDefault().findMode("editor").dockInto(tc);
-            tc.open();
-            tc.requestActive();
-        }
-    }
 }

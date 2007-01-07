@@ -20,6 +20,7 @@
              <module>nb-repo-browser</module>
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
+	     <module>graph</module>
           </modules>
        </profile>
       
@@ -89,6 +90,7 @@
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
      <!--module>nb-repo-browser</module-->
+     <!--module>graph</module-->
   </modules>
     <repositories>
         <repository>
