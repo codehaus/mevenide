@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import java.io.StringReader;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -31,9 +32,12 @@ import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
@@ -232,11 +236,38 @@ public class ActionProviderImpl implements ActionProvider {
                 }
                 maps.getActions().add(mapping);
                 ActionToGoalUtils.writeMappingsToFileAttributes(project.getProjectDirectory(), maps);
+                if (pnl.isRememberedAs() != null) {
+                    try {
+                        UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+                        ActionToGoalMapping mappings = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
+                        String tit = "CUSTOM-" + pnl.isRememberedAs();
+                        mapping.setActionName(tit);
+                        Iterator it = mappings.getActions().iterator();
+                        NetbeansActionMapping exist = null;
+                        while (it.hasNext()) {
+                            NetbeansActionMapping m = (NetbeansActionMapping)it.next();
+                            if (tit.equals(m.getActionName())) {
+                                exist = m;
+                                break;
+                            }
+                        }
+                        if (exist != null) {
+                            mappings.getActions().set(mappings.getActions().indexOf(exist), mapping);
+                        } else {
+                            mappings.addAction(mapping);
+                        }
+                        mapping.setDisplayName(pnl.isRememberedAs());
+                        CustomizerProviderImpl.writeNbActionsModel(project.getProjectDirectory(), mappings);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
                 ModelRunConfig rc = new ModelRunConfig(project, mapping);
                 rc.setOffline(Boolean.valueOf(pnl.isOffline()));
                 rc.setShowDebug(pnl.isShowDebug());
                 rc.setRecursive(pnl.isRecursive());
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
+                
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
             }
         }

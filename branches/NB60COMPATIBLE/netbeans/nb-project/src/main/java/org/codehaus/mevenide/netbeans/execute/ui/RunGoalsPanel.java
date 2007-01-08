@@ -18,10 +18,7 @@
 package org.codehaus.mevenide.netbeans.execute.ui;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
-import java.awt.Component;
-import java.awt.GridBagConstraints;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -236,8 +233,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         cbSkipTests = new javax.swing.JCheckBox();
         btnNext = new javax.swing.JButton();
         btnPrev = new javax.swing.JButton();
+        cbRemember = new javax.swing.JCheckBox();
+        txtRemember = new javax.swing.JTextField();
+        jSeparator1 = new javax.swing.JSeparator();
 
-        org.openide.awt.Mnemonics.setLocalizedText(lblGoals, "Goals:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblGoals, "&Goals:");
 
         org.openide.awt.Mnemonics.setLocalizedText(lblProfiles, "&Profiles:");
 
@@ -247,23 +247,23 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         taProperties.setRows(5);
         jScrollPane1.setViewportView(taProperties);
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbRecursive, "Recursive (with Modules)");
+        org.openide.awt.Mnemonics.setLocalizedText(cbRecursive, "Re&cursive (with Modules)");
         cbRecursive.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbRecursive.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbOffline, "Build Offline");
+        org.openide.awt.Mnemonics.setLocalizedText(cbOffline, "&Build Offline");
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbOffline.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbDebug, "Show Debug Output");
+        org.openide.awt.Mnemonics.setLocalizedText(cbDebug, "Show &Debug Output");
         cbDebug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbDebug.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbUpdateSnapshots, "Update Snapshots");
+        org.openide.awt.Mnemonics.setLocalizedText(cbUpdateSnapshots, "&Update Snapshots");
         cbUpdateSnapshots.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbUpdateSnapshots.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, "Skip Tests");
+        org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, "&Skip Tests");
         cbSkipTests.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbSkipTests.addActionListener(new java.awt.event.ActionListener() {
@@ -288,6 +288,10 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
         });
 
+        org.openide.awt.Mnemonics.setLocalizedText(cbRemember, "Remember &as:");
+        cbRemember.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbRemember.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -295,6 +299,15 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(cbRecursive)
+                            .add(cbOffline))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(cbDebug)
+                            .add(cbUpdateSnapshots)))
+                    .add(cbSkipTests)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(lblGoals)
@@ -306,24 +319,20 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                             .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)
                             .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 364, Short.MAX_VALUE)))
                     .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(cbRecursive)
-                            .add(cbOffline))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(cbDebug)
-                            .add(cbUpdateSnapshots)))
-                    .add(cbSkipTests)
-                    .add(layout.createSequentialGroup()
                         .add(btnPrev)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnNext)))
+                        .add(btnNext)
+                        .add(52, 52, 52)
+                        .add(cbRemember)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(txtRemember, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
+                    .add(jSeparator1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .add(5, 5, 5)
+                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblGoals)
                     .add(txtGoals, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -333,8 +342,8 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                     .add(txtProfiles, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel2))
+                    .add(jLabel2)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(cbRecursive)
@@ -346,9 +355,13 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cbSkipTests)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jSeparator1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 10, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnPrev)
-                    .add(btnNext))
+                    .add(btnNext)
+                    .add(cbRemember)
+                    .add(txtRemember, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -419,20 +432,33 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         return cbUpdateSnapshots.isSelected();
     }
     
+    public String isRememberedAs() {
+        if (cbRemember.isSelected()) {
+            String txt = txtRemember.getText().trim();
+            if (txt.length() > 0) {
+                return txt;
+            }
+        }
+        return null;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
     private javax.swing.JCheckBox cbDebug;
     private javax.swing.JCheckBox cbOffline;
     private javax.swing.JCheckBox cbRecursive;
+    private javax.swing.JCheckBox cbRemember;
     private javax.swing.JCheckBox cbSkipTests;
     private javax.swing.JCheckBox cbUpdateSnapshots;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblGoals;
     private javax.swing.JLabel lblProfiles;
     private javax.swing.JTextArea taProperties;
     private javax.swing.JTextField txtGoals;
     private javax.swing.JTextField txtProfiles;
+    private javax.swing.JTextField txtRemember;
     // End of variables declaration//GEN-END:variables
 }

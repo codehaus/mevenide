@@ -13,22 +13,9 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblGoals" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblProfiles" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="0" pref="364" max="32767" attributes="0"/>
-                          <Component id="txtGoals" alignment="0" pref="364" max="32767" attributes="0"/>
-                          <Component id="txtProfiles" alignment="0" pref="364" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbRecursive" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -42,10 +29,28 @@
                   </Group>
                   <Component id="cbSkipTests" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblGoals" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblProfiles" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jScrollPane1" pref="364" max="32767" attributes="0"/>
+                          <Component id="txtGoals" alignment="0" pref="364" max="32767" attributes="0"/>
+                          <Component id="txtProfiles" alignment="0" pref="364" max="32767" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
                       <Component id="btnPrev" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="btnNext" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+                      <Component id="cbRemember" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="txtRemember" pref="254" max="32767" attributes="0"/>
                   </Group>
+                  <Component id="jSeparator1" alignment="0" pref="442" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -53,8 +58,8 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblGoals" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtGoals" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -66,10 +71,10 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cbRecursive" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="cbUpdateSnapshots" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -82,9 +87,13 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbSkipTests" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+              <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btnPrev" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnNext" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="cbRemember" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtRemember" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
@@ -94,7 +103,7 @@
   <SubComponents>
     <Component class="javax.swing.JLabel" name="lblGoals">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Goals:"/>
+        <Property name="text" type="java.lang.String" value="&amp;Goals:"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtGoals">
@@ -128,7 +137,7 @@
     </Container>
     <Component class="javax.swing.JCheckBox" name="cbRecursive">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Recursive (with Modules)"/>
+        <Property name="text" type="java.lang.String" value="Re&amp;cursive (with Modules)"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -141,7 +150,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbOffline">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Build Offline"/>
+        <Property name="text" type="java.lang.String" value="&amp;Build Offline"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -154,7 +163,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbDebug">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Show Debug Output"/>
+        <Property name="text" type="java.lang.String" value="Show &amp;Debug Output"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -167,7 +176,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbUpdateSnapshots">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Update Snapshots"/>
+        <Property name="text" type="java.lang.String" value="&amp;Update Snapshots"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -180,7 +189,7 @@
     </Component>
     <Component class="javax.swing.JCheckBox" name="cbSkipTests">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Skip Tests"/>
+        <Property name="text" type="java.lang.String" value="&amp;Skip Tests"/>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
             <EmptyBorder bottom="0" left="0" right="0" top="0"/>
@@ -215,6 +224,23 @@
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnPrevActionPerformed"/>
       </Events>
+    </Component>
+    <Component class="javax.swing.JCheckBox" name="cbRemember">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Remember &amp;as:"/>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
+            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
+          </Border>
+        </Property>
+        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
+          <Insets value="[0, 0, 0, 0]"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="txtRemember">
+    </Component>
+    <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
   </SubComponents>
 </Form>
