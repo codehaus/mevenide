@@ -20,8 +20,9 @@ import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
@@ -37,8 +38,8 @@ public class WebRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     }
     
     public Category createCategory(Lookup context) {
-        NbMavenProject project = context.lookup(NbMavenProject.class);
-        if ("war".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+        Project project = context.lookup(Project.class);
+        if ("war".equalsIgnoreCase(project.getLookup().lookup(ProjectURLWatcher.class).getMavenProject().getPackaging())) {
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
                     "Run",
@@ -50,8 +51,7 @@ public class WebRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        NbMavenProject project = context.lookup(NbMavenProject.class);
-        final WebRunCustomizerPanel panel = new WebRunCustomizerPanel(handle, project);
+        final WebRunCustomizerPanel panel = new WebRunCustomizerPanel(handle, context.lookup(Project.class));
         //TODO eventually replace by the Category's action listener
         handle.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {

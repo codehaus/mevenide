@@ -31,6 +31,7 @@ import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.spi.project.ActionProvider;
@@ -40,7 +41,7 @@ import org.netbeans.spi.project.ActionProvider;
  * @author  mkleint
  */
 public class WebRunCustomizerPanel extends javax.swing.JPanel {
-    private NbMavenProject project;
+    private Project project;
     private ModelHandle handle;
     private WebModule module;
     private WebModuleProviderImpl moduleProvider;
@@ -58,7 +59,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     private String oldUrl;
     
     /** Creates new form WebRunCustomizerPanel */
-    public WebRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
+    public WebRunCustomizerPanel(ModelHandle handle, Project project) {
         initComponents();
         this.handle = handle;
         this.project = project;
@@ -120,8 +121,9 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
         });
         ActionToGoalMapping mappings = handle.getActionMappings();
-        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project);
-        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
+        //TODO remove the NbMavenProject dependency
+        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class));
+        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
         oldUrl = isRunCompatible ? run.getProperties().getProperty("netbeans.deploy.clientUrlPart") :
