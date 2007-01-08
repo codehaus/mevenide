@@ -1,5 +1,0 @@
-        <folder name="Maven">
-            <folder name="PluginProperties">
-                <file name="mycustom-plugin-1.5.xml" url="mycustom-plugin.xml"/>
-            </folder>
-        </folder>
