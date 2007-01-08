@@ -17,6 +17,9 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.awt.event.ActionEvent;
@@ -25,10 +28,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -60,7 +65,6 @@ import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
-import org.netbeans.api.progress.aggregate.ProgressMonitor;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -307,6 +311,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
                 }
             }
+            doRemoveAllShutdownHooks();
         }
     }
     
@@ -353,6 +358,50 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
 
     public void setTask(ExecutorTask task) {
         this.task = task;
+    }
+
+    /**
+     * a brute force hack to workaround a severe issue with Maven Plugins 
+     * registering shutdown hooks. The plugin's ThreadGroup was long gone and the
+     * hooks thread was not capable of being run, halting the shutdown of the IDE
+     * indefinitely.
+     * The workaround involves use of reflection to get the list of shutdown hooks
+     *  and remove/run all that appeared in the current threadgroup. The chances are
+     * these stem from the plugins. (Use of shutdown hooks in the plugins should be punished
+     * without mercy)
+     */ 
+    private void doRemoveAllShutdownHooks() {
+        try     {
+            java.lang.Class shutdown = java.lang.Class.forName("java.lang.Shutdown"); //NOI18N
+            java.lang.reflect.Field fld = shutdown.getDeclaredField("hooks"); //NOI18N
+            if (fld != null) {
+                fld.setAccessible(true);
+                Set set = (Set) fld.get(null);
+                if (set != null) {
+                    // objects are Shutdown.WrappedHook instances
+                    for (Object wr : new HashSet(set)) {
+                         Field hookFld = wr.getClass().getDeclaredField("hook"); //NOI18N
+                         hookFld.setAccessible(true);
+                         Thread hook = (Thread) hookFld.get(wr);
+                         if (hook.getThreadGroup() != null && hook.getThreadGroup() == Thread.currentThread().getThreadGroup()) {
+                             hook.start();
+                             try {
+                                 hook.join();
+                             } catch (InterruptedException e) {
+                                 
+                             } finally {
+                                 Runtime.getRuntime().removeShutdownHook(hook);
+                             }
+                         }
+                    }
+                }
+            }
+        }
+        catch (Exception ex) {
+            Logger.getLogger(getClass().getName()).log(Level.INFO,
+                "Error removing shutdown hook originated from Maven build. " + ex.getMessage(), 
+                ex);
+        }
     }
     
     
