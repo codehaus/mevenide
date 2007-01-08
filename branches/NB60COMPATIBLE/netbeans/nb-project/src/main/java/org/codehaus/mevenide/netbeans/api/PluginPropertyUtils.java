@@ -15,10 +15,11 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans;
+package org.codehaus.mevenide.netbeans.api;
 
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.project.Project;
 
