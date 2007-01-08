@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:foo="http://intellij.plugin.example.foo"
+           targetNamespace="http://intellij.plugin.example.foo">
+
+    <xs:element name="school" type="foo:school"/>
+
+    <xs:complexType name="school">
+        <xs:sequence>
+            <xs:element name="classes" type="foo:classes" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="classes">
+        <xs:sequence>
+            <xs:element name="class" type="foo:class" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="class">
+        <xs:sequence>
+            <xs:element name="students" type="foo:students" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="teacher" type="xs:string" use="required"/>
+        <xs:attribute name="subject" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="students">
+        <xs:sequence>
+            <xs:element name="student" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>
