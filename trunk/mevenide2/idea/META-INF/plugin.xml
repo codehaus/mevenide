@@ -3,7 +3,7 @@
 <idea-plugin>
     <name>Maven Reloaded</name>
     <description>A plugin that inspects the project space for Maven 2 POM files and modifies the module source and test roots, classpaths, and inter-module dependencies. It also provides the capability to execute Maven 2 goals on a POM from the IDE.</description>
-    <version>0.8.0</version>
+    <version>0.8.1</version>
     <vendor>Bryan Kate</vendor>
     <idea-version since-build="5784"/>
     <project-components>
