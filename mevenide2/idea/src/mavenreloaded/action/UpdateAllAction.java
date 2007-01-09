@@ -25,6 +25,7 @@ import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.project.Project;
 import mavenreloaded.PluginPomManager;
 import mavenreloaded.PluginLoggerManager;
+import mavenreloaded.PluginConfigurationManager;
 import mavenreloaded.console.PluginLogger;
 
 
@@ -55,10 +56,14 @@ public class UpdateAllAction extends AnAction {
         Project project = (Project)e.getDataContext().getData(DataConstants.PROJECT);
 
         if (project == null) {
+
             e.getPresentation().setEnabled(false);
+            e.getPresentation().setVisible(false);
         }
         else {
-            e.getPresentation().setEnabled(true);
+            
+            e.getPresentation().setEnabled(PluginConfigurationManager.getInstance(project).getConfig().isPluginEnabled());
+            e.getPresentation().setVisible(true);
         }
     }
 
