@@ -154,6 +154,49 @@
         </pluginRepository>
     </pluginRepositories>
     
+    <profiles>
+        <profile>
+            <id>jdktools-linux</id>
+            <activation>
+                <os>
+                    <family>Linux</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.4.2</version>
+                    <scope>system</scope>
+                    <systemPath>${java142.home}/lib/tools.jar</systemPath>
+                </dependency>
+            </dependencies>
+            <properties>
+                <java142.home>${java.home}/..</java142.home>
+            </properties>
+        </profile>
+        <profile>
+            <id>jdktools-win</id>
+            <activation>
+                <os>
+                    <family>Windows</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>sun.jdk</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.4.2</version>
+                    <scope>system</scope>
+                    <systemPath>${java142.home}/lib/tools.jar</systemPath>
+                </dependency>
+            </dependencies>
+            <properties>
+                <java142.home>${java.home}/..</java142.home>
+            </properties>
+        </profile>
+    </profiles>    
+    
     <build>
         <plugins>
             <plugin>
