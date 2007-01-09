@@ -23,6 +23,10 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.project.Project;
+import mavenreloaded.MavenConstants;
+import mavenreloaded.PluginPomManager;
+import mavenreloaded.PluginConfigurationManager;
 
 
 /**
@@ -31,9 +35,6 @@ import com.intellij.openapi.vfs.VirtualFile;
  * @author bkate
  */
 public class MavenPopupGroup extends DefaultActionGroup {
-
-    private static final String POM_NAME = "pom.xml";
-
 
     /**
      * Default constructor.
@@ -63,10 +64,9 @@ public class MavenPopupGroup extends DefaultActionGroup {
 
         super.update(e);
 
-        boolean enabled = isPomFile((VirtualFile)e.getDataContext().getData(DataConstants.VIRTUAL_FILE));
+        boolean enabled = isGroupEnabled(e);
 
         e.getPresentation().setEnabled(enabled);
-        e.getPresentation().setVisible(enabled);
     }
 
 
@@ -84,8 +84,24 @@ public class MavenPopupGroup extends DefaultActionGroup {
             return false;
         }
 
-        return file.getName().equalsIgnoreCase(POM_NAME);
+        return file.getName().equalsIgnoreCase(MavenConstants.POM_NAME);
     }
 
+
+    /**
+     * Determines if this action group should be enabled.
+     *
+     * @param e The action event triggering this call.
+     *
+     * @return True if the event context supports enabling this action group.
+     */
+    protected boolean isGroupEnabled(AnActionEvent e) {
+
+        VirtualFile thisFile = (VirtualFile)e.getDataContext().getData(DataConstants.VIRTUAL_FILE);
+        Project project = (Project)e.getDataContext().getData(DataConstants.PROJECT);
+        PluginConfigurationManager config = PluginConfigurationManager.getInstance(project);
+
+        return config.getConfig().isPluginEnabled() && isPomFile(thisFile);
+    }
 }
 
