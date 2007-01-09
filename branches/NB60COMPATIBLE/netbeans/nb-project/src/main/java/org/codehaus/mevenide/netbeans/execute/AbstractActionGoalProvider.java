@@ -62,9 +62,6 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     public AbstractActionGoalProvider() {
     }
     
-    public Action[] createPopupActions(NbMavenProject project) {
-        return new Action[0];
-    }
     
     /**
      * just gets the array of FOs from lookup.

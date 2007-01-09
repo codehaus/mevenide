@@ -35,10 +35,6 @@ import org.openide.util.Lookup;
  */
 public interface AdditionalM2ActionsProvider {
 
-    /**
-     * add action instances to the popup of the project.
-     */
-    Action[] createPopupActions(NbMavenProject project);
     
     /**
      * Create an instance of RunConfig configured for execution.

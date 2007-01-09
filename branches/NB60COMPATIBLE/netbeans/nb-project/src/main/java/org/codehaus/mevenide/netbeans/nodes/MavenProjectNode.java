@@ -159,17 +159,6 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, "Debug", null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, "Test", null));
         lst.add(null);
-//        if (isMultiproject) {
-//            lst.add(provider.createBasicMavenAction("Build (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTBUILD));
-//            lst.add(provider.createBasicMavenAction("Clean (multiproject)", ActionProviderImpl.COMMAND_MULTIPROJECTCLEAN));
-//        }
-        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-        Iterator it = res.allInstances().iterator();
-        while (it.hasNext()) {
-            AdditionalM2ActionsProvider act = (AdditionalM2ActionsProvider)it.next();
-            Action[] acts = act.createPopupActions(project);
-            lst.addAll(Arrays.asList(acts));
-        }
 //        lst.add(new LifecycleMapTest());
         lst.add(provider.createCustomPopupAction()); 
         // separator
