@@ -145,28 +145,7 @@
             <artifactId>nb-mvn-embedder</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
-        <dependency>
-            <groupId>sun.jdk</groupId>
-            <artifactId>tools</artifactId>
-            <version>1.4.2</version>
-            <scope>system</scope>
-            <systemPath>${java142.home}/lib/tools.jar</systemPath>
-        </dependency>
     </dependencies>
-    <profiles>
-        <profile>
-            <id>jdk142</id>
-            <activation>
-                <jdk>1.4.2</jdk>
-            </activation>
-            <properties>
-                <java142.home>${java.home}/..</java142.home>
-            </properties>
-        </profile>
-    </profiles>
-    <properties>
-        <java142.home>${java.home}/..</java142.home>
-    </properties>
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus.snapshots</id>
