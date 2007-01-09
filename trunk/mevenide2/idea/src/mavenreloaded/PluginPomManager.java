@@ -285,7 +285,7 @@ public class PluginPomManager implements ModuleListener {
                             moduleAsArtifact.put(maven.createArtifact(pom.getGroupId(),
                                                                       pom.getArtifactId(),
                                                                       pom.getVersion(),
-                                                                      MavenConstants.COMPILE_SCOPE, 
+                                                                      MavenConstants.COMPILE_SCOPE,
                                                                       MavenConstants.JAR_PACKAGING), module);
                         }
 
@@ -1183,13 +1183,11 @@ public class PluginPomManager implements ModuleListener {
                 // not in terms of the base version that may have been resolved for this artifact
                 if ((ret == null) && artifact.isSnapshot()) {
 
-                    String version = artifact.getVersionRange().toString();
-
                     for (Artifact art : moduleAsArtifact.keySet()) {
 
                         if (art.getGroupId().equals(artifact.getGroupId()) &&
                             art.getArtifactId().equals(artifact.getArtifactId()) &&
-                            art.getVersion().equals(version)) {
+                            art.getVersion().equals(artifact.getBaseVersion())) {
 
                             // found a SNAPSHOT that matches
                             ret = moduleAsArtifact.get(art);
