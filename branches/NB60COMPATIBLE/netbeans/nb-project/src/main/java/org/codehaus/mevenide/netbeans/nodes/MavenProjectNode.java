@@ -21,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
@@ -35,12 +34,10 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.problems.ProblemsPanel;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -53,6 +50,7 @@ import org.netbeans.spi.project.ui.support.ProjectSensitiveActions;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
+import org.openide.NotifyDescriptor;
 import org.openide.actions.FindAction;
 import org.openide.actions.ToolsAction;
 import org.openide.filesystems.FileObject;
@@ -64,6 +62,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.loaders.FolderLookup;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
 
@@ -76,7 +75,6 @@ public class MavenProjectNode extends AbstractNode {
      
      private NbMavenProject project;
      private ProjectInformation info;
-     private Image icon;
      private ProblemReporter reporter;
      public MavenProjectNode(Lookup lookup, NbMavenProject proj) {
         super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
@@ -90,7 +88,6 @@ public class MavenProjectNode extends AbstractNode {
                 }
             }
         });
-//        setIconBase("org/mevenide/netbeans/projects/resources/MavenIcon");
         reporter = (ProblemReporter)proj.getLookup().lookup(ProblemReporter.class);
         reporter.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
@@ -122,7 +119,7 @@ public class MavenProjectNode extends AbstractNode {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
         }
         if (reporter.getReports().size() > 0) {
-            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);
+            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);//NOI18N
         }
         return img;
     }
@@ -138,26 +135,25 @@ public class MavenProjectNode extends AbstractNode {
             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
         }
         if (reporter.getReports().size() > 0) {
-            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);
+            img = Utilities.mergeImages(img, Utilities.loadImage("org/codehaus/mevenide/netbeans/brokenProjectBadge.png"), 8, 0);//NOI18N
         }
         return img;
     }
     
     public javax.swing.Action[] getActions(boolean param) {
-//       javax.swing.Action[] spr = super.getActions(param);
         ArrayList lst = new ArrayList();
         ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
         lst.add(CommonProjectActions.newFileAction());
         lst.add(null);
     
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_BUILD, "Build", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, "Clean and Build", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_CLEAN, "Clean", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", "Generate Javadoc", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_BUILD, NbBundle.getMessage(MavenProjectNode.class, "ACT_Build"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, NbBundle.getMessage(MavenProjectNode.class, "ACT_Clean_Build"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_CLEAN, NbBundle.getMessage(MavenProjectNode.class, "ACT_Clean"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", NbBundle.getMessage(MavenProjectNode.class, "ACT_Javadoc"), null));
         lst.add(null);
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_RUN, "Run", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, "Debug", null));
-        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, "Test", null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_RUN, NbBundle.getMessage(MavenProjectNode.class, "ACT_Run"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, NbBundle.getMessage(MavenProjectNode.class, "ACT_Debug"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, NbBundle.getMessage(MavenProjectNode.class, "ACT_Test"), null));
         lst.add(null);
 //        lst.add(new LifecycleMapTest());
         lst.add(provider.createCustomPopupAction()); 
@@ -166,7 +162,7 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(project.createRefreshAction());
         lst.add(CommonProjectActions.setAsMainProjectAction());
         lst.add(CommonProjectActions.openSubprojectsAction());
-        if ("pom".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) {
+        if ("pom".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) { //NOI18N
             lst.add(new CloseSuprojectsAction());
         }
         lst.add(CommonProjectActions.closeProjectAction());
@@ -178,7 +174,7 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(CommonProjectActions.copyProjectAction());
         lst.add(CommonProjectActions.deleteProjectAction());
             
-        loadLayerActions("Projects/Actions", lst);
+        loadLayerActions("Projects/Actions", lst); //NOI18N
         lst.add(null);
         lst.add(SystemAction.get(ToolsAction.class));
         lst.add(null);
@@ -220,14 +216,14 @@ public class MavenProjectNode extends AbstractNode {
 
     public String getShortDescription() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<html><i>Location:</i><b> ").append(project.getProjectDirectory().getPath()).append("</b><br>");
-        buf.append("<i>GroupId:</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br>");
-        buf.append("<i>ArtifactId:</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br>");
-        buf.append("<i>Version:</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br>");
+        buf.append("<html><i>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project1")).append("</i><b> ").append(project.getProjectDirectory().getPath()).append("</b><br><i>");
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project2")).append("</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br><i>");
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project3")).append("</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br><i>");
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project4")).append("</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br><i>");
         //TODO escape the short description
-        buf.append("<i>Description:</i> ").append(breakPerLine(project.getShortDescription(), "Description:".length()));
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5")).append("</i> ").append(breakPerLine(project.getShortDescription(), NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5").length()));
         if (reporter.getReports().size() > 0) {
-            buf.append("<br><b>Problems:</b><br><ul>");
+            buf.append("<br><b>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project6")).append("</b><br><ul>");
             Iterator it = reporter.getReports().iterator();
             while (it.hasNext()) {
                 ProblemReport elem = (ProblemReport) it.next();
@@ -258,7 +254,7 @@ public class MavenProjectNode extends AbstractNode {
     
     private class CloseSuprojectsAction extends AbstractAction {
         public CloseSuprojectsAction() {
-            putValue(Action.NAME, "Close Required Projects");
+            putValue(Action.NAME, NbBundle.getMessage(MavenProjectNode.class, "ACT_CloseRequired"));
         }
 
         public void actionPerformed(ActionEvent e) {
@@ -306,16 +302,16 @@ public class MavenProjectNode extends AbstractNode {
     private class ShowProblemsAction extends AbstractAction {
         
         public ShowProblemsAction() {
-            putValue(Action.NAME, "Show and Resolve Problems...");
+            putValue(Action.NAME, NbBundle.getMessage(MavenProjectNode.class, "ACT_ShowProblems"));
         }
         
         public void actionPerformed(ActionEvent arg0) {
             JButton butt = new JButton();
             ProblemsPanel panel = new ProblemsPanel(reporter);
             panel.setActionButton(butt);
-            DialogDescriptor dd = new DialogDescriptor(panel, "Show Problems");
-            dd.setOptions(new Object[] { butt, "Close" });
-            dd.setClosingOptions(new Object[] {"Close"});
+            DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(MavenProjectNode.class, "TIT_Show_Problems"));
+            dd.setOptions(new Object[] { butt, NbBundle.getMessage(MavenProjectNode.class, "BTN_Close") });
+            dd.setClosingOptions(new Object[] {NbBundle.getMessage(MavenProjectNode.class, "BTN_Close")});
             dd.setModal(false);
             DialogDisplayer.getDefault().notify(dd);
         }
