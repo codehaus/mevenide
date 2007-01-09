@@ -25,6 +25,8 @@ import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.project.Project;
 import mavenreloaded.PluginPomManager;
+import mavenreloaded.PluginConfigurationManager;
+import mavenreloaded.MavenConstants;
 
 
 /**
@@ -33,9 +35,6 @@ import mavenreloaded.PluginPomManager;
  * @author bkate
  */
 public abstract class MavenGroupAction extends AnAction {
-
-    private static final String POM_NAME = "pom.xml";
-
 
     /**
      * {@inheritDoc}
@@ -64,7 +63,7 @@ public abstract class MavenGroupAction extends AnAction {
             return false;
         }
 
-        return file.getName().equalsIgnoreCase(POM_NAME);
+        return file.getName().equalsIgnoreCase(MavenConstants.POM_NAME);
     }
 
 
@@ -77,10 +76,12 @@ public abstract class MavenGroupAction extends AnAction {
      */
     protected boolean isActionEnabled(AnActionEvent e) {
 
-        Project project = (Project)e.getDataContext().getData(DataConstants.PROJECT);
         VirtualFile thisFile = (VirtualFile)e.getDataContext().getData(DataConstants.VIRTUAL_FILE);
+        Project project = (Project)e.getDataContext().getData(DataConstants.PROJECT);
+        PluginPomManager manager = PluginPomManager.getInstance(project);
+        PluginConfigurationManager config = PluginConfigurationManager.getInstance(project);
 
-        return isPomFile(thisFile) && PluginPomManager.getInstance(project).isPomEnabled(thisFile);
+        return config.getConfig().isPluginEnabled() && isPomFile(thisFile) && manager.isPomEnabled(thisFile);
     }
 
 }
