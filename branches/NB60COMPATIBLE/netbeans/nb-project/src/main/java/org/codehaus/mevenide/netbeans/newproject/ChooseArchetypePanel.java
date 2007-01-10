@@ -34,6 +34,7 @@ import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.NotifyDescriptor;
 import org.openide.WizardDescriptor;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -42,6 +43,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -181,6 +183,13 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     Node[] nds = getExplorerManager().getSelectedNodes();
     if (nds.length != 0) {
         Archetype arch = (Archetype) nds[0].getValue(PROP_ARCHETYPE);
+        NotifyDescriptor nd = new NotifyDescriptor.Confirmation(
+                NbBundle.getMessage(ChooseArchetypePanel.class, "Q_RemoveArch", arch.getArtifactId()), 
+                NotifyDescriptor.YES_NO_OPTION);
+        Object ret = DialogDisplayer.getDefault().notify(nd);
+        if (ret != NotifyDescriptor.YES_OPTION) {
+            return;
+        }
         try {
             List<StandardArtifactIndexRecord> rec = CustomQueries.getRecords(arch.getGroupId(), arch.getArtifactId(), arch.getVersion());
             for (StandardArtifactIndexRecord record : rec) {
@@ -291,8 +300,10 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
                              arch.getArtifactId(),
                              arch.getVersion()
                     }));
+            btnRemove.setEnabled(arch.deletable);
         } else {
             taDescription.setText(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "MSG_NoTemplate"));
+            btnRemove.setEnabled(false);
         }
     }
     

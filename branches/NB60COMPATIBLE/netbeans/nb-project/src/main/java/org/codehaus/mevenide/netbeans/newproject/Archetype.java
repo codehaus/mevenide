@@ -21,7 +21,7 @@ package org.codehaus.mevenide.netbeans.newproject;
  *
  * @author mkleint
  */
-public class Archetype {
+public final class Archetype {
     
     private String artifactId;
     private String groupId;
@@ -29,8 +29,15 @@ public class Archetype {
     private String name;
     private String description;
     private String repository;
+    boolean deletable;
+    
     /** Creates a new instance of Archetype */
+    public Archetype(boolean deletable) {
+        this.deletable = deletable;
+    }
+    
     public Archetype() {
+        this(true);
     }
     
     public String getArtifactId() {
@@ -104,5 +111,5 @@ public class Archetype {
         boolean ver =  ar1.getVersion().trim().equals(getVersion().trim());
         return ver;
     }
-    
+
 }

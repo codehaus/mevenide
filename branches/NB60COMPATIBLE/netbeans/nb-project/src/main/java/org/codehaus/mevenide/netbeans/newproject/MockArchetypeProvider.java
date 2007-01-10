@@ -33,21 +33,21 @@ public class MockArchetypeProvider implements ArchetypeProvider {
 
     public List<Archetype> getArchetypes() {
         List<Archetype> toRet = new ArrayList<Archetype>();
-        Archetype simple = new Archetype();
+        Archetype simple = new Archetype(false);
         simple.setArtifactId("maven-archetype-quickstart");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
         simple.setName(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "LBL_Maven_Quickstart_Archetype"));
         simple.setDescription(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "HINT_MavenQuickStart"));
         toRet.add(simple);
-        simple = new Archetype();
+        simple = new Archetype(false);
         simple.setArtifactId("maven-archetype-webapp");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
         simple.setName(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "LBL_Webapp_Archetype"));
         simple.setDescription(org.openide.util.NbBundle.getMessage(MockArchetypeProvider.class, "HINT_Webapp_Archetype"));
         toRet.add(simple);
-        simple = new Archetype();
+        simple = new Archetype(false);
         simple.setArtifactId("maven-archetype-mojo");
         simple.setGroupId("org.apache.maven.archetypes");
         simple.setVersion("1.0");
