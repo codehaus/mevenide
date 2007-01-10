@@ -286,7 +286,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             taDescription.setText(NbBundle.getMessage(ChooseArchetypePanel.class, "MSG_Description", 
                     new Object[] {
                             (arch.getName() != null ? arch.getName() : arch.getArtifactId()),
-                             arch.getDescription(),
+                             arch.getDescription() == null ? "" : arch.getDescription(),
                              arch.getGroupId(),
                              arch.getArtifactId(),
                              arch.getVersion()
