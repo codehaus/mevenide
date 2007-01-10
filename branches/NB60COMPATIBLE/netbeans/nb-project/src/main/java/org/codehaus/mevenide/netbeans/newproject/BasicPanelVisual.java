@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.newproject;
 
 import java.io.File;
+import java.text.MessageFormat;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.event.DocumentEvent;
@@ -27,6 +28,7 @@ import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
 
 public class BasicPanelVisual extends JPanel implements DocumentListener {
     
@@ -319,10 +321,14 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         
         String projectName = (String) settings.getProperty("name"); //NOI18N
 
-        //TODO add the incremental name changes..
         if(projectName == null) {
-            projectName = "mavenproject"; //NOI18N
+            int baseCount = 1;
+            String formatter = NbBundle.getMessage(BasicPanelVisual.class,"TXT_MavenProjectName");
+            while ((projectName = validFreeProjectName(projectLocation, formatter, baseCount)) == null) {
+                baseCount++;                
+            }
         }
+        
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();
     }
@@ -389,5 +395,12 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         
         panel.fireChangeEvent(); // Notify that the panel changed
     }
+    
+    private String validFreeProjectName (final File parentFolder, final String formater, final int index) {
+        String name = MessageFormat.format (formater, new Object[]{new Integer (index)});                
+        File file = new File (parentFolder, name);
+        return file.exists() ? null : name;
+    }
+    
     
 }
