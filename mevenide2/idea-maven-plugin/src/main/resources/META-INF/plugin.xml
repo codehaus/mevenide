@@ -1,0 +1,83 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin url="http://quebbemann.kicks-ass.net/idea-maven-plugin">
+  <name>Maven 2 Integration</name>
+  <description>This plugin integrates Maven 2 into IntelliJ IDEA</description>
+  <version>${plugin.version}</version>
+  <vendor email="ralfq@gmx.de" url="http://quebbemann.kicks-ass.net/idea-maven-plugin">Ralf
+    Quebbemann
+  </vendor>
+  <change-notes>
+    <![CDATA[
+Release Notes - MAIDEA - IntelliJ IDEA Maven-2 Plugin - Version 1.2.2
+
+<h2>Bug</h2>
+<ul>
+<li>Multiple values (separated with spaces) in MAVEN_OPTS env variable causes build failure</li>
+<li>No possibility to declare JVM options (eg. -Xmx128m)</li>
+</ul>
+
+<h2>Improvement</h2>
+<ul>
+<li>Add "site" phase to list of filtered phases</li>
+</ul>
+                    ]]>
+  </change-notes>
+  <idea-version since-build="5700"/>
+  <application-components>
+    <component>
+      <implementation-class>de.qu.idea.plugin.maven.component.MavenBuildApplicationComponent
+      </implementation-class>
+    </component>
+  </application-components>
+  <project-components>
+    <component>
+      <!-- Component's implementation class -->
+      <implementation-class>de.qu.idea.plugin.maven.component.MavenBuildProjectComponent
+      </implementation-class>
+    </component>
+  </project-components>
+  <actions>
+    <action id="de.qu.idea.plugin.maven.action.AddPluginAction"
+            class="de.qu.idea.plugin.maven.action.AddPluginAction"
+            text="Add plugin to POM"
+            description="Adds a plugin to the selected POM"/>
+    <action id="de.qu.idea.plugin.maven.action.AddPomAction"
+            class="de.qu.idea.plugin.maven.action.AddPomAction" text="Add POM"
+            description="Adds a POM to the tree of Maven projects"/>
+    <action id="de.qu.idea.plugin.maven.action.RemovePomAction"
+            class="de.qu.idea.plugin.maven.action.RemovePomAction"
+            text="Remove POM"
+            description="Removes a POM from the tree of Maven projects"/>
+    <action id="de.qu.idea.plugin.maven.action.RunGoalsAction"
+            class="de.qu.idea.plugin.maven.action.RunGoalsAction"
+            text="Run goal(s)"
+            description="Run selected goal(s) from the given Maven project"/>
+    <action id="de.qu.idea.plugin.maven.action.SortAction"
+            class="de.qu.idea.plugin.maven.action.SortAction"
+            text="Sort ascending"
+            description="Sorts the children of the selected node in ascending order"/>
+    <action id="de.qu.idea.plugin.maven.action.RemovePluginAction"
+            class="de.qu.idea.plugin.maven.action.RemovePluginAction"
+            text="Remove Plugin"
+            description="Removes selected plugins from the POM"/>
+    <action id="de.qu.idea.plugin.maven.action.PauseOutputAction"
+            class="de.qu.idea.plugin.maven.action.PauseOutputAction"
+            text="Pause Output"
+            description="Pauses the output in the build output window"/>
+    <action id="de.qu.idea.plugin.maven.action.StopProcessAction"
+            class="de.qu.idea.plugin.maven.action.StopProcessAction"
+            text="Stop Maven Process"
+            description="Stops the currently running Maven Process"/>
+    <action id="de.qu.idea.plugin.maven.action.CloseOutputPanelAction"
+            class="de.qu.idea.plugin.maven.action.CloseOutputPanelAction"
+            text="Close Output Panel"
+            description="Closes the output panel"/>
+    <action id="de.qu.idea.plugin.maven.action.RerunMavenAction"
+            class="de.qu.idea.plugin.maven.action.RerunMavenAction"
+            text="Reruns Maven"
+            description="Reruns the previous Maven build"/>
+    <action id="de.qu.idea.plugin.maven.action.FilterAction"
+            class="de.qu.idea.plugin.maven.action.FilterAction" text="Filter Phases and Goals"
+            description="Filters phases and goals"/>    
+  </actions>
+</idea-plugin>

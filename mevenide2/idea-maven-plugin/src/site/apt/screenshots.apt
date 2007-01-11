@@ -1,0 +1,30 @@
+Screenshots
+
+* Configuration
+
+  Screenshot showing the plugin's configuration dialog.
+
+[screenshots/screenshot-1.jpg] Application wide settings
+
+  Screenshot showing the plugin's project configuration dialog in more detail.
+
+[screenshots/plugin-project-configuration.jpg]
+
+  Screenshot showing the plugin's application configuration dialog in more detail.
+
+[screenshots/plugin-application-configuration-1.jpg]
+
+  Screenshot showing the plugin's application configuration dialog in more detail.
+
+[screenshots/plugin-application-configuration-2.jpg]
+
+* Features
+
+  Screenshot showing the syntax highlighting in case of compilation failures (at the bottom) and
+  the Build Tool Window to the right.
+
+[screenshots/error-highlighting.jpg] Error highlighting
+
+  Screenshot showing howto remove a POM.
+
+[screenshots/remove-pom.jpg]
