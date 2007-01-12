@@ -48,6 +48,13 @@ public class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
             File fil = FileUtil.normalizeFile(new File(str));
             col.add(fil.toURI());
         }
+        
+        //needed for form module to find the bundle files..
+        URI[] res = getMavenProject().getResources(true);
+        for (URI resource : res) {
+            col.add(resource);
+        }
+        
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        
