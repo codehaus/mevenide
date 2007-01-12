@@ -55,6 +55,12 @@ public class SourceClassPathImpl extends AbstractProjectClassPathImpl {
         if (new File(webSrc).exists()) {
             col.add(webSrc);
         }
+        
+        //needed for form module to find the bundle files..
+        URI[] res = getMavenProject().getResources(false);
+        for (URI resource : res) {
+            col.add(resource);
+        }
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        
