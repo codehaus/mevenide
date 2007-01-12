@@ -28,12 +28,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -376,10 +374,16 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             java.lang.reflect.Field fld = shutdown.getDeclaredField("hooks"); //NOI18N
             if (fld != null) {
                 fld.setAccessible(true);
-                Set set = (Set) fld.get(null);
+                Collection set = (Collection) fld.get(null);
                 if (set != null) {
                     // objects are Shutdown.WrappedHook instances
-                    for (Object wr : new HashSet(set)) {
+                    for (Object wr : new ArrayList(set)) {
+                        if (wr instanceof Runnable) {
+                            // we'return in 1.6 and later.. it's all Runnables, not Threads..
+                            // not possible to distinguish the maven shutdown hooks from the rest..
+                            // but should not cause any trouble anymore..
+                            break;
+                        }
                          Field hookFld = wr.getClass().getDeclaredField("hook"); //NOI18N
                          hookFld.setAccessible(true);
                          Thread hook = (Thread) hookFld.get(wr);
