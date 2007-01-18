@@ -27,7 +27,7 @@
         </menu>
             
         <menu name="Developers">
-            <item name="Building" href="mevenide2-netbeans/building.html"/>
+            <item name="Netbeans building" href="mevenide2-netbeans/building.html"/>
         </menu>
         
         <!--menu name="Mevenide2Eclipse">  

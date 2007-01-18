@@ -3,3 +3,5 @@ Tutorials
   [[1]] One minute tutorial : {{{./helloWorldApp.html}Hello World sample application}}
 
   [[2]] One minute and half tutorial : {{{./helloWorldWebApp.html}Hello World sample web application}}
+
+  [[3]] 30 seconds tutorial : {{{./continuumTutorial.html} a very short continuum client tutorial}}
