@@ -37,7 +37,11 @@ public class LocalRepoProvider implements ArchetypeProvider {
     public List getArchetypes() {
         List lst = new ArrayList();
         try {
-            Iterator it = LocalRepositoryIndexer.getInstance().retrievePossibleArchetypes().iterator();
+            List archs = LocalRepositoryIndexer.getInstance().retrievePossibleArchetypes();
+            if (archs == null) {
+                return lst;
+            }
+            Iterator it = archs.iterator();
             while (it.hasNext()) {
                 StandardArtifactIndexRecord art = (StandardArtifactIndexRecord) it.next();
                 Archetype arch = new Archetype();
