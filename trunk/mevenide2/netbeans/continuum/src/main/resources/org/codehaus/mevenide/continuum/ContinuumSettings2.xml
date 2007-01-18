@@ -4,6 +4,6 @@
     <module name="org.codehaus.mevenide.continuum"/>
     <instanceof class="org.openide.util.SharedClassObject"/>
     <instanceof class="org.openide.options.SystemOption"/>
-    <instanceof class="org.codehaus.mevenide.continuum.ContinuumSettings"/>
-    <instance class="org.codehaus.mevenide.continuum.ContinuumSettings"/>
+    <instanceof class="org.codehaus.mevenide.continuum.ContinuumSettings2"/>
+    <instance class="org.codehaus.mevenide.continuum.ContinuumSettings2"/>
 </settings>
