@@ -28,10 +28,10 @@
                       <Component id="lblHint" min="-2" max="-2" attributes="0"/>
                       <EmptySpace pref="57" max="32767" attributes="0"/>
                   </Group>
-                  <Component id="txtVMOptions" alignment="1" pref="153" max="32767" attributes="0"/>
-                  <Component id="txtWorkDir" alignment="1" pref="153" max="32767" attributes="1"/>
-                  <Component id="txtArguments" alignment="1" pref="153" max="32767" attributes="1"/>
-                  <Component id="txtMainClass" alignment="1" pref="153" max="32767" attributes="1"/>
+                  <Component id="txtVMOptions" alignment="1" pref="155" max="32767" attributes="0"/>
+                  <Component id="txtWorkDir" alignment="1" pref="155" max="32767" attributes="1"/>
+                  <Component id="txtArguments" alignment="1" pref="155" max="32767" attributes="1"/>
+                  <Component id="txtMainClass" alignment="1" pref="155" max="32767" attributes="1"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
@@ -92,7 +92,6 @@
     <Component class="javax.swing.JButton" name="btnMainClass">
       <Properties>
         <Property name="text" type="java.lang.String" value="Browse..."/>
-        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMainClassActionPerformed"/>

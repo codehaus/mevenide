@@ -13,7 +13,7 @@
     <description>Autoupdate server for Mevenide 2.0, the support for Maven2.</description>
     <dependencies>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
+            <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-autoupdate</artifactId>
             <version>${netbeans.release}</version>
         </dependency>

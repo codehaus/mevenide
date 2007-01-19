@@ -17,30 +17,49 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import java.awt.Dialog;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
+import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Profile;
+import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.NotifyDescriptor;
+import org.openide.awt.MouseUtils;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
 
 /**
  * panel for displaying the Run Jar project related properties..
@@ -69,6 +88,22 @@ public class RunJarPanel extends javax.swing.JPanel {
         this.project = project;
         initValues();
         lblMainClass.setFont(lblMainClass.getFont().deriveFont((int)Font.BOLD));
+        List<FileObject> roots = new ArrayList<FileObject>();
+        Sources srcs =  ProjectUtils.getSources(project);
+        SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        for (int i = 0; i < grps.length; i++) {
+            SourceGroup sourceGroup = grps[i];
+            if (MavenSourcesImpl.NAME_SOURCE.equals(sourceGroup.getName())) {
+                roots.add(sourceGroup.getRootFolder());
+            }
+        }
+        grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
+        for (int i = 0; i < grps.length; i++) {
+            SourceGroup sourceGroup = grps[i];
+            roots.add(sourceGroup.getRootFolder());
+        }
+
+        btnMainClass.addActionListener(new MainClassListener(roots.toArray(new FileObject[roots.size()]), txtMainClass));
     }
     
     private void initValues() {
@@ -152,7 +187,6 @@ public class RunJarPanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(lblMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_MainClass")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(btnMainClass, "Browse...");
-        btnMainClass.setEnabled(false);
         btnMainClass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMainClassActionPerformed(evt);
@@ -194,10 +228,10 @@ public class RunJarPanel extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(lblHint)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 57, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 153, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(btnMainClass)
@@ -383,4 +417,62 @@ public class RunJarPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtWorkDir;
     // End of variables declaration//GEN-END:variables
 
+        // Innercasses -------------------------------------------------------------
+    
+    private class MainClassListener implements ActionListener /*, DocumentListener */ {
+        
+        private final JButton okButton;
+        private FileObject[] sourceRoots;
+        private JTextField mainClassTextField;
+        
+        MainClassListener( FileObject[] sourceRoots, JTextField mainClassTextField ) {            
+            this.sourceRoots = sourceRoots;
+            this.mainClassTextField = mainClassTextField;
+            this.okButton  = new JButton (NbBundle.getMessage (RunJarPanel.class, "LBL_ChooseMainClass_OK"));
+            this.okButton.getAccessibleContext().setAccessibleDescription (NbBundle.getMessage (RunJarPanel.class, "AD_ChooseMainClass_OK"));
+        }
+        
+        // Implementation of ActionListener ------------------------------------
+        
+        /** Handles button events
+         */        
+        public void actionPerformed( ActionEvent e ) {
+            
+            // only chooseMainClassButton can be performed
+            
+            final MainClassChooser panel = new MainClassChooser (sourceRoots);
+            Object[] options = new Object[] {
+                okButton,
+                DialogDescriptor.CANCEL_OPTION
+            };
+            panel.addChangeListener (new ChangeListener () {
+               public void stateChanged(ChangeEvent e) {
+                   if (e.getSource () instanceof MouseEvent && MouseUtils.isDoubleClick (((MouseEvent)e.getSource ()))) {
+                       // click button and finish the dialog with selected class
+                       okButton.doClick ();
+                   } else {
+                       okButton.setEnabled (panel.getSelectedMainClass () != null);
+                   }
+               }
+            });
+            okButton.setEnabled (false);
+            DialogDescriptor desc = new DialogDescriptor (
+                panel,
+                NbBundle.getMessage (RunJarPanel.class, "LBL_ChooseMainClass_Title" ),
+                true, 
+                options, 
+                options[0], 
+                DialogDescriptor.BOTTOM_ALIGN, 
+                null, 
+                null);
+            //desc.setMessageType (DialogDescriptor.INFORMATION_MESSAGE);
+            Dialog dlg = DialogDisplayer.getDefault ().createDialog (desc);
+            dlg.setVisible (true);
+            if (desc.getValue() == options[0]) {
+               mainClassTextField.setText (panel.getSelectedMainClass ());
+            } 
+            dlg.dispose();
+        }
+        
+    }
 }

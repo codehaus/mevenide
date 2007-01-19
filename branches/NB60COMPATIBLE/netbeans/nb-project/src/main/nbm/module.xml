@@ -9,6 +9,12 @@
    <licenseFile>license.txt</licenseFile>
    <dependencies>
       <dependency>
+        <id>org.netbeans.api:org-netbeans-libs-javacapi</id>
+      </dependency>
+      <dependency>
+        <id>org.netbeans.api:org-netbeans-modules-java-source</id>
+      </dependency>
+      <dependency>
           <id>org.codehaus.mevenide:indexer</id>
       </dependency>
       <dependency>
