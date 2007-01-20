@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -32,6 +33,7 @@ import org.openide.filesystems.FileUtil;
  * relative path changes.
  * @author mkleint
  */
+//TODO rename to something else doesn't describe correctly what it does..
 public final class ProjectURLWatcher {
     
     private NbMavenProject project;
@@ -95,6 +97,20 @@ public final class ProjectURLWatcher {
      */ 
     public MavenProject getMavenProject() {
         return project.getOriginalMavenProject();
+    }
+    
+    public static final String TYPE_JAR = "jar";
+    public static final String TYPE_WAR = "war";
+    public static final String TYPE_EAR = "ear";
+    public static final String TYPE_EJB = "ejb";
+    
+    /**
+     * get the user level packaging type for the project, allows to get the same UI support
+     *  of user's custom lifecycles.
+     */ 
+    public String getPackagingType() {
+        String custom = project.getLookup().lookup(UserActionGoalProvider.class).getRawMappings().getPackaging();
+        return custom != null ? custom : project.getOriginalMavenProject().getPackaging();
     }
     
     

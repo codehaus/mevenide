@@ -14,6 +14,14 @@
             <name>ActionToGoalMapping</name>
             <version>1.0.0+</version>
             <fields>
+                <field>
+                    <name>packaging</name>
+                    <version>1.0.0+</version>
+                    <description>Supported packaging type that this this project maps to. 
+                    Useful for custom non-standard packingings to get the same behaviour as the supported ones.
+                    Supported types: jar, war, ejb, ear</description>
+                    <type>String</type>
+                </field>
                 <field xml.listStyle="flat">
                     <name>actions</name>
                     <version>1.0.0+</version>

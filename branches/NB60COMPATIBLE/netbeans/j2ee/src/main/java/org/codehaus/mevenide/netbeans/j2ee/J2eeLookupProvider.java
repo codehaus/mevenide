@@ -55,7 +55,7 @@ public class J2eeLookupProvider implements LookupProvider {
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
         private NbMavenProject project;
         private InstanceContent content;
-        private String lastType = "jar";
+        private String lastType = ProjectURLWatcher.TYPE_JAR;
         private Object lastInstance = null;
         private CopyOnSave copyOnSave;
         public Provider(NbMavenProject proj, InstanceContent cont) {
@@ -73,11 +73,12 @@ public class J2eeLookupProvider implements LookupProvider {
         }
         
         private void checkJ2ee() {
-            String packaging = project.getOriginalMavenProject().getPackaging();
+            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            String packaging = watcher.getPackagingType();
             if (packaging == null) {
-                packaging = "jar";
+                packaging = ProjectURLWatcher.TYPE_JAR;
             }
-            if (copyOnSave != null && !"war".equals(packaging)) {
+            if (copyOnSave != null && !ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
                 try {
                     copyOnSave.cleanup();
                 } catch (FileStateInvalidException ex) {
@@ -85,7 +86,7 @@ public class J2eeLookupProvider implements LookupProvider {
                 }
                 copyOnSave = null;
             }
-            if ("war".equals(packaging) && !lastType.equals(packaging)) {
+            if (ProjectURLWatcher.TYPE_WAR.equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance != null) {
                     content.remove(lastInstance);
                 }
@@ -98,22 +99,22 @@ public class J2eeLookupProvider implements LookupProvider {
                 } catch (FileStateInvalidException ex) {
                     ex.printStackTrace();
                 }
-            } else if ("ear".equals(packaging) && !lastType.equals(packaging)) {
+            } else if (ProjectURLWatcher.TYPE_EAR.equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance != null) {
                     content.remove(lastInstance);
                 }
                 lastInstance = new EarModuleProviderImpl(project);
                 content.add(lastInstance);
-            } else if ("ejb".equals(packaging) && !lastType.equals(packaging)) {
+            } else if (ProjectURLWatcher.TYPE_EJB.equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance != null) {
                     content.remove(lastInstance);
                 }
                 lastInstance = new EjbModuleProviderImpl(project);
                 content.add(lastInstance);
             } else if (lastInstance != null && !(
-                    "war".equals(packaging) || 
-                    "ejb".equals(packaging) || 
-                    "ear".equals(packaging)))
+                    ProjectURLWatcher.TYPE_WAR.equals(packaging) || 
+                    ProjectURLWatcher.TYPE_EJB.equals(packaging) || 
+                    ProjectURLWatcher.TYPE_EAR.equals(packaging)))
             {
                 content.remove(lastInstance);
                 lastInstance = null;

@@ -105,11 +105,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             String path = (String)it.next();
             File sub = new File(basedir, path);
             Project proj = processOneSubproject(sub);
-            if (proj != null && proj instanceof NbMavenProject) {
-                NbMavenProject mv = (NbMavenProject)proj;
+            NbMavenProject mv = proj != null ? proj.getLookup().lookup(NbMavenProject.class) : null;
+            if (mv != null) {
                 // ignore the pom type projects when resolving subprojects..
                 // maybe make an user settable option??
-                if (! "pom".equals(mv.getOriginalMavenProject().getPackaging())) {
+                if (! "pom".equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
                     resultset.add(proj);
                 }
                 addProjectModules(FileUtil.toFile(mv.getProjectDirectory()), 

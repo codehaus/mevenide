@@ -669,21 +669,21 @@ public final class NbMavenProject implements Project {
         RecommendedTemplatesImpl(NbMavenProject proj) {
             project = proj;
             prohibited = new ArrayList<String>();
-            prohibited.add("ear"); //NOI18N
-            prohibited.add("ejb"); //NOI18N
-            prohibited.add("war"); //NOI18N
+            prohibited.add(ProjectURLWatcher.TYPE_EAR); //NOI18N
+            prohibited.add(ProjectURLWatcher.TYPE_EJB); //NOI18N
+            prohibited.add(ProjectURLWatcher.TYPE_WAR); //NOI18N
         }
         
         public String[] getRecommendedTypes() {
-            String packaging = project.getOriginalMavenProject().getPackaging();
+            String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = "jar"; //NOI18N
+                packaging = ProjectURLWatcher.TYPE_JAR; //NOI18N
             }
             packaging = packaging.trim();
             if ("pom".equals(packaging)) { //NOI18N
                 return POM_APPLICATION_TYPES;
             }
-            if ("jar".equals(packaging)) { //NOI18N
+            if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) { //NOI18N
                 return JAR_APPLICATION_TYPES;
             }
             //NBM also fall under this I guess..
@@ -702,9 +702,9 @@ public final class NbMavenProject implements Project {
         }
         
         public String[] getPrivilegedTemplates() {
-            String packaging = project.getOriginalMavenProject().getPackaging();
+            String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = "jar"; //NOI18N
+                packaging = ProjectURLWatcher.TYPE_JAR; //NOI18N
             }
             packaging = packaging.trim();
             if ("pom".equals(packaging)) { //NOI18N

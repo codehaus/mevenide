@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
@@ -37,7 +38,9 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public Category createCategory(Lookup context) {
         NbMavenProject project = context.lookup(NbMavenProject.class);
-        if ("jar".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) { //NOI18N
+        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        
+        if (ProjectURLWatcher.TYPE_JAR.equalsIgnoreCase(watcher.getPackagingType())) { //NOI18N
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
                     org.openide.util.NbBundle.getMessage(RunJarPanelProvider.class, "TIT_Run"),

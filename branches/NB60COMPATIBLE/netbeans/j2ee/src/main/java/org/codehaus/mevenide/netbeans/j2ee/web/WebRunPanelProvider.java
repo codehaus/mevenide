@@ -39,7 +39,8 @@ public class WebRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public Category createCategory(Lookup context) {
         Project project = context.lookup(Project.class);
-        if ("war".equalsIgnoreCase(project.getLookup().lookup(ProjectURLWatcher.class).getMavenProject().getPackaging())) {
+        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        if (ProjectURLWatcher.TYPE_WAR.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
                     "Run",

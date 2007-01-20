@@ -16,7 +16,8 @@
  */
 
 package org.codehaus.mevenide.netbeans.j2ee;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 
@@ -26,9 +27,9 @@ import org.netbeans.spi.project.ui.RecommendedTemplates;
  */
 public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTemplates {
     
-    private NbMavenProject project;
+    private Project project;
     
-    J2eeRecoPrivTemplates(NbMavenProject proj) {
+    J2eeRecoPrivTemplates(Project proj) {
         project = proj;
     }
     
@@ -102,36 +103,38 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
     };
     
     public String[] getRecommendedTypes() {
-        String packaging = project.getOriginalMavenProject().getPackaging();
+        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = "jar";
+            packaging = ProjectURLWatcher.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if ("ejb".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
             return EJB_TYPES;
         }
-        if ("ear".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
             return EAR_TYPES;
         }
-        if ("war".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
             return WEB_TYPES;
         }
         return new String[0];
     }
     
     public String[] getPrivilegedTemplates() {
-        String packaging = project.getOriginalMavenProject().getPackaging();
+        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = "jar";
+            packaging = ProjectURLWatcher.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if ("ejb".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
             return EJB_PRIVILEGED_NAMES;
         }
-        if ("ear".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
             return EAR_PRIVILEGED_NAMES;
         }
-        if ("war".equals(packaging)) {
+        if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
             return WEB_PRIVILEGED_NAMES;
         }
         

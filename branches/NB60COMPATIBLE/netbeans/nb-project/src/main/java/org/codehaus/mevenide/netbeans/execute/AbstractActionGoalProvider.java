@@ -193,10 +193,11 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             // basically doing a copy here..
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
+            String prjPack = project.getProjectWatcher().getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
-                        (elem.getPackagings().contains(project.getOriginalMavenProject().getPackaging().trim()) ||
+                        (elem.getPackagings().contains(prjPack.trim()) ||
                         elem.getPackagings().contains("*"))) {
                     action = elem;
                 }
@@ -223,10 +224,11 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
             NetbeansActionMapping action = null;
+            String prjPack = project.getProjectWatcher().getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
-                        (elem.getPackagings().contains(project.getOriginalMavenProject().getPackaging().trim()) ||
+                        (elem.getPackagings().contains(prjPack.trim()) ||
                         elem.getPackagings().contains("*"))) {
                     action = elem;
                 }
