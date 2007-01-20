@@ -79,7 +79,7 @@ public class DeployMojo extends AbstractMojo {
         allowedPackagings.add("ejb");
         allowedPackagings.add("ear");
         if (!allowedPackagings.contains(project.getPackaging())) {
-            throw new MojoFailureException("Can only deploy war, ear or ejb packaged projects");
+            getLog().warn("You attempt to run run the plugin on a project that might not be of war, ear or ejb kind (packaging). The plugin might possibly fail.");
         }
         MavenDeployment deployment = (MavenDeployment)Lookup.getDefault().lookup(MavenDeployment.class);
         if (deployment == null) {
