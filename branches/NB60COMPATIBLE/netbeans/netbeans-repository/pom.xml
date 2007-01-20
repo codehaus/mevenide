@@ -17,7 +17,7 @@
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-deploy-plugin</artifactId>
-            <version>1.2.2</version>
+            <version>1.2.3</version>
             <scope>compile</scope>
         </dependency>
         <!-- mark as dependency to get it built before the nbm gets packaged-->
