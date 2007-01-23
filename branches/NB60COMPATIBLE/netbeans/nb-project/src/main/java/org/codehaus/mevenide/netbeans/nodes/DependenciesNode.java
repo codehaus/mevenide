@@ -223,19 +223,24 @@ class DependenciesNode extends AbstractNode {
                     AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download " + (javadoc ? "Javadoc" : "Sources"), 
                             contribs, null, null);
                     handle.start();
+                    try {
+                    ProgressTransferListener.setAggregateHandle(handle);
                     for (int i = 0; i < nds.length; i++) {
                         if (nds[i] instanceof DependencyNode) {
                             DependencyNode nd = (DependencyNode)nds[i];
                             if (javadoc && !nd.hasJavadocInRepository()) {
                                 nd.downloadJavadocSources(online, contribs[i], javadoc);
                             } else if (!javadoc && !nd.hasSourceInRepository()) {
-                                nd.downloadJavadocSources(online, contribs[i], !javadoc);
+                                nd.downloadJavadocSources(online, contribs[i], javadoc);
                             } else {
                                 contribs[i].finish();
                             }
                         }
                     }
-                    handle.finish();
+                    } finally {
+                        handle.finish();
+                        ProgressTransferListener.clearAggregateHandle();
+                    }
                 }
             });
         }
