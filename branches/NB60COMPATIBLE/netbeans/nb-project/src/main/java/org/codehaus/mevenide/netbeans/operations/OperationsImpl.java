@@ -36,6 +36,7 @@ import org.netbeans.spi.project.MoveOperationImplementation;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
 
 /**
  * Implementation of IDE's idea how to move/delete/copy a project.
@@ -69,7 +70,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
     
     public List<FileObject> getDataFiles() {
         List<FileObject> files = new ArrayList<FileObject>();
-        addFile(project.getProjectDirectory(), "src", files);
+        addFile(project.getProjectDirectory(), "src", files); //NOI18N
         //TODO is there more?
         return files;
     }
@@ -80,12 +81,12 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
         BeanRunConfig config = new BeanRunConfig();
         config.setExecutionDirectory(FileUtil.toFile(project.getProjectDirectory()));
         //config.setOffline(true);
-        config.setGoals(Collections.singletonList("clean"));
+        config.setGoals(Collections.singletonList("clean")); //NOI18N
         config.setRecursive(false);
         config.setProject(project);
-        config.setExecutionName("Delete Project");
+        config.setExecutionName(NbBundle.getMessage(OperationsImpl.class, "NotifyDeleting.execute"));
         config.setUpdateSnapshots(false);
-        ExecutorTask task = RunUtils.executeMaven("Delete Project", config);
+        ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(OperationsImpl.class, "NotifyDeleting.execute"), config);
         task.result();
         checkParentProject(project.getProjectDirectory(), true, null, null);
     }
@@ -96,7 +97,6 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
     }
     
     public void notifyMoving() throws IOException {
-        System.out.println("notify moving..");
         notifyDeleting();
     }
     
@@ -105,7 +105,6 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
             //old project call..
             return;
         } else {
-            System.out.println("calling moved on new project..");
             checkParentProject(project.getProjectDirectory(), false, newName, originalLoc.getName());
         }
     }
