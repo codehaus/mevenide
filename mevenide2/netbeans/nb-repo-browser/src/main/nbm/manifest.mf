@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/repository/Bundle.properties
-OpenIDE-Module-Layer: org/codehaus/mevenide/repository/layer.xml
-
