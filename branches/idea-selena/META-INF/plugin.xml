@@ -1,0 +1,50 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+
+<idea-plugin>
+    <name>Maven Reloaded</name>
+    <description>A plugin that inspects the project space for Maven 2 POM files and modifies the module source and test roots, classpaths, and inter-module dependencies. It also provides the capability to execute Maven 2 goals on a POM from the IDE.</description>
+    <version>0.8.1</version>
+    <vendor>Bryan Kate</vendor>
+    <idea-version since-build="5784"/>
+    <project-components>
+        <component>
+            <implementation-class>mavenreloaded.MavenReloadedPlugin</implementation-class>
+        </component>
+    </project-components>
+    <actions>
+        <group id="MavenPopupGroup" class="mavenreloaded.action.MavenPopupGroup" popup="true" text="Maven" description="Maven 2 Actions">
+
+            <separator/>
+
+            <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+        </group>
+
+        <group id="MavenContextGroup" popup="false">
+
+            <action class="mavenreloaded.action.ExecuteAction" id="MavenContextGroup.execute"
+                    text="Execute Goal" description="Executes a Maven 2 goal using the selected POM."/>
+
+            <action class="mavenreloaded.action.UpdateAction" id="MavenContextGroup.update"
+                    text="Update Project" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <action class="mavenreloaded.action.OnOffAction" id="MavenContextGroup.onOff"
+                    text="Disable" description="Enables/Disables the parsing of this Maven 2 POM."/>
+
+            <add-to-group anchor="last" group-id="MavenPopupGroup"/>
+        </group>
+
+        <group id="MavenBuildGroup" popup="false">
+
+            <separator/>
+
+            <action class="mavenreloaded.action.UpdateAllAction" id="MavenBuildGroup.updateAll"
+                    text="Process Maven POMs" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <add-to-group relative-to-action="AntBuildGroup" anchor="after" group-id="BuildMenu"/>
+        </group>
+    </actions>
+</idea-plugin>

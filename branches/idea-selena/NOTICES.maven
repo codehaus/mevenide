@@ -1,0 +1,6 @@
+The maven embedder jar distributed in this release represents a snapshot from the Maven 2 code repository.
+The following files were modified from the Maven 2 distribution.
+
+  maven-core/src/main/java/org/apache/maven/DefaultMaven.java
+  maven-embedder/src/main/java/org/apache/maven/embedder/MavenEmbedder.java
+  maven-project/src/main/java/org/apache/maven/project/DefaultMavenProjectBuilder.java
