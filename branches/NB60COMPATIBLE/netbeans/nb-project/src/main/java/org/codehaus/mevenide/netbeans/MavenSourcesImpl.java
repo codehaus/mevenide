@@ -42,7 +42,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
 import org.openide.util.NbBundle;
-
 import org.openide.util.RequestProcessor;
 
 /**
@@ -52,8 +51,10 @@ import org.openide.util.RequestProcessor;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenSourcesImpl implements Sources {
-    public static final String TYPE_RESOURCES = "Resources"; //NOI18N
-    public static final String TYPE_TEST_RESOURCES = "TestResources"; //NOI18N
+    //TODO remove when upgrading to later milestone..
+    public static final String TYPE_RESOURCES="resources";
+    public static final String TYPE_OTHER = "Resources"; //NOI18N
+    public static final String TYPE_TEST_OTHER = "TestResources"; //NOI18N
     public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
     public static final String NAME_PROJECTROOT = "ProjectRoot"; //NOI18N
     public static final String NAME_XDOCS = "XDocs"; //NOI18N
@@ -184,9 +185,9 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         }
-        if (TYPE_RESOURCES.equals(str) || TYPE_TEST_RESOURCES.equals(str)) {
+        if (TYPE_OTHER.equals(str) || TYPE_TEST_OTHER.equals(str)) {
             // TODO not all these are probably resources.. maybe need to split in 2 groups..
-            boolean test = TYPE_TEST_RESOURCES.equals(str);
+            boolean test = TYPE_TEST_OTHER.equals(str);
             List<SourceGroup> toReturn = new ArrayList<SourceGroup>();
             File[] roots = project.getOtherRoots(test);
             for (File f : roots) {
@@ -198,6 +199,17 @@ public class MavenSourcesImpl implements Sources {
             SourceGroup[] grp = new SourceGroup[toReturn.size()];
             grp = toReturn.toArray(grp);
             return grp;
+        }
+        if (TYPE_RESOURCES.equals(str)) {
+            URI[] uris = project.getResources(false);
+            if (uris.length > 0) {
+                File root = new File(uris[0]);
+                if (!root.exists()) {
+                    root.mkdirs();
+                }
+                FileObject fo = FileUtil.toFileObject(root);
+                return new SourceGroup[] { GenericSources.group(project, fo, "resources", "Project Resources", null, null) };
+            }
         }
 //        logger.warn("unknown source type=" + str);
         return new SourceGroup[0];
