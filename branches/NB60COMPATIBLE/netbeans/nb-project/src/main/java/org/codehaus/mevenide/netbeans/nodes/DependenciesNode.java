@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.Image;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
@@ -29,6 +30,8 @@ import java.util.List;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
+import javax.swing.UIManager;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
@@ -80,17 +83,15 @@ class DependenciesNode extends AbstractNode {
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/defaultFolder.gif"); //NOI18N
     }
     
-    public java.awt.Image getIcon(int param) {
-        java.awt.Image retValue = super.getIcon(param);
-        retValue = Utilities.mergeImages(retValue,
+    public Image getIcon(int param) {
+        Image retValue = Utilities.mergeImages(getTreeFolderIcon(false),
                 Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
                 8, 8);
         return retValue;
     }
     
-    public java.awt.Image getOpenedIcon(int param) {
-        java.awt.Image retValue = super.getOpenedIcon(param);
-        retValue = Utilities.mergeImages(retValue,
+    public Image getOpenedIcon(int param) {
+        Image retValue = Utilities.mergeImages(getTreeFolderIcon(true),
                 Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
                 8, 8);
         return retValue;
@@ -103,7 +104,6 @@ class DependenciesNode extends AbstractNode {
         toRet.add(new ResolveDepsAction());
         toRet.add(new DownloadJavadocSrcAction(true));
         toRet.add(new DownloadJavadocSrcAction(false));
-//        toRet.add(new ShowGraphAction());
         MavenProjectNode.loadLayerActions("Projects/org-codehaus-mevenide-netbeans/DependenciesActions", toRet); //NOI18N
         return toRet.toArray(new Action[toRet.size()]);
     }
@@ -301,5 +301,37 @@ class DependenciesNode extends AbstractNode {
         }
         
     }
+    
+    
+    private static final String ICON_KEY_UIMANAGER = "Tree.closedIcon"; // NOI18N
+    private static final String OPENED_ICON_KEY_UIMANAGER = "Tree.openIcon"; // NOI18N
+    private static final String ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.icon"; // NOI18N
+    private static final String OPENED_ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.openedIcon"; // NOI18N
+    private static final String ICON_PATH = "org/codehaus/mevenide/netbeans/defaultFolder.gif"; // NOI18N
+    private static final String OPENED_ICON_PATH = "org/codehaus/mevenide/netbeans/defaultFolderOpen.gif"; // NOI18N
+    
+    /**
+     * Returns default folder icon as {@link java.awt.Image}. Never returns
+     * <code>null</code>.
+     *
+     * @param opened wheter closed or opened icon should be returned.
+     * 
+     * copied from apisupport/project
+     */
+    public static Image getTreeFolderIcon(boolean opened) {
+        Image base = null;
+        Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
+        if (baseIcon != null) {
+            base = Utilities.icon2Image(baseIcon);
+        } else {
+            base = (Image) UIManager.get(opened ? OPENED_ICON_KEY_UIMANAGER_NB : ICON_KEY_UIMANAGER_NB); // #70263
+            if (base == null) { // fallback to our owns
+                base = Utilities.loadImage(opened ? OPENED_ICON_PATH : ICON_PATH, true);
+            }
+        }
+        assert base != null;
+        return base;
+    }
+    
 }
 
