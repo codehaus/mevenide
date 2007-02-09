@@ -80,14 +80,18 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
                 WebApp wa = prov.getDDRoot(dd);
                 String waVersion = wa.getVersion() ;
                 
-                if(WebApp.VERSION_2_4.equals(waVersion)) {
+                if(WebApp.VERSION_2_3.equals(waVersion)) {
+                    return WebModule.J2EE_13_LEVEL;
+                }
+                if (WebApp.VERSION_2_4.equals(waVersion)) {
                     return WebModule.J2EE_14_LEVEL;
                 }
             } catch (IOException exc) {
                 ErrorManager.getDefault().notify(exc);
             }
         }
-        return WebModule.J2EE_13_LEVEL;
+        //make 15 the default..
+        return WebModule.JAVA_EE_5_LEVEL;
     }
     
     public FileObject getDocumentBase() {
@@ -96,7 +100,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         if (grp.length > 0) {
             return grp[0].getRootFolder();
         }
-//        System.out.println("NO DOCUMENT BASE!!!");
+        System.out.println("NO DOCUMENT BASE!!! " + project.getProjectDirectory());
         return null;
     }
     
@@ -138,7 +142,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
     //88888888888888888888888888888888888888888888888888888888888888888888888888
     
     public String getModuleVersion() {
-        return getJ2eePlatformVersion();
+        WebApp wapp = getWebApp ();
+        String version = WebApp.VERSION_2_5;             //NOI18N
+        if (wapp != null)
+            version = wapp.getVersion();
+        return version;
     }
     
     public Object getModuleType() {
@@ -217,6 +225,18 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         System.out.println("no dd for=" + string);
         return null;
     }
+    
+    private WebApp getWebApp () {
+        try {
+            FileObject deploymentDescriptor = getDeploymentDescriptor ();
+            if(deploymentDescriptor != null) {
+                return DDProvider.getDefault ().getMergedDDRoot (deploymentDescriptor);
+            }
+        } catch (java.io.IOException e) {
+            org.openide.ErrorManager.getDefault ().log (e.getLocalizedMessage ());
+        }
+        return null;
+    }    
     
     public void addVersionListener(J2eeModule.VersionListener versionListener) {
         System.out.println("adding version listener");
