@@ -32,8 +32,8 @@
     <repositories>
         <repository>
             <id>idea</id>
-            <name>repository hosting netbeans.org api artifacts</name>
-            <url>http://208.44.201.216:18080/maven</url>
+            <name>repository hosting IDEA api artifacts</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>

@@ -85,8 +85,8 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>jsr173_1.0_api</artifactId>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jsr173_api</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
