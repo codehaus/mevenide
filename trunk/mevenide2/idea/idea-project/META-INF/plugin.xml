@@ -1,0 +1,108 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin url="http://quebbemann.kicks-ass.net/idea-maven-plugin">
+    <name>Mevenide2 IDEA Plugin</name>
+    <description>This plugin integrates Maven 2 into IntelliJ IDEA</description>
+    <version>0.1-SNAPSHOT</version>
+    <vendor email="ralfq@gmx.de" url="http://quebbemann.kicks-ass.net/idea-maven-plugin">Ralf
+        Quebbemann
+    </vendor>
+    <change-notes>
+        <![CDATA[]]>
+    </change-notes>
+    <idea-version since-build="5700"/>
+    <application-components>
+        <component>
+            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildApplicationComponent
+            </implementation-class>
+        </component>
+    </application-components>
+    <project-components>
+        <component>
+            <!-- Component's implementation class -->
+            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildProjectComponent
+            </implementation-class>
+        </component>
+        <component>
+            <implementation-class>org.codehaus.mevenide.idea.MavenReloadedPlugin</implementation-class>
+        </component>
+    </project-components>
+    <actions>
+        <action id="org.codehaus.mevenide.idea.action.AddPluginAction"
+                class="org.codehaus.mevenide.idea.action.AddPluginAction"
+                text="Add plugin to POM"
+                description="Adds a plugin to the selected POM"/>
+        <action id="org.codehaus.mevenide.idea.action.AddPomAction"
+                class="org.codehaus.mevenide.idea.action.AddPomAction" text="Add POM"
+                description="Adds a POM to the tree of Maven projects"/>
+        <action id="org.codehaus.mevenide.idea.action.RemovePomAction"
+                class="org.codehaus.mevenide.idea.action.RemovePomAction"
+                text="Remove POM"
+                description="Removes a POM from the tree of Maven projects"/>
+        <action id="org.codehaus.mevenide.idea.action.RunGoalsAction"
+                class="org.codehaus.mevenide.idea.action.RunGoalsAction"
+                text="Run goal(s)"
+                description="Run selected goal(s) from the given Maven project"/>
+        <action id="org.codehaus.mevenide.idea.action.SortAction"
+                class="org.codehaus.mevenide.idea.action.SortAction"
+                text="Sort ascending"
+                description="Sorts the children of the selected node in ascending order"/>
+        <action id="org.codehaus.mevenide.idea.action.RemovePluginAction"
+                class="org.codehaus.mevenide.idea.action.RemovePluginAction"
+                text="Remove Plugin"
+                description="Removes selected plugins from the POM"/>
+        <action id="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                class="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                text="Pause Output"
+                description="Pauses the output in the build output window"/>
+        <action id="org.codehaus.mevenide.idea.action.StopProcessAction"
+                class="org.codehaus.mevenide.idea.action.StopProcessAction"
+                text="Stop Maven Process"
+                description="Stops the currently running Maven Process"/>
+        <action id="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                class="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                text="Close Output Panel"
+                description="Closes the output panel"/>
+        <action id="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                class="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                text="Reruns Maven"
+                description="Reruns the previous Maven build"/>
+        <action id="org.codehaus.mevenide.idea.action.FilterAction"
+                class="org.codehaus.mevenide.idea.action.FilterAction" text="Filter Phases and Goals"
+                description="Filters phases and goals"/>
+        <group id="MavenPopupGroup" class="org.codehaus.mevenide.idea.action.MavenPopupGroup" popup="true" text="Maven"
+               description="Maven 2 Actions">
+
+            <separator/>
+
+            <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+        </group>
+
+        <group id="MavenContextGroup" popup="false">
+
+            <action class="org.codehaus.mevenide.idea.action.ExecuteAction" id="MavenContextGroup.execute"
+                    text="Execute Goal" description="Executes a Maven 2 goal using the selected POM."/>
+
+            <action class="org.codehaus.mevenide.idea.action.UpdateAction" id="MavenContextGroup.update"
+                    text="Update Project" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <action class="org.codehaus.mevenide.idea.action.OnOffAction" id="MavenContextGroup.onOff"
+                    text="Disable" description="Enables/Disables the parsing of this Maven 2 POM."/>
+
+            <add-to-group anchor="last" group-id="MavenPopupGroup"/>
+        </group>
+
+        <group id="MavenBuildGroup" popup="false">
+
+            <separator/>
+
+            <action class="org.codehaus.mevenide.idea.action.UpdateAllAction" id="MavenBuildGroup.updateAll"
+                    text="Process Maven POMs" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <add-to-group relative-to-action="AntBuildGroup" anchor="after" group-id="BuildMenu"/>
+        </group>
+    </actions>
+</idea-plugin>
