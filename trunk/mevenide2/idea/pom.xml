@@ -30,19 +30,6 @@
         <module>idea-project</module>
     </modules>
     <repositories>
-        <repository>
-            <id>idea</id>
-            <name>repository hosting IDEA api artifacts</name>
-            <url>http://mevenide.codehaus.org/m2-repository</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-                <updatePolicy>never</updatePolicy>
-            </snapshots>
-        </repository>
     </repositories>
     <reporting>
         <plugins>
