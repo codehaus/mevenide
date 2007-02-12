@@ -3,9 +3,7 @@ package org.codehaus.mevenide.idea.common;
 import org.codehaus.mevenide.idea.build.MavenOptions;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.apache.commons.lang.StringUtils;
-import org.testng.Assert;
-import org.testng.annotations.Configuration;
-import org.testng.annotations.Test;
+import junit.framework.TestCase;
 
 /**
  * MavenBuildPluginSettings Tester.
@@ -15,90 +13,87 @@ import org.testng.annotations.Test;
  * @created Dezember 26, 2006
  * @since 1.0
  */
-public class MavenBuildPluginSettingsTest {
+public class MavenBuildPluginSettingsTest extends TestCase {
   private MavenBuildPluginSettings settings;
 
-  @Configuration(beforeTest = true)
   public void setUp() {
   }
 
-  @Test
   public void testGetMavenOptions() {
     settings = new MavenBuildPluginSettings();
-    Assert.assertNotNull(settings.getMavenOptions());
+    assertNotNull(settings.getMavenOptions());
     MavenOptions options = new MavenOptions();
     options.setActivateProfiles("activateProfile");
     options.setBatchMode(true);
-    Assert.assertNotNull(options);
+    assertNotNull(options);
     settings.setMavenOptions(options);
-    Assert.assertNotNull(settings.getMavenOptions());
+    assertNotNull(settings.getMavenOptions());
   }
 
-  @Test
   public void testSetMavenOptions() {
     settings = new MavenBuildPluginSettings();
     MavenOptions options = new MavenOptions();
     options.setActivateProfiles("activateProfile");
     options.setBatchMode(true);
-    Assert.assertNotNull(options);
+    assertNotNull(options);
     settings.setMavenOptions(options);
-    Assert.assertNotNull(settings.getMavenOptions());
+    assertNotNull(settings.getMavenOptions());
   }
 
-  @Test
+
   public void testGetMavenSettingsFile() {
     settings = new MavenBuildPluginSettings();
     String systemProperty =
         System.getProperty("user.home") + System.getProperty("file.separator") + ".m2"
             + System.getProperty("file.separator") + BuildConstants.FILENAME_MAVEN_SETTINGS_FILE;
     if (StringUtils.isBlank(systemProperty)) {
-      Assert.assertNull(settings.getMavenSettingsFile());
+      assertNull(settings.getMavenSettingsFile());
     } else {
-      Assert.assertNotNull(settings.getMavenSettingsFile());
+      assertNotNull(settings.getMavenSettingsFile());
     }
   }
 
-  @Test
+
   public void testSetMavenSettingsFile() {
     settings = new MavenBuildPluginSettings();
     settings.setMavenSettingsFile("A settings file");
-    Assert.assertNotNull(settings.getMavenSettingsFile());
+    assertNotNull(settings.getMavenSettingsFile());
   }
 
-  @Test
+
   public void testGetMavenCommandLineParams() {
     settings = new MavenBuildPluginSettings();
     settings.setMavenCommandLineParams("A command line param");
-    Assert.assertNotNull(settings.getMavenCommandLineParams());
+    assertNotNull(settings.getMavenCommandLineParams());
   }
 
-  @Test
+
   public void testGetMavenHome() {
     settings = new MavenBuildPluginSettings();
     settings.setMavenHome("Maven Home");
-    Assert.assertNotNull(settings.getMavenHome());
+    assertNotNull(settings.getMavenHome());
   }
 
-  @Test
+
   public void testGetMavenRepository() {
     settings = new MavenBuildPluginSettings();
     settings.setMavenRepository("Maven Repository");
-    Assert.assertNotNull(settings.getMavenRepository());
+    assertNotNull(settings.getMavenRepository());
   }
 
-  @Test
+
   public void testIsScanForExistingPoms() {
     settings = new MavenBuildPluginSettings();
-    Assert.assertFalse(settings.isScanForExistingPoms());
+    assertFalse(settings.isScanForExistingPoms());
     settings.setScanForExistingPoms(true);
-    Assert.assertTrue(settings.isScanForExistingPoms());
+    assertTrue(settings.isScanForExistingPoms());
   }
 
-  @Test
+  
   public void testIsUseMavenEmbedder() {
     settings = new MavenBuildPluginSettings();
-    Assert.assertFalse(settings.isUseMavenEmbedder());
+    assertFalse(settings.isUseMavenEmbedder());
     settings.setUseMavenEmbedder(true);
-    Assert.assertTrue(settings.isUseMavenEmbedder());
+    assertTrue(settings.isUseMavenEmbedder());
   }
 }
