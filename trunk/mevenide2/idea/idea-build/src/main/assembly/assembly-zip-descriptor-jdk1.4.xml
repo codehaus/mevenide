@@ -1,0 +1,26 @@
+<assembly>
+  <id></id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/idea-maven-plugin/lib</outputDirectory>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>de.qu:idea-maven-plugin</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+  <fileSets>
+    <fileSet>
+      <directory>target/lib</directory>
+      <outputDirectory>/idea-maven-plugin/lib</outputDirectory>
+      <includes>
+        <include>**/*.jar</include>
+      </includes>
+    </fileSet>
+  </fileSets>
+</assembly>

@@ -1,0 +1,12 @@
+General info for developers
+
+    * How do I upload an artifact to the Mevenide repository?
+
++---------
+mvn deploy:deploy-file -Durl=dav:https://dav.codehaus.org/mevenide/m2-repository -DrepositoryId="mevenide"
+    -Dfile=d:/temp/annotations.jar -DgroupId=com.intellij.idea -DartifactId=annotations
+    -Dversion=6.0.4 -Dpackaging=jar -DgeneratePom=true
++---------
+
+    The wagon-webdav artifact must reside in your $M2_HOME/lib directory to enable webdav protocol
+    for Maven deploy plugin.

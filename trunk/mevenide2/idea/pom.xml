@@ -24,13 +24,85 @@
                     <target>1.5</target>
                 </configuration>
             </plugin>
+            <plugin>
+              <artifactId>maven-surefire-plugin</artifactId>
+              <version>2.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.0</version>
+                <!-- Version 2.1 only shows coverage of tested classes -->
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>org/apache/maven/**/*.class</exclude>
+                            <exclude>org/codehaus/mevenide/idea/config/**/*.class</exclude>
+                            <exclude>schemaorg_apache_xmlbeans/**/*.class</exclude>
+                        </excludes>
+                        <!--
+                                    <ignore>org.apache.maven.*</ignore>
+                        -->
+                    </instrumentation>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <modules>
         <module>idea-project</module>
+        <module>build</module>
     </modules>
     <repositories>
     </repositories>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.apache.maven</groupId>
+                <artifactId>maven-embedder-dep</artifactId>
+                <version>2.1-dev</version>
+                <type>jar</type>
+            </dependency>
+            <dependency>
+                <groupId>com.intellij.idea</groupId>
+                <artifactId>forms_rt</artifactId>
+                <version>6.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.intellij.idea</groupId>
+                <artifactId>openapi</artifactId>
+                <version>6.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.intellij.idea</groupId>
+                <artifactId>annotations</artifactId>
+                <version>6.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.intellij.idea</groupId>
+                <artifactId>extensions</artifactId>
+                <version>6.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>codehaus.snapshots</id>
+            <name>Codehaus Snapshots</name>
+            <url>http://snapshots.repository.codehaus.org</url>
+        </pluginRepository>
+    </pluginRepositories>
+
     <reporting>
         <plugins>
             <plugin>
@@ -50,22 +122,22 @@
                     <addModules>true</addModules>
                 </configuration>
             </plugin>
-<!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changes-plugin</artifactId>
-                <configuration>
-                    <issueLinkTemplate>http://www.jetbrains.net/jira/browse/%ISSUE%</issueLinkTemplate>
-                </configuration>
-                <reportSets>
-                    <reportSet>
-                        <reports>
-                            <report>changes-report</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
-            </plugin>
--->
+            <!--
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-changes-plugin</artifactId>
+                            <configuration>
+                                <issueLinkTemplate>http://www.jetbrains.net/jira/browse/%ISSUE%</issueLinkTemplate>
+                            </configuration>
+                            <reportSets>
+                                <reportSet>
+                                    <reports>
+                                        <report>changes-report</report>
+                                    </reports>
+                                </reportSet>
+                            </reportSets>
+                        </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
