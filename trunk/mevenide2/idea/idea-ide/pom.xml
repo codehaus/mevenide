@@ -64,36 +64,6 @@
           </resource>
         </resources>
         <plugins>
-<!--
-            <plugin>
-              <artifactId>maven-release-plugin</artifactId>
-              <configuration>
-                <tagBase>
-                  svn://quebbemann.kicks-ass.net/var/lib/subversion/repository/java/tags/idea-maven-plugin
-                </tagBase>
-                <goals>
-                  deploy assembly:assembly copy:copy-files site-deploy
-                </goals>
-              </configuration>
-            </plugin>
--->
-            <plugin>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <configuration>
-                <!--
-                          <descriptorRefs>
-                            <descriptorRef>src</descriptorRef>
-                          </descriptorRefs>
-                -->
-                <descriptors>
-                  <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml</descriptor>
-                  <descriptor>${basedir}/src/main/assembly/assembly-src-descriptor.xml
-                  </descriptor>
-                </descriptors>
-                <finalName>${pom.artifactId}-${pom.version}</finalName>
-              </configuration>
-            </plugin>
-
         </plugins>
     </build>
 </project>
