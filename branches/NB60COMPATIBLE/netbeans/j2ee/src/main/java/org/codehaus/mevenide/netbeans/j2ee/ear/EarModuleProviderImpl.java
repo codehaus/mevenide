@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ear;
 
 import java.io.File;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -165,8 +166,8 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
      * @param name file name of the deployement configuration file.
      * @return FileObject of the configuration descriptor file; null if the file does not exists.
      */
-    public FileObject findDeploymentConfigurationFile(String string) {
-        File fil = getDeploymentConfigurationFile(string);
+    public FileObject findDeploymentConfigurationFile(String name) {
+        File fil = getDeploymentConfigurationFile(name);
         if (fil != null) {
             return FileUtil.toFileObject(fil);
         }
@@ -181,7 +182,7 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
         }
-        return super.getServerInstanceID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
     
     public String getServerID() {
@@ -191,8 +192,9 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
                 return tr;
             }
         }
-        return super.getServerID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
+    
     public boolean useDefaultServer() {
         return serverInstanceID == null;
     }

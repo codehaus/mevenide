@@ -64,16 +64,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         this.handle = handle;
         this.project = project;
         module = WebModule.getWebModule(project.getProjectDirectory());
-        moduleProvider = (WebModuleProviderImpl)project.getLookup().lookup(WebModuleProviderImpl.class);
+        moduleProvider = project.getLookup().lookup(WebModuleProviderImpl.class);
         loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
         }
-        handle.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                moduleProvider.loadPersistedServerId();
-            }
-        });
         initValues();
         txtContextPath.setText(moduleProvider.getContextPath());
     }
@@ -99,12 +94,12 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             
             public Object getValue() {
                 Wrapper wr = null;
-                String id = handle.getNetbeansPrivateProfile().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getNetbeansPublicProfile().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -116,7 +111,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                Wrapper wr = (Wrapper)value;
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
-               handle.getNetbeansPublicProfile().getProperties().put(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+               System.out.println("setting value to " + sID + " : " + iID);
+               handle.getNetbeansPublicProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
                handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
             }
         });
@@ -298,6 +294,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }
+        moduleProvider.loadPersistedServerId();
         moduleProvider.setContextPath(txtContextPath.getText().trim());
     }
     

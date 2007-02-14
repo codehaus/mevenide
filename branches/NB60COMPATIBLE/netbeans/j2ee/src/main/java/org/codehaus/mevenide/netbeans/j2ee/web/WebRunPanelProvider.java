@@ -52,9 +52,9 @@ public class WebRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        final WebRunCustomizerPanel panel = new WebRunCustomizerPanel(handle, context.lookup(Project.class));
-        //TODO eventually replace by the Category's action listener
-        handle.addActionListener(new ActionListener() {
+        final Project prj = context.lookup(Project.class);
+        final WebRunCustomizerPanel panel = new WebRunCustomizerPanel(handle, prj);
+        category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panel.applyChanges();
             }

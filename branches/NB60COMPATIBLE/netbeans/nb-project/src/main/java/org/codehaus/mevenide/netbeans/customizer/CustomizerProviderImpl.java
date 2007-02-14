@@ -139,7 +139,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         
         public abstract ModelHandle createHandle(Model model, ProfilesRoot prof, MavenProject proj, ActionToGoalMapping mapp);
         
-        public abstract void fireActionPerformed(ModelHandle handle);
     }
     /** Listens to the actions on the Customizer's option buttons */
     private class OptionListener extends WindowAdapter implements ActionListener {
@@ -159,7 +158,6 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
-                    ACCESSOR.fireActionPerformed(handle);
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
                             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());

@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
 import java.io.File;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -80,14 +81,12 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
             }
         }
         if (instanceFound == null) {
-            System.out.println("no server instance found");
             String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.EJB});
             if (ids != null && ids.length > 0) {
                 instanceFound = ids[0];
             }
         }
         serverInstanceID = instanceFound;
-        System.out.println("server instance=" + serverInstanceID);
         if (oldSer != null && serverInstanceID != null && ensureReady) {
             getConfigSupport().ensureConfigurationReady();
         }
@@ -148,7 +147,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
         }
-        return super.getServerInstanceID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
     
     public String getServerID() {
@@ -158,7 +157,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
                 return tr;
             }
         }
-        return super.getServerID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
     
     public File getEnterpriseResourceDirectory() {

@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
+import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
@@ -43,6 +44,7 @@ import org.openide.filesystems.FileUtil;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModuleProvider {
+    
     
     private NbMavenProject project;
     private WebModuleImpl implementation;
@@ -202,7 +204,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
         }
-        return super.getServerInstanceID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
     
     /** This method is used to determin type of target server.
@@ -215,7 +217,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                 return tr;
             }
         }
-        return super.getServerID();
+        return MavenDeploymentImpl.DEV_NULL;
     }
 
     /**

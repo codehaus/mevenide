@@ -37,6 +37,8 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public class MavenDeploymentImpl implements MavenDeployment {
+
+    public static final String DEV_NULL = "WTF"; //NOI18N
     
     /** Creates a new instance of MavenDeploymentImpl */
     public MavenDeploymentImpl() {
@@ -65,13 +67,17 @@ public class MavenDeploymentImpl implements MavenDeployment {
             fob.refresh(); // without this the "target" directory is not found in filesystems
             
             J2eeModuleProvider jmp = (J2eeModuleProvider) FileOwnerQuery.getOwner(fob).getLookup().lookup(J2eeModuleProvider.class);
-            
-            log.info("Deploying on " + Deployment.getDefault().getServerInstanceDisplayName(jmp.getServerInstanceID()));
+            String serverInstanceID = jmp.getServerInstanceID();
+            if (DEV_NULL.equals(serverInstanceID)) {
+                log.error("No suitable Deployment Server is defined for the project or globally.");
+                throw new MojoFailureException("No suitable Deployment Server is defined for the project or globally.");
+            }
+            log.info("Deploying on " + Deployment.getDefault().getServerInstanceDisplayName(serverInstanceID));
             try {
-                log.info("    debugMode=" + debugmode);
-                log.info("    clientModuleuri=" + clientModuleUri);
-                log.info("    clientUrlPart=" + clientUrlPart);
-                log.info("    forcedeploy=" + forceRedeploy);
+                log.info("    debugMode: " + debugmode);
+                log.info("    clientModuleUri: " + clientModuleUri);
+                log.info("    clientUrlPart: " + clientUrlPart);
+                log.info("    forcedeploy: " + forceRedeploy);
                 
                 String clientUrl = Deployment.getDefault().deploy(jmp, debugmode, clientModuleUri, clientUrlPart, forceRedeploy, new DLogger(log));
                 if (clientUrl != null) {
@@ -96,6 +102,7 @@ public class MavenDeploymentImpl implements MavenDeployment {
                     }
                 }
             } catch (Exception ex) {
+                log.error(ex);
                 throw new MojoFailureException("Failed Deployment:" + ex.getMessage());
             }
         } finally {

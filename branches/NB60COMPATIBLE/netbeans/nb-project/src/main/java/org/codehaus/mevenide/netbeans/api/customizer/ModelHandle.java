@@ -73,9 +73,6 @@ public final class ModelHandle {
              }
          }
     
-        public void fireActionPerformed(ModelHandle handle) {
-            handle.fireActionPerformed();
-        }
     }
     
     /** Creates a new instance of ModelHandle */
@@ -85,21 +82,6 @@ public final class ModelHandle {
         this.mapping = mapping;
         this.profiles = profile;
         listeners = new ArrayList();
-    }
-    
-    /**
-     * action listeners are notified when the dialog is closed and values are to be applied 
-     * before the data is actually written
-     */
-    public void addActionListener(ActionListener listener) {
-        listeners.add(listener);
-    }
-    /**
-     * action listeners are notified when the dialog is closed and values are to be applied 
-     * before the data is actually written
-     */
-    public void removeActionListener(ActionListener listener) {
-        listeners.remove(listener);
     }
     
     /**
@@ -116,7 +98,15 @@ public final class ModelHandle {
         return profiles;
     }
     
+    /**
+     * warning: can update the model, for non-updating one for use in value getters
+     * use getNetbeansPublicProfile(false)
+     */ 
     public org.apache.maven.model.Profile getNetbeansPublicProfile() {
+        return getNetbeansPublicProfile(true);
+    }
+    
+    public org.apache.maven.model.Profile getNetbeansPublicProfile(boolean addIfNotPresent) {
         if (publicProfile == null) {
             List lst = model.getProfiles();
             if (lst != null) {
@@ -129,7 +119,7 @@ public final class ModelHandle {
                     }
                 }
             }
-            if (publicProfile == null) {
+            if (publicProfile == null && addIfNotPresent) {
                 publicProfile = new org.apache.maven.model.Profile();
                 publicProfile.setId(PROFILE_PUBLIC);
                 Activation act = new Activation();
@@ -142,10 +132,20 @@ public final class ModelHandle {
                 model.addProfile(publicProfile);
             }
         }
+        if (publicProfile == null && !addIfNotPresent) {
+            return new org.apache.maven.model.Profile();
+        }
         return publicProfile;
     }
-    
+    /**
+     * warning: can update the model, for non-updating one for use in value getters
+     * use getNetbeansPrivateProfile(false)
+     */ 
     public org.apache.maven.profiles.Profile getNetbeansPrivateProfile() {
+        return getNetbeansPrivateProfile(true);
+    }
+    
+    public org.apache.maven.profiles.Profile getNetbeansPrivateProfile(boolean addIfNotPresent) {
         if (privateProfile == null) {
             List lst = profiles.getProfiles();
             if (lst != null) {
@@ -158,7 +158,7 @@ public final class ModelHandle {
                     }
                 }
             }
-            if (privateProfile == null) {
+            if (privateProfile == null && addIfNotPresent) {
                 privateProfile = new org.apache.maven.profiles.Profile();
                 privateProfile.setId(PROFILE_PRIVATE);
                 org.apache.maven.profiles.Activation act = new org.apache.maven.profiles.Activation();
@@ -169,7 +169,10 @@ public final class ModelHandle {
                 privateProfile.setActivation(act);
                 profiles.addProfile(privateProfile);
             }
-            
+        }
+        if (privateProfile == null && !addIfNotPresent) {
+            // just return something to prevent npes.. won't be live though..
+            return new org.apache.maven.profiles.Profile();
         }
         return privateProfile;
     }
@@ -188,14 +191,4 @@ public final class ModelHandle {
     public ActionToGoalMapping getActionMappings() {
         return mapping;
     }
-
-    void fireActionPerformed() {
-        Iterator it = listeners.iterator();
-        ActionEvent evnt = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "X"); //NOI18N
-        while (it.hasNext()) {
-            ActionListener elem = (ActionListener) it.next();
-            elem.actionPerformed(evnt);
-        }
-    }
-    
 }

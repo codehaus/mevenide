@@ -54,8 +54,7 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
         ModelHandle handle = context.lookup(ModelHandle.class);
         NbMavenProject project = context.lookup(NbMavenProject.class);
         final RunJarPanel panel = new RunJarPanel(handle, project);
-        //TODO eventually replace by the Category's action listener
-        handle.addActionListener(new ActionListener() {
+        category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panel.applyChanges();
             }

@@ -18,8 +18,6 @@
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -53,16 +51,11 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         this.handle = handle;
         this.project = project;
         module = EjbJar.getEjbJar(project.getProjectDirectory());
-        moduleProvider = (EjbModuleProviderImpl)project.getLookup().lookup(EjbModuleProviderImpl.class);
+        moduleProvider = project.getLookup().lookup(EjbModuleProviderImpl.class);
         loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
         }
-        handle.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                moduleProvider.loadPersistedServerId();
-            }
-        });
         initValues();
     }
     
@@ -87,12 +80,12 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
             
             public Object getValue() {
                 Wrapper wr = null;
-                String id = handle.getNetbeansPrivateProfile().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getNetbeansPublicProfile().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
