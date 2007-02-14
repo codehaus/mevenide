@@ -68,9 +68,6 @@
     </dependencies>
 
     <build>
-        <filters>
-          <filter>src/main/filters/plugin.filter</filter>
-        </filters>
         <resources>
           <resource>
             <filtering>true</filtering>
@@ -94,22 +91,6 @@
               </configuration>
             </plugin>
 -->
-            <plugin>
-              <artifactId>maven-assembly-plugin</artifactId>
-              <configuration>
-                <!--
-                          <descriptorRefs>
-                            <descriptorRef>src</descriptorRef>
-                          </descriptorRefs>
-                -->
-                <descriptors>
-                  <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml</descriptor>
-                  <descriptor>${basedir}/src/main/assembly/assembly-src-descriptor.xml
-                  </descriptor>
-                </descriptors>
-                <finalName>${pom.artifactId}-${pom.version}</finalName>
-              </configuration>
-            </plugin>
             <plugin>
               <groupId>org.codehaus.mojo</groupId>
               <artifactId>xmlbeans-maven-plugin</artifactId>
