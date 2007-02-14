@@ -1,0 +1,31 @@
+<assembly>
+    <id></id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <moduleSets>
+        <moduleSet>
+            <includes>
+                <include>org.codehaus.mevenide:idea-ide</include>
+                <include>org.codehaus.mevenide:idea-build</include>
+            </includes>
+            <binaries>
+                <dependencySets>
+                    <dependencySet>
+                        <unpack>false</unpack>
+                        <scope>runtime</scope>
+                        <includes>
+                            <include>xmlbeans:xbean</include>
+                            <include>xmlbeans:jsr173_1.0_api</include>
+                            <include>commons-lang:commons-lang</include>
+                            <include>org.apache.maven:maven-embedder-dep</include>
+                        </includes>
+                    </dependencySet>
+                </dependencySets>
+                <outputDirectory>/mevenide2-idea/lib</outputDirectory>
+                <unpack>false</unpack>
+            </binaries>
+        </moduleSet>
+    </moduleSets>
+</assembly>
