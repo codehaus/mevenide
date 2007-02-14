@@ -312,7 +312,7 @@ public class MavenRunner {
     IBuildEnvironment buildEnvironment = new IdeaBuildEnvironment();
     buildEnvironment.setProject(context.getPluginProject());
     buildEnvironment.setMavenBuildSettings(BuildUtils.createMavenBuildSettings(
-        context.getApplicationPluginSettings(), context.getProjectPluginSettings()));
+            context.getProjectPluginSettings()));
     buildEnvironment.setGoals(buildContext.getGoals());
     buildEnvironment.setUseMavenEmbedder(useEmbedder);
     buildEnvironment.setPomFile(buildContext.getPomFile());

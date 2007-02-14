@@ -8,12 +8,14 @@
         <![CDATA[]]>
     </change-notes>
     <idea-version since-build="5700"/>
+<!--
     <application-components>
         <component>
             <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildApplicationComponent
             </implementation-class>
         </component>
     </application-components>
+-->
     <project-components>
         <component>
             <!-- Component's implementation class -->

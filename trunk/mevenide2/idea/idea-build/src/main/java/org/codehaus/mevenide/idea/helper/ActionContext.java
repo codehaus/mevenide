@@ -198,14 +198,13 @@
 package org.codehaus.mevenide.idea.helper;
 
 import com.intellij.openapi.project.Project;
-import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
+import org.apache.xmlbeans.XmlOptions;
 import org.codehaus.mevenide.idea.common.MavenBuildProjectPluginSettings;
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.config.IdeaMavenPluginDocument;
 import org.codehaus.mevenide.idea.config.PluginConfigDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-import org.apache.xmlbeans.XmlOptions;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -219,90 +218,77 @@ import java.util.Map;
  * @version $Revision$
  */
 public class ActionContext {
-  private GuiContext guiContext = new GuiContext();
-  private String lastExecutedMavenProject;
-  private MavenBuildProjectPluginSettings projectPluginSettings =
-      new MavenBuildProjectPluginSettings();
-  private List<MavenProjectDocument> pomDocumentList = new ArrayList<MavenProjectDocument>();
-  private Project pluginProject;
+    private GuiContext guiContext = new GuiContext();
+    private String lastExecutedMavenProject;
+    private MavenBuildProjectPluginSettings projectPluginSettings =
+            new MavenBuildProjectPluginSettings();
+    private List<MavenProjectDocument> pomDocumentList = new ArrayList<MavenProjectDocument>();
+    private Project pluginProject;
 
-  private MavenBuildPluginSettings applicationPluginSettings =
-      new MavenBuildPluginSettings();
-
-
-  /**
-   * Constructs ...
-   */
-  public ActionContext() {
-  }
-
-  public MavenBuildPluginSettings getApplicationPluginSettings() {
-    return applicationPluginSettings;
-  }
-
-  public void setApplicationPluginSettings(
-      MavenBuildPluginSettings applicationPluginSettings) {
-    this.applicationPluginSettings = applicationPluginSettings;
-  }
-
-  public Project getPluginProject() {
-    return pluginProject;
-  }
-
-  public void setPluginProject(Project pluginProject) {
-    this.pluginProject = pluginProject;
-  }
-
-  public List<MavenProjectDocument> getPomDocumentList() {
-    return pomDocumentList;
-  }
-
-  public void setPomDocumentList(List<MavenProjectDocument> pomDocumentList) {
-    this.pomDocumentList = pomDocumentList;
-  }
-
-  public MavenBuildProjectPluginSettings getProjectPluginSettings() {
-    return projectPluginSettings;
-  }
-
-  public void setProjectPluginSettings(MavenBuildProjectPluginSettings projectPluginSettings) {
-    this.projectPluginSettings = projectPluginSettings;
-  }
-
-  public GuiContext getGuiContext() {
-    return guiContext;
-  }
-
-  public String getLastExecutedMavenProject() {
-    return lastExecutedMavenProject;
-  }
-
-  public void setLastExecutedMavenProject(String lastExecutedMavenProject) {
-    this.lastExecutedMavenProject = lastExecutedMavenProject;
-  }
-
-  /**
-   * Method description
-   *
-   * @return Document me!
-   */
-  public PluginConfigDocument.PluginConfig getProjectPluginConfiguration() {
-    try {
-      XmlOptions xmlOptions = new XmlOptions();
-      Map<String, String> xmlOptionsMap = new Hashtable<String, String>();
-
-      xmlOptionsMap.put("", "org/apache/maven/plugin");
-      xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
-      IdeaMavenPluginDocument ideaMavenPluginDoc = IdeaMavenPluginDocument.Factory.parse(
-          this.getClass().getResource(
-              PluginConstants.PLUGIN_CONFIG_FILENAME), xmlOptions);
-
-      return ideaMavenPluginDoc.getIdeaMavenPlugin().getPluginConfig();
-    } catch (Exception e) {
-      ErrorHandler.processAndShowError(getPluginProject(), e);
+    /**
+     * Constructs ...
+     */
+    public ActionContext() {
     }
 
-    return null;
-  }
+    public Project getPluginProject() {
+        return pluginProject;
+    }
+
+    public void setPluginProject(Project pluginProject) {
+        this.pluginProject = pluginProject;
+    }
+
+    public List<MavenProjectDocument> getPomDocumentList() {
+        return pomDocumentList;
+    }
+
+    public void setPomDocumentList(List<MavenProjectDocument> pomDocumentList) {
+        this.pomDocumentList = pomDocumentList;
+    }
+
+    public MavenBuildProjectPluginSettings getProjectPluginSettings() {
+        return projectPluginSettings;
+    }
+
+    public void setProjectPluginSettings(MavenBuildProjectPluginSettings projectPluginSettings) {
+        this.projectPluginSettings = projectPluginSettings;
+    }
+
+    public GuiContext getGuiContext() {
+        return guiContext;
+    }
+
+    public String getLastExecutedMavenProject() {
+        return lastExecutedMavenProject;
+    }
+
+    public void setLastExecutedMavenProject(String lastExecutedMavenProject) {
+        this.lastExecutedMavenProject = lastExecutedMavenProject;
+    }
+
+    /**
+     * Method description
+     *
+     * @return Document me!
+     */
+    public PluginConfigDocument.PluginConfig getProjectPluginConfiguration() {
+        try {
+            XmlOptions xmlOptions = new XmlOptions();
+            Map<String, String> xmlOptionsMap = new Hashtable<String, String>();
+
+            xmlOptionsMap.put("", "org/apache/maven/plugin");
+            xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
+            IdeaMavenPluginDocument ideaMavenPluginDoc = IdeaMavenPluginDocument.Factory.parse(
+                    this.getClass().getResource(
+                            PluginConstants.PLUGIN_CONFIG_FILENAME), xmlOptions);
+
+            return ideaMavenPluginDoc.getIdeaMavenPlugin().getPluginConfig();
+        } catch (Exception e) {
+            ErrorHandler.processAndShowError(getPluginProject(), e);
+        }
+
+        return null;
+    }
 
 }
