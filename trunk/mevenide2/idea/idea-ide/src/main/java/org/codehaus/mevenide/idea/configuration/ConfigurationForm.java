@@ -1,26 +1,25 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea.configuration;
 
-
 import javax.swing.*;
-
 
 /**
  * An auto-generated class that goes along with the configuration GUI form.
@@ -28,12 +27,9 @@ import javax.swing.*;
  * @author bkate
  */
 public class ConfigurationForm {
-
     private JPanel rootComponent;
-
     private JTextField settingsPathTextField;
     private JTextField searchFilterTextField;
-
     private JCheckBox updateClasspathsCheckBox;
     private JCheckBox sortDependencyListCheckBox;
     private JCheckBox manageSourceRootsCheckBox;
@@ -44,16 +40,12 @@ public class ConfigurationForm {
     private JCheckBox enablePluginCheckBox;
     private JCheckBox removeDuplicateDependenciesCheckBox;
     private JCheckBox respondToPomChangesCheckBox;
-
     private JSlider logLevelSlider;
-
 
     /**
      * Default constructor.
      */
-    public ConfigurationForm() {
-    }
-
+    public ConfigurationForm() {}
 
     /**
      * Gets the root GUI component of this form.
@@ -64,9 +56,7 @@ public class ConfigurationForm {
         return rootComponent;
     }
 
-
     public void setData(ConfigurationBean data) {
-
         enablePluginCheckBox.setSelected(data.isPluginEnabled());
         updateClasspathsCheckBox.setSelected(data.isUpdateClasspathsEnabled());
         sortDependencyListCheckBox.setSelected(data.isSortDependenciesEnabled());
@@ -82,9 +72,7 @@ public class ConfigurationForm {
         logLevelSlider.setValue(data.getLogLevel());
     }
 
-
     public void getData(ConfigurationBean data) {
-
         data.setPluginEnabled(enablePluginCheckBox.isSelected());
         data.setUpdateClasspathsEnabled(updateClasspathsCheckBox.isSelected());
         data.setSortDependenciesEnabled(sortDependencyListCheckBox.isSelected());
@@ -100,9 +88,7 @@ public class ConfigurationForm {
         data.setLogLevel(logLevelSlider.getValue());
     }
 
-
     public boolean isModified(ConfigurationBean data) {
-
         if (enablePluginCheckBox.isSelected() != data.isPluginEnabled()) {
             return true;
         }
@@ -143,11 +129,15 @@ public class ConfigurationForm {
             return true;
         }
 
-        if (settingsPathTextField.getText() != null ? !settingsPathTextField.getText().equals(data.getSettingsPath()) : data.getSettingsPath() != null) {
+        if ((settingsPathTextField.getText() != null)
+            ? !settingsPathTextField.getText().equals(data.getSettingsPath())
+            : data.getSettingsPath() != null) {
             return true;
         }
 
-        if (searchFilterTextField.getText() != null ? !searchFilterTextField.getText().equals(data.getSearchFilter()) : data.getSearchFilter() != null) {
+        if ((searchFilterTextField.getText() != null)
+            ? !searchFilterTextField.getText().equals(data.getSearchFilter())
+            : data.getSearchFilter() != null) {
             return true;
         }
 
@@ -157,6 +147,4 @@ public class ConfigurationForm {
 
         return false;
     }
-
 }
-

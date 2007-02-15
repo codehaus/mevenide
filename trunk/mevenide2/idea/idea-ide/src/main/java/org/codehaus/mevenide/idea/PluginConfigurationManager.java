@@ -1,30 +1,30 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea;
 
+import com.intellij.openapi.project.Project;
 
 import org.codehaus.mevenide.idea.configuration.ConfigurationBean;
-import com.intellij.openapi.project.Project;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
  * A manager that provides access to the configuration of the plugin for specific Project instances.
@@ -37,15 +37,13 @@ public class PluginConfigurationManager {
     private ConfigurationBean config = null;
 
     // hold all the instances in a static map
-    private static Map<Project, PluginConfigurationManager> instances = new ConcurrentHashMap<Project, PluginConfigurationManager>();
-
+    private static Map<Project, PluginConfigurationManager> instances = new ConcurrentHashMap<Project,
+                                                                            PluginConfigurationManager>();
 
     /**
      * Private constructor for factory pattern.
      */
-    private PluginConfigurationManager() {
-    }
-
+    private PluginConfigurationManager() {}
 
     /**
      * Get the instance of the configuration manager that corresponds to the Project at hand.
@@ -64,7 +62,6 @@ public class PluginConfigurationManager {
         return instances.get(project);
     }
 
-
     /**
      * Frees up the instance of the manager that is related to the Project given.
      *
@@ -73,7 +70,6 @@ public class PluginConfigurationManager {
     public static void releaseInstance(Project proj) {
         instances.remove(proj);
     }
-
 
     /**
      * Gets the configuration that this manager is holding.
@@ -84,7 +80,6 @@ public class PluginConfigurationManager {
         return config;
     }
 
-
     /**
      * Sets the configuration into the instance of this manager.
      *
@@ -93,6 +88,4 @@ public class PluginConfigurationManager {
     public void setConfig(ConfigurationBean config) {
         this.config = config;
     }
-
 }
-

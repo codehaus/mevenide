@@ -1,39 +1,40 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea;
 
-
-import org.codehaus.mevenide.idea.console.LogMessage;
-import org.codehaus.mevenide.idea.console.PluginLogger;
-import org.codehaus.mevenide.idea.console.LoggerListener;
-import org.codehaus.mevenide.idea.configuration.ConfigurationBean;
-
-import java.util.Set;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.concurrent.ConcurrentHashMap;
-import java.io.PrintStream;
-
-import org.apache.maven.embedder.MavenEmbedderLogger;
 import com.intellij.openapi.project.Project;
 
+import org.apache.maven.embedder.MavenEmbedderLogger;
+
+import org.codehaus.mevenide.idea.configuration.ConfigurationBean;
+import org.codehaus.mevenide.idea.console.LogMessage;
+import org.codehaus.mevenide.idea.console.LoggerListener;
+import org.codehaus.mevenide.idea.console.PluginLogger;
+
+import java.io.PrintStream;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A class that manages logging within the Maven Reloaded plugin.
@@ -53,23 +54,22 @@ public class PluginLoggerManager {
     private Set<LoggerListener> listeners = new HashSet<LoggerListener>();
 
     // different log types to manage
-    private enum LogType {EMBEDDER, PLUGIN};
+    private enum LogType {EMBEDDER, PLUGIN}
+
+    ;
 
     // map of instances sorted by project
-    private static final Map<Project, PluginLoggerManager> instances = new ConcurrentHashMap<Project, PluginLoggerManager>();
-
+    private static final Map<Project, PluginLoggerManager> instances = new ConcurrentHashMap<Project,
+                                                                           PluginLoggerManager>();
 
     /**
      * Private constructor supports the factory pattern, use getInstance() to obtain a manager.
      */
     private PluginLoggerManager(Project proj) {
-
         config = PluginConfigurationManager.getInstance(proj).getConfig();
-
         pluginLoggers = new HashMap<String, PluginLogger>();
         embedderLogger = new MavenEmbedderLoggerImpl();
     }
-
 
     /**
      * Gets the singleton instance of the manager.
@@ -77,14 +77,12 @@ public class PluginLoggerManager {
      * @return The PluginLoggerManager that is managing the plugin pluginLoggers.
      */
     public static PluginLoggerManager getInstance(Project proj) {
-
         if (!instances.containsKey(proj)) {
             instances.put(proj, new PluginLoggerManager(proj));
         }
 
         return instances.get(proj);
     }
-
 
     /**
      * Releases the instance that is associated with the Project passed in.
@@ -94,7 +92,6 @@ public class PluginLoggerManager {
     public static void releaseInstance(Project proj) {
         instances.remove(proj);
     }
-
 
     /**
      * Gets the plugin logger responsible for handling the logging of a specific class type.
@@ -106,7 +103,6 @@ public class PluginLoggerManager {
     public PluginLogger getPluginLogger(Class loggingClass) {
         return getPluginLogger(loggingClass.getName());
     }
-
 
     /**
      * Gets a plugin logger by name.
@@ -130,7 +126,6 @@ public class PluginLoggerManager {
         return logger;
     }
 
-
     /**
      * Gets the maven embedder logger in use.
      *
@@ -139,7 +134,6 @@ public class PluginLoggerManager {
     public MavenEmbedderLogger getEmbedderLogger() {
         return embedderLogger;
     }
-
 
     /**
      * Adds a log listener.
@@ -150,7 +144,6 @@ public class PluginLoggerManager {
         listeners.add(listener);
     }
 
-
     /**
      * Removes a log listener.
      *
@@ -160,7 +153,6 @@ public class PluginLoggerManager {
         listeners.remove(listener);
     }
 
-
     /**
      * Notifies all log listeners that there is a new log message.
      *
@@ -168,23 +160,21 @@ public class PluginLoggerManager {
      * @param log The log type, EMBEDDER or PLUGIN.
      */
     private void notifyListeners(LogMessage message, LogType log) {
-
         for (LoggerListener listener : listeners) {
-
-            switch(log) {
-
-                case EMBEDDER:
+            switch (log) {
+                case EMBEDDER :
                     listener.logEmbedderMessage(message);
+
                     break;
 
-                case PLUGIN:
-                default:
+                case PLUGIN :
+                default :
                     listener.logPluginMessage(message);
+
                     break;
             }
         }
     }
-
 
     /**
      * An implementation of the PluginLogger interface that works with the log listeners to export messages.
@@ -193,7 +183,6 @@ public class PluginLoggerManager {
 
         // name of the logger
         private String loggerName;
-
 
         /**
          * Default constructor that takes the name of the logger.
@@ -204,81 +193,65 @@ public class PluginLoggerManager {
             loggerName = name;
         }
 
-
         /** {@inheritDoc} */
         public void debug(String message) {
             debug(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void debug(String message, Throwable error) {
-
             if (isLogEnabled(LogMessage.DEBUG)) {
                 notifyListeners(new LogMessage(format(message, error), LogMessage.DEBUG), LogType.PLUGIN);
             }
         }
-
 
         /** {@inheritDoc} */
         public void info(String message) {
             info(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void info(String message, Throwable error) {
-
             if (isLogEnabled(LogMessage.INFO)) {
                 notifyListeners(new LogMessage(format(message, error), LogMessage.INFO), LogType.PLUGIN);
             }
         }
-
 
         /** {@inheritDoc} */
         public void warn(String message) {
             warn(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void warn(String message, Throwable error) {
-
             if (isLogEnabled(LogMessage.WARN)) {
                 notifyListeners(new LogMessage(format(message, error), LogMessage.WARN), LogType.PLUGIN);
             }
         }
-
 
         /** {@inheritDoc} */
         public void error(String message) {
             error(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void error(String message, Throwable error) {
-
             if (isLogEnabled(LogMessage.ERROR)) {
                 notifyListeners(new LogMessage(format(message, error), LogMessage.ERROR), LogType.PLUGIN);
             }
         }
-
 
         /** {@inheritDoc} */
         public void fatal(String message) {
             fatal(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void fatal(String message, Throwable error) {
-
             if (isLogEnabled(LogMessage.FATAL)) {
                 notifyListeners(new LogMessage(format(message, error), LogMessage.FATAL), LogType.PLUGIN);
             }
         }
-
 
         /**
          * Determines if logging is enabled at the given level.
@@ -290,7 +263,6 @@ public class PluginLoggerManager {
         private boolean isLogEnabled(int level) {
             return (level >= config.getLogLevel());
         }
-
 
         /**
          * Formats a log message to have the name of the logger prepended.
@@ -328,120 +300,97 @@ public class PluginLoggerManager {
             debug(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void debug(String message, Throwable throwable) {
-
             if (isLogEnabled(LogMessage.DEBUG)) {
                 notifyListeners(new LogMessage(format(message, throwable), LogMessage.DEBUG), LogType.EMBEDDER);
             }
         }
-
 
         /** {@inheritDoc} */
         public boolean isDebugEnabled() {
             return isLogEnabled(LogMessage.DEBUG);
         }
 
-
         /** {@inheritDoc} */
         public void info(String message) {
             info(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void info(String message, Throwable throwable) {
-
             if (isLogEnabled(LogMessage.INFO)) {
                 notifyListeners(new LogMessage(format(message, throwable), LogMessage.INFO), LogType.EMBEDDER);
             }
         }
-
 
         /** {@inheritDoc} */
         public boolean isInfoEnabled() {
             return isLogEnabled(LogMessage.INFO);
         }
 
-
         /** {@inheritDoc} */
         public void warn(String message) {
             warn(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void warn(String message, Throwable throwable) {
-
             if (isLogEnabled(LogMessage.WARN)) {
                 notifyListeners(new LogMessage(format(message, throwable), LogMessage.WARN), LogType.EMBEDDER);
             }
         }
-
 
         /** {@inheritDoc} */
         public boolean isWarnEnabled() {
             return isLogEnabled(LogMessage.WARN);
         }
 
-
         /** {@inheritDoc} */
         public void error(String message) {
             error(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void error(String message, Throwable throwable) {
-
             if (isLogEnabled(LogMessage.ERROR)) {
                 notifyListeners(new LogMessage(format(message, throwable), LogMessage.ERROR), LogType.EMBEDDER);
             }
         }
-
 
         /** {@inheritDoc} */
         public boolean isErrorEnabled() {
             return isLogEnabled(LogMessage.ERROR);
         }
 
-
         /** {@inheritDoc} */
         public void fatalError(String message) {
             fatalError(message, null);
         }
 
-
         /** {@inheritDoc} */
         public void fatalError(String message, Throwable throwable) {
-
             if (isLogEnabled(LogMessage.FATAL)) {
                 notifyListeners(new LogMessage(format(message, throwable), LogMessage.FATAL), LogType.EMBEDDER);
             }
         }
-
 
         /** {@inheritDoc} */
         public boolean isFatalErrorEnabled() {
             return isLogEnabled(LogMessage.FATAL);
         }
 
-
         /**
          * {@inheritDoc}
          *
          * Does nothing in this implementation.
          */
-        public void setThreshold(int threshold) {
-        }
-
+        public void setThreshold(int threshold) {}
 
         /** {@inheritDoc} */
         public int getThreshold() {
             return config.getLogLevel();
         }
-
 
         /**
          * A method that formats a message (and possibly a throwable) into a single string.
@@ -467,7 +416,6 @@ public class PluginLoggerManager {
             return message + "\n" + stream.getStreamContents();
         }
 
-
         /**
          * Determines if logging is enabled at the given level.
          *
@@ -490,7 +438,6 @@ public class PluginLoggerManager {
         // the internal data structure
         private StringBuffer log = new StringBuffer();
 
-
         /**
          * Default constructor, all un-overridden functionality will fall through to System.out...
          */
@@ -498,66 +445,55 @@ public class PluginLoggerManager {
             super(System.out);
         }
 
-
         /** {@inheritDoc} */
         public void print(boolean b) {
             print(Boolean.toString(b));
         }
-
 
         /** {@inheritDoc} */
         public void print(char c) {
             print(Character.toString(c));
         }
 
-
         /** {@inheritDoc} */
         public void print(int i) {
             print(Integer.toString(i));
         }
-
 
         /** {@inheritDoc} */
         public void print(long l) {
             print(Long.toString(l));
         }
 
-
         /** {@inheritDoc} */
         public void print(double v) {
             print(Double.toString(v));
         }
-
 
         /** {@inheritDoc} */
         public void print(float v) {
             print(Float.toString(v));
         }
 
-
         /** {@inheritDoc} */
         public void print(char[] chars) {
             print(String.valueOf(chars));
         }
-
 
         /** {@inheritDoc} */
         public void print(String string) {
             log.append(string);
         }
 
-
         /** {@inheritDoc} */
         public void print(Object object) {
             print(object.toString());
         }
 
-
         /** {@inheritDoc} */
         public void println() {
             log.append("\n");
         }
-
 
         /** {@inheritDoc} */
         public void println(boolean b) {
@@ -565,13 +501,11 @@ public class PluginLoggerManager {
             println();
         }
 
-
         /** {@inheritDoc} */
         public void println(char c) {
             print(c);
             println();
         }
-
 
         /** {@inheritDoc} */
         public void println(int i) {
@@ -579,13 +513,11 @@ public class PluginLoggerManager {
             println();
         }
 
-
         /** {@inheritDoc} */
         public void println(long l) {
             print(l);
             println();
         }
-
 
         /** {@inheritDoc} */
         public void println(float v) {
@@ -593,13 +525,11 @@ public class PluginLoggerManager {
             println();
         }
 
-
         /** {@inheritDoc} */
         public void println(double v) {
             print(v);
             println();
         }
-
 
         /** {@inheritDoc} */
         public void println(char[] chars) {
@@ -607,20 +537,17 @@ public class PluginLoggerManager {
             println();
         }
 
-
         /** {@inheritDoc} */
         public void println(String string) {
             print(string);
             println();
         }
 
-
         /** {@inheritDoc} */
         public void println(Object object) {
             print(object);
             println();
         }
-
 
         /**
          * Gets the contents of the logger stream.
@@ -631,6 +558,4 @@ public class PluginLoggerManager {
             return log.toString();
         }
     }
-
 }
-
