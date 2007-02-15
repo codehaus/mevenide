@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.graph;
 import org.apache.maven.artifact.Artifact;
+import org.netbeans.api.visual.widget.Widget;
 
 /**
  *
@@ -30,6 +31,7 @@ public class ArtifactGraphNode {
     double dispX;
     double dispY;
     private boolean fixed;
+    private Widget widget;
     
     private boolean root;
     /** Creates a new instance of ArtifactGraphNode */
@@ -40,6 +42,10 @@ public class ArtifactGraphNode {
     
     Artifact getArtifact() {
         return artifact;
+    }
+    
+    void setArtifact(Artifact ar) {
+        artifact = ar;
     }
     
     public void setRoot(boolean r) {
@@ -56,5 +62,13 @@ public class ArtifactGraphNode {
     
     public boolean isFixed() {
         return fixed;
+    }
+    
+    public boolean isVisible() {
+        return widget != null ? widget.isVisible() : true;
+    }
+    
+    void setWidget(Widget wid) {
+        widget = wid;
     }
 }

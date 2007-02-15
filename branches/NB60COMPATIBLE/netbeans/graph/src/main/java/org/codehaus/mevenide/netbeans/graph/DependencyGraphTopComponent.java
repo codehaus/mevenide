@@ -19,27 +19,38 @@ package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.netbeans.api.visual.widget.Scene.SceneListener;
 import org.netbeans.api.visual.widget.Widget;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 
 /**
- * component showing graph of dependencies for a pom project.
+ * component showing graph of dependencies for project.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class DependencyGraphTopComponent extends TopComponent {
-    public static final String ATTRIBUTE_DEPENDENCIES_LAYOUT = "MavenProjectDependenciesLayout"; //NOI18N
+//    public static final String ATTRIBUTE_DEPENDENCIES_LAYOUT = "MavenProjectDependenciesLayout"; //NOI18N
     
     private NbMavenProject project;
-    private JComponent view = null;
     private DependencyGraphScene scene;
+    private Timer timer = new Timer(1000, new ActionListener() {
+        public void actionPerformed(ActionEvent arg0) {
+            checkFindValue();
+        }
+    });
     
     /** Creates new form ModulesGraphTopComponent */
     public DependencyGraphTopComponent(NbMavenProject proj) {
@@ -47,10 +58,31 @@ public class DependencyGraphTopComponent extends TopComponent {
         project = proj;
         setName("DependencyGraph" + proj.getName());
         setDisplayName("Dependencies - " + proj.getDisplayName());
+        timer.setDelay(1000);
+        timer.setRepeats(false);
+        txtFind.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent arg0) {
+                timer.restart();
+            }
+
+            public void removeUpdate(DocumentEvent arg0) {
+                timer.restart();
+            }
+
+            public void changedUpdate(DocumentEvent arg0) {
+                timer.restart();
+            }
+        });
     }
     
-    
-    
+    private void checkFindValue() {
+        String val = txtFind.getText().trim();
+        if ("".equals(val)) {
+            scene.clearFind();
+        } else {
+            scene.findNodeByText(val);
+        }
+    }
     
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_NEVER;
@@ -58,64 +90,46 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     protected void componentOpened() {
         super.componentOpened();
-//        controller = new DefaultViewController();
-        scene = GraphDocumentFactory.createDependencyDocument(project);
-        JComponent sceneView = scene.getView ();
-        if (sceneView == null) {
-            sceneView = scene.createView ();
-        }
         final JScrollPane pane = new JScrollPane();
-        pane.setViewportView(sceneView);
         add(pane, BorderLayout.CENTER);
-        scene.cleanLayout();
-        
-        scene.addSceneListener(new SceneListener() {
-            public void sceneRepaint() {
-            }
-            public void sceneValidating() {
-            }
-            public void sceneValidated() {
-//                for (ArtifactGraphNode nd : scene.getNodes()) {
-//                    Widget wid = scene.findWidget(nd);
-//                    Rectangle sceneBounds = wid.convertLocalToScene(wid.getBounds());
-//                    if (rec == null) {
-//                        rec = sceneBounds;
-//                    } else {
-//                        rec.union(sceneBounds);
-//                    }
-//                }
-//                if (rec == null)
-//                    rec = new Rectangle ();
-//                rec.grow(rec.width / 10, rec.height /10);
-//                System.out.println("max rect=" + rec);
-//                
-                ArtifactGraphNode root = scene.getRootArtifact();
-                Widget rootWidget = scene.findWidget (root);
-                Rectangle rootSceneBounds = rootWidget.convertLocalToScene(rootWidget.getBounds());
-                System.out.println("view bounds to scroll0-" + rootWidget.getBounds());
-                System.out.println("view bounds to scroll1-" + rootSceneBounds);
-                Rectangle rootViewBounds = scene.convertSceneToView (rootSceneBounds);
-                scene.getView().scrollRectToVisible(rootViewBounds); 
-                System.out.println("view bounds to scroll2-" + rootViewBounds);
-
-////                Rectangle rec = scene.convertSceneToView(scene.getBounds());
-////                Rectangle viewBounds = scene.convertSceneToView (rec);
-////                Dimension viewportSize = pane.getViewport().getSize();
-////                System.out.println("view size=" + viewportSize);
-////                System.out.println("scene bounds=" + viewBounds);
-////                float zoomFactor = Math.max ((float) viewportSize.width / viewBounds.width,
-////                                             (float) viewportSize.height / viewBounds.height);                
-////                
-////                System.out.println("zoom factor is " + zoomFactor);
-////                scene.setZoomFactor(zoomFactor);
-//////                scene.getSceneAnimator().animateZoomFactor(zoomFactor);
-                scene.removeSceneListener (this);                
+        JLabel lbl = new JLabel("Loading...");
+        lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        pane.setViewportView(lbl);
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                scene = GraphDocumentFactory.createDependencyDocument(project);
+                try {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            JComponent sceneView = scene.getView ();
+                            if (sceneView == null) {
+                                sceneView = scene.createView ();
+                            }
+                            pane.setViewportView(sceneView);
+                        }
+                    });
+                } catch (Exception e) {
+                    
+                }
+                scene.cleanLayout();
+                centerView(pane);
             }
         });
-        revalidate();
-        repaint();
-        
-        
+    }
+    
+    private void centerView(final JScrollPane pane) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Rectangle rectangle = new Rectangle (0, 0, 1, 1);
+                for (ArtifactGraphNode node : scene.getNodes()) {
+                    Widget widget = scene.findWidget(node);
+                    rectangle = rectangle.union (widget.convertLocalToScene (widget.getBounds ()));
+                }
+                Dimension dim = rectangle.getSize ();
+                Dimension viewDim = pane.getViewportBorderBounds ().getSize ();
+                scene.setZoomFactor (Math.min ((float) viewDim.width / dim.width, (float) viewDim.height / dim.height));
+            }
+        });
     }
     
     
@@ -130,6 +144,8 @@ public class DependencyGraphTopComponent extends TopComponent {
         jPanel1 = new javax.swing.JPanel();
         btnBigger = new javax.swing.JButton();
         btnSmaller = new javax.swing.JButton();
+        lblFind = new javax.swing.JLabel();
+        txtFind = new javax.swing.JTextField();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -151,57 +167,36 @@ public class DependencyGraphTopComponent extends TopComponent {
         });
         jPanel1.add(btnSmaller);
 
+        lblFind.setText("Find:");
+        jPanel1.add(lblFind);
+
+        txtFind.setMinimumSize(new java.awt.Dimension(100, 19));
+        txtFind.setPreferredSize(new java.awt.Dimension(150, 19));
+        jPanel1.add(txtFind);
+
         add(jPanel1, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
-        scene.setZoomFactor(scene.getZoomFactor() * 0.75);
+        scene.setZoomFactor(scene.getZoomFactor() * 0.8);
         revalidate();
         repaint();
-//        GraphFactory.setZoom(view, zoom);
     }//GEN-LAST:event_btnSmallerActionPerformed
     
     private void btnBiggerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBiggerActionPerformed
-        scene.setZoomFactor(scene.getZoomFactor() * 1.5);
+        scene.setZoomFactor(scene.getZoomFactor() * 1.2);
         revalidate();
         repaint();
-//        GraphFactory.setZoom(view, zoom);
-// TODO add your handling code here:
     }//GEN-LAST:event_btnBiggerActionPerformed
 
-//    private void loadDocument() {
-//        VMDSerializer ser = new VMDSerializer();
-//        FileObject fo = project.getProjectDirectory();
-//        String attrVal = (String)fo.getAttribute(ATTRIBUTE_DEPENDENCIES_LAYOUT);
-//        if (attrVal != null) {
-//            try {
-//            Reader str = new StringReader(attrVal);
-//            Document doc = XMLUtil.parse(new InputSource(str),false, false, null, null);
-//            Node nd = doc.getDocumentElement().getFirstChild();
-//            while (nd != null && !(nd instanceof Element)) {
-//                nd = nd.getNextSibling();
-//            }
-//            if (nd == null) {
-//                System.out.println("errror...");
-//            } else {
-//                ser.loadStructure(nd);
-//                ser.useStructure(controller.getHelper());
-//            }
-//            } catch (FileNotFoundException ex) {
-//                ex.printStackTrace();
-//            } catch (IOException ex) {
-//                ex.printStackTrace();
-//            } catch (SAXException ex) {
-//                ex.printStackTrace();
-//            }
-//        }
-//    }
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBigger;
     private javax.swing.JButton btnSmaller;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblFind;
+    private javax.swing.JTextField txtFind;
     // End of variables declaration//GEN-END:variables
     
 }

@@ -18,14 +18,17 @@ package org.codehaus.mevenide.netbeans.graph;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Collection;
-import javax.swing.JMenuItem;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javax.swing.JPopupMenu;
 import org.apache.maven.artifact.Artifact;
 import org.netbeans.api.visual.action.ActionFactory;
-import org.netbeans.api.visual.action.MoveProvider;
 import org.netbeans.api.visual.action.PopupMenuProvider;
-import org.netbeans.api.visual.action.TwoStateHoverProvider;
+import org.netbeans.api.visual.action.SelectProvider;
 import org.netbeans.api.visual.action.WidgetAction;
 import org.netbeans.api.visual.anchor.AnchorFactory;
 import org.netbeans.api.visual.anchor.AnchorFactory;
@@ -33,6 +36,10 @@ import org.netbeans.api.visual.anchor.AnchorShape;
 import org.netbeans.api.visual.border.BorderFactory;
 import org.netbeans.api.visual.graph.GraphScene;
 import org.netbeans.api.visual.layout.LayoutFactory;
+import org.netbeans.api.visual.model.ObjectSceneEvent;
+import org.netbeans.api.visual.model.ObjectSceneEventType;
+import org.netbeans.api.visual.model.ObjectSceneListener;
+import org.netbeans.api.visual.model.ObjectState;
 import org.netbeans.api.visual.widget.ConnectionWidget;
 import org.netbeans.api.visual.widget.LabelWidget;
 import org.netbeans.api.visual.widget.LayerWidget;
@@ -50,12 +57,12 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     private ArtifactGraphNode rootNode;
     
     private WidgetAction moveAction = ActionFactory.createMoveAction();
-    private WidgetAction mouseHoverAction = ActionFactory.createHoverAction(new MyHoverProvider());
     private WidgetAction popupMenuAction = ActionFactory.createPopupMenuAction(new MyPopupMenuProvider());
-    private WidgetAction zoomAction = ActionFactory.createZoomAction();
+    private WidgetAction zoomAction = ActionFactory.createCenteredZoomAction(1.1);
     private WidgetAction panAction = ActionFactory.createPanAction();
-    private WidgetAction movetStrategyAction = ActionFactory.createMoveAction(null, new MyMoveStrategy());
+    private WidgetAction selectAction = ActionFactory.createSelectAction(new MySelectProvider());
     private FruchtermanReingoldLayout layout;
+    
     /** Creates a new instance ofla DependencyGraphScene */
     public DependencyGraphScene() {
         mainLayer = new LayerWidget(this);
@@ -63,18 +70,12 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         addChild(mainLayer);
         addChild(connectionLayer);
         
-        getActions().addAction(mouseHoverAction);
+        getActions().addAction(selectAction);
         getActions().addAction(zoomAction);
         getActions().addAction(panAction);
-        getActions().addAction(movetStrategyAction);
-//        getActions ().addAction (ActionFactory.createEditAction (new EditProvider() {
-//            public void edit (Widget widget) {
-//                new TreeGraphLayout<Artifact, String> (DependencyGraphScene.this, 100, 100, 50, 50, true).layout(getRootArtifact());
-//            }
-//        }));
-        
+        addObjectSceneListener(new SceneListener(), ObjectSceneEventType.OBJECT_SELECTION_CHANGED);
     }
-    
+
     void cleanLayout() {
         layout =  new FruchtermanReingoldLayout(this);
         layout.invokeLayout();
@@ -85,37 +86,17 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     }
     
     protected Widget attachNodeWidget(ArtifactGraphNode node) {
-        Artifact artifact = node.getArtifact();
-        Widget root = new LevelOfDetailsWidget(this, 0.05, 0.1, Double.MAX_VALUE, Double.MAX_VALUE);
-        root.setBorder(BorderFactory.createLineBorder(5));
-        root.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
+        Widget root = new ArtifactWidget(this, node);
         mainLayer.addChild(root);
-        LabelWidget lbl = new LabelWidget(this);
-        lbl.setLabel(artifact.getArtifactId() + "  ");
-//        Font fnt = getDefaultFont();
-//        lbl.setFont(fnt.deriveFont((float)(fnt.getSize() * 2)));
-        root.addChild(lbl);
-        
-        root.getActions().addAction(moveAction);
-        root.getActions().addAction(mouseHoverAction);
-        root.getActions().addAction(popupMenuAction);
-        
-        Widget details1 = new LevelOfDetailsWidget(this, 0.5, 0.7, Double.MAX_VALUE, Double.MAX_VALUE);
-        details1.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
-        root.addChild(details1);
-        LabelWidget lbl2 = new LabelWidget(this);
-        lbl2.setLabel(artifact.getVersion() + "  ");
-        details1.addChild(lbl2);
-//        LabelWidget lbl3 = new LabelWidget(this);
-//        lbl3.setLabel(artifact.getScope());
-//        details1.addChild (lbl3);
+        node.setWidget(root);
         if (rootNode == null) {
             rootNode = node;
         }
-//        details1.getActions().addAction(movetStrategyAction);
-        root.getActions().addAction(movetStrategyAction);
-//        lbl.getActions().addAction(movetStrategyAction);
-//        lbl2.getActions().addAction(movetStrategyAction);
+        root.setOpaque(true);
+        
+        root.getActions().addAction(moveAction);
+        root.getActions().addAction(selectAction);
+        root.getActions().addAction(popupMenuAction);
         
         return root;
     }
@@ -140,111 +121,168 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         ((ConnectionWidget) findWidget(edge)).setTargetAnchor(AnchorFactory.createRectangularAnchor(findWidget(target)));
     }
     
-    private class MyHoverProvider implements TwoStateHoverProvider {
-        
+    
+    void findNodeByText(String text) {
+        clearFind();
+        List<ArtifactGraphNode> found = new ArrayList<ArtifactGraphNode>();
+        for (ArtifactGraphNode node : getNodes()) {
+            Artifact art = node.getArtifact();
+            if (art.getId().contains(text)) {
+                found.add(node);
+            }
+        }
+        Set<ArtifactGraphNode> toShow = new HashSet<ArtifactGraphNode>();
+        toShow.addAll(found);
+        for (ArtifactGraphNode nd : found) {
+            Widget widget = findWidget(nd);
+            widget.setBackground(hovering);
+            markParent(nd, found, toShow);
+        }
+        if (toShow.size() > 0) {
+            for (ArtifactGraphNode node : getNodes()) {
+                if (!toShow.contains(node)) {
+                    findWidget(node).setVisible(false);
+                }
+            }
+            for (ArtifactGraphEdge edge : getEdges()) {
+                if (!toShow.contains(getEdgeSource(edge)) || !toShow.contains(getEdgeTarget(edge))) {
+                    findWidget(edge).setVisible(false);
+                }
+            }
+        }
+    }
+    
+    void clearFind() {
+        for (ArtifactGraphNode nd: getNodes()) {
+            Widget wid = DependencyGraphScene.this.findWidget(nd);
+            wid.setBackground(Color.WHITE);
+            wid.setVisible(true);
+        }
+        for (ArtifactGraphEdge ed : getEdges()) {
+            Widget wid = DependencyGraphScene.this.findWidget(ed);
+            wid.setForeground(null);
+            wid.repaint();
+            wid.setVisible(true);
+        }
+    }
         Color hovering = new Color(71, 215, 217);
         Color deps = new Color(154, 215, 217);
         Color parents = new Color(219, 197, 191);
         Color parentsLink = new Color(219, 46, 0);
-        
-        public void unsetHovering(Widget widget) {
-            for (ArtifactGraphNode nd: DependencyGraphScene.this.getNodes()) {
-                Widget wid = DependencyGraphScene.this.findWidget(nd);
-                wid.setOpaque(false);
-                wid.setBackground(Color.WHITE);
-            }
-            for (ArtifactGraphEdge ed : DependencyGraphScene.this.getEdges()) {
-                Widget wid = DependencyGraphScene.this.findWidget(ed);
-                wid.setForeground(null);
-                wid.repaint();
-//                wid.setBackground(null);
-            }
-        }
-        
-        public void setHovering(Widget widget) {
-            widget.setOpaque(true);
-            widget.setBackground(hovering);
-            Object sel = DependencyGraphScene.this.findObject(widget);
-            if (sel instanceof ArtifactGraphNode) {
-                ArtifactGraphNode art = (ArtifactGraphNode)sel;
-                for (ArtifactGraphEdge edge : DependencyGraphScene.this.findNodeEdges(art, true, false)) {
-                    Widget wid = DependencyGraphScene.this.findWidget(DependencyGraphScene.this.getEdgeTarget(edge));
-                    wid.setOpaque(true);
-                    DependencyGraphScene.this.getSceneAnimator().animateBackgroundColor(wid, deps);
-                }
-                markParent(art);
-            }
-        }
-        private void markParent(ArtifactGraphNode target) {
+    
+        private void markParent(ArtifactGraphNode target, List<ArtifactGraphNode> excludes, Set<ArtifactGraphNode> collect) {
             Collection<ArtifactGraphEdge> col = DependencyGraphScene.this.findNodeEdges(target, false, true);
             for (ArtifactGraphEdge edge : col) {
                 ArtifactGraphNode source = DependencyGraphScene.this.getEdgeSource(edge);
-                Widget wid = DependencyGraphScene.this.findWidget(source);
-                wid.setOpaque(true);
-                DependencyGraphScene.this.getSceneAnimator().animateBackgroundColor(wid, parents);
                 Widget wid2 = DependencyGraphScene.this.findWidget(edge);
                 wid2.setForeground(parentsLink);
 //                DependencyGraphScene.this.getSceneAnimator().animateBackgroundColor(wid2, parentsLink);
-                DependencyGraphScene.this.getSceneAnimator().animateForegroundColor(wid2, parentsLink);
-                markParent(source);
+                getSceneAnimator().animateForegroundColor(wid2, parentsLink);
+                if (!excludes.contains(source)) {
+                    Widget wid = DependencyGraphScene.this.findWidget(source);
+                    getSceneAnimator().animateBackgroundColor(wid, parents);
+                }
+                if (collect != null) {
+                    collect.add(source);
+                }
+                markParent(source, excludes, collect);
             }
         }
+    
+    
+    
+    private class MySelectProvider implements SelectProvider {
         
+    
+        public boolean isAimingAllowed(Widget arg0, Point arg1, boolean arg2) {
+            return true;
+        }
+
+        public boolean isSelectionAllowed(Widget arg0, Point arg1, boolean arg2) {
+            return true;
+        }
+
+        public void select(Widget wid, Point arg1, boolean arg2) {
+            ArtifactGraphNode node = (ArtifactGraphNode)findObject(wid);
+            if (node != null) {
+                setSelectedObjects(Collections.singleton(node));
+            }
+        }
     }
     
     private static class MyPopupMenuProvider implements PopupMenuProvider {
         
         public JPopupMenu getPopupMenu(Widget widget, Point localLocation) {
             JPopupMenu popupMenu = new JPopupMenu();
-            popupMenu.add(new JMenuItem("Open "));
+//            popupMenu.add(new JMenuItem("Open "));
             return popupMenu;
         }
         
     }
     
-    private class MyMoveStrategy implements MoveProvider {
+    private static class ArtifactWidget extends Widget {
+        private Widget detailsWidget;
         
-        public void movementStarted(Widget arg0) {
-        }
+        private ArtifactWidget(DependencyGraphScene scene, ArtifactGraphNode node) {
+            super(scene);
+            Artifact artifact = node.getArtifact();
+            setLayout (LayoutFactory.createVerticalLayout ());
+            setOpaque (true);
+            setBackground (Color.WHITE);
+            setBorder (BorderFactory.createLineBorder (10));
+            
+            Widget root = new LevelOfDetailsWidget(scene, 0.05, 0.1, Double.MAX_VALUE, Double.MAX_VALUE);
+            addChild(root);
+            root.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
+            LabelWidget lbl = new LabelWidget(scene);
+            lbl.setLabel(artifact.getArtifactId() + "  ");
+//            lbl.setFont(scene.getDefaultFont().deriveFont(Font.BOLD));
+            root.addChild(lbl);
         
-        public void movementFinished(Widget wid) {
-//            Object obj = DependencyGraphScene.this.findObject(wid);
-//            if (obj instanceof ArtifactGraphNode) {
-//                ArtifactGraphNode art = (ArtifactGraphNode)obj;
-//                System.out.println("art=" + art.getArtifact().getId());
-//                for (ArtifactGraphNode nd : DependencyGraphScene.this.getNodes()) {
-//                    nd.setFixed(false);
-//                    nd.dispX = 0;
-//                    nd.dispY = 0;
-//                    Widget artWid = DependencyGraphScene.this.findWidget(nd);
-//                    nd.locX = artWid.getLocation().x;
-//                    nd.locY = artWid.getLocation().y;
-//                }
-//                art.setFixed(true);
-////                RequestProcessor.getDefault().post(new Runnable() {
-////                    public void run() {
-//                        layout.rePerformLayout(10);
-//                        for (ArtifactGraphNode nd : DependencyGraphScene.this.getNodes()) {
-//                            if (!nd.isFixed()) {
-//                                Widget artWid = DependencyGraphScene.this.findWidget(nd);
-//                                Point point = new Point();
-//                                point.setLocation(nd.locX, nd.locY);
-//                                DependencyGraphScene.this.getSceneAnimator().animatePreferredLocation(artWid, point);
-//                            } else {
-//                                System.out.println("fixed node=" + nd);
-//                            }
-//                        }
-////                    }
-////                }, 1000);
-//            }
-        }
-        
-        public Point getOriginalLocation(Widget widget) {
-            return widget.getPreferredLocation();
-        }
-        public void setNewLocation(Widget widget, Point location) {
-            widget.setPreferredLocation(location);
+            Widget details1 = new LevelOfDetailsWidget(scene, 0.5, 0.7, Double.MAX_VALUE, Double.MAX_VALUE);
+            details1.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
+            root.addChild(details1);
+            LabelWidget lbl2 = new LabelWidget(scene);
+            lbl2.setLabel(artifact.getVersion() + "  ");
+            details1.addChild(lbl2);
         }
     }
     
+    public class SceneListener implements ObjectSceneListener {
+        
+    
+        public void objectAdded(ObjectSceneEvent arg0, Object arg1) {}
+
+        public void objectRemoved(ObjectSceneEvent arg0, Object arg1) {}
+
+        public void objectStateChanged(ObjectSceneEvent arg0, Object arg1,
+                                       ObjectState arg2, ObjectState arg3) {}
+
+        public void selectionChanged(ObjectSceneEvent state,
+                                     Set<Object> oldSet,
+                                     Set<Object> newSet) {
+            clearFind();
+            for (Object obj : newSet) {
+                Widget widget = findWidget(obj);
+                widget.setBackground(hovering);
+                
+                if (obj instanceof ArtifactGraphNode) {
+                    ArtifactGraphNode art = (ArtifactGraphNode)obj;
+                    for (ArtifactGraphEdge edge : findNodeEdges(art, true, false)) {
+                        Widget wid = findWidget(DependencyGraphScene.this.getEdgeTarget(edge));
+                        wid.setOpaque(true);
+                        getSceneAnimator().animateBackgroundColor(wid, deps);
+                    }
+                    markParent(art, new ArrayList<ArtifactGraphNode>(), new HashSet<ArtifactGraphNode>());
+                }
+            }
+            
+        }
+
+        public void highlightingChanged(ObjectSceneEvent arg0, Set<Object> arg1, Set<Object> arg2) {}
+
+        public void hoverChanged(ObjectSceneEvent arg0, Object arg1, Object arg2) {}
+
+        public void focusChanged(ObjectSceneEvent arg0, Object arg1, Object arg2) {}
+    }
 }

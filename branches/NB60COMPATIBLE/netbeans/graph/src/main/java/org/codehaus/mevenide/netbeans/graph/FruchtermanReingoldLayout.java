@@ -117,7 +117,6 @@ public class FruchtermanReingoldLayout extends SceneLayout {
                                magicSizeConstant  + (magicSizeMultiplier * nds)); //g.getMaximumBounds();
         temp = bounds.getWidth() / 10;
         forceConstant = 0.75 * Math.sqrt(bounds.getHeight() * bounds.getWidth() / nds);
-//        System.out.println("force constant=" + forceConstant);
         
         ArtifactGraphNode r = scene.getRootArtifact();
         r.locX = bounds.getCenterX();
@@ -127,7 +126,6 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     }
     
     private void finish() {
-        System.out.println("finish called");
         for (ArtifactGraphNode n : scene.getNodes()) {
             Widget wid = scene.findWidget(n);
             Point point = new Point();

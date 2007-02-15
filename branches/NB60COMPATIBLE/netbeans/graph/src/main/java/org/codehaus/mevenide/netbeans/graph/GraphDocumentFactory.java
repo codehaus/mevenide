@@ -33,7 +33,6 @@ import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MyResolutionListener;
-import org.netbeans.api.visual.graph.GraphScene;
 
 /**
  *
@@ -43,14 +42,6 @@ public class GraphDocumentFactory {
     
     /** Creates a new instance of GraphDocumentFactory */
     private GraphDocumentFactory() {
-    }
-    
-    /**
-     * create a graph document, recursively iterating through the projects' modules
-     * declarations..
-     */
-    static GraphScene createModuleDocument(NbMavenProject project) {
-        return null;
     }
     
     /**
@@ -78,62 +69,6 @@ public class GraphDocumentFactory {
             return scene;
         }
     }
-    
-//    private static void createSubnodes(final GraphDocument doc, final GraphPort parentport, NbMavenProject prj) {
-//        Iterator it = loadModules(prj).iterator();
-//        while (it.hasNext()) {
-//            NbMavenProject proj = (NbMavenProject)it.next();
-//            GraphNode node = new ProjectGraphNode(proj);
-//            doc.addComponents(GraphEvent.createSingle(node));
-//            GraphPort port = new GraphPort();
-//            port.setTarget(true);
-//            port.setDirection(IDirectionable.LEFT);
-//            // WTF is the order position and how it's calculated???
-//            port.setPreferredOrderPosition(new Integer(8));
-//            node.addPort(port);
-//            GraphLink link = new GraphLink();
-//            link.setSourcePort(parentport);
-//            link.setTargetPort(port);
-//            doc.addComponents(GraphEvent.createSingle(link));
-//            if ("pom".equalsIgnoreCase(proj.getOriginalMavenProject().getPackaging())) {
-//                GraphPort myparent = new GraphPort();
-//                myparent.setSource(true);
-//                myparent.setDirection(IDirectionable.RIGHT);
-//                myparent.setPreferredOrderPosition(new Integer(0));
-//                node.addPort(myparent);
-//                node.setDefaultPort(myparent);
-//                createSubnodes(doc, myparent, proj);
-//            }
-//        }
-//    }
-    
-    
-    
-//    private static Collection loadModules(NbMavenProject prj) {
-//        Collection modules = new ArrayList();
-//        File base = prj.getOriginalMavenProject().getBasedir();
-//        for (Iterator it = prj.getOriginalMavenProject().getModules().iterator(); it.hasNext();) {
-//            String elem = (String) it.next();
-//            File projDir = FileUtil.normalizeFile(new File(base, elem));
-//            FileObject fo = FileUtil.toFileObject(projDir);
-//            if (fo != null) {
-//                try {
-//                    Project childproj = ProjectManager.getDefault().findProject(fo);
-//                    if (childproj instanceof NbMavenProject) {
-//                        modules.add(childproj);
-//                    }
-//                } catch (IllegalArgumentException ex) {
-//                    ex.printStackTrace();
-//                } catch (IOException ex) {
-//                    ex.printStackTrace();
-//                }
-//            } else {
-//                //TODO broken module reference.. show as such..
-//            }
-//        }
-//        return modules;
-//    }
-    
     
     private static class GraphResolutionListener implements ResolutionListener {
         private DependencyGraphScene scene;
@@ -188,11 +123,9 @@ public class GraphDocumentFactory {
                 Collection<ArtifactGraphEdge> edges = scene.getEdges();
                 for (ArtifactGraphEdge edge : edges) {
                     if (getNode(omitted) == scene.getEdgeSource(edge)) {
-                        System.out.println("new source2" + edge);
-                        scene.setEdgeSource(edge, getNode(kept));
+                     scene.setEdgeSource(edge, getNode(kept));
                     }
                     if (getNode(omitted) == scene.getEdgeTarget(edge)) {
-                        System.out.println("new target2" + edge);
                         scene.setEdgeTarget(edge, getNode(kept));
                     }
                 }
@@ -218,18 +151,20 @@ public class GraphDocumentFactory {
         }
         
         public void manageArtifact(Artifact artifact, Artifact replacement) {
-            System.out.println("manage=" + artifact);
+            if (artifact.equals(replacement)) {
+                ArtifactGraphNode nd = getNode(artifact);
+                nd.setArtifact(replacement);
+                return;
+            }
             if (!scene.isNode(getNode(replacement))) {
                 scene.addNode(getNode(replacement));
             }
             Collection<ArtifactGraphEdge> edges = scene.getEdges();
             for (ArtifactGraphEdge edge : edges) {
                 if (getNode(artifact) == scene.getEdgeSource(edge)) {
-                    System.out.println("new source" + edge);
                     scene.setEdgeSource(edge, getNode(replacement));
                 }
                 if (getNode(artifact) == scene.getEdgeTarget(edge)) {
-                    System.out.println("new target" + edge);
                     scene.setEdgeTarget(edge, getNode(replacement));
                 }
             }
