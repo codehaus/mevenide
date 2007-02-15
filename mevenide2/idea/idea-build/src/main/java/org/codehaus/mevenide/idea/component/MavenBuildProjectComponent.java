@@ -488,8 +488,8 @@ public class MavenBuildProjectComponent extends AbstractComponent
                 PluginConstants.CONFIG_ELEMENT_VM_OPTIONS));
         pluginSettings.setUseMavenEmbedder(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER)));
-        pluginSettings.setUseMavenEmbedder(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER)));
+        pluginSettings.setUseFilter(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_USE_FILTER)));
         pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS)));
         super.readExternal(actionContext.getProjectPluginSettings(), element);
