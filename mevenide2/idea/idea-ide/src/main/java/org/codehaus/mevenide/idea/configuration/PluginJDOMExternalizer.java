@@ -1,41 +1,41 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea.configuration;
 
-
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.WriteExternalException;
+
+import org.jdom.Attribute;
+import org.jdom.Element;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
+
 import java.util.Collection;
-
-import org.jdom.Element;
-import org.jdom.Attribute;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A JDOM externalizer that handles primitives, Strings, and some data structures. The data structures must be of type
@@ -56,20 +56,18 @@ public class PluginJDOMExternalizer {
     private static final String ENTRY_ELEMENT = "entry";
     private static final String VALUE_ATTRIBUTE = "value";
     private static final String TYPE_ATTRIBUTE = "type";
-
-    private static final Logger LOG = Logger.getInstance("#org.codehaus.mevenide.idea.configuration.PluginJDOMExternalizer");
-
+    private static final Logger LOG =
+        Logger.getInstance("#org.codehaus.mevenide.idea.configuration.PluginJDOMExternalizer");
 
     /** {@inheritDoc} */
     public static void writeExternal(Object data, Element parentNode) throws WriteExternalException {
-
         if (parentNode == null) {
             return;
         }
 
         Field[] fields = data.getClass().getFields();
 
-        for(int i = 0; i < fields.length; i++) {
+        for (int i = 0; i < fields.length; i++) {
 
             // operate on the fields of the class being written
             Field field = fields[i];
@@ -90,26 +88,25 @@ public class PluginJDOMExternalizer {
             field.setAccessible(true);
 
             Class type = field.getType();
-
             Element element = new Element("option");
+
             element.setAttribute("name", field.getName());
 
             try {
 
                 // handling primitives and Strings is easy
                 if (type.isPrimitive() || type.equals(String.class)) {
-
                     value = writeBasicValue(field.get(data));
 
                     if (value != null) {
                         element.setAttribute("value", value);
                     }
-                }
-                else if (isSupportedCollection(type)) {
+                } else if (isSupportedCollection(type)) {
 
                     // check if this field is a collection that is typed as containing basic values
                     if (!isCollectionWritable(field.getGenericType())) {
                         LOG.debug("Cannot write field '" + field.getName() + "': invalid Collection.");
+
                         continue;
                     }
 
@@ -117,11 +114,10 @@ public class PluginJDOMExternalizer {
 
                     writeCollection(field.get(data), valueElement);
                     element.addContent(valueElement);
-                }
-                else if (JDOMExternalizable.class.isAssignableFrom(type)) {
+                } else if (JDOMExternalizable.class.isAssignableFrom(type)) {
 
                     // the field is not primitive, but it is externalizable
-                    JDOMExternalizable domValue = (JDOMExternalizable)field.get(data);
+                    JDOMExternalizable domValue = (JDOMExternalizable) field.get(data);
 
                     if (domValue != null) {
 
@@ -131,13 +127,12 @@ public class PluginJDOMExternalizer {
                         domValue.writeExternal(valueElement);
                         element.addContent(valueElement);
                     }
-                }
-                else {
+                } else {
                     LOG.debug("Wrong field type: " + type);
+
                     continue;
                 }
-            }
-            catch (IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 continue;
             }
 
@@ -145,18 +140,14 @@ public class PluginJDOMExternalizer {
         }
     }
 
-
     /** {@inheritDoc} */
     public static void readExternal(Object data, Element parentNode) throws InvalidDataException {
-
         if (parentNode == null) {
             return;
         }
 
-        for (Iterator i = parentNode.getChildren("option").iterator(); i.hasNext();) {
-
-            Element e = (Element)i.next();
-
+        for (Iterator i = parentNode.getChildren("option").iterator(); i.hasNext(); ) {
+            Element e = (Element) i.next();
             String fieldName = e.getAttributeValue("name");
 
             if (fieldName == null) {
@@ -164,13 +155,12 @@ public class PluginJDOMExternalizer {
             }
 
             try {
-
                 Field field = data.getClass().getField(fieldName);
                 Class type = field.getType();
-
                 int modifiers = field.getModifiers();
 
-                if ((modifiers & Modifier.PUBLIC) == 0 || (modifiers & Modifier.STATIC) != 0 || (modifiers & Modifier.FINAL) != 0) {
+                if ((modifiers & Modifier.PUBLIC) == 0 || (modifiers & Modifier.STATIC) != 0
+                        || (modifiers & Modifier.FINAL) != 0) {
                     continue;
                 }
 
@@ -179,76 +169,64 @@ public class PluginJDOMExternalizer {
 
                 // read in a primitive or string
                 if (type.isPrimitive() || type.equals(String.class)) {
-
                     String value = e.getAttributeValue("value");
 
                     if (value != null) {
-
                         try {
                             field.set(data, createBasicObject(field.getType(), value));
-                        }
-                        catch(IllegalAccessException iae) {
+                        } catch (IllegalAccessException iae) {
                             throw new InvalidDataException();
                         }
                     }
-                }
-                else if (isSupportedCollection(type)) {
+                } else if (isSupportedCollection(type)) {
 
                     // parse a collection
                     if (!isCollectionWritable(field.getGenericType())) {
                         LOG.debug("Cannot read field '" + field.getName() + "': invalid Collection.");
+
                         continue;
                     }
 
                     Element valueElement = e.getChild("value");
 
                     if (valueElement != null) {
-
                         Object collection = parseCollection(valueElement);
 
                         try {
                             field.set(data, collection);
-                        }
-                        catch(IllegalAccessException iae) {
+                        } catch (IllegalAccessException iae) {
                             throw new InvalidDataException();
                         }
                     }
-                }
-                else if (JDOMExternalizable.class.isAssignableFrom(type)) {
+                } else if (JDOMExternalizable.class.isAssignableFrom(type)) {
 
                     // read in another externalized object
                     JDOMExternalizable object = null;
 
-                    for (Iterator j = e.getChildren("value").iterator(); j.hasNext();) {
+                    for (Iterator j = e.getChildren("value").iterator(); j.hasNext(); ) {
+                        Element el = (Element) j.next();
 
-                        Element el = (Element)j.next();
-
-                        object = (JDOMExternalizable)type.newInstance();
+                        object = (JDOMExternalizable) type.newInstance();
                         object.readExternal(el);
                     }
 
                     field.set(data, object);
-                }
-                else {
+                } else {
                     throw new InvalidDataException("wrong type: " + type);
                 }
-            }
-            catch (NoSuchFieldException ex) {
+            } catch (NoSuchFieldException ex) {
                 continue;
-            }
-            catch (SecurityException ex) {
+            } catch (SecurityException ex) {
                 throw new InvalidDataException();
-            }
-            catch (IllegalAccessException ex) {
+            } catch (IllegalAccessException ex) {
                 ex.printStackTrace();
+
                 throw new InvalidDataException();
-            }
-            catch (InstantiationException ex) {
+            } catch (InstantiationException ex) {
                 throw new InvalidDataException();
             }
         }
     }
-
 
     /**
      * Converts a 'basic' value (primitive or String) to a string that can be written in XML.
@@ -258,40 +236,30 @@ public class PluginJDOMExternalizer {
      * @return A String representing the object being written.
      */
     private static String writeBasicValue(Object obj) {
-
         String value = null;
 
         if (obj instanceof Byte) {
-            value = Byte.toString((Byte)obj);
-        }
-        else if (obj instanceof Short) {
-            value = Short.toString((Short)obj);
-        }
-        else if (obj instanceof Integer) {
-            value = Integer.toString((Integer)obj);
-        }
-        else if (obj instanceof Long) {
-            value = Long.toString((Long)obj);
-        }
-        else if (obj instanceof Float) {
-            value = Float.toString((Float)obj);
-        }
-        else if (obj instanceof Double) {
-            value = Double.toString((Double)obj);
-        }
-        else if (obj instanceof Character) {
-            value = "" + (Character)obj;
-        }
-        else if (obj instanceof Boolean) {
-            value = Boolean.toString((Boolean)obj);
-        }
-        else if (obj instanceof String) {
-            value = (String)obj;
+            value = Byte.toString((Byte) obj);
+        } else if (obj instanceof Short) {
+            value = Short.toString((Short) obj);
+        } else if (obj instanceof Integer) {
+            value = Integer.toString((Integer) obj);
+        } else if (obj instanceof Long) {
+            value = Long.toString((Long) obj);
+        } else if (obj instanceof Float) {
+            value = Float.toString((Float) obj);
+        } else if (obj instanceof Double) {
+            value = Double.toString((Double) obj);
+        } else if (obj instanceof Character) {
+            value = "" + (Character) obj;
+        } else if (obj instanceof Boolean) {
+            value = Boolean.toString((Boolean) obj);
+        } else if (obj instanceof String) {
+            value = (String) obj;
         }
 
         return value;
     }
-
 
     /**
      * A method that creates a basic obejct from a Class type and a String value.
@@ -304,19 +272,16 @@ public class PluginJDOMExternalizer {
      * @throws InvalidDataException Thrown when the object cannot be created as requested.
      */
     private static Object createBasicObject(String type, String value) throws InvalidDataException {
-
         Class typeClass = null;
 
         try {
             typeClass = Class.forName(type);
-        }
-        catch(ClassNotFoundException cnf) {
+        } catch (ClassNotFoundException cnf) {
             throw new InvalidDataException();
         }
 
         return createBasicObject(typeClass, value);
     }
-
 
     /**
      * A method that creates a basic obejct from a Class type and a String value.
@@ -329,50 +294,36 @@ public class PluginJDOMExternalizer {
      * @throws InvalidDataException Thrown when the object cannot be created as requested.
      */
     private static Object createBasicObject(Class typeClass, String value) throws InvalidDataException {
-
         try {
-
             if (typeClass.equals(byte.class)) {
                 return Byte.parseByte(value);
-            }
-            else if (typeClass.equals(short.class)) {
+            } else if (typeClass.equals(short.class)) {
                 return Short.parseShort(value);
-            }
-            else if (typeClass.equals(int.class)) {
+            } else if (typeClass.equals(int.class)) {
                 return Integer.parseInt(value);
-            }
-            else if (typeClass.equals(long.class)) {
+            } else if (typeClass.equals(long.class)) {
                 return Long.parseLong(value);
-            }
-            else if (typeClass.equals(float.class)) {
+            } else if (typeClass.equals(float.class)) {
                 return Float.parseFloat(value);
-            }
-            else if (typeClass.equals(double.class)) {
+            } else if (typeClass.equals(double.class)) {
                 return Double.parseDouble(value);
-            }
-            else if (typeClass.equals(char.class)) {
-
+            } else if (typeClass.equals(char.class)) {
                 if (value.length() != 1) {
                     throw new InvalidDataException();
                 }
 
                 return new Character(value.charAt(0));
-            }
-            else if (typeClass.equals(boolean.class)) {
+            } else if (typeClass.equals(boolean.class)) {
                 return Boolean.parseBoolean(value);
-            }
-            else if (typeClass.equals(String.class)) {
+            } else if (typeClass.equals(String.class)) {
                 return value;
-            }
-            else {
+            } else {
                 throw new InvalidDataException();
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new InvalidDataException();
         }
     }
-
 
     /**
      * Writes a collection as a hierarchy of DOM Elements into the given element.
@@ -381,8 +332,8 @@ public class PluginJDOMExternalizer {
      * @param container The DOM element that contains the data structure.
      */
     private static void writeCollection(Object collection, Element container) {
-
         Element collectionRoot = new Element("structure");
+
         collectionRoot.setAttribute(TYPE_ATTRIBUTE, collection.getClass().getName());
 
         if (collection instanceof Map) {
@@ -390,42 +341,35 @@ public class PluginJDOMExternalizer {
             // take care of the map case
             collectionRoot.setName(MAP_ELEMENT);
 
-            Map map = (Map)collection;
+            Map map = (Map) collection;
 
             // get the key/value paris from the map and store them
             for (Object key : map.keySet()) {
-
                 Object val = map.get(key);
-
                 Element entryElement = new Element(ENTRY_ELEMENT);
                 Element keyElement = new Element(KEY_ELEMENT);
 
                 writeCollectionDataElement(key, keyElement);
                 writeCollectionDataElement(val, entryElement);
-
                 entryElement.addContent(keyElement);
                 collectionRoot.addContent(entryElement);
             }
-        }
-        else if (collection instanceof Collection) {
+        } else if (collection instanceof Collection) {
 
             // the structure is a collection
             collectionRoot.setName(COLLECTION_ELEMENT);
 
             // get each entry and store it as XML
-            for (Object obj : ((Collection)collection).toArray()) {
-
+            for (Object obj : ((Collection) collection).toArray()) {
                 Element entryElement = new Element(ENTRY_ELEMENT);
 
                 writeCollectionDataElement(obj, entryElement);
-
                 collectionRoot.addContent(entryElement);
             }
         }
 
         container.addContent(collectionRoot);
     }
-
 
     /**
      * Parses a data structure DOM Element into a Java Object.
@@ -437,18 +381,16 @@ public class PluginJDOMExternalizer {
      * @throws InvalidDataException Thrown if the XML cannot be parsed into an Object.
      */
     private static Object parseCollection(Element valueElement) throws InvalidDataException {
-
         Object ret = null;
-
         Element collElement = null;
 
         // see if the element is a map
-        collElement = (Element)valueElement.getChild(MAP_ELEMENT);
+        collElement = (Element) valueElement.getChild(MAP_ELEMENT);
 
         if (collElement == null) {
 
             // see if the element is a collection
-            collElement = (Element)valueElement.getChild(COLLECTION_ELEMENT);
+            collElement = (Element) valueElement.getChild(COLLECTION_ELEMENT);
         }
 
         // the element is neither a Map nor a Collection
@@ -473,30 +415,24 @@ public class PluginJDOMExternalizer {
 
             // make an instance of the structure
             ret = Class.forName(type).newInstance();
-        }
-        catch(ClassNotFoundException cnf) {
+        } catch (ClassNotFoundException cnf) {
             throw new InvalidDataException();
-        }
-        catch(InstantiationException ie) {
+        } catch (InstantiationException ie) {
             throw new InvalidDataException();
-        }
-        catch(IllegalAccessException iae) {
+        } catch (IllegalAccessException iae) {
             throw new InvalidDataException();
         }
 
         // try to get all the data entries for the structure
-        for (Element entry : (List<Element>)collElement.getChildren(ENTRY_ELEMENT)) {
-
+        for (Element entry : (List<Element>) collElement.getChildren(ENTRY_ELEMENT)) {
             Object entryData = null;
-
             Element entryValueElement = entry.getChild(VALUE_ELEMENT);
 
             if (entryValueElement != null) {
 
                 // the entry is another collection
                 entryData = parseCollection(entryValueElement);
-            }
-            else {
+            } else {
 
                 // the entry is a primitive or String
                 Attribute entryTypeAttr = entry.getAttribute(TYPE_ATTRIBUTE);
@@ -520,15 +456,13 @@ public class PluginJDOMExternalizer {
                 }
 
                 Object keyData = null;
-
                 Element keyValueElement = keyElement.getChild(VALUE_ELEMENT);
 
                 if (keyValueElement != null) {
 
                     // key is another collection
                     keyData = parseCollection(entryValueElement);
-                }
-                else {
+                } else {
 
                     // key is a primitive or String
                     Attribute keyTypeAttr = keyElement.getAttribute(TYPE_ATTRIBUTE);
@@ -542,18 +476,16 @@ public class PluginJDOMExternalizer {
                 }
 
                 // store the key/value pair in the Map
-                ((Map)ret).put(keyData, entryData);
-            }
-            else if (collElement.getName().equals(COLLECTION_ELEMENT)) {
+                ((Map) ret).put(keyData, entryData);
+            } else if (collElement.getName().equals(COLLECTION_ELEMENT)) {
 
                 // store the entry into the Collection
-                ((Collection)ret).add(entryData);
+                ((Collection) ret).add(entryData);
             }
         }
 
         return ret;
     }
-
 
     /**
      * Writes a Collection data element.
@@ -562,24 +494,20 @@ public class PluginJDOMExternalizer {
      * @param element The element being formed.
      */
     private static void writeCollectionDataElement(Object data, Element element) {
-
         if (isSupportedCollection(data.getClass())) {
 
             // the data is another collection, we need to handle this with a child value element
             Element valueElement = new Element(VALUE_ELEMENT);
 
             writeCollection(data, valueElement);
-
             element.addContent(valueElement);
-        }
-        else {
+        } else {
 
             // no child value needed, just use attributes to store the data type and value
             element.setAttribute(TYPE_ATTRIBUTE, data.getClass().getName());
             element.setAttribute(VALUE_ATTRIBUTE, writeBasicValue(data));
         }
     }
-
 
     /**
      * Determines if the type of a data structure is supported by this JDOMExternalizer.
@@ -589,17 +517,14 @@ public class PluginJDOMExternalizer {
      * @return True if the type is supported, false otherwise.
      */
     private static boolean isSupportedCollection(Class c) {
-
         if (Map.class.isAssignableFrom(c)) {
             return true;
-        }
-        else if (Collection.class.isAssignableFrom(c)) {
+        } else if (Collection.class.isAssignableFrom(c)) {
             return true;
         }
 
         return false;
     }
-
 
     /**
      * Determines if a data structure is of the right parameterized type to be externalized by this JDOMExternalizer.
@@ -611,30 +536,28 @@ public class PluginJDOMExternalizer {
     private static boolean isCollectionWritable(Type type) {
 
         // test to make sure it is a parameterized collection, so we can determine now if it is externalizable
-        if ((type == null) || !(type instanceof ParameterizedType)) {
+        if ((type == null) ||!(type instanceof ParameterizedType)) {
             return false;
         }
 
-        ParameterizedType genType = (ParameterizedType)type;
+        ParameterizedType genType = (ParameterizedType) type;
 
         // get the parameterized types for this collection
         for (Type t : genType.getActualTypeArguments()) {
-
             if (t instanceof Class) {
 
                 // the type is a concrete implementation
-                Class clazz = (Class)t;
+                Class clazz = (Class) t;
 
                 // it has to be primitive or a String
-                if (!clazz.isPrimitive() && !String.class.isAssignableFrom(clazz)) {
+                if (!clazz.isPrimitive() &&!String.class.isAssignableFrom(clazz)) {
                     return false;
                 }
-            }
-            else if (t instanceof ParameterizedType) {
+            } else if (t instanceof ParameterizedType) {
 
                 // it is another parameterized type.
                 // make sure the type that is parameterized is a collection, otherwise we do not support it
-                if (!isSupportedCollection((Class)genType.getRawType())) {
+                if (!isSupportedCollection((Class) genType.getRawType())) {
                     return false;
                 }
 
@@ -642,14 +565,11 @@ public class PluginJDOMExternalizer {
                 if (!isCollectionWritable(t)) {
                     return false;
                 }
-            }
-            else {
+            } else {
                 return false;
             }
         }
 
         return true;
     }
-
 }
-

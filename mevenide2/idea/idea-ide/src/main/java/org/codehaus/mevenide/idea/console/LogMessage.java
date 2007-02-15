@@ -1,20 +1,21 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea.console;
 
@@ -30,13 +31,12 @@ public class LogMessage {
     private int severity = INFO;
 
     // different levels of logging
-    public static final int OFF   = 5;
+    public static final int OFF = 5;
     public static final int FATAL = 4;
     public static final int ERROR = 3;
-    public static final int WARN  = 2;
-    public static final int INFO  = 1;
+    public static final int WARN = 2;
+    public static final int INFO = 1;
     public static final int DEBUG = 0;
-
 
     /**
      * Constructor that takes the message text. Defaults to INFO log level.
@@ -46,7 +46,6 @@ public class LogMessage {
     public LogMessage(String text) {
         message = text;
     }
-
 
     /**
      * Constructor that takes the message text and a logging level.
@@ -59,7 +58,6 @@ public class LogMessage {
         severity = level;
     }
 
-
     /**
      * Gets the string message.
      *
@@ -68,7 +66,6 @@ public class LogMessage {
     public String getMessage() {
         return message;
     }
-
 
     /**
      * Gets the log message level.
@@ -79,7 +76,6 @@ public class LogMessage {
         return severity;
     }
 
-
     /**
      * Converts a logging level to a string identifier.
      *
@@ -88,27 +84,24 @@ public class LogMessage {
      * @return The logging level as a string (i.e. INFO, DEBUG, etc...).
      */
     public String levelToString(int level) {
-
-        switch(level) {
-
-            case FATAL:
+        switch (level) {
+            case FATAL :
                 return "FATAL";
 
-            case ERROR:
+            case ERROR :
                 return "ERROR";
 
-            case WARN:
+            case WARN :
                 return "WARN";
 
-            case DEBUG:
+            case DEBUG :
                 return "DEBUG";
 
-            case INFO:
-            default:
+            case INFO :
+            default :
                 return "INFO";
         }
     }
-
 
     /**
      * Gets the message as a human readable string.
@@ -118,5 +111,4 @@ public class LogMessage {
     public String toString() {
         return "[" + levelToString(severity) + "] - " + message;
     }
-
 }

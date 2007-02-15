@@ -1,20 +1,21 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea;
 
@@ -35,6 +36,7 @@ import com.intellij.openapi.roots.*;
 import com.intellij.openapi.roots.libraries.Library;
 import com.intellij.openapi.roots.libraries.LibraryTable;
 import com.intellij.openapi.vfs.*;
+
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -47,13 +49,14 @@ import org.apache.maven.monitor.event.DefaultEventMonitor;
 import org.apache.maven.monitor.event.EventMonitor;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.reactor.MavenExecutionException;
+
 import org.codehaus.mevenide.idea.configuration.ConfigurationBean;
 import org.codehaus.mevenide.idea.console.PluginLogger;
 
 import java.io.File;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-
 
 /**
  * A class that manages the Maven 2 POMs in the project. It attempts to add the dependencies of each pom to the
@@ -88,22 +91,18 @@ public class PluginPomManager implements ModuleListener {
     // a map of instances tied to the project they service
     private static final Map<Project, PluginPomManager> instances = new ConcurrentHashMap<Project, PluginPomManager>();
 
-
     /**
      * Private constructor - factory pattern.
      *
      * @param proj The project that is being monitors.
      */
     private PluginPomManager(Project proj) {
-
         this.project = proj;
-
         config = PluginConfigurationManager.getInstance(project).getConfig();
         logger = PluginLoggerManager.getInstance(project).getPluginLogger(PluginPomManager.class);
 
         // make an embedder to run maven
         maven = new MavenEmbedder();
-
         maven.setClassLoader(this.getClass().getClassLoader());
         maven.setLogger(PluginLoggerManager.getInstance(project).getEmbedderLogger());
 
@@ -114,12 +113,10 @@ public class PluginPomManager implements ModuleListener {
 
         try {
             maven.start(req);
-        }
-        catch(MavenEmbedderException e) {
+        } catch (MavenEmbedderException e) {
             logger.error("Could not create Maven 2 Embedder.");
         }
     }
-
 
     /**
      * Gets the singleton instance of the POM manager for the project.
@@ -127,14 +124,12 @@ public class PluginPomManager implements ModuleListener {
      * @return The PluginPomManager being used.
      */
     public static PluginPomManager getInstance(Project proj) {
-
         if (!instances.containsKey(proj)) {
             instances.put(proj, new PluginPomManager(proj));
         }
 
         return instances.get(proj);
     }
-
 
     /**
      * Gets rid of any reference to the instance of the manager that is registered to the Project passed.
@@ -145,21 +140,23 @@ public class PluginPomManager implements ModuleListener {
         instances.remove(proj);
     }
 
-
     /**
      * Processes any POM files in the project, resolve any inter-module dependencies, and update the classpaths.
      */
     public void updateProjectModules() {
-
         if (!config.isPluginEnabled()) {
             return;
         }
 
         // keep a list of modules that have a modified classpath or inter-module dependency
         final Map<Module, ModifiableRootModel> dirtyModules = new HashMap<Module, ModifiableRootModel>();
-        final Map<Module, LibraryTable.ModifiableModel> dirtyLibTables = new HashMap<Module, LibraryTable.ModifiableModel>();
-        final Map<Module, Map<String, Library.ModifiableModel>> dirtyLibraries = new HashMap<Module, Map<String, Library.ModifiableModel>>();
-        final Map<ModifiableRootModel, TransactionalEditable> dirtyJ2eeProps = new HashMap<ModifiableRootModel, TransactionalEditable>();
+        final Map<Module, LibraryTable.ModifiableModel> dirtyLibTables = new HashMap<Module,
+                                                                             LibraryTable.ModifiableModel>();
+        final Map<Module, Map<String, Library.ModifiableModel>> dirtyLibraries = new HashMap<Module,
+                                                                                     Map<String,
+                                                                                         Library.ModifiableModel>>();
+        final Map<ModifiableRootModel, TransactionalEditable> dirtyJ2eeProps = new HashMap<ModifiableRootModel,
+                                                                                   TransactionalEditable>();
 
         // reset the set of known POM files
         knownPoms = new HashSet<VirtualFile>();
@@ -180,18 +177,14 @@ public class PluginPomManager implements ModuleListener {
             // the progress indicator in use
             private ProgressIndicator indicator;
 
-
             /**
              * Runs the maven process - parses POMs, resolves dependencies, and updates the classpath
              */
             public void run() {
-
                 try {
-
                     indicator = ProgressManager.getInstance().getProgressIndicator();
                     indicator.setIndeterminate(true);
                     indicator.setFraction(0.0001);
-
                     indicator.setText("Searching for POM files in the project.");
 
                     // search for poms
@@ -201,7 +194,6 @@ public class PluginPomManager implements ModuleListener {
 
                     // read each POM, validate, and record the project it represents
                     for (Module module : moduleToFile.keySet()) {
-
                         indicator.setText("Parsing POMs in module: " + module.getName());
 
                         List<VirtualFile> pomFiles = moduleToFile.get(module);
@@ -241,24 +233,21 @@ public class PluginPomManager implements ModuleListener {
                                 if (pom == null) {
                                     throw new NullPointerException("Could not read POM.");
                                 }
-                            }
-                            catch(Exception e) {
-
+                            } catch (Exception e) {
                                 logger.error("Could not parse POM file: " + pomFile.getPath());
                                 logger.debug("Error parsing POM: " + pomFile.getPath(), e);
 
                                 // get rid of the evidence
                                 pomsToRemove.add(pomFile);
+
                                 continue;
                             }
 
                             // store the parsed result
                             fileToPom.put(pomFile, pom);
-                            moduleAsArtifact.put(maven.createArtifact(pom.getGroupId(),
-                                                                      pom.getArtifactId(),
-                                                                      pom.getVersion(),
-                                                                      MavenConstants.COMPILE_SCOPE,
-                                                                      MavenConstants.JAR_PACKAGING), module);
+                            moduleAsArtifact.put(maven.createArtifact(pom.getGroupId(), pom.getArtifactId(),
+                                    pom.getVersion(), MavenConstants.COMPILE_SCOPE,
+                                    MavenConstants.JAR_PACKAGING), module);
                         }
 
                         // get rid of any unparseable pom files from this module
@@ -280,16 +269,13 @@ public class PluginPomManager implements ModuleListener {
 
                     // get rid of any modules that had only unparseable poms
                     for (Module module : modulesToRemove) {
-
                         logger.warn("Disregarding module: " + module.getName());
                         moduleToFile.remove(module);
                     }
 
                     // construct a master list of dependencies for this module
                     for (Module module : moduleToFile.keySet()) {
-
                         indicator.setText("Processing POMs in module: " + module.getName());
-
                         moduleToArtifact.put(module, new HashSet<Artifact>());
 
                         List<VirtualFile> pomFiles = moduleToFile.get(module);
@@ -299,11 +285,10 @@ public class PluginPomManager implements ModuleListener {
 
                         // try to read each POM file
                         for (VirtualFile pomFile : pomFiles) {
-
                             MavenProject pom = fileToPom.get(pomFile);
                             Set<Artifact> artifacts = new HashSet<Artifact>();
 
-                            for (Artifact artifact : (Set<Artifact>)pom.getArtifacts()) {
+                            for (Artifact artifact : (Set<Artifact>) pom.getArtifacts()) {
 
                                 // check for bail out
                                 if (indicator.isCanceled()) {
@@ -317,7 +302,6 @@ public class PluginPomManager implements ModuleListener {
 
                                     // make sure it is not this module
                                     if (!module.getName().equals(depModule.getName())) {
-
                                         if (!moduleToModule.containsKey(module)) {
                                             moduleToModule.put(module, new HashSet<Module>());
                                         }
@@ -335,10 +319,9 @@ public class PluginPomManager implements ModuleListener {
                                 }
 
                                 // filter out dependencies that have a source or javadoc classifier
-                                if ((artifact.hasClassifier()) &&
-                                    (artifact.getClassifier().equalsIgnoreCase(MavenConstants.SOURCES_CLASSIFIER) ||
-                                     artifact.getClassifier().equalsIgnoreCase(MavenConstants.JAVADOC_CLASSIFIER))) {
-
+                                if ((artifact.hasClassifier()) && (artifact.getClassifier().equalsIgnoreCase(
+                                        MavenConstants.SOURCES_CLASSIFIER) || artifact.getClassifier().equalsIgnoreCase(
+                                        MavenConstants.JAVADOC_CLASSIFIER))) {
                                     continue;
                                 }
 
@@ -352,12 +335,10 @@ public class PluginPomManager implements ModuleListener {
 
                     // download sources and javadoc for dependencies
                     if (config.isDownloadSourcesEnabled() || config.isDownloadJavadocEnabled()) {
-
                         indicator.setText("Downloading supporting artifacts (sources and/or javadoc).");
 
                         for (Module module : moduleToFile.keySet()) {
-                            for(VirtualFile pomFile : moduleToFile.get(module)) {
-
+                            for (VirtualFile pomFile : moduleToFile.get(module)) {
                                 MavenProject pom = fileToPom.get(pomFile);
 
                                 for (Artifact artifact : pomToArtifact.get(pom)) {
@@ -374,36 +355,28 @@ public class PluginPomManager implements ModuleListener {
 
                                         // sources
                                         if (config.isDownloadSourcesEnabled()) {
-
                                             try {
-
-                                                maven.resolve(maven.createArtifactWithClassifier(artifact.getGroupId(),
-                                                                                                 artifact.getArtifactId(),
-                                                                                                 artifact.getVersion(),
-                                                                                                 MavenConstants.JAR_PACKAGING,
-                                                                                                 MavenConstants.SOURCES_CLASSIFIER),
-                                                              pom.getRemoteArtifactRepositories(),
-                                                              maven.getLocalRepository());
-                                            }
-                                            catch (Exception e) {
+                                                maven.resolve(maven
+                                                    .createArtifactWithClassifier(artifact.getGroupId(), artifact
+                                                        .getArtifactId(), artifact.getVersion(), MavenConstants
+                                                        .JAR_PACKAGING, MavenConstants.SOURCES_CLASSIFIER), pom
+                                                            .getRemoteArtifactRepositories(), maven
+                                                            .getLocalRepository());
+                                            } catch (Exception e) {
                                                 logger.debug("Could not resolve source dependency for: " + artifact);
                                             }
                                         }
 
                                         // javadoc
                                         if (config.isDownloadSourcesEnabled()) {
-
                                             try {
-
-                                                maven.resolve(maven.createArtifactWithClassifier(artifact.getGroupId(),
-                                                                                                 artifact.getArtifactId(),
-                                                                                                 artifact.getVersion(),
-                                                                                                 MavenConstants.JAR_PACKAGING,
-                                                                                                 MavenConstants.JAVADOC_CLASSIFIER),
-                                                              pom.getRemoteArtifactRepositories(),
-                                                              maven.getLocalRepository());
-                                            }
-                                            catch (Exception e) {
+                                                maven.resolve(maven
+                                                    .createArtifactWithClassifier(artifact.getGroupId(), artifact
+                                                        .getArtifactId(), artifact.getVersion(), MavenConstants
+                                                        .JAR_PACKAGING, MavenConstants.JAVADOC_CLASSIFIER), pom
+                                                            .getRemoteArtifactRepositories(), maven
+                                                            .getLocalRepository());
+                                            } catch (Exception e) {
                                                 logger.debug("Could not resolve javadoc dependency for: " + artifact);
                                             }
                                         }
@@ -415,10 +388,9 @@ public class PluginPomManager implements ModuleListener {
 
                     // weed out multiple version of the same dependency
                     if (config.isRemoveDuplicateDependenciesEnabled()) {
-
                         for (Module module : moduleToFile.keySet()) {
-
-                            indicator.setText("Removing duplicate dependencies from classpath for module: " + module.getName());
+                            indicator.setText("Removing duplicate dependencies from classpath for module: "
+                                              + module.getName());
 
                             // keep track fo the most appropriate version of each artifact.
                             // keep by group and artifact ID
@@ -437,11 +409,11 @@ public class PluginPomManager implements ModuleListener {
 
                                 if (!artifactMap.containsKey(id)) {
                                     artifactMap.put(id, artifact);
-                                }
-                                else {
+                                } else {
 
                                     // see if this artifact is more appropriate than the one in storage
-                                    ArtifactVersion currVersion = new DefaultArtifactVersion(artifactMap.get(id).getVersion());
+                                    ArtifactVersion currVersion =
+                                        new DefaultArtifactVersion(artifactMap.get(id).getVersion());
                                     ArtifactVersion newVersion = new DefaultArtifactVersion(artifact.getVersion());
 
                                     if (newVersion.compareTo(currVersion) > 0) {
@@ -459,9 +431,7 @@ public class PluginPomManager implements ModuleListener {
                     Set<Module> neededModules = new HashSet<Module>();
 
                     if (config.isManageModuleInterdependenciesEnabled()) {
-
                         for (Module module : moduleToFile.keySet()) {
-
                             logger.debug("Setting inter-dependencies for module: " + module.getName());
 
                             // check for bail out
@@ -477,18 +447,16 @@ public class PluginPomManager implements ModuleListener {
                             }
 
                             final ModifiableRootModel rootModel = dirtyModules.get(module);
-
                             Map<String, Set<String>> interDependencies = config.getModuleInterDependencies();
 
                             // first get rid of any inter-deps we set previously
                             if (interDependencies.containsKey(module.getName())) {
-
-                                for (OrderEntry mod: rootModel.getOrderEntries()) {
-
+                                for (OrderEntry mod : rootModel.getOrderEntries()) {
                                     if (mod instanceof ModuleOrderEntry) {
 
                                         // make sure we previously added this dependency, if not it was added by the user
-                                        if (interDependencies.get(module.getName()).contains(mod.getPresentableName())) {
+                                        if (interDependencies.get(module.getName()).contains(
+                                                mod.getPresentableName())) {
                                             rootModel.removeOrderEntry(mod);
                                         }
                                     }
@@ -503,7 +471,7 @@ public class PluginPomManager implements ModuleListener {
                                 // store the existing deps in a collection
                                 Set<Module> existingDeps = new HashSet<Module>();
 
-                                for (Module mod: rootModel.getModuleDependencies()) {
+                                for (Module mod : rootModel.getModuleDependencies()) {
                                     existingDeps.add(mod);
                                 }
 
@@ -513,8 +481,7 @@ public class PluginPomManager implements ModuleListener {
                                 for (Module depModule : moduleToModule.get(module)) {
 
                                     // add the other module to the dependency list
-                                    if (!existingDeps.contains(depModule) && !added.contains(depModule.getName())) {
-
+                                    if (!existingDeps.contains(depModule) &&!added.contains(depModule.getName())) {
                                         rootModel.addModuleOrderEntry(depModule);
                                     }
 
@@ -537,9 +504,7 @@ public class PluginPomManager implements ModuleListener {
 
                     // setup module classpaths
                     if (config.isUpdateClasspathsEnabled()) {
-
                         for (Module module : ModuleManager.getInstance(project).getModules()) {
-
                             logger.debug("Inspecting libraries for module: " + module.getName());
 
                             // check for bail out
@@ -579,14 +544,14 @@ public class PluginPomManager implements ModuleListener {
 
                                     // not already in the classpath, try to add it
                                     if ((library == null) || (library.getUrls(OrderRootType.CLASSES).length == 0)) {
-
                                         logger.debug("Adding new library: " + dep);
 
                                         // get the compiled jar first
                                         String jarPath = PluginPomManager.unifyPath(getFileSystemPath(dep, null));
-                                        String jarURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarPath) + JarFileSystem.JAR_SEPARATOR;
-
-                                        VirtualFile jarClassesFile = VirtualFileManager.getInstance().findFileByUrl(jarURL);
+                                        String jarURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL,
+                                                            jarPath) + JarFileSystem.JAR_SEPARATOR;
+                                        VirtualFile jarClassesFile =
+                                            VirtualFileManager.getInstance().findFileByUrl(jarURL);
 
                                         if (jarClassesFile != null) {
 
@@ -597,50 +562,56 @@ public class PluginPomManager implements ModuleListener {
 
                                             // get the model for the module's library
                                             if (!dirtyLibraries.get(module).containsKey(library.getName())) {
-                                                dirtyLibraries.get(module).put(library.getName(), library.getModifiableModel());
+                                                dirtyLibraries.get(module).put(library.getName(),
+                                                                   library.getModifiableModel());
                                             }
 
-                                            final Library.ModifiableModel libraryModel = dirtyLibraries.get(module).get(library.getName());
+                                            final Library.ModifiableModel libraryModel =
+                                                dirtyLibraries.get(module).get(library.getName());
 
                                             // add the library to the model
                                             libraryModel.addRoot(jarClassesFile, OrderRootType.CLASSES);
-                                        }
-                                        else {
+                                        } else {
                                             logger.warn("Could not locate library file: " + jarPath);
                                         }
                                     }
 
                                     // only add sources for non system-scoped dependencies
-                                    if ((library != null) && !dep.getScope().equalsIgnoreCase(MavenConstants.SYSTEM_SCOPE)) {
+                                    if ((library != null)
+                                            &&!dep.getScope().equalsIgnoreCase(MavenConstants.SYSTEM_SCOPE)) {
 
                                         // get the model for the module's library
                                         if (!dirtyLibraries.get(module).containsKey(library.getName())) {
-                                            dirtyLibraries.get(module).put(library.getName(), library.getModifiableModel());
+                                            dirtyLibraries.get(module).put(library.getName(),
+                                                               library.getModifiableModel());
                                         }
 
-                                        final Library.ModifiableModel libraryModel = dirtyLibraries.get(module).get(library.getName());
+                                        final Library.ModifiableModel libraryModel =
+                                            dirtyLibraries.get(module).get(library.getName());
 
                                         // get the source jar
-                                        String jarSourcePath = PluginPomManager.unifyPath(getFileSystemPath(dep, MavenConstants.SOURCES_CLASSIFIER));
-                                        String jarSourceURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarSourcePath) + JarFileSystem.JAR_SEPARATOR;
-
-                                        VirtualFile jarSourcesFile = VirtualFileManager.getInstance().findFileByUrl(jarSourceURL);
+                                        String jarSourcePath = PluginPomManager.unifyPath(getFileSystemPath(dep,
+                                                                   MavenConstants.SOURCES_CLASSIFIER));
+                                        String jarSourceURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL,
+                                                                  jarSourcePath) + JarFileSystem.JAR_SEPARATOR;
+                                        VirtualFile jarSourcesFile =
+                                            VirtualFileManager.getInstance().findFileByUrl(jarSourceURL);
 
                                         // add the source jar, if it is available
                                         if (jarSourcesFile != null) {
 
                                             // make sure that the sources jar isn't already added
-                                            VirtualFile[] existingSources = libraryModel.getFiles(OrderRootType.SOURCES);
+                                            VirtualFile[] existingSources =
+                                                libraryModel.getFiles(OrderRootType.SOURCES);
                                             boolean alreadyAdded = false;
 
                                             if (existingSources != null) {
 
                                                 // look at all the currently attached files
                                                 for (VirtualFile source : existingSources) {
-
                                                     if (source.equals(jarSourcesFile)) {
-
                                                         alreadyAdded = true;
+
                                                         break;
                                                     }
                                                 }
@@ -653,26 +624,28 @@ public class PluginPomManager implements ModuleListener {
                                         }
 
                                         // get the javadoc jar
-                                        String jarJavadocPath = PluginPomManager.unifyPath(getFileSystemPath(dep, MavenConstants.JAVADOC_CLASSIFIER));
-                                        String jarJavadocURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL, jarJavadocPath) + JarFileSystem.JAR_SEPARATOR;
-
-                                        VirtualFile jarJavadocFile = VirtualFileManager.getInstance().findFileByUrl(jarJavadocURL);
+                                        String jarJavadocPath = PluginPomManager.unifyPath(getFileSystemPath(dep,
+                                                                    MavenConstants.JAVADOC_CLASSIFIER));
+                                        String jarJavadocURL = VirtualFileManager.constructUrl(JarFileSystem.PROTOCOL,
+                                                                   jarJavadocPath) + JarFileSystem.JAR_SEPARATOR;
+                                        VirtualFile jarJavadocFile =
+                                            VirtualFileManager.getInstance().findFileByUrl(jarJavadocURL);
 
                                         // add the javadoc jar, if it is available
                                         if (jarJavadocFile != null) {
 
                                             // make sure that the javadoc jar isn't already added
-                                            VirtualFile[] existingJavadoc = libraryModel.getFiles(OrderRootType.JAVADOC);
+                                            VirtualFile[] existingJavadoc =
+                                                libraryModel.getFiles(OrderRootType.JAVADOC);
                                             boolean alreadyAdded = false;
 
                                             if (existingJavadoc != null) {
 
                                                 // look at all the currently attached files
                                                 for (VirtualFile source : existingJavadoc) {
-
                                                     if (source.equals(jarJavadocFile)) {
-
                                                         alreadyAdded = true;
+
                                                         break;
                                                     }
                                                 }
@@ -682,8 +655,7 @@ public class PluginPomManager implements ModuleListener {
                                             if (!alreadyAdded) {
                                                 libraryModel.addRoot(jarJavadocFile, OrderRootType.JAVADOC);
                                             }
-                                        }
-                                        else {
+                                        } else {
                                             logger.debug("Could not locate javadoc library: " + jarJavadocPath);
                                         }
                                     }
@@ -703,9 +675,7 @@ public class PluginPomManager implements ModuleListener {
 
                                     // check to see if it is in the latest set of updates
                                     if (!mavenLibraries.containsKey(lib.getName())) {
-
                                         logger.debug("Removing old library: " + lib.getName());
-
                                         libTable.removeLibrary(lib);
                                     }
                                 }
@@ -713,7 +683,6 @@ public class PluginPomManager implements ModuleListener {
 
                             // if this is a J2EE module, make sure to package the appropriate jars only
                             if (module.getModuleType().isJ2EE()) {
-
                                 TransactionalEditable trans = dirtyJ2eeProps.get(rootModel);
 
                                 if (trans == null) {
@@ -722,14 +691,13 @@ public class PluginPomManager implements ModuleListener {
 
                                 trans.startEdit(rootModel);
 
-                                ModuleContainer container = trans.getModifiableModel(); 
+                                ModuleContainer container = trans.getModifiableModel();
 
                                 // todo: fix this so that the list of packaged jars is consistent with the libraries in the module
                                 for (LibraryLink lib : container.getContainingLibraries()) {
 
                                     // check if it is a maven related library -- leave all others alone
                                     if (mavenLibraries.containsKey(lib.getName())) {
-
                                         Artifact dep = mavenLibraries.get(lib.getName());
 
                                         // only do something if it is a provided or test scope dependency
@@ -737,7 +705,6 @@ public class PluginPomManager implements ModuleListener {
 
                                             // make sure that these deps are not packaged
                                             if (!lib.getPackagingMethod().equals(J2EEPackagingMethod.DO_NOT_PACKAGE)) {
-
                                                 lib.setPackagingMethod(J2EEPackagingMethod.DO_NOT_PACKAGE);
 
                                                 // store off the change to be committed later
@@ -750,22 +717,16 @@ public class PluginPomManager implements ModuleListener {
 
                             // if this module is a dependency of another, export all maven libraries
                             if (config.isManageModuleInterdependenciesEnabled() && neededModules.contains(module)) {
-
                                 for (OrderEntry entry : rootModel.getOrderEntries()) {
-
                                     if (entry instanceof LibraryOrderEntry) {
-
-                                        LibraryOrderEntry lib = (LibraryOrderEntry)entry;
+                                        LibraryOrderEntry lib = (LibraryOrderEntry) entry;
 
                                         // export the library if it comes from maven
                                         if (mavenLibraries.containsKey(lib.getLibraryName())) {
-
                                             lib.setExported(true);
                                         }
-                                    }
-                                    else if (entry instanceof ModuleOrderEntry) {
-
-                                        ModuleOrderEntry mod = (ModuleOrderEntry)entry;
+                                    } else if (entry instanceof ModuleOrderEntry) {
+                                        ModuleOrderEntry mod = (ModuleOrderEntry) entry;
 
                                         // export modules that are needed by this module
                                         mod.setExported(true);
@@ -777,9 +738,7 @@ public class PluginPomManager implements ModuleListener {
 
                     // generate sources and determine source roots
                     if (config.isManageSourceRootsEnabled()) {
-
                         for (Module module : moduleToFile.keySet()) {
-
                             logger.debug("Inspecting source paths for module: " + module.getName());
                             indicator.setText("Determining source roots for module: " + module.getName());
 
@@ -846,7 +805,6 @@ public class PluginPomManager implements ModuleListener {
 
                                 // clear out any old source roots, only if there is a pom in this content root
                                 if (pomsInRoot.size() > 0) {
-
                                     for (SourceFolder source : root.getSourceFolders()) {
                                         root.removeSourceFolder(source);
                                     }
@@ -854,20 +812,18 @@ public class PluginPomManager implements ModuleListener {
 
                                 // go though each pom file and try to process it
                                 for (VirtualFile pomFile : pomsInRoot) {
-
                                     indicator.setText2("Processing POM: " + pomFile.getPath());
 
                                     // get the loaded pom project model
                                     MavenProject pom = fileToPom.get(pomFile);
-
                                     VirtualFile rootToAdd = null;
 
                                     // add all compile roots
                                     if (pom.getCompileSourceRoots() != null) {
-
-                                        for (String compileRoot : (List<String>)pom.getCompileSourceRoots()) {
-
-                                            rootToAdd = rootFile.findFileByRelativePath(PluginPomManager.unifyPath(compileRoot).substring(rootPath.length() + 1));
+                                        for (String compileRoot : (List<String>) pom.getCompileSourceRoots()) {
+                                            rootToAdd = rootFile.findFileByRelativePath(
+                                                PluginPomManager.unifyPath(compileRoot).substring(
+                                                    rootPath.length() + 1));
 
                                             if (rootToAdd != null) {
                                                 root.addSourceFolder(rootToAdd, false);
@@ -877,10 +833,10 @@ public class PluginPomManager implements ModuleListener {
 
                                     // add resources
                                     if (pom.getResources() != null) {
-
-                                        for (Resource resourceRoot : (List<Resource>)pom.getResources()) {
-
-                                            rootToAdd = rootFile.findFileByRelativePath(PluginPomManager.unifyPath(resourceRoot.getDirectory()).substring(rootPath.length() + 1));
+                                        for (Resource resourceRoot : (List<Resource>) pom.getResources()) {
+                                            rootToAdd = rootFile.findFileByRelativePath(
+                                                PluginPomManager.unifyPath(resourceRoot.getDirectory()).substring(
+                                                    rootPath.length() + 1));
 
                                             if (rootToAdd != null) {
                                                 root.addSourceFolder(rootToAdd, false);
@@ -890,9 +846,10 @@ public class PluginPomManager implements ModuleListener {
 
                                     // add all test compile roots
                                     if (pom.getTestCompileSourceRoots() != null) {
-
-                                        for (String testCompileRoot : (List<String>)pom.getTestCompileSourceRoots()) {
-                                            rootToAdd = rootFile.findFileByRelativePath(PluginPomManager.unifyPath(testCompileRoot).substring(rootPath.length() + 1));
+                                        for (String testCompileRoot : (List<String>) pom.getTestCompileSourceRoots()) {
+                                            rootToAdd = rootFile.findFileByRelativePath(
+                                                PluginPomManager.unifyPath(testCompileRoot).substring(
+                                                    rootPath.length() + 1));
 
                                             if (rootToAdd != null) {
                                                 root.addSourceFolder(rootToAdd, true);
@@ -902,9 +859,10 @@ public class PluginPomManager implements ModuleListener {
 
                                     // add test resources
                                     if (pom.getTestResources() != null) {
-
-                                        for (Resource testResourceRoot : (List<Resource>)pom.getTestResources()) {
-                                            rootToAdd = rootFile.findFileByRelativePath(PluginPomManager.unifyPath(testResourceRoot.getDirectory()).substring(rootPath.length() + 1));
+                                        for (Resource testResourceRoot : (List<Resource>) pom.getTestResources()) {
+                                            rootToAdd = rootFile.findFileByRelativePath(
+                                                PluginPomManager.unifyPath(testResourceRoot.getDirectory()).substring(
+                                                    rootPath.length() + 1));
 
                                             if (rootToAdd != null) {
                                                 root.addSourceFolder(rootToAdd, true);
@@ -920,7 +878,6 @@ public class PluginPomManager implements ModuleListener {
 
                     // if we are supposed to be sorting the dependencies, do so now
                     if (config.isSortDependenciesEnabled()) {
-
                         for (Module module : moduleToFile.keySet()) {
 
                             // get the model for the module
@@ -936,12 +893,10 @@ public class PluginPomManager implements ModuleListener {
 
                     // finished!
                     indicator.setFraction(1.0);
-                }
-                catch(MavenWorkerCancelledException e) {
+                } catch (MavenWorkerCancelledException e) {
                     logger.error("POM processing cancelled by user. Results may vary.");
                 }
             }
-
 
             /**
              * Kicks off a top level search for POM files.
@@ -953,6 +908,7 @@ public class PluginPomManager implements ModuleListener {
 
                 if (modules == null) {
                     logger.warn("There are no project modules.");
+
                     return;
                 }
 
@@ -960,7 +916,6 @@ public class PluginPomManager implements ModuleListener {
                     locatePoms(module);
                 }
             }
-
 
             /**
              * Searches for POM files in a specific module.
@@ -975,12 +930,12 @@ public class PluginPomManager implements ModuleListener {
 
                 if (roots == null) {
                     logger.warn("There are no source roots in the module: " + module.getName());
+
                     return;
                 }
 
                 // search for poms in the content roots
                 for (VirtualFile root : roots) {
-
                     if (!passesSearchFilter(root)) {
                         continue;
                     }
@@ -988,7 +943,6 @@ public class PluginPomManager implements ModuleListener {
                     checkForPoms(root, root, module);
                 }
             }
-
 
             /**
              * Recursively checks the module for POM files. The very first file is never checked, assumed to be content root...
@@ -998,7 +952,6 @@ public class PluginPomManager implements ModuleListener {
              * @param currentModule The module that the file belongs to.
              */
             private void checkForPoms(VirtualFile root, VirtualFile file, Module currentModule) {
-
                 VirtualFile[] children = file.getChildren();
 
                 if (children == null) {
@@ -1007,9 +960,7 @@ public class PluginPomManager implements ModuleListener {
 
                 // look at each child node of this file/directory
                 for (VirtualFile child : children) {
-
                     if (isPomFile(child) && isPomEnabled(child)) {
-
                         logger.debug("Found POM in module: " + currentModule.getName() + ": " + child.getPath());
 
                         if (!rootToFile.containsKey(root)) {
@@ -1023,13 +974,11 @@ public class PluginPomManager implements ModuleListener {
                         }
 
                         moduleToFile.get(currentModule).add(child);
-                    }
-                    else if (child.isDirectory() && passesSearchFilter(child)) {
+                    } else if (child.isDirectory() && passesSearchFilter(child)) {
                         checkForPoms(root, child, currentModule);
                     }
                 }
             }
-
 
             /**
              * Checks if a directory passes the filter setup by the user.
@@ -1039,7 +988,6 @@ public class PluginPomManager implements ModuleListener {
              * @return True if the directory is not being filtered, false otherwise.
              */
             private boolean passesSearchFilter(VirtualFile directory) {
-
                 for (String exclude : config.getSearchFilter().split(",")) {
 
                     // do a case insensitive name match
@@ -1051,7 +999,6 @@ public class PluginPomManager implements ModuleListener {
 
                 return true;
             }
-
 
             /**
              * Organizes the dependency entries of a module to specify a specific precedence.
@@ -1071,27 +1018,21 @@ public class PluginPomManager implements ModuleListener {
                 List<OrderEntry> otherEntries = new ArrayList<OrderEntry>();
 
                 for (OrderEntry entry : originalOrder) {
-
                     if (entry instanceof JdkOrderEntry) {
                         jdkEntries.add(entry);
-                    }
-                    else if (entry instanceof ModuleSourceOrderEntry) {
+                    } else if (entry instanceof ModuleSourceOrderEntry) {
                         sourceEntries.add(entry);
-                    }
-                    else if (entry instanceof ModuleOrderEntry) {
+                    } else if (entry instanceof ModuleOrderEntry) {
                         moduleEntries.add(entry);
-                    }
-                    else if (entry instanceof LibraryOrderEntry) {
+                    } else if (entry instanceof LibraryOrderEntry) {
                         libraryEntries.add(entry);
-                    }
-                    else {
+                    } else {
                         otherEntries.add(entry);
                     }
                 }
 
                 // sort the dependencies
                 if (config.isSortDependenciesEnabled()) {
-
                     Comparator<OrderEntry> comparator = new OrderEntryComparator();
 
                     Collections.sort(jdkEntries, comparator);
@@ -1115,7 +1056,6 @@ public class PluginPomManager implements ModuleListener {
                 return ordered.toArray(new OrderEntry[0]);
             }
 
-
             /**
              * Gets the path to the file on the disk.
              *
@@ -1125,13 +1065,11 @@ public class PluginPomManager implements ModuleListener {
              * @return The path to the file on disk.
              */
             String getFileSystemPath(Artifact artifact, String classifier) {
-
                 String base = null;
 
                 try {
                     base = artifact.getFile().getPath();
-                }
-                catch(NullPointerException npe) {
+                } catch (NullPointerException npe) {
                     return null;
                 }
 
@@ -1142,7 +1080,6 @@ public class PluginPomManager implements ModuleListener {
                 return base.substring(0, base.lastIndexOf(".")) + "-" + classifier + "." + artifact.getType();
             }
 
-
             /**
              * Tries to locate a module that represents a needed dependency.
              *
@@ -1151,21 +1088,19 @@ public class PluginPomManager implements ModuleListener {
              * @return The Module that has a POM that represents the artifact, or null if none is found.
              */
             private Module checkForModuleDependency(Artifact artifact) {
-
                 Module ret = moduleAsArtifact.get(artifact);
 
                 // only check for snapshots because the map keys are stored as the original 'SNAPSHOT', and
                 // not in terms of the base version that may have been resolved for this artifact
                 if ((ret == null) && artifact.isSnapshot()) {
-
                     for (Artifact art : moduleAsArtifact.keySet()) {
-
-                        if (art.getGroupId().equals(artifact.getGroupId()) &&
-                            art.getArtifactId().equals(artifact.getArtifactId()) &&
-                            art.getVersion().equals(artifact.getBaseVersion())) {
+                        if (art.getGroupId().equals(artifact.getGroupId())
+                                && art.getArtifactId().equals(artifact.getArtifactId())
+                                && art.getVersion().equals(artifact.getBaseVersion())) {
 
                             // found a SNAPSHOT that matches
                             ret = moduleAsArtifact.get(art);
+
                             break;
                         }
                     }
@@ -1173,7 +1108,6 @@ public class PluginPomManager implements ModuleListener {
 
                 return ret;
             }
-
 
             /**
              * Gets the pretty name that goes into the module library.
@@ -1185,21 +1119,15 @@ public class PluginPomManager implements ModuleListener {
             public String getLibraryName(Artifact artifact) {
                 return LIBRARY_PREFIX + artifact;
             }
-
         }, "Processing Maven POMs", true, project);
-
 
         // commit any changes to libraries, library tables, J2EE properties, and modules that have been dirtied.
         // this has to take place out here instead of in the parsing thread because IntelliJ throws an error
         // if the modification is not in the Event Dispatch Thread.
         for (Module module : dirtyLibraries.keySet()) {
-
             for (final Library.ModifiableModel lib : dirtyLibraries.get(module).values()) {
-
                 if (lib.isChanged()) {
-
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
-
                         public void run() {
                             lib.commit();
                         }
@@ -1209,11 +1137,8 @@ public class PluginPomManager implements ModuleListener {
         }
 
         for (final LibraryTable.ModifiableModel libTable : dirtyLibTables.values()) {
-
             if (libTable.isChanged()) {
-
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
-
                     public void run() {
                         libTable.commit();
                     }
@@ -1225,22 +1150,16 @@ public class PluginPomManager implements ModuleListener {
 
             // check to see if there are J2EE properties to commit first
             if (dirtyJ2eeProps.containsKey(rootModel)) {
-
                 final TransactionalEditable trans = dirtyJ2eeProps.get(rootModel);
 
                 if (trans.isModified(rootModel)) {
-
                     ApplicationManager.getApplication().runWriteAction(new Runnable() {
-
                         public void run() {
-
                             try {
                                 trans.commit(rootModel);
-                            }
-                            catch(ConfigurationException ce) {
-
-                                logger.warn("Could not commit changes to module J2EE packaging for module: " +
-                                            rootModel.getModule().getName());
+                            } catch (ConfigurationException ce) {
+                                logger.warn("Could not commit changes to module J2EE packaging for module: "
+                                            + rootModel.getModule().getName());
                             }
                         }
                     });
@@ -1249,9 +1168,7 @@ public class PluginPomManager implements ModuleListener {
 
             // commit changes to the module
             if (rootModel.isChanged()) {
-
                 ApplicationManager.getApplication().runWriteAction(new Runnable() {
-
                     public void run() {
                         rootModel.commit();
                     }
@@ -1259,7 +1176,6 @@ public class PluginPomManager implements ModuleListener {
             }
         }
     }
-
 
     /**
      * Executes a number of maven goals in the embedder.
@@ -1270,26 +1186,21 @@ public class PluginPomManager implements ModuleListener {
      * @param recursive A flag to indicate if the execution of this POM should be recursive.
      * @param failureBehavior The Maven failure policy, one of (ReactorManager.FAIL_FAST, FAIL_AT_END, or FAIL_NEVER).
      */
-    public void executeGoals(final VirtualFile pomFile,
-                             final List<String> goals, final Properties props,
+    public void executeGoals(final VirtualFile pomFile, final List<String> goals, final Properties props,
                              final boolean recursive, final String failureBehavior) {
 
         // do this all in a separate thread controlled by the IDE
         ProgressManager.getInstance().runProcessWithProgressSynchronously(new Runnable() {
-
             public void run() {
-
                 try {
-                    runMaven(pomFile, goals, props, ProgressManager.getInstance().getProgressIndicator(), recursive, failureBehavior);
-                }
-                catch(MavenWorkerCancelledException e) {
+                    runMaven(pomFile, goals, props, ProgressManager.getInstance().getProgressIndicator(), recursive,
+                             failureBehavior);
+                } catch (MavenWorkerCancelledException e) {
                     logger.warn("User cancelled execution of POM: " + pomFile.getPath());
                 }
             }
-
         }, "Maven Execution", true, project);
     }
-
 
     /**
      * A helper method that executes a mavne goal list. It is a prerequisite that this method be called from within a
@@ -1306,8 +1217,9 @@ public class PluginPomManager implements ModuleListener {
      *
      * @throws MavenWorkerCancelledException If the user cancels the action before it is complete.
      */
-    private void runMaven(VirtualFile pomFile, List<String> goals, Properties props,
-                                    final ProgressIndicator indicator, boolean recursive, String failureBehavior) throws MavenWorkerCancelledException {
+    private void runMaven(VirtualFile pomFile, List<String> goals, Properties props, final ProgressIndicator indicator,
+                          boolean recursive, String failureBehavior)
+            throws MavenWorkerCancelledException {
 
         // save the previous indicator settings in case we are running from within another context
         boolean indicatorWasIndeterminate = indicator.isIndeterminate();
@@ -1317,11 +1229,9 @@ public class PluginPomManager implements ModuleListener {
         String goalList = goals.get(0);
 
         if (goals.size() > 1) {
-
             StringBuffer buff = new StringBuffer();
 
             for (String goal : goals) {
-
                 buff.append(goal);
                 buff.append(" ");
             }
@@ -1329,12 +1239,11 @@ public class PluginPomManager implements ModuleListener {
             goalList = buff.toString().trim().replaceAll(" ", ", ");
         }
 
-        logger.debug("Executing POM: " +  pomFile.getPath() + " with goals: " + goalList);
+        logger.debug("Executing POM: " + pomFile.getPath() + " with goals: " + goalList);
 
         // cant tell the progress being made, so dont even try
         indicator.setIndeterminate(true);
         indicator.setFraction(0.1);
-
         indicator.setText("Compiling Execution Request");
 
         MavenExecutionRequest req = new DefaultMavenExecutionRequest();
@@ -1343,16 +1252,18 @@ public class PluginPomManager implements ModuleListener {
         req.setPomFile(pomFile.getPath());
         req.setBasedir(new File(pomFile.getParent().getPath()));
         req.setLocalRepository(maven.getLocalRepository());
+
         // Todo: Build the settings file
-        //req.setSettings(maven.buildSettings());
+        // req.setSettings(maven.buildSettings());
         req.setProperties(props);
         req.setRecursive(recursive);
         req.setFailureBehavior(failureBehavior);
 
         // add event monitors to see what is going on with the build
-        req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(PluginLoggerManager.getInstance(project).getEmbedderLogger())));
+        req.addEventMonitor(
+            new DefaultEventMonitor(
+                new PlexusLoggerAdapter(PluginLoggerManager.getInstance(project).getEmbedderLogger())));
         req.addEventMonitor(new EventMonitor() {
-
             public void startEvent(String eventName, String target, long timestamp) {
 
                 // check for bail out
@@ -1365,25 +1276,19 @@ public class PluginPomManager implements ModuleListener {
                     indicator.setText2(target);
                 }
             }
-
-            public void endEvent(String eventName, String target, long timestamp) {
-            }
-
-            public void errorEvent(String eventName, String target, long timestamp, Throwable cause) {
-            }
+            public void endEvent(String eventName, String target, long timestamp) {}
+            public void errorEvent(String eventName, String target, long timestamp, Throwable cause) {}
         });
 
         ReactorManager results = null;
 
         // set the goals to execute
         req.setGoals(goals);
-
-        indicator.setText("Executing POM: " +  pomFile.getPath());
+        indicator.setText("Executing POM: " + pomFile.getPath());
 
         try {
             maven.execute(req);
-        }
-        catch(MavenExecutionException e) {
+        } catch (MavenExecutionException e) {
             logger.error("Maven execution failed.");
         }
 
@@ -1391,7 +1296,6 @@ public class PluginPomManager implements ModuleListener {
         indicator.setIndeterminate(indicatorWasIndeterminate);
         indicator.setFraction(indicatorPreviousValue);
     }
-
 
     /**
      * Changes all paths to have the same (UNIX) separator.
@@ -1404,7 +1308,6 @@ public class PluginPomManager implements ModuleListener {
         return input.replaceAll("\\\\", "/");
     }
 
-
     /**
      * Checks if a POM file is in the disabled list.
      *
@@ -1416,7 +1319,6 @@ public class PluginPomManager implements ModuleListener {
         return !config.getDisabledPoms().contains(pomFile.getPath());
     }
 
-
     /**
      * Sets the status of a POM file.
      *
@@ -1424,15 +1326,12 @@ public class PluginPomManager implements ModuleListener {
      * @param enabled True if the POM should be included in parsing, false otherwise.
      */
     public void setPomEnabled(VirtualFile pomFile, boolean enabled) {
-
         if (enabled) {
             config.getDisabledPoms().remove(pomFile.getPath());
-        }
-        else {
+        } else {
             config.getDisabledPoms().add(pomFile.getPath());
         }
     }
-
 
     /**
      * Determines if a virtual file is a POM file.
@@ -1445,7 +1344,6 @@ public class PluginPomManager implements ModuleListener {
         return file.getName().equalsIgnoreCase(MavenConstants.POM_NAME);
     }
 
-
     /**
      * Determines if a virtual file is a POM file from this project.
      *
@@ -1457,20 +1355,16 @@ public class PluginPomManager implements ModuleListener {
         return file.getName().equalsIgnoreCase(MavenConstants.POM_NAME) && knownPoms.contains(file);
     }
 
-
     /**
      * {@inheritDoc}
      *
      * Adds this as a virtual file listener and runs the first pom search.
      */
     public void projectOpened() {
-
         VirtualFileManager.getInstance().addVirtualFileListener(pomFileListener);
         ModuleManager.getInstance(project).addModuleListener(this);
-
         updateProjectModules();
     }
-
 
     /**
      * {@inheritDoc}
@@ -1478,11 +1372,9 @@ public class PluginPomManager implements ModuleListener {
      * Unregisters this clss as a virtual file listener.
      */
     public void projectClosed() {
-
         VirtualFileManager.getInstance().removeVirtualFileListener(pomFileListener);
         ModuleManager.getInstance(project).removeModuleListener(this);
     }
-
 
     /**
      * {@inheritDoc}
@@ -1493,11 +1385,8 @@ public class PluginPomManager implements ModuleListener {
         updateProjectModules();
     }
 
-
     /** {@inheritDoc} */
-    public void beforeModuleRemoved(Project project, Module module) {
-    }
-
+    public void beforeModuleRemoved(Project project, Module module) {}
 
     /**
      * {@inheritDoc}
@@ -1508,12 +1397,10 @@ public class PluginPomManager implements ModuleListener {
         updateProjectModules();
     }
 
-
     /** {@inheritDoc} */
     public void modulesRenamed(Project project, List<Module> modules) {
         updateProjectModules();
     }
-
 
     /**
      * A class that acts as a POM file listener. It looks for changes to existing POMs, as well as additions and
@@ -1523,7 +1410,6 @@ public class PluginPomManager implements ModuleListener {
 
         /** {@inheritDoc} */
         public void contentsChanged(VirtualFileEvent event) {
-
             if (shouldAct(event)) {
 
                 // only act on the change if the pom is enabled
@@ -1535,51 +1421,39 @@ public class PluginPomManager implements ModuleListener {
             }
         }
 
-
         /** {@inheritDoc} */
         public void fileCreated(VirtualFileEvent event) {
-
             if (shouldAct(event)) {
 
                 // do not enable the pom when it is brand new
                 setPomEnabled(event.getFile(), false);
 
                 // it is a new file, but check anyway
-//                if (isPomEnabled(event.getFile())) {
-//                    updateProjectModules();
-//                }
-
+                //                if (isPomEnabled(event.getFile())) {
+                //                    updateProjectModules();
+                //                }
                 logger.info("POM file created (initially disabled): " + event.getFile().getPath());
             }
         }
 
-
         /** {@inheritDoc} */
         public void fileDeleted(VirtualFileEvent event) {
-
             if (shouldAct(event)) {
 
                 // remove it from the disabled pom list
                 config.getDisabledPoms().remove(event.getFile().getPath());
-
                 updateProjectModules();
-
                 logger.debug("POM file deleted: " + event.getFile().getPath());
             }
         }
 
-
         /** {@inheritDoc} */
         public void fileMoved(VirtualFileMoveEvent event) {
-
             if (shouldAct(event)) {
-
                 updateProjectModules();
-
                 logger.debug("POM file moved: " + event.getFile().getPath());
             }
         }
-
 
         /**
          * Determines if the listener should take action on the event.
@@ -1598,7 +1472,6 @@ public class PluginPomManager implements ModuleListener {
      * A simple Comparator that can compare OrderEntries by name.
      */
     private static class OrderEntryComparator implements Comparator<OrderEntry> {
-
         public int compare(OrderEntry o1, OrderEntry o2) {
             return o1.getPresentableName().compareTo(o2.getPresentableName());
         }
@@ -1608,8 +1481,5 @@ public class PluginPomManager implements ModuleListener {
     /**
      * A simple exception that is thrown when a user cancels a maven action.
      */
-    private static class MavenWorkerCancelledException extends RuntimeException {
-
-    }
-
+    private static class MavenWorkerCancelledException extends RuntimeException {}
 }

@@ -1,32 +1,32 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
+
+
 
 package org.codehaus.mevenide.idea.action;
 
-
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
+
 import org.codehaus.mevenide.idea.MavenConstants;
 import org.codehaus.mevenide.idea.PluginConfigurationManager;
-
 
 /**
  * A group that represents all of the actions that are related to Maven 2 processing.
@@ -42,7 +42,6 @@ public class MavenPopupGroup extends DefaultActionGroup {
         super();
     }
 
-
     /**
      * More involved constructor.
      *
@@ -53,21 +52,18 @@ public class MavenPopupGroup extends DefaultActionGroup {
         super(shortName, popup);
     }
 
-
     /**
      * {@inheritDoc}
      *
      * Turns the group off if it is not a Maven 2 POM file.
      */
     public void update(AnActionEvent e) {
-
         super.update(e);
 
         boolean enabled = isGroupEnabled(e);
 
         e.getPresentation().setEnabled(enabled);
     }
-
 
     /**
      * Determines if the group is being called on a Maven 2 POM file.
@@ -86,7 +82,6 @@ public class MavenPopupGroup extends DefaultActionGroup {
         return file.getName().equalsIgnoreCase(MavenConstants.POM_NAME);
     }
 
-
     /**
      * Determines if this action group should be enabled.
      *
@@ -95,12 +90,10 @@ public class MavenPopupGroup extends DefaultActionGroup {
      * @return True if the event context supports enabling this action group.
      */
     protected boolean isGroupEnabled(AnActionEvent e) {
-
-        VirtualFile thisFile = (VirtualFile)e.getDataContext().getData(DataConstants.VIRTUAL_FILE);
-        Project project = (Project)e.getDataContext().getData(DataConstants.PROJECT);
+        VirtualFile thisFile = (VirtualFile) e.getDataContext().getData(DataConstants.VIRTUAL_FILE);
+        Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
         PluginConfigurationManager config = PluginConfigurationManager.getInstance(project);
 
         return config.getConfig().isPluginEnabled() && isPomFile(thisFile);
     }
 }
-

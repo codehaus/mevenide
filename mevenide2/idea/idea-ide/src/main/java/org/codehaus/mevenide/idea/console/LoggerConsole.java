@@ -1,39 +1,23 @@
-/*
- * Copyright (c) 2006 Bryan Kate
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
- * to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial
- * portions of the Software.
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
+
+
 package org.codehaus.mevenide.idea.console;
-
-
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
-import javax.swing.JToolBar;
-import javax.swing.SwingUtilities;
-import javax.swing.JTextPane;
-import javax.swing.Icon;
-import javax.swing.text.DefaultStyledDocument;
-import javax.swing.text.StyledDocument;
-import javax.swing.text.Style;
-import javax.swing.text.StyleContext;
-import javax.swing.text.StyleConstants;
-import javax.swing.text.BadLocationException;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -45,6 +29,21 @@ import java.text.SimpleDateFormat;
 
 import java.util.Date;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextPane;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultStyledDocument;
+import javax.swing.text.Style;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyleContext;
+import javax.swing.text.StyledDocument;
 
 /**
  * A class that sets up the logging console for the plugin.
@@ -57,7 +56,6 @@ public class LoggerConsole extends JPanel implements LoggerListener {
     private LogPanel embedderLog;
     private LogPanel pluginLog;
 
-
     /**
      * Default constructor.
      */
@@ -65,14 +63,11 @@ public class LoggerConsole extends JPanel implements LoggerListener {
         init();
     }
 
-
     /**
      * Initializes the log panels.
      */
     private void init() {
-
         setLayout(new BorderLayout());
-
         embedderLog = new LogPanel();
         pluginLog = new LogPanel();
 
@@ -81,22 +76,18 @@ public class LoggerConsole extends JPanel implements LoggerListener {
 
         tabs.add("Embedder", embedderLog);
         tabs.add("Plugin", pluginLog);
-
         add(tabs, BorderLayout.CENTER);
     }
-
 
     /** {@inheritDoc} */
     public void logEmbedderMessage(LogMessage message) {
         embedderLog.logMessage(message);
     }
 
-
     /** {@inheritDoc} */
     public void logPluginMessage(LogMessage message) {
         pluginLog.logMessage(message);
     }
-
 
     /**
      * A class that defines an individual logging panel.
@@ -112,7 +103,6 @@ public class LoggerConsole extends JPanel implements LoggerListener {
         // for timestamping
         private static final SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss a");
 
-
         /**
          * Default constructor.
          */
@@ -120,18 +110,15 @@ public class LoggerConsole extends JPanel implements LoggerListener {
             init();
         }
 
-
         /**
          * Initializes the swing components that make up the logging panel.
          */
         private void init() {
-
             setLayout(new BorderLayout());
-
             display.setEditable(false);
             display.setBackground(Color.WHITE);
 
-              // a toolbar for user interaction
+            // a toolbar for user interaction
             JToolBar toolbar = new JToolBar(JToolBar.VERTICAL);
 
             toolbar.setFloatable(false);
@@ -145,21 +132,16 @@ public class LoggerConsole extends JPanel implements LoggerListener {
             clearButton.setToolTipText("Clear Log");
 
             // an action listener that clears the selected log console
-            clearButton.addActionListener(new ActionListener () {
-
+            clearButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
-
                     SwingUtilities.invokeLater(new Runnable() {
-
                         public void run() {
-
                             display.setStyledDocument(new LoggerStyledDocument());
                             display.validate();
                         }
                     });
                 }
             });
-
             toolbar.add(clearButton);
 
             // add the toolbar and the log console
@@ -167,63 +149,64 @@ public class LoggerConsole extends JPanel implements LoggerListener {
             add(new JScrollPane(display), BorderLayout.CENTER);
         }
 
-
         /**
          * Records a message to the logging panel.
          *
          * @param message The message to be logged.
          */
         public void logMessage(final LogMessage message) {
-
             SwingUtilities.invokeLater(new Runnable() {
-
                 public void run() {
 
                     // get the logger styles
                     StyledDocument doc = display.getStyledDocument();
 
                     try {
-
                         Style level;
 
                         // get the right level icon
-                        switch(message.getLogLevel()) {
-
-                            case LogMessage.DEBUG:
+                        switch (message.getLogLevel()) {
+                            case LogMessage.DEBUG :
                                 level = doc.getStyle(LoggerStyledDocument.DEBUG_ICON_STYLE);
+
                                 break;
 
-                            case LogMessage.WARN:
+                            case LogMessage.WARN :
                                 level = doc.getStyle(LoggerStyledDocument.WARN_ICON_STYLE);
+
                                 break;
 
-                            case LogMessage.ERROR:
+                            case LogMessage.ERROR :
                                 level = doc.getStyle(LoggerStyledDocument.ERROR_ICON_STYLE);
+
                                 break;
 
-                            case LogMessage.FATAL:
+                            case LogMessage.FATAL :
                                 level = doc.getStyle(LoggerStyledDocument.FATAL_ICON_STYLE);
+
                                 break;
 
-                            case LogMessage.INFO:
-                            default:
+                            case LogMessage.INFO :
+                            default :
                                 level = doc.getStyle(LoggerStyledDocument.INFO_ICON_STYLE);
+
                                 break;
                         }
 
                         // show the level, timestamp, and message
                         doc.insertString(doc.getLength(), " ", level);
-                        doc.insertString(doc.getLength(), " " + getTimeStamp(), doc.getStyle(LoggerStyledDocument.TIMESTAMP_STYLE));
+                        doc.insertString(doc.getLength(), " " + getTimeStamp(),
+                                         doc.getStyle(LoggerStyledDocument.TIMESTAMP_STYLE));
                         doc.insertString(doc.getLength(), " - ", doc.getStyle(LoggerStyledDocument.REGULAR_STYLE));
-                        doc.insertString(doc.getLength(), message.getMessage() + "\n", doc.getStyle(LoggerStyledDocument.REGULAR_STYLE));
-                    }
-                    catch(BadLocationException ble) {
+                        doc.insertString(doc.getLength(), message.getMessage() + "\n",
+                                         doc.getStyle(LoggerStyledDocument.REGULAR_STYLE));
+                    } catch (BadLocationException ble) {
+
                         // intentionally empty - nothing we can do...
                     }
                 }
             });
         }
-
 
         /**
          * Constructs a timestamp at the time of invocation.
@@ -233,7 +216,6 @@ public class LoggerConsole extends JPanel implements LoggerListener {
         private String getTimeStamp() {
             return formatter.format(new Date());
         }
-
 
         /**
          * A StyledDocument with built in styles for the logging messages.
@@ -265,7 +247,6 @@ public class LoggerConsole extends JPanel implements LoggerListener {
             private static final String ERROR_ICON = "/images/error.png";
             private static final String FATAL_ICON = "/images/fatal.png";
 
-
             /**
              * Default constructor.
              */
@@ -273,22 +254,21 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 initStyles();
             }
 
-
             /**
              * Adds the logging styles to the document.
              */
             private void initStyles() {
-
-                Style def = StyleContext.getDefaultStyleContext().
-                        getStyle(StyleContext.DEFAULT_STYLE);
-
+                Style def = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
                 Style regular = addStyle(REGULAR_STYLE, def);
+
                 StyleConstants.setFontFamily(def, "SansSerif");
 
                 Style italic = addStyle(ITALIC_STYLE, regular);
+
                 StyleConstants.setItalic(italic, true);
 
                 Style bold = addStyle(BOLD_STYLE, regular);
+
                 StyleConstants.setBold(bold, true);
 
                 Style timestamp = addStyle(TIMESTAMP_STYLE, bold);
@@ -297,8 +277,8 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 Style warn = addStyle(WARN_STYLE, regular);
                 Style fatal = addStyle(FATAL_STYLE, regular);
                 Style error = addStyle(ERROR_STYLE, regular);
-
                 Style debugIcon = addStyle(DEBUG_ICON_STYLE, regular);
+
                 StyleConstants.setAlignment(debugIcon, StyleConstants.ALIGN_CENTER);
 
                 Icon icon = new ImageIcon(LoggerStyledDocument.class.getResource(DEBUG_ICON));
@@ -308,8 +288,8 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 }
 
                 Style infoIcon = addStyle(INFO_ICON_STYLE, regular);
-                StyleConstants.setAlignment(infoIcon, StyleConstants.ALIGN_CENTER);
 
+                StyleConstants.setAlignment(infoIcon, StyleConstants.ALIGN_CENTER);
                 icon = new ImageIcon(LoggerStyledDocument.class.getResource(INFO_ICON));
 
                 if (infoIcon != null) {
@@ -317,8 +297,8 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 }
 
                 Style warnIcon = addStyle(WARN_ICON_STYLE, regular);
-                StyleConstants.setAlignment(warnIcon, StyleConstants.ALIGN_CENTER);
 
+                StyleConstants.setAlignment(warnIcon, StyleConstants.ALIGN_CENTER);
                 icon = new ImageIcon(LoggerStyledDocument.class.getResource(WARN_ICON));
 
                 if (warnIcon != null) {
@@ -326,8 +306,8 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 }
 
                 Style errorIcon = addStyle(ERROR_ICON_STYLE, regular);
-                StyleConstants.setAlignment(errorIcon, StyleConstants.ALIGN_CENTER);
 
+                StyleConstants.setAlignment(errorIcon, StyleConstants.ALIGN_CENTER);
                 icon = new ImageIcon(LoggerStyledDocument.class.getResource(ERROR_ICON));
 
                 if (errorIcon != null) {
@@ -335,8 +315,8 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 }
 
                 Style fatalIcon = addStyle(FATAL_ICON_STYLE, regular);
-                StyleConstants.setAlignment(fatalIcon, StyleConstants.ALIGN_CENTER);
 
+                StyleConstants.setAlignment(fatalIcon, StyleConstants.ALIGN_CENTER);
                 icon = new ImageIcon(LoggerStyledDocument.class.getResource(FATAL_ICON));
 
                 if (fatalIcon != null) {
@@ -344,8 +324,5 @@ public class LoggerConsole extends JPanel implements LoggerListener {
                 }
             }
         }
-
     }
-
 }
-
