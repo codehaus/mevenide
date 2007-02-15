@@ -476,7 +476,7 @@ public abstract class AbstractConfigurationForm extends AbstractForm {
     return mavenOptionsPanel;
   }
 
-  protected void getApplicationWideData(IMavenBuildSettings data) {
+  protected void getData(IMavenBuildSettings data) {
     data.setMavenHome(textFieldMavenHomeDir.getText());
     data.setMavenSettingsFile(textFieldAlternateSettingsFile.getText());
     data.setMavenCommandLineParams(textFieldMavenCmdLineArgs.getText());
@@ -500,7 +500,7 @@ public abstract class AbstractConfigurationForm extends AbstractForm {
     data.getMavenOptions().setSkipTests(checkBoxSkipTests.isSelected());
   }
 
-  protected void setApplicationWideData(IMavenBuildSettings data) {
+  protected void setData(IMavenBuildSettings data) {
     textFieldMavenHomeDir.setText(data.getMavenHome());
     textFieldAlternateSettingsFile.setText(data.getMavenSettingsFile());
     textFieldMavenCmdLineArgs.setText(data.getMavenCommandLineParams());
@@ -524,7 +524,7 @@ public abstract class AbstractConfigurationForm extends AbstractForm {
     checkBoxSkipTests.setSelected(data.getMavenOptions().isSkipTests());
   }
 
-  protected boolean isApplicationWideDataModified(IMavenBuildSettings data) {
+  protected boolean isDataModified(IMavenBuildSettings data) {
     if ((textFieldMavenHomeDir.getText() != null)
         ? !textFieldMavenHomeDir.getText().equals(data.getMavenHome())
         : data.getMavenHome() != null) {
