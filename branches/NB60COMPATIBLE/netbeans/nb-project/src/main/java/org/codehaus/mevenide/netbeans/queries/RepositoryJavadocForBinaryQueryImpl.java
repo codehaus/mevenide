@@ -117,6 +117,9 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     // don't examine here, just return 2 places..
                     url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
                     url[1] = new URL(url[0] + "apidocs/");
+                    
+                    //TODO there are also some other possible layout in the remote repository
+                    // eg. jung/jung jas javadoc i "doc" subfolder, not sure we can cater for everything..
                     return url;
                 } catch (MalformedURLException exc) {
                     ErrorManager.getDefault().notify(exc);
