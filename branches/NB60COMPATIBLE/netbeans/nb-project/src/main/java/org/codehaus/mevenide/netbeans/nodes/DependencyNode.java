@@ -721,7 +721,16 @@ public class DependencyNode extends AbstractNode {
                         index = jarfo.getFileObject("index.html"); //NOI18N
                     }
                     if (index == null) {
-                        index = jarfo;
+                        for (FileObject chil : jarfo.getChildren()) {
+                            if (chil.isFolder()) {
+                                index = chil.getFileObject("index.html");
+                            }
+                            if (index != null) break;
+                        }
+                        if (index == null) {
+                            //oh well, does it contain javadoc in the first place?
+                            index = jarfo;
+                        }
                     }
                     URL link = URLMapper.findURL(index, URLMapper.EXTERNAL);
                     HtmlBrowser.URLDisplayer.getDefault().showURL(link);
