@@ -229,7 +229,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
                         (elem.getPackagings().contains(prjPack.trim()) ||
-                        elem.getPackagings().contains("*"))) {
+                        elem.getPackagings().contains("*") || elem.getPackagings().size() == 0)) {
                     action = elem;
                 }
             }
