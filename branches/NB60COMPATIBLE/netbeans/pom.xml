@@ -21,6 +21,8 @@
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
 	     <module>graph</module>
+	     <!-- VERY EXPERIMENTAL module>apisupport</module-->
+	     <module>persistence</module>
           </modules>
        </profile>
       
