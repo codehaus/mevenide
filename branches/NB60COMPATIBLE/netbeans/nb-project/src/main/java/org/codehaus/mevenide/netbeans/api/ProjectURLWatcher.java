@@ -103,6 +103,7 @@ public final class ProjectURLWatcher {
     public static final String TYPE_WAR = "war";
     public static final String TYPE_EAR = "ear";
     public static final String TYPE_EJB = "ejb";
+    public static final String TYPE_NBM = "nbm";
     
     /**
      * get the user level packaging type for the project, allows to get the same UI support

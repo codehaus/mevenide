@@ -672,6 +672,7 @@ public final class NbMavenProject implements Project {
             prohibited.add(ProjectURLWatcher.TYPE_EAR); //NOI18N
             prohibited.add(ProjectURLWatcher.TYPE_EJB); //NOI18N
             prohibited.add(ProjectURLWatcher.TYPE_WAR); //NOI18N
+            prohibited.add(ProjectURLWatcher.TYPE_NBM); //NOI18N
         }
         
         public String[] getRecommendedTypes() {
@@ -686,6 +687,7 @@ public final class NbMavenProject implements Project {
             if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) { //NOI18N
                 return JAR_APPLICATION_TYPES;
             }
+			//TODO when apisupport module becomes 'non-experimental', delete this block..
             //NBM also fall under this I guess..
             if ("nbm".equals(packaging)) { //NOI18N
                 return JAR_APPLICATION_TYPES;
