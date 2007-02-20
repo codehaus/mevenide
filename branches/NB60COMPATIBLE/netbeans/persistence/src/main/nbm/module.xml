@@ -1,0 +1,39 @@
+<nbm>
+   <moduleType>eager</moduleType>
+   <codeNameBase>org.codehaus.mevenide.netbeans.persistence/1</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+   <dependencies>
+        <dependency>
+            <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-util</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-filesystems</id>
+        </dependency>
+        <dependency>
+            <id>org.codehaus.mevenide:nb-project</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-j2ee-common</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.modules:org-netbeans-modules-j2ee-persistenceapi</id>
+            <type>impl</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-api-java</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-j2ee-metadata</id>
+        </dependency>
+   </dependencies> 
+</nbm>
