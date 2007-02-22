@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.customizer;
 
 import java.awt.Dialog;
+import javax.swing.event.DocumentEvent;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -37,6 +38,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentListener;
 import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
@@ -104,6 +106,23 @@ public class RunJarPanel extends javax.swing.JPanel {
         }
 
         btnMainClass.addActionListener(new MainClassListener(roots.toArray(new FileObject[roots.size()]), txtMainClass));
+        DocumentListener docListener = new DocumentListener() {
+            public void insertUpdate(DocumentEvent arg0) {
+                applyChanges();
+            }
+
+            public void removeUpdate(DocumentEvent arg0) {
+                applyChanges();
+            }
+
+            public void changedUpdate(DocumentEvent arg0) {
+                applyChanges();
+            }
+        };
+        txtMainClass.getDocument().addDocumentListener(docListener);
+        txtArguments.getDocument().addDocumentListener(docListener);
+        txtVMOptions.getDocument().addDocumentListener(docListener);
+        txtWorkDir.getDocument().addDocumentListener(docListener);
     }
     
     private void initValues() {
@@ -111,11 +130,11 @@ public class RunJarPanel extends javax.swing.JPanel {
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
-        Profile publicProfile = handle.getNetbeansPublicProfile();
-        BuildBase bld = publicProfile.getBuild();
+        Profile publicProfile = handle.getNetbeansPublicProfile(false);
         jarPlugin = null;
         assemblyPlugin = null;
-        if (bld != null) {
+        if (publicProfile != null && publicProfile.getBuild() != null) {
+            BuildBase bld = publicProfile.getBuild();
             Iterator it = bld.getPlugins().iterator();
             while (it.hasNext()) {
                 Plugin elem = (Plugin)it.next();
@@ -288,6 +307,35 @@ public class RunJarPanel extends javax.swing.JPanel {
 // TODO add your handling code here:
     }//GEN-LAST:event_btnMainClassActionPerformed
 
+    void applyExternalChanges() {
+        String newMainClass = txtMainClass.getText().trim();
+        if (!newMainClass.equals(oldMainClass)) {
+            File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies"); //NOI18N
+            if (!assDir.exists()) {
+                assDir.mkdirs();
+            }
+            File assembly = new File(assDir, "netbeans-run.xml"); //NOI18N
+            if (!assembly.exists()) {
+                InputStream instr = null;
+                OutputStream outstr = null;
+                try {
+                    assembly.createNewFile();
+                    instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml"); //NOI18N
+                    outstr = new FileOutputStream(assembly);
+                    IOUtil.copy(instr, outstr);
+                } catch (IOException exc) {
+                    ErrorManager.getDefault().notify(exc);
+                    NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "Err_CannotCreate", assembly));
+                    DialogDisplayer.getDefault().notify(nd);
+                } finally {
+                    IOUtil.close(instr);
+                    IOUtil.close(outstr);
+                }
+            }
+        }
+        
+    }
+    
     void applyChanges() {
         String newMainClass = txtMainClass.getText().trim();
         if (!newMainClass.equals(oldMainClass)) {
@@ -347,18 +395,18 @@ public class RunJarPanel extends javax.swing.JPanel {
         return jarPlugin;
     }
 
-    private Plugin checkAssemblyPlugin(Plugin assemblyPlugin) {
-        if (assemblyPlugin == null) {
-            assemblyPlugin = new Plugin();
-            assemblyPlugin.setArtifactId("maven-assembly-plugin"); //NOI18N
-            assemblyPlugin.setGroupId("org.apache.maven.plugins"); //NOI18N
-            handle.getNetbeansPublicProfile().getBuild().addPlugin(assemblyPlugin);
+    private Plugin checkAssemblyPlugin(Plugin assPlugin) {
+        if (assPlugin == null) {
+            assPlugin = new org.apache.maven.model.Plugin();
+            assPlugin.setArtifactId("maven-assembly-plugin");
+            assPlugin.setGroupId("org.apache.maven.plugins");
+            handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
-        PluginExecution exec = (PluginExecution)assemblyPlugin.getExecutionsAsMap().get("nb"); //NOI18N
+        PluginExecution exec = (PluginExecution)assPlugin.getExecutionsAsMap().get("nb"); //NOI18N
         if (exec == null) {
             exec = new PluginExecution();
             exec.setId("nb"); //NOI18N
-            assemblyPlugin.addExecution(exec);
+            assPlugin.addExecution(exec);
         }
         exec.setPhase("package"); //NOI18N
         exec.setGoals(Collections.singletonList("directory")); //NOI18N
@@ -368,29 +416,8 @@ public class RunJarPanel extends javax.swing.JPanel {
         Xpp3Dom configuration = (Xpp3Dom) exec.getConfiguration();
         getOrCreateXppDomChild(configuration, "descriptor").setValue("${basedir}/src/main/assemblies/netbeans-run.xml"); //NOI18N
         getOrCreateXppDomChild(configuration, "finalName").setValue("executable"); //NOI18N
-        File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies"); //NOI18N
-        if (!assDir.exists()) {
-            assDir.mkdirs();
-        }
-        File assembly = new File(assDir, "netbeans-run.xml"); //NOI18N
-        if (!assembly.exists()) {
-            InputStream instr = null;
-            OutputStream outstr = null;
-            try {
-                assembly.createNewFile();
-                instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml"); //NOI18N
-                outstr = new FileOutputStream(assembly);
-                IOUtil.copy(instr, outstr);
-            } catch (IOException exc) {
-                ErrorManager.getDefault().notify(exc);
-                NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "Err_CannotCreate", assembly));
-                DialogDisplayer.getDefault().notify(nd);
-            } finally {
-                IOUtil.close(instr);
-                IOUtil.close(outstr);
-            }
-        }
-        return assemblyPlugin;
+        
+        return assPlugin;
     }
     
     private Xpp3Dom getOrCreateXppDomChild(Xpp3Dom parent, String name) {
