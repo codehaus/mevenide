@@ -161,14 +161,39 @@ public class MavenRunJarImpl implements MavenRunJar {
         
         public void run() {
             try {
+                long stamp = System.currentTimeMillis();
                 int chr = str.read();
+                StringBuffer buf = new StringBuffer();
                 while (chr != -1) {
                     if (chr == (int)'\n') {
-                        writer.println();
+                        if (buf.length() > 0 && buf.charAt(buf.length() - 1) == '\r') {
+                            // should fix issues on windows..
+                            buf.setLength(buf.length() - 1);
+                        }
+                        writer.println(buf.toString());
+                        buf.setLength(0);
+                        stamp = System.currentTimeMillis();
                     } else {
-                        writer.write(chr);
+                        buf.append((char)chr);
                     }
-                    chr = str.read();
+                    while (true) {
+                        if (str.ready()) {
+                            chr = str.read();
+                            break;
+                        } else {
+                            if (System.currentTimeMillis() - stamp > 700) {
+                                writer.print(buf.toString());
+                                buf.setLength(0);
+                                chr = str.read();
+                                stamp = System.currentTimeMillis();
+                                break;
+                            }
+                            try {
+                                Thread.sleep(100);
+                            } catch (Exception e) {
+                            }
+                        }
+                    }
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
