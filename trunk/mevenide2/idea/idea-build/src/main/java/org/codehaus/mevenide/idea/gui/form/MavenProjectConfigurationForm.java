@@ -65,7 +65,7 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      * @param data Document me!
      */
     public void getData(MavenBuildPluginSettings data) {
-        getData(data);
+        super.getData(data);
         data.setScanForExistingPoms(checkBoxScanForExistingPoms.isSelected());
     }
 
@@ -112,7 +112,7 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      * @param data Document me!
      */
     public void setData(MavenBuildPluginSettings data) {
-        setData(data);
+        super.setData(data);
         checkBoxScanForExistingPoms.setSelected(data.isScanForExistingPoms());
     }
 

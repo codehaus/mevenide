@@ -16,7 +16,6 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.component;
 
 import com.intellij.openapi.actionSystem.ActionManager;
@@ -24,7 +23,6 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
@@ -39,12 +37,12 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.uiDesigner.core.GridConstraints;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.maven.settings.x100.SettingsDocument;
 import org.apache.xmlbeans.XmlOptions;
-
+import org.codehaus.mevenide.idea.CorePlugin;
+import org.codehaus.mevenide.idea.IMevenideIdeaComponent;
 import org.codehaus.mevenide.idea.action.ActionUtils;
 import org.codehaus.mevenide.idea.action.AddPluginAction;
 import org.codehaus.mevenide.idea.action.AddPomAction;
@@ -70,25 +68,20 @@ import org.codehaus.mevenide.idea.model.MavenProjectDocumentImpl;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
 import org.jdom.Element;
-
 import org.jetbrains.annotations.Nls;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-import java.awt.*;
-
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JTree;
+import java.awt.Dimension;
 import java.io.File;
-
 import java.util.Hashtable;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -97,7 +90,7 @@ import javax.swing.*;
  * @version $Revision$
  */
 public class MavenBuildProjectComponent extends AbstractComponent
-        implements ProjectComponent, Configurable, JDOMExternalizable {
+        implements IMevenideIdeaComponent, ProjectComponent, JDOMExternalizable {
     private static final Logger LOG = Logger.getLogger(MavenBuildProjectComponent.class);
     private ActionContext actionContext = new ActionContext();
     private Set<MavenProjectDocument> mavenPomList = new LinkedHashSet<MavenProjectDocument>();
@@ -107,40 +100,41 @@ public class MavenBuildProjectComponent extends AbstractComponent
      *
      * @param project Document me!
      */
-    public MavenBuildProjectComponent(Project project) {
+    public MavenBuildProjectComponent(Project project, CorePlugin corePlugin) {
         actionContext.setPluginProject(project);
+        corePlugin.registerMevenideComponent(this);
     }
 
     private MavenBuildProjectToolWindowForm createMavenToolWindowForm() {
         MavenBuildProjectToolWindowForm toolWindowForm = new MavenBuildProjectToolWindowForm();
         DefaultActionGroup group = new DefaultActionGroup();
         AnAction actionAddPom = new AddPomAction(actionContext, PluginConstants.ACTION_COMMAND_ADD_POM,
-                                    "Adds a POM to the project", IconLoader.getIcon(PluginConstants.ICON_ADD_POM));
+                "Adds a POM to the project", IconLoader.getIcon(PluginConstants.ICON_ADD_POM));
         AnAction actionRemovePom = new RemovePomAction(actionContext, PluginConstants.ACTION_COMMAND_REMOVE_POM,
-                                       "Removes a POM from the project",
-                                       IconLoader.getIcon(PluginConstants.ICON_REMOVE_POM));
+                "Removes a POM from the project",
+                IconLoader.getIcon(PluginConstants.ICON_REMOVE_POM));
         AnAction actionAddPlugin = new AddPluginAction(actionContext, PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
-                                       PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
-                                       IconLoader.getIcon(PluginConstants.ICON_ADD_PLUGIN));
+                PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
+                IconLoader.getIcon(PluginConstants.ICON_ADD_PLUGIN));
         AnAction actionRemovePlugin = new RemovePluginAction(actionContext,
-                                          PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
-                                          PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
-                                          IconLoader.getIcon(PluginConstants.ICON_REMOVE_PLUGIN));
+                PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
+                PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
+                IconLoader.getIcon(PluginConstants.ICON_REMOVE_PLUGIN));
         AnAction actionRunGoals = new RunGoalsAction(actionContext, PluginConstants.ACTION_COMMAND_RUN_GOALS,
-                                      PluginConstants.ACTION_COMMAND_RUN_GOALS,
-                                      IconLoader.getIcon(PluginConstants.ICON_RUN));
+                PluginConstants.ACTION_COMMAND_RUN_GOALS,
+                IconLoader.getIcon(PluginConstants.ICON_RUN));
         AnAction actionSortAsc = new SortAction(actionContext, PluginConstants.ACTION_COMMAND_SORT_ASC,
-                                     PluginConstants.ACTION_COMMAND_SORT_ASC,
-                                     IconLoader.getIcon(PluginConstants.ICON_SORT_ASC));
+                PluginConstants.ACTION_COMMAND_SORT_ASC,
+                IconLoader.getIcon(PluginConstants.ICON_SORT_ASC));
         AnAction showMavenOptions = new ShowMavenOptionsAction(actionContext,
-                                        PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
-                                        PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
-                                        IconLoader.getIcon(PluginConstants.ICON_SHOW_MAVEN_OPTIONS));
+                PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
+                PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
+                IconLoader.getIcon(PluginConstants.ICON_SHOW_MAVEN_OPTIONS));
         AnAction filter = new FilterAction(actionContext, PluginConstants.ACTION_COMMAND_FILTER,
-                                           PluginConstants.ACTION_COMMAND_FILTER,
-                                           actionContext.getProjectPluginSettings().isUseFilter()
-                                           ? IconLoader.getIcon(PluginConstants.ICON_FILTER_APPLIED)
-                                           : IconLoader.getIcon(PluginConstants.ICON_FILTER));
+                PluginConstants.ACTION_COMMAND_FILTER,
+                actionContext.getProjectPluginSettings().isUseFilter()
+                        ? IconLoader.getIcon(PluginConstants.ICON_FILTER_APPLIED)
+                        : IconLoader.getIcon(PluginConstants.ICON_FILTER));
 
         group.add(actionAddPom);
         group.add(actionRemovePom);
@@ -160,8 +154,8 @@ public class MavenBuildProjectComponent extends AbstractComponent
         actionToolbar.getComponent().setEnabled(false);
         toolWindowForm.getRootComponent().add(actionToolbar.getComponent(),
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                    GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                    GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null));
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null));
 
         ToolWindowKeyListener keyListener = new ToolWindowKeyListener(actionContext);
 
@@ -177,7 +171,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
      */
     public void apply() throws ConfigurationException {
         MavenProjectConfigurationForm form =
-            (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
+                (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
         MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         if (form != null) {
@@ -226,7 +220,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
         actionContext.getGuiContext().setMavenToolWindowForm(createMavenToolWindowForm());
 
         MavenProjectConfigurationForm form =
-            (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
+                (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
 
         if (form == null) {
             form = new MavenProjectConfigurationForm();
@@ -244,7 +238,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(actionContext.getPluginProject());
         MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
         MavenBuildProjectToolWindowForm form =
-            (MavenBuildProjectToolWindowForm) actionContext.getGuiContext().getMavenToolWindowForm();
+                (MavenBuildProjectToolWindowForm) actionContext.getGuiContext().getMavenToolWindowForm();
 
         form.getScrollpane().setViewportView(tree);
         form.getTextFieldCmdLine().setText(pluginSettings.getMavenCommandLineParams());
@@ -252,7 +246,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
 
         // createToolbar(mavenToolWindowForm);
         ToolWindow pomToolWindow = toolWindowManager.registerToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID,
-                                       pomContentPanel, ToolWindowAnchor.RIGHT);
+                pomContentPanel, ToolWindowAnchor.RIGHT);
 
         pomToolWindow.setIcon(GuiUtils.createImageIcon(PluginConstants.ICON_APPLICATION_EMBLEM_SMALL));
     }
@@ -295,7 +289,6 @@ public class MavenBuildProjectComponent extends AbstractComponent
      * Method description
      *
      * @param element Document me!
-     *
      * @throws InvalidDataException
      */
     public void readExternal(Element element) throws InvalidDataException {
@@ -327,8 +320,8 @@ public class MavenBuildProjectComponent extends AbstractComponent
                 xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
 
                 SettingsDocument settingsDocument = SettingsDocument.Factory.parse(new File(mavenHomeDir
-                                                        + System.getProperty("file.separator")
-                                                        + "settings.xml"), xmlOptions);
+                        + System.getProperty("file.separator")
+                        + "settings.xml"), xmlOptions);
 
                 if (settingsDocument != null) {
                     if (!StringUtils.isEmpty(settingsDocument.getSettings().getLocalRepository())) {
@@ -377,7 +370,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
 
                                 try {
                                     MavenPluginDocument mavenPluginDocument =
-                                        ActionUtils.createMavenPluginDocument(pluginJarArchive, true);
+                                            ActionUtils.createMavenPluginDocument(pluginJarArchive, true);
 
                                     if (mavenPluginDocument != null) {
                                         mavenProjectDocument.getPluginDocumentList().add(mavenPluginDocument);
@@ -402,7 +395,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
      */
     public void reset() {
         MavenProjectConfigurationForm form =
-            (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
+                (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
         MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         if (form != null) {
@@ -420,26 +413,25 @@ public class MavenBuildProjectComponent extends AbstractComponent
      * Method description
      *
      * @param element Document me!
-     *
      * @throws WriteExternalException
      */
     public void writeExternal(Element element) throws WriteExternalException {
         MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE,
-                                        pluginSettings.getMavenHome());
+                pluginSettings.getMavenHome());
         JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_SETTINGS_FILE,
-                                        pluginSettings.getMavenSettingsFile());
+                pluginSettings.getMavenSettingsFile());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_MAVEN_COMMAND_LINE,
-                                        pluginSettings.getMavenCommandLineParams());
+                pluginSettings.getMavenCommandLineParams());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_VM_OPTIONS,
-                                        pluginSettings.getVmOptions());
+                pluginSettings.getVmOptions());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER,
-                                        Boolean.toString(pluginSettings.isUseMavenEmbedder()));
+                Boolean.toString(pluginSettings.isUseMavenEmbedder()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_USE_FILTER,
-                                        Boolean.toString(pluginSettings.isUseFilter()));
+                Boolean.toString(pluginSettings.isUseFilter()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS,
-                                        Boolean.toString(pluginSettings.isScanForExistingPoms()));
+                Boolean.toString(pluginSettings.isScanForExistingPoms()));
         super.writeExternal(pluginSettings, element);
 
         Element pomListElement = new Element("pom-list");
@@ -475,7 +467,8 @@ public class MavenBuildProjectComponent extends AbstractComponent
      *
      * @return Document me!
      */
-    @NotNull public String getComponentName() {
+    @NotNull
+    public String getComponentName() {
         return PluginConstants.PROJECT_COMPONENT_NAME;
     }
 
@@ -484,9 +477,10 @@ public class MavenBuildProjectComponent extends AbstractComponent
      *
      * @return Document me!
      */
-    @Nls public String getDisplayName() {
+    @Nls
+    public String getDisplayName() {
         return PluginConstants
-            .PLUGIN_PROJECT_DISPLAY_NAME;    // To change body of implemented methods use File | Settings | File Templates.
+                .PLUGIN_PROJECT_DISPLAY_NAME;    // To change body of implemented methods use File | Settings | File Templates.
     }
 
     /**
@@ -494,22 +488,25 @@ public class MavenBuildProjectComponent extends AbstractComponent
      *
      * @return Document me!
      */
+/*
     @Nullable @NonNls
     public String getHelpTopic() {
         return null;
     }
+*/
 
     /**
      * Method description
      *
      * @return Document me!
      */
+/*
     public Icon getIcon() {
         return GuiUtils
             .createImageIcon(PluginConstants
                 .ICON_APPLICATION_BIG);    // To change body of implemented methods use File | Settings | File Templates.
     }
-
+*/
     private void readPomFiles(VirtualFile virtualFile, Set<MavenProjectDocument> pomFileList) {
         VirtualFile[] children = virtualFile.getChildren();
 
@@ -545,7 +542,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
      */
     public boolean isModified() {
         MavenProjectConfigurationForm form =
-            (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
+                (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
         MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         return (form != null) && form.isModified(pluginSettings);
@@ -559,5 +556,29 @@ public class MavenBuildProjectComponent extends AbstractComponent
         }
 
         return false;
+    }
+
+    public JComponent getMevenideConfigurationComponent() {
+        return createComponent();
+    }
+
+    public String getMevenideComponentName() {
+        return getDisplayName();
+    }
+
+    public boolean isMevenideConfigurationModified() {
+        return isModified();
+    }
+
+    public void applyMevenideConfiguration() {
+        try {
+            apply();
+        } catch (ConfigurationException e) {
+            LOG.error(e);
+        }
+    }
+
+    public void resetMevenideConfiguration() {
+        reset();
     }
 }

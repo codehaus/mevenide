@@ -6,35 +6,13 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>idea-ide</artifactId>
+    <artifactId>idea-core</artifactId>
     <packaging>jar</packaging>
     <version>0.1-SNAPSHOT</version>
-    <name>IDEA Maven2 IDE support</name>
-    <description>Implementation of an IDEA IDE project backed by Maven2 POM files.</description>
+    <name>IDEA Maven2 Core plugin</name>
+    <description>Implements the basic features of the Mevenide2 IDEA plugin</description>
 
     <dependencies>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>idea-core</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
-<!--
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>indexer</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>debugger-bridge</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>run-jar-bridge</artifactId>
-            <version>1.0</version>
-        </dependency>
--->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-embedder-dep</artifactId>
