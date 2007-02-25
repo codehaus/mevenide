@@ -30,7 +30,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String PLUGIN_PROJECT_DISPLAY_NAME = "Maven-2 Build";
+    public static final String PLUGIN_PROJECT_DISPLAY_NAME = "Build";
 
     /**
      * Field description
@@ -70,7 +70,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String OUTPUT_TOOL_WINDOW_ID = "Maven-2 Build Output";
+    public static final String OUTPUT_TOOL_WINDOW_ID = "Mevenide2 Build Output";
 
     /**
      * Field description
@@ -210,7 +210,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ACTION_COMMAND_RERUN_MAVEN = "Rerun Maven-2";
+    public static final String ACTION_COMMAND_RERUN_MAVEN = "Rerun Mevenide2";
 
     /**
      * Field description
@@ -230,7 +230,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ACTION_COMMAND_STOP_PROCESS = "Stop Maven-2 Build";
+    public static final String ACTION_COMMAND_STOP_PROCESS = "Stop Mevenide2 Build";
 
     /**
      * Field description
@@ -260,7 +260,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String BUILD_TOOL_WINDOW_ID = "Maven-2 Build";
+    public static final String BUILD_TOOL_WINDOW_ID = "Mevenide2 Build";
 
     /**
      * Field description

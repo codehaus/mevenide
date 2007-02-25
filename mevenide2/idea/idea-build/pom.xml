@@ -14,6 +14,29 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>idea-core</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>2.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xbean</artifactId>
+            <version>2.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jsr173_api</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-embedder-dep</artifactId>
         </dependency>
@@ -32,80 +55,54 @@
         <dependency>
             <groupId>com.intellij.idea</groupId>
             <artifactId>extensions</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>2.1</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.13</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jdom</groupId>
-            <artifactId>jdom</artifactId>
-            <version>1.0</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>xmlbeans</groupId>
-            <artifactId>xbean</artifactId>
-            <version>2.0.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jsr173_api</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
+        </dependency>   
     </dependencies>
-
     <build>
         <resources>
-          <resource>
-            <filtering>true</filtering>
-            <directory>${basedir}/src/main/resources</directory>
-            <includes>
-              <include>**/*.*</include>
-            </includes>
-          </resource>
+            <resource>
+                <filtering>true</filtering>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*.*</include>
+                </includes>
+            </resource>
         </resources>
         <plugins>
-<!--
+            <!--
+                        <plugin>
+                          <artifactId>maven-release-plugin</artifactId>
+                          <configuration>
+                            <tagBase>
+                              svn://quebbemann.kicks-ass.net/var/lib/subversion/repository/java/tags/idea-maven-plugin
+                            </tagBase>
+                            <goals>
+                              deploy assembly:assembly copy:copy-files site-deploy
+                            </goals>
+                          </configuration>
+                        </plugin>
+            -->
             <plugin>
-              <artifactId>maven-release-plugin</artifactId>
-              <configuration>
-                <tagBase>
-                  svn://quebbemann.kicks-ass.net/var/lib/subversion/repository/java/tags/idea-maven-plugin
-                </tagBase>
-                <goals>
-                  deploy assembly:assembly copy:copy-files site-deploy
-                </goals>
-              </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-idea-plugin</artifactId>
+                <configuration>
+                    <ideaPlugin>true</ideaPlugin>
+                </configuration>
             </plugin>
--->
             <plugin>
-              <groupId>org.codehaus.mojo</groupId>
-              <artifactId>xmlbeans-maven-plugin</artifactId>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>xmlbeans</goal>
-                  </goals>
-                </execution>
-              </executions>
-              <inherited>true</inherited>
-              <configuration>
-                <schemaDirectory>src/main/xsd</schemaDirectory>
-                <javaSource>1.5</javaSource>
-              </configuration>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>xmlbeans-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xmlbeans</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <inherited>true</inherited>
+                <configuration>
+                    <schemaDirectory>src/main/xsd</schemaDirectory>
+                    <javaSource>1.5</javaSource>
+                </configuration>
             </plugin>
         </plugins>
     </build>

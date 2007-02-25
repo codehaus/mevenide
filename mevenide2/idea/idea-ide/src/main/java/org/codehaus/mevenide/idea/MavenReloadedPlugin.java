@@ -16,11 +16,9 @@
  */
 
 
-
 package org.codehaus.mevenide.idea;
 
 import com.intellij.openapi.components.ProjectComponent;
-import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
@@ -29,26 +27,22 @@ import com.intellij.openapi.util.WriteExternalException;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-
+import org.apache.log4j.Logger;
 import org.codehaus.mevenide.idea.configuration.ConfigurationBean;
 import org.codehaus.mevenide.idea.configuration.ConfigurationForm;
 import org.codehaus.mevenide.idea.configuration.PluginJDOMExternalizer;
 import org.codehaus.mevenide.idea.console.LoggerConsole;
 import org.codehaus.mevenide.idea.console.PluginLogger;
-
 import org.jdom.Element;
 
-import org.jetbrains.annotations.NonNls;
-import org.jetbrains.annotations.Nullable;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 
 /**
  * A class that acts as the entry point for the MavenReloaded IntelliJ plugin.
  */
-public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable, Configurable {
+public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable, IMevenideIdeaComponent {
+    private static final Logger LOG = Logger.getLogger(MavenReloadedPlugin.class);
 
     // the current project in use
     private final Project project;
@@ -69,27 +63,39 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
     // the logger that corresponds to this instance of the plugin
     private PluginLogger logger;
 
+
     /**
      * A constructor that takes the project in use.
      *
      * @param project The currently loaded project.
      */
-    public MavenReloadedPlugin(Project project) {
+    public MavenReloadedPlugin(Project project, CorePlugin corePlugin) {
         this.project = project;
+        corePlugin.registerMevenideComponent(this);
     }
 
-    /** {@inheritDoc} */
-    public void initComponent() {}
+    /**
+     * {@inheritDoc}
+     */
+    public void initComponent() {
+    }
 
-    /** {@inheritDoc} */
-    public void disposeComponent() {}
+    /**
+     * {@inheritDoc}
+     */
+    public void disposeComponent() {
+    }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getComponentName() {
         return "Maven Reloaded";
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void projectOpened() {
 
         // store the plugin config in the config manager so other classes can get access
@@ -97,14 +103,16 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
         logger = PluginLoggerManager.getInstance(project).getPluginLogger(MavenReloadedPlugin.class);
 
         // bring up the logging console
-        createLogConsole();
+    //    createLogConsole();
 
         // tell the POM manager to start working
         PluginPomManager.getInstance(project).projectOpened();
         logger.debug("Opened project " + project.getName());
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void projectClosed() {
 
         // tell the POM manager to stop working
@@ -112,7 +120,7 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
         logger.debug("Closed project " + project.getName());
 
         // bring down the logging console
-        destroyLogConsole();
+  //      destroyLogConsole();
 
         // get rid of references to the project from the managers
         PluginConfigurationManager.releaseInstance(project);
@@ -134,7 +142,7 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
         // make a tool window for the console
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
         ToolWindow logWindow = toolWindowManager.registerToolWindow(LOG_CONSOLE_ID, logConsole,
-                                   ToolWindowAnchor.BOTTOM);
+                ToolWindowAnchor.BOTTOM);
 
         logWindow.setTitle(LOG_CONSOLE_TITLE);
         logWindow.setIcon(new ImageIcon(MavenReloadedPlugin.class.getResource(LOG_CONSOLE_ICON)));
@@ -154,33 +162,30 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
         toolWindowManager.unregisterToolWindow(LOG_CONSOLE_ID);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void readExternal(Element element) throws InvalidDataException {
         PluginJDOMExternalizer.readExternal(this, element);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void writeExternal(Element element) throws WriteExternalException {
         PluginJDOMExternalizer.writeExternal(this, element);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public String getDisplayName() {
-        return "Maven Reloaded";
+        return "IDE";
     }
 
-    /** {@inheritDoc} */
-    public Icon getIcon() {
-        return new ImageIcon(MavenReloadedPlugin.class.getResource(CONFIGURATION_ICON));
-    }
-
-    /** {@inheritDoc} */
-    @Nullable @NonNls
-    public String getHelpTopic() {
-        return null;
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public JComponent createComponent() {
         if (configForm == null) {
             configForm = new ConfigurationForm();
@@ -189,27 +194,59 @@ public class MavenReloadedPlugin implements ProjectComponent, JDOMExternalizable
         return configForm.getRootComponent();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public boolean isModified() {
         return ((configForm != null) && configForm.isModified(config));
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void apply() throws ConfigurationException {
         if (configForm != null) {
             configForm.getData(config);
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void reset() {
         if (configForm != null) {
             configForm.setData(config);
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     public void disposeUIResources() {
         configForm = null;
+    }
+
+    public JComponent getMevenideConfigurationComponent() {
+        return createComponent();
+    }
+
+    public String getMevenideComponentName() {
+        return getDisplayName();
+    }
+
+    public boolean isMevenideConfigurationModified() {
+        return isModified();
+    }
+
+    public void applyMevenideConfiguration() {
+        try {
+            apply();
+        } catch (ConfigurationException e) {
+            LOG.error(e);
+        }
+    }
+
+    public void resetMevenideConfiguration() {
+        reset();
     }
 }

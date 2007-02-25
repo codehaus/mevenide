@@ -7,6 +7,7 @@
     <moduleSets>
         <moduleSet>
             <includes>
+                <include>org.codehaus.mevenide:idea-core</include>
                 <include>org.codehaus.mevenide:idea-ide</include>
                 <include>org.codehaus.mevenide:idea-build</include>
             </includes>
