@@ -19,10 +19,14 @@ package org.codehaus.mevenide.idea.form;
 
 import org.codehaus.mevenide.idea.CorePlugin;
 
-import javax.swing.*;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 
 /**
- * Todo: Describe what this class does!
+ * This is the core configuration dialog container. It acts as a single point of configuration
+ * for all Mevenide2 IDEA plugins.
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
