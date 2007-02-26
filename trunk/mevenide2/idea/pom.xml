@@ -80,11 +80,6 @@
             </plugin>
         </plugins>
     </build>
-    <modules>
-        <module>idea-core</module>
-        <module>idea-ide</module>
-        <module>idea-build</module>
-    </modules>
     <repositories>
     </repositories>
     <dependencies>
@@ -147,7 +142,7 @@
                 <scope>provided</scope>
             </dependency>
         </dependencies>
-    </dependencyManagement>        
+    </dependencyManagement>
     <pluginRepositories>
         <pluginRepository>
             <id>codehaus.snapshots</id>
@@ -292,4 +287,21 @@
             </plugin>
         </plugins>
     </reporting>
+    <profiles>
+        <profile>
+            <id>mevenide-dev</id>
+            <distributionManagement>
+                <site>
+                    <id>Mevenide2 IDEA Local Dev Site</id>
+                    <name>Mevenide2 IDEA Plugin</name>
+                    <url>${mevenide2.idea.dist.url}</url>
+                </site>
+            </distributionManagement>
+        </profile>
+    </profiles>
+    <modules>
+        <module>idea-core</module>
+        <module>idea-ide</module>
+        <module>idea-build</module>
+    </modules>
 </project>
