@@ -1,0 +1,20 @@
+<assembly>
+  <id></id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>/mevenide2-idea-build/lib</outputDirectory>
+      <unpack>false</unpack>
+      <scope>runtime</scope>
+      <includes>
+        <include>xmlbeans:xbean</include>
+        <include>javax.xml.bind:jsr173_api</include>
+        <include>org.codehaus.mevenide:idea-build</include>
+        <include>commons-lang:commons-lang</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+</assembly>
