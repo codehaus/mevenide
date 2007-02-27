@@ -6,11 +6,11 @@
     <includeBaseDirectory>false</includeBaseDirectory>
     <dependencySets>
         <dependencySet>
-            <outputDirectory>/mevenide2-idea/lib</outputDirectory>
+            <outputDirectory>/mevenide2-idea-ide/lib</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.apache.maven:maven-embedder-dep</include>
+                <include>org.codehaus.mevenide:idea-ide</include>
             </includes>
         </dependencySet>
     </dependencySets>

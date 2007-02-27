@@ -12,6 +12,24 @@
     <description>IDEA Support</description>
     <version>0.1-SNAPSHOT</version>
     <inceptionYear>2006</inceptionYear>
+    <developers>
+        <developer>
+          <name>Ralf Quebbemann</name>
+          <id>ralfq</id>
+          <email>ralfq@gmx.de</email>
+          <timezone>1</timezone>
+          <roles>
+            <role>Developer</role>
+          </roles>
+        </developer>
+    </developers>
+    <licenses>
+        <license>
+            <name>Apache License</name>
+            <url>license.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>
@@ -22,6 +40,18 @@
                     <compilerVersion>1.5</compilerVersion>
                     <source>1.5</source>
                     <target>1.5</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml
+                        </descriptor>
+                        <!--     <descriptor>${basedir}/src/main/assembly/assembly-src-descriptor.xml
+                    </descriptor>    -->
+                    </descriptors>
+                    <finalName>mevenide2-${pom.artifactId}-${pom.version}</finalName>
                 </configuration>
             </plugin>
             <plugin>
@@ -36,22 +66,6 @@
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.2</version>
-            </plugin>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.2-SNAPSHOT</version>
-                <configuration>
-                    <!--
-                              <descriptorRefs>
-                                <descriptorRef>src</descriptorRef>
-                              </descriptorRefs>
-                    -->
-                    <descriptors>
-                        <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml</descriptor>
-                        <descriptor>${basedir}/src/main/assembly/assembly-src-descriptor.xml</descriptor>
-                    </descriptors>
-                    <finalName>mevenide2-${pom.artifactId}-${pom.version}</finalName>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
