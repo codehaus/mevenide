@@ -22,13 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.netbeans.modules.j2ee.persistence.api.PersistenceScopes;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
-import org.openide.filesystems.FileAttributeEvent;
-import org.openide.filesystems.FileChangeListener;
-import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -111,7 +106,7 @@ public class PersistenceLocationProviderImpl implements PersistenceLocationProvi
     /**
      * called by constructor to check if there is a persistence.xml available,
      * it checks in /src/main/java/META-INF and /src/main/resources/META-INF
-     * @return File object with the current persistence.xml or null
+             * @return File object with the current persistence.xml or null
      */
     private File findPersistenceXml()
     {

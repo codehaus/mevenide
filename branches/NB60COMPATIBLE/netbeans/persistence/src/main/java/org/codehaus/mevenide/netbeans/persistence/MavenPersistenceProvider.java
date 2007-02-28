@@ -16,10 +16,13 @@
  */
 package org.codehaus.mevenide.netbeans.persistence;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.io.IOException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScopes;
@@ -27,11 +30,9 @@ import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopesProvider;
-import org.netbeans.modules.j2ee.persistenceapi.FileChangeSupport;
-import org.netbeans.modules.j2ee.persistenceapi.FileChangeSupportEvent;
-import org.netbeans.modules.j2ee.persistenceapi.FileChangeSupportListener;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.WeakListeners;
 
 /**
  *
@@ -49,8 +50,8 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     private PersistenceScopeProviderImpl     scopeProvider    = null;
    
     private final PropertyChangeSupport propChangeSupport = new PropertyChangeSupport(this);
-    private final FileChangeSupportListener listener = new FileListener();
-    
+//    private final FileChangeSupportListener listener = new FileListener();
+    private ResourceListener res = new ResourceListener();
     /**
      * Creates a new instance of MavenPersistenceProvider
      */
@@ -66,7 +67,10 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
                 
         // add FileChangeListener on persistence.xml
         File persistenceXml = locProvider.getPersistenceXml();
-        FileChangeSupport.DEFAULT.addListener(listener, persistenceXml);
+        ProjectURLWatcher watcher = proj.getLookup().lookup(ProjectURLWatcher.class);
+        watcher.addWatchedPath(PersistenceLocationProviderImpl.DEF_PERSISTENCE);
+        watcher.addWatchedPath(PersistenceLocationProviderImpl.ALT_PERSISTENCE);
+        watcher.addPropertyChangeListener(WeakListeners.propertyChange(res, watcher));
     }
 
     /**************************************************************************
@@ -106,25 +110,16 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
         return cpProvider.getClassPath();
     }
     
-    
-    /**************************************************************************
-     * FileChangeSupportListener for Persistence.xml
-     *************************************************************************/
-    private class FileListener implements FileChangeSupportListener 
-    {
-        public void fileCreated(FileChangeSupportEvent fileChangeSupportEvent)
-        {
-            propChangeSupport.firePropertyChange(PROP_PERSISTENCE, null, null);
-        }
-
-        public void fileDeleted(FileChangeSupportEvent fileChangeSupportEvent)
-        {
-            propChangeSupport.firePropertyChange(PROP_PERSISTENCE, null, null);
-        }
-
-        public void fileModified(FileChangeSupportEvent fileChangeSupportEvent)
-        {
-            // we don't care about file changes
+    //TODO rewrite..
+    private class ResourceListener implements PropertyChangeListener {
+        public void propertyChange(PropertyChangeEvent event) {
+            if (NbMavenProject.PROP_RESOURCE.equals(event.getPropertyName())) {
+                if (  PersistenceLocationProviderImpl.DEF_PERSISTENCE.equals(event.getNewValue())
+                   || PersistenceLocationProviderImpl.ALT_PERSISTENCE.equals(event.getNewValue())) {
+                   propChangeSupport.firePropertyChange(PROP_PERSISTENCE, null, null);
+                    
+                }
+            }
         }
     }
  }

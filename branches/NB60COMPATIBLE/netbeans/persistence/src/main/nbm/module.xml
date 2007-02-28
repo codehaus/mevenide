@@ -17,6 +17,9 @@
             <id>org.netbeans.api:org-openide-filesystems</id>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-openide-modules</id>
+        </dependency>
+        <dependency>
             <id>org.codehaus.mevenide:nb-project</id>
         </dependency>
         <dependency>
@@ -26,8 +29,17 @@
             <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-projectuiapi</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-java-project</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-project-libraries</id>
+        </dependency>
+        <dependency>
             <id>org.netbeans.modules:org-netbeans-modules-j2ee-persistenceapi</id>
-            <type>impl</type>
+            <!--type>impl</type-->
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-api-java</id>
