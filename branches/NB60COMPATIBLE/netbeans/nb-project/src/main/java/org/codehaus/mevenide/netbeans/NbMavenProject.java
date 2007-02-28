@@ -433,6 +433,7 @@ public final class NbMavenProject implements Project {
         return lookup;
     }
     private Lookup createBasicLookup() {
+        CPExtender extender = new CPExtender(this);
         Lookup staticLookup = Lookups.fixed(new Object[] {
             projectInfo,
             this,
@@ -453,7 +454,6 @@ public final class NbMavenProject implements Project {
             new JarPackagingRunChecker(),
             problemReporter,
             new UserActionGoalProvider(this),
-            new CPExtender(this),
             watcher,
             
             //operations
@@ -462,7 +462,9 @@ public final class NbMavenProject implements Project {
             // default mergers..        
             UILookupMergerSupport.createPrivilegedTemplatesMerger(),
             UILookupMergerSupport.createRecommendedTemplatesMerger(),
-            LookupProviderSupport.createSourcesMerger()        
+            LookupProviderSupport.createSourcesMerger(),
+            new CPExtenderLookupMerger(extender),
+            new CPModifierLookupMerger(extender)
         });
         return staticLookup;
     }

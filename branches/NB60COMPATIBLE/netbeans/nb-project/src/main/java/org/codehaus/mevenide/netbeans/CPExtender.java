@@ -68,11 +68,13 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = addLibrary(library, model, null);
-        try {
-            WriterUtils.writePomModel(pom, model);
-            ProjectURLWatcher.fireMavenProjectReload(project);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (added) {
+            try {
+                WriterUtils.writePomModel(pom, model);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         return added;
     }
@@ -87,11 +89,13 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         Model model = WriterUtils.loadModel(fo);
         assert model != null;
         boolean added = addArchiveFile(file, model, null);
-        try {
-            WriterUtils.writePomModel(fo, model);
-            ProjectURLWatcher.fireMavenProjectReload(project);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (added) {
+            try {
+                WriterUtils.writePomModel(fo, model);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         return added;
     }
@@ -189,20 +193,20 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects."); //NOI18N
     }
     
-    protected SourceGroup[] getExtensibleSourceGroups() {
+    public SourceGroup[] getExtensibleSourceGroups() {
         Sources s = (Sources) this.project.getLookup().lookup(Sources.class);
         assert s != null;
         return s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
     }
     
-    protected String[] getExtensibleClassPathTypes(SourceGroup arg0) {
+    public String[] getExtensibleClassPathTypes(SourceGroup arg0) {
         return new String[] {
             ClassPath.COMPILE,
             ClassPath.EXECUTE
         };
     }
     
-    protected boolean addLibraries(Library[] libraries, SourceGroup grp, String type) throws IOException {
+    public boolean addLibraries(Library[] libraries, SourceGroup grp, String type) throws IOException {
         FileObject pom = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = libraries.length > 0;
@@ -210,22 +214,24 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         for (Library library : libraries) {
             added = added && addLibrary(library, model, scope);
         }
-        try {
-            WriterUtils.writePomModel(pom, model);
-            ProjectURLWatcher.fireMavenProjectReload(project);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (added) {
+            try {
+                WriterUtils.writePomModel(pom, model);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         return added;
     }
     
-    protected boolean removeLibraries(Library[] arg0, SourceGroup arg1,
+    public boolean removeLibraries(Library[] arg0, SourceGroup arg1,
                                       String arg2) throws IOException,
                                                           UnsupportedOperationException {
-        throw new UnsupportedOperationException("Not supported yet.");//NOI18N
+        throw new UnsupportedOperationException("Not supported in maven projects.");//NOI18N
     }
     
-    protected boolean addRoots(URL[] urls, SourceGroup grp, String type) throws IOException {
+    public boolean addRoots(URL[] urls, SourceGroup grp, String type) throws IOException {
         FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = urls.length > 0;
@@ -235,26 +241,28 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             assert fo != null;
             added = added && addArchiveFile(fo, model, scope);
         }
-        try {
-            WriterUtils.writePomModel(pom, model);
-            ProjectURLWatcher.fireMavenProjectReload(project);
-        } catch (IOException ex) {
-            ex.printStackTrace();
+        if (added) {
+            try {
+                WriterUtils.writePomModel(pom, model);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         return added;
     }
     
-    protected boolean removeRoots(URL[] arg0, SourceGroup arg1, String arg2) throws IOException,
+    public boolean removeRoots(URL[] arg0, SourceGroup arg1, String arg2) throws IOException,
                                                                                     UnsupportedOperationException {
         throw new UnsupportedOperationException("Not supported yet.");//NOI18N
     }
     
-    protected boolean addAntArtifacts(AntArtifact[] arg0, URI[] arg1,
+    public boolean addAntArtifacts(AntArtifact[] arg0, URI[] arg1,
                                       SourceGroup arg2, String arg3) throws IOException {
         throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects.");//NOI18N
     }
     
-    protected boolean removeAntArtifacts(AntArtifact[] arg0, URI[] arg1,
+    public boolean removeAntArtifacts(AntArtifact[] arg0, URI[] arg1,
                                          SourceGroup arg2, String arg3) throws IOException {
         return false;
     }
