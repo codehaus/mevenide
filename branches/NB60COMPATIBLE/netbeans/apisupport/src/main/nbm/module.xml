@@ -27,14 +27,16 @@
           <id>org.codehaus.mevenide:nb-project</id>
       </dependency>
       <dependency>
+          <id>org.codehaus.mevenide:indexer</id>
+      </dependency>
+      <dependency>
           <id>org.netbeans.api:org-netbeans-modules-projectuiapi</id>
       </dependency>
       <dependency>
           <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
       </dependency>
-        <dependency>
-            <id>org.netbeans.modules:org-netbeans-modules-apisupport-project</id>
-            <type>impl</type>
-        </dependency>
+      <dependency>
+         <id>org.netbeans.modules:org-netbeans-modules-apisupport-project</id>
+      </dependency>
    </dependencies> 
 </nbm>

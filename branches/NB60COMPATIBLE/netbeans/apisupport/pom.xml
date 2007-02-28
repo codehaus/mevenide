@@ -38,6 +38,11 @@
             <artifactId>nb-project</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>indexer</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
