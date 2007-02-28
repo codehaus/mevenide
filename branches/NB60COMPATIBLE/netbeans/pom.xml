@@ -114,7 +114,7 @@
       <!--a fallback to make it work everywhere -->
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE60-M6</netbeans.release>
-       <mevenide.nb.release>3.0-SNAPSHOT</mevenide.nb.release>
+       <netbeans.release>RELEASE60-M7</netbeans.release>
+       <mevenide.nb.release>3.0.1-SNAPSHOT</mevenide.nb.release>
   </properties>
 </project>
