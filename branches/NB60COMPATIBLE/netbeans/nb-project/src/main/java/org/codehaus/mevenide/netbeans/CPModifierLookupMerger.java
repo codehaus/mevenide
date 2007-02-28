@@ -86,7 +86,10 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                 if (x.getCause() instanceof IOException) {
                     throw (IOException)x.getCause();
                 }
-                throw new IOException(x.getCause());
+                //JDK16 can replace with new IOException(x.getCause());
+                IOException ex = new IOException(x.getCause().getMessage());
+                ex.initCause(x.getCause());
+                throw ex;
             } catch (Exception e) {
                 e.printStackTrace();
                 throw new AssertionError("Cannot use reflection on " + impl + " method:" + methodName);
