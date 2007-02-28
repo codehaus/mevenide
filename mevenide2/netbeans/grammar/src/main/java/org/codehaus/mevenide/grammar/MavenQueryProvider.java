@@ -47,11 +47,14 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     }
     
     public Enumeration enabled(GrammarEnvironment ctx) {
-        Enumeration en = ctx.getDocumentChildren();
-        while (en.hasMoreElements()) {
-            Node next = (Node) en.nextElement();
-            if (next.getNodeType() == next.ELEMENT_NODE) {
-                return Collections.enumeration(Collections.singletonList(next));
+        // check if is supported environment..
+        if (getGrammar(ctx) != null) {
+            Enumeration en = ctx.getDocumentChildren();
+            while (en.hasMoreElements()) {
+                Node next = (Node)en.nextElement();
+                if (next.getNodeType() == next.ELEMENT_NODE) {
+                    return Collections.enumeration(Collections.singletonList(next));
+                }
             }
         }
         return null;
