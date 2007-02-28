@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0-SNAPSHOT</version>
+  <version>3.0.1-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <profiles>
       <profile>
