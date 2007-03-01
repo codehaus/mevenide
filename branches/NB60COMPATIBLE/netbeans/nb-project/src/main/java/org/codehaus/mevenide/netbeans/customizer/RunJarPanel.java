@@ -402,6 +402,9 @@ public class RunJarPanel extends javax.swing.JPanel {
             assPlugin.setGroupId("org.apache.maven.plugins");
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
+        //#96834
+        assPlugin.flushExecutionMap();
+        
         PluginExecution exec = (PluginExecution)assPlugin.getExecutionsAsMap().get("nb"); //NOI18N
         if (exec == null) {
             exec = new PluginExecution();
