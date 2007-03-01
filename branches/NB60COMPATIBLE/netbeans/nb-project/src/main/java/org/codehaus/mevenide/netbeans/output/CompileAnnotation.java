@@ -62,7 +62,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
     private String text;
     
     public CompileAnnotation(String clazz, String line, String textAnn) {
-        clazzfile = new File(clazz + ".java");
+        clazzfile = FileUtil.normalizeFile(new File(clazz + ".java"));
         text = textAnn;
         try {
             lineNum = Integer.parseInt(line);
