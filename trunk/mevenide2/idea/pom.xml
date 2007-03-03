@@ -14,13 +14,13 @@
     <inceptionYear>2006</inceptionYear>
     <developers>
         <developer>
-          <name>Ralf Quebbemann</name>
-          <id>ralfq</id>
-          <email>ralfq@gmx.de</email>
-          <timezone>1</timezone>
-          <roles>
-            <role>Developer</role>
-          </roles>
+            <name>Ralf Quebbemann</name>
+            <id>ralfq</id>
+            <email>ralfq@gmx.de</email>
+            <timezone>1</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
         </developer>
     </developers>
     <licenses>
@@ -153,6 +153,12 @@
                 <groupId>com.intellij.idea</groupId>
                 <artifactId>extensions</artifactId>
                 <version>6.0.4</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.jgoodies</groupId>
+                <artifactId>forms</artifactId>
+                <version>1.0.7</version>
                 <scope>provided</scope>
             </dependency>
         </dependencies>

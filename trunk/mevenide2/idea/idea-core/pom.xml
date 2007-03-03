@@ -33,6 +33,10 @@
             <groupId>com.intellij.idea</groupId>
             <artifactId>extensions</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jgoodies</groupId>
+            <artifactId>forms</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

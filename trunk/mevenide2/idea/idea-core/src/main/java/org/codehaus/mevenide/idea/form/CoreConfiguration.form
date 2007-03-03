@@ -18,28 +18,7 @@
         </constraints>
         <properties/>
         <border type="none"/>
-        <children>
-          <grid id="b8a28" layout-manager="FormLayout">
-            <rowspec value="center:d:noGrow"/>
-            <colspec value="fill:d:noGrow"/>
-            <constraints>
-              <tabbedpane title="Core"/>
-            </constraints>
-            <properties/>
-            <border type="none"/>
-            <children>
-              <component id="c8b15" class="javax.swing.JCheckBox" binding="checkboxScanForExistingPoms">
-                <constraints>
-                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-                  <forms/>
-                </constraints>
-                <properties>
-                  <text value="Scan for existing POMs"/>
-                </properties>
-              </component>
-            </children>
-          </grid>
-        </children>
+        <children/>
       </tabbedpane>
     </children>
   </grid>
