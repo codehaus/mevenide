@@ -48,11 +48,10 @@
                     <descriptors>
                         <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml
                         </descriptor>
-                        <!--     <descriptor>${basedir}/src/main/assembly/assembly-src-descriptor.xml
-                    </descriptor>    -->
                     </descriptors>
                     <finalName>mevenide2-${pom.artifactId}-${pom.version}</finalName>
                 </configuration>
+                <inherited>false</inherited>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -65,7 +64,6 @@
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.2</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>

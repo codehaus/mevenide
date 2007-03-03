@@ -18,23 +18,23 @@
             <artifactId>idea-core</artifactId>
             <version>0.1-SNAPSHOT</version>
         </dependency>
-<!--
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>indexer</artifactId>
-            <version>1.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>debugger-bridge</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>run-jar-bridge</artifactId>
-            <version>1.0</version>
-        </dependency>
--->
+        <!--
+                <dependency>
+                    <groupId>org.codehaus.mevenide</groupId>
+                    <artifactId>indexer</artifactId>
+                    <version>1.1-SNAPSHOT</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.codehaus.mevenide</groupId>
+                    <artifactId>debugger-bridge</artifactId>
+                    <version>1.0</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.codehaus.mevenide</groupId>
+                    <artifactId>run-jar-bridge</artifactId>
+                    <version>1.0</version>
+                </dependency>
+        -->
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-embedder-dep</artifactId>
@@ -77,6 +77,26 @@
                 <configuration>
                     <ideaPlugin>true</ideaPlugin>
                 </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <descriptors>
+                        <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml
+                        </descriptor>
+                    </descriptors>
+                    <finalName>mevenide2-${pom.artifactId}</finalName>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>dist</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>directory-inline</goal>
+                             <goal>attached</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
