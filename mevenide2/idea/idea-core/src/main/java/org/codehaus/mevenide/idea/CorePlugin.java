@@ -34,10 +34,14 @@ public class CorePlugin implements ProjectComponent, Configurable {
 
     public CorePlugin(Project project) {
         corePlugin = project;
+        LOG.info("Mevenide2 Core Plugin constructed!");
     }
 
     public void registerMevenideComponent(IMevenideIdeaComponent mevenideIdeaComponent) {
-        mevenideIdeaComponents.add(mevenideIdeaComponent);
+        if (mevenideIdeaComponent != null) {
+            LOG.info("Registering mevenide component: " + mevenideIdeaComponent.getMevenideComponentName());
+            mevenideIdeaComponents.add(mevenideIdeaComponent);
+        }
     }
 
     public void initComponent() {
@@ -81,11 +85,12 @@ public class CorePlugin implements ProjectComponent, Configurable {
         if (form == null) {
             form = new CoreConfigurationForm();
         }
-
+        LOG.info("Instantiated Core Configuration Form!");
         for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
             JPanel panel = new JPanel();
             panel.add(mevenideIdeaComponent.getMevenideConfigurationComponent());
             form.getTabbedPane().add(mevenideIdeaComponent.getMevenideComponentName(), panel);
+            LOG.info("Adding Mevenide2 component: " + mevenideIdeaComponent.getMevenideComponentName());
         }
         return form.getRootComponent();
     }
