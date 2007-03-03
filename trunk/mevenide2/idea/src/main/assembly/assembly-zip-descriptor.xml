@@ -4,14 +4,27 @@
         <format>zip</format>
     </formats>
     <includeBaseDirectory>false</includeBaseDirectory>
-    <dependencySets>
-        <dependencySet>
-            <outputDirectory>/mevenide2-idea/lib</outputDirectory>
-            <unpack>false</unpack>
-            <scope>runtime</scope>
+    <fileSets>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>idea-core/target/mevenide2-idea-core-dist</directory>
             <includes>
-                <include>org.apache.maven:maven-embedder-dep</include>
+                <include>**/*</include>
             </includes>
-        </dependencySet>
-    </dependencySets>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>idea-build/target/mevenide2-idea-build-dist</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <outputDirectory>/</outputDirectory>
+            <directory>idea-ide/target/mevenide2-idea-ide-dist</directory>
+            <includes>
+                <include>**/*</include>
+            </includes>
+        </fileSet>
+    </fileSets>
 </assembly>
