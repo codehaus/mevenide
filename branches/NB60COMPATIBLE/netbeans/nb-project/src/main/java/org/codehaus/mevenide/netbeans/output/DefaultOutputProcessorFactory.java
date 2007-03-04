@@ -39,6 +39,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
             toReturn.add(new JavaOutputListenerProvider(project));
             toReturn.add(new TestOutputListenerProvider(project));
             toReturn.add(new JavadocOutputProcessor());
+            toReturn.add(new SiteOutputProcessor(project));
         }
         return toReturn;
     }
