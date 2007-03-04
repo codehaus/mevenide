@@ -42,6 +42,8 @@ public class SettingsPanel extends javax.swing.JPanel {
     /** Creates new form SettingsPanel */
     public SettingsPanel() {
         initComponents();
+        //TODO just ignore for now, possibly remove altogether if it doens't make sense..
+        cbSynchProxy.setVisible(false);
         cbDebug.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (cbDebug.isSelected()) {
