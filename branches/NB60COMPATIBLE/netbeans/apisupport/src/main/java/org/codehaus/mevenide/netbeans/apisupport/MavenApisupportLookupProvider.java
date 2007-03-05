@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2005 Mevenide Team
+ * Copyright 2007 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,6 @@ public class MavenApisupportLookupProvider implements LookupProvider {
     public Lookup createAdditionalLookup(Lookup baseLookup) {
         NbMavenProject project = baseLookup.lookup(NbMavenProject.class);
         assert project != null;
-        System.out.println("apisupport lookup.");
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         ic.add(new ApisupportRecoPrivTemplates(project));
@@ -76,7 +75,6 @@ public class MavenApisupportLookupProvider implements LookupProvider {
                     lastInstance = new MavenNbModuleImpl(project);
                 }
                 content.add(lastInstance);
-                System.out.println("adding nbm impl.");
             } else if (lastInstance != null && !(
                     ProjectURLWatcher.TYPE_NBM.equals(packaging)))
             {
