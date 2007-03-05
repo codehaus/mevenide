@@ -1,10 +1,18 @@
-/*
- * MavenNbModuleImpl.java
+/* ==========================================================================
+ * Copyright 2007 Mevenide Team
  *
- * Created on February 18, 2007, 12:11 PM
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * To change this template, choose Tools | Template Manager
- * and open the template in the editor.
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
  */
 
 package org.codehaus.mevenide.netbeans.apisupport;
@@ -12,14 +20,12 @@ package org.codehaus.mevenide.netbeans.apisupport;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.jar.Manifest;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.digest.Md5Digester;
@@ -28,13 +34,13 @@ import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.codehaus.plexus.util.DirectoryWalker;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
@@ -118,7 +124,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     public FileObject getSourceDirectory() {
         FileObject fo = project.getProjectDirectory().getFileObject(getSourceDirectoryPath());
         if (fo == null) {
-            try         {
+            try {
                 fo = FileUtil.createFolder(project.getProjectDirectory(),
                                            getSourceDirectoryPath());
             }
@@ -153,7 +159,6 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                                  SpecificationVersion version,
                                  boolean useInCompiler) throws IOException {
         String artifactId = codeNameBase.replaceAll("\\.", "-");
-        System.out.println("jar name=" + artifactId);
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
@@ -174,7 +179,6 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             try {
                 Md5Digester digest = new Md5Digester();
                 String md5 = digest.calc(platformFile);
-                System.out.println("md5=" + md5);
                 LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
                 TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, md5));
                 LuceneQuery q = new LuceneQuery(tq);
@@ -189,9 +193,43 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+        }
+        if (dep == null) {
+            //TODO try to guess 
+            dep = new Dependency();
+            dep.setGroupId("org.netbeans.api");
+            dep.setArtifactId(artifactId);
+            if (version != null) {
+                dep.setVersion(version.toString());
+            } else {
+                //try guessing the version according to the rest of netbeans dependencies..
+                List deps = watch.getMavenProject().getModel().getDependencies();
+                if (deps != null) {
+                    Iterator it = deps.iterator();
+                    while (it.hasNext()) {
+                        Dependency d = (Dependency)it.next();
+                        if ("org.netbeans.api".equals(d.getGroupId())) {
+                            dep.setVersion(d.getVersion());
+                        }
+                    }
+                }
+            }
         }
         
+        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+        Model model = WriterUtils.loadModel(fo); //NOI18N
+        if (model != null) {
+            Dependency mdlDep = PluginPropertyUtils.checkModelDependency(model, dep.getGroupId(), dep.getArtifactId(), true);
+            mdlDep.setVersion(dep.getVersion());
+            try {
+                WriterUtils.writePomModel(fo, model);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        } else {
+            //TODO warn somehow?
+            //the pom file is probably being edited..
+        }
         return true;
     }
 
@@ -211,7 +249,6 @@ public class MavenNbModuleImpl implements NbModuleProvider {
      */ 
     public SpecificationVersion getDependencyVersion(String codenamebase) throws IOException {
         String artifactId = codenamebase.replaceAll("\\.", "-");
-        System.out.println("jar name=" + artifactId);
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
@@ -253,7 +290,6 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             String[] candidates = walk.getIncludedFiles();
             assert candidates != null && candidates.length <= 1;
             if (candidates.length > 0) {
-                System.out.println("found=" + candidates[0]);
                 return new File(actPlatform, candidates[0]);
             }
         }
