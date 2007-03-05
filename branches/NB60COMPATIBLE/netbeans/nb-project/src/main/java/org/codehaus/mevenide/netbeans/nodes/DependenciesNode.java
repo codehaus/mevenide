@@ -40,6 +40,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -188,12 +189,10 @@ class DependenciesNode extends AbstractNode {
                 FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
                 Model model = WriterUtils.loadModel(fo);
                 if (model != null) {
-                    Dependency dep = new Dependency();
-                    dep.setArtifactId(pnl.getArtifactId());
-                    dep.setGroupId(pnl.getGroupId());
+                    Dependency dep = PluginPropertyUtils.checkModelDependency(
+                            model, pnl.getGroupId(), pnl.getArtifactId(), true);
                     dep.setVersion(pnl.getVersion());
                     dep.setScope(pnl.getScope());
-                    model.addDependency(dep);
                     try {
                         WriterUtils.writePomModel(fo, model);
                     } catch (IOException ex) {
