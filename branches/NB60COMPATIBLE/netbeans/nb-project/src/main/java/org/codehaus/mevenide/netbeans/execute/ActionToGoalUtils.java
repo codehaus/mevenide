@@ -107,6 +107,7 @@ public final class ActionToGoalUtils {
     public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
         UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
         // no active custom mappings shall be in the default providers... just the nbactions.xml file counts
+        //TODO possible usecase for custom mappings are update-site creation for nbm typed projects or their parents..
         return user.getCustomMappings();
     }
     
