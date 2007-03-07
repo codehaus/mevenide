@@ -73,6 +73,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.operations.OperationsImpl;
+import org.codehaus.mevenide.netbeans.queries.MavenBinaryForSourceQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 
@@ -438,6 +439,7 @@ public final class NbMavenProject implements Project {
             projectInfo,
             this,
             new MavenForBinaryQueryImpl(this),
+            new MavenBinaryForSourceQueryImpl(this),
             new ActionProviderImpl(this),
             new M2AuxilaryConfigImpl(this),
             new CustomizerProviderImpl(this),
