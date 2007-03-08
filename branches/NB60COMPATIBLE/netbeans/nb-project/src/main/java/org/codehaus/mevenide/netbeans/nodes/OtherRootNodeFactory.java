@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.nodes;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -25,6 +26,8 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Node;
 
 /**
@@ -70,9 +73,13 @@ public class OtherRootNodeFactory implements NodeFactory {
         
         public Node node(String key) {
             if (key == KEY_OTHER) {
-                return new OthersRootNode(project, false);
+                File[] fls = project.getOtherRoots(false);
+                FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
+                return new OthersRootNode(project, false, fo);
             } else if (key == KEY_OTHER_TEST) {
-                return new OthersRootNode(project, true);
+                File[] fls = project.getOtherRoots(false);
+                FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
+                return new OthersRootNode(project, true, fo);
             }
             assert false: "Wrong key for Dependencies NodeFactory: " + key;
             return null;

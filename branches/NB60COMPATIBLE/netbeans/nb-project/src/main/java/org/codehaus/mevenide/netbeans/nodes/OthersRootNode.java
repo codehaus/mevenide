@@ -22,7 +22,10 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.filesystems.FileObject;
+import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -31,8 +34,8 @@ import org.openide.nodes.AbstractNode;
 class OthersRootNode extends AbstractNode {
     private NbMavenProject project;
     
-    OthersRootNode(NbMavenProject mavproject, boolean testResource) {
-        super(new OthersRootChildren(mavproject, testResource));
+    OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
+        super(new OthersRootChildren(mavproject, testResource), Lookups.fixed(fo, DataFolder.findFolder(fo)));
         setName(testResource ? "OtherTestRoots" : "OtherRoots"); //NOI18N
         setDisplayName(testResource ? "Other Test Sources" : "Other Sources");
         // can do so, since we depend on it..

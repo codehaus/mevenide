@@ -18,14 +18,22 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.StringTokenizer;
 import org.codehaus.mevenide.netbeans.nodes.MavenProjectNode;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.project.support.ui.PackageView;
 import org.netbeans.spi.project.ui.LogicalViewProvider;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataFolder;
+import org.openide.loaders.DataObject;
 import org.openide.nodes.Node;
+import org.openide.nodes.NodeNotFoundException;
+import org.openide.nodes.NodeOp;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -33,8 +41,7 @@ import org.openide.util.lookup.Lookups;
  * provider of logical view, meaning the top node in the projects tab.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class LogicalViewProviderImpl implements LogicalViewProvider
-{
+public class LogicalViewProviderImpl implements LogicalViewProvider {
     private NbMavenProject project;
     /** Creates a new instance of LogicalViewProviderImpl */
     public LogicalViewProviderImpl(NbMavenProject proj) {
@@ -44,11 +51,10 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
     /**
      * create the root node for maven projects..
      */
-    public Node createLogicalView()
-    {
+    public Node createLogicalView() {
         return new MavenProjectNode(createLookup(project), project);
     }
-
+    
     private static Lookup createLookup( NbMavenProject project ) {
         DataFolder rootFolder = DataFolder.findFolder( project.getProjectDirectory() );
         // XXX Remove root folder after FindAction rewrite
@@ -59,14 +65,14 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
      * TODO this is probably good for the Select in Project view action..
      */
     public Node findPath(Node node, Object target) {
-        NbMavenProject proj = (NbMavenProject)node.getLookup().lookup(NbMavenProject.class );
+        NbMavenProject proj = node.getLookup().lookup(NbMavenProject.class );
         if ( proj == null ) {
             return null;
         }
         
         if ( target instanceof FileObject ) {
             FileObject fo = (FileObject)target;
-
+            
             Project owner = FileOwnerQuery.getOwner( fo );
             if ( !proj.equals( owner ) ) {
                 return null; // Don't waste time if project does not own the fo
@@ -76,6 +82,44 @@ public class LogicalViewProviderImpl implements LogicalViewProvider
                 Node result = PackageView.findPath(nodes[i], target);
                 if (result != null) {
                     return result;
+                }
+                
+            }
+            // fallback if not found by PackageView.
+            for (int i = 0; i < nodes.length; i++) {
+                FileObject xfo = nodes[i].getLookup().lookup(FileObject.class);
+                if (xfo == null) {
+                    DataObject dobj = nodes[i].getLookup().lookup(DataObject.class);
+                    if (dobj != null) {
+                        xfo = dobj.getPrimaryFile();
+                    }
+                }
+                if (xfo != null && FileUtil.isParentOf(xfo, fo)) {
+                    FileObject folder = fo.isFolder() ? fo : fo.getParent();
+                    String relPath = FileUtil.getRelativePath(xfo, folder);
+                    List<String> path = new ArrayList<String>();
+                    StringTokenizer strtok = new StringTokenizer(relPath, "/"); // NOI18N
+                    while (strtok.hasMoreTokens()) {
+                        String token = strtok.nextToken();
+                        path.add(token);
+                    }
+                    try {
+                        Node folderNode =  folder.equals(xfo) ? nodes[i] : NodeOp.findPath(nodes[i], Collections.enumeration(path));
+                        if (fo.isFolder()) {
+                            return folderNode;
+                        } else {
+                            Node[] childs = folderNode.getChildren().getNodes(true);
+                            for (int j = 0; j < childs.length; j++) {
+                                DataObject dobj = childs[j].getLookup().lookup(DataObject.class);
+                                if (dobj != null && dobj.getPrimaryFile().getNameExt().equals(fo.getNameExt())) {
+                                    return childs[j];
+                                }
+                            }
+                        }
+                    } catch (NodeNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    
                 }
             }
         }

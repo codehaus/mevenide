@@ -43,6 +43,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.lookup.Lookups;
 
 /**
  * maven project related aggregator node..
@@ -53,7 +54,7 @@ public class ProjectFilesNode extends AbstractNode {
     private NbMavenProject project;
     /** Creates a new instance of ProjectFilesNode */
     public ProjectFilesNode(NbMavenProject project) {
-        super(new ProjectFilesChildren(project));
+        super(new ProjectFilesChildren(project), Lookups.fixed(project.getProjectDirectory()));
         setName("projectfiles"); //NOI18N
         setDisplayName("Project Files");
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif");
