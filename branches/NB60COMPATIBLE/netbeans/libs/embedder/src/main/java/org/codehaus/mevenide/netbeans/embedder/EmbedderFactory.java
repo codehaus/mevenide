@@ -72,7 +72,7 @@ public class EmbedderFactory {
         project = null;
     }
     
-    public synchronized static MavenEmbedder getProjectEmbedder() throws MavenEmbedderException {
+    public synchronized static MavenEmbedder getProjectEmbedder() /*throws MavenEmbedderException*/ {
         if (project == null) {
             MavenEmbedder embedder = new MavenEmbedder();
             embedder.setOffline(false);
@@ -180,7 +180,7 @@ public class EmbedderFactory {
         
     }
     
-    public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) throws MavenEmbedderException {
+    public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) /*throws MavenEmbedderException*/ {
         ClassLoader loader = (ClassLoader) Lookup.getDefault().lookup(ClassLoader.class);
         
         // need to have some location for the global plugin registry because otherwise we get NPE

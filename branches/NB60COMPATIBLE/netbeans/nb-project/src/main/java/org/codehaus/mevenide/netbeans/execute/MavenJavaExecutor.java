@@ -261,9 +261,6 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             req.setRecursive(config.isRecursive());
             IOBridge.pushSystemInOutErr(out);
             embedder.execute(req);
-        } catch (MavenEmbedderException ex) {
-            //            ex.printStackTrace();
-            //            ErrorManager.getDefault().notify(ex);
         } catch (MavenExecutionException ex) {
             //            ex.printStackTrace();
             //            ErrorManager.getDefault().notify(ex);

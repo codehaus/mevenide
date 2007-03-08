@@ -190,8 +190,6 @@ public final class ProblemReporter implements Comparator {
                 ex.printStackTrace();
             } catch (ArtifactNotFoundException ex) {
                 ex.printStackTrace();
-            } catch (MavenEmbedderException ex) {
-                ex.printStackTrace();
             }
             if (nbart.getNonFakedFile() != null && !nbart.getNonFakedFile().exists()) {
                 //TODO create a correction action for this.

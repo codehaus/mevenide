@@ -321,12 +321,7 @@ public final class NbMavenProject implements Project {
     }
     
     public MavenEmbedder getEmbedder() {
-        try {
-            return EmbedderFactory.getProjectEmbedder();
-        } catch (MavenEmbedderException ex) {
-            ErrorManager.getDefault().notify(ex);
-        }
-        throw new IllegalStateException("Cannot start the embedder."); //NOI18N
+        return EmbedderFactory.getProjectEmbedder();
     }
     
     

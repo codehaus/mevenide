@@ -190,8 +190,6 @@ public class ModulesNode extends AbstractNode {
                     ex.printStackTrace();
                 } catch (XmlPullParserException ex) {
                     ex.printStackTrace();
-                } catch (MavenEmbedderException ex) {
-                    ex.printStackTrace();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }

@@ -525,8 +525,6 @@ public class DependencyNode extends AbstractNode {
                 ProjectURLWatcher.fireMavenProjectReload(project);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
-            } catch (MavenEmbedderException ex) {
-                ex.printStackTrace();
             } catch (IOException ex) {
                 ex.printStackTrace();
             } catch (XmlPullParserException ex) {
@@ -606,8 +604,6 @@ public class DependencyNode extends AbstractNode {
             } catch (XmlPullParserException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
-                ex.printStackTrace();
-            } catch (MavenEmbedderException ex) {
                 ex.printStackTrace();
             }
         }
