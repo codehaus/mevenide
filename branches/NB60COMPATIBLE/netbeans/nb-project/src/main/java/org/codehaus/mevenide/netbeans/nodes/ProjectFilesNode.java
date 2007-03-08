@@ -57,16 +57,16 @@ public class ProjectFilesNode extends AbstractNode {
         super(new ProjectFilesChildren(project), Lookups.fixed(project.getProjectDirectory()));
         setName("projectfiles"); //NOI18N
         setDisplayName("Project Files");
-        setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif");
+        setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif"); //NOI18N
         this.project = project;
     }
     
     public Action[] getActions(boolean context) {
         Collection col = new ArrayList();
-        if (project.getProjectDirectory().getFileObject("profiles.xml") == null) {
+        if (project.getProjectDirectory().getFileObject("profiles.xml") == null) { //NOI18N
             col.add(new AddProfileXmlAction());
         };
-        if (! new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml").exists()) {
+        if (! new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml").exists()) { //NOI18N
             col.add(new AddSettingsXmlAction());
         };
         return (Action[])col.toArray(new Action[col.size()]);
@@ -138,9 +138,9 @@ public class ProjectFilesNode extends AbstractNode {
         
         private void regenerateKeys() {
             Collection keys = new ArrayList();
-            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml"));
-            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml"));
-            keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml"));
+            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")); //NOI18N
+            keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")); //NOI18N
+            keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")); //NOI18N
             setKeys(keys);
         }
     }
@@ -153,7 +153,7 @@ public class ProjectFilesNode extends AbstractNode {
             try {
                 DataFolder folder = DataFolder.findFolder(project.getProjectDirectory());
                 // path to template...
-                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/profiles.xml");
+                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/profiles.xml"); //NOI18N
                 DataObject dobj = DataObject.find(temp);
                 DataObject newOne = dobj.createFromTemplate(folder);
                 EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
@@ -187,7 +187,7 @@ public class ProjectFilesNode extends AbstractNode {
                 }
                 DataFolder folder = DataFolder.findFolder(FileUtil.toFileObject(fil));
                 // path to template...
-                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml");
+                FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml"); //NOI18N
                 DataObject dobj = DataObject.find(temp);
                 DataObject newOne = dobj.createFromTemplate(folder);
                 EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
