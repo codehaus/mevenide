@@ -43,7 +43,7 @@ public class ProgressTransferListener implements TransferListener {
         handleRef.set(hndl);
     }
     
-    public AggregateProgressHandle getHandle() {
+    private AggregateProgressHandle getHandle() {
         if (handleRef.get() == null) {
             handleRef.set(AggregateProgressFactory.createHandle("Fallback", new ProgressContributor[0], null, null));
             handleRef.get().start();
