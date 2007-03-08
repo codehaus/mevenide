@@ -28,7 +28,6 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.versioning.VersionRange;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -56,8 +55,6 @@ public class GraphDocumentFactory {
         } catch (ArtifactNotFoundException ex) {
             ex.printStackTrace();
         } catch (ArtifactResolutionException ex) {
-            ex.printStackTrace();
-        } catch (MavenEmbedderException ex) {
             ex.printStackTrace();
         } catch (ProjectBuildingException ex) {
             ex.printStackTrace();

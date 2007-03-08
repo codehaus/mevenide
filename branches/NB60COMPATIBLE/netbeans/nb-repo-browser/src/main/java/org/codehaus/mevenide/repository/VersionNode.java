@@ -58,9 +58,6 @@ public class VersionNode extends AbstractNode {
                     DataObject dobj = DataObject.find(fo);
                     return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
                 }
-            } catch (MavenEmbedderException ex) {
-                java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,//NOI18N
-                        ex.getMessage(), ex);
             } catch (DataObjectNotFoundException e) {
             }
         }
@@ -124,17 +121,11 @@ public class VersionNode extends AbstractNode {
     }
     
     private FileObject getJavadocFile() {
-        try {
-            Artifact art = RepositoryUtils.createJavadocArtifact(record,
-                    EmbedderFactory.getProjectEmbedder().getLocalRepository());
-            return FileUtil.toFileObject(art.getFile());
-        } catch (MavenEmbedderException ex) {
-            java.util.logging.Logger.getLogger("global").log(java.util.logging.Level.SEVERE,//NOI18N
-                    ex.getMessage(), ex);
-        }
-        return null;
+        Artifact art = RepositoryUtils.createJavadocArtifact(record,
+                EmbedderFactory.getProjectEmbedder().getLocalRepository());
+        return FileUtil.toFileObject(art.getFile());
     }
-    
+
     
     private class ShowRecordAction extends AbstractAction {
         ShowRecordAction() {
