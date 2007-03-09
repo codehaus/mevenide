@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.debugger.DebuggerManager;
 import org.netbeans.api.debugger.jpda.MethodBreakpoint;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -37,6 +38,7 @@ import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
+import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
@@ -62,7 +64,7 @@ public class Utils {
         return breakpoint;
     }
     
-    public static File[] convertStringsToNormalizedFiles(List strings) {
+    public static File[] convertStringsToNormalizedFiles(Collection<String> strings) {
         File[] fos = new File[strings.size()];
         int index = 0;
         Iterator it = strings.iterator();
@@ -76,20 +78,52 @@ public class Utils {
         return fos;
     }
     
+    static Set<String> collectClasspaths(Project prj) throws DependencyResolutionRequiredException {
+        Set<String> toRet = new HashSet<String>();
+        ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
+        MavenProject mproject = watcher.getMavenProject();
+        //TODO this ought to be really configurable based on what class gets debugged.
+        toRet.addAll(mproject.getTestClasspathElements());
+        //for poms also include all module projects recursively..
+        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watcher.getPackagingType());
+        if (isPom) {
+            SubprojectProvider subs = prj.getLookup().lookup(SubprojectProvider.class);
+            Set<? extends Project> subProjects = subs.getSubprojects();
+            for (Project pr : subProjects) {
+                toRet.addAll(collectClasspaths(pr));
+            }
+        }
+        return toRet;
+    }
+    static Set<String> collectSourceRoots(Project prj) {
+        Set<String> toRet = new HashSet<String>();
+        ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
+        MavenProject mproject = watcher.getMavenProject();
+        //TODO this ought to be really configurable based on what class gets debugged.
+        toRet.addAll(mproject.getTestCompileSourceRoots());
+        //for poms also include all module projects recursively..
+        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watcher.getPackagingType());
+        if (isPom) {
+            SubprojectProvider subs = prj.getLookup().lookup(SubprojectProvider.class);
+            Set<? extends Project> subProjects = subs.getSubprojects();
+            for (Project pr : subProjects) {
+                toRet.addAll(collectSourceRoots(pr));
+            }
+        }
+        return toRet;
+    }
     
-    static ClassPath createSourcePath(Project proj, MavenProject mproject) {
-        File[] roots;
+    static ClassPath createSourcePath(Project project, MavenProject mproject) {
+        File[] roots = new File[0];
         ClassPath cp;
         try {
-            //TODO this ought to be really configurable based on what class gets debugged.
-            roots = convertStringsToNormalizedFiles(mproject.getTestClasspathElements());
+            roots = convertStringsToNormalizedFiles(collectClasspaths(project));
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
-        
-        roots = convertStringsToNormalizedFiles(mproject.getTestCompileSourceRoots());
+        roots = convertStringsToNormalizedFiles(collectSourceRoots(project));
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(
