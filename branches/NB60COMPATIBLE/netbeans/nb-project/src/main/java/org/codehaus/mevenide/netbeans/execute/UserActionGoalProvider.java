@@ -81,7 +81,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
                 Iterator it = lst.iterator();
                 while(it.hasNext()) {
                     NetbeansActionMapping mapp = (NetbeansActionMapping) it.next();
-                    if (mapp.getActionName().startsWith("CUSTOM-")) {
+                    if (mapp.getActionName().startsWith("CUSTOM-")) { //NOI18N
                         toRet.add(mapp);
                     }
                 }
@@ -94,6 +94,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
         }
         return fallbackActions;
     }
+    
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
         return (fo == null || fo.lastModified().after(lastModified));
