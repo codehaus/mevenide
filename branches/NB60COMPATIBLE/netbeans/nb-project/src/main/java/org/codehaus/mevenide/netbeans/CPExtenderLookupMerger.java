@@ -31,6 +31,7 @@ import org.openide.util.Lookup;
  *
  * @author mkleint
  */
+@SuppressWarnings("deprecation")
 public class CPExtenderLookupMerger implements LookupMerger<ProjectClassPathExtender> {
     
     private CPExtender fallback;

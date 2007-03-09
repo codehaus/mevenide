@@ -54,6 +54,7 @@ import org.openide.filesystems.URLMapper;
  * maven dependencies to the way classpath items are added through this api.
  * @author mkleint@codehaus.org
  */
+@SuppressWarnings("deprecation")
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
 
     private NbMavenProject project;
@@ -64,6 +65,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         this.project = project;
     }
     
+    @SuppressWarnings("deprecation")
     public boolean addLibrary(Library library) throws IOException {
         FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
         Model model = WriterUtils.loadModel(pom);
@@ -79,7 +81,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return added;
     }
     
-    
+    @SuppressWarnings("deprecation")
     public boolean addArchiveFile(FileObject arch) throws IOException {
         FileObject file = FileUtil.getArchiveFile(arch);
         if (file.isFolder()) {
@@ -189,6 +191,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return null;
     }
     
+    @SuppressWarnings("deprecation")
     public boolean addAntArtifact(AntArtifact arg0, URI arg1) throws IOException {
         throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects."); //NOI18N
     }
