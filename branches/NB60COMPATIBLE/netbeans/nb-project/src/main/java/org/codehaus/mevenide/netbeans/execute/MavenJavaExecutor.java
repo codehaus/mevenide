@@ -179,25 +179,26 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                     ex.printStackTrace();
                 }
             }
-            //            ArtifactRepository netbeansRepo = null;
             File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
-            //            netbeansRepo = embedder.createRepository("file://" + repoRoot.getAbsolutePath(), "netbeansIDE-repo-internal");
             Profile myProfile = new Profile();
-            myProfile.setId("netbeans-public");
-            Repository repo = new Repository();
-            repo.setUrl("file://" + repoRoot.getAbsolutePath());
-            repo.setId("netbeansIDE-repo-internal");
-            RepositoryPolicy snap = new RepositoryPolicy();
-            snap.setEnabled(false);
-            repo.setSnapshots(snap);
-            repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");
-            myProfile.addPluginRepository(repo);
-            Activation act = new Activation();
-            ActivationProperty prop = new ActivationProperty();
-            prop.setName("netbeans.execution");
-            prop.setValue("true");
-            act.setProperty(prop);
-            myProfile.setActivation(act);
+            if (repoRoot != null) {
+                //can happen when users don't install the repository module.
+                myProfile.setId("netbeans-public");
+                Repository repo = new Repository();
+                repo.setUrl("file://" + repoRoot.getAbsolutePath());
+                repo.setId("netbeansIDE-repo-internal");
+                RepositoryPolicy snap = new RepositoryPolicy();
+                snap.setEnabled(false);
+                repo.setSnapshots(snap);
+                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");
+                myProfile.addPluginRepository(repo);
+                Activation act = new Activation();
+                ActivationProperty prop = new ActivationProperty();
+                prop.setName("netbeans.execution");
+                prop.setValue("true");
+                act.setProperty(prop);
+                myProfile.setActivation(act);
+            }
             
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
@@ -206,7 +207,9 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             Settings settings = embedder.buildSettings( userSettingsPath,
                     globalSettingsPath,
                     MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
-            settings.addProfile(myProfile);
+            if (repoRoot != null) {
+                settings.addProfile(myProfile);
+            }
             settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
             //MEVENIDE-407
             if (settings.getLocalRepository() == null) {
