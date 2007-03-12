@@ -16,7 +16,6 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.action;
 
 import com.intellij.execution.filters.ExceptionFilter;
@@ -27,11 +26,12 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
-
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.apache.maven.embedder.DefaultMavenEmbedRequest;
+import org.apache.maven.embedder.MavenEmbedRequest;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildManager;
 import org.codehaus.mevenide.idea.build.BuildException;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
@@ -46,8 +46,14 @@ import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.helper.IdeaBuildEnvironment;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
+import org.codehaus.classworlds.ClassWorld;
+import org.codehaus.classworlds.ClassRealm;
+import org.codehaus.classworlds.NoSuchRealmException;
+import org.codehaus.classworlds.DuplicateRealmException;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
 /**
  * Describe what this class does.
@@ -58,8 +64,8 @@ import java.io.IOException;
 public class MavenRunner {
     private static final Logger LOG = Logger.getLogger(MavenRunner.class);
     private static final String COMPILE_REGEXP_SOURCE = RegexpFilter.FILE_PATH_MACROS + ":\\["
-                                                        + RegexpFilter.LINE_MACROS + "," + RegexpFilter.COLUMN_MACROS
-                                                        + "]";
+            + RegexpFilter.LINE_MACROS + "," + RegexpFilter.COLUMN_MACROS
+            + "]";
     private static final String COMPILE_REGEXP_JAR = RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
     private ActionContext context;
     private BuildContext buildContext;
@@ -104,10 +110,9 @@ public class MavenRunner {
         IBuildEnvironment buildEnvironment = createBuildEnvironment();
         MavenEmbedder embedder = createMavenEmbedder();
 
-        buildContext.setMavenEmbedder(embedder);
-        buildContext.setLogger((MavenEmbedderBuildLogger) buildContext.getMavenEmbedder().getLogger());
+        buildContext.setLogger((MavenEmbedderBuildLogger) embedder.getLogger());
         ActionUtils.createAndShowOutputConsole(buildContext);
-        buildEnvironment.setLogger((MavenEmbedderBuildLogger) buildContext.getMavenEmbedder().getLogger());
+        buildEnvironment.setLogger((MavenEmbedderBuildLogger) embedder.getLogger());
         buildEnvironment.setMavenEmbedder(embedder);
 
         AbstractMavenBuildManager buildManager = new MavenEmbedderBuildManager(buildEnvironment);
@@ -157,8 +162,8 @@ public class MavenRunner {
 
         builder = factory.createBuilder(project);
 
-        Filter[] filters = new Filter[] {new ExceptionFilter(project), new RegexpFilter(project, COMPILE_REGEXP_SOURCE),
-                                         new RegexpFilter(project, COMPILE_REGEXP_JAR)};
+        Filter[] filters = new Filter[]{new ExceptionFilter(project), new RegexpFilter(project, COMPILE_REGEXP_SOURCE),
+                new RegexpFilter(project, COMPILE_REGEXP_JAR)};
 
         builder.addFilter(filters[0]);
         builder.addFilter(filters[1]);
@@ -172,19 +177,22 @@ public class MavenRunner {
 
     private MavenEmbedder createMavenEmbedder() {
         MavenEmbedder maven = new MavenEmbedder();
-        ClassLoader classLoader = getClass().getClassLoader();
+ //       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+  //      maven.setClassLoader(this.getClass().getClassLoader());
+        ClassLoader classLoader = this.getClass().getClassLoader();
 
-        // ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         MavenEmbedderBuildLogger logger = new MavenEmbedderBuildLogger();
 
         logger.setThreshold(IMavenBuildLogger.LEVEL_INFO);
         maven.setLogger(logger);
         maven.setClassLoader(classLoader);
-
         try {
-            maven.start();
+           maven.start();
         } catch (MavenEmbedderException e) {
             LOG.error(e);
+        } finally {
+            //http://jira.codehaus.org/browse/PLX-203
+     //       Thread.currentThread().setContextClassLoader(classLoader);
         }
 
         return maven;

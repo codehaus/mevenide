@@ -47,17 +47,8 @@ public class BuildContext {
     private String pomFile;
     private String workingDir;
     private ProgressIndicator progressIndicator;
-    private MavenEmbedder mavenEmbedder;
 
     public BuildContext() {}
-
-    public MavenEmbedder getMavenEmbedder() {
-        return mavenEmbedder;
-    }
-
-    public void setMavenEmbedder(MavenEmbedder mavenEmbedder) {
-        this.mavenEmbedder = mavenEmbedder;
-    }
 
     public AbstractMavenBuildTask getBuildTask() {
         return buildTask;

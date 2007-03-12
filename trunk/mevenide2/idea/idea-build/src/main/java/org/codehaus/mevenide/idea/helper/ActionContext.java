@@ -16,14 +16,11 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.helper;
 
 import com.intellij.openapi.project.Project;
-
 import org.apache.xmlbeans.XmlOptions;
-
-import org.codehaus.mevenide.idea.common.MavenBuildProjectPluginSettings;
+import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.config.IdeaMavenPluginDocument;
 import org.codehaus.mevenide.idea.config.PluginConfigDocument;
@@ -44,14 +41,15 @@ import java.util.Map;
 public class ActionContext {
     private GuiContext guiContext = new GuiContext();
     private String lastExecutedMavenProject;
-    private MavenBuildProjectPluginSettings projectPluginSettings = new MavenBuildProjectPluginSettings();
+    private MavenBuildPluginSettings projectPluginSettings = new MavenBuildPluginSettings();
     private List<MavenProjectDocument> pomDocumentList = new ArrayList<MavenProjectDocument>();
     private Project pluginProject;
 
     /**
      * Constructs ...
      */
-    public ActionContext() {}
+    public ActionContext() {
+    }
 
     public Project getPluginProject() {
         return pluginProject;
@@ -69,11 +67,11 @@ public class ActionContext {
         this.pomDocumentList = pomDocumentList;
     }
 
-    public MavenBuildProjectPluginSettings getProjectPluginSettings() {
+    public MavenBuildPluginSettings getProjectPluginSettings() {
         return projectPluginSettings;
     }
 
-    public void setProjectPluginSettings(MavenBuildProjectPluginSettings projectPluginSettings) {
+    public void setProjectPluginSettings(MavenBuildPluginSettings projectPluginSettings) {
         this.projectPluginSettings = projectPluginSettings;
     }
 
@@ -103,8 +101,8 @@ public class ActionContext {
             xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
 
             IdeaMavenPluginDocument ideaMavenPluginDoc = IdeaMavenPluginDocument.Factory.parse(
-                                                             this.getClass().getResource(
-                                                                 PluginConstants.PLUGIN_CONFIG_FILENAME), xmlOptions);
+                    this.getClass().getResource(
+                            PluginConstants.PLUGIN_CONFIG_FILENAME), xmlOptions);
 
             return ideaMavenPluginDoc.getIdeaMavenPlugin().getPluginConfig();
         } catch (Exception e) {

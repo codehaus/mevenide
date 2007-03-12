@@ -110,6 +110,8 @@ public class BuildHelper {
             cmdList.add(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
         }
 
+        // Todo: Insert Maven Options when running external maven
+/*
         if (StringUtils.isNotEmpty(buildEnvironment.getMavenBuildSettings().getMavenOptions().toString())) {
             String[] mavenOptions;
 
@@ -119,6 +121,7 @@ public class BuildHelper {
                 cmdList.add(mavenOption);
             }
         }
+*/
 
         cmdList.add("-f");
         cmdList.add(buildEnvironment.getPomFile());

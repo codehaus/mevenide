@@ -10,7 +10,7 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.apache.maven:maven-embedder-dep</include>
+                <include>org.apache.maven:maven-embedder</include>
                 <include>org.codehaus.mevenide:idea-core</include>
             </includes>
         </dependencySet>

@@ -22,7 +22,7 @@ package org.codehaus.mevenide.idea.gui.form;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 
-import org.codehaus.mevenide.idea.build.IMavenBuildSettings;
+import org.codehaus.mevenide.idea.build.IMavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 
@@ -298,55 +298,24 @@ public abstract class AbstractConfigurationForm extends AbstractForm {
         return mavenOptionsPanel;
     }
 
-    protected void getData(IMavenBuildSettings data) {
+    protected void getData(IMavenConfiguration data) {
         data.setMavenHome(textFieldMavenHomeDir.getText());
         data.setMavenSettingsFile(textFieldAlternateSettingsFile.getText());
         data.setMavenCommandLineParams(textFieldMavenCmdLineArgs.getText());
+        data.setUseMavenEmbedder(checkBoxUseMavenEmbedder.isSelected());
         data.setVmOptions(textFieldVmOptions.getText());
-        data.getMavenOptions().setBatchMode(checkBoxBatchMode.isSelected());
-        data.getMavenOptions().setCheckPluginUpdates(checkBoxUpdatePlugins.isSelected());
-        data.getMavenOptions().setDebug(checkBoxDebug.isSelected());
-        data.getMavenOptions().setErrors(checkBoxErrors.isSelected());
-        data.getMavenOptions().setFailAtEnd(checkBoxFailAtEnd.isSelected());
-        data.getMavenOptions().setFailFast(checkBoxFailFast.isSelected());
-        data.getMavenOptions().setFailNever(checkBoxFailNever.isSelected());
-        data.getMavenOptions().setLaxChecksums(checkBoxLaxChecksums.isSelected());
-        data.getMavenOptions().setNonRecursive(checkBoxNonRecursive.isSelected());
-        data.getMavenOptions().setNoPluginRegistry(checkBoxNoPluginRegistry.isSelected());
-        data.getMavenOptions().setNoPluginUpdates(checkBoxNoPluginUpdates.isSelected());
-        data.getMavenOptions().setOffline(checkBoxOffline.isSelected());
-        data.getMavenOptions().setReactor(checkBoxReactor.isSelected());
-        data.getMavenOptions().setStrictChecksums(checkBoxStrictChecksums.isSelected());
-        data.getMavenOptions().setUpdatePlugins(checkBoxUpdatePlugins.isSelected());
-        data.getMavenOptions().setUpdateSnapshots(checkBoxUpdateSnapshots.isSelected());
-        data.getMavenOptions().setSkipTests(checkBoxSkipTests.isSelected());
     }
 
-    protected void setData(IMavenBuildSettings data) {
+    protected void setData(IMavenConfiguration data) {
         textFieldMavenHomeDir.setText(data.getMavenHome());
         textFieldAlternateSettingsFile.setText(data.getMavenSettingsFile());
         textFieldMavenCmdLineArgs.setText(data.getMavenCommandLineParams());
         textFieldVmOptions.setText(data.getVmOptions());
-        checkBoxBatchMode.setSelected(data.getMavenOptions().isBatchMode());
-        checkBoxCheckPluginUpdates.setSelected(data.getMavenOptions().isCheckPluginUpdates());
-        checkBoxDebug.setSelected(data.getMavenOptions().isDebug());
-        checkBoxErrors.setSelected(data.getMavenOptions().isErrors());
-        checkBoxFailAtEnd.setSelected(data.getMavenOptions().isFailAtEnd());
-        checkBoxFailFast.setSelected(data.getMavenOptions().isFailFast());
-        checkBoxFailNever.setSelected(data.getMavenOptions().isFailNever());
-        checkBoxLaxChecksums.setSelected(data.getMavenOptions().isLaxChecksums());
-        checkBoxNonRecursive.setSelected(data.getMavenOptions().isNonRecursive());
-        checkBoxNoPluginRegistry.setSelected(data.getMavenOptions().isNoPluginRegistry());
-        checkBoxNoPluginUpdates.setSelected(data.getMavenOptions().isNoPluginUpdates());
-        checkBoxOffline.setSelected(data.getMavenOptions().isOffline());
-        checkBoxReactor.setSelected(data.getMavenOptions().isReactor());
-        checkBoxStrictChecksums.setSelected(data.getMavenOptions().isStrictChecksums());
-        checkBoxUpdatePlugins.setSelected(data.getMavenOptions().isUpdatePlugins());
-        checkBoxUpdateSnapshots.setSelected(data.getMavenOptions().isUpdateSnapshots());
-        checkBoxSkipTests.setSelected(data.getMavenOptions().isSkipTests());
+        checkBoxUseMavenEmbedder.setSelected(data.isUseMavenEmbedder());
+
     }
 
-    protected boolean isDataModified(IMavenBuildSettings data) {
+    protected boolean isDataModified(IMavenConfiguration data) {
         if ((textFieldMavenHomeDir.getText() != null)
             ? !textFieldMavenHomeDir.getText().equals(data.getMavenHome())
             : data.getMavenHome() != null) {
@@ -371,74 +340,9 @@ public abstract class AbstractConfigurationForm extends AbstractForm {
             return true;
         }
 
-        if (checkBoxBatchMode.isSelected() != data.getMavenOptions().isBatchMode()) {
+        if (checkBoxUseMavenEmbedder.isSelected() != data.isUseMavenEmbedder()) {
             return true;
         }
-
-        if (checkBoxCheckPluginUpdates.isSelected() != data.getMavenOptions().isCheckPluginUpdates()) {
-            return true;
-        }
-
-        if (checkBoxDebug.isSelected() != data.getMavenOptions().isDebug()) {
-            return true;
-        }
-
-        if (checkBoxErrors.isSelected() != data.getMavenOptions().isErrors()) {
-            return true;
-        }
-
-        if (checkBoxFailAtEnd.isSelected() != data.getMavenOptions().isFailAtEnd()) {
-            return true;
-        }
-
-        if (checkBoxFailFast.isSelected() != data.getMavenOptions().isFailFast()) {
-            return true;
-        }
-
-        if (checkBoxFailNever.isSelected() != data.getMavenOptions().isFailNever()) {
-            return true;
-        }
-
-        if (checkBoxLaxChecksums.isSelected() != data.getMavenOptions().isLaxChecksums()) {
-            return true;
-        }
-
-        if (checkBoxNonRecursive.isSelected() != data.getMavenOptions().isNonRecursive()) {
-            return true;
-        }
-
-        if (checkBoxNoPluginRegistry.isSelected() != data.getMavenOptions().isNoPluginRegistry()) {
-            return true;
-        }
-
-        if (checkBoxNoPluginUpdates.isSelected() != data.getMavenOptions().isNoPluginUpdates()) {
-            return true;
-        }
-
-        if (checkBoxOffline.isSelected() != data.getMavenOptions().isOffline()) {
-            return true;
-        }
-
-        if (checkBoxReactor.isSelected() != data.getMavenOptions().isReactor()) {
-            return true;
-        }
-
-        if (checkBoxStrictChecksums.isSelected() != data.getMavenOptions().isStrictChecksums()) {
-            return true;
-        }
-
-        if (checkBoxUpdatePlugins.isSelected() != data.getMavenOptions().isUpdatePlugins()) {
-            return true;
-        }
-
-        if (checkBoxUpdateSnapshots.isSelected() != data.getMavenOptions().isUpdateSnapshots()) {
-            return true;
-        }
-
-        if (checkBoxSkipTests.isSelected() != data.getMavenOptions().isSkipTests()) {
-            return true;
-        }
-
         return false;
     }
 }

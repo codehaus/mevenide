@@ -21,9 +21,9 @@ package org.codehaus.mevenide.idea.common.util;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.codehaus.mevenide.idea.build.IMavenBuildSettings;
-import org.codehaus.mevenide.idea.build.MavenOptions;
-import org.codehaus.mevenide.idea.common.MavenBuildProjectPluginSettings;
+import org.codehaus.mevenide.idea.build.IMavenConfiguration;
+import org.codehaus.mevenide.idea.build.MavenConfiguration;
+import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 
 /**
  * Describe what this class does.
@@ -32,10 +32,10 @@ import org.codehaus.mevenide.idea.common.MavenBuildProjectPluginSettings;
  * @version $Revision$
  */
 public class BuildUtils {
-    public static IMavenBuildSettings createMavenBuildSettings(MavenBuildProjectPluginSettings projectSettings) {
-        IMavenBuildSettings buildSettings = new MavenBuildProjectPluginSettings();
+    public static IMavenConfiguration createMavenBuildSettings(IMavenConfiguration projectSettings) {
+        IMavenConfiguration configuration = new MavenBuildPluginSettings();
         String mavenHome = null;
-        MavenOptions mavenOptions = null;
+        MavenConfiguration mavenOptions = null;
         String mavenCommandLineParams = null;
         String vmOptions = null;
         String mavenRepository = null;
@@ -53,10 +53,6 @@ public class BuildUtils {
             vmOptions = StringUtils.defaultString(projectSettings.getVmOptions());
         }
 
-        if (StringUtils.isNotEmpty(projectSettings.getMavenOptions().toString())) {
-            mavenOptions = projectSettings.getMavenOptions();
-        }
-
         if (StringUtils.isNotEmpty(projectSettings.getMavenRepository())) {
             mavenRepository = StringUtils.defaultString(projectSettings.getMavenRepository());
         }
@@ -65,13 +61,13 @@ public class BuildUtils {
             mavenSettingsFile = StringUtils.defaultString(projectSettings.getMavenSettingsFile());
         }
 
-        buildSettings.setMavenCommandLineParams(mavenCommandLineParams);
-        buildSettings.setMavenRepository(mavenRepository);
-        buildSettings.setMavenSettingsFile(mavenSettingsFile);
-        buildSettings.setMavenHome(mavenHome);
-        buildSettings.setVmOptions(vmOptions);
-        buildSettings.setMavenOptions(mavenOptions);
+        configuration.setMavenCommandLineParams(mavenCommandLineParams);
+        configuration.setMavenRepository(mavenRepository);
+        configuration.setMavenSettingsFile(mavenSettingsFile);
+        configuration.setMavenHome(mavenHome);
+        configuration.setVmOptions(vmOptions);
+        configuration.setMavenConfiguration(projectSettings.getMavenConfiguration());
 
-        return buildSettings;
+        return configuration;
     }
 }

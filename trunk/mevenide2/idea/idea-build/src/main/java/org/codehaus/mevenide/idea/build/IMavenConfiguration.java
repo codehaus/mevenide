@@ -17,7 +17,7 @@
 
 
 
-package org.codehaus.mevenide.idea.common;
+package org.codehaus.mevenide.idea.build;
 
 /**
  * Describe what this class does.
@@ -25,4 +25,32 @@ package org.codehaus.mevenide.idea.common;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public class MavenBuildProjectPluginSettings extends MavenBuildPluginSettings {}
+public interface IMavenConfiguration {
+    MavenConfiguration getMavenConfiguration();
+
+    void setMavenConfiguration(MavenConfiguration mavenConfiguration);
+
+    String getMavenCommandLineParams();
+
+    String getMavenHome();
+
+    String getMavenSettingsFile();
+
+    String getMavenRepository();
+
+    String getVmOptions();
+
+    void setMavenCommandLineParams(String mavenCommandLineParams);
+
+    void setMavenHome(String mavenHome);
+
+    void setMavenSettingsFile(String mavenAdditionalOptions);
+
+    void setMavenRepository(String mavenRepository);
+
+    void setVmOptions(String vmOptions);
+
+    public boolean isUseMavenEmbedder();
+
+    public void setUseMavenEmbedder(boolean useMavenEmbedder);
+}

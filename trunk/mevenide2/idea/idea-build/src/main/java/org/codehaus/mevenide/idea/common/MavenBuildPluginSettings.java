@@ -21,8 +21,8 @@ package org.codehaus.mevenide.idea.common;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.codehaus.mevenide.idea.build.IMavenBuildSettings;
-import org.codehaus.mevenide.idea.build.MavenOptions;
+import org.codehaus.mevenide.idea.build.IMavenConfiguration;
+import org.codehaus.mevenide.idea.build.MavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 
 import java.io.File;
@@ -36,7 +36,7 @@ import java.util.List;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public class MavenBuildPluginSettings implements IMavenBuildSettings {
+public class MavenBuildPluginSettings implements IMavenConfiguration {
     private String mavenCommandLineParams;
     private String mavenExecutable;
     private String mavenRepository;
@@ -45,8 +45,8 @@ public class MavenBuildPluginSettings implements IMavenBuildSettings {
     private boolean scanForExistingPoms;
     private boolean useFilter;
     private boolean useMavenEmbedder;
-    private MavenOptions mavenOptions = new MavenOptions();
     private List<String> standardPhasesList = new ArrayList<String>();
+    private MavenConfiguration mavenConfiguration = new MavenConfiguration();
 
     public MavenBuildPluginSettings() {
         standardPhasesList.add("clean");
@@ -57,12 +57,12 @@ public class MavenBuildPluginSettings implements IMavenBuildSettings {
         standardPhasesList.add("site");
     }
 
-    public MavenOptions getMavenOptions() {
-        return mavenOptions;
+    public MavenConfiguration getMavenConfiguration() {
+        return mavenConfiguration;
     }
 
-    public void setMavenOptions(MavenOptions mavenOptions) {
-        this.mavenOptions = mavenOptions;
+    public void setMavenConfiguration(MavenConfiguration mavenConfiguration) {
+        this.mavenConfiguration = mavenConfiguration;
     }
 
     public String getMavenSettingsFile() {

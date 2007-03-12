@@ -16,24 +16,25 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.build.embedder;
 
 import com.intellij.openapi.progress.ProgressManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.PlexusLoggerAdapter;
+import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.monitor.event.DefaultEventMonitor;
-
+import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.LogListener;
+import org.codehaus.mevenide.idea.build.MavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 
 import java.io.File;
+import java.util.Properties;
 
 /**
  * Describe what this class does.
@@ -47,34 +48,53 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
     }
 
     public void run() {
-        MavenEmbedder maven;
+        MavenEmbedder mavenEmbedder;
         MavenEmbedderBuildLogger logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
-
+        MavenConfiguration mavenOption = buildEnvironment.getMavenBuildSettings().getMavenConfiguration();
         try {
-            maven = buildEnvironment.getMavenEmbedder();
+            mavenEmbedder = buildEnvironment.getMavenEmbedder();
 
             File pomFile = new File(buildEnvironment.getPomFile());
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
 
-            req.setPomFile(pomFile.getPath());
+            if (pomFile.exists()) {
+                req.setPomFile(pomFile.getAbsolutePath());
+            }
             req.setBasedir(new File(buildEnvironment.getWorkingDir()));
             req.setLocalRepositoryPath(buildEnvironment.getMavenBuildSettings().getMavenRepository());
 
             String mavenSettingsFile =
-                StringUtils.defaultString(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
-
-            req.setSettings(maven.buildSettings(new File(mavenSettingsFile),
-                    new File(System.getProperty("user.dir") + "/settings.xml"), false));
-
-            // req.setProperties(props);
-            req.setRecursive(true);
-            req.setShowErrors(true);
-            req.setFailureBehavior("fail-fast");
+                    StringUtils.defaultString(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
+            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            File userSettingsPath = new File(userLoc, "settings.xml");
+            Settings settings = mavenEmbedder.buildSettings(new File(mavenSettingsFile), userSettingsPath, false);
+            settings.setOffline(mavenOption.isWorkOffline());
+            req.setSettings(settings);
+            req.setLocalRepositoryPath(mavenEmbedder.getLocalRepositoryPath(settings));
+            req.setRecursive(!mavenOption.isNonRecursive());
+            req.setShowErrors(mavenOption.isProduceExceptionErrorMessages());
+      //      req.setFailureBehavior("fail-never");
             req.setGoals(buildEnvironment.getGoals());
-            req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(maven.getLogger())));
+            Properties props = new Properties();
+            props.putAll(System.getProperties());
+      //      props.putAll(config.getProperties());
+            props.setProperty("idea.execution", "true");
+
+            if (mavenOption.isSkipTests()) {
+                props.setProperty("test", "skip");
+            }
+            req.setProperties(props);
+            MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
+
+            req.setLoggingLevel(mavenOption.getOutputLevel());
+            mavenEmbedderLogger.setThreshold(mavenOption.getOutputLevel());
+
+            req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger)));
             req.addEventMonitor(
-                new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
-            maven.execute(req);
+                    new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
+   //         req.setGlobalChecksumPolicy(mavenOption.);
+            req.setStartTime(new java.util.Date());
+            mavenEmbedder.execute(req);
             stop();
 
             if (logger.isOutputPaused()) {
@@ -84,7 +104,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
 
             if (isCancelled()) {
                 logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
-                            LogListener.OUTPUT_TYPE_SYSTEM);
+                        LogListener.OUTPUT_TYPE_SYSTEM);
             }
         } catch (Exception e) {
             stop();
@@ -96,8 +116,8 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
 
             if (isCancelled()) {
                 logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
-                            LogListener.OUTPUT_TYPE_SYSTEM);
+                        LogListener.OUTPUT_TYPE_SYSTEM);
             }
-        }
+        }                       
     }
 }

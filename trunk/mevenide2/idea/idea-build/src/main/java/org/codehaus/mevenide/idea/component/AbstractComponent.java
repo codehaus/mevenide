@@ -46,40 +46,10 @@ public class AbstractComponent {
      *          in case of invalid data.
      */
     public void readExternal(MavenBuildPluginSettings pluginSettings, Element element) throws InvalidDataException {
-        pluginSettings.getMavenOptions().setBatchMode(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_BATCH_MODE)));
-        pluginSettings.getMavenOptions().setCheckPluginUpdates(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_CHECK_PLUGIN_UPDATES)));
-        pluginSettings.getMavenOptions().setDebug(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_DEBUG)));
-        pluginSettings.getMavenOptions().setErrors(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+/*
+        pluginSettings.getMavenConfiguration().setProduceExceptionErrorMessages(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 BuildConstants.MAVEN_OPTION_ERRORS)));
-        pluginSettings.getMavenOptions().setFailAtEnd(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_FAIL_AT_END)));
-        pluginSettings.getMavenOptions().setFailFast(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_FAIL_FAST)));
-        pluginSettings.getMavenOptions().setFailNever(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_FAIL_NEVER)));
-        pluginSettings.getMavenOptions().setLaxChecksums(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_LAX_CHECKSUM)));
-        pluginSettings.getMavenOptions().setNonRecursive(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_NON_RECURSIVE)));
-        pluginSettings.getMavenOptions().setNoPluginRegistry(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_NO_PLUGIN_REGISTRY)));
-        pluginSettings.getMavenOptions().setNoPluginUpdates(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_NO_PLUGIN_UPDATES)));
-        pluginSettings.getMavenOptions().setOffline(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_OFFLINE)));
-        pluginSettings.getMavenOptions().setReactor(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_REACTOR)));
-        pluginSettings.getMavenOptions().setStrictChecksums(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_STRICT_CHECKSUM)));
-        pluginSettings.getMavenOptions().setUpdatePlugins(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_UPDATE_PLUGINS)));
-        pluginSettings.getMavenOptions().setUpdateSnapshots(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_UPDATE_SNAPSHOTS)));
-        pluginSettings.getMavenOptions().setSkipTests(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                BuildConstants.MAVEN_OPTION_SKIP_TESTS)));
+*/
     }
 
     /**
@@ -92,39 +62,9 @@ public class AbstractComponent {
      *
      */
     public void writeExternal(MavenBuildPluginSettings pluginSettings, Element element) throws WriteExternalException {
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_BATCH_MODE,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isBatchMode()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_CHECK_PLUGIN_UPDATES,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isCheckPluginUpdates()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_DEBUG,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isDebug()));
+/*
         JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_ERRORS,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isErrors()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_FAIL_AT_END,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isFailAtEnd()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_FAIL_FAST,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isFailFast()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_FAIL_NEVER,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isFailNever()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_LAX_CHECKSUM,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isLaxChecksums()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_NO_PLUGIN_REGISTRY,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isNoPluginRegistry()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_NO_PLUGIN_UPDATES,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isNoPluginUpdates()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_NON_RECURSIVE,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isNonRecursive()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_OFFLINE,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isOffline()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_REACTOR,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isReactor()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_STRICT_CHECKSUM,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isStrictChecksums()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_UPDATE_PLUGINS,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isUpdatePlugins()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_UPDATE_SNAPSHOTS,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isUpdateSnapshots()));
-        JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_SKIP_TESTS,
-                                        Boolean.toString(pluginSettings.getMavenOptions().isSkipTests()));
+                                        Boolean.toString(pluginSettings.getMavenConfiguration().isProduceExceptionErrorMessages()));
+*/
     }
 }
