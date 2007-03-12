@@ -178,80 +178,121 @@ public class ConfigurationForm {
         enablePluginCheckBox.setSelected(false);
         enablePluginCheckBox.setText("Enable Plugin");
         enablePluginCheckBox.setToolTipText("Enable/Disable Maven Reloaded plugin");
-        rootComponent.add(enablePluginCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        rootComponent.add(enablePluginCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        rootComponent.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 10), new Dimension(-1, 10), new Dimension(-1, 10), 0, false));
+        rootComponent.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 10),
+                new Dimension(-1, 10), new Dimension(-1, 10), 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(3, 3, 3, 3), -1, -1));
-        rootComponent.add(panel1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(350, 175), null, 0, false));
+        rootComponent.add(panel1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                new Dimension(350, 175), null, 0, false));
         panel1.setBorder(BorderFactory.createTitledBorder("POM Usage"));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new GridLayoutManager(5, 2, new Insets(0, 0, 0, 0), -1, 5));
-        panel1.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel1.add(panel2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0,
+                false));
         updateClasspathsCheckBox = new JCheckBox();
         updateClasspathsCheckBox.setText("Update Classpaths");
         updateClasspathsCheckBox.setToolTipText("Use POMs to manage module classpaths.");
-        panel2.add(updateClasspathsCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(updateClasspathsCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageSourceRootsCheckBox = new JCheckBox();
         manageSourceRootsCheckBox.setText("Manage Source Roots");
         manageSourceRootsCheckBox.setToolTipText("Set module source and test source roots based on POM source roots.");
-        panel2.add(manageSourceRootsCheckBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(manageSourceRootsCheckBox, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         manageModuleInterdependenciesCheckBox = new JCheckBox();
         manageModuleInterdependenciesCheckBox.setLabel("Manage Module Inter-Dependencies");
         manageModuleInterdependenciesCheckBox.setText("Manage Module Inter-Dependencies");
-        manageModuleInterdependenciesCheckBox.setToolTipText("Use POMs to determine dependencies between project modules.");
-        panel2.add(manageModuleInterdependenciesCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        manageModuleInterdependenciesCheckBox
+                .setToolTipText("Use POMs to determine dependencies between project modules.");
+        panel2.add(manageModuleInterdependenciesCheckBox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         generateSourcesCheckBox = new JCheckBox();
         generateSourcesCheckBox.setText("Generate Sources");
-        generateSourcesCheckBox.setToolTipText("Run generate-sources, generate-resources, generate-test-sources, and generate-test-resources on POM files before managing module source roots.");
-        panel2.add(generateSourcesCheckBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        generateSourcesCheckBox.setToolTipText(
+                "Run generate-sources, generate-resources, generate-test-sources, and generate-test-resources on POM files before managing module source roots.");
+        panel2.add(generateSourcesCheckBox, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         sortDependencyListCheckBox = new JCheckBox();
         sortDependencyListCheckBox.setText("Sort Dependency List");
         sortDependencyListCheckBox.setToolTipText("Sort the list of dependencies for each module.");
-        panel2.add(sortDependencyListCheckBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(sortDependencyListCheckBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         removeDuplicateDependenciesCheckBox = new JCheckBox();
         removeDuplicateDependenciesCheckBox.setSelected(false);
         removeDuplicateDependenciesCheckBox.setText("Remove Duplicate Dependencies");
-        removeDuplicateDependenciesCheckBox.setToolTipText("Attempt to remove multiple versions of dependencies in each module. May cause unexpected results from missing classpath dependencies.");
+        removeDuplicateDependenciesCheckBox.setToolTipText(
+                "Attempt to remove multiple versions of dependencies in each module. May cause unexpected results from missing classpath dependencies.");
         removeDuplicateDependenciesCheckBox.setVerifyInputWhenFocusTarget(false);
-        panel2.add(removeDuplicateDependenciesCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(removeDuplicateDependenciesCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         downloadSourcesCheckBox = new JCheckBox();
         downloadSourcesCheckBox.setText("Download Sources");
         downloadSourcesCheckBox.setToolTipText("Download source jar files of POM dependencies.");
         downloadSourcesCheckBox.setVerifyInputWhenFocusTarget(false);
-        panel2.add(downloadSourcesCheckBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(downloadSourcesCheckBox, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         downloadJavadocCheckBox = new JCheckBox();
         downloadJavadocCheckBox.setSelected(false);
         downloadJavadocCheckBox.setText("Download Javadoc");
         downloadJavadocCheckBox.setToolTipText("Download javadoc jar files of POM dependencies.");
-        panel2.add(downloadJavadocCheckBox, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel2.add(downloadJavadocCheckBox, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         respondToPomChangesCheckBox = new JCheckBox();
         respondToPomChangesCheckBox.setSelected(false);
         respondToPomChangesCheckBox.setText("Respond to POM File Changes");
-        respondToPomChangesCheckBox.setToolTipText("Determines if the plugin should update the project after a change to a POM file.");
-        panel2.add(respondToPomChangesCheckBox, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        respondToPomChangesCheckBox
+                .setToolTipText("Determines if the plugin should update the project after a change to a POM file.");
+        panel2.add(respondToPomChangesCheckBox, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel3 = new JPanel();
         panel3.setLayout(new GridLayoutManager(3, 2, new Insets(3, 3, 3, 3), -1, 10));
-        rootComponent.add(panel3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(350, 150), null, 0, false));
+        rootComponent.add(panel3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                new Dimension(350, 150), null, 0, false));
         panel3.setBorder(BorderFactory.createTitledBorder("General"));
         final JLabel label1 = new JLabel();
         label1.setText("Settings Path");
-        panel3.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         settingsPathTextField = new JTextField();
         settingsPathTextField.setText("");
         settingsPathTextField.setToolTipText("Absolute path to Maven 2 settings.xml file.");
         settingsPathTextField.setVerifyInputWhenFocusTarget(false);
-        panel3.add(settingsPathTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        panel3.add(settingsPathTextField, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED,
+                null, new Dimension(150, -1), null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Logging Level");
-        panel3.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("Search Filter");
         label3.setToolTipText("");
-        panel3.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(label3, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         searchFilterTextField = new JTextField();
-        searchFilterTextField.setToolTipText("A comma separated list of strings that will be tested against directory names while searching for POM files. If a the name is a case insensitive match, the directory will be skipped. No wildcards.");
-        panel3.add(searchFilterTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(150, -1), null, 0, false));
+        searchFilterTextField.setToolTipText(
+                "A comma separated list of strings that will be tested against directory names while searching for POM files. If a the name is a case insensitive match, the directory will be skipped. No wildcards.");
+        panel3.add(searchFilterTextField, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED,
+                null, new Dimension(150, -1), null, 0, false));
         logLevelSlider = new JSlider();
         logLevelSlider.setInverted(true);
         logLevelSlider.setMajorTickSpacing(1);
@@ -262,9 +303,13 @@ public class ConfigurationForm {
         logLevelSlider.setSnapToTicks(true);
         logLevelSlider.setToolTipText("Change the logging level: OFF ->FATAL -> ERROR -> WARN -> INFO -> DEBUG");
         logLevelSlider.setValueIsAdjusting(false);
-        panel3.add(logLevelSlider, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel3.add(logLevelSlider, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED,
+                null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
-        rootComponent.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 10), new Dimension(-1, 10), new Dimension(-1, 10), 0, false));
+        rootComponent.add(spacer2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER,
+                GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_FIXED, new Dimension(-1, 10),
+                new Dimension(-1, 10), new Dimension(-1, 10), 0, false));
     }
 
     /**

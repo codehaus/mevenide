@@ -21,7 +21,6 @@ package org.codehaus.mevenide.idea.action;
 
 import org.apache.log4j.Logger;
 
-import org.codehaus.mevenide.idea.build.MavenOptions;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 
@@ -50,6 +49,8 @@ public class MavenOptionsMenuActionListener extends AbstractBaseActionListener i
 
     public void actionPerformed(ActionEvent actionEvent) {
         JCheckBoxMenuItem source = (JCheckBoxMenuItem) actionEvent.getSource();
+        // Todo: Use MavenConfiguration class
+/*
         MavenOptions options = context.getProjectPluginSettings().getMavenOptions();
 
         if (source.getActionCommand().equals(BuildConstants.MAVEN_OPTION_STRICT_CHECKSUM)) {
@@ -87,6 +88,7 @@ public class MavenOptionsMenuActionListener extends AbstractBaseActionListener i
         } else if (source.getActionCommand().equals(BuildConstants.MAVEN_OPTION_SKIP_TESTS)) {
             options.setSkipTests(getMavenOptionValue(source));
         }
+*/
     }
 
     private boolean getMavenOptionValue(JCheckBoxMenuItem menuItem) {

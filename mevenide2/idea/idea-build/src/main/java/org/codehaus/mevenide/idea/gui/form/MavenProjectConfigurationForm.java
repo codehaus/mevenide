@@ -16,19 +16,23 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.gui.form;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 
-import java.awt.*;
-
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import java.awt.Dimension;
+import java.awt.Insets;
 
 /**
  * Describe what this class does.
@@ -40,11 +44,13 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
     private JCheckBox checkBoxScanForExistingPoms;
     private JPanel panel;
     private JTabbedPane rootComponent;
+    private MavenBuildConfigDialog buildConfigDialog;
 
     /**
      * Constructs ...
      */
     public MavenProjectConfigurationForm() {
+        buildConfigDialog = new MavenBuildConfigDialog();
         setupForm();
         buttonMavenHomeDir.setActionCommand(PluginConstants.ACTION_COMMAND_SET_MAVEN_HOME);
         buttonAlternativeSettingsFile.setActionCommand(PluginConstants.ACTION_COMMAND_SET_ALTERNATE_SETTINGS);
@@ -67,6 +73,7 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
     public void getData(MavenBuildPluginSettings data) {
         super.getData(data);
         data.setScanForExistingPoms(checkBoxScanForExistingPoms.isSelected());
+        buildConfigDialog.getData(data.getMavenConfiguration());
     }
 
     /**
@@ -94,7 +101,8 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      * @return Document me!
      */
     public boolean isModified(MavenBuildPluginSettings data) {
-        return isDataModified(data) || (checkBoxScanForExistingPoms.isSelected() != data.isScanForExistingPoms());
+        return buildConfigDialog.isModified(data.getMavenConfiguration()) || isDataModified(data) ||
+                (checkBoxScanForExistingPoms.isSelected() != data.isScanForExistingPoms());
     }
 
     /**
@@ -113,6 +121,7 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      */
     public void setData(MavenBuildPluginSettings data) {
         super.setData(data);
+        buildConfigDialog.setData(data.getMavenConfiguration());
         checkBoxScanForExistingPoms.setSelected(data.isScanForExistingPoms());
     }
 
@@ -139,78 +148,85 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
         panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         rootComponent.addTab(PluginConstants.CONFIG_DIALOG_TAB_MAVEN_SETUP, panel1);
         panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(8, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel.setLayout(new GridLayoutManager(9, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel1.add(panel,
-                   new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                       null, null, null));
+                new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        null, null, null));
+
+        checkBoxUseMavenEmbedder = new JCheckBox();
+        checkBoxUseMavenEmbedder
+                .setText(PluginConstants.CONFIG_DIALOG_CHECKBOX_LABEL_USE_MAVEN_EMBEDDER);
+        panel.add(checkBoxUseMavenEmbedder, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST,
+                GridConstraints.FILL_NONE,
+                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                GridConstraints.SIZEPOLICY_FIXED, null, null, null));
 
         JLabel labelMavenExecutable = new JLabel();
 
         labelMavenExecutable.setText(PluginConstants.CONFIG_DIALOG_LABEL_MAVEN_HOME_DIRECTORY);
         panel.add(labelMavenExecutable,
-                  new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                                      GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(357, 14), null));
+                new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(357, 14), null));
         textFieldMavenHomeDir = new JTextField();
         panel.add(textFieldMavenHomeDir,
-                  new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(357, 20), null));
+                new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(357, 20), null));
         buttonMavenHomeDir = new JButton();
         buttonMavenHomeDir.setLabel("...");
         buttonMavenHomeDir.setText("...");
         panel.add(buttonMavenHomeDir,
-                  new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                      GridConstraints.SIZEPOLICY_FIXED, null, null, null));
+                new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, null, null));
 
         JLabel labelAlternativeSettingsFile = new JLabel();
 
         labelAlternativeSettingsFile.setText(PluginConstants.CONFIG_DIALOG_LABEL_SETTINGS_FILE);
         panel.add(labelAlternativeSettingsFile,
-                  new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                                      GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(357, 14), null));
+                new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(357, 14), null));
         textFieldAlternateSettingsFile = new JTextField();
         panel.add(textFieldAlternateSettingsFile,
-                  new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(150, -1), null));
+                new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(150, -1), null));
         buttonAlternativeSettingsFile = new JButton();
         buttonAlternativeSettingsFile.setLabel("...");
         buttonAlternativeSettingsFile.setText("...");
         panel.add(buttonAlternativeSettingsFile,
-                  new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                      GridConstraints.SIZEPOLICY_FIXED, null, null, null));
+                new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, null, null));
 
         JLabel labelMavenGlobalCmdLineArgs = new JLabel();
 
         labelMavenGlobalCmdLineArgs.setText(PluginConstants.CONFIG_DIALOG_LABEL_MAVEN_GLOBAL_COMMAND_LINE_ARGUMENTS);
         panel.add(labelMavenGlobalCmdLineArgs,
-                  new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                                      GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(357, 14), null));
+                new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(357, 14), null));
         textFieldMavenCmdLineArgs = new JTextField();
         panel.add(textFieldMavenCmdLineArgs,
-                  new GridConstraints(5, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(150, -1), null));
+                new GridConstraints(6, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(150, -1), null));
         labelVmOptions = new JLabel();
         labelVmOptions.setText(PluginConstants.CONFIG_DIALOG_LABEL_VM_OPTIONS);
         panel.add(labelVmOptions,
-                  new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                                      GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(357, 14), null));
+                new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(357, 14), null));
         textFieldVmOptions = new JTextField();
         panel.add(textFieldVmOptions,
-                  new GridConstraints(7, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                                      new Dimension(150, -1), null));
-        rootComponent.addTab(PluginConstants.CONFIG_DIALOG_TAB_MAVEN_OPTIONS, createMavenOptionsPanel());
-
+                new GridConstraints(8, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(150, -1), null));
+        rootComponent.addTab(PluginConstants.CONFIG_DIALOG_TAB_MAVEN_OPTIONS, buildConfigDialog.getRootComponent());
         final JPanel panelGeneral = new JPanel();
 
         panelGeneral.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));
@@ -219,13 +235,13 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
         final Spacer spacer1 = new Spacer();
 
         panelGeneral.add(spacer1,
-                         new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
-                             1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null));
+                new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL,
+                        1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null));
         checkBoxScanForExistingPoms = new JCheckBox();
         checkBoxScanForExistingPoms.setText(PluginConstants.CONFIG_DIALOG_CHECKBOX_LABEL_SCAN_POMS);
         panelGeneral.add(checkBoxScanForExistingPoms,
-                         new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
-                             GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                             GridConstraints.SIZEPOLICY_FIXED, null, null, null));
+                new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, null, null));
     }
 }

@@ -23,8 +23,8 @@ import junit.framework.TestCase;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.codehaus.mevenide.idea.build.MavenOptions;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
+import org.codehaus.mevenide.idea.build.MavenConfiguration;
 
 /**
  * MavenBuildPluginSettings Tester.
@@ -39,29 +39,29 @@ public class MavenBuildPluginSettingsTest extends TestCase {
 
     public void setUp() {}
 
-    public void testGetMavenOptions() {
+    public void testGetMavenConfiguration() {
         settings = new MavenBuildPluginSettings();
-        assertNotNull(settings.getMavenOptions());
+        assertNotNull(settings.getMavenConfiguration());
 
-        MavenOptions options = new MavenOptions();
+        MavenConfiguration options = new MavenConfiguration();
 
-        options.setActivateProfiles("activateProfile");
-        options.setBatchMode(true);
+        options.setNonRecursive(true);
+        options.setSkipTests(true);
         assertNotNull(options);
-        settings.setMavenOptions(options);
-        assertNotNull(settings.getMavenOptions());
+        settings.setMavenConfiguration(options);
+        assertNotNull(settings.getMavenConfiguration());
     }
 
     public void testSetMavenOptions() {
         settings = new MavenBuildPluginSettings();
 
-        MavenOptions options = new MavenOptions();
+        MavenConfiguration options = new MavenConfiguration();
 
-        options.setActivateProfiles("activateProfile");
-        options.setBatchMode(true);
+        options.setNonRecursive(true);
+        options.setSkipTests(true);
         assertNotNull(options);
-        settings.setMavenOptions(options);
-        assertNotNull(settings.getMavenOptions());
+        settings.setMavenConfiguration(options);
+        assertNotNull(settings.getMavenConfiguration());
     }
 
     public void testGetMavenSettingsFile() {

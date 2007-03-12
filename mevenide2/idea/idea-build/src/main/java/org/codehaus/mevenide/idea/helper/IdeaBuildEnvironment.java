@@ -29,7 +29,7 @@ import org.apache.maven.embedder.MavenEmbedder;
 
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
-import org.codehaus.mevenide.idea.build.IMavenBuildSettings;
+import org.codehaus.mevenide.idea.build.IMavenConfiguration;
 import org.codehaus.mevenide.idea.build.MavenBuildException;
 
 import java.util.ArrayList;
@@ -50,7 +50,7 @@ public class IdeaBuildEnvironment implements IBuildEnvironment {
     private String pomFile;
     private String workingDir;
     private Project project;
-    private IMavenBuildSettings mavenBuildSettings;
+    private IMavenConfiguration mavenConfiguration;
 
     public MavenEmbedder getMavenEmbedder() {
         return mavenEmbedder;
@@ -68,12 +68,12 @@ public class IdeaBuildEnvironment implements IBuildEnvironment {
         this.project = project;
     }
 
-    public IMavenBuildSettings getMavenBuildSettings() {
-        return mavenBuildSettings;    // To change body of implemented methods use File | Settings | File Templates.
+    public IMavenConfiguration getMavenBuildSettings() {
+        return mavenConfiguration;    // To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setMavenBuildSettings(IMavenBuildSettings mavenBuildSettings) {
-        this.mavenBuildSettings = mavenBuildSettings;
+    public void setMavenBuildSettings(IMavenConfiguration mavenConfiguration) {
+        this.mavenConfiguration = mavenConfiguration;
     }
 
     public String getPathToJdk() {

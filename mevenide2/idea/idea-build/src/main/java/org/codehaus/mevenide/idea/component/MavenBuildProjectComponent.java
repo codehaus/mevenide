@@ -56,7 +56,7 @@ import org.codehaus.mevenide.idea.action.ShowMavenOptionsAction;
 import org.codehaus.mevenide.idea.action.SortAction;
 import org.codehaus.mevenide.idea.action.ToolWindowKeyListener;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
-import org.codehaus.mevenide.idea.common.MavenBuildProjectPluginSettings;
+import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.gui.PomTree;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
@@ -173,7 +173,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
     public void apply() throws ConfigurationException {
         MavenProjectConfigurationForm form =
                 (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         if (form != null) {
             form.getData(pluginSettings);
@@ -237,7 +237,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
     private void initToolWindow(JTree tree) {
         JComponent pomContentPanel;
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(actionContext.getPluginProject());
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
         MavenBuildProjectToolWindowForm form =
                 (MavenBuildProjectToolWindowForm) actionContext.getGuiContext().getMavenToolWindowForm();
 
@@ -293,7 +293,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
      * @throws InvalidDataException
      */
     public void readExternal(Element element) throws InvalidDataException {
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         pluginSettings.setMavenHome(JDOMExternalizerUtil.readField(element,
                 PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE));
@@ -397,7 +397,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
     public void reset() {
         MavenProjectConfigurationForm form =
                 (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         if (form != null) {
             form.setData(pluginSettings);
@@ -417,7 +417,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
      * @throws WriteExternalException
      */
     public void writeExternal(Element element) throws WriteExternalException {
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE,
                 pluginSettings.getMavenHome());
@@ -544,7 +544,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
     public boolean isModified() {
         MavenProjectConfigurationForm form =
                 (MavenProjectConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildProjectPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         return (form != null) && form.isModified(pluginSettings);
     }

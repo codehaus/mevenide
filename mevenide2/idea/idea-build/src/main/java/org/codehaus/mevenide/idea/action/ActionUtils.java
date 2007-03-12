@@ -722,7 +722,7 @@ public class ActionUtils {
         context.getActionContext().getGuiContext().setMavenOutputWindowForm(form);
 
         if (useEmbedder) {
-            MavenBuildLogger mavenLogger = (MavenBuildLogger) context.getMavenEmbedder().getLogger();
+            MavenBuildLogger mavenLogger = (MavenBuildLogger) context.getLogger();
 
             mavenLogger.removeListener(oldForm);
             mavenLogger.addListener(form);

@@ -21,7 +21,6 @@ package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 
-import org.codehaus.mevenide.idea.build.MavenOptions;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.GuiUtils;
@@ -71,12 +70,14 @@ public class ShowMavenOptionsAction extends AbstractBaseAction {
         String actionText = actionEvent.getPresentation().getText();
         MouseEvent event = (MouseEvent) actionEvent.getInputEvent();
 
+/*
         if (actionText.equals(PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS)) {
             getAndUpdateMavenOptionsPopupMenu(actionContext, mavenOptionsPopupMenu).show(event.getComponent(),
                                               event.getX(), event.getY());
+*/
 
 //          ActionUtils.chooseAndAddPluginToPom(context);
-        }
+      //  }
     }
 
     private JPopupMenu createPopup() {
@@ -130,7 +131,7 @@ public class ShowMavenOptionsAction extends AbstractBaseAction {
      *
      * @return The popup menu.
      */
-    public JPopupMenu getAndUpdateMavenOptionsPopupMenu(ActionContext actionContext, JPopupMenu mavenOptionsPopupMenu) {
+/*    public JPopupMenu getAndUpdateMavenOptionsPopupMenu(ActionContext actionContext, JPopupMenu mavenOptionsPopupMenu) {
         MenuElement[] menuElements = mavenOptionsPopupMenu.getSubElements();
         MavenOptions options = actionContext.getProjectPluginSettings().getMavenOptions();
         Hashtable optionMap = options.getMavenOptionList();
@@ -154,5 +155,5 @@ public class ShowMavenOptionsAction extends AbstractBaseAction {
         }
 
         return mavenOptionsPopupMenu;
-    }
+    }*/
 }

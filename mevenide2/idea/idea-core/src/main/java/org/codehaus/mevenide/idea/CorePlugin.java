@@ -13,11 +13,18 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Comparator;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * Todo: Describe what this class does!
+ * The core Mevenide IDEA plugin provides methods generally available to all
+ * other Mevenide IDEA plugins which depends on this plugin.
+ * </br>
+ * A plugin which depends on this core plugin has to implement the
+ * {@link org.codehaus.mevenide.idea.IMevenideIdeaComponent} interface
+ * and register itself into the core plugin by calling the method
+ * {@link #registerMevenideComponent}
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
@@ -25,12 +32,27 @@ public class CorePlugin implements ProjectComponent, Configurable {
     private static final Logger LOG = Logger.getLogger(CorePlugin.class);
 
     private final Project corePlugin;
-    private List<IMevenideIdeaComponent> mevenideIdeaComponents = new ArrayList<IMevenideIdeaComponent>();
+    private Set<IMevenideIdeaComponent> mevenideIdeaComponents =
+            new TreeSet<IMevenideIdeaComponent>(new MevenideIdeaComponentComparator());
     private CoreConfigurationForm form;
     private boolean scanForExistingPoms;
     private boolean checkBoxText;
     // the logger that corresponds to this instance of the plugin
 
+
+    private class MevenideIdeaComponentComparator implements Comparator {
+
+        public int compare(Object mevenideComponent, Object mevenideComponent1) {
+            if (mevenideComponent instanceof IMevenideIdeaComponent &&
+                    mevenideComponent1 instanceof IMevenideIdeaComponent) {
+                if (mevenideComponent != null && mevenideComponent1 != null) {
+                    return ((IMevenideIdeaComponent) mevenideComponent).getMevenideComponentName()
+                            .compareTo(((IMevenideIdeaComponent) mevenideComponent1).getMevenideComponentName());
+                }
+            }
+            return -1;
+        }
+    }
 
     public CorePlugin(Project project) {
         corePlugin = project;
@@ -45,11 +67,9 @@ public class CorePlugin implements ProjectComponent, Configurable {
     }
 
     public void initComponent() {
-        // TODO: insert component initialization logic here
     }
 
     public void disposeComponent() {
-        // TODO: insert component disposal logic here
     }
 
     public String getComponentName() {
