@@ -16,19 +16,21 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.util;
 
 import org.apache.log4j.Logger;
 
-import java.awt.event.ActionListener;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -45,7 +47,6 @@ public class GuiUtils {
      * @param menu           The menu to plase the items into.
      * @param menuItemText   The menu text of the newly created menu item.
      * @param actionListener The action listener to register.
-     *
      * @return Document me!
      */
     public static JMenuItem addMenuItem(JMenu menu, String menuItemText, ActionListener actionListener) {
@@ -63,7 +64,6 @@ public class GuiUtils {
      * @param popupMenu      The menu to plase the items into.
      * @param menuItemText   The menu text of the newly created menu item.
      * @param actionListener The action listener to register.
-     *
      * @return Document me!
      */
     public static JMenuItem addMenuItem(JPopupMenu popupMenu, String menuItemText, ActionListener actionListener) {
@@ -81,11 +81,10 @@ public class GuiUtils {
      * @param popupMenu      The menu to plase the items into.
      * @param menuItemText   The menu text of the newly created menu item.
      * @param actionListener The action listener to register.
-     *
      * @return Document me!
      */
     public static JCheckBoxMenuItem addCheckBoxMenuItem(JPopupMenu popupMenu, String menuItemText,
-            ActionListener actionListener) {
+                                                        ActionListener actionListener) {
         JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(menuItemText);
 
         menuItem.addActionListener(actionListener);
@@ -103,11 +102,10 @@ public class GuiUtils {
      * @param menuItemText   The menu text of the newly created menu item.
      * @param actionListener The action listener to register.
      * @param isEnabled      True if the menu item should be enabled, false otherwise.
-     *
      * @return Document me!
      */
     public static JMenuItem addMenuItem(JMenu menu, String menuItemText, ActionListener actionListener,
-            boolean isEnabled) {
+                                        boolean isEnabled) {
         JMenuItem menuItem = new JMenuItem(menuItemText);
 
         menuItem.addActionListener(actionListener);
@@ -121,7 +119,6 @@ public class GuiUtils {
      * Method description
      *
      * @param obj Document me!
-     *
      * @return Document me!
      */
     public static DefaultMutableTreeNode createDefaultTreeNode(Object obj) {
@@ -132,7 +129,6 @@ public class GuiUtils {
      * Returns an ImageIcon, or null if the path was invalid.
      *
      * @param path Document me!
-     *
      * @return the image icon.
      */
     public static ImageIcon createImageIcon(String path) {
@@ -151,7 +147,6 @@ public class GuiUtils {
      * Gets the selected node of a tree.
      *
      * @param tree The tree.
-     *
      * @return The node or null in case no node is selected.
      */
     public static DefaultMutableTreeNode getSelectedNodeObject(JTree tree) {
@@ -172,7 +167,6 @@ public class GuiUtils {
      * @param tree The tree.
      * @param x    The x coordinate.
      * @param y    The y coordinate
-     *
      * @return The node or null in case no node is selected.
      */
     public static DefaultMutableTreeNode getSelectedNodeObject(JTree tree, int x, int y) {
@@ -189,7 +183,6 @@ public class GuiUtils {
      * Gets the selected nodes of a tree.
      *
      * @param tree The tree.
-     *
      * @return The list of nodes or null in case no node is selected.
      */
     public static List<DefaultMutableTreeNode> getSelectedNodeObjects(JTree tree) {
@@ -214,7 +207,6 @@ public class GuiUtils {
      * Gets the selected nodes of a tree, sorted by phases and goals.
      *
      * @param tree The tree.
-     *
      * @return The list of nodes or null in case no node is selected.
      */
     public static List<DefaultMutableTreeNode> getSortedSelectedNodeObjects(JTree tree) {
@@ -258,15 +250,14 @@ public class GuiUtils {
      *
      * @param selectedNodeList Document me!
      * @param clazz            Document me!
-     *
      * @return Document me!
      */
     public static boolean allNodesAreOfTheSameType(List<DefaultMutableTreeNode> selectedNodeList, Object clazz) {
         for (DefaultMutableTreeNode node : selectedNodeList) {
             Object nodeInfo = node.getUserObject();
 
-            if ((nodeInfo != null) && nodeInfo.getClass().equals(clazz)) {}
-            else {
+            if ((nodeInfo != null) && nodeInfo.getClass().equals(clazz)) {
+            } else {
                 return false;
             }
         }
