@@ -18,29 +18,29 @@
 package org.codehaus.mevenide.idea.gui.form;
 
 /**
- * Todo: Describe what this class does!
+ * Container object of simple value/label mapping.
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
-public class Label2ValueMapper {
-    private Integer value;
+public class CustomizingObject {
+    private String value;
     private String label;
 
 
-    public Label2ValueMapper() {
+    public CustomizingObject() {
     }
 
 
-    public Label2ValueMapper(Integer value, String label) {
+    public CustomizingObject(String value, String label) {
         this.value = value;
         this.label = label;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(Integer value) {
+    public void setValue(String value) {
         this.value = value;
     }
 

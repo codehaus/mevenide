@@ -21,8 +21,8 @@ package org.codehaus.mevenide.idea.build.embedder;
 import com.intellij.openapi.progress.ProgressManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.PlexusLoggerAdapter;
 import org.apache.maven.embedder.MavenEmbedderLogger;
+import org.apache.maven.embedder.PlexusLoggerAdapter;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.monitor.event.DefaultEventMonitor;
@@ -50,7 +50,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
     public void run() {
         MavenEmbedder mavenEmbedder;
         MavenEmbedderBuildLogger logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
-        MavenConfiguration mavenOption = buildEnvironment.getMavenBuildSettings().getMavenConfiguration();
+        MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildSettings().getMavenConfiguration();
         try {
             mavenEmbedder = buildEnvironment.getMavenEmbedder();
 
@@ -67,33 +67,37 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
                     StringUtils.defaultString(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
-            Settings settings = mavenEmbedder.buildSettings(new File(mavenSettingsFile), userSettingsPath, false);
-            settings.setOffline(mavenOption.isWorkOffline());
+            Settings settings = mavenEmbedder
+                    .buildSettings(new File(mavenSettingsFile), userSettingsPath, mavenConfig.isPluginUpdatePolicy());
+            settings.setOffline(mavenConfig.isWorkOffline());
             req.setSettings(settings);
             req.setLocalRepositoryPath(mavenEmbedder.getLocalRepositoryPath(settings));
-            req.setRecursive(!mavenOption.isNonRecursive());
-            req.setShowErrors(mavenOption.isProduceExceptionErrorMessages());
-      //      req.setFailureBehavior("fail-never");
+            req.setRecursive(!mavenConfig.isNonRecursive());
+            req.setShowErrors(mavenConfig.isProduceExceptionErrorMessages());
             req.setGoals(buildEnvironment.getGoals());
+            req.setFailureBehavior(mavenConfig.getFailureBehavior());
+            req.setGlobalChecksumPolicy(
+                    (StringUtils.isEmpty(mavenConfig.getChecksumPolicy()) ? null : mavenConfig.getChecksumPolicy()));
             Properties props = new Properties();
             props.putAll(System.getProperties());
-      //      props.putAll(config.getProperties());
+            //      props.putAll(config.getProperties());
             props.setProperty("idea.execution", "true");
 
-            if (mavenOption.isSkipTests()) {
+            if (mavenConfig.isSkipTests()) {
                 props.setProperty("test", "skip");
             }
             req.setProperties(props);
             MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
 
-            req.setLoggingLevel(mavenOption.getOutputLevel());
-            mavenEmbedderLogger.setThreshold(mavenOption.getOutputLevel());
+            req.setLoggingLevel(mavenConfig.getOutputLevel());
+            mavenEmbedderLogger.setThreshold(mavenConfig.getOutputLevel());
 
             req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger)));
             req.addEventMonitor(
                     new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
-   //         req.setGlobalChecksumPolicy(mavenOption.);
+            //         req.setGlobalChecksumPolicy(mavenConfig.);
             req.setStartTime(new java.util.Date());
+            logger.debug(mavenConfig.toString());
             mavenEmbedder.execute(req);
             stop();
 
@@ -118,6 +122,6 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
                 logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
                         LogListener.OUTPUT_TYPE_SYSTEM);
             }
-        }                       
+        }
     }
 }
