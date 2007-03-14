@@ -38,7 +38,6 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 import org.apache.maven.SettingsConfigurationException;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
@@ -89,6 +88,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     private AggregateProgressHandle handle;
     private OutputHandler out;
     
+    private Logger LOGGER = Logger.getLogger(MavenJavaExecutor.class.getName());
     /**
      * All tabs which were used for some process which has now ended.
      * These are closed when you start a fresh process.
@@ -169,17 +169,19 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
             out = new OutputHandler(ioput, config.getProject(), handle);
+            IOBridge.pushSystemInOutErr(out);
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             if (config.getProject() != null) {
                 try {
                     checkDebuggerListening(config, out);
                 } catch (MojoExecutionException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
                 } catch (MojoFailureException ex) {
-                    ex.printStackTrace();
+                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
             File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
+            //TODO we should get completely rid of this..
             Profile myProfile = new Profile();
             if (repoRoot != null) {
                 //can happen when users don't install the repository module.
@@ -262,13 +264,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             }
             req.setUpdateSnapshots(config.isUpdateSnapshots());
             req.setRecursive(config.isRecursive());
-            IOBridge.pushSystemInOutErr(out);
             embedder.execute(req);
         } catch (MavenExecutionException ex) {
-            //            ex.printStackTrace();
-            //            ErrorManager.getDefault().notify(ex);
+            LOGGER.log(Level.FINE, ex.getMessage(), ex);
         } catch (SettingsConfigurationException ex) {
-            //                ex.printStackTrace();
+            LOGGER.log(Level.FINE, ex.getMessage(), ex);
         } catch (ThreadDeath death) {
 //            cancel();
             throw death;
@@ -402,7 +402,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             }
         }
         catch (Exception ex) {
-            Logger.getLogger(getClass().getName()).log(Level.INFO,
+            LOGGER.log(Level.INFO,
                 "Error removing shutdown hook originated from Maven build. " + ex.getMessage(), 
                 ex);
         }
