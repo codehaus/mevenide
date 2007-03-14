@@ -4,8 +4,14 @@ import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.InvalidDataException;
+import com.intellij.openapi.util.JDOMExternalizable;
+import com.intellij.openapi.util.JDOMExternalizerUtil;
+import com.intellij.openapi.util.WriteExternalException;
 import org.apache.log4j.Logger;
 import org.codehaus.mevenide.idea.form.CoreConfigurationForm;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
+import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
@@ -28,27 +34,22 @@ import java.util.TreeSet;
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
-public class CorePlugin implements ProjectComponent, Configurable {
+public class CorePlugin implements ProjectComponent, Configurable, JDOMExternalizable {
     private static final Logger LOG = Logger.getLogger(CorePlugin.class);
 
     private final Project corePlugin;
     private Set<IMevenideIdeaComponent> mevenideIdeaComponents =
             new TreeSet<IMevenideIdeaComponent>(new MevenideIdeaComponentComparator());
     private CoreConfigurationForm form;
-    private boolean scanForExistingPoms;
-    private boolean checkBoxText;
-    // the logger that corresponds to this instance of the plugin
-
+    private MavenConfiguration mavenConfiguration = new MavenConfiguration();
 
     private class MevenideIdeaComponentComparator implements Comparator {
 
         public int compare(Object mevenideComponent, Object mevenideComponent1) {
             if (mevenideComponent instanceof IMevenideIdeaComponent &&
                     mevenideComponent1 instanceof IMevenideIdeaComponent) {
-                if (mevenideComponent != null && mevenideComponent1 != null) {
-                    return ((IMevenideIdeaComponent) mevenideComponent).getMevenideComponentName()
-                            .compareTo(((IMevenideIdeaComponent) mevenideComponent1).getMevenideComponentName());
-                }
+                return ((IMevenideIdeaComponent) mevenideComponent).getMevenideComponentName()
+                        .compareTo(((IMevenideIdeaComponent) mevenideComponent1).getMevenideComponentName());
             }
             return -1;
         }
@@ -64,6 +65,15 @@ public class CorePlugin implements ProjectComponent, Configurable {
             LOG.info("Registering mevenide component: " + mevenideIdeaComponent.getMevenideComponentName());
             mevenideIdeaComponents.add(mevenideIdeaComponent);
         }
+    }
+
+    /**
+     * Return the maven configuration, so other plugins may use it.
+     *
+     * @return The maven configuration
+     */
+    public MavenConfiguration getMavenConfiguration() {
+        return mavenConfiguration;
     }
 
     public void initComponent() {
@@ -85,27 +95,12 @@ public class CorePlugin implements ProjectComponent, Configurable {
         // called when project is being closed
     }
 
-    public boolean isScanForExistingPoms() {
-        return scanForExistingPoms;
-    }
-
-    public void setScanForExistingPoms(final boolean scanForExistingPoms) {
-        this.scanForExistingPoms = scanForExistingPoms;
-    }
-
-    public boolean isCheckBoxText() {
-        return checkBoxText;
-    }
-
-    public void setCheckBoxText(final boolean checkBoxText) {
-        this.checkBoxText = checkBoxText;
-    }
-
     public JComponent createComponent() {
         if (form == null) {
             form = new CoreConfigurationForm();
         }
         LOG.info("Instantiated Core Configuration Form!");
+        // add all mevenide idea configuration forms to the core form
         for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
             JPanel panel = new JPanel();
             panel.add(mevenideIdeaComponent.getMevenideConfigurationComponent());
@@ -116,7 +111,7 @@ public class CorePlugin implements ProjectComponent, Configurable {
     }
 
     public boolean isModified() {
-        boolean isModified = form != null && form.isModified(this);
+        boolean isModified = form != null && form.isModified(mavenConfiguration);
         for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
             isModified = isModified || mevenideIdeaComponent.isMevenideConfigurationModified();
         }
@@ -126,7 +121,7 @@ public class CorePlugin implements ProjectComponent, Configurable {
     public void apply() throws ConfigurationException {
         if (form != null) {
             // Get data from form to component
-            form.getData(this);
+            form.getData(mavenConfiguration);
             for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
                 mevenideIdeaComponent.applyMevenideConfiguration();
             }
@@ -136,7 +131,7 @@ public class CorePlugin implements ProjectComponent, Configurable {
     public void reset() {
         if (form != null) {
             // Reset form data from component
-            form.setData(this);
+            form.setData(mavenConfiguration);
             for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
                 mevenideIdeaComponent.resetMevenideConfiguration();
             }
@@ -149,16 +144,58 @@ public class CorePlugin implements ProjectComponent, Configurable {
 
     @Nls
     public String getDisplayName() {
-        return "Mevenide2 IDEA";  //To change body of implemented methods use File | Settings | File Templates.
+        return "Mevenide2 IDEA";
     }
 
     public Icon getIcon() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     @Nullable
     @NonNls
     public String getHelpTopic() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
+    }
+
+    public void readExternal(Element element) throws InvalidDataException {
+        mavenConfiguration.setChecksumPolicy(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_CHECKSUM_POLICY));
+        mavenConfiguration.setFailureBehavior(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_FAILURE_BEHAVIOR));
+        mavenConfiguration.setLocalRepository(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_LOCAL_REPOSITORY));
+        mavenConfiguration.setNonRecursive(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_NON_RECURSIVE)));
+        mavenConfiguration.setOutputLevel(Integer.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_OUTPUT_LEVEL)));
+        mavenConfiguration.setPluginUpdatePolicy(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_PLUGIN_UPDATE_POLICY)));
+        mavenConfiguration.setProduceExceptionErrorMessages(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_EXCEPTION_ERROR_MESSAGES)));
+        mavenConfiguration.setUsePluginRegistry(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_USE_PLUGIN_REGISTRY)));
+        mavenConfiguration.setWorkOffline(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                MavenConfiguration.CONFIG_ELEMENT_WORK_OFFLINE)));
+    }
+
+    public void writeExternal(Element element) throws WriteExternalException {
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_CHECKSUM_POLICY,
+                mavenConfiguration.getChecksumPolicy());
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_EXCEPTION_ERROR_MESSAGES,
+                String.valueOf(mavenConfiguration.isProduceExceptionErrorMessages()));
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_FAILURE_BEHAVIOR,
+                mavenConfiguration.getFailureBehavior());
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_LOCAL_REPOSITORY,
+                mavenConfiguration.getLocalRepository());
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_NON_RECURSIVE,
+                String.valueOf(mavenConfiguration.isNonRecursive()));
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_OUTPUT_LEVEL,
+                String.valueOf(mavenConfiguration.getOutputLevel()));
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_PLUGIN_UPDATE_POLICY,
+                String.valueOf(mavenConfiguration.isPluginUpdatePolicy()));
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_USE_PLUGIN_REGISTRY,
+                String.valueOf(mavenConfiguration.isUsePluginRegistry()));
+        JDOMExternalizerUtil.writeField(element, MavenConfiguration.CONFIG_ELEMENT_WORK_OFFLINE,
+                String.valueOf(mavenConfiguration.isWorkOffline()));
     }
 }

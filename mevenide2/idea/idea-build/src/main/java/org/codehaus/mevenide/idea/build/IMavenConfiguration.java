@@ -19,6 +19,8 @@
 
 package org.codehaus.mevenide.idea.build;
 
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
+
 /**
  * Describe what this class does.
  *

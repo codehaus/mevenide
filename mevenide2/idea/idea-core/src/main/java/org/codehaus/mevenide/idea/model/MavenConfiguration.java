@@ -1,13 +1,37 @@
-package org.codehaus.mevenide.idea.build;
+/* ==========================================================================
+ * Copyright 2006 Mevenide Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ * =========================================================================
+ */
 
-import org.apache.commons.lang.builder.ToStringBuilder;
+package org.codehaus.mevenide.idea.model;
 
 public class MavenConfiguration {
+    public static final String CONFIG_ELEMENT_WORK_OFFLINE = "workOffline";
+    public static final String CONFIG_ELEMENT_LOCAL_REPOSITORY = "localRepository";
+    public static final String CONFIG_ELEMENT_EXCEPTION_ERROR_MESSAGES = "exceptionErrorMessages";
+    public static final String CONFIG_ELEMENT_USE_PLUGIN_REGISTRY = "usePluginRegistry";
+    public static final String CONFIG_ELEMENT_NON_RECURSIVE = "nonRecursive";
+    public static final String CONFIG_ELEMENT_OUTPUT_LEVEL = "outputLevel";
+    public static final String CONFIG_ELEMENT_CHECKSUM_POLICY = "checksumPolicy";
+    public static final String CONFIG_ELEMENT_FAILURE_BEHAVIOR = "failureBehavior";
+    public static final String CONFIG_ELEMENT_PLUGIN_UPDATE_POLICY = "updatePolicy";
+
     private boolean workOffline;
     private String localRepository;
     private boolean produceExceptionErrorMessages;
     private boolean usePluginRegistry;
-    private boolean skipTests;
     private boolean nonRecursive;
     private int outputLevel;
     private String checksumPolicy;
@@ -82,14 +106,6 @@ public class MavenConfiguration {
         this.usePluginRegistry = usePluginRegistry;
     }
 
-    public boolean isSkipTests() {
-        return skipTests;
-    }
-
-    public void setSkipTests(final boolean skipTests) {
-        this.skipTests = skipTests;
-    }
-
     public boolean isNonRecursive() {
         return nonRecursive;
     }
@@ -107,7 +123,6 @@ public class MavenConfiguration {
         sb.append(", localRepository='").append(localRepository).append('\'');
         sb.append(", produceExceptionErrorMessages=").append(produceExceptionErrorMessages);
         sb.append(", usePluginRegistry=").append(usePluginRegistry);
-        sb.append(", skipTests=").append(skipTests);
         sb.append(", nonRecursive=").append(nonRecursive);
         sb.append(", outputLevel=").append(outputLevel);
         sb.append(", checksumPolicy='").append(checksumPolicy).append('\'');

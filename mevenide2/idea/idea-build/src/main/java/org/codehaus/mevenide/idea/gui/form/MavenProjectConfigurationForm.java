@@ -44,13 +44,11 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
     private JCheckBox checkBoxScanForExistingPoms;
     private JPanel panel;
     private JTabbedPane rootComponent;
-    private MavenBuildConfigDialog buildConfigDialog;
 
     /**
      * Constructs ...
      */
     public MavenProjectConfigurationForm() {
-        buildConfigDialog = new MavenBuildConfigDialog();
         setupForm();
         buttonMavenHomeDir.setActionCommand(PluginConstants.ACTION_COMMAND_SET_MAVEN_HOME);
         buttonAlternativeSettingsFile.setActionCommand(PluginConstants.ACTION_COMMAND_SET_ALTERNATE_SETTINGS);
@@ -73,7 +71,6 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
     public void getData(MavenBuildPluginSettings data) {
         super.getData(data);
         data.setScanForExistingPoms(checkBoxScanForExistingPoms.isSelected());
-        buildConfigDialog.getData(data.getMavenConfiguration());
     }
 
     /**
@@ -101,7 +98,7 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      * @return Document me!
      */
     public boolean isModified(MavenBuildPluginSettings data) {
-        return buildConfigDialog.isModified(data.getMavenConfiguration()) || isDataModified(data) ||
+        return isDataModified(data) ||
                 (checkBoxScanForExistingPoms.isSelected() != data.isScanForExistingPoms());
     }
 
@@ -121,7 +118,6 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
      */
     public void setData(MavenBuildPluginSettings data) {
         super.setData(data);
-        buildConfigDialog.setData(data.getMavenConfiguration());
         checkBoxScanForExistingPoms.setSelected(data.isScanForExistingPoms());
     }
 
@@ -226,7 +222,6 @@ public class MavenProjectConfigurationForm extends AbstractConfigurationForm {
                 new GridConstraints(8, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL,
                         GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
                         new Dimension(150, -1), null));
-        rootComponent.addTab(PluginConstants.CONFIG_DIALOG_TAB_MAVEN_OPTIONS, buildConfigDialog.getRootComponent());
         final JPanel panelGeneral = new JPanel();
 
         panelGeneral.setLayout(new GridLayoutManager(2, 2, new Insets(0, 0, 0, 0), -1, -1));

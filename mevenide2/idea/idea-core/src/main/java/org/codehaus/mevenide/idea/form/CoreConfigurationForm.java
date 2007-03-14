@@ -17,14 +17,13 @@
 
 package org.codehaus.mevenide.idea.form;
 
-import org.codehaus.mevenide.idea.CorePlugin;
+import com.jgoodies.forms.layout.CellConstraints;
+import com.jgoodies.forms.layout.FormLayout;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.CellConstraints;
 
 /**
  * This is the core configuration dialog container. It acts as a single point of configuration
@@ -35,6 +34,12 @@ import com.jgoodies.forms.layout.CellConstraints;
 public class CoreConfigurationForm {
     private JPanel panel;
     private JTabbedPane tabbedPane;
+    private MavenCoreSetupDialog mavenCoreSetupDialog;
+
+    public CoreConfigurationForm() {
+        mavenCoreSetupDialog = new MavenCoreSetupDialog();
+        tabbedPane.add("Core", mavenCoreSetupDialog.getRootComponent());
+    }
 
     // Method returns the root component of the form
     public JComponent getRootComponent() {
@@ -46,14 +51,16 @@ public class CoreConfigurationForm {
         return tabbedPane;
     }
 
-    public void setData(CorePlugin data) {
+    public void setData(MavenConfiguration data) {
+        mavenCoreSetupDialog.setData(data);
     }
 
-    public void getData(CorePlugin data) {
+    public void getData(MavenConfiguration data) {
+        mavenCoreSetupDialog.getData(data);
     }
 
-    public boolean isModified(CorePlugin data) {
-        return false;
+    public boolean isModified(MavenConfiguration data) {
+        return mavenCoreSetupDialog.isModified(data);
     }
 
     {

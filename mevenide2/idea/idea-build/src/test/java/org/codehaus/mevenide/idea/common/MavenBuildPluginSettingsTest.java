@@ -24,7 +24,7 @@ import junit.framework.TestCase;
 import org.apache.commons.lang.StringUtils;
 
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
-import org.codehaus.mevenide.idea.build.MavenConfiguration;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 /**
  * MavenBuildPluginSettings Tester.
@@ -46,7 +46,7 @@ public class MavenBuildPluginSettingsTest extends TestCase {
         MavenConfiguration options = new MavenConfiguration();
 
         options.setNonRecursive(true);
-        options.setSkipTests(true);
+//        options.setSkipTests(true);
         assertNotNull(options);
         settings.setMavenConfiguration(options);
         assertNotNull(settings.getMavenConfiguration());
@@ -58,7 +58,7 @@ public class MavenBuildPluginSettingsTest extends TestCase {
         MavenConfiguration options = new MavenConfiguration();
 
         options.setNonRecursive(true);
-        options.setSkipTests(true);
+  //      options.setSkipTests(true);
         assertNotNull(options);
         settings.setMavenConfiguration(options);
         assertNotNull(settings.getMavenConfiguration());

@@ -30,7 +30,7 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.LogListener;
-import org.codehaus.mevenide.idea.build.MavenConfiguration;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 
 import java.io.File;
@@ -83,9 +83,11 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             //      props.putAll(config.getProperties());
             props.setProperty("idea.execution", "true");
 
+/*
             if (mavenConfig.isSkipTests()) {
                 props.setProperty("test", "skip");
             }
+*/
             req.setProperties(props);
             MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
 
