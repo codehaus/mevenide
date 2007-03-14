@@ -237,11 +237,11 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
     }
     
     public void info(String string)    {
-        processMultiLine(string, stdOut, "INFO");
+        processMultiLine(string, stdOut, /*"INFO"*/ "");
     }
     
     public void info(String string, Throwable throwable)    {
-        processMultiLine( string, stdOut, "INFO");
+        processMultiLine( string, stdOut, /*"INFO"*/ "");
         throwable.printStackTrace(stdOut);
     }
     
