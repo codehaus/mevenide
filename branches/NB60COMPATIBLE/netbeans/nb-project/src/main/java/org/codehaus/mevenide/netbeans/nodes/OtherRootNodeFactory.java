@@ -74,12 +74,20 @@ public class OtherRootNodeFactory implements NodeFactory {
         public Node node(String key) {
             if (key == KEY_OTHER) {
                 File[] fls = project.getOtherRoots(false);
-                FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
-                return new OthersRootNode(project, false, fo);
+                // the content of OtherRoots can change from keys() to node(String)
+                if (fls.length > 0) {
+                    FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
+                    return new OthersRootNode(project, false, fo);
+                }
+                return null;
             } else if (key == KEY_OTHER_TEST) {
                 File[] fls = project.getOtherRoots(false);
-                FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
-                return new OthersRootNode(project, true, fo);
+                // the content of OtherRoots can change from keys() to node(String)
+                if (fls.length > 0) {
+                    FileObject fo = FileUtil.toFileObject(fls[0].getParentFile());
+                    return new OthersRootNode(project, true, fo);
+                }
+                return null;
             }
             assert false: "Wrong key for Dependencies NodeFactory: " + key;
             return null;
