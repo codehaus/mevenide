@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.idea.gui.form;
+package org.codehaus.mevenide.idea.form;
 
 /**
  * Container object of simple value/label mapping.

@@ -104,6 +104,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
         actionContext.setPluginProject(project);
         LOG.info("Trying to register Mevenide component <" + getComponentName() + "> into Mevenide Core");
         corePlugin.registerMevenideComponent(this);
+        actionContext.getProjectPluginSettings().setMavenConfiguration(corePlugin.getMavenConfiguration());
     }
 
     private MavenBuildProjectToolWindowForm createMavenToolWindowForm() {

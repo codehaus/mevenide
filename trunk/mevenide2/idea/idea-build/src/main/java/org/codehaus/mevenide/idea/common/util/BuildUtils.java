@@ -22,7 +22,7 @@ package org.codehaus.mevenide.idea.common.util;
 import org.apache.commons.lang.StringUtils;
 
 import org.codehaus.mevenide.idea.build.IMavenConfiguration;
-import org.codehaus.mevenide.idea.build.MavenConfiguration;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 
 /**
