@@ -8,8 +8,8 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>idea</artifactId>
     <packaging>pom</packaging>
-    <name>IDEA Support</name>
-    <description>IDEA Support</description>
+    <name>Mevenide2 IDEA Support</name>
+    <description>Mevenide2 IDEA Support</description>
     <version>0.1-SNAPSHOT</version>
     <inceptionYear>2006</inceptionYear>
     <developers>
