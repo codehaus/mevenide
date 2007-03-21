@@ -22,5 +22,5 @@ package org.codehaus.mevenide.idea.gui.form;
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
-public class MavenBuildConfiguration {
+public class MavenBuildConfigurationForm {
 }
