@@ -27,7 +27,7 @@ import org.codehaus.mevenide.idea.model.MavenConfiguration;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public interface IMavenConfiguration {
+public interface IMavenBuildConfiguration {
     MavenConfiguration getMavenConfiguration();
 
     void setMavenConfiguration(MavenConfiguration mavenConfiguration);
@@ -41,6 +41,10 @@ public interface IMavenConfiguration {
     String getMavenRepository();
 
     String getVmOptions();
+
+    boolean isSkipTests();
+
+    void setSkipTests(boolean skipTests);
 
     void setMavenCommandLineParams(String mavenCommandLineParams);
 

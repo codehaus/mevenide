@@ -50,7 +50,6 @@ public class MavenCoreConfigurationForm {
     private JCheckBox checkboxUsePluginRegistry;
     private JTextField textFieldLocalRepository;
     private JButton buttonBrowseLocalRepository;
-    private JCheckBox checkboxSkipTests;
     private JLabel labelOutputLevel;
     private JLabel labelPluginUpdatePolicy;
     private JLabel labelMultiprojectBuildFailPolicy;
@@ -125,7 +124,7 @@ public class MavenCoreConfigurationForm {
     }
 
     public void setTextFieldLocalRepositoryData(String localRepository) {
-      textFieldLocalRepository.setText(localRepository);  
+        textFieldLocalRepository.setText(localRepository);
     }
 
     public void setData(MavenConfiguration data) {
@@ -133,7 +132,7 @@ public class MavenCoreConfigurationForm {
         textFieldLocalRepository.setText(data.getLocalRepository());
         checkboxProduceExceptionErrorMessages.setSelected(data.isProduceExceptionErrorMessages());
         checkboxUsePluginRegistry.setSelected(data.isUsePluginRegistry());
- //       checkboxSkipTests.setSelected(data.isSkipTests());
+        //       checkboxSkipTests.setSelected(data.isSkipTests());
         checkboxNonRecursive.setSelected(data.isNonRecursive());
         for (int i = 0; i < comboboxModelOutputLevel.getSize(); i++) {
             CustomizingObject customizingObject = (CustomizingObject) comboboxModelOutputLevel.getElementAt(i);
@@ -188,7 +187,7 @@ public class MavenCoreConfigurationForm {
         data.setLocalRepository(textFieldLocalRepository.getText());
         data.setProduceExceptionErrorMessages(checkboxProduceExceptionErrorMessages.isSelected());
         data.setUsePluginRegistry(checkboxUsePluginRegistry.isSelected());
- //       data.setSkipTests(checkboxSkipTests.isSelected());
+        //       data.setSkipTests(checkboxSkipTests.isSelected());
         data.setNonRecursive(checkboxNonRecursive.isSelected());
         data.setOutputLevel(Integer.parseInt(((CustomizingObject) comboboxOutputLevel.getSelectedItem()).getValue()));
         data.setChecksumPolicy(((CustomizingObject) comboboxChecksumPolicy.getSelectedItem()).getValue());
@@ -262,12 +261,6 @@ public class MavenCoreConfigurationForm {
         buttonBrowseLocalRepository = new JButton();
         buttonBrowseLocalRepository.setText("Browse ...");
         panel.add(buttonBrowseLocalRepository, cc.xy(5, 17, CellConstraints.LEFT, CellConstraints.DEFAULT));
-        checkboxUsePluginRegistry = new JCheckBox();
-        checkboxUsePluginRegistry.setText("Use Plugin Registry");
-        panel.add(checkboxUsePluginRegistry, cc.xy(3, 11));
-        checkboxSkipTests = new JCheckBox();
-        checkboxSkipTests.setText("Skip Tests");
-        panel.add(checkboxSkipTests, cc.xy(3, 9));
         comboboxPluginUpdatePolicy = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel2 = new DefaultComboBoxModel();
         defaultComboBoxModel2.addElement("No Global Policy");
@@ -309,11 +302,14 @@ public class MavenCoreConfigurationForm {
         panel.add(spacer1, cc.xy(1, 5, CellConstraints.FILL, CellConstraints.DEFAULT));
         final Spacer spacer2 = new Spacer();
         panel.add(spacer2, cc.xy(7, 9, CellConstraints.FILL, CellConstraints.DEFAULT));
-        checkboxNonRecursive = new JCheckBox();
-        checkboxNonRecursive.setText("Non Recursive");
-        panel.add(checkboxNonRecursive, cc.xy(3, 13));
         final Spacer spacer3 = new Spacer();
         panel.add(spacer3, cc.xy(3, 19, CellConstraints.DEFAULT, CellConstraints.FILL));
+        checkboxUsePluginRegistry = new JCheckBox();
+        checkboxUsePluginRegistry.setText("Use Plugin Registry");
+        panel.add(checkboxUsePluginRegistry, cc.xy(3, 9));
+        checkboxNonRecursive = new JCheckBox();
+        checkboxNonRecursive.setText("Non Recursive");
+        panel.add(checkboxNonRecursive, cc.xy(3, 11));
         labelOutputLevel.setLabelFor(comboboxOutputLevel);
         labelPluginUpdatePolicy.setLabelFor(comboboxPluginUpdatePolicy);
         labelMultiprojectBuildFailPolicy.setLabelFor(comboboxMultiprojectBuildFailPolicy);

@@ -40,9 +40,9 @@ public interface IBuildEnvironment {
 
     public void setProject(Project project);
 
-    public IMavenConfiguration getMavenBuildSettings();
+    public IMavenBuildConfiguration getMavenBuildConfiguration();
 
-    public void setMavenBuildSettings(IMavenConfiguration mavenConfiguration);
+    public void setMavenBuildConfiguration(IMavenBuildConfiguration mavenConfiguration);
 
     public String getPathToJdk();
 

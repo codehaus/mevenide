@@ -29,7 +29,6 @@ import org.apache.maven.embedder.MavenEmbedder;
 
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
-import org.codehaus.mevenide.idea.build.IMavenConfiguration;
 import org.codehaus.mevenide.idea.build.MavenBuildException;
 
 import java.util.ArrayList;
@@ -50,7 +49,7 @@ public class IdeaBuildEnvironment implements IBuildEnvironment {
     private String pomFile;
     private String workingDir;
     private Project project;
-    private IMavenConfiguration mavenConfiguration;
+    private org.codehaus.mevenide.idea.build.IMavenBuildConfiguration mavenConfiguration;
 
     public MavenEmbedder getMavenEmbedder() {
         return mavenEmbedder;
@@ -68,11 +67,11 @@ public class IdeaBuildEnvironment implements IBuildEnvironment {
         this.project = project;
     }
 
-    public IMavenConfiguration getMavenBuildSettings() {
+    public org.codehaus.mevenide.idea.build.IMavenBuildConfiguration getMavenBuildConfiguration() {
         return mavenConfiguration;    // To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setMavenBuildSettings(IMavenConfiguration mavenConfiguration) {
+    public void setMavenBuildConfiguration(org.codehaus.mevenide.idea.build.IMavenBuildConfiguration mavenConfiguration) {
         this.mavenConfiguration = mavenConfiguration;
     }
 

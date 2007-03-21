@@ -20,10 +20,8 @@
 package org.codehaus.mevenide.idea.component;
 
 import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizerUtil;
 import com.intellij.openapi.util.WriteExternalException;
 
-import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 
 import org.jdom.Element;
@@ -47,7 +45,7 @@ public class AbstractComponent {
      */
     public void readExternal(MavenBuildPluginSettings pluginSettings, Element element) throws InvalidDataException {
 /*
-        pluginSettings.getMavenConfiguration().setProduceExceptionErrorMessages(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+        pluginSettings.getMavenBuildConfiguration().setProduceExceptionErrorMessages(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 BuildConstants.MAVEN_OPTION_ERRORS)));
 */
     }
@@ -64,7 +62,7 @@ public class AbstractComponent {
     public void writeExternal(MavenBuildPluginSettings pluginSettings, Element element) throws WriteExternalException {
 /*
         JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_ERRORS,
-                                        Boolean.toString(pluginSettings.getMavenConfiguration().isProduceExceptionErrorMessages()));
+                                        Boolean.toString(pluginSettings.getMavenBuildConfiguration().isProduceExceptionErrorMessages()));
 */
     }
 }
