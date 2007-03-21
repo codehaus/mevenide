@@ -34,11 +34,11 @@ import javax.swing.JTabbedPane;
 public class CoreConfigurationForm {
     private JPanel panel;
     private JTabbedPane tabbedPane;
-    private MavenCoreSetupDialog mavenCoreSetupDialog;
+    private MavenCoreConfigurationForm mavenCoreConfigurationForm;
 
     public CoreConfigurationForm() {
-        mavenCoreSetupDialog = new MavenCoreSetupDialog();
-        tabbedPane.add("Core", mavenCoreSetupDialog.getRootComponent());
+        mavenCoreConfigurationForm = new MavenCoreConfigurationForm();
+        tabbedPane.add("Core", mavenCoreConfigurationForm.getRootComponent());
     }
 
     // Method returns the root component of the form
@@ -47,20 +47,24 @@ public class CoreConfigurationForm {
     }
 
 
+    public MavenCoreConfigurationForm getMavenCoreConfigurationForm() {
+        return mavenCoreConfigurationForm;
+    }
+
     public JTabbedPane getTabbedPane() {
         return tabbedPane;
     }
 
     public void setData(MavenConfiguration data) {
-        mavenCoreSetupDialog.setData(data);
+        mavenCoreConfigurationForm.setData(data);
     }
 
     public void getData(MavenConfiguration data) {
-        mavenCoreSetupDialog.getData(data);
+        mavenCoreConfigurationForm.getData(data);
     }
 
     public boolean isModified(MavenConfiguration data) {
-        return mavenCoreSetupDialog.isModified(data);
+        return mavenCoreConfigurationForm.isModified(data);
     }
 
     {
