@@ -38,7 +38,8 @@ import java.awt.Insets;
  *
  * @author Ralf Quebbemann (ralfq@codehaus.org)
  */
-public class MavenCoreSetupDialog {
+public class MavenCoreConfigurationForm {
+    public static final String ACTION_COMMAND_SET_LOCAL_REPOSITORY = "MavenCoreConfigurationForm.SetLocalRepository";
     private JCheckBox checkboxWorkOffline;
     private JPanel panel;
     private JComboBox comboboxOutputLevel;
@@ -62,12 +63,12 @@ public class MavenCoreSetupDialog {
     private DefaultComboBoxModel comboboxModelPluginUpdatePolicy = new DefaultComboBoxModel();
 
 
-    public MavenCoreSetupDialog() {
+    public MavenCoreConfigurationForm() {
         fillComboboxOutputLevel();
-
         fillComboboxChecksumPolicy();
         fillComboboxFailureBehavior();
         fillComboboxPluginUpdatePolicy();
+        buttonBrowseLocalRepository.setActionCommand(ACTION_COMMAND_SET_LOCAL_REPOSITORY);
     }
 
     private void fillComboboxFailureBehavior() {
@@ -117,6 +118,14 @@ public class MavenCoreSetupDialog {
 
     public JComponent getRootComponent() {
         return panel;
+    }
+
+    public JButton getButtonBrowseLocalRepository() {
+        return buttonBrowseLocalRepository;
+    }
+
+    public void setTextFieldLocalRepositoryData(String localRepository) {
+      textFieldLocalRepository.setText(localRepository);  
     }
 
     public void setData(MavenConfiguration data) {

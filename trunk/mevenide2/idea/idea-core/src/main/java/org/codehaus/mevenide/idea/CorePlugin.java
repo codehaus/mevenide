@@ -9,14 +9,17 @@ import com.intellij.openapi.util.JDOMExternalizable;
 import com.intellij.openapi.util.JDOMExternalizerUtil;
 import com.intellij.openapi.util.WriteExternalException;
 import org.apache.log4j.Logger;
+import org.codehaus.mevenide.idea.action.CoreConfigurationActionListener;
 import org.codehaus.mevenide.idea.form.CoreConfigurationForm;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.util.Comparator;
@@ -82,6 +85,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
     public void disposeComponent() {
     }
 
+    @NotNull
     public String getComponentName() {
         return "CorePlugin";
     }
@@ -97,7 +101,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
 
     public JComponent createComponent() {
         if (form == null) {
-            form = new CoreConfigurationForm();
+            createCoreForm();
         }
         LOG.info("Instantiated Core Configuration Form!");
         // add all mevenide idea configuration forms to the core form
@@ -108,6 +112,14 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
             LOG.info("Adding Mevenide2 component: " + mevenideIdeaComponent.getMevenideComponentName());
         }
         return form.getRootComponent();
+    }
+
+    private void createCoreForm() {
+        form = new CoreConfigurationForm();
+        JButton buttonBrowseLocalRepository = form.getMavenCoreConfigurationForm().getButtonBrowseLocalRepository();
+        buttonBrowseLocalRepository
+                .addActionListener(new CoreConfigurationActionListener(corePlugin,
+                        form.getMavenCoreConfigurationForm()));
     }
 
     public boolean isModified() {

@@ -30,14 +30,15 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.LogListener;
-import org.codehaus.mevenide.idea.model.MavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
+import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 import java.io.File;
 import java.util.Properties;
 
 /**
- * Describe what this class does.
+ * Implements the execution of a Maven build process using the maven embedder component.
+ * The embedder runs in his own process so nothing is blocked from executioning.
  *
  * @author Ralf Quebbemann
  * @version $Revision$
@@ -61,7 +62,6 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
                 req.setPomFile(pomFile.getAbsolutePath());
             }
             req.setBasedir(new File(buildEnvironment.getWorkingDir()));
-            req.setLocalRepositoryPath(buildEnvironment.getMavenBuildSettings().getMavenRepository());
 
             String mavenSettingsFile =
                     StringUtils.defaultString(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
@@ -70,6 +70,15 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             Settings settings = mavenEmbedder
                     .buildSettings(new File(mavenSettingsFile), userSettingsPath, mavenConfig.isPluginUpdatePolicy());
             settings.setOffline(mavenConfig.isWorkOffline());
+            //MEVENIDE-407
+            if (settings.getLocalRepository() == null) {
+                if (!StringUtils.isEmpty(mavenConfig.getLocalRepository())) {
+                    settings.setLocalRepository(new File(mavenConfig.getLocalRepository()).getAbsolutePath());
+                } else {
+                    settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+                }
+            }
+
             req.setSettings(settings);
             req.setLocalRepositoryPath(mavenEmbedder.getLocalRepositoryPath(settings));
             req.setRecursive(!mavenConfig.isNonRecursive());
@@ -97,7 +106,6 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger)));
             req.addEventMonitor(
                     new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
-            //         req.setGlobalChecksumPolicy(mavenConfig.);
             req.setStartTime(new java.util.Date());
             logger.debug(mavenConfig.toString());
             mavenEmbedder.execute(req);
