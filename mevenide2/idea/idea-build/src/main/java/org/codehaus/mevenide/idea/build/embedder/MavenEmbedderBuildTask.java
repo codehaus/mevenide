@@ -51,7 +51,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
     public void run() {
         MavenEmbedder mavenEmbedder;
         MavenEmbedderBuildLogger logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
-        MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildSettings().getMavenConfiguration();
+        MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildConfiguration().getMavenConfiguration();
         try {
             mavenEmbedder = buildEnvironment.getMavenEmbedder();
 
@@ -64,7 +64,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             req.setBasedir(new File(buildEnvironment.getWorkingDir()));
 
             String mavenSettingsFile =
-                    StringUtils.defaultString(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
+                    StringUtils.defaultString(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile());
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
             Settings settings = mavenEmbedder

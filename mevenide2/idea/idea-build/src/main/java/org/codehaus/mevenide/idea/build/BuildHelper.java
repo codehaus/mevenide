@@ -67,11 +67,11 @@ public class BuildHelper {
             classpathSeparator = ":";
         }
 
-        mavenHome = buildEnvironment.getMavenBuildSettings().getMavenHome();
+        mavenHome = buildEnvironment.getMavenBuildConfiguration().getMavenHome();
         mavenHome = getMavenHome(mavenHome);
 
         String classpathEntries = getMavenClasspathEntries(mavenHome, classpathSeparator);
-        String vmOptions = buildEnvironment.getMavenBuildSettings().getVmOptions();
+        String vmOptions = buildEnvironment.getMavenBuildConfiguration().getVmOptions();
         String mavenSystemOptions = StringUtils.defaultString(System.getenv("MAVEN_OPTS"));
         List<String> cmdList = new ArrayList<String>();
 
@@ -100,22 +100,22 @@ public class BuildHelper {
         cmdList.add("-Dmaven.home=" + mavenHome);
         cmdList.add("org.codehaus.classworlds.Launcher");
 
-        if (!StringUtils.isBlank(buildEnvironment.getMavenBuildSettings().getMavenCommandLineParams())) {
-            cmdList.add(buildEnvironment.getMavenBuildSettings().getMavenCommandLineParams());
+        if (!StringUtils.isBlank(buildEnvironment.getMavenBuildConfiguration().getMavenCommandLineParams())) {
+            cmdList.add(buildEnvironment.getMavenBuildConfiguration().getMavenCommandLineParams());
         }
 
-        if (!StringUtils.isBlank(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile())
-                &&!isDefaultSettingsFile(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile())) {
+        if (!StringUtils.isBlank(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile())
+                &&!isDefaultSettingsFile(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile())) {
             cmdList.add("-s");
-            cmdList.add(buildEnvironment.getMavenBuildSettings().getMavenSettingsFile());
+            cmdList.add(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile());
         }
 
         // Todo: Insert Maven Options when running external maven
 /*
-        if (StringUtils.isNotEmpty(buildEnvironment.getMavenBuildSettings().getMavenOptions().toString())) {
+        if (StringUtils.isNotEmpty(buildEnvironment.getMavenBuildConfiguration().getMavenOptions().toString())) {
             String[] mavenOptions;
 
-            mavenOptions = StringUtils.split(buildEnvironment.getMavenBuildSettings().getMavenOptions().toString());
+            mavenOptions = StringUtils.split(buildEnvironment.getMavenBuildConfiguration().getMavenOptions().toString());
 
             for (String mavenOption : mavenOptions) {
                 cmdList.add(mavenOption);

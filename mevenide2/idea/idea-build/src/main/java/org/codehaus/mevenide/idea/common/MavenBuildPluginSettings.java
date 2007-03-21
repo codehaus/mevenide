@@ -21,7 +21,6 @@ package org.codehaus.mevenide.idea.common;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.codehaus.mevenide.idea.build.IMavenConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
@@ -36,7 +35,7 @@ import java.util.List;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public class MavenBuildPluginSettings implements IMavenConfiguration {
+public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.build.IMavenBuildConfiguration {
     private String mavenCommandLineParams;
     private String mavenExecutable;
     private String mavenRepository;
@@ -45,6 +44,7 @@ public class MavenBuildPluginSettings implements IMavenConfiguration {
     private boolean scanForExistingPoms;
     private boolean useFilter;
     private boolean useMavenEmbedder;
+    private boolean skipTests;
     private List<String> standardPhasesList = new ArrayList<String>();
     private MavenConfiguration mavenConfiguration = new MavenConfiguration();
 
@@ -63,6 +63,15 @@ public class MavenBuildPluginSettings implements IMavenConfiguration {
 
     public void setMavenConfiguration(MavenConfiguration mavenConfiguration) {
         this.mavenConfiguration = mavenConfiguration;
+    }
+
+
+    public boolean isSkipTests() {
+        return skipTests;
+    }
+
+    public void setSkipTests(boolean skipTests) {
+        this.skipTests = skipTests;
     }
 
     public String getMavenSettingsFile() {

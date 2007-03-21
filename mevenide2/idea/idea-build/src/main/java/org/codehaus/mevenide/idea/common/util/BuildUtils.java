@@ -21,7 +21,6 @@ package org.codehaus.mevenide.idea.common.util;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.codehaus.mevenide.idea.build.IMavenConfiguration;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 
@@ -32,8 +31,8 @@ import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
  * @version $Revision$
  */
 public class BuildUtils {
-    public static IMavenConfiguration createMavenBuildSettings(IMavenConfiguration projectSettings) {
-        IMavenConfiguration configuration = new MavenBuildPluginSettings();
+    public static org.codehaus.mevenide.idea.build.IMavenBuildConfiguration createMavenBuildSettings(org.codehaus.mevenide.idea.build.IMavenBuildConfiguration projectSettings) {
+        org.codehaus.mevenide.idea.build.IMavenBuildConfiguration configuration = new MavenBuildPluginSettings();
         String mavenHome = null;
         MavenConfiguration mavenOptions = null;
         String mavenCommandLineParams = null;

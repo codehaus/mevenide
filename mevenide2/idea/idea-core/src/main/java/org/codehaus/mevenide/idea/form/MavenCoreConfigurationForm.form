@@ -90,24 +90,6 @@
           <text value="Browse ..."/>
         </properties>
       </component>
-      <component id="2d2f9" class="javax.swing.JCheckBox" binding="checkboxUsePluginRegistry">
-        <constraints>
-          <grid row="10" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <text value="Use Plugin Registry"/>
-        </properties>
-      </component>
-      <component id="8b8ae" class="javax.swing.JCheckBox" binding="checkboxSkipTests">
-        <constraints>
-          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <text value="Skip Tests"/>
-        </properties>
-      </component>
       <component id="4e889" class="javax.swing.JComboBox" binding="comboboxPluginUpdatePolicy">
         <constraints>
           <grid row="12" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
@@ -198,21 +180,30 @@
           <forms defaultalign-horz="false"/>
         </constraints>
       </hspacer>
-      <component id="86396" class="javax.swing.JCheckBox" binding="checkboxNonRecursive">
-        <constraints>
-          <grid row="12" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <forms/>
-        </constraints>
-        <properties>
-          <text value="Non Recursive"/>
-        </properties>
-      </component>
       <vspacer id="f8233">
         <constraints>
           <grid row="18" column="2" row-span="1" col-span="1" vsize-policy="6" hsize-policy="1" anchor="0" fill="2" indent="0" use-parent-layout="false"/>
           <forms defaultalign-vert="false"/>
         </constraints>
       </vspacer>
+      <component id="2d2f9" class="javax.swing.JCheckBox" binding="checkboxUsePluginRegistry">
+        <constraints>
+          <grid row="8" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Use Plugin Registry"/>
+        </properties>
+      </component>
+      <component id="86396" class="javax.swing.JCheckBox" binding="checkboxNonRecursive">
+        <constraints>
+          <grid row="10" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <forms/>
+        </constraints>
+        <properties>
+          <text value="Non Recursive"/>
+        </properties>
+      </component>
     </children>
   </grid>
 </form>

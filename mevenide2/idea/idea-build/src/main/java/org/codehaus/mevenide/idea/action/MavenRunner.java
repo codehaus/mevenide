@@ -26,10 +26,7 @@ import com.intellij.execution.filters.TextConsoleBuilderFactory;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindowManager;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.maven.embedder.DefaultMavenEmbedRequest;
-import org.apache.maven.embedder.MavenEmbedRequest;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildManager;
@@ -46,14 +43,8 @@ import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.helper.IdeaBuildEnvironment;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.classworlds.ClassRealm;
-import org.codehaus.classworlds.NoSuchRealmException;
-import org.codehaus.classworlds.DuplicateRealmException;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 /**
  * Describe what this class does.
@@ -146,7 +137,7 @@ public class MavenRunner {
         IBuildEnvironment buildEnvironment = new IdeaBuildEnvironment();
 
         buildEnvironment.setProject(context.getPluginProject());
-        buildEnvironment.setMavenBuildSettings(BuildUtils.createMavenBuildSettings(context.getProjectPluginSettings()));
+        buildEnvironment.setMavenBuildConfiguration(BuildUtils.createMavenBuildSettings(context.getProjectPluginSettings()));
         buildEnvironment.setGoals(buildContext.getGoals());
         buildEnvironment.setUseMavenEmbedder(useEmbedder);
         buildEnvironment.setPomFile(buildContext.getPomFile());
