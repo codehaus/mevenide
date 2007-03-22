@@ -20,10 +20,8 @@
 package org.codehaus.mevenide.idea.model;
 
 import com.intellij.openapi.vfs.VirtualFile;
-
-import org.apache.maven.pom.x400.ProjectDocument;
-
-import java.util.List;
+import com.intellij.psi.PsiFile;
+import org.codehaus.mevenide.idea.xml.ProjectDocument;
 
 /**
  * Describe what this class does.
@@ -33,45 +31,19 @@ import java.util.List;
  */
 public interface MavenProjectDocument extends Comparable {
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public List<MavenPluginDocument> getPluginDocumentList();
+    public boolean isValid ();
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
+    public PsiFile getPsiFile();
+
     public VirtualFile getPomFile();
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public ProjectDocument getProjectDocument();
+    public ProjectDocument.Project getProject();
 
-    /**
-     * Method description
-     *
-     * @param pluginPathList Document me!
-     */
-    public void setPluginDocumentList(List<MavenPluginDocument> pluginPathList);
+    public Iterable<? extends MavenPluginDocument> getPlugins();
 
-    /**
-     * Method description
-     *
-     * @param pomFile Document me!
-     */
-    public void setPomFile(VirtualFile pomFile);
+    public void addPlugin ( MavenPluginDocument plugin );
 
-    /**
-     * Method description
-     *
-     * @param projectDocument Document me!
-     */
-    public void setProjectDocument(ProjectDocument projectDocument);
+    public void removePlugin ( MavenPluginDocument plugin );
+
+    void reparse();
 }

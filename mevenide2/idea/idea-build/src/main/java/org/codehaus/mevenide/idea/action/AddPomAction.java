@@ -53,6 +53,10 @@ public class AddPomAction extends AbstractBaseAction {
         this.actionContext = context;
     }
 
+    public void update(AnActionEvent e) {
+        e.getPresentation().setEnabled(false);
+    }
+
     /**
      * Method description
      *

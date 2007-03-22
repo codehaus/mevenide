@@ -20,9 +20,9 @@
 package org.codehaus.mevenide.idea.model;
 
 import com.intellij.openapi.vfs.VirtualFile;
-
+import com.intellij.psi.PsiFile;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.pom.x400.ProjectDocument;
+import org.codehaus.mevenide.idea.xml.ProjectDocument;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,113 +35,71 @@ import java.util.List;
  */
 public class MavenProjectDocumentImpl implements MavenProjectDocument {
     private List<MavenPluginDocument> pluginDocumentList = new ArrayList<MavenPluginDocument>();
-    private VirtualFile pomFile;
+    private PsiFile psiFile;
     private ProjectDocument projectDocument;
 
-    /**
-     * Constructs ...
-     *
-     * @param projectDocument Document me!
-     */
-    public MavenProjectDocumentImpl(ProjectDocument projectDocument) {
-        this.projectDocument = projectDocument;
+    public MavenProjectDocumentImpl(PsiFile psiFile) {
+        this.psiFile = psiFile;
+        parseDocument ();
     }
 
-    /**
-     * Constructs ...
-     *
-     * @param pomFile Document me!
-     */
-    public MavenProjectDocumentImpl(VirtualFile pomFile) {
-        this.pomFile = pomFile;
+    private void parseDocument() {
+        projectDocument = ProjectDocument.Factory.parse(psiFile);
     }
 
-    /**
-     * Constructs ...
-     *
-     * @param projectDocument Document me!
-     * @param pomFile         Document me!
-     */
-    public MavenProjectDocumentImpl(ProjectDocument projectDocument, VirtualFile pomFile) {
-        this.projectDocument = projectDocument;
-        this.pomFile = pomFile;
-    }
-
-    /**
-     * Method description
-     *
-     * @param o Document me!
-     *
-     * @return Document me!
-     */
     public int compareTo(Object o) {
         return this.toString().compareToIgnoreCase(o.toString());
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public String toString() {
-        if (StringUtils.isBlank(projectDocument.getProject().getName())) {
-            return projectDocument.getProject().getArtifactId();
+        if (!isValid()) {
+            return "invalid";
         }
 
-        return projectDocument.getProject().getName();
+        String name = projectDocument.getProject().getName().getStringValue();
+        if (!StringUtils.isBlank(name)) {
+            return name;
+        }
+
+        String artifactId = projectDocument.getProject().getArtifactId().getStringValue();
+        if (!StringUtils.isBlank(artifactId)) {
+            return artifactId;
+        }
+
+        return "unnamed";
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public List<MavenPluginDocument> getPluginDocumentList() {
+    public Iterable<? extends MavenPluginDocument> getPlugins() {
         return pluginDocumentList;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
+    public void addPlugin(MavenPluginDocument plugin) {
+        pluginDocumentList.add(plugin);
+    }
+
+    public void removePlugin(MavenPluginDocument plugin) {
+        pluginDocumentList.remove(plugin);
+    }
+
+    public void reparse() {
+        parseDocument();
+        pluginDocumentList.clear();
+    }
+
     public VirtualFile getPomFile() {
-        return pomFile;
+        return psiFile.getVirtualFile();
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public ProjectDocument getProjectDocument() {
-        return projectDocument;
+    public ProjectDocument.Project getProject() {
+        return projectDocument.getProject();
     }
 
-    /**
-     * Method description
-     *
-     * @param pluginDocumentList Document me!
-     */
-    public void setPluginDocumentList(List<MavenPluginDocument> pluginDocumentList) {
-        this.pluginDocumentList = pluginDocumentList;
+    public boolean isValid() {
+        return projectDocument.isWellFormed();
     }
 
-    /**
-     * Method description
-     *
-     * @param pomFile Document me!
-     */
-    public void setPomFile(VirtualFile pomFile) {
-        this.pomFile = pomFile;
+    public PsiFile getPsiFile() {
+        return psiFile;
     }
 
-    /**
-     * Method description
-     *
-     * @param projectDocument Document me!
-     */
-    public void setProjectDocument(ProjectDocument projectDocument) {
-        this.projectDocument = projectDocument;
-    }
 }

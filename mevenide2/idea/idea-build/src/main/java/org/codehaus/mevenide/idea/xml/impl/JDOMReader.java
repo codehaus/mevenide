@@ -1,8 +1,9 @@
-package org.apache.xmlbeans;
+package org.codehaus.mevenide.idea.xml.impl;
 
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
+import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
 
 import java.io.IOException;
@@ -15,13 +16,20 @@ public class JDOMReader {
     protected Element rootElement;
     protected Namespace namespace;
 
-    public void init(InputStream is, XmlOptions xmlOptions) {
+    public boolean isWellFormed () {
+        return rootElement != null;
+    }
+
+    public void init(InputStream is) {
         try {
-            rootElement = new SAXBuilder().build(is).getRootElement();
+            Document document = new SAXBuilder().build(is);
+            if (document.hasRootElement()) {
+                rootElement = document.getRootElement();
+                this.namespace = rootElement.getNamespace();
+            }
         } catch (JDOMException ignore) {
         } catch (IOException ignore) {
         }
-        this.namespace = rootElement.getNamespace();
     }
 
     public Element getChild(Element element, String tag) {

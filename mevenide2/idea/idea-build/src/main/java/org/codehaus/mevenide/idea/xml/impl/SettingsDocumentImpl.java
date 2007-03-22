@@ -1,8 +1,7 @@
-package org.apache.maven.settings.x100.impl;
+package org.codehaus.mevenide.idea.xml.impl;
 
-import org.apache.maven.settings.x100.SettingsDocument;
-import org.apache.xmlbeans.JDOMReader;
-import org.apache.xmlbeans.XmlOptions;
+import org.codehaus.mevenide.idea.xml.SettingsDocument;
+import org.codehaus.mevenide.idea.xml.impl.JDOMReader;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,9 +9,9 @@ import java.io.IOException;
 
 public class SettingsDocumentImpl extends JDOMReader implements SettingsDocument {
 
-    public SettingsDocumentImpl(File file, XmlOptions xmlOptions) {
+    public SettingsDocumentImpl(File file) {
         try {
-            init(new FileInputStream(file), xmlOptions);
+            init(new FileInputStream(file));
         } catch (IOException ignore) {
         }
     }

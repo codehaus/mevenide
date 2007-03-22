@@ -20,20 +20,18 @@
 package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.gui.PomTree;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import java.util.Enumeration;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import java.util.Enumeration;
 
 /**
  * Describe what this class does.
@@ -61,13 +59,13 @@ public class FilterAction extends AbstractBaseAction {
                 || actionText.equals(PluginConstants.ACTION_COMMAND_FILTER_RELEASE)) {
             try {
                 if (!actionContext.getProjectPluginSettings().isUseFilter()) {
-                    toggleFilter(actionContext, true);
+                    toggleFilter(true);
                     actionContext.getProjectPluginSettings().setUseFilter(true);
                     actionEvent.getPresentation().setIcon(
                         GuiUtils.createImageIcon(PluginConstants.ICON_FILTER_APPLIED));
                     actionEvent.getPresentation().setText(PluginConstants.ACTION_COMMAND_FILTER_RELEASE);
                 } else {
-                    toggleFilter(actionContext, false);
+                    toggleFilter(false);
                     actionContext.getProjectPluginSettings().setUseFilter(false);
                     actionEvent.getPresentation().setIcon(GuiUtils.createImageIcon(PluginConstants.ICON_FILTER));
                     actionEvent.getPresentation().setText(PluginConstants.ACTION_COMMAND_FILTER);
@@ -81,21 +79,19 @@ public class FilterAction extends AbstractBaseAction {
     /**
      * Method description
      *
-     * @param context  Document me!
      * @param doFilter true in case the filter should be applied, false otherwise.
      */
-    private void toggleFilter(ActionContext context, boolean doFilter) {
-        PomTree pomTree =
-            ((MavenBuildProjectToolWindowForm) context.getGuiContext().getMavenToolWindowForm()).getPomTree();
+    private void toggleFilter(boolean doFilter) {
+        PomTree pomTree = PomTreeUtil.getPomTree(actionContext);
         TreePath[] selectedPaths = pomTree.getSelectionPaths();
         Enumeration expandedPaths = pomTree.getExpandedDescendants(
                                         new TreePath(
                                             ((DefaultMutableTreeNode) pomTree.getModel().getRoot()).getPath()));
 
         if (doFilter) {
-            ActionUtils.filterStandardPhasesInNodes(context, (DefaultMutableTreeNode) pomTree.getModel().getRoot());
+            PomTreeUtil.filterStandardPhasesInNodes(actionContext, (DefaultMutableTreeNode) pomTree.getModel().getRoot());
         } else {
-            ActionUtils.unfilterStandardPhasesInNodes(context, (DefaultMutableTreeNode) pomTree.getModel().getRoot());
+            PomTreeUtil.unfilterStandardPhasesInNodes(actionContext, (DefaultMutableTreeNode) pomTree.getModel().getRoot());
         }
 
         reloadTree(pomTree, expandedPaths, selectedPaths);

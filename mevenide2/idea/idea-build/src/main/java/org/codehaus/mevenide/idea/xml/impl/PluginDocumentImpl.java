@@ -1,9 +1,7 @@
-package org.apache.maven.plugin.impl;
+package org.codehaus.mevenide.idea.xml.impl;
 
-import org.apache.maven.plugin.MojoDocument;
-import org.apache.maven.plugin.PluginDocument;
-import org.apache.xmlbeans.JDOMReader;
-import org.apache.xmlbeans.XmlOptions;
+import org.codehaus.mevenide.idea.xml.PluginDocument;
+import org.codehaus.mevenide.idea.xml.impl.JDOMReader;
 import org.jdom.Element;
 
 import java.io.InputStream;
@@ -11,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PluginDocumentImpl extends JDOMReader implements PluginDocument {
-    public PluginDocumentImpl(InputStream inputStream, XmlOptions xmlOptions) {
-        init(inputStream, xmlOptions);
+    public PluginDocumentImpl(InputStream inputStream) {
+        init(inputStream);
     }
 
     public Plugin getPlugin() {
@@ -24,10 +22,10 @@ public class PluginDocumentImpl extends JDOMReader implements PluginDocument {
             public Mojos getMojos() {
                 final Element mojosElement = getChild(rootElement, "mojos");
                 return new Mojos() {
-                    public List<MojoDocument.Mojo> getMojoList() {
-                        final List<MojoDocument.Mojo> list = new ArrayList<MojoDocument.Mojo>();
+                    public List<Mojo> getMojoList() {
+                        final List<Mojo> list = new ArrayList<Mojo>();
                         for (final Element mojoElement : getChildren(mojosElement, "mojo")) {
-                            list.add(new MojoDocument.Mojo() {
+                            list.add(new Mojo() {
                                 public String getGoal() {
                                     return getChildText(mojoElement, "goal");
                                 }

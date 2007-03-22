@@ -20,28 +20,23 @@
 package org.codehaus.mevenide.idea.action;
 
 import org.apache.log4j.Logger;
-
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
-import org.codehaus.mevenide.idea.config.NameDocument;
 import org.codehaus.mevenide.idea.gui.PomTree;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.model.MavenPluginDocumentImpl;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocumentImpl;
-import org.codehaus.mevenide.idea.model.PluginGoal;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 
-import java.awt.event.MouseEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -65,20 +60,20 @@ public class PomTreeMouseActionListener extends AbstractTreeMouseActionListener 
      */
     public PomTreeMouseActionListener(ActionContext context) {
         this.context = context;
-        this.tree = ((MavenBuildProjectToolWindowForm) context.getGuiContext().getMavenToolWindowForm()).getPomTree();
+        this.tree = PomTreeUtil.getPomTree(context);
     }
 
     private JPopupMenu createPopup(List<DefaultMutableTreeNode> nodeList) {
         JPopupMenu popupMenu = new JPopupMenu();
 
         if ((nodeList.size() == 1) && nodeList.get(0).isRoot()) {
-            GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_ADD_POM,
-                                 new PomTreeMenuActionListener(context));
+//            GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_ADD_POM,
+//                                 new PomTreeMenuActionListener(context));
         } else if (GuiUtils.allNodesAreOfTheSameType(nodeList, MavenProjectDocumentImpl.class)) {
             GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_OPEN_POM,
                                  new PomTreeMenuActionListener(context));
-            GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_REMOVE_POM,
-                                 new PomTreeMenuActionListener(context));
+//            GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_REMOVE_POM,
+//                                 new PomTreeMenuActionListener(context));
             GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
                                  new PomTreeMenuActionListener(context));
         } else if (!nodeList.get(0).isLeaf() && (nodeList.get(0).getFirstChild() != null)) {
@@ -86,7 +81,7 @@ public class PomTreeMouseActionListener extends AbstractTreeMouseActionListener 
                 GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
                                      new PomTreeMenuActionListener(context));
             }
-        } else if (nodeList.get(0).isLeaf() && ActionUtils.nodesAreExecutableMavenGoals(nodeList)) {
+        } else if (nodeList.get(0).isLeaf() && PomTreeUtil.nodesAreExecutableMavenGoals(nodeList)) {
             GuiUtils.addMenuItem(popupMenu, PluginConstants.ACTION_COMMAND_RUN_GOALS,
                                  new PomTreeMenuActionListener(context));
         }
@@ -134,17 +129,15 @@ public class PomTreeMouseActionListener extends AbstractTreeMouseActionListener 
                 if ((nodeInfo != null) && (nodeInfo instanceof MavenProjectDocument)) {
                     MavenProjectDocument mavenProjectDocument = (MavenProjectDocument) nodeInfo;
 
-                    LOG.info("Project Name: " + mavenProjectDocument.getProjectDocument().getProject().getName());
-                } else if ((nodeInfo != null) && (nodeInfo instanceof NameDocument.Name.Enum)) {
-                    NameDocument.Name.Enum goalName = (NameDocument.Name.Enum) nodeInfo;
-
-                    LOG.info("Goal name is: " + goalName);
+                    LOG.info("Project Name: " + mavenProjectDocument.getProject().getName());
+                } else if ((nodeInfo != null) && PomTreeUtil.isProjectGoal(nodeInfo)) {
+                    LOG.info("Goal name is: " + nodeInfo.toString());
                 }
             } else if (e.getClickCount() == 2) {
                 Object nodeInfo = selectedNodeList.get(0).getUserObject();
 
                 if (nodeInfo != null) {
-                    if ((nodeInfo instanceof NameDocument.Name.Enum) || (nodeInfo instanceof PluginGoal)) {
+                    if (PomTreeUtil.isExecutableGoal(nodeInfo)) {
                         try {
                             ActionUtils.runSelectedGoals(context, selectedNodeList);
                         } catch (IdeaMavenPluginException e1) {

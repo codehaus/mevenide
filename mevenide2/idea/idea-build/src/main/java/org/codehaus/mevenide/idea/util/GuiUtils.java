@@ -28,6 +28,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
@@ -263,5 +265,26 @@ public class GuiUtils {
         }
 
         return true;
+    }
+
+    public static DefaultMutableTreeNode findNodeByObject(DefaultMutableTreeNode root, Object object) {
+        if ( root.getUserObject() == object ) {
+            return root;
+        }
+        for ( int i = 0; i != root.getChildCount(); i++ ) {
+            DefaultMutableTreeNode child = (DefaultMutableTreeNode) root.getChildAt(i);
+            DefaultMutableTreeNode found = findNodeByObject(child, object);
+            if ( found != null ) {
+                return found;
+            }
+        }
+        return null;
+    }
+
+    public static void removeAndSelectParent(JTree tree, DefaultMutableTreeNode node) {
+        DefaultTreeModel treeModel = ((DefaultTreeModel) tree.getModel());
+        TreeNode[] path = treeModel.getPathToRoot(node.getParent());
+        treeModel.removeNodeFromParent(node);
+        tree.setSelectionPath(new TreePath(path));
     }
 }
