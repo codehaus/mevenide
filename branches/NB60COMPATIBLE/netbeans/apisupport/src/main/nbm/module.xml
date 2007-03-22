@@ -45,6 +45,12 @@
           <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
       </dependency>
       <dependency>
+          <id>org.netbeans.api:org-netbeans-modules-java-project</id>
+      </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-netbeans-api-java</id>
+      </dependency>
+      <dependency>
          <id>org.netbeans.modules:org-netbeans-modules-apisupport-project</id>
       </dependency>
    </dependencies> 
