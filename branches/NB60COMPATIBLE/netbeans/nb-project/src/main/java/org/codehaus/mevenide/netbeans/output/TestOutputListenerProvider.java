@@ -20,22 +20,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
+import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.URLMapper;
-import org.openide.loaders.DataObject;
 import org.openide.text.Line;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
@@ -200,37 +197,7 @@ public class TestOutputListenerProvider implements OutputProcessor {
                 ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
                 while ((line = reader.readLine()) != null) {
                     Matcher match = linePattern.matcher(line);
-                    OutputListener list = null;
-                    if (match.matches()) {
-                        String method = match.group(1);
-                        String file = match.group(2);
-                        String lineNum = match.group(3);
-                        int index = method.indexOf(file);
-                        if (index > -1) {
-                            String packageName = method.substring(0, index).replace('.', '/');
-                            String resourceName = packageName  + file + ".class"; //NOI18N
-                            FileObject resource = classPath.findResource(resourceName);
-                            if (resource != null) {
-                                FileObject root = classPath.findOwnerRoot(resource);
-                                URL url = URLMapper.findURL(root, URLMapper.INTERNAL);
-                                SourceForBinaryQuery.Result res = SourceForBinaryQuery.findSourceRoots(url);
-                                FileObject[] rootz = res.getRoots();
-                                for (int i = 0; i < rootz.length; i++) {
-                                    File rootFile = FileUtil.toFile(rootz[i]);
-                                    File java = new File(rootFile, packageName + file + ".java");
-                                    FileObject javaFo = FileUtil.toFileObject(java);
-                                    if (javaFo != null) {
-                                        DataObject obj = DataObject.find(javaFo);
-                                        EditorCookie cook = (EditorCookie)obj.getCookie(EditorCookie.class);
-                                        int lineInt = Integer.parseInt(lineNum);
-                                        list = new StacktraceOutputListener(cook, lineInt);
-                                    }
-                                }
-                            }
-                        } else {
-                            //weird..
-                        }
-                    }
+                    OutputListener list = OutputUtils.matchStackTraceLine(line, classPath);
                     if (list != null) {
                         writer.println(line, list);
                     } else {

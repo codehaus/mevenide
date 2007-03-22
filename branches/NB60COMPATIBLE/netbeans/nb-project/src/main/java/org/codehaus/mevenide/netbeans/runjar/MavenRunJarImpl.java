@@ -25,13 +25,27 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.bridges.runjar.MavenRunJar;
+import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
+import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.plexus.util.cli.Commandline;
+import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.api.project.Sources;
+import org.netbeans.spi.java.classpath.ClassPathProvider;
+import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 
 public class MavenRunJarImpl implements MavenRunJar {
@@ -121,6 +135,8 @@ public class MavenRunJarImpl implements MavenRunJar {
                 cmd.append(" ");
             }
             String[] cmds;
+            Output out = null;
+            Output err = null;
             try {
                 cmds = Commandline.translateCommandline(cmd.toString());
                 log.info("Executing \"" + cmd + "\" in directory " + workDirectory);
@@ -129,15 +145,22 @@ public class MavenRunJarImpl implements MavenRunJar {
                 synchronized (semaphor) {
                     semaphor.notifyAll();
                 }
-                Output out = new Output(proc.getInputStream(), io.getOut());
-                Output err = new Output(proc.getErrorStream(), io.getErr());
+                File fil = FileUtil.normalizeFile(project.getFile());
+                FileObject fo = FileUtil.toFileObject(fil);
+                ClassPath classpath = null;
+                if (fo != null) {
+                    Project prj = FileOwnerQuery.getOwner(fo);
+                    ClassPathProviderImpl cpp = prj.getLookup().lookup(ClassPathProviderImpl.class);
+                    classpath =  ClassPathSupport.createProxyClassPath(cpp.getProjectClassPaths(ClassPath.EXECUTE));
+                }
+                
+                out = new Output(proc.getInputStream(), io.getOut(), classpath);
+                err = new Output(proc.getErrorStream(), io.getErr(), classpath);
                 Task outTask = PROCESSOR.post(out);
                 Task errTask = PROCESSOR.post(err);
                 int exit = proc.waitFor();
                 outTask.waitFinished();
-                out.closeWriter();
                 errTask.waitFinished();
-                err.closeWriter();
             } catch (IOException ex) {
                 ex.printStackTrace();
 //            System.out.println("IO");
@@ -146,6 +169,10 @@ public class MavenRunJarImpl implements MavenRunJar {
 //            System.out.println("INT");
             } catch (Exception ex) {
                 ex.printStackTrace();
+            } finally {
+                if (out != null) out.closeWriter();
+                if (err != null) err.closeWriter();
+                
             }
         }
     }
@@ -153,9 +180,11 @@ public class MavenRunJarImpl implements MavenRunJar {
     private static class Output implements Runnable {
         private InputStreamReader str;
         private OutputWriter writer;
-        public Output(InputStream instream, OutputWriter out) {
+        private ClassPath cp;
+        public Output(InputStream instream, OutputWriter out, ClassPath cp) {
             str = new InputStreamReader(instream);
             writer = out;
+            this.cp = cp;
         }
         
         public void run() {
@@ -169,7 +198,18 @@ public class MavenRunJarImpl implements MavenRunJar {
                             // should fix issues on windows..
                             buf.setLength(buf.length() - 1);
                         }
-                        writer.println(buf.toString());
+                        String line = buf.toString();
+                        if (cp != null) {
+                            OutputListener ol = OutputUtils.matchStackTraceLine(line, cp);
+                            if (ol != null) {
+                                writer.println(line, ol);
+                            } else {
+                                writer.println(line);
+                            }
+                        } else {
+                            writer.println(line);
+                        }
+                                
                         buf.setLength(0);
                         stamp = System.currentTimeMillis();
                     } else {
