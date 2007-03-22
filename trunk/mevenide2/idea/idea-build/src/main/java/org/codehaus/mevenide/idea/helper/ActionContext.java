@@ -19,18 +19,13 @@
 package org.codehaus.mevenide.idea.helper;
 
 import com.intellij.openapi.project.Project;
-import org.apache.xmlbeans.XmlOptions;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.common.util.ErrorHandler;
-import org.codehaus.mevenide.idea.config.IdeaMavenPluginDocument;
-import org.codehaus.mevenide.idea.config.PluginConfigDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
 import org.codehaus.mevenide.idea.util.PluginConstants;
+import org.codehaus.mevenide.idea.xml.MavenDefaultsDocument;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Describe what this class does.
@@ -44,11 +39,14 @@ public class ActionContext {
     private MavenBuildPluginSettings projectPluginSettings = new MavenBuildPluginSettings();
     private List<MavenProjectDocument> pomDocumentList = new ArrayList<MavenProjectDocument>();
     private Project pluginProject;
+    MavenDefaultsDocument defaultsDocument;
 
     /**
      * Constructs ...
      */
     public ActionContext() {
+        defaultsDocument = MavenDefaultsDocument.Factory.parse(
+                getClass().getResource(PluginConstants.PLUGIN_CONFIG_FILENAME));
     }
 
     public Project getPluginProject() {
@@ -87,28 +85,7 @@ public class ActionContext {
         this.lastExecutedMavenProject = lastExecutedMavenProject;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public PluginConfigDocument.PluginConfig getProjectPluginConfiguration() {
-        try {
-            XmlOptions xmlOptions = new XmlOptions();
-            Map<String, String> xmlOptionsMap = new Hashtable<String, String>();
-
-            xmlOptionsMap.put("", "org/apache/maven/plugin");
-            xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
-
-            IdeaMavenPluginDocument ideaMavenPluginDoc = IdeaMavenPluginDocument.Factory.parse(
-                    this.getClass().getResource(
-                            PluginConstants.PLUGIN_CONFIG_FILENAME), xmlOptions);
-
-            return ideaMavenPluginDoc.getIdeaMavenPlugin().getPluginConfig();
-        } catch (Exception e) {
-            ErrorHandler.processAndShowError(getPluginProject(), e);
-        }
-
-        return null;
+    public List<MavenDefaultsDocument.Goal> getStandardGoals() {
+        return defaultsDocument.getIdeaMavenPlugin().getPluginConfig().getMaven().getGoals().getStandard().getGoalList();
     }
 }

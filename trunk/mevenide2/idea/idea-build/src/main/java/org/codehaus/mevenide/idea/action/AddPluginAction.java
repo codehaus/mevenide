@@ -21,17 +21,15 @@ package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.model.MavenProjectDocumentImpl;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import java.util.List;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -68,7 +66,7 @@ public class AddPluginAction extends AbstractBaseAction {
         String actionText = actionEvent.getPresentation().getText();
 
         if (actionText.equals(PluginConstants.ACTION_COMMAND_ADD_PLUGIN)) {
-            ActionUtils.chooseAndAddPluginToPom(actionContext);
+            ActionUtils.chooseAndAddPluginToPom(actionContext, PomTreeUtil.getPomTree(actionContext));
         }
     }
 
@@ -82,9 +80,7 @@ public class AddPluginAction extends AbstractBaseAction {
 
         if ((actionContext != null) && (actionContext.getGuiContext().getMavenToolWindowForm() != null)) {
             List<DefaultMutableTreeNode> selectedNodeList =
-                GuiUtils
-                    .getSelectedNodeObjects(((MavenBuildProjectToolWindowForm) actionContext.getGuiContext()
-                        .getMavenToolWindowForm()).getPomTree());
+                GuiUtils.getSelectedNodeObjects(PomTreeUtil.getPomTree(actionContext));
 
             if (selectedNodeList.isEmpty()) {
                 presentation.setEnabled(false);

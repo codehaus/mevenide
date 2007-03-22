@@ -19,15 +19,12 @@
 
 package org.codehaus.mevenide.idea.gui;
 
-import org.codehaus.mevenide.idea.config.NameDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
-import org.codehaus.mevenide.idea.model.PluginGoal;
-
-import java.awt.*;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import java.awt.*;
 
 /**
  * Describe what this class does.
@@ -76,14 +73,14 @@ public class PomTreeCellRenderer extends DefaultTreeCellRenderer {
 
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
 
-        if ((leaf && (node.getUserObject() instanceof NameDocument.Name.Enum))
-                || (node.getUserObject() instanceof PluginGoal)) {
+        if ((leaf && (PomTreeUtil.isProjectGoal(node.getUserObject())))
+                || (PomTreeUtil.isPluginGoal(node.getUserObject()))) {
             setIcon(goalIcon);
         } else if (isMavenProject(node)) {
             MavenProjectDocument document = ((MavenProjectDocument) node.getUserObject());
             String tooltipText = document.getPomFile().getPath();
 
-            setText(node.getUserObject().toString() + " (" + document.getPomFile().getPath() + ")");
+            setText(node.getUserObject().toString() + " (" + document.getPomFile().getParent().getPath() + ")");
             setToolTipText(tooltipText);
             setIcon(pomIcon);
         } else {

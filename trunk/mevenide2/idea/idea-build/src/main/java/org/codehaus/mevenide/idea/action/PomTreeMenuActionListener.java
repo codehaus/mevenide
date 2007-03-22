@@ -20,15 +20,14 @@
 package org.codehaus.mevenide.idea.action;
 
 import org.apache.log4j.Logger;
-
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Describe what this class does.
@@ -69,7 +68,7 @@ public class PomTreeMenuActionListener extends AbstractBaseActionListener implem
                 } else if (menuText.equals(PluginConstants.ACTION_COMMAND_REMOVE_POM)) {
                     ActionUtils.removePomFromTree(context);
                 } else if (menuText.equals(PluginConstants.ACTION_COMMAND_ADD_PLUGIN)) {
-                    ActionUtils.chooseAndAddPluginToPom(context);
+                    ActionUtils.chooseAndAddPluginToPom(context, PomTreeUtil.getPomTree(context));
                 } else if (menuText.equals(PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN)) {
                     ActionUtils.removeSelectedPluginsFromPom(context);
                 } else if (menuText.equals(PluginConstants.ACTION_COMMAND_RUN_GOALS)) {

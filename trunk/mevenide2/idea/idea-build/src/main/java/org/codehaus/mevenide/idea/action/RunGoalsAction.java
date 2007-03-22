@@ -21,18 +21,16 @@ package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import java.util.List;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -72,9 +70,7 @@ public class RunGoalsAction extends AbstractBaseAction {
             try {
                 ActionUtils
                     .runSelectedGoals(actionContext,
-                                      GuiUtils
-                                          .getSortedSelectedNodeObjects(((MavenBuildProjectToolWindowForm) actionContext
-                                              .getGuiContext().getMavenToolWindowForm()).getPomTree()));
+                                      GuiUtils.getSortedSelectedNodeObjects(PomTreeUtil.getPomTree(actionContext)));
             } catch (IdeaMavenPluginException e) {
                 ErrorHandler.processAndShowError(actionContext.getPluginProject(), e, false);
             }
@@ -92,8 +88,7 @@ public class RunGoalsAction extends AbstractBaseAction {
         if ((actionContext != null) && (actionContext.getGuiContext().getMavenToolWindowForm() != null)) {
             List<DefaultMutableTreeNode> selectedNodeList =
                 GuiUtils
-                    .getSelectedNodeObjects(((MavenBuildProjectToolWindowForm) actionContext.getGuiContext()
-                        .getMavenToolWindowForm()).getPomTree());
+                    .getSelectedNodeObjects(PomTreeUtil.getPomTree(actionContext));
 
             if (selectedNodeList.isEmpty()) {
                 presentation.setEnabled(false);
@@ -101,7 +96,7 @@ public class RunGoalsAction extends AbstractBaseAction {
                 return;
             }
 
-            if (ActionUtils.nodesAreExecutableMavenGoals(selectedNodeList)) {
+            if (PomTreeUtil.nodesAreExecutableMavenGoals(selectedNodeList)) {
                 presentation.setEnabled(true);
             } else {
                 presentation.setEnabled(false);

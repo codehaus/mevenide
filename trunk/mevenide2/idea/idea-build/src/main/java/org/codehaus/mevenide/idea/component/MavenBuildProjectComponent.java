@@ -25,7 +25,6 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizable;
@@ -39,11 +38,9 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.uiDesigner.core.GridConstraints;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.apache.maven.settings.x100.SettingsDocument;
-import org.apache.xmlbeans.XmlOptions;
+import org.codehaus.mevenide.idea.xml.SettingsDocument;
 import org.codehaus.mevenide.idea.CorePlugin;
 import org.codehaus.mevenide.idea.IMevenideIdeaComponent;
-import org.codehaus.mevenide.idea.action.ActionUtils;
 import org.codehaus.mevenide.idea.action.AddPluginAction;
 import org.codehaus.mevenide.idea.action.AddPomAction;
 import org.codehaus.mevenide.idea.action.FilterAction;
@@ -57,30 +54,24 @@ import org.codehaus.mevenide.idea.action.SortAction;
 import org.codehaus.mevenide.idea.action.ToolWindowKeyListener;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.gui.PomTree;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.gui.form.MavenProjectConfigurationForm;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.model.MavenPluginDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
-import org.codehaus.mevenide.idea.model.MavenProjectDocumentImpl;
 import org.codehaus.mevenide.idea.util.GuiUtils;
-import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JTree;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.tree.TreePath;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
 import java.io.File;
-import java.util.Hashtable;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -93,7 +84,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
         implements IMevenideIdeaComponent, ProjectComponent, JDOMExternalizable {
     private static final Logger LOG = Logger.getLogger(MavenBuildProjectComponent.class);
     private ActionContext actionContext = new ActionContext();
-    private Set<MavenProjectDocument> mavenPomList = new LinkedHashSet<MavenProjectDocument>();
+    private PomWatcher pomWatcher;
 
     /**
      * Constructs ...
@@ -190,15 +181,6 @@ public class MavenBuildProjectComponent extends AbstractComponent
         return actionContext.getGuiContext().getProjectConfigurationForm().getRootComponent();
     }
 
-    private void createPomTree()
-            throws org.apache.xmlbeans.XmlException, java.io.IOException, IdeaMavenPluginException {
-        for (MavenProjectDocument mavenProjectDocument : mavenPomList) {
-            ActionUtils.addSinglePomToTree(actionContext, mavenProjectDocument);
-
-            // Register a document listener that listens for changes
-        }
-    }
-
     /**
      * Method description
      */
@@ -264,27 +246,17 @@ public class MavenBuildProjectComponent extends AbstractComponent
      * Method description
      */
     public void projectOpened() {
-        PomTree pomTree;
-        ProjectRootManager projectRootManager = ProjectRootManager.getInstance(actionContext.getPluginProject());
         Icon goalIcon = GuiUtils.createImageIcon(PluginConstants.ICON_APPLICATION_SMALL);
         Icon pomIcon = IconLoader.getIcon(PluginConstants.ICON_POM_SMALL);
 
-        pomTree = new PomTree(PluginConstants.TREE_ROOT_NODE_TITLE, pomIcon, goalIcon);
+        final JTree pomTree = new PomTree(PluginConstants.TREE_ROOT_NODE_TITLE, pomIcon, goalIcon);
         pomTree.addMouseListener(new PomTreeMouseActionListener(actionContext));
 
-        if ((actionContext.getProjectPluginSettings() != null)
-                && actionContext.getProjectPluginSettings().isScanForExistingPoms()) {
-            mavenPomList = getPomFilesOfProject(projectRootManager);
-        }
-
         pomTree.setRootVisible(true);
+        pomTree.expandPath(new TreePath(((DefaultMutableTreeNode) pomTree.getModel().getRoot()).getPath()));
         initToolWindow(pomTree);
 
-        try {
-            createPomTree();
-        } catch (Exception e) {
-            ErrorHandler.processAndShowError(actionContext.getPluginProject(), e);
-        }
+        pomWatcher = new PomWatcher( actionContext );
     }
 
     /**
@@ -315,15 +287,9 @@ public class MavenBuildProjectComponent extends AbstractComponent
 
         if (settingsFile.exists()) {
             try {
-                XmlOptions xmlOptions = new XmlOptions();
-                Map<String, String> xmlOptionsMap = new Hashtable<String, String>();
-
-                xmlOptionsMap.put("", "http://maven.apache.org/Settings/1.0.0");
-                xmlOptions.setLoadSubstituteNamespaces(xmlOptionsMap);
-
                 SettingsDocument settingsDocument = SettingsDocument.Factory.parse(new File(mavenHomeDir
                         + System.getProperty("file.separator")
-                        + "settings.xml"), xmlOptions);
+                        + "settings.xml"));
 
                 if (settingsDocument != null) {
                     if (!StringUtils.isEmpty(settingsDocument.getSettings().getLocalRepository())) {
@@ -341,6 +307,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
 
         LOG.debug("Location of Maven Repository is: " + pluginSettings.getMavenRepository());
 
+/*
         Element pomListElement = element.getChild("pom-list");
 
         if (pomListElement != null) {
@@ -390,6 +357,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
                 }
             }
         }
+*/
     }
 
     /**
@@ -452,9 +420,7 @@ public class MavenBuildProjectComponent extends AbstractComponent
 
             pomElement.addContent(pluginListElement);
 
-            List<MavenPluginDocument> pluginDocList = pomFile.getPluginDocumentList();
-
-            for (MavenPluginDocument pluginDoc : pluginDocList) {
+            for (MavenPluginDocument pluginDoc : pomFile.getPlugins()) {
 
                 // Store only those plugins, which were manually added by the user
                 if (!pluginDoc.isMemberOfPom()) {
@@ -509,34 +475,6 @@ public class MavenBuildProjectComponent extends AbstractComponent
                 .ICON_APPLICATION_BIG);    // To change body of implemented methods use File | Settings | File Templates.
     }
 */
-    private void readPomFiles(VirtualFile virtualFile, Set<MavenProjectDocument> pomFileList) {
-        VirtualFile[] children = virtualFile.getChildren();
-
-        if (children == null) {
-            return;
-        }
-
-        for (VirtualFile child : children) {
-            if (child.getName().equals(PluginConstants.POM_FILE_NAME)) {
-                if (!isPomInList(pomFileList, child)) {
-                    pomFileList.add(new MavenProjectDocumentImpl(child));
-                }
-            }
-
-            readPomFiles(child, pomFileList);
-        }
-    }
-
-    private Set<MavenProjectDocument> getPomFilesOfProject(ProjectRootManager projectRootManager) {
-        VirtualFile[] contentRoots = projectRootManager.getContentRoots();
-
-        for (VirtualFile contentRoot : contentRoots) {
-            readPomFiles(contentRoot, mavenPomList);
-        }
-
-        return mavenPomList;
-    }
-
     /**
      * Method description
      *

@@ -21,22 +21,19 @@ package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
 import org.apache.log4j.Logger;
-
 import org.codehaus.mevenide.idea.gui.PomTree;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
+import org.codehaus.mevenide.idea.gui.PomTreeUtil;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.GuiUtils;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import java.util.Collections;
-import java.util.Enumeration;
 
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * Describe what this class does.
@@ -88,9 +85,7 @@ public class SortAction extends AbstractBaseAction {
 
         if ((actionContext != null) && (actionContext.getGuiContext().getMavenToolWindowForm() != null)) {
             DefaultMutableTreeNode selectedNode =
-                GuiUtils
-                    .getSelectedNodeObject(((MavenBuildProjectToolWindowForm) actionContext.getGuiContext()
-                        .getMavenToolWindowForm()).getPomTree());
+                GuiUtils.getSelectedNodeObject(PomTreeUtil.getPomTree(actionContext));
 
             if (selectedNode == null) {
                 presentation.setEnabled(false);
@@ -114,8 +109,7 @@ public class SortAction extends AbstractBaseAction {
     private void sortNodesAscending(ActionContext context) {
         LOG.debug("Sorting nodes in ascending order");
 
-        PomTree pomTree =
-            ((MavenBuildProjectToolWindowForm) context.getGuiContext().getMavenToolWindowForm()).getPomTree();
+        PomTree pomTree = PomTreeUtil.getPomTree(context);
         TreePath[] selectedPaths = pomTree.getSelectionPaths();
         DefaultMutableTreeNode rootNode = sortTree(GuiUtils.getSelectedNodeObject(pomTree));
         Enumeration expandedPaths = pomTree.getExpandedDescendants(

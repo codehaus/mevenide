@@ -19,7 +19,7 @@
 
 package org.codehaus.mevenide.idea.model;
 
-import org.apache.maven.plugin.PluginDocument;
+import org.codehaus.mevenide.idea.xml.PluginDocument;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
