@@ -59,12 +59,9 @@ public class ImportantFilesNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project p) {
-        System.out.println("creating nodes...");
         if (p.getLookup().lookup(NbModuleProvider.class) != null) {
-            System.out.println("exit 1");
             return new ImpFilesNL(p);
         }
-        System.out.println("exit 2");
         return NodeFactorySupport.fixedNodeList();
     }
 
