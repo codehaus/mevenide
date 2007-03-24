@@ -96,8 +96,7 @@ public class LocalRepositoryIndexer {
     /** Creates a new instance of LocalRepositoryIndexer */
     private LocalRepositoryIndexer() throws  EmbedderException, ComponentLookupException, PlexusContainerException, MavenEmbedderException, RepositoryIndexException {
         embedder = new Embedder();
-        ClassWorld world = new ClassWorld();
-        embedder.start( world );
+        embedder.start();
         indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene");
         discoverer = (ArtifactDiscoverer) embedder.lookup(ArtifactDiscoverer.ROLE, "default" );
         repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();

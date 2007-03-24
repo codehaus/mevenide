@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>mevenide2-parent</artifactId>
@@ -23,6 +23,7 @@
                 <configuration>
                     <descriptor>src/main/nbm/module.xml</descriptor>
                     <keystorealias>mevenide2</keystorealias>
+                    <brandingToken>mevenidex</brandingToken>
                 </configuration>
             </plugin>
         </plugins>
@@ -59,7 +60,6 @@
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://208.44.201.216:18080/maven</url>
             <releases>
-                <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>

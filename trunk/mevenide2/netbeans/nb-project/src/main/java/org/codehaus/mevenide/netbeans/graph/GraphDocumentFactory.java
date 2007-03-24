@@ -30,6 +30,9 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -82,14 +85,10 @@ public class GraphDocumentFactory {
         GraphResolutionListener listener = new GraphResolutionListener();
         try {
             MyResolutionListener.setDelegateResolutionListener(listener);
-            EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(project.getPOMFile());
-        } catch (ArtifactNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (ArtifactResolutionException ex) {
-            ex.printStackTrace();
+            MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+            req.setPomFile(project.getPOMFile().getAbsolutePath());
+            MavenExecutionResult res = EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(req);
         } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
-        } catch (ProjectBuildingException ex) {
             ex.printStackTrace();
         } catch (Throwable ex) {
             System.out.println("throwable=" + ex.getClass());

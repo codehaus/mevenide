@@ -58,6 +58,7 @@ import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.ErrorManager;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -201,32 +202,17 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             act.setProperty(prop);
             myProfile.setActivation(act);
             
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
             
-            Settings settings = embedder.buildSettings( userSettingsPath,
-                    globalSettingsPath,
-                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
-            settings.addProfile(myProfile);
-            settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
-            //MEVENIDE-407
-            if (settings.getLocalRepository() == null) {
-                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
-            }
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
             // need to set some profiles or get NPE!
             req.addActiveProfiles(Collections.EMPTY_LIST).addInactiveProfiles(Collections.EMPTY_LIST);
-			// TODO remove explicit activation
+            // TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
             req.addActiveProfiles(config.getActiveteProfiles());
             //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
-                settings.setOffline(config.isOffline().booleanValue());
-            } else {
-                config.setOffline(Boolean.valueOf(settings.isOffline()));
+                req.setOffline(config.isOffline().booleanValue());
             }
-            req.setSettings(settings);
             req.setGoals(config.getGoals());
             //mavenCLI adds all System.getProperties() in there as well..
             Properties props = new Properties();
@@ -235,17 +221,17 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             props.setProperty("netbeans.execution", "true");
             
             req.setProperties(props);
-            req.setBasedir(config.getExecutionDirectory());
+            req.setBaseDirectory(config.getExecutionDirectory());
             File pom = new File(config.getExecutionDirectory(), "pom.xml");
             if (pom.exists()) {
                 req.setPomFile(pom.getAbsolutePath());
             }
-            req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
+//TODO??            req.setLocalRepositoryPath(embedder.getSettings().getLocalRepository());
             req.addEventMonitor(out);
             req.setTransferListener(out);
             //            req.setReactorActive(true);
             
-            req.setFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
+            req.setReactorFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
@@ -263,13 +249,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             IOBridge.pushSystemInOutErr(out);
             embedder.execute(req);
         } catch (MavenEmbedderException ex) {
-            //            ex.printStackTrace();
-            //            ErrorManager.getDefault().notify(ex);
-        } catch (MavenExecutionException ex) {
-            //            ex.printStackTrace();
-            //            ErrorManager.getDefault().notify(ex);
-        } catch (SettingsConfigurationException ex) {
-            //                ex.printStackTrace();
+                        ex.printStackTrace();
+                        ErrorManager.getDefault().notify(ex);
         } catch (ThreadDeath death) {
 //            cancel();
             throw death;

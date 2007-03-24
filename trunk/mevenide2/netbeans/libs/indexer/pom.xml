@@ -1,4 +1,5 @@
-<?xml version="1.0"?><project>
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
   <parent>
     <artifactId>netbeans-libs</artifactId>
     <groupId>org.codehaus.mevenide</groupId>
@@ -31,6 +32,11 @@
       </repository>
   </repositories>
   <dependencies>
+    <dependency>
+        <artifactId>plexus-container-default</artifactId>
+        <groupId>org.codehaus.plexus</groupId>
+        <version>1.0-alpha-20</version>
+    </dependency>
     <dependency>
         <groupId>org.apache.maven.archiva</groupId>
         <artifactId>archiva-indexer</artifactId>
