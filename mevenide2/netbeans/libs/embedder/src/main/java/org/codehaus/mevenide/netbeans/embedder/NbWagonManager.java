@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.embedder;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.manager.DefaultWagonManager;
@@ -36,6 +37,8 @@ import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.events.TransferListener;
 import org.apache.maven.wagon.proxy.ProxyInfo;
 import org.apache.maven.wagon.repository.Repository;
+import org.apache.maven.wagon.repository.RepositoryPermissions;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
 import org.codehaus.plexus.logging.AbstractLogEnabled;
@@ -194,7 +197,16 @@ public class NbWagonManager extends AbstractLogEnabled implements WagonManager, 
         return original.getWagon(repository);
     }
 
+    public void registerWagons(Collection arg0, PlexusContainer arg1) {
+        original.registerWagons(arg0, arg1);
+    }
 
+    public void findAndRegisterWagons(PlexusContainer arg0) {
+        original.findAndRegisterWagons(arg0);
+    }
 
+    public void setDefaultRepositoryPermissions(RepositoryPermissions arg0) {
+        original.setDefaultRepositoryPermissions(arg0);
+    }
     
 }

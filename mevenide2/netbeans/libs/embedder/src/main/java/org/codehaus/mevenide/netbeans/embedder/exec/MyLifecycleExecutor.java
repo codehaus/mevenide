@@ -96,7 +96,6 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
         DefaultLifecycleExecutor exec = new DefaultLifecycleExecutor();
         setVar(exec, pluginManager, "pluginManager");
         setVar(exec, extensionManager, "extensionManager");
-        System.out.println("setting lifecycle=" + lifecycles);
         setVar(exec, lifecycles, "lifecycles");
         setVar(exec, artifactHandlerManager, "artifactHandlerManager");
         setVar(exec, defaultReports, "defaultReports");
@@ -119,10 +118,6 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
         } catch (NoSuchFieldException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public Map getLifecycleMappings(MavenSession mavenSession, String string, String string0, MavenProject mavenProject) throws LifecycleExecutionException, BuildFailureException, PluginNotFoundException {
-        return createExecutor().getLifecycleMappings(mavenSession, string, string0, mavenProject);
     }
     
 }

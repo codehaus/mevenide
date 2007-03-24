@@ -31,12 +31,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.ProgressTransferListener;
@@ -298,22 +299,18 @@ class DependenciesNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
-                    boolean ok = true; 
-                    try {
-                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")), 
-                                                           new ProgressTransferListener());
-                    } catch (ArtifactNotFoundException ex) {
-                        ex.printStackTrace();
+                    boolean ok = true;
+                    MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+                    req.setTransferListener(new ProgressTransferListener());
+                    req.setPomFile(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")).getAbsolutePath());
+                    MavenExecutionResult res = online.readProjectWithDependencies(req);
+                    if (res.hasExceptions()) {
                         ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
-                    } catch (ArtifactResolutionException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
-                    } catch (ProjectBuildingException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
+                        for (Object ex : res.getExceptions()) {
+                            Exception exc = (Exception)ex;
+                            exc.printStackTrace();
+                            StatusDisplayer.getDefault().setStatusText("Failed to download - " + exc.getLocalizedMessage());
+                        }
                     }
                     if (ok) {
                         StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
@@ -322,9 +319,8 @@ class DependenciesNode extends AbstractNode {
                 }
             });
         }
-    }  
-    
-    private class ShowGraphAction extends AbstractAction {
+    }
+     class ShowGraphAction extends AbstractAction {
         public ShowGraphAction() {
             putValue(Action.NAME, "Show Dependency Graph");
         }

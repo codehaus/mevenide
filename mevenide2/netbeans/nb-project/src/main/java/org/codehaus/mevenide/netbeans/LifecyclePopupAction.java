@@ -41,14 +41,7 @@ public class LifecyclePopupAction extends AbstractAction implements Presenter.Po
     /** Creates a new instance of LifecyclePopupAction */
     public LifecyclePopupAction(NbMavenProject proj ) {
         project = proj;
-        try {
-            phases = project.getEmbedder().getLifecyclePhases();
-        } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
-            phases = new ArrayList();
-            loadingFailed = true;
-        }
-        
+        phases = project.getEmbedder().getLifecyclePhases();
     }
 
     public void actionPerformed(ActionEvent e) {
