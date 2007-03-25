@@ -76,11 +76,21 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                 "org.codehaus.mojo", 
                 "nbm-maven-plugin",
                 "descriptor", null);
-        return new File(FileUtil.toFile(project.getProjectDirectory()), file);
+        if (file == null) {
+            file = "src/main/nbm/module.xml"; //NOI18N
+        }
+        File rel = new File(file);
+        if (!rel.isAbsolute()) {
+            rel = new File(FileUtil.toFile(project.getProjectDirectory()), file);
+        }
+        return FileUtil.normalizeFile(rel);
     }
     
     private Xpp3Dom getModuleDom() throws UnsupportedEncodingException, IOException, XmlPullParserException {
         //TODO convert to FileOBject and have the IO stream from there..
+        if (!getModuleXmlLocation().exists()) {
+            return null;
+        }
         FileInputStream is = new FileInputStream(getModuleXmlLocation());
         Reader reader = new InputStreamReader(is, "UTF-8");
         try {
@@ -99,14 +109,15 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     public String getCodeNameBase() {
         try {
             Xpp3Dom dom = getModuleDom();
-            Xpp3Dom cnb = dom.getChild("codeNameBase");
-            if (cnb != null) {
-                System.out.println("cnb=" + cnb.getValue());
-                String val = cnb.getValue();
-                if (val.indexOf( "/") > -1) {
-                    val = val.substring(0, val.indexOf("/"));
+            if (dom != null) {
+                Xpp3Dom cnb = dom.getChild("codeNameBase");
+                if (cnb != null) {
+                    String val = cnb.getValue();
+                    if (val.indexOf( "/") > -1) {
+                        val = val.substring(0, val.indexOf("/"));
+                    }
+                    return val;
                 }
-                return val;
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,16 +147,20 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     }
 
     public FileObject getManifestFile() {
+        String path = "src/main/nbm/manifest.mf"; 
+
         try {
             Xpp3Dom dom = getModuleDom();
-            Xpp3Dom cnb = dom.getChild("manifest");
-            if (cnb != null) {
-                return project.getProjectDirectory().getFileObject(cnb.getValue());
+            if (dom != null) {
+                Xpp3Dom cnb = dom.getChild("manifest");
+                if (cnb != null) {
+                    path = cnb.getValue();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return project.getProjectDirectory().getFileObject(path);
     }
 
     public String getResourceDirectoryPath(boolean isTest) {
