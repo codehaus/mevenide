@@ -86,7 +86,7 @@ public class CoreConfigurationForm {
         panel.setLayout(new FormLayout("fill:d:grow", "center:d:grow"));
         tabbedPane = new JTabbedPane();
         CellConstraints cc = new CellConstraints();
-        panel.add(tabbedPane, cc.xy(1, 1));
+        panel.add(tabbedPane, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.DEFAULT));
     }
 
     /**

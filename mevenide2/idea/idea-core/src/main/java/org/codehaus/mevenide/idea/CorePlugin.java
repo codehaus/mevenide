@@ -108,7 +108,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
         for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
             JPanel panel = new JPanel();
             panel.add(mevenideIdeaComponent.getMevenideConfigurationComponent());
-            form.getTabbedPane().add(mevenideIdeaComponent.getMevenideComponentName(), panel);
+            form.getTabbedPane().add(mevenideIdeaComponent.getMevenideComponentName(), mevenideIdeaComponent.getMevenideConfigurationComponent());
             LOG.info("Adding Mevenide2 component: " + mevenideIdeaComponent.getMevenideComponentName());
         }
         return form.getRootComponent();

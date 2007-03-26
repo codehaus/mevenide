@@ -16,18 +16,15 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.action;
 
-import org.codehaus.mevenide.idea.gui.form.AbstractConfigurationForm;
-import org.codehaus.mevenide.idea.util.PluginConstants;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
 
+import javax.swing.JFileChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import java.io.File;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -36,14 +33,14 @@ import javax.swing.*;
  * @version $Revision$
  */
 public class PluginConfigurationActionListener implements ActionListener {
-    private AbstractConfigurationForm projectConfigurationForm;
+    private MavenBuildConfigurationForm projectConfigurationForm;
 
     /**
      * Constructs ...
      *
      * @param form Document me!
      */
-    public PluginConfigurationActionListener(AbstractConfigurationForm form) {
+    public PluginConfigurationActionListener(MavenBuildConfigurationForm form) {
         this.projectConfigurationForm = form;
     }
 
@@ -56,13 +53,12 @@ public class PluginConfigurationActionListener implements ActionListener {
         JFileChooser fileChooser = new JFileChooser();
 
         if (projectConfigurationForm != null) {
-            if (actionEvent.getActionCommand().equals(PluginConstants.ACTION_COMMAND_SET_MAVEN_HOME)) {
+            if (actionEvent.getActionCommand().equals(MavenBuildConfigurationForm.ACTION_COMMAND_SET_MAVEN_HOME)) {
                 fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
-                if ((projectConfigurationForm.getTextFieldMavenHomeDir() != null)
-                        && (projectConfigurationForm.getTextFieldMavenHomeDir().getText().length() > 0)) {
+                if (!StringUtils.isEmpty(projectConfigurationForm.getTextFieldMavenHomeDirectory().getText())) {
                     fileChooser.setCurrentDirectory(
-                        new File(projectConfigurationForm.getTextFieldMavenHomeDir().getText()));
+                            new File(projectConfigurationForm.getTextFieldMavenHomeDirectory().getText()));
                 }
 
                 int returnVal = fileChooser.showOpenDialog(projectConfigurationForm.getRootComponent());
@@ -70,23 +66,7 @@ public class PluginConfigurationActionListener implements ActionListener {
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
 
-                    projectConfigurationForm.getTextFieldMavenHomeDir().setText(file.getPath());
-                }
-            } else if (actionEvent.getActionCommand().equals(PluginConstants.ACTION_COMMAND_SET_ALTERNATE_SETTINGS)) {
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-
-                if ((projectConfigurationForm.getTextFieldAlternateSettingsFile() != null)
-                        && (projectConfigurationForm.getTextFieldAlternateSettingsFile().getText().length() > 0)) {
-                    fileChooser.setCurrentDirectory(
-                        new File(projectConfigurationForm.getTextFieldAlternateSettingsFile().getText()));
-                }
-
-                int returnVal = fileChooser.showOpenDialog(projectConfigurationForm.getRootComponent());
-
-                if (returnVal == JFileChooser.APPROVE_OPTION) {
-                    File file = fileChooser.getSelectedFile();
-
-                    projectConfigurationForm.getTextFieldAlternateSettingsFile().setText(file.getPath());
+                    projectConfigurationForm.getTextFieldMavenHomeDirectory().setText(file.getPath());
                 }
             }
         }

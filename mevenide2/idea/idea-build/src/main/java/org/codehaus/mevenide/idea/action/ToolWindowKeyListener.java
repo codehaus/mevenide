@@ -16,17 +16,15 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.action;
 
-import org.codehaus.mevenide.idea.gui.form.MavenProjectConfigurationForm;
+import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
 import org.codehaus.mevenide.idea.helper.ActionContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 
+import javax.swing.JTextField;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -45,9 +43,11 @@ public class ToolWindowKeyListener implements KeyListener {
         this.context = context;
     }
 
-    public void keyTyped(KeyEvent keyEvent) {}
+    public void keyTyped(KeyEvent keyEvent) {
+    }
 
-    public void keyPressed(KeyEvent keyEvent) {}
+    public void keyPressed(KeyEvent keyEvent) {
+    }
 
     public void keyReleased(KeyEvent keyEvent) {
         if (keyEvent.getSource() instanceof JTextField) {
@@ -56,8 +56,8 @@ public class ToolWindowKeyListener implements KeyListener {
             if (textfield.getName().equals(PluginConstants.ACTION_COMMAND_EDIT_MAVEN_COMMAND_LINE)) {
                 if (this.context.getGuiContext().getProjectConfigurationForm() != null) {
                     this.context.getProjectPluginSettings().setMavenCommandLineParams(textfield.getText());
-                    ((MavenProjectConfigurationForm) this.context.getGuiContext().getProjectConfigurationForm())
-                        .setData(this.context.getProjectPluginSettings());
+                    ((MavenBuildConfigurationForm) this.context.getGuiContext().getProjectConfigurationForm())
+                            .setData(this.context.getProjectPluginSettings());
                 }
             }
         }
