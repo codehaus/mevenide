@@ -168,6 +168,7 @@
     
     <modules>
         <module>netbeans</module>
+        <module>idea</module>
     </modules>
     
 </project>
