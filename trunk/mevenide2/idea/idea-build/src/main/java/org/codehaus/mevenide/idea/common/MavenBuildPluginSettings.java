@@ -41,6 +41,7 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
     private String mavenRepository;
     private String vmOptions;
     private String mavenSettingsFile;
+    private String additionalOptions;
     private boolean scanForExistingPoms;
     private boolean useFilter;
     private boolean useMavenEmbedder;
@@ -72,6 +73,15 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
 
     public void setSkipTests(boolean skipTests) {
         this.skipTests = skipTests;
+    }
+
+
+    public String getAdditionalOptions() {
+        return additionalOptions;
+    }
+
+    public void setAdditionalOptions(String additionalOptions) {
+        this.additionalOptions = additionalOptions;
     }
 
     public String getMavenSettingsFile() {
