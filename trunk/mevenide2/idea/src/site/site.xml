@@ -18,8 +18,8 @@
             <item name="IDEA" href="http://www.jetbrains.com/idea/" />
             <item name="Maven1 support" href="http://mevenide.codehaus.org"/>
         </links>
+        <!--
         <menu name="Mevenide2-IDEA">
-<!--
             <item name="Introduction" href="index.html"/>
             <item name="Features" href="features.html"/>
             <item name="Installation" href="installation.html"/>
@@ -27,14 +27,16 @@
               <item name="Screenshots" href="screenshots.html"/>            
             <item name="Tutorials" href="tutorials/index.html"/>
             <item name="Testimonials" href="testimonials.html"/>
--->
         </menu>
+-->
+        <!--
 
         <menu name="Developers">
-<!--
             <item name="Plugin building" href="building.html"/>
--->
         </menu>
+-->
+
+        ${parentProject}
 
         ${modules}
 
