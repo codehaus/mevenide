@@ -12,11 +12,45 @@
     <description>Mevenide2 IDEA Support</description>
     <version>0.1-SNAPSHOT</version>
     <inceptionYear>2006</inceptionYear>
+    <ciManagement>
+        <system>continuum</system>
+        <url>${mevenide2.continuum.url}</url>
+        <notifiers>
+            <notifier>
+                <type>mail</type>
+                <sendOnSuccess>true</sendOnSuccess>
+                <sendOnFailure>true</sendOnFailure>
+                <sendOnError>true</sendOnError>
+                <sendOnWarning>true</sendOnWarning>
+                <configuration>
+                    <address>ralf@quebbemann.de</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
     <developers>
+        <developer>
+            <name>Vladislav Kaznacheev</name>
+            <id>vladk</id>
+            <email>Vladislav.Kaznacheev@jetbrains.com</email>
+            <timezone>1</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
         <developer>
             <name>Ralf Quebbemann</name>
             <id>ralfq</id>
             <email>ralfq@gmx.de</email>
+            <timezone>1</timezone>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <name>Jason van Zyl</name>
+            <id>jvanzyl</id>
+            <email>jason@maven.org</email>
             <timezone>1</timezone>
             <roles>
                 <role>Developer</role>
@@ -30,6 +64,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <distributionManagement>
+        <site>
+            <id>mevenide-idea-site-upload</id>
+            <name>Mevenide IDEA Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/mevenide2-idea</url>
+        </site>
+    </distributionManagement>
     <build>
         <plugins>
             <plugin>
