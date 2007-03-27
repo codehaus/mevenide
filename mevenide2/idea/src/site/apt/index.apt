@@ -1,0 +1,34 @@
+Introduction
+
+    Mevenide2-IDEA is an IntelliJ IDEA plugin which integrates all the Maven2 project management 
+    possibilities into IntelliJ IDEA.
+
+* Release
+
+    Currently we don't have any releases yet but the plugin is already working and you might
+    want to check it out from the {{{source-repository.html}Subversion Repository}}.
+    
+    But keep in mind that not all features are implemented yet and bugs may still arise.
+
+* Requirements
+
+    You need to have at least version 6.0 of IntelliJ IDEA. The plugin does not work under
+    versions prior to version 6.0.
+
+* Building from source
+
+    The plugin is actually a set of plugins separating different features into different
+    components.
+
+    Simply call
+
++---------
+mvn install assembly:directory
++---------
+
+    from the parent module to build and assemble all modules.
+    After that the plugins can be found in the
+    <target/mevenide2-idea-version> directory and can simply be dropped into the
+    IntelliJ IDEA plugin folder.
+
+
