@@ -1,0 +1,39 @@
+Building Mevenide2 for IntelliJ IDEA
+
+  These are instructions to build Mevenide2, the support for Maven2.
+
+  The plugin is actually a set of plugins separating different features into different components.
+
+* Prerequisites
+
+  * Make sure you've installed at least Maven 2.0.4
+
+* Checkout
+
+  * Checkout modules required for the Mevenide 2:
+
++-------------------------------------------------------------------------------+
+svn checkout http://svn.codehaus.org/mevenide/trunk/mevenide2/idea idea
++-------------------------------------------------------------------------------+
+
+* Building
+
+  * Go to the created idea directory and run
+
++-------------------------------------------------------------------------------+
+mvn install assembly:directory
++-------------------------------------------------------------------------------+
+
+  That one should build the whole idea support. Make sure you are online when building
+  for the first time, it will download multiple IDEA API artifacts.
+
+  In the idea directory, you will have a new directory created: <target/mevenide2-idea-version>
+  with the binaries of all mevenide2 plugins for IDEA.
+
+  Simply drop each plugin folder in your IntelliJ IDEA plugin folder and restart IDEA.
+
+
+
+
+
+
