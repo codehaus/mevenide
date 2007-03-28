@@ -46,6 +46,7 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
     private boolean useFilter;
     private boolean useMavenEmbedder;
     private boolean skipTests;
+    private String jdkPath;
     private List<String> standardPhasesList = new ArrayList<String>();
     private MavenConfiguration mavenConfiguration = new MavenConfiguration();
 
@@ -66,6 +67,14 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
         this.mavenConfiguration = mavenConfiguration;
     }
 
+
+    public String getJdkPath() {
+        return jdkPath;
+    }
+
+    public void setJdkPath(String jdkPath) {
+        this.jdkPath = jdkPath;
+    }
 
     public boolean isSkipTests() {
         return skipTests;

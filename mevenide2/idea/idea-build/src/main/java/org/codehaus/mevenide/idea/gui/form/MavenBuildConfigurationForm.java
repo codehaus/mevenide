@@ -17,21 +17,24 @@
 
 package org.codehaus.mevenide.idea.gui.form;
 
-import com.jgoodies.forms.layout.FormLayout;
+import com.intellij.openapi.projectRoots.ProjectJdkTable;
+import com.intellij.openapi.projectRoots.ProjectJdk;
 import com.jgoodies.forms.layout.CellConstraints;
-import com.intellij.uiDesigner.core.Spacer;
+import com.jgoodies.forms.layout.FormLayout;
+import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
+import org.codehaus.mevenide.idea.form.CustomizingObject;
+import org.codehaus.mevenide.idea.helper.IForm;
 
-import javax.swing.JPanel;
-import javax.swing.JCheckBox;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.BorderFactory;
-
-import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.helper.IForm;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import java.awt.Dimension;
 
 /**
  * Todo: Describe what this class does!
@@ -44,19 +47,40 @@ public class MavenBuildConfigurationForm implements IForm {
      */
     public static final String ACTION_COMMAND_SET_MAVEN_HOME = "Set Maven Home";
 
+    /**
+     * Field description
+     */
+    public static final String ACTION_COMMAND_SET_JDK_HOME = "Set JDK Home";
+
     private JCheckBox checkBoxUseEmbeddedMaven;
     private JPanel panel;
     private JTextField textFieldMavenHomeDirectory;
     private JButton buttonBrowseMavenHomeDirectory;
-    private JTextField textFieldMavenCommandLineArguments;
     private JTextField textFieldVMParameters;
     private JCheckBox checkBoxSkipTests;
     private JTextField textFieldAdditionalProperties;
+    private JLabel labelBrowseMavenHomeDirectory;
+    private JLabel labelJdkHomeDirectory;
+    private JLabel labelVMParameters;
+    private JComboBox comboBoxChooseJDK;
+    private DefaultComboBoxModel comboboxModelModelChooseJdk = new DefaultComboBoxModel();
 
 
     public MavenBuildConfigurationForm() {
+        buttonBrowseMavenHomeDirectory.setActionCommand(ACTION_COMMAND_SET_MAVEN_HOME);
     }
 
+    private void fillComboboxJdk() {
+        ProjectJdkTable jdkTable = ProjectJdkTable.getInstance();
+        ProjectJdk[] projectJdks = jdkTable.getAllJdks();
+        comboboxModelModelChooseJdk.removeAllElements();
+        for (ProjectJdk projectJdk : projectJdks) {
+            comboboxModelModelChooseJdk
+                    .addElement(
+                            new CustomizingObject(projectJdk.getVMExecutablePath(), projectJdk.getName()));
+        }
+        comboBoxChooseJDK.setModel(comboboxModelModelChooseJdk);
+    }
 
     public JTextField getTextFieldMavenHomeDirectory() {
         return textFieldMavenHomeDirectory;
@@ -71,9 +95,17 @@ public class MavenBuildConfigurationForm implements IForm {
     }
 
     public void setData(MavenBuildPluginSettings data) {
+        fillComboboxJdk();
+        for (int i = 0; i < comboboxModelModelChooseJdk.getSize(); i++) {
+            CustomizingObject customizingObject = (CustomizingObject) comboboxModelModelChooseJdk.getElementAt(i);
+            if (customizingObject.getValue().equals(data.getJdkPath())) {
+                comboBoxChooseJDK.setSelectedItem(customizingObject);
+                break;
+            }
+        }
+
         checkBoxUseEmbeddedMaven.setSelected(data.isUseMavenEmbedder());
         textFieldMavenHomeDirectory.setText(data.getMavenHome());
-        textFieldMavenCommandLineArguments.setText(data.getMavenCommandLineParams());
         textFieldVMParameters.setText(data.getVmOptions());
         checkBoxSkipTests.setSelected(data.isSkipTests());
         textFieldAdditionalProperties.setText(data.getAdditionalOptions());
@@ -82,26 +114,45 @@ public class MavenBuildConfigurationForm implements IForm {
     public void getData(MavenBuildPluginSettings data) {
         data.setUseMavenEmbedder(checkBoxUseEmbeddedMaven.isSelected());
         data.setMavenHome(textFieldMavenHomeDirectory.getText());
-        data.setMavenCommandLineParams(textFieldMavenCommandLineArguments.getText());
         data.setVmOptions(textFieldVMParameters.getText());
         data.setSkipTests(checkBoxSkipTests.isSelected());
         data.setAdditionalOptions(textFieldAdditionalProperties.getText());
+        data.setJdkPath(((CustomizingObject) comboBoxChooseJDK.getSelectedItem()).getValue());
+
     }
 
     public boolean isModified(MavenBuildPluginSettings data) {
+        if (!checkBoxUseEmbeddedMaven.isSelected()) {
+            textFieldMavenHomeDirectory.setEnabled(true);
+            textFieldVMParameters.setEnabled(true);
+            buttonBrowseMavenHomeDirectory.setEnabled(true);
+            labelBrowseMavenHomeDirectory.setEnabled(true);
+            labelJdkHomeDirectory.setEnabled(true);
+            labelVMParameters.setEnabled(true);
+            comboBoxChooseJDK.setEnabled(true);
+        } else {
+            textFieldMavenHomeDirectory.setEnabled(false);
+            textFieldVMParameters.setEnabled(false);
+            buttonBrowseMavenHomeDirectory.setEnabled(false);
+            labelBrowseMavenHomeDirectory.setEnabled(false);
+            labelJdkHomeDirectory.setEnabled(false);
+            labelVMParameters.setEnabled(false);
+            comboBoxChooseJDK.setEnabled(false);
+        }
         if (checkBoxUseEmbeddedMaven.isSelected() != data.isUseMavenEmbedder()) return true;
         if (textFieldMavenHomeDirectory.getText() != null ?
                 !textFieldMavenHomeDirectory.getText().equals(data.getMavenHome()) : data.getMavenHome() != null)
             return true;
-        if (textFieldMavenCommandLineArguments.getText() != null ?
-                !textFieldMavenCommandLineArguments.getText().equals(data.getMavenCommandLineParams()) :
-                data.getMavenCommandLineParams() != null) return true;
         if (textFieldVMParameters.getText() != null ? !textFieldVMParameters.getText().equals(data.getVmOptions()) :
                 data.getVmOptions() != null) return true;
         if (checkBoxSkipTests.isSelected() != data.isSkipTests()) return true;
         if (textFieldAdditionalProperties.getText() != null ?
                 !textFieldAdditionalProperties.getText().equals(data.getAdditionalOptions()) :
                 data.getAdditionalOptions() != null) return true;
+        if (!((CustomizingObject) comboBoxChooseJDK.getSelectedItem()).getValue()
+                .equals(data.getJdkPath()))
+            return true;
+
         return false;
     }
 
@@ -127,7 +178,7 @@ public class MavenBuildConfigurationForm implements IForm {
         panel1.setLayout(new FormLayout("fill:d:noGrow,left:4dlu:noGrow,fill:max(d;4px):noGrow",
                 "center:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,top:max(d;4px):noGrow"));
         CellConstraints cc = new CellConstraints();
-        panel.add(panel1, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.TOP));
+        panel.add(panel1, cc.xy(1, 1, CellConstraints.FILL, CellConstraints.FILL));
         panel1.setBorder(BorderFactory.createTitledBorder("General Maven Setup"));
         checkBoxUseEmbeddedMaven = new JCheckBox();
         checkBoxUseEmbeddedMaven.setSelected(true);
@@ -138,37 +189,37 @@ public class MavenBuildConfigurationForm implements IForm {
         textFieldMavenHomeDirectory.setEnabled(false);
         textFieldMavenHomeDirectory.setText("");
         panel1.add(textFieldMavenHomeDirectory, cc.xy(1, 5, CellConstraints.FILL, CellConstraints.DEFAULT));
-        final JLabel label1 = new JLabel();
-        label1.setEnabled(false);
-        label1.setText("Maven2 Home Directory");
-        panel1.add(label1, cc.xy(1, 3));
+        labelBrowseMavenHomeDirectory = new JLabel();
+        labelBrowseMavenHomeDirectory.setEnabled(false);
+        labelBrowseMavenHomeDirectory.setText("Maven2 Home Directory");
+        panel1.add(labelBrowseMavenHomeDirectory, cc.xy(1, 3));
         buttonBrowseMavenHomeDirectory = new JButton();
         buttonBrowseMavenHomeDirectory.setEnabled(false);
         buttonBrowseMavenHomeDirectory.setText("Browse ...");
         panel1.add(buttonBrowseMavenHomeDirectory, cc.xy(3, 5, CellConstraints.LEFT, CellConstraints.DEFAULT));
-        final JLabel label2 = new JLabel();
-        label2.setEnabled(false);
-        label2.setText("Maven2 Command Line Arguments");
-        panel1.add(label2, cc.xy(1, 7));
-        textFieldMavenCommandLineArguments = new JTextField();
-        textFieldMavenCommandLineArguments.setEnabled(false);
-        panel1.add(textFieldMavenCommandLineArguments, cc.xy(1, 9, CellConstraints.FILL, CellConstraints.DEFAULT));
-        final JLabel label3 = new JLabel();
-        label3.setEnabled(false);
-        label3.setText("VM Parameters");
-        panel1.add(label3, cc.xy(1, 11));
+        labelJdkHomeDirectory = new JLabel();
+        labelJdkHomeDirectory.setEnabled(false);
+        labelJdkHomeDirectory.setText("Choose JDK");
+        panel1.add(labelJdkHomeDirectory, cc.xy(1, 7));
+        labelVMParameters = new JLabel();
+        labelVMParameters.setEnabled(false);
+        labelVMParameters.setText("VM Parameters");
+        panel1.add(labelVMParameters, cc.xy(1, 11));
         textFieldVMParameters = new JTextField();
         textFieldVMParameters.setEnabled(false);
         panel1.add(textFieldVMParameters, cc.xy(1, 13, CellConstraints.FILL, CellConstraints.DEFAULT));
+        comboBoxChooseJDK = new JComboBox();
+        comboBoxChooseJDK.setPreferredSize(new Dimension(150, 24));
+        panel1.add(comboBoxChooseJDK, cc.xy(1, 9, CellConstraints.LEFT, CellConstraints.DEFAULT));
         final JPanel panel2 = new JPanel();
         panel2.setLayout(new FormLayout("fill:d:noGrow",
                 "top:d:noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow,top:4dlu:noGrow,center:max(d;4px):noGrow"));
-        panel.add(panel2, cc.xy(1, 3, CellConstraints.FILL, CellConstraints.TOP));
+        panel.add(panel2, cc.xy(1, 3, CellConstraints.FILL, CellConstraints.FILL));
         panel2.setBorder(BorderFactory.createTitledBorder("Options"));
-        final JLabel label4 = new JLabel();
-        label4.setText("Additional Properties");
-        label4.setToolTipText("Properties to pass to Maven, e.g. username=johndoe");
-        panel2.add(label4, cc.xy(1, 3));
+        final JLabel label1 = new JLabel();
+        label1.setText("Additional Properties");
+        label1.setToolTipText("Properties to pass to Maven, e.g. username=johndoe");
+        panel2.add(label1, cc.xy(1, 3));
         textFieldAdditionalProperties = new JTextField();
         textFieldAdditionalProperties.setColumns(34);
         panel2.add(textFieldAdditionalProperties, cc.xy(1, 5, CellConstraints.FILL, CellConstraints.DEFAULT));
