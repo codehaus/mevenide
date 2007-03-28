@@ -281,6 +281,7 @@ public class PluginConstants {
     public static final String CONFIG_ELEMENT_MAVEN_REPOSITORY = "mavenRepository";
     public static final String CONFIG_ELEMENT_SCAN_FOR_POMS = "scanForExistingPoms";
     public static final String CONFIG_ELEMENT_USE_MAVEN_EMBEDDER = "useMavenEmbedder";
+    public static final String CONFIG_ELEMENT_SKIP_TESTS = "skipTests";
     public static final String CONFIG_ELEMENT_USE_FILTER = "useFilter";
     public static final String ACTION_COMMAND_EDIT_MAVEN_COMMAND_LINE = "EditMavenCommandLine";
     public static final String ACTION_COMMAND_FILTER_RELEASE = "Release Filter";

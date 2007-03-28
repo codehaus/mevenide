@@ -42,6 +42,10 @@ public interface IMavenBuildConfiguration {
 
     String getVmOptions();
 
+    String getJdkPath();
+
+    void setJdkPath(String jdkPath);
+
     boolean isSkipTests();
 
     void setSkipTests(boolean skipTests);

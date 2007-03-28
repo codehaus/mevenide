@@ -109,7 +109,9 @@ public class BuildHelper {
             cmdList.add("-s");
             cmdList.add(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile());
         }
-
+        if (buildEnvironment.getMavenBuildConfiguration().isSkipTests()) {
+            cmdList.add("-Dtest=skip");
+        }
         // Todo: Insert Maven Options when running external maven
 /*
         if (StringUtils.isNotEmpty(buildEnvironment.getMavenBuildConfiguration().getMavenOptions().toString())) {

@@ -280,6 +280,8 @@ public class MavenBuildProjectComponent
                 PluginConstants.CONFIG_ELEMENT_USE_FILTER)));
         pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS)));
+        pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_SKIP_TESTS)));
 
         String mavenHomeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".m2";
         LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -402,6 +404,8 @@ public class MavenBuildProjectComponent
                 Boolean.toString(pluginSettings.isUseFilter()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS,
                 Boolean.toString(pluginSettings.isScanForExistingPoms()));
+        JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SKIP_TESTS,
+                Boolean.toString(pluginSettings.isSkipTests()));
 
         Element pomListElement = new Element("pom-list");
 

@@ -30,6 +30,7 @@ import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.LogListener;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
@@ -52,6 +53,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
         MavenEmbedder mavenEmbedder;
         MavenEmbedderBuildLogger logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
         MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildConfiguration().getMavenConfiguration();
+        IMavenBuildConfiguration mavenBuildConfig = buildEnvironment.getMavenBuildConfiguration();
         try {
             mavenEmbedder = buildEnvironment.getMavenEmbedder();
 
@@ -64,7 +66,7 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             req.setBasedir(new File(buildEnvironment.getWorkingDir()));
 
             String mavenSettingsFile =
-                    StringUtils.defaultString(buildEnvironment.getMavenBuildConfiguration().getMavenSettingsFile());
+                    StringUtils.defaultString(mavenBuildConfig.getMavenSettingsFile());
             File userLoc = new File(System.getProperty("user.home"), ".m2");
             File userSettingsPath = new File(userLoc, "settings.xml");
             Settings settings = mavenEmbedder
@@ -89,14 +91,15 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
                     (StringUtils.isEmpty(mavenConfig.getChecksumPolicy()) ? null : mavenConfig.getChecksumPolicy()));
             Properties props = new Properties();
             props.putAll(System.getProperties());
+            
             //      props.putAll(config.getProperties());
             props.setProperty("idea.execution", "true");
 
-/*
-            if (mavenConfig.isSkipTests()) {
+
+            if (mavenBuildConfig.isSkipTests()) {
                 props.setProperty("test", "skip");
             }
-*/
+
             req.setProperties(props);
             MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
 
