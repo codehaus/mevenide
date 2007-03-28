@@ -29,12 +29,10 @@
             <item name="Testimonials" href="testimonials.html"/>
 -->
         </menu>
-        <!--
 
         <menu name="Developers">
-            <item name="Plugin building" href="building.html"/>
+            <item name="Building" href="building.html"/>
         </menu>
--->
 
         ${parentProject}
 
