@@ -3,12 +3,12 @@
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
-        <version>3.0.1-SNAPSHOT</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>apisupport</artifactId>
     <packaging>nbm</packaging>
-    <version>3.0.1-SNAPSHOT</version>
+    <version>3.0.2-SNAPSHOT</version>
     <name>NetBeans Maven2 apisupport</name>
     <description>x</description>
 
@@ -26,7 +26,7 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-apisupport-project</artifactId>
-            <version>RELEASE60-M8-SNAPSHOT</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>

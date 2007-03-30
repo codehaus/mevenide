@@ -10,19 +10,16 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.2-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <profiles>
       <profile>
           <id>experimental</id>
           <modules>
-             <!--module>j2ee</module-->
              <module>nb-repo-browser</module>
-             <module>libs/continuum-rpc</module>
-             <module>continuum</module>
+             <!--module>libs/continuum-rpc</module>
+             <module>continuum</module-->
 	     <module>graph</module>
-	     <!-- VERY EXPERIMENTAL module>apisupport</module-->
-	     <module>persistence</module>
           </modules>
        </profile>
       
@@ -91,6 +88,8 @@
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
+    <module>apisupport</module>
+    <module>persistence</module>
      <!--module>nb-repo-browser</module-->
      <!--module>graph</module-->
   </modules>
@@ -114,7 +113,7 @@
       <!--a fallback to make it work everywhere -->
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE60-M7</netbeans.release>
-       <mevenide.nb.release>3.0.1-SNAPSHOT</mevenide.nb.release>
+       <netbeans.release>RELEASE60-M8</netbeans.release>
+       <mevenide.nb.release>3.0.2-SNAPSHOT</mevenide.nb.release>
   </properties>
 </project>
