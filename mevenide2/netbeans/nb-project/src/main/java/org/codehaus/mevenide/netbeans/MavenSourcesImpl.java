@@ -33,6 +33,7 @@ import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.SharabilityQuery;
@@ -154,7 +155,8 @@ public class MavenSourcesImpl implements Sources {
     
     public SourceGroup[] getSourceGroups(String str) {
         if (Sources.TYPE_GENERIC.equals(str)) {
-            return new SourceGroup[] { GenericSources.group(project, project.getProjectDirectory(), NAME_PROJECTROOT, "Project Root", null, null) };
+            return new SourceGroup[] { GenericSources.group(project, project.getProjectDirectory(), NAME_PROJECTROOT, 
+                    ((ProjectInformation)project.getLookup().lookup(ProjectInformation.class)).getDisplayName(), null, null) };
         }
         if (JavaProjectConstants.SOURCES_TYPE_JAVA.equals(str)) {
             List toReturn = new ArrayList();
