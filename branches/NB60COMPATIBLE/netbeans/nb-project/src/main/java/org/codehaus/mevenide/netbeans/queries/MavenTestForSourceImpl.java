@@ -25,6 +25,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.spi.java.queries.MultipleRootsUnitTestForSourceQueryImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * JUnit tests queries.
@@ -44,7 +45,7 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
         try {
             String str = project.getOriginalMavenProject().getBuild().getTestSourceDirectory();
             if (str != null) {
-                URI uri = new File(str).toURI();
+                URI uri = FileUtil.normalizeFile(new File(str)).toURI();
                 return new URL[] { uri.toURL() };
             }
         } catch (MalformedURLException exc) {
@@ -57,7 +58,7 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
         try {
             String str = project.getOriginalMavenProject().getBuild().getSourceDirectory();
             if (str != null) {
-                URI uri = new File(str).toURI();
+                URI uri = FileUtil.normalizeFile(new File(str)).toURI();
                 return new URL[] { uri.toURL() };
             }
         } catch (MalformedURLException exc) {
