@@ -45,6 +45,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
             new TreeSet<IMevenideIdeaComponent>(new MevenideIdeaComponentComparator());
     private CoreConfigurationForm form;
     private MavenConfiguration mavenConfiguration = new MavenConfiguration();
+    private int selectedTabIndex = 0;
 
     private class MevenideIdeaComponentComparator implements Comparator {
 
@@ -137,6 +138,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
             for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
                 mevenideIdeaComponent.applyMevenideConfiguration();
             }
+            selectedTabIndex = form.getTabbedPane().getSelectedIndex();
         }
     }
 
@@ -147,6 +149,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
             for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
                 mevenideIdeaComponent.resetMevenideConfiguration();
             }
+            form.getTabbedPane().setSelectedIndex(selectedTabIndex);
         }
     }
 

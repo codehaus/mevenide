@@ -75,6 +75,8 @@ import java.awt.Dimension;
 import java.io.File;
 import java.util.List;
 import java.util.Set;
+import java.util.Properties;
+import java.util.Enumeration;
 
 /**
  * Describe what this class does.
@@ -287,6 +289,19 @@ public class MavenBuildProjectComponent
         LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
         File settingsFile = new File(mavenHomeDir + System.getProperty("file.separator") + "settings.xml");
 
+        Element mavenPropertiesElement = element.getChild("maven-properties");
+        if (mavenPropertiesElement != null) {
+            List mavenPropertiesElementChildren = mavenPropertiesElement.getChildren();
+            for (Object aMavenPropertiesElementChildren : mavenPropertiesElementChildren) {
+                Element childElement = (Element) aMavenPropertiesElementChildren;
+                if (childElement != null) {
+                    String key = childElement.getAttributeValue("name");
+                    String value = childElement.getAttributeValue("value");
+                    pluginSettings.getMavenProperties().setProperty(key, value);
+                }
+            }
+        }
+
         if (settingsFile.exists()) {
             try {
                 SettingsDocument settingsDocument = SettingsDocument.Factory.parse(new File(mavenHomeDir
@@ -406,6 +421,16 @@ public class MavenBuildProjectComponent
                 Boolean.toString(pluginSettings.isScanForExistingPoms()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SKIP_TESTS,
                 Boolean.toString(pluginSettings.isSkipTests()));
+
+        Properties mavenProperties = pluginSettings.getMavenProperties();
+        Enumeration mavenPropertiesKeys = mavenProperties.keys();
+        Element mavenPropertiesElement = new Element("maven-properties");
+        element.addContent(mavenPropertiesElement);
+        for (int i = 0; mavenPropertiesKeys.hasMoreElements();) {
+            String key = (String)mavenPropertiesKeys.nextElement();
+            String value = mavenProperties.getProperty(key);
+            JDOMExternalizerUtil.writeField(mavenPropertiesElement, key, value);
+        }
 
         Element pomListElement = new Element("pom-list");
 
