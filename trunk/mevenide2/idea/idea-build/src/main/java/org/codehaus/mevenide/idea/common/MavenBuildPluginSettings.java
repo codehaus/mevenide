@@ -28,6 +28,7 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * Describe what this class does.
@@ -39,9 +40,9 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
     private String mavenCommandLineParams;
     private String mavenExecutable;
     private String mavenRepository;
+    private Properties mavenProperties = new Properties();
     private String vmOptions;
     private String mavenSettingsFile;
-    private String additionalOptions;
     private boolean scanForExistingPoms;
     private boolean useFilter;
     private boolean useMavenEmbedder;
@@ -61,6 +62,14 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
 
     public MavenConfiguration getMavenConfiguration() {
         return mavenConfiguration;
+    }
+
+    public Properties getMavenProperties() {
+        return this.mavenProperties;
+    }
+
+    public void setMavenProperties(Properties mavenProperties) {
+        this.mavenProperties = mavenProperties;
     }
 
     public void setMavenConfiguration(MavenConfiguration mavenConfiguration) {
@@ -84,14 +93,6 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
         this.skipTests = skipTests;
     }
 
-
-    public String getAdditionalOptions() {
-        return additionalOptions;
-    }
-
-    public void setAdditionalOptions(String additionalOptions) {
-        this.additionalOptions = additionalOptions;
-    }
 
     public String getMavenSettingsFile() {
         if (StringUtils.isBlank(mavenSettingsFile)) {

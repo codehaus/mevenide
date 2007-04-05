@@ -21,6 +21,8 @@ package org.codehaus.mevenide.idea.build;
 
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
+import java.util.Properties;
+
 /**
  * Describe what this class does.
  *
@@ -29,6 +31,10 @@ import org.codehaus.mevenide.idea.model.MavenConfiguration;
  */
 public interface IMavenBuildConfiguration {
     MavenConfiguration getMavenConfiguration();
+
+    Properties getMavenProperties();
+
+    void setMavenProperties(Properties mavenProperties);
 
     void setMavenConfiguration(MavenConfiguration mavenConfiguration);
 

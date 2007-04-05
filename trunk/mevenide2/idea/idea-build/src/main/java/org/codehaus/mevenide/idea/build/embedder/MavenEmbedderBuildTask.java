@@ -90,11 +90,11 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
             req.setGlobalChecksumPolicy(
                     (StringUtils.isEmpty(mavenConfig.getChecksumPolicy()) ? null : mavenConfig.getChecksumPolicy()));
             Properties props = new Properties();
+            // add all system properties
             props.putAll(System.getProperties());
-            
-            //      props.putAll(config.getProperties());
+            // add all configured user properties
+            props.putAll(mavenBuildConfig.getMavenProperties());
             props.setProperty("idea.execution", "true");
-
 
             if (mavenBuildConfig.isSkipTests()) {
                 props.setProperty("test", "skip");
