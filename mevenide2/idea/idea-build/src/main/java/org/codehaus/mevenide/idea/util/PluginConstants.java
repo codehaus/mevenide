@@ -105,12 +105,12 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ICON_FILTER = "/filter.png";
+    public static final String ICON_FILTER = "/images/filter.png";
 
     /**
      * Field description
      */
-    public static final String ICON_FILTER_APPLIED = "/filter-applied.png";
+    public static final String ICON_FILTER_APPLIED = "/images/filter-applied.png";
 
     /**
      * Field description
@@ -120,17 +120,17 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ICON_REMOVE_PLUGIN = "/list-remove.png";
+    public static final String ICON_REMOVE_PLUGIN = "/images/list-remove.png";
 
     /**
      * Field description
      */
-    public static final String ICON_POM_SMALL = "/modulesNode.png";
+    public static final String ICON_POM_SMALL = "/images/modulesNode.png";
 
     /**
      * Field description
      */
-    public static final String ICON_APPLICATION_SMALL = "/applications-system.png";
+    public static final String ICON_APPLICATION_SMALL = "/images/applications-system.png";
 
     /**
      * Field description
@@ -140,12 +140,12 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ICON_APPLICATION_EMBLEM_SMALL = "/emblem-system.png";
+    public static final String ICON_APPLICATION_EMBLEM_SMALL = "/images/emblem-system.png";
 
     /**
      * Field description
      */
-    public static final String ICON_APPLICATION_BIG = "/applications-system-22.png";
+    public static final String ICON_APPLICATION_BIG = "/images/applications-system-22.png";
 
     /**
      * Field description
@@ -175,7 +175,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String ICON_ADD_PLUGIN = "/list-add.png";
+    public static final String ICON_ADD_PLUGIN = "/images/list-add.png";
 
     /**
      * Field description
