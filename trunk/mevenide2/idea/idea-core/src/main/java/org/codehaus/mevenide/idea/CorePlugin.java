@@ -126,7 +126,9 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
     public boolean isModified() {
         boolean isModified = form != null && form.isModified(mavenConfiguration);
         for (IMevenideIdeaComponent mevenideIdeaComponent : mevenideIdeaComponents) {
-            isModified = isModified || mevenideIdeaComponent.isMevenideConfigurationModified();
+            // This bitwise "or" is important! isModified from all registered MevenideComponents
+            // must be called! No short evaluation.
+            isModified = isModified | mevenideIdeaComponent.isMevenideConfigurationModified();
         }
         return isModified;
     }

@@ -181,11 +181,7 @@ public class MavenRunner {
            maven.start();
         } catch (MavenEmbedderException e) {
             LOG.error(e);
-        } finally {
-            //http://jira.codehaus.org/browse/PLX-203
-     //       Thread.currentThread().setContextClassLoader(classLoader);
         }
-
         return maven;
     }
 }

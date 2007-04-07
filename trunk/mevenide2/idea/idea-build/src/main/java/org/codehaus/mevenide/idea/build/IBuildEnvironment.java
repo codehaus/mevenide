@@ -44,8 +44,6 @@ public interface IBuildEnvironment {
 
     public void setMavenBuildConfiguration(IMavenBuildConfiguration mavenConfiguration);
 
-    public String getPathToJdk();
-
     public boolean isUseMavenEmbedder();
 
     public void setUseMavenEmbedder(boolean useMavenEmbedder);

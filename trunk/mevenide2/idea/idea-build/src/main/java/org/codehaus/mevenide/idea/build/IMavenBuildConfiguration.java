@@ -16,12 +16,11 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.build;
 
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Describe what this class does.
@@ -32,9 +31,9 @@ import java.util.Properties;
 public interface IMavenBuildConfiguration {
     MavenConfiguration getMavenConfiguration();
 
-    Properties getMavenProperties();
+    Map<String, String> getMavenProperties();
 
-    void setMavenProperties(Properties mavenProperties);
+    void setMavenProperties(Map<String, String> mavenProperties);
 
     void setMavenConfiguration(MavenConfiguration mavenConfiguration);
 
