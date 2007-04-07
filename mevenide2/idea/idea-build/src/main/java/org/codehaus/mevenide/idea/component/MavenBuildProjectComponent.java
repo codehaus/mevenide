@@ -73,10 +73,10 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.Dimension;
 import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
-import java.util.Properties;
-import java.util.Enumeration;
 
 /**
  * Describe what this class does.
@@ -284,6 +284,8 @@ public class MavenBuildProjectComponent
                 PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS)));
         pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
                 PluginConstants.CONFIG_ELEMENT_SKIP_TESTS)));
+        pluginSettings.setJdkPath(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_JDK_PATH));
 
         String mavenHomeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".m2";
         LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
@@ -297,7 +299,7 @@ public class MavenBuildProjectComponent
                 if (childElement != null) {
                     String key = childElement.getAttributeValue("name");
                     String value = childElement.getAttributeValue("value");
-                    pluginSettings.getMavenProperties().setProperty(key, value);
+                    pluginSettings.getMavenProperties().put(key, value);
                 }
             }
         }
@@ -421,15 +423,18 @@ public class MavenBuildProjectComponent
                 Boolean.toString(pluginSettings.isScanForExistingPoms()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SKIP_TESTS,
                 Boolean.toString(pluginSettings.isSkipTests()));
+        JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_JDK_PATH,
+                pluginSettings.getJdkPath());
 
-        Properties mavenProperties = pluginSettings.getMavenProperties();
-        Enumeration mavenPropertiesKeys = mavenProperties.keys();
         Element mavenPropertiesElement = new Element("maven-properties");
         element.addContent(mavenPropertiesElement);
-        for (int i = 0; mavenPropertiesKeys.hasMoreElements();) {
-            String key = (String)mavenPropertiesKeys.nextElement();
-            String value = mavenProperties.getProperty(key);
-            JDOMExternalizerUtil.writeField(mavenPropertiesElement, key, value);
+        Map<String, String> mavenProperties = pluginSettings.getMavenProperties();
+        Set keys = mavenProperties.keySet();
+        Iterator iterator = keys.iterator();
+        for (Object key : keys) {
+            String propertyName = (String) key;
+            String propertyValue = mavenProperties.get(propertyName);
+            JDOMExternalizerUtil.writeField(mavenPropertiesElement, propertyName, propertyValue);
         }
 
         Element pomListElement = new Element("pom-list");

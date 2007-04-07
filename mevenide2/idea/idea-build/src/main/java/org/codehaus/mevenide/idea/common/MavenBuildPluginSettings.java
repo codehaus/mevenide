@@ -16,19 +16,18 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.common;
 
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
-
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 import java.io.File;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
 /**
  * Describe what this class does.
@@ -36,11 +35,11 @@ import java.util.Properties;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.build.IMavenBuildConfiguration {
+public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
     private String mavenCommandLineParams;
     private String mavenExecutable;
     private String mavenRepository;
-    private Properties mavenProperties = new Properties();
+    private Map<String, String> mavenProperties = new LinkedMap();
     private String vmOptions;
     private String mavenSettingsFile;
     private boolean scanForExistingPoms;
@@ -64,11 +63,11 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
         return mavenConfiguration;
     }
 
-    public Properties getMavenProperties() {
+    public Map<String, String> getMavenProperties() {
         return this.mavenProperties;
     }
 
-    public void setMavenProperties(Properties mavenProperties) {
+    public void setMavenProperties(Map<String, String> mavenProperties) {
         this.mavenProperties = mavenProperties;
     }
 
@@ -78,8 +77,9 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
 
 
     public String getJdkPath() {
-        return jdkPath;
+        return this.jdkPath;
     }
+
 
     public void setJdkPath(String jdkPath) {
         this.jdkPath = jdkPath;
@@ -97,7 +97,7 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
     public String getMavenSettingsFile() {
         if (StringUtils.isBlank(mavenSettingsFile)) {
             String settingsFile = System.getProperty("user.home") + System.getProperty("file.separator") + ".m2"
-                                  + System.getProperty("file.separator") + BuildConstants.FILENAME_MAVEN_SETTINGS_FILE;
+                    + System.getProperty("file.separator") + BuildConstants.FILENAME_MAVEN_SETTINGS_FILE;
             File settingsFileAsFile = new File(settingsFile);
 
             if (settingsFileAsFile.exists()) {
@@ -210,5 +210,27 @@ public class MavenBuildPluginSettings implements org.codehaus.mevenide.idea.buil
 
     public void setUseMavenEmbedder(boolean useMavenEmbedder) {
         this.useMavenEmbedder = useMavenEmbedder;
+    }
+
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("MavenBuildPluginSettings");
+        sb.append("{mavenCommandLineParams='").append(mavenCommandLineParams).append('\'');
+        sb.append(", mavenExecutable='").append(mavenExecutable).append('\'');
+        sb.append(", mavenRepository='").append(mavenRepository).append('\'');
+        sb.append(", mavenProperties=").append(mavenProperties);
+        sb.append(", vmOptions='").append(vmOptions).append('\'');
+        sb.append(", mavenSettingsFile='").append(mavenSettingsFile).append('\'');
+        sb.append(", scanForExistingPoms=").append(scanForExistingPoms);
+        sb.append(", useFilter=").append(useFilter);
+        sb.append(", useMavenEmbedder=").append(useMavenEmbedder);
+        sb.append(", skipTests=").append(skipTests);
+        sb.append(", jdkPath='").append(jdkPath).append('\'');
+        sb.append(", standardPhasesList=").append(standardPhasesList);
+        sb.append(", mavenConfiguration=").append(mavenConfiguration);
+        sb.append('}');
+        return sb.toString();
     }
 }

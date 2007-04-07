@@ -42,7 +42,9 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Dimension;
 import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 
 /**
@@ -74,13 +76,13 @@ public class MavenBuildConfigurationForm implements IForm {
     private JComboBox comboBoxChooseJDK;
     private JTable tableProperties;
     private DefaultTableModel tablePropertiesModel;
-    private Vector<Vector> tablePropertiesData = new Vector<Vector>();
     private JScrollPane scrollPaneProperties;
     private DefaultComboBoxModel comboboxModelModelChooseJdk = new DefaultComboBoxModel();
     private MavenBuildConfigurationTableListener propertiesTableListener;
 
 
     public MavenBuildConfigurationForm() {
+        Vector<Vector> tablePropertiesData = new Vector<Vector>();
         buttonBrowseMavenHomeDirectory.setActionCommand(ACTION_COMMAND_SET_MAVEN_HOME);
         Vector<String> columnNames = new Vector<String>();
         columnNames.add("Property Key");
@@ -179,11 +181,11 @@ public class MavenBuildConfigurationForm implements IForm {
             if (tablePropertiesModel.getRowCount() > 0) {
                 int changedRow = tableModelEvent.getLastRow();
                 if ((changedRow == tablePropertiesModel.getRowCount() - 1) &&
-                        (!isRowEmpty(tablePropertiesData, changedRow))) {
+                        (!isRowEmpty(changedRow))) {
                     addEmptyPropertyRow();
                     return;
                 }
-                if ((isRowEmpty(tablePropertiesData, changedRow)) && 
+                if ((isRowEmpty(changedRow)) &&
                         (tablePropertiesModel.getRowCount() > 1) &&
                         (changedRow != tablePropertiesModel.getRowCount() - 1)) {
                     tablePropertiesModel.removeRow(changedRow);
@@ -196,24 +198,26 @@ public class MavenBuildConfigurationForm implements IForm {
         Vector<String> emptyPropertyRow = new Vector<String>();
         emptyPropertyRow.add("");
         emptyPropertyRow.add("");
-        tablePropertiesData.add(emptyPropertyRow);
+        tablePropertiesModel.addRow(emptyPropertyRow);
     }
 
-    private boolean hasEmptyLastRow(Vector<Vector> propertiesTableData) {
-        if (propertiesTableData.size() > 0) {
-            Vector lastRow = propertiesTableData.elementAt(propertiesTableData.size() - 1);
+    private boolean hasEmptyLastRow() {
+        Vector<Vector> tablePropertiesData = tablePropertiesModel.getDataVector();
+        if (tablePropertiesData.size() > 0) {
+            Vector lastRow = tablePropertiesData.elementAt(tablePropertiesData.size() - 1);
             String lastKey = (String) lastRow.elementAt(0);
             String lastValue = (String) lastRow.elementAt(1);
-            if (StringUtils.isEmpty(lastKey) && StringUtils.isEmpty(lastValue)) {
+            if (StringUtils.isEmpty(lastKey)) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isRowEmpty(Vector<Vector> propertiesTableData, int row) {
-        if (propertiesTableData.size() > 0) {
-            Vector myRow = propertiesTableData.elementAt(row);
+    private boolean isRowEmpty(int row) {
+        Vector<Vector> tablePropertiesData = tablePropertiesModel.getDataVector();
+        if (tablePropertiesData.size() > 0) {
+            Vector myRow = tablePropertiesData.elementAt(row);
             String lastKey = (String) myRow.elementAt(0);
             String lastValue = (String) myRow.elementAt(1);
             if (StringUtils.isEmpty(lastKey) && StringUtils.isEmpty(lastValue)) {
@@ -232,6 +236,7 @@ public class MavenBuildConfigurationForm implements IForm {
                     .addElement(
                             new CustomizingObject(projectJdk.getVMExecutablePath(), projectJdk.getName()));
         }
+        comboboxModelModelChooseJdk.addElement(new CustomizingObject("", "Use $JAVA_HOME"));
         comboBoxChooseJDK.setModel(comboboxModelModelChooseJdk);
     }
 
@@ -248,12 +253,15 @@ public class MavenBuildConfigurationForm implements IForm {
     }
 
     public void setData(MavenBuildPluginSettings data) {
+        tablePropertiesModel.removeTableModelListener(propertiesTableListener);
         fillComboboxJdk();
         for (int i = 0; i < comboboxModelModelChooseJdk.getSize(); i++) {
             CustomizingObject customizingObject = (CustomizingObject) comboboxModelModelChooseJdk.getElementAt(i);
             if (customizingObject.getValue().equals(data.getJdkPath())) {
                 comboBoxChooseJDK.setSelectedItem(customizingObject);
                 break;
+            } else if (StringUtils.isBlank(customizingObject.getValue())) {
+                comboBoxChooseJDK.setSelectedItem(customizingObject);
             }
         }
 
@@ -261,15 +269,15 @@ public class MavenBuildConfigurationForm implements IForm {
         textFieldMavenHomeDirectory.setText(data.getMavenHome());
         textFieldVMParameters.setText(data.getVmOptions());
         checkBoxSkipTests.setSelected(data.isSkipTests());
-        Enumeration mavenPropertiesKeys = data.getMavenProperties().keys();
-        Properties mavenProperties = data.getMavenProperties();
+        Map<String, String> mavenProperties = data.getMavenProperties();
         tablePropertiesModel.getDataVector().clear();
         for (int i = 0; i < tablePropertiesModel.getRowCount(); i++) {
             tablePropertiesModel.removeRow(i);
         }
-        while (mavenPropertiesKeys.hasMoreElements()) {
-            String propertyKey = (String) mavenPropertiesKeys.nextElement();
-            String propertyValue = mavenProperties.getProperty(propertyKey);
+        Set keys = mavenProperties.keySet();
+        for (Object key : keys) {
+            String propertyKey = (String) key;
+            String propertyValue = mavenProperties.get(propertyKey);
             if (StringUtils.isEmpty(propertyKey)) {
                 continue;
             }
@@ -278,7 +286,8 @@ public class MavenBuildConfigurationForm implements IForm {
             rowData.add(propertyValue);
             tablePropertiesModel.addRow(rowData);
         }
-        if (!hasEmptyLastRow(tablePropertiesData)) {
+
+        if (!hasEmptyLastRow()) {
             addEmptyPropertyRow();
         }
         // register listener for table change events.
@@ -298,9 +307,8 @@ public class MavenBuildConfigurationForm implements IForm {
             if (StringUtils.isEmpty((String) aDataRow.elementAt(0))) {
                 continue;
             }
-            data.getMavenProperties().setProperty((String) aDataRow.elementAt(0), (String) aDataRow.elementAt(1));
+            data.getMavenProperties().put((String) aDataRow.elementAt(0), (String) aDataRow.elementAt(1));
         }
-        tablePropertiesModel.removeTableModelListener(propertiesTableListener);
     }
 
     public boolean isModified(MavenBuildPluginSettings data) {
@@ -364,7 +372,7 @@ public class MavenBuildConfigurationForm implements IForm {
                 String key = (String) keys.nextElement();
                 String value = tableDataProperties.getProperty(key);
                 if (data.getMavenProperties().containsKey(key)) {
-                    String dataValue = data.getMavenProperties().getProperty(key);
+                    String dataValue = data.getMavenProperties().get(key);
                     if (!value.equals(dataValue)) {
                         return true;
                     }

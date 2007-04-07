@@ -19,6 +19,7 @@
 package org.codehaus.mevenide.idea.common.util;
 
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 
 /**
@@ -28,33 +29,32 @@ import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
  * @version $Revision$
  */
 public class BuildUtils {
-    public static org.codehaus.mevenide.idea.build.IMavenBuildConfiguration createMavenBuildSettings(
-            org.codehaus.mevenide.idea.build.IMavenBuildConfiguration projectSettings) {
-        org.codehaus.mevenide.idea.build.IMavenBuildConfiguration configuration = new MavenBuildPluginSettings();
+    public static IMavenBuildConfiguration createMavenBuildSettings(IMavenBuildConfiguration buildConfiguration) {
+        IMavenBuildConfiguration configuration = new MavenBuildPluginSettings();
         String mavenHome = null;
         String mavenCommandLineParams = null;
         String vmOptions = null;
         String mavenRepository = null;
         String mavenSettingsFile = null;
 
-        if (StringUtils.isNotEmpty(projectSettings.getMavenHome())) {
-            mavenHome = StringUtils.defaultString(projectSettings.getMavenHome());
+        if (StringUtils.isNotEmpty(buildConfiguration.getMavenHome())) {
+            mavenHome = StringUtils.defaultString(buildConfiguration.getMavenHome());
         }
 
-        if (StringUtils.isNotEmpty(projectSettings.getMavenCommandLineParams())) {
-            mavenCommandLineParams = StringUtils.defaultString(projectSettings.getMavenCommandLineParams());
+        if (StringUtils.isNotEmpty(buildConfiguration.getMavenCommandLineParams())) {
+            mavenCommandLineParams = StringUtils.defaultString(buildConfiguration.getMavenCommandLineParams());
         }
 
-        if (StringUtils.isNotEmpty(projectSettings.getVmOptions())) {
-            vmOptions = StringUtils.defaultString(projectSettings.getVmOptions());
+        if (StringUtils.isNotEmpty(buildConfiguration.getVmOptions())) {
+            vmOptions = StringUtils.defaultString(buildConfiguration.getVmOptions());
         }
 
-        if (StringUtils.isNotEmpty(projectSettings.getMavenRepository())) {
-            mavenRepository = StringUtils.defaultString(projectSettings.getMavenRepository());
+        if (StringUtils.isNotEmpty(buildConfiguration.getMavenRepository())) {
+            mavenRepository = StringUtils.defaultString(buildConfiguration.getMavenRepository());
         }
 
-        if (StringUtils.isNotEmpty(projectSettings.getMavenSettingsFile())) {
-            mavenSettingsFile = StringUtils.defaultString(projectSettings.getMavenSettingsFile());
+        if (StringUtils.isNotEmpty(buildConfiguration.getMavenSettingsFile())) {
+            mavenSettingsFile = StringUtils.defaultString(buildConfiguration.getMavenSettingsFile());
         }
 
         configuration.setMavenCommandLineParams(mavenCommandLineParams);
@@ -62,9 +62,10 @@ public class BuildUtils {
         configuration.setMavenSettingsFile(mavenSettingsFile);
         configuration.setMavenHome(mavenHome);
         configuration.setVmOptions(vmOptions);
-        configuration.setMavenConfiguration(projectSettings.getMavenConfiguration());
-        configuration.setSkipTests(projectSettings.isSkipTests());
-        configuration.setMavenProperties(projectSettings.getMavenProperties());
+        configuration.setMavenConfiguration(buildConfiguration.getMavenConfiguration());
+        configuration.setSkipTests(buildConfiguration.isSkipTests());
+        configuration.setMavenProperties(buildConfiguration.getMavenProperties());
+        configuration.setJdkPath(buildConfiguration.getJdkPath());
         return configuration;
     }
 }

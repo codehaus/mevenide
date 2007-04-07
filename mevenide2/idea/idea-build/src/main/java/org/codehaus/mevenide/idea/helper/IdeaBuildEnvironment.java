@@ -16,20 +16,12 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.helper;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.projectRoots.ProjectJdkTable;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
-import org.apache.log4j.Logger;
 import org.apache.maven.embedder.MavenEmbedder;
-
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
 import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
-import org.codehaus.mevenide.idea.build.MavenBuildException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +33,6 @@ import java.util.List;
  * @version $Revision$
  */
 public class IdeaBuildEnvironment implements IBuildEnvironment {
-    private static final Logger LOG = Logger.getLogger(IdeaBuildEnvironment.class);
     private boolean useMavenEmbedder;
     private MavenEmbedder mavenEmbedder;
     private IMavenBuildLogger logger;
@@ -71,48 +62,9 @@ public class IdeaBuildEnvironment implements IBuildEnvironment {
         return mavenConfiguration;    // To change body of implemented methods use File | Settings | File Templates.
     }
 
-    public void setMavenBuildConfiguration(org.codehaus.mevenide.idea.build.IMavenBuildConfiguration mavenConfiguration) {
+    public void setMavenBuildConfiguration(
+            org.codehaus.mevenide.idea.build.IMavenBuildConfiguration mavenConfiguration) {
         this.mavenConfiguration = mavenConfiguration;
-    }
-
-    public String getPathToJdk() {
-        String javaExecutable;    // if JAVA_HOME is specified use it as executable
-        String javaHome = System.getenv("JAVA_HOME");
-
-        if (!StringUtils.isBlank(javaHome)) {
-            javaExecutable = javaHome + System.getProperty("file.separator") + "bin"
-                             + System.getProperty("file.separator");
-            LOG.info("Using JAVA_HOME variable. Java executable is in directory: " + javaExecutable);
-
-            // if JAVA_HOME is not specified try to use the internal JDK from IDEA
-        } else {
-            ProjectJdkTable projectJdkTable = ProjectJdkTable.getInstance();
-
-            javaExecutable = projectJdkTable.getInternalJdk().getBinPath() + System.getProperty("file.separator");
-            LOG.info("JAVA_HOME not specified. Using internal IDEA JDK with bin path: " + javaExecutable);
-            javaHome = projectJdkTable.getInternalJdk().getHomePath();
-        }
-
-        if (StringUtils.isBlank(javaHome)) {
-            throw new MavenBuildException("Unable to locate JDK home directory!" + System.getProperty("line.separator")
-                                          + "Either set the home directory in the configuration dialogs"
-                                          + System.getProperty("line.separator")
-                                          + "or set the JAVA_HOME environment variable on your system!");
-        }
-
-        if (SystemUtils.IS_OS_WINDOWS || SystemUtils.IS_OS_WINDOWS_2000 || SystemUtils.IS_OS_WINDOWS_95
-                || SystemUtils.IS_OS_WINDOWS_98 || SystemUtils.IS_OS_WINDOWS_ME || SystemUtils.IS_OS_WINDOWS_NT
-                || SystemUtils.IS_OS_WINDOWS_XP) {
-            if (!StringUtils.isBlank(javaExecutable)) {
-                javaExecutable = javaExecutable + "java.exe";
-            }
-        } else if (SystemUtils.IS_OS_UNIX) {
-            if (!StringUtils.isBlank(javaExecutable)) {
-                javaExecutable = javaExecutable + "java";
-            }
-        }
-
-        return javaExecutable;
     }
 
     public boolean isUseMavenEmbedder() {
