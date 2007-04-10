@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2006 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,42 +15,18 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.api.execute;
+package org.codehaus.mevenide.netbeans.execute;
 
-import java.io.File;
-import java.util.List;
-import java.util.Properties;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.execution.ExecutorTask;
+import org.openide.windows.InputOutput;
 
 /**
- * Context provider for maven executor
- * @author Milos Kleint (mkleint@codehaus.org)
+ * What the executors have in common.
+ * @author mkleint
  */
-public interface RunConfig {
-    
-    File getExecutionDirectory();
+public interface MavenExecutor extends Runnable {
 
-    NbMavenProject getProject();
+    void setTask(ExecutorTask task);
     
-    List<String> getGoals();
-
-    String getExecutionName();
-
-    Properties getProperties();
-    
-    boolean isShowDebug();
-    
-    boolean isShowError();
-    
-    Boolean isOffline();
-    
-    void setOffline(Boolean bool);
-    
-    boolean isRecursive();
-    
-    boolean isUpdateSnapshots();
-
-    List getActivatedProfiles();
-
-    
+    InputOutput getInputOutput();
 }

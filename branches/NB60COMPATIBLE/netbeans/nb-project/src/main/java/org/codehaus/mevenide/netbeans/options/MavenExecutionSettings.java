@@ -17,8 +17,10 @@
 
 package org.codehaus.mevenide.netbeans.options;
 
+import java.io.File;
 import java.util.prefs.Preferences;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbPreferences;
 
 /**
@@ -33,6 +35,8 @@ public class MavenExecutionSettings  {
     public static final String PROP_FAILURE_BEHAVIOUR = "failureBehaviour"; //NOI18N
     public static final String PROP_USE_REGISTRY = "usePluginRegistry"; //NOI18N
     public static final String PROP_SYNCH_PROXY = "synchronizeProxySettings"; //NOI18N
+    public static final String PROP_USE_COMMANDLINE = "useCommandLineMaven"; //NOI18N
+    public static final String PROP_COMMANDLINE_PATH = "commandLineMavenPath"; //NOI18N
     
     private static final MavenExecutionSettings INSTANCE = new MavenExecutionSettings();
     
@@ -122,5 +126,26 @@ public class MavenExecutionSettings  {
     public boolean isSynchronizeProxy() {
         return getPreferences().getBoolean(PROP_SYNCH_PROXY, true);
     }
+    
+    public boolean isUseCommandLine() {
+        return getPreferences().getBoolean(PROP_USE_COMMANDLINE, false);
+    }
+
+    public void setUseCommandLine(boolean useCommandLine) {
+        getPreferences().putBoolean(PROP_USE_COMMANDLINE, useCommandLine);
+    }
+    
+    public File getCommandLinePath() {
+        String str =  getPreferences().get(PROP_COMMANDLINE_PATH, null);
+        if (str != null) {
+            return FileUtil.normalizeFile(new File(str));
+        }
+        return null;
+    }
+
+    public void setCommandLinePath(File path) {
+        putProperty(PROP_COMMANDLINE_PATH, FileUtil.normalizeFile(path).getAbsolutePath());
+    }
+    
     
 }

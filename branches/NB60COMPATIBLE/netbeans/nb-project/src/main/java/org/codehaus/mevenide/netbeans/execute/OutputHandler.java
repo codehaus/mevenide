@@ -25,22 +25,15 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.monitor.event.EventMonitor;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
-import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
-import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.openide.execution.ExecutorTask;
-import org.openide.util.Lookup;
 import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputWriter;
@@ -49,7 +42,7 @@ import org.openide.windows.OutputWriter;
  * handling of output coming from maven builds.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class OutputHandler implements EventMonitor, MavenEmbedderLogger {
+class OutputHandler extends AbstractOutputHandler implements EventMonitor, MavenEmbedderLogger {
     
     private InputOutput inputOutput;
     
@@ -60,8 +53,6 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
     
     private int threshold = MavenEmbedderLogger.LEVEL_INFO;
     
-    private HashMap processors;
-    private OutputVisitor visitor;
 
     private AggregateProgressHandle handle;
 
@@ -69,7 +60,6 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
 
     private ExecutorTask task;
     
-    private Set currentProcessors;
     
     private List<ProgressContributor> progress = new ArrayList<ProgressContributor>();
     private boolean isReactor = false;
@@ -78,9 +68,6 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
     private int count = 0;
     
     OutputHandler() {
-        processors = new HashMap();
-        currentProcessors = new HashSet();
-        visitor = new OutputVisitor();
     }
     
     /**
@@ -99,70 +86,14 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
         stdOut = inputOutput.getOut();
         stdErr = inputOutput.getErr();
         
-        // get the registered processors.
-        Lookup.Result result  = Lookup.getDefault().lookup(new Lookup.Template(OutputProcessorFactory.class));
-        Iterator it = result.allInstances().iterator();
-        while (it.hasNext()) {
-            OutputProcessorFactory factory = (OutputProcessorFactory)it.next();
-            Set procs = factory.createProcessorsSet(proj);
-            Iterator it2 = procs.iterator();
-            while (it2.hasNext()) {
-                OutputProcessor proc = (OutputProcessor)it2.next();
-                String[] regs = proc.getRegisteredOutputSequences();
-                for (int i = 0; i < regs.length; i++) {
-                    String str = regs[i];
-                    Set set = (Set) processors.get(str);
-                    if (set == null) {
-                        set = new HashSet();
-                        processors.put(str, set);
-                    }
-                    set.add(proc);
-                }
-            }
-        }
+        initProcessorList(proj);
     }
     
     public void errorEvent(String eventName, String target, long l, Throwable throwable) {
-//        if (throwable != null) {
-//            processMultiLine(throwable.getLocalizedMessage(), stdErr, "ERROR2");
-//        }
-//        if (throwable instanceof MojoExecutionException) {
-//            MojoExecutionException exc = (MojoExecutionException)throwable;
-//            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
-//        } else if (throwable instanceof MojoFailureException) {
-//            MojoFailureException exc = (MojoFailureException)throwable;
-//            processMultiLine(exc.getLongMessage(), stdErr, "ERROR");
-//        }
         processFail(getEventId(eventName, target), stdErr);
-//        if (throwable instanceof BuildFailureException) {
-//            stdErr.println("");
-//            stdErr.println("BUILD FAILED.");
-//            stdErr.println("");
-//        }
-        Set set = (Set) processors.get(getEventId(eventName, target));
-        if (set != null) {
-            Set retain = new HashSet();
-            retain.addAll(set);
-            retain.retainAll(currentProcessors);
-            Set remove = new HashSet();
-            remove.addAll(set);
-            remove.removeAll(retain);
-            currentProcessors.removeAll(remove);
-        }
-    }
-    
-    private String getEventId(String eventName, String target) {
-        if ("project-execute".equals(eventName)) {
-            return eventName;
-        }
-        return eventName + "#" + target;
     }
     
     public void startEvent(String eventName, String target, long l)    {
-        Set set = (Set) processors.get(getEventId(eventName, target));
-        if (set != null) {
-            currentProcessors.addAll(set);
-        }
         processStart(getEventId(eventName, target), stdOut);
         if (handle != null) {
             if ("reactor-execute".equals(eventName)) { //NOI18N
@@ -202,13 +133,6 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
     
     public void endEvent(String eventName, String target, long l)    {
         processEnd(getEventId(eventName, target), stdOut);
-        Set set = (Set) processors.get(getEventId(eventName, target));
-        if (set != null) {
-            //TODO a bulletproof way would be to keep a list of currently started
-            // sections and compare to the list of getRegisteredOutputSequences fo each of the
-            // processors in set..
-            currentProcessors.removeAll(set);
-        }
         if ("project-execute".equals(eventName) &&  cont != null) { //NOI18N
             total = count;
             cont.finish();
@@ -296,100 +220,7 @@ class OutputHandler implements EventMonitor, MavenEmbedderLogger {
         return threshold;
     }
  
-    private void processMultiLine(String input, OutputWriter writer, String levelText) {
-        if (input == null) {
-            return;
-        }
-        String[] strs = input.split(System.getProperty("line.separator"));
-        for (int i = 0; i < strs.length; i++) {
-            processLine(strs[i], writer, levelText);
-        }
-    }
     
-    private void processLine(String input, OutputWriter writer, String levelText) {
-        visitor.resetVisitor();
-        Iterator it = currentProcessors.iterator();
-        while (it.hasNext()) {
-            OutputProcessor proc = (OutputProcessor)it.next();
-            proc.processLine(input, visitor);
-        }
-        if (!visitor.isLineSkipped()) {
-            String line = visitor.getLine() == null ? input : visitor.getLine();
-            if (visitor.getOutputListener() != null) {
-                try {
-                    writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
-            } else {
-                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line);
-            }
-        }
-    }
-    
-    private void processStart(String id, OutputWriter writer) {
-        visitor.resetVisitor();
-        Iterator it = currentProcessors.iterator();
-        while (it.hasNext()) {
-            OutputProcessor proc = (OutputProcessor)it.next();
-            proc.sequenceStart(id, visitor);
-        }
-        if (visitor.getLine() == null) {
-            return;
-        }
-        if (visitor.getOutputListener() != null) {
-            try {
-                writer.println(visitor.getLine(), visitor.getOutputListener(), visitor.isImportant());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            writer.println(visitor.getLine());
-        }
-    }
-    
-    private void processEnd(String id, OutputWriter writer) {
-        visitor.resetVisitor();
-        Iterator it = currentProcessors.iterator();
-        while (it.hasNext()) {
-            OutputProcessor proc = (OutputProcessor)it.next();
-            proc.sequenceEnd(id, visitor);
-        }
-        if (visitor.getLine() == null) {
-            return;
-        }
-        if (visitor.getOutputListener() != null) {
-            try {
-                writer.println(visitor.getLine(), visitor.getOutputListener(), visitor.isImportant());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            writer.println(visitor.getLine());
-        }
-    }
-    
-    private void processFail(String id, OutputWriter writer) {
-        visitor.resetVisitor();
-        Iterator it = currentProcessors.iterator();
-        while (it.hasNext()) {
-            OutputProcessor proc = (OutputProcessor)it.next();
-            proc.sequenceFail(id, visitor);
-        }
-        if (visitor.getLine() == null) {
-            return;
-        }
-        if (visitor.getOutputListener() != null) {
-            try {
-                writer.println(visitor.getLine(), visitor.getOutputListener(), visitor.isImportant());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else {
-            writer.println(visitor.getLine());
-        }
-    }
-
     PrintStream getErr() {
         if (err == null) {
             err =  new StreamBridge(stdErr);

@@ -32,7 +32,7 @@ public class BeanRunConfig implements RunConfig {
     
     private File executionDirectory;
     private NbMavenProject project;
-    private List goals;
+    private List<String> goals;
     private String executionName;
     private Properties properties = new Properties();
     private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
@@ -62,11 +62,11 @@ public class BeanRunConfig implements RunConfig {
         this.project = project;
     }
 
-    public List getGoals() {
+    public List<String> getGoals() {
         return goals;
     }
 
-    public void setGoals(List goals) {
+    public void setGoals(List<String> goals) {
         this.goals = goals;
     }
 

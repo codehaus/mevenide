@@ -17,9 +17,14 @@
 
 package org.codehaus.mevenide.netbeans.api.execute;
 
+import java.io.File;
+import org.codehaus.mevenide.netbeans.execute.MavenCommandLineExecutor;
+import org.codehaus.mevenide.netbeans.execute.MavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
+import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
+import org.openide.windows.InputOutput;
 
 /**
  * Utility method for executing a maven build, using the RunConfig.
@@ -35,11 +40,17 @@ public final class RunUtils {
      *  execute maven build in netbeans execution engine.
      */
     public static ExecutorTask executeMaven(String runtimeName, RunConfig config) {
-        MavenJavaExecutor exec = new MavenJavaExecutor(config);
+        File home = MavenExecutionSettings.getDefault().getCommandLinePath();
+        MavenExecutor exec;
+        if (MavenExecutionSettings.getDefault().isUseCommandLine() && home != null) {
+            exec = new MavenCommandLineExecutor(config);
+        } else {
+            exec = new MavenJavaExecutor(config);
+        }
         return executeMavenImpl(runtimeName, exec);
     }
     
-    private static ExecutorTask executeMavenImpl(String runtimeName, MavenJavaExecutor exec) {
+    private static ExecutorTask executeMavenImpl(String runtimeName, MavenExecutor exec) {
         ExecutorTask task =  ExecutionEngine.getDefault().execute(runtimeName, exec, exec.getInputOutput());
         exec.setTask(task);
         return task;

@@ -22,20 +22,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
-import java.awt.event.ActionEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
-import java.util.WeakHashMap;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ImageIcon;
 import org.apache.maven.SettingsConfigurationException;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderLogger;
@@ -51,55 +44,34 @@ import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
-import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
-import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.FileOwnerQuery;
-import org.openide.DialogDescriptor;
-import org.openide.DialogDisplayer;
-import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
-import org.openide.util.Cancellable;
-import org.openide.util.Utilities;
-import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 
 /**
  * support for executing maven, from the ide using embedder
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class MavenJavaExecutor implements Runnable, Cancellable {
+public class MavenJavaExecutor extends AbstractMavenExecutor {
     
-    private RunConfig config;
-    private InputOutput io;
-    private ReRunAction rerun;
-    private ReRunAction rerunDebug;
-    private StopAction stop;
     private AggregateProgressHandle handle;
     private OutputHandler out;
     
     private Logger LOGGER = Logger.getLogger(MavenJavaExecutor.class.getName());
-    /**
-     * All tabs which were used for some process which has now ended.
-     * These are closed when you start a fresh process.
-     * Map from tab to tab display name.
-     */
-    private static final Map freeTabs = new WeakHashMap();
-    private ExecutorTask task;
     
     
     public MavenJavaExecutor(RunConfig conf) {
-        config = conf;
+        super(conf);
         String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
                                                   "Execute Maven";  
         handle = AggregateProgressFactory.createHandle(name, new ProgressContributor[0], this, null);
@@ -107,62 +79,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         handle.addContributor(backupContrib);
     }
     
-    private InputOutput createInputOutput() {
-        synchronized (freeTabs) {
-            Iterator it = freeTabs.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                InputOutput free = (InputOutput)entry.getKey();
-                Iterator vals = ((Collection)entry.getValue()).iterator();
-                String freeName = (String)vals.next();
-                if (io == null && freeName.equals(config.getExecutionName())) {
-                    // Reuse it.
-                    io = free;
-                    rerun = (ReRunAction)vals.next();
-                    rerunDebug = (ReRunAction)vals.next();
-                    stop = (StopAction)vals.next();
-                    rerun.setConfig(config);
-                    rerunDebug.setConfig(config);
-                    stop.setExecutor(this);
-                    try {
-                        io.getOut().reset();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    // useless: io.flushReader();
-                } else {
-                    // Discard it.
-                    free.closeInputOutput();
-                }
-            }
-            freeTabs.clear();
-        }
-        //                }
-        if (io == null) {
-            rerun = new ReRunAction(false);
-            rerunDebug = new ReRunAction(true);
-            stop = new StopAction();
-            Action[] actions = new Action[] {
-                rerun, 
-                rerunDebug,
-                stop
-            };
-            io = IOProvider.getDefault().getIO(config.getExecutionName(), actions);
-            rerun.setConfig(config);
-            rerunDebug.setConfig(config);
-            stop.setExecutor(this);
-        }
-        return io;
-    }
     
     /**
      * not to be called directrly.. use execute();
      */
     public void run() {
         InputOutput ioput = getInputOutput();
-        rerun.setEnabled(false);
-        rerunDebug.setEnabled(false);
-        stop.setEnabled(true);
+        actionStatesAtStart();
         String basedir = System.getProperty("basedir");
         handle.start();
         try {
@@ -285,17 +208,8 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             } else {
                 System.setProperty("basedir", basedir);
             }
-            rerun.setEnabled(true);
-            rerunDebug.setEnabled(true);
-            stop.setEnabled(false);
-            synchronized (freeTabs) {
-                Collection col = new ArrayList();
-                col.add(config.getExecutionName());
-                col.add(rerun);
-                col.add(rerunDebug);
-                col.add(stop);
-                freeTabs.put(ioput, col);
-            }
+            actionStatesAtFinish();
+            markFreeTab(ioput);
             EmbedderFactory.resetProjectEmbedder();
             List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
             for (File elem: fireList) {
@@ -316,16 +230,11 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
     public boolean cancel() {
         if (out != null) {
             out.requestCancel(task);
+            //TODO add a timeout for this and do a hard kill otherwise
         }
         return true;
     }
     
-    public InputOutput getInputOutput() {
-        if (io == null) {
-            io = createInputOutput();
-        }
-        return io;
-    }
     
     private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
         if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {
@@ -354,9 +263,6 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         }
     }
 
-    public void setTask(ExecutorTask task) {
-        this.task = task;
-    }
 
     /**
      * a brute force hack to workaround a severe issue with Maven Plugins 
@@ -405,66 +311,6 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
             LOGGER.log(Level.INFO,
                 "Error removing shutdown hook originated from Maven build. " + ex.getMessage(), 
                 ex);
-        }
-    }
-    
-    
-    
-    static class ReRunAction extends AbstractAction {
-        private RunConfig config;
-        private boolean debug;
-        
-        public ReRunAction(boolean debug) {
-            this.debug  = debug;
-            this.putValue(Action.SMALL_ICON, debug ? 
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) :
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
-            putValue(Action.NAME, debug ? "Re-run with different parameters" : "Re-run the goals.");
-            putValue(Action.SHORT_DESCRIPTION, debug ? "Re-run with different parameters": "Re-run the goals.");
-            setEnabled(false);
-            
-        }
-        
-        void setConfig(RunConfig config) {
-            this.config = config;
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            if (debug) {
-                RunGoalsPanel pnl = new RunGoalsPanel();
-                DialogDescriptor dd = new DialogDescriptor(pnl, "Run Maven");
-                pnl.readConfig(config);
-                Object retValue = DialogDisplayer.getDefault().notify(dd);
-                if (retValue == DialogDescriptor.OK_OPTION) {
-                    BeanRunConfig newConfig = new BeanRunConfig();
-                    newConfig.setExecutionDirectory(config.getExecutionDirectory());
-                    newConfig.setExecutionName(config.getExecutionName());
-                    newConfig.setProject(config.getProject());
-                    pnl.applyValues(newConfig);
-                    RunUtils.executeMaven("Maven", newConfig);
-                }
-            } else {
-                RunConfig newConfig = config;
-                RunUtils.executeMaven("Maven", newConfig);
-            }
-            //TODO the waiting on tasks won't work..
-        }
-    }
-    
-    static class StopAction extends AbstractAction {
-        private MavenJavaExecutor exec;
-        StopAction() {
-            putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/stop.gif")));
-            putValue(Action.NAME, "Stop execution");
-            putValue(Action.SHORT_DESCRIPTION, "Stop the currently executing build");
-            setEnabled(false);
-        }
-        
-        void setExecutor(MavenJavaExecutor ex) {
-            exec = ex;
-        }
-        public void actionPerformed(ActionEvent e) {
-            exec.cancel();
         }
     }
 }
