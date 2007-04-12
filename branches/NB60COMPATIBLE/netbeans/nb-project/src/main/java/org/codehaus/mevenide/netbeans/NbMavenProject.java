@@ -74,6 +74,7 @@ import org.openide.util.lookup.Lookups;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.operations.OperationsImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenBinaryForSourceQueryImpl;
+import org.codehaus.mevenide.netbeans.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
 
@@ -452,6 +453,7 @@ public final class NbMavenProject implements Project {
             problemReporter,
             new UserActionGoalProvider(this),
             watcher,
+            new MavenFileEncodingQueryImpl(this),
             
             //operations
             new OperationsImpl(this),
@@ -465,8 +467,6 @@ public final class NbMavenProject implements Project {
         });
         return staticLookup;
     }
-    
-    // Private innerclasses ----------------------------------------------------
     
     private final class Info implements ProjectInformation {
         
