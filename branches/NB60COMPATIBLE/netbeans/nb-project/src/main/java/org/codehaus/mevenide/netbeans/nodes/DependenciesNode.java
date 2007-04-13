@@ -48,6 +48,7 @@ import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
+import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.awt.StatusDisplayer;
@@ -65,7 +66,7 @@ import org.openide.util.lookup.Lookups;
  * root node for dependencies in project's view.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-class DependenciesNode extends AbstractNode {
+public class DependenciesNode extends AbstractNode {
     static final int TYPE_COMPILE = 0;
     static final int TYPE_TEST = 1;
     static final int TYPE_RUNTIME = 2;
@@ -102,7 +103,7 @@ class DependenciesNode extends AbstractNode {
         ArrayList<Action> toRet = new ArrayList<Action>();
         toRet.add(new AddDependencyAction());
         toRet.add(null);
-        toRet.add(new ResolveDepsAction());
+        toRet.add(new ResolveDepsAction(project));
         toRet.add(new DownloadJavadocSrcAction(true));
         toRet.add(new DownloadJavadocSrcAction(false));
         MavenProjectNode.loadLayerActions("Projects/org-codehaus-mevenide-netbeans/DependenciesActions", toRet); //NOI18N
@@ -245,12 +246,15 @@ class DependenciesNode extends AbstractNode {
         }
     }  
 
-    private class ResolveDepsAction extends AbstractAction {
-        public ResolveDepsAction() {
+    public static class ResolveDepsAction extends AbstractAction {
+        private Project project;
+        public ResolveDepsAction(Project prj) {
             putValue(Action.NAME, "Download All Libraries");
+            project = prj;
         }
         
         public void actionPerformed(ActionEvent evnt) {
+            setEnabled(false);
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();

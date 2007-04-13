@@ -34,13 +34,13 @@ import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
+import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileObject;
@@ -161,10 +161,13 @@ public final class ProblemReporter implements Comparator {
                         Artifact ar = (Artifact)it2.next();
                         mess = mess + ar.getId() + "\n"; //NOI18N
                     }
+                    AbstractAction act = new DependenciesNode.ResolveDepsAction(nbproject);
+                    act.putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ACT_DownloadDeps"));
+                    
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
                             org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_NonLocal"),
                             org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_NonLocal", mess),
-                            null);
+                            act);
                     addReport(report);
                 }
                 
