@@ -66,6 +66,10 @@ public class GoalsProviderImpl implements GoalsProvider {
 
     private void checkFolder(File parent, Set<String> list, boolean recurs) {
         File[] files = parent.listFiles();
+        if (files == null) {
+            //fix for #100894, happens when a plugin group is defined but not in our list.
+            return;
+        }
         boolean hasFile = false;
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
