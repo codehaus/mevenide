@@ -55,6 +55,11 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         if (!file.getAbsolutePath().startsWith(basedir.getAbsolutePath())) {
             return false;
         }
+        if (basedir.equals(file.getParentFile()) && "nbproject".equals(file.getName())) {
+            // screw the netbeans profiler directory creation.
+            // #98662
+            return false;
+        }
         MavenProject proj = project.getOriginalMavenProject();
         Build build = proj.getBuild();
         if (build != null && build.getDirectory() != null) {
