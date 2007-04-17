@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
 import java.io.File;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -29,6 +30,7 @@ import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
@@ -48,18 +50,26 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     private EjbJarImpl ejbimpl;
     private NbMavenProject project;
     private String serverInstanceID;
+    private J2eeModule j2eemodule;    
     
     /** Creates a new instance of EjbModuleProviderImpl */
     public EjbModuleProviderImpl(NbMavenProject proj) {
         project = proj;
-        ejbimpl = new EjbJarImpl(project);
+        ejbimpl = new EjbJarImpl(project, this);
         loadPersistedServerId(false);
     }
     
+    /**
+     * 
+     */
     public void loadPersistedServerId() {
         loadPersistedServerId(true);
     }
     
+    /**
+     * 
+     * @param ensureReady 
+     */
     public void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
@@ -96,6 +106,11 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     }
     
 
+    /**
+     * 
+     * @param file 
+     * @return 
+     */
     public EjbJar findEjbJar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner (file);
         if (proj != null) {
@@ -110,34 +125,54 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         return null;
     }
 
-    public J2eeModule getJ2eeModule() {
-        System.out.println("EjbMP:getJ2eeModule");
-        return ejbimpl;
+    /**
+     * 
+     * @return 
+     */
+    public synchronized J2eeModule getJ2eeModule() {
+        if (j2eemodule == null) {
+            j2eemodule = J2eeModuleFactory.createJ2eeModule(ejbimpl);
+        }
+        return j2eemodule; 
     }
-
+    
+    /**
+     * 
+     * @return 
+     */
     public ModuleChangeReporter getModuleChangeReporter() {
         return ejbimpl;
     }
 
-    public File getDeploymentConfigurationFile(String name) {
-        if (name == null) {
-            return null;
-        }
-        String path = getConfigSupport().getContentRelativePath(name);
-        if (path == null) {
-            path = name;
-        }
-        return ejbimpl.getDDFile(path);
-    }
+//    /**
+//     * 
+//     * @param name 
+//     * @return 
+//     */
+//    public File getDeploymentConfigurationFile(String name) {
+//        if (name == null) {
+//            return null;
+//        }
+//        String path = getConfigSupport().getContentRelativePath(name);
+//        if (path == null) {
+//            path = name;
+//        }
+//        return ejbimpl.getDDFile(path);
+//    }
 
     
-    public FileObject findDeploymentConfigurationFile(String string) {
-        File fil = getDeploymentConfigurationFile(string);
-        if (fil != null) {
-            return FileUtil.toFileObject(fil);
-        }
-        return null;
-    }
+//    /**
+//     * 
+//     * @param string 
+//     * @return 
+//     */
+//    public FileObject findDeploymentConfigurationFile(String string) {
+//        File fil = getDeploymentConfigurationFile(string);
+//        if (fil != null) {
+//            return FileUtil.toFileObject(fil);
+//        }
+//        return null;
+//    }
 
     public void setServerInstanceID(String string) {
         // TODO implement when needed
@@ -160,10 +195,14 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         return MavenDeploymentImpl.DEV_NULL;
     }
     
-    public File getEnterpriseResourceDirectory() {
-        System.out.println("EjbMP: getEnterpriseResourceDirectory");
-        return null;
-    }
+//    /**
+//     * 
+//     * @return 
+//     */
+//    public File getEnterpriseResourceDirectory() {
+//        System.out.println("EjbMP: getEnterpriseResourceDirectory");
+//        return null;
+//    }
     
     public boolean useDefaultServer() {
         return serverInstanceID == null;

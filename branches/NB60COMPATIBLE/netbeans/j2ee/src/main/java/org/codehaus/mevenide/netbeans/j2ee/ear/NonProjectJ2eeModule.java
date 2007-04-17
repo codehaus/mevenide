@@ -17,6 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.ear;
 
+import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
@@ -24,9 +26,12 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import org.apache.maven.artifact.Artifact;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
+import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+
 import org.netbeans.modules.schema2beans.BaseBean;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -38,7 +43,7 @@ import org.xml.sax.SAXException;
  *  works only on top of ear's modules' artifacts.. will this work?
  * @author mkleint
  */
-public class NonProjectJ2eeModule implements J2eeModule {
+public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     private String moduleVersion;
     private Artifact artifact;
     private String url;
@@ -96,7 +101,7 @@ public class NonProjectJ2eeModule implements J2eeModule {
         return null;
     }
     
-    public BaseBean getDeploymentDescriptor(String location) {
+    public RootInterface getDeploymentDescriptor(String location) {
         System.out.println("NPJM: get DD =" + location);
         try {
             JarFile fil = new JarFile(artifact.getFile());
@@ -111,36 +116,21 @@ public class NonProjectJ2eeModule implements J2eeModule {
         return null;
     }
     
-    public void addVersionListener(J2eeModule.VersionListener listener) {
-        System.out.println("NonProjectJ2eeModule adding version listener");
-    }
     
-    public void removeVersionListener(J2eeModule.VersionListener listener) {
-        System.out.println("NonProjectJ2eeModule removing version listener");
-    }
-    
-    private BaseBean readBaseBean(InputStream str) {
+    private RootInterface readBaseBean(InputStream str) {
         System.out.println("NPJM:   read base bean");
         String type = artifact.getType();
         if ("war".equals(type)) {
             try {
                 FileObject root = FileUtil.getArchiveRoot(getArchive());
                 System.out.println("NPJM:root=" + root);
-                WebApp web = org.netbeans.modules.j2ee.dd.api.web.DDProvider.getDefault().getDDRoot(root.getFileObject(J2eeModule.WEB_XML));
-                System.out.println("NPJM:web..=" + web);
-                if (web != null) {
-                    return org.netbeans.modules.j2ee.dd.api.web.DDProvider.getDefault().getBaseBean(web);
-                }
+                return org.netbeans.modules.j2ee.dd.api.web.DDProvider.getDefault().getDDRoot(root.getFileObject(J2eeModule.WEB_XML));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
         } else if ("ejb".equals(type)) {
                 try {
-                    EjbJar jar = org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getDDRoot(new InputSource(str));
-                    System.out.println("NPJM:ejbjar=" + jar);
-                    if (jar != null) {
-                        return org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getBaseBean(jar);
-                    }
+                    return org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getDDRoot(new InputSource(str));
                 } catch (SAXException ex) {
                     ex.printStackTrace();
                 } catch (IOException ex) {
@@ -148,11 +138,7 @@ public class NonProjectJ2eeModule implements J2eeModule {
                 }
         } else if ("ear".equals(type)) {
             try {
-                Application app = org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getDDRoot(new InputSource(str));
-                if (app != null) {
-                    System.out.println("NPJM:getDeploymentDescriptor.returning a base bean...");
-                    return org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getBaseBean(app);
-                }
+                return org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getDDRoot(new InputSource(str));
             } catch (SAXException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -161,6 +147,22 @@ public class NonProjectJ2eeModule implements J2eeModule {
             
         }
         return null;
+    }
+
+    public File getResourceDirectory() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public File getDeploymentConfigurationFile(String arg0) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener arg0) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener arg0) {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

@@ -27,16 +27,19 @@ import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.netbeans.modules.j2ee.deployment.common.api.ConfigurationException;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 
 /**
@@ -49,6 +52,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private NbMavenProject project;
     private WebModuleImpl implementation;
     private WebModule module;
+    private J2eeModule j2eemodule;
     
     private ModuleChangeReporter moduleChange;
     
@@ -61,7 +65,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     public WebModuleProviderImpl(NbMavenProject proj) {
         project = proj;
-        implementation = new WebModuleImpl(project);
+        implementation = new WebModuleImpl(project, this);
         moduleChange = new ModuleChangeReporterImpl();
         loadPersistedServerId(false);
     }
@@ -117,7 +121,18 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return null;
     }
     
-    public J2eeModule getJ2eeModule() {
+    public synchronized J2eeModule getJ2eeModule() {
+        if (j2eemodule == null) {
+            j2eemodule = J2eeModuleFactory.createJ2eeModule(implementation);
+        }
+        return j2eemodule; 
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public WebModuleImpl getWebModuleImplementation() {
         return implementation;
     }
     
@@ -125,6 +140,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return moduleChange;
     }
     
+    /**
+     * 
+     * @param name 
+     * @return 
+     */
     public File getDeploymentConfigurationFile(String name) {
         if (name == null) {
             return null;
@@ -137,6 +157,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     }
 
     
+    /**
+     * 
+     * @param string 
+     * @return 
+     */
     public FileObject findDeploymentConfigurationFile(String string) {
         File fil = getDeploymentConfigurationFile(string);
         if (fil != null) {
@@ -145,11 +170,20 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return null;
     }
     
+    /**
+     * 
+     * @return 
+     */
     public String getContextPath() {
         if(implementation.getDeploymentDescriptor() == null) {
             return (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
         }
-        return getConfigSupport().getWebContextRoot ();
+        try {
+            return getConfigSupport().getWebContextRoot();
+        } catch (ConfigurationException e) {
+            // TODO #95280: inform the user that the context root cannot be retrieved
+            return null;
+        }
     }
     
     public void setContextPath(String path) {
@@ -164,8 +198,13 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     
     private void setContextPathImpl(String path) {
         if (implementation.getDeploymentDescriptor() != null) {
-            getConfigSupport().setWebContextRoot (path);
-        }
+            try         {
+                getConfigSupport().setWebContextRoot(path);
+            }
+            catch (ConfigurationException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+}
     }
     
     public void setServerInstanceID(String str) {

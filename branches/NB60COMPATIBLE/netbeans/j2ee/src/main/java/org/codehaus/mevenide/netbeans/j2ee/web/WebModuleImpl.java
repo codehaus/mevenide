@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -29,9 +30,9 @@ import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
-import org.netbeans.modules.schema2beans.BaseBean;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.ErrorManager;
@@ -39,6 +40,7 @@ import org.openide.filesystems.FileObject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.openide.filesystems.FileUtil;
 
 
@@ -46,15 +48,17 @@ import org.openide.filesystems.FileUtil;
  * war/webapp related apis implementation..
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
+public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImplementation {
     private NbMavenProject project;
+    private WebModuleProviderImpl provider;
     
     private String url = "";
 
     private boolean inplace = false;
     
-    public WebModuleImpl(NbMavenProject proj) {
+    public WebModuleImpl(NbMavenProject proj, WebModuleProviderImpl prov) {
         project = proj;
+        provider = prov;
     }
     
     public FileObject getWebInf() {
@@ -203,7 +207,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         return fo;
     }
     
-    public BaseBean getDeploymentDescriptor(String string) {
+    public RootInterface getDeploymentDescriptor(String string) {
 //        System.out.println("get DD");
         if (J2eeModule.WEB_XML.equals(string)) {
             try {
@@ -213,10 +217,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
                 }
                 FileObject deploymentDescriptor = content.getFileObject(J2eeModule.WEB_XML);
                 if(deploymentDescriptor != null) {
-                    WebApp web = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
-                    if (web != null) {
-                        return DDProvider.getDefault().getBaseBean(web);
-                    }
+                    return DDProvider.getDefault().getMergedDDRoot(deploymentDescriptor);
                 }
             } catch (IOException e) {
                 ErrorManager.getDefault().log(e.getLocalizedMessage());
@@ -238,15 +239,6 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         return null;
     }    
     
-    public void addVersionListener(J2eeModule.VersionListener versionListener) {
-        System.out.println("adding version listener");
-    }
-    
-    public void removeVersionListener(J2eeModule.VersionListener versionListener) {
-        System.out.println("removing version listener");
-    }
-
-    //55 only..
     //TODO this probably also adds test sources.. is that correct?
     public FileObject[] getJavaSources() {
         Sources srcs = ProjectUtils.getSources(project);
@@ -312,6 +304,58 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModule {
         public String getRelativePath() {
             return FileUtil.getRelativePath(root, f);
         }
+    }
+
+    /**
+     * Returns the module resource directory, or null if the module has no resource
+     * directory.
+     * 
+     * @return the module resource directory, or null if the module has no resource
+     *         directory.
+     */
+
+    public File getResourceDirectory() {
+        //TODO .. in ant projects equals to "setup" directory.. what's it's use?
+        return null;
+    }
+
+    /**
+     * Returns source deployment configuration file path for the given deployment 
+     * configuration file name.
+     *
+     * @param name file name of the deployment configuration file, WEB-INF/sun-web.xml
+     *        for example.
+     * 
+     * @return absolute path to the deployment configuration file, or null if the
+     *         specified file name is not known to this J2eeModule.
+     */
+    public File getDeploymentConfigurationFile(String name) {
+       if (name == null) {
+            return null;
+        }
+        String path = provider.getConfigSupport().getContentRelativePath(name);
+        if (path == null) {
+            path = name;
+        }
+        return getDDFile(path);
+    }
+
+   /**
+     * Add a PropertyChangeListener to the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
+    }
+    
+    /**
+     * Remove a PropertyChangeListener from the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
     }
     
 }

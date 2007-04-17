@@ -25,6 +25,7 @@ import java.util.List;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleImpl;
+import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.spi.project.ActionProvider;
@@ -61,7 +62,7 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
 
     private void checkWarInplace(RunConfig config, J2eeModuleProvider provider) {
         J2eeModule module = provider.getJ2eeModule();
-        if (module instanceof WebModuleImpl) {
+        if (provider instanceof WebModuleProviderImpl) {
             Iterator it = config.getGoals().iterator();
             boolean inplace = false;
             while (it.hasNext()) {
@@ -71,7 +72,7 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
                     break;
                 }
             }
-            ((WebModuleImpl)module).setWarInplace(inplace);
+            ((WebModuleProviderImpl)provider).getWebModuleImplementation().setWarInplace(inplace);
         }
     }
     

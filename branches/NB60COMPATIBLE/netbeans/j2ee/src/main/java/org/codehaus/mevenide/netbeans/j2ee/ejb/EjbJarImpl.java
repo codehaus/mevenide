@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -31,14 +32,15 @@ import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
+import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.ejb.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.metadata.MetadataUnit;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
-import org.netbeans.modules.schema2beans.BaseBean;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -48,14 +50,18 @@ import org.openide.filesystems.URLMapper;
  * implementation of ejb netbeans functionality
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReporter {
+class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, ModuleChangeReporter {
     
     private NbMavenProject project;
     private List versionListeners;
+    
+    private EjbModuleProviderImpl provider;
+    
     /** Creates a new instance of EjbJarImpl */
-    EjbJarImpl(NbMavenProject proj) {
+    EjbJarImpl(NbMavenProject proj, EjbModuleProviderImpl prov) {
         project = proj;
         versionListeners = new ArrayList();
+        provider = prov;
     }
     
     boolean isValid() {
@@ -235,7 +241,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
      * Location must be prefixed by /META-INF or /WEB-INF as appropriate.
      * @return a live bean representing the final DD
      */
-    public BaseBean getDeploymentDescriptor(String location) {
+    public RootInterface getDeploymentDescriptor(String location) {
         if (J2eeModule.EJBJAR_XML.equals(location)) {
             try {
                 FileObject content = getContentDirectory();
@@ -248,10 +254,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
                 if (content != null) {
                     FileObject deploymentDescriptor = content.getFileObject(J2eeModule.EJBJAR_XML);
                     if(deploymentDescriptor != null) {
-                        EjbJar jar = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
-                        if (jar != null) {
-                            return DDProvider.getDefault().getBaseBean(jar);
-                        }
+                        return DDProvider.getDefault().getDDRoot(deploymentDescriptor);
                     }
                 }
              } catch (IOException e) {
@@ -263,23 +266,6 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
         
     }
     
-    /**
-     * Add module change listener.
-     *
-     * @param listener on version change
-     */
-    public void addVersionListener(J2eeModule.VersionListener listener) {
-        versionListeners.add(listener);
-    }
-    
-    /**
-     * Remove module version change listener.
-     *
-     * @param listener on version change
-     */
-    public void removeVersionListener(J2eeModule.VersionListener listener) {
-        versionListeners.remove(listener);
-    }
     
     
     public EjbChangeDescriptor getEjbChanges(long timestamp) {
@@ -358,6 +344,58 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModule, ModuleChangeReport
         public String getRelativePath() {
             return FileUtil.getRelativePath(root, f);
         }
+    }
+
+     /**
+     * Returns the module resource directory, or null if the module has no resource
+     * directory.
+     * 
+     * @return the module resource directory, or null if the module has no resource
+     *         directory.
+     */
+
+    public File getResourceDirectory() {
+        //TODO .. in ant projects equals to "setup" directory.. what's it's use?
+        return null;
+    }
+
+    /**
+     * Returns source deployment configuration file path for the given deployment 
+     * configuration file name.
+     *
+     * @param name file name of the deployment configuration file, WEB-INF/sun-web.xml
+     *        for example.
+     * 
+     * @return absolute path to the deployment configuration file, or null if the
+     *         specified file name is not known to this J2eeModule.
+     */
+    public File getDeploymentConfigurationFile(String name) {
+       if (name == null) {
+            return null;
+        }
+        String path = provider.getConfigSupport().getContentRelativePath(name);
+        if (path == null) {
+            path = name;
+        }
+        return getDDFile(path);
+    }
+
+   /**
+     * Add a PropertyChangeListener to the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
+    }
+    
+    /**
+     * Remove a PropertyChangeListener from the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
     }
     
     

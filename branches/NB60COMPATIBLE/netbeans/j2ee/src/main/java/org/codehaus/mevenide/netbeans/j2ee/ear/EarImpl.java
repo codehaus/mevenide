@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.ear;
 
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -34,13 +35,14 @@ import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
 import org.netbeans.modules.j2ee.dd.api.application.DDProvider;
+import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModuleContainer;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationImplementation;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
-import org.netbeans.modules.schema2beans.BaseBean;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
@@ -52,13 +54,15 @@ import org.xml.sax.SAXException;
  * implementation of ear related netbeans functionality
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, ModuleChangeReporter {
+class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplicationImplementation, ModuleChangeReporter {
 
     private NbMavenProject project;
+    private EarModuleProviderImpl provider;
     
     /** Creates a new instance of EarImpl */
-    EarImpl(NbMavenProject proj) {
+    EarImpl(NbMavenProject proj, EarModuleProviderImpl prov) {
         project = proj;
+        provider = prov;
     }
 
     /** J2EE platform version - one of the constants 
@@ -261,7 +265,7 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
      * Location must be prefixed by /META-INF or /WEB-INF as appropriate.
      * @return a live bean representing the final DD
      */
-    public BaseBean getDeploymentDescriptor(String location) {
+    public RootInterface getDeploymentDescriptor(String location) {
         if (J2eeModule.APP_XML.equals(location)) {
             try {
                 
@@ -270,25 +274,17 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
                     System.out.println("getDeploymentDescriptor.application dd is null");
                     StringInputStream str = new StringInputStream(
   "<application xmlns=\"http://java.sun.com/xml/ns/j2ee\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\" version=\"1.4\">" +
-  "<description>DayTrader Stock Trading Performance Benchmark Sample</description>" +
-  "<display-name>Trade</display-name></application>");
+  "<description>description</description>" +
+  "<display-name>application</display-name></application>");
                     try {
-                        Application app = DDProvider.getDefault().getDDRoot(new InputSource(str));
-                        if (app != null) {
-                            System.out.println("getDeploymentDescriptor.returning a base bean...");
-                            return DDProvider.getDefault().getBaseBean(app);
-                        }
+                        return DDProvider.getDefault().getDDRoot(new InputSource(str));
                     } catch (SAXException ex) {
                         ex.printStackTrace();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
                 } else {
-                    Application app = DDProvider.getDefault().getDDRoot(content);
-                    if (app != null) {
-                        System.out.println("getDeploymentDescriptor bean-have dd");
-                        return DDProvider.getDefault().getBaseBean(app);
-                    }
+                    return DDProvider.getDefault().getDDRoot(content);
                 }
             } catch (IOException e) {
                 ErrorManager.getDefault().log(e.getLocalizedMessage());
@@ -298,23 +294,7 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
         return null;
     }
 
-    /**
-     * Add module change listener.
-     * 
-     * @param listener on version change
-     */
-    public void addVersionListener(J2eeModule.VersionListener listener) {
-    }
-
-    /**
-     * Remove module version change listener.
-     * 
-     * @param listener on version change
-     */
-    public void removeVersionListener(J2eeModule.VersionListener listener) {
-    }
-
-    public J2eeModule[] getModules(ModuleListener ml) {
+    public J2eeModule[] getModules() {
         System.out.println("EarImpl.getModules called");
         Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
         List toRet = new ArrayList();
@@ -326,6 +306,7 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
                 toRet.add(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion()));
             }
         }
+        //TODO need to also consult the pom file for potencial additional modules.
         return (J2eeModule[])toRet.toArray(new J2eeModule[toRet.size()]);
     }
     
@@ -425,7 +406,57 @@ class EarImpl implements EarImplementation, J2eeModule, J2eeModuleContainer, Mod
             return new String[0];
         }
     }
-    
-    
 
+    /**
+     * Returns the module resource directory, or null if the module has no resource
+     * directory.
+     * 
+     * @return the module resource directory, or null if the module has no resource
+     *         directory.
+     */
+
+    public File getResourceDirectory() {
+        //TODO .. in ant projects equals to "setup" directory.. what's it's use?
+        return null;
+    }
+
+    /**
+     * Returns source deployment configuration file path for the given deployment 
+     * configuration file name.
+     *
+     * @param name file name of the deployment configuration file, WEB-INF/sun-web.xml
+     *        for example.
+     * 
+     * @return absolute path to the deployment configuration file, or null if the
+     *         specified file name is not known to this J2eeModule.
+     */
+    public File getDeploymentConfigurationFile(String name) {
+       if (name == null) {
+            return null;
+        }
+        String path = provider.getConfigSupport().getContentRelativePath(name);
+        if (path == null) {
+            path = name;
+        }
+        return getDDFile(path);
+    }
+
+   /**
+     * Add a PropertyChangeListener to the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void addPropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
+    }
+    
+    /**
+     * Remove a PropertyChangeListener from the listener list.
+     * 
+     * @param listener PropertyChangeListener
+     */
+    public void removePropertyChangeListener(PropertyChangeListener arg0) {
+        //TODO..
+    }
+ 
 }

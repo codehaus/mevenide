@@ -30,7 +30,8 @@ import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
-import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeAppProvider;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationProvider;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
@@ -42,18 +43,20 @@ import org.openide.filesystems.FileUtil;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 
-public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvider  {
+public class EarModuleProviderImpl extends J2eeApplicationProvider implements EarProvider  {
     
     static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
     static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
     private EarImpl earimpl;
     private NbMavenProject project;
     private String serverInstanceID;
+    private J2eeModule j2eemodule;
+
     
     /** Creates a new instance of MavenEarProvider */
     public EarModuleProviderImpl(NbMavenProject proj) {
         project = proj;
-        earimpl = new EarImpl(project);
+        earimpl = new EarImpl(project, this);
         loadPersistedServerId(false);
     }
     
@@ -130,9 +133,13 @@ public class EarModuleProviderImpl extends J2eeAppProvider implements EarProvide
         return new J2eeModuleProvider[0];
     }
 
-    public J2eeModule getJ2eeModule() {
-        return earimpl;
+    public synchronized J2eeModule getJ2eeModule() {
+        if (j2eemodule == null) {
+            j2eemodule = J2eeModuleFactory.createJ2eeModule(earimpl);
+        }
+        return j2eemodule; 
     }
+
 
     public ModuleChangeReporter getModuleChangeReporter() {
         return earimpl;
