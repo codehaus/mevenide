@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0.2-SNAPSHOT</version>
+  <version>3.0.3-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <profiles>
       <profile>
@@ -20,6 +20,7 @@
              <!--module>libs/continuum-rpc</module>
              <module>continuum</module-->
 	     <module>graph</module>
+             <module>j2ee</module>
           </modules>
        </profile>
       
@@ -83,7 +84,7 @@
      <module>libs</module>
      <!--module>continuum</module-->
      <module>grammar</module>
-     <module>j2ee</module>
+     <!--module>j2ee</module-->
      <module>autoupdate</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
@@ -114,6 +115,6 @@
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
        <netbeans.release>RELEASE60-M8</netbeans.release>
-       <mevenide.nb.release>3.0.2-SNAPSHOT</mevenide.nb.release>
+       <mevenide.nb.release>3.0.3-SNAPSHOT</mevenide.nb.release>
   </properties>
 </project>
