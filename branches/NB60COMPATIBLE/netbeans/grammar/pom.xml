@@ -69,6 +69,11 @@
             <artifactId>org-netbeans-modules-xml-core</artifactId>
             <version>${netbeans.release}</version>
         </dependency>               
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-xml-catalog</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     
     <build>

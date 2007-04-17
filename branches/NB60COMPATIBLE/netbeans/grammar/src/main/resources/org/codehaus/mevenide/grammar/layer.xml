@@ -2,18 +2,30 @@
 
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
 <filesystem>
- 
-<folder name="Plugins">
-    <folder name="XML">
-        <folder name="GrammarQueryManagers">
-            <!-- register Maven project grammar -->
-            <attr name="semantics-grammar-to-generic-grammar-separator/org-codehaus-mevenide-grammar-MavenQueryProvider.instance" boolvalue="true"/>
-            <file name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance"/>
-            <attr name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance/generic-grammar-to-universal-grammar-separator" boolvalue="true"/>
+    
+    <folder name="Plugins">
+        <folder name="XML">
+            <folder name="GrammarQueryManagers">
+                <!-- register Maven project grammar -->
+                <attr name="semantics-grammar-to-generic-grammar-separator/org-codehaus-mevenide-grammar-MavenQueryProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance"/>
+                <attr name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance/generic-grammar-to-universal-grammar-separator" boolvalue="true"/>
+            </folder>
+            <folder name="UserCatalogs">
+                <file name="org-codehaus-mevenide-grammar-catalog-MavenCatalog.instance">
+                    <attr name="instanceOf" 
+                    stringvalue="org.netbeans.modules.xml.catalog.spi.CatalogReader"/>
+                </file>
+            </folder>
         </folder>
     </folder>
-</folder>
-
+    
+    <!--folder name="Services">
+        <folder name="MIMEResolver">
+            <file name="org-codehaus-mevenide-grammar-mime-resolver.xml" url="mime-resolver.xml"/>
+        </folder>
+    </folder-->
+    
     <folder name="Editors">
         <folder name="text">
             <folder name="xml">
@@ -24,6 +36,14 @@
                     </file>
                 </folder>
             </folder>
+            <!--folder name="x-pom+xml">
+                <folder name="Defaults">
+                    <file name="abbreviations.xml" url="POM-abbreviations.xml"/>
+                </folder>
+                <folder name="CompletionProviders">
+                    <file name="org-codehaus-mevenide-abbreviations-XMLCompletionProvider.instance"/>
+                </folder>
+            </folder-->
         </folder>
     </folder>
 </filesystem>

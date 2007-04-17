@@ -53,6 +53,9 @@
         <dependency>
             <id>org.codehaus.mevenide:nb-project</id>
             <type>spec</type>
+        </dependency>        
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-xml-catalog</id>
         </dependency>
     </dependencies> 
    <nbmResources>
