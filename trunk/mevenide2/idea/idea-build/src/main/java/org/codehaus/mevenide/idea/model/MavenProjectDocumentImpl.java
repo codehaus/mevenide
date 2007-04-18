@@ -40,11 +40,6 @@ public class MavenProjectDocumentImpl implements MavenProjectDocument {
 
     public MavenProjectDocumentImpl(PsiFile psiFile) {
         this.psiFile = psiFile;
-        parseDocument ();
-    }
-
-    private void parseDocument() {
-        projectDocument = ProjectDocument.Factory.parse(psiFile);
     }
 
     public int compareTo(Object o) {
@@ -82,7 +77,7 @@ public class MavenProjectDocumentImpl implements MavenProjectDocument {
     }
 
     public void reparse() {
-        parseDocument();
+        projectDocument = ProjectDocument.Factory.parse(psiFile);
         pluginDocumentList.clear();
     }
 
