@@ -82,6 +82,25 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         return new ClassPath[0];
     }
     
+    /**
+     * Returns the given type of the classpath for the project sources
+     * (i.e., excluding tests roots).
+     */
+    public ClassPath getProjectSourcesClassPath(String type) {
+        if (ClassPath.BOOT.equals(type)) {
+            return getBootClassPath();
+        }
+        if (ClassPath.COMPILE.equals(type)) {
+            return getCompileTimeClasspath(0);
+        }
+        if (ClassPath.SOURCE.equals(type)) {
+            return getSourcepath(0);
+        }
+        assert false;
+        return null;
+    }
+    
+    
     public ClassPath findClassPath(FileObject file, String type) {
         int fileType = getType(file);
         if (fileType != TYPE_SRC &&  fileType != TYPE_TESTSRC && fileType != TYPE_WEB) {
