@@ -61,12 +61,12 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-j2ee-persistenceapi</artifactId>
-            <version>${netbeans.release}</version>
+            <version>RELEASE60-M9-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2ee-metadata</artifactId>
-            <version>${netbeans.release}</version>
+            <version>RELEASE60-M9-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <build>

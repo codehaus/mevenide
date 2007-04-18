@@ -21,6 +21,7 @@
              <module>continuum</module-->
 	     <module>graph</module>
              <module>j2ee</module>
+            <module>persistence</module>
           </modules>
        </profile>
       
@@ -85,12 +86,12 @@
      <!--module>continuum</module-->
      <module>grammar</module>
      <!--module>j2ee</module-->
+    <!--module>persistence</module-->
      <module>autoupdate</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
     <module>apisupport</module>
-    <module>persistence</module>
      <!--module>nb-repo-browser</module-->
      <!--module>graph</module-->
   </modules>

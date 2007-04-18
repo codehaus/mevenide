@@ -16,10 +16,14 @@
  */
 package org.codehaus.mevenide.netbeans.persistence;
 
+import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
+import org.netbeans.modules.j2ee.persistence.api.metadata.orm.EntityMappingsMetadata;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeImplementation;
+import org.netbeans.modules.j2ee.persistence.spi.support.EntityMappingsMetadataModelHelper;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -31,6 +35,9 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
 {
     private PersistenceLocationProvider  locationProvider  = null;
     private PersistenceClassPathProvider classpathProvider = null;
+    private final EntityMappingsMetadataModelHelper modelHelper;
+    private ClassPathProviderImpl cpProvider;
+    
     
     /**
      * Creates a new instance of PersistenceScopeImpl
@@ -38,10 +45,12 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeImpl(PersistenceLocationProvider locProvider,
-            PersistenceClassPathProvider cpProvider)
+            PersistenceClassPathProvider cpProv, ClassPathProviderImpl imp)
     {
         this.locationProvider  = locProvider;
-        this.classpathProvider = cpProvider;
+        this.classpathProvider = cpProv;
+        cpProvider = imp;
+        modelHelper = createEntityMappingsHelper();
     }
     
     /**
@@ -67,5 +76,17 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
     {
         return classpathProvider.getClassPath();
     }
+
+    public MetadataModel<EntityMappingsMetadata> getEntityMappingsModel(String persistenceUnitName) {
+        return modelHelper.getEntityMappingsModel(persistenceUnitName);
+    }
+    
+    private EntityMappingsMetadataModelHelper createEntityMappingsHelper() {
+        return EntityMappingsMetadataModelHelper.create(
+            cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+            cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+            cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE));
+    }
+    
     
 }

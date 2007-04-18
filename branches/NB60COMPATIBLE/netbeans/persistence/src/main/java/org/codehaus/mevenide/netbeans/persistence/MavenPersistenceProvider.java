@@ -59,7 +59,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     {
         locProvider    = new PersistenceLocationProviderImpl(proj);
         cpProvider     = new PersistenceClasspathProviderImpl(proj);
-        scopeProvider  = new PersistenceScopeProviderImpl(locProvider, cpProvider);
+        scopeProvider  = new PersistenceScopeProviderImpl(locProvider, cpProvider, proj);
         scopesProvider = new PersistenceScopesProviderImpl(scopeProvider);
         
         propChangeSupport.addPropertyChangeListener(locProvider);
