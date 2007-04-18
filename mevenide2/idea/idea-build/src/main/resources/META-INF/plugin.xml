@@ -60,5 +60,46 @@
         <action id="org.codehaus.mevenide.idea.action.FilterAction"
                 class="org.codehaus.mevenide.idea.action.FilterAction" text="Filter Phases and Goals"
                 description="Filters phases and goals"/>
+
+        <group id="org.codehaus.mevenide.idea.action.PomTreeToolbar" description="Pom Tree toolbar">
+            <action id="org.codehaus.mevenide.idea.action.GroupByModulesAction"
+                    class="org.codehaus.mevenide.idea.action.GroupByModulesAction" text="Group by modules"
+                    description="Group by modules"
+                    icon="/nodes/ModuleClosed.png"/>
+            <action id="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction"
+                    class="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction" text="Group by directories"
+                    description="Group by directories"
+                    icon="/toolbar/folders.png"/>
+            <action id="org.codehaus.mevenide.idea.action.FilterPhasesAction"
+                    class="org.codehaus.mevenide.idea.action.FilterPhasesAction" text="Filter standard goals"
+                    description="Filter standard goals"
+                    icon="/images/filter.png"/>
+            <action id="org.codehaus.mevenide.idea.action.AttachPluginAction"
+                    class="org.codehaus.mevenide.idea.action.AttachPluginAction" text="Attach plugin"
+                    description="Attach plugin"
+                    icon="/images/list-add.png"/>
+            <action id="org.codehaus.mevenide.idea.action.DetachPluginAction"
+                    class="org.codehaus.mevenide.idea.action.DetachPluginAction" text="Detach plugin"
+                    description="Detach plugin"
+                    icon="/images/list-remove.png"/>
+            <action id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"
+                    class="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction" text="Run selected goals"
+                    description="Run selected goals"
+                    icon="/actions/execute.png"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.PomMenu" popup="true">
+            <reference id="EditSource"/>
+            <reference id="org.codehaus.mevenide.idea.action.AttachPluginAction"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.GoalMenu" popup="true">
+            <reference id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.PluginMenu" popup="true">
+            <reference id="org.codehaus.mevenide.idea.action.DetachPluginAction"/>
+        </group>
+
     </actions>
 </idea-plugin>

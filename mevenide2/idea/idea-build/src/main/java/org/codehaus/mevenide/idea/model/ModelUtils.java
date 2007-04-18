@@ -2,6 +2,7 @@ package org.codehaus.mevenide.idea.model;
 
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import org.apache.commons.lang.StringUtils;
@@ -33,10 +34,15 @@ public class ModelUtils {
         }
 
         MavenProjectDocument mavenProjectDocument = new MavenProjectDocumentImpl(psiFile);
+        mavenProjectDocument.reparse();
         loadPlugins(mavenProjectDocument, context.getProjectPluginSettings().getMavenRepository());
         context.getPomDocumentList().add(mavenProjectDocument);
 
         return mavenProjectDocument;
+    }
+
+    public static MavenProjectDocument loadMavenProjectDocument(Project project, VirtualFile vFile) {
+        return new MavenProjectDocumentImpl(PsiManager.getInstance(project).findFile(vFile));
     }
 
     public static void loadPlugins(MavenProjectDocument mavenProjectDocument, String mavenRepository) {

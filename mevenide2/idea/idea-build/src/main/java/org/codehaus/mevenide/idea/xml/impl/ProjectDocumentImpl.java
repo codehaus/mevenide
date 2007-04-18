@@ -11,7 +11,11 @@ public class ProjectDocumentImpl implements ProjectDocument {
     DomFileElement<Project> fileElement;
 
     public ProjectDocumentImpl(PsiFile psiFile) {
-        fileElement = DomManager.getDomManager(psiFile.getProject()).getFileElement((XmlFile) psiFile/*, Project.class*/);
+        if ( psiFile == null ) {
+            fileElement = null;
+        } else {
+            fileElement = DomManager.getDomManager(psiFile.getProject()).getFileElement((XmlFile) psiFile/*, Project.class*/);
+        }
     }
 
     public boolean isWellFormed() {

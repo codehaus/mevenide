@@ -54,6 +54,7 @@ import org.codehaus.mevenide.idea.action.ToolWindowKeyListener;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.gui.PomTree;
+import org.codehaus.mevenide.idea.gui.PomTreeView;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.helper.ActionContext;
@@ -90,6 +91,16 @@ public class MavenBuildProjectComponent
     private ActionContext actionContext = new ActionContext();
     private PomWatcher pomWatcher;
 
+    public PomTreeView getPomTreeView() {
+        return pomTreeView;
+    }
+
+    public PomTreeView pomTreeView;
+
+    public static MavenBuildProjectComponent getInstance(Project project) {
+        return project.getComponent(MavenBuildProjectComponent.class);
+    }
+
     /**
      * Constructs ...
      *
@@ -103,7 +114,7 @@ public class MavenBuildProjectComponent
     }
 
     private MavenBuildProjectToolWindowForm createMavenToolWindowForm() {
-        MavenBuildProjectToolWindowForm toolWindowForm = new MavenBuildProjectToolWindowForm();
+        MavenBuildProjectToolWindowForm toolWindowForm = new MavenBuildProjectToolWindowForm(actionContext.getPluginProject());
         DefaultActionGroup group = new DefaultActionGroup();
         AnAction actionAddPom = new AddPomAction(actionContext, PluginConstants.ACTION_COMMAND_ADD_POM,
                 "Adds a POM to the project", IconLoader.getIcon(PluginConstants.ICON_ADD_POM));
@@ -220,7 +231,7 @@ public class MavenBuildProjectComponent
         }
     }
 
-    private void initToolWindow(JTree tree) {
+    private void initToolWindow(JTree tree, JTree treeNew) {
         JComponent pomContentPanel;
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(actionContext.getPluginProject());
         MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
@@ -228,6 +239,7 @@ public class MavenBuildProjectComponent
                 (MavenBuildProjectToolWindowForm) actionContext.getGuiContext().getMavenToolWindowForm();
 
         form.getScrollpane().setViewportView(tree);
+        form.getScrollpaneSimple().setViewportView(treeNew);
         form.getTextFieldCmdLine().setText(pluginSettings.getMavenCommandLineParams());
         pomContentPanel = form.getRootComponent();
 
@@ -257,9 +269,17 @@ public class MavenBuildProjectComponent
 
         pomTree.setRootVisible(true);
         pomTree.expandPath(new TreePath(((DefaultMutableTreeNode) pomTree.getModel().getRoot()).getPath()));
-        initToolWindow(pomTree);
 
-        pomWatcher = new PomWatcher(actionContext);
+
+        pomTreeView = new PomTreeView(
+                actionContext.getPluginProject(),
+                actionContext.getStandardGoals(),
+                actionContext.getProjectPluginSettings().getStandardPhasesList(),
+                actionContext.getProjectPluginSettings().getMavenRepository());
+
+        initToolWindow(pomTree, pomTreeView.getTree());
+
+        pomWatcher = new PomWatcher( actionContext, pomTreeView );
     }
 
     /**
@@ -553,5 +573,9 @@ public class MavenBuildProjectComponent
 
     public void resetMevenideConfiguration() {
         reset();
+    }
+
+    public ActionContext getActionContext() {
+        return actionContext;
     }
 }
