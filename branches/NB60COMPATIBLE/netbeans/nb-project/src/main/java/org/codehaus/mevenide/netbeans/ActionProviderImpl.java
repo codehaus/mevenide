@@ -19,6 +19,8 @@ package org.codehaus.mevenide.netbeans;
 
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
@@ -110,8 +112,11 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
-        assert rc != null;
-        runGoal(action, lookup, rc);
+        if (rc == null) {
+            Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.FINE, "No handling for action:" + action + ". Ignoring.");
+        } else {
+            runGoal(action, lookup, rc);
+        }
     }
     
     
