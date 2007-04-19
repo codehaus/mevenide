@@ -134,10 +134,6 @@ public class MavenBuildProjectComponent
         AnAction actionSortAsc = new SortAction(actionContext, PluginConstants.ACTION_COMMAND_SORT_ASC,
                 PluginConstants.ACTION_COMMAND_SORT_ASC,
                 IconLoader.getIcon(PluginConstants.ICON_SORT_ASC));
-        AnAction showMavenOptions = new ShowMavenOptionsAction(actionContext,
-                PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
-                PluginConstants.ACTION_COMMAND_SHOW_MAVEN_OPTIONS,
-                IconLoader.getIcon(PluginConstants.ICON_SHOW_MAVEN_OPTIONS));
         AnAction filter = new FilterAction(actionContext, PluginConstants.ACTION_COMMAND_FILTER,
                 PluginConstants.ACTION_COMMAND_FILTER,
                 actionContext.getProjectPluginSettings().isUseFilter()
@@ -153,7 +149,6 @@ public class MavenBuildProjectComponent
         group.add(actionRunGoals);
         group.addSeparator();
         group.add(actionSortAsc);
-        group.add(showMavenOptions);
         group.add(filter);
         group.addSeparator();
 
