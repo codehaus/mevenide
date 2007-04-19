@@ -165,20 +165,25 @@ public class BuildHelper {
     private static String getMavenClasspathEntries(String mavenHome, String classpathSeparator) {
         File mavenHomeBootAsFile = new File(mavenHome + System.getProperty("file.separator") + "core"
                 + System.getProperty("file.separator") + "boot");
-        String classpathEntries = "";
-
-        if (mavenHomeBootAsFile.isDirectory()) {
-            File[] files = mavenHomeBootAsFile.listFiles();
-
-            for (File file : files) {
-                if (file.getName().startsWith("classworlds-")) {
-                    classpathEntries = classpathEntries + file.getAbsolutePath() + classpathSeparator;
-                }
-            }
-
-            classpathEntries = StringUtils.chop(classpathEntries);
+        // if the dir "core/boot" does not exist we are using a Maven version > 2.0.4
+        // in this case the classpath must be constructed from the dir "boot"
+        if (!mavenHomeBootAsFile.exists()) {
+          mavenHomeBootAsFile = new File(mavenHome + System.getProperty("file.separator") + "boot");
         }
+        String classpathEntries = "";
+        if (mavenHomeBootAsFile.exists()) {
+            if (mavenHomeBootAsFile.isDirectory()) {
+                File[] files = mavenHomeBootAsFile.listFiles();
 
+                for (File file : files) {
+                    if (file.getName().startsWith("classworlds-")) {
+                        classpathEntries = classpathEntries + file.getAbsolutePath() + classpathSeparator;
+                    }
+                }
+
+                classpathEntries = StringUtils.chop(classpathEntries);
+            }
+        }
         LOG.info("Classpath for Maven-2 call is: " + classpathEntries);
 
         return classpathEntries;
