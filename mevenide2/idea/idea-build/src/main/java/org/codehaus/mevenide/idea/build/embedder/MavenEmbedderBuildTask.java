@@ -105,8 +105,8 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
 
             req.setLoggingLevel(mavenConfig.getOutputLevel());
             mavenEmbedderLogger.setThreshold(mavenConfig.getOutputLevel());
-
-            req.addEventMonitor(new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger)));
+            DefaultEventMonitor eventMonitor = new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger));
+            req.addEventMonitor(eventMonitor);
             req.addEventMonitor(
                     new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
             req.setStartTime(new java.util.Date());
