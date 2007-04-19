@@ -46,7 +46,11 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
             String str = project.getOriginalMavenProject().getBuild().getTestSourceDirectory();
             if (str != null) {
                 URI uri = FileUtil.normalizeFile(new File(str)).toURI();
-                return new URL[] { uri.toURL() };
+                URL entry = uri.toURL();
+                if  (!entry.toExternalForm().endsWith("/")) { //NOI18N
+                    entry = new URL(entry.toExternalForm() + "/"); //NOI18N
+                }
+                return new URL[] { entry };
             }
         } catch (MalformedURLException exc) {
             ErrorManager.getDefault().notify(exc);
@@ -59,7 +63,12 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
             String str = project.getOriginalMavenProject().getBuild().getSourceDirectory();
             if (str != null) {
                 URI uri = FileUtil.normalizeFile(new File(str)).toURI();
-                return new URL[] { uri.toURL() };
+                URL entry = uri.toURL();
+                if  (!entry.toExternalForm().endsWith("/")) { //NOI18N
+                    entry = new URL(entry.toExternalForm() + "/"); //NOI18N
+                }
+                
+                return new URL[] { entry };
             }
         } catch (MalformedURLException exc) {
             ErrorManager.getDefault().notify(exc);
