@@ -26,7 +26,11 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
+import org.openide.filesystems.FileAttributeEvent;
+import org.openide.filesystems.FileChangeListener;
+import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileUtil;
 import org.openide.nodes.Node;
 
@@ -48,7 +52,7 @@ public class OtherRootNodeFactory implements NodeFactory {
         return new NList(prj);
     }
     
-    private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener {
+    private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener, FileChangeListener {
         private NbMavenProject project;
         NList(NbMavenProject prj) {
             project = prj;
@@ -57,6 +61,12 @@ public class OtherRootNodeFactory implements NodeFactory {
         public void propertyChange(PropertyChangeEvent evt) {
             if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
+            }
+            if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName())) {
+                if ("src/main".equals(evt.getNewValue()) || "src/test".equals(evt.getNewValue())) { //NOI18N
+                    fireChange();
+                    checkFileObject((String)evt.getNewValue());
+                }
             }
         }
         
@@ -94,11 +104,57 @@ public class OtherRootNodeFactory implements NodeFactory {
         }
         
         public void addNotify() {
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+            watch.addPropertyChangeListener(project, this);
+            watch.addWatchedPath("src/main"); //NOI18N
+            watch.addWatchedPath("src/test"); //NOI18N    
+            checkFileObject("src/main");
+            checkFileObject("src/test");
         }
         
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+            watch.removePropertyChangeListener(project, this);
+            watch.removeWatchedPath("src/main"); //NOI18N
+            watch.removeWatchedPath("src/test"); //NOI18N            
+            FileObject fo = project.getProjectDirectory().getFileObject("src/main");
+            if (fo != null) {
+                fo.removeFileChangeListener(this);
+            }
+            fo = project.getProjectDirectory().getFileObject("src/test");
+            if (fo != null) {
+                fo.removeFileChangeListener(this);
+            }
+        }
+        
+        private void checkFileObject(String path) {
+            FileObject fo = project.getProjectDirectory().getFileObject(path);
+            if (fo != null) {
+                fo.removeFileChangeListener(this);
+                fo.addFileChangeListener(this);
+            }
+        }
+
+        public void fileFolderCreated(FileEvent arg0) {
+            fireChange();
+        }
+
+        public void fileDataCreated(FileEvent arg0) {
+        }
+
+        public void fileChanged(FileEvent arg0) {
+        }
+
+        public void fileDeleted(FileEvent arg0) {
+            fireChange();
+            arg0.getFile().removeFileChangeListener(this);
+        }
+
+        public void fileRenamed(FileRenameEvent arg0) {
+            fireChange();
+        }
+
+        public void fileAttributeChanged(FileAttributeEvent arg0) {
         }
     }
 }
