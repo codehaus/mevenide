@@ -42,9 +42,9 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	Configuration for different proxy profiles. Multiple proxy profiles
-            might come in handy for anyone working from a notebook or other 
-            mobile platform, to enable easy switching of entire proxy 
+              Configuration for different proxy profiles. Multiple proxy profiles
+            might come in handy for anyone working from a notebook or other
+            mobile platform, to enable easy switching of entire proxy
             configurations by simply specifying the profile id, again either from
             the command line or from the defaults section below.
           </xs:documentation>
@@ -59,7 +59,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	Configuration of server-specific settings, mainly authentication
+              Configuration of server-specific settings, mainly authentication
             method. This allows configuration of authentication on a per-server
             basis.
           </xs:documentation>
@@ -86,7 +86,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-            Configuration of build profiles for adjusting the build 
+            Configuration of build profiles for adjusting the build
             according to environmental parameters
           </xs:documentation>
         </xs:annotation>
@@ -134,7 +134,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">The server ID of the repository being mirrored, eg
-            "central". This MUST NOT match the mirror id.</xs:documentation>
+            &quot;central&quot;. This MUST NOT match the mirror id.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="name" minOccurs="0" type="xs:string">
@@ -150,65 +150,7 @@
           <xs:documentation source="description">The URL of the mirror repository.</xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="id" minOccurs="0" type="xs:string">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-    </xs:all>
-  </xs:complexType>
-  <xs:complexType name="Proxy">
-    <xs:annotation>
-      <xs:documentation source="version">1.0.0</xs:documentation>
-    </xs:annotation>
-    <xs:all>
-      <xs:element name="active" minOccurs="0" type="xs:boolean" default="false">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">Whether this proxy configuration is the active one.
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="protocol" minOccurs="0" type="xs:string" default="http">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The proxy protocol.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="username" minOccurs="0" type="xs:string">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The proxy user.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="password" minOccurs="0" type="xs:string">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The proxy password.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="port" minOccurs="0" type="xs:int" default="8080">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The proxy port.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="host" minOccurs="0" type="xs:string">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The proxy host.</xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="nonProxyHosts" minOccurs="0" type="xs:string">
-        <xs:annotation>
-          <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">
-          	The list of non-proxied hosts (usually 
-          	comma-delimited).
-          </xs:documentation>
-        </xs:annotation>
-      </xs:element>
-      <xs:element name="id" minOccurs="0" type="xs:string">
+      <xs:element name="id" minOccurs="0" type="xs:string" default="default">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
         </xs:annotation>
@@ -231,7 +173,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	The password used in conjunction with the username to authenticate.
+              The password used in conjunction with the username to authenticate.
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -246,7 +188,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	The passphrase used in conjunction with the privateKey to authenticate.
+              The passphrase used in conjunction with the privateKey to authenticate.
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -254,7 +196,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	The permissions for files when they are created.
+              The permissions for files when they are created.
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -262,7 +204,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-          	The permissions for directories when they are created.
+              The permissions for directories when they are created.
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -270,7 +212,7 @@
         <xs:annotation>
           <xs:documentation source="version">0.0.0+</xs:documentation>
           <xs:documentation source="description">
-          	Extra configuration for the transport layer.
+              Extra configuration for the transport layer.
           </xs:documentation>
         </xs:annotation>
         <xs:complexType>
@@ -279,7 +221,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="id" minOccurs="0" type="xs:string">
+      <xs:element name="id" minOccurs="0" type="xs:string" default="default">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
         </xs:annotation>
@@ -290,7 +232,7 @@
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
       <xs:documentation source="description">
-        Modifications to the build process which is keyed on some 
+        Modifications to the build process which is keyed on some
         sort of environmental parameter.
       </xs:documentation>
     </xs:annotation>
@@ -298,7 +240,7 @@
       <xs:element name="activation" minOccurs="0" type="Activation">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The conditional logic which will automatically 
+          <xs:documentation source="description">The conditional logic which will automatically
             trigger the inclusion of this profile.</xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -339,7 +281,7 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="id" minOccurs="0" type="xs:string">
+      <xs:element name="id" minOccurs="0" type="xs:string" default="default">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
         </xs:annotation>
@@ -393,8 +335,8 @@
       <xs:element name="layout" minOccurs="0" type="xs:string" default="default">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The type of layout this repository uses for locating and storing artifacts - can be "legacy" or
-            "default".</xs:documentation>
+          <xs:documentation source="description">The type of layout this repository uses for locating and storing artifacts - can be &quot;legacy&quot; or
+            &quot;default&quot;.</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:all>
@@ -408,15 +350,15 @@
       <xs:element name="enabled" minOccurs="0" type="xs:boolean" default="true">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">Whether to use this repository for downloading this type of artifact</xs:documentation>
+          <xs:documentation source="description">Whether to use this repository for downloading this type of artifact.</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="updatePolicy" minOccurs="0" type="xs:string">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">
-            The frequency for downloading updates - can be "always", "daily" (default), "interval:XXX" (in minutes) or
-            "never" (only if it doesn't exist locally).
+            The frequency for downloading updates - can be &quot;always&quot;, &quot;daily&quot; (default), &quot;interval:XXX&quot; (in minutes) or
+            &quot;never&quot; (only if it doesn&apos;t exist locally).
           </xs:documentation>
         </xs:annotation>
       </xs:element>
@@ -424,7 +366,7 @@
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
           <xs:documentation source="description">What to do when verification of an artifact checksum fails - warn, fail, etc. Valid values are
-            "fail" or "warn"</xs:documentation>
+            &quot;fail&quot; or &quot;warn&quot;</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:all>
@@ -433,7 +375,7 @@
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
       <xs:documentation source="description">
-        The conditions within the build runtime environment which will trigger 
+        The conditions within the build runtime environment which will trigger
         the automatic inclusion of the parent build profile.
       </xs:documentation>
     </xs:annotation>
@@ -478,12 +420,36 @@
       </xs:element>
     </xs:all>
   </xs:complexType>
+  <xs:complexType name="ActivationProperty">
+    <xs:annotation>
+      <xs:documentation source="version">1.0.0</xs:documentation>
+      <xs:documentation source="description">
+        This is the property specification used to activate a profile. If the value field is empty,
+        then the existence of the named property will activate the profile, otherwise it does a case-sensitive
+        match against the property value as well.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:all>
+      <xs:element name="name" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The name of the property to be used to activate a profile</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="value" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The value of the property to be used to activate a profile</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:all>
+  </xs:complexType>
   <xs:complexType name="ActivationFile">
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
       <xs:documentation source="description">
         This is the file specification used to activate a profile. The missing value will be a the location
-        of a file that needs to exist, and if it doesn't the profile must run.  On the other hand exists will test 
+        of a file that needs to exist, and if it doesn&apos;t the profile must run.  On the other hand exists will test
         for the existence of the file and if it is there will run the profile.
       </xs:documentation>
     </xs:annotation>
@@ -506,7 +472,7 @@
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
       <xs:documentation source="description">
-        This is an activator which will detect an operating system's attributes in order to activate
+        This is an activator which will detect an operating system&apos;s attributes in order to activate
         its profile.
       </xs:documentation>
     </xs:annotation>
@@ -520,7 +486,7 @@
       <xs:element name="family" minOccurs="0" type="xs:string">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The general family of the OS to be used to activate a profile (e.g. 'windows')</xs:documentation>
+          <xs:documentation source="description">The general family of the OS to be used to activate a profile (e.g. &apos;windows&apos;)</xs:documentation>
         </xs:annotation>
       </xs:element>
       <xs:element name="arch" minOccurs="0" type="xs:string">
@@ -537,26 +503,59 @@
       </xs:element>
     </xs:all>
   </xs:complexType>
-  <xs:complexType name="ActivationProperty">
+  <xs:complexType name="Proxy">
     <xs:annotation>
       <xs:documentation source="version">1.0.0</xs:documentation>
-      <xs:documentation source="description">
-        This is the property specification used to activate a profile. If the value field is empty, 
-        then the existence of the named property will activate the profile, otherwise it does a case-sensitive
-        match against the property value as well.
-      </xs:documentation>
     </xs:annotation>
     <xs:all>
-      <xs:element name="name" minOccurs="0" type="xs:string">
+      <xs:element name="active" minOccurs="0" type="xs:boolean" default="false">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The name of the property to be used to activate a profile</xs:documentation>
+          <xs:documentation source="description">Whether this proxy configuration is the active one.
+          </xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="value" minOccurs="0" type="xs:string">
+      <xs:element name="protocol" minOccurs="0" type="xs:string" default="http">
         <xs:annotation>
           <xs:documentation source="version">1.0.0</xs:documentation>
-          <xs:documentation source="description">The value of the property to be used to activate a profile</xs:documentation>
+          <xs:documentation source="description">The proxy protocol.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="username" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The proxy user.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="password" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The proxy password.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="port" minOccurs="0" type="xs:int" default="8080">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The proxy port.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="host" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">The proxy host.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="nonProxyHosts" minOccurs="0" type="xs:string">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
+          <xs:documentation source="description">
+              The list of non-proxied hosts (delimited by |).
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="id" minOccurs="0" type="xs:string" default="default">
+        <xs:annotation>
+          <xs:documentation source="version">1.0.0</xs:documentation>
         </xs:annotation>
       </xs:element>
     </xs:all>
