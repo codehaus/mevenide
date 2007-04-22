@@ -99,8 +99,10 @@
                 <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance"/>
                 <!--attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance" boolvalue="true"/-->
                 <!--file name="org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance"/-->
-                <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
+                <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance"/>
                 <!--attr name="org-codehaus-mevenide-netbeans-customizer-LibrariesProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/-->
+                <attr name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
                 <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
                 <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
@@ -116,6 +118,11 @@
                     <file name="junit-3.8.3.pom" url="libraries/junit-3.8.2.pom">
                         <attr name="MD5" stringvalue="28e7eb9eeefe31a657c68755bfccc541"/>
                     </file>
+                    <!-- TODO currently junit library has both 3.x and 4.x jars and is
+                              not added to project via API.
+                       file name="junit-4.1.pom" url="libraries/junit-4.1.pom">
+                        <attr name="MD5" stringvalue="3aa45be8fd3f5ae8c69b73959a7fa57c"/>
+                    </file-->
                 </folder>    
                 <folder name="jstl11">
                     <file name="standard-1.1.2.pom" url="libraries/standard-1.1.2.pom">

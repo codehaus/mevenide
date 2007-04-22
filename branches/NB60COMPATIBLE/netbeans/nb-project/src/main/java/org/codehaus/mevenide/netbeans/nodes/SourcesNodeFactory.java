@@ -66,6 +66,7 @@ public class SourcesNodeFactory implements NodeFactory {
         }
         
         public Node node(SourceGroup group) {
+            System.out.println("creating node for source group=" + group.getRootFolder());
             return PackageView.createPackageView(group);
         }
         

@@ -54,6 +54,14 @@
                     <defaultValue>false</defaultValue>
                 </field>
                 <field>
+                    <name>delegateTo</name>
+                    <version>1.1.0+</version>
+                    <type>String</type>
+                    <description>Allow delegating the specific mapping to another project. 
+                                 The field contains relative path to the other project.
+                                 If defined, other fields in the action are not taken into account.</description>
+                </field>
+                <field>
                     <name>online</name>
                     <version>1.1.0+</version>
                     <type>boolean</type>

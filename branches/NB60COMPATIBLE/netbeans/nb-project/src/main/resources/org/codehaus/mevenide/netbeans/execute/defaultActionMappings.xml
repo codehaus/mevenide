@@ -66,7 +66,7 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar</goal>
+            <goal>org.codehaus.mevenide:netbeans-run-plugin:RELEASE:run-jar</goal>
         </goals>
     </action>
     <action>
@@ -76,22 +76,26 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-run-plugin:LATEST:run-jar</goal>
+            <goal>org.codehaus.mevenide:netbeans-run-plugin:RELEASE:run-jar</goal>
         </goals>
         <properties>
             <netbeans.jar.run.debugparams>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</netbeans.jar.run.debugparams>
             <jpda.listen>true</jpda.listen>
         </properties>
     </action>
-    <!--action>
+    <action>
         <actionName>run.single</actionName>
         <packagings>
             <packaging>jar</packaging>
         </packagings>
         <goals>
-            <goal>install</goal>
+            <goal>package</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:RELEASE:java</goal>
         </goals>
-    </action-->
+        <properties>
+            <exec.mainClass>${packageClassName}</exec.mainClass>
+        </properties>
+    </action>
     <!--action>
         <actionName>debug.single</actionName>
         <packagings>
@@ -99,17 +103,15 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:LATEST:jpdastart</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:RELEASE:java</goal>
         </goals>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mevenide</groupId>
-                <artifactId>netbeans-debugger-plugin</artifactId>
-                <version>LATEST</version>
-            </plugin>
-        </plugins>
+        <properties>
+            <exec.mainClass>${packageClassName}</exec.mainClass>
+            <exec.args>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</exec.args>
+            <jpda.listen>true</jpda.listen>
+            <jpda.stopclass>${packageClassName}</jpda.stopclass>
+        </properties>
     </action-->
-
     <action>
         <actionName>debug.test.single</actionName>
         <packagings>
