@@ -331,6 +331,7 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
             assemblyPlugin = new Plugin();
             assemblyPlugin.setArtifactId("maven-assembly-plugin");
             assemblyPlugin.setGroupId("org.apache.maven.plugins");
+//not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assemblyPlugin);
         }
         PluginExecution exec = (PluginExecution)assemblyPlugin.getExecutionsAsMap().get("nb");

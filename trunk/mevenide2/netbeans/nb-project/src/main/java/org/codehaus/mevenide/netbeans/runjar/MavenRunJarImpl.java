@@ -45,6 +45,20 @@ public class MavenRunJarImpl implements MavenRunJar {
             File jarLocation, File workDirectory, String executable, String parameters,
             String jvmParameters, String debugJvmParameters, boolean waitForFinish) throws MojoFailureException, MojoExecutionException 
     {
+        if (!jarLocation.exists()) {
+            File alternate = new File(jarLocation.getAbsolutePath() + ".dir");
+            if (alternate.exists()) {
+                //MEVENIDE-523
+                jarLocation = alternate;
+            }
+        }
+        if (!workDirectory.exists()) {
+            File alternate = new File(workDirectory.getAbsolutePath() + ".dir");
+            if (alternate.exists()) {
+                //MEVENIDE-523
+                workDirectory = alternate;
+            }
+        }
         File jarArtifact = new File(jarLocation, finalName + ".jar");
         if (jarArtifact == null || !jarArtifact.exists()) {
             throw new MojoExecutionException("Badly configured, need existing jar at " + jarArtifact);
