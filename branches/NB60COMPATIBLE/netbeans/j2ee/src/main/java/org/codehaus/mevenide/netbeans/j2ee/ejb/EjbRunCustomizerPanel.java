@@ -62,8 +62,8 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     private void initValues() {
         Model mdl = handle.getPOMModel();
         listeners = new ArrayList();
-        listeners.add(new ComboBoxUpdater(comServer) {
-            public Object getDefaultValue() {
+        listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
+            public Wrapper getDefaultValue() {
                 Wrapper wr = null;
                 String id = (String)handle.getProject().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
@@ -78,7 +78,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
                 return wr;
             }
             
-            public Object getValue() {
+            public Wrapper getValue() {
                 Wrapper wr = null;
                 String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
@@ -93,8 +93,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
                 return wr;
             }
             
-            public void setValue(Object value) {
-               Wrapper wr = (Wrapper)value;
+            public void setValue(Wrapper wr) {
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
                handle.getNetbeansPublicProfile().getProperties().put(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);

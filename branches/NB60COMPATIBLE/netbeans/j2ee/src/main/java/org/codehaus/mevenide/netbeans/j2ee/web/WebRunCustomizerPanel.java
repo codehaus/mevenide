@@ -76,8 +76,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     private void initValues() {
         Model mdl = handle.getPOMModel();
         listeners = new ArrayList();
-        listeners.add(new ComboBoxUpdater(comServer) {
-            public Object getDefaultValue() {
+        listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
+            public Wrapper getDefaultValue() {
                 Wrapper wr = null;
                 String id = (String)handle.getProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
@@ -92,7 +92,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 return wr;
             }
             
-            public Object getValue() {
+            public Wrapper getValue() {
                 Wrapper wr = null;
                 String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
@@ -107,8 +107,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 return wr;
             }
             
-            public void setValue(Object value) {
-               Wrapper wr = (Wrapper)value;
+            public void setValue(Wrapper wr) {
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
                System.out.println("setting value to " + sID + " : " + iID);

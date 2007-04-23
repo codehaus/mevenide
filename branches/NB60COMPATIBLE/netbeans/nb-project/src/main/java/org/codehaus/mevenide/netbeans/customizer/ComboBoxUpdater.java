@@ -17,12 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
-import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
 import javax.swing.event.AncestorEvent;
 import javax.swing.event.AncestorListener;
 
@@ -30,31 +30,33 @@ import javax.swing.event.AncestorListener;
  *
  * @author mkleint
  */
-public abstract class ComboBoxUpdater implements ActionListener, AncestorListener {
-    private static Color INHERITED = new Color(254, 255, 200);
-    private static Color DEFAULT = UIManager.getColor("TextField.background"); //NOI18N
-    
+public abstract class ComboBoxUpdater<T> implements ActionListener, AncestorListener {
+
     private JComboBox component;
+    private JLabel label;
     
     private boolean inherited = false;
     
     /** Creates a new instance of TextComponentUpdater */
-    public ComboBoxUpdater(JComboBox comp) {
+    public ComboBoxUpdater(JComboBox comp, JLabel label) {
         component = comp;
         component.addAncestorListener(this);
+        this.label = label;
     }
     
-    public abstract Object getValue();
-    public abstract Object getDefaultValue();
-    public abstract void setValue(Object value);
+    public abstract T getValue();
+    public abstract T getDefaultValue();
+    public abstract void setValue(T value);
 
     private void setModelValue() {
         if (inherited) {
             inherited = false;
-            component.setBackground(DEFAULT);
+//            component.setBackground(DEFAULT);
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
+            
             component.setToolTipText(""); //NOI18N
         }
-        Object val = component.getSelectedItem();
+        T val = (T)component.getSelectedItem();
         setValue(val == getDefaultValue() ? null : val);
         if (val == getDefaultValue()) {
             SwingUtilities.invokeLater(new Runnable() {
@@ -83,21 +85,24 @@ public abstract class ComboBoxUpdater implements ActionListener, AncestorListene
     public void ancestorMoved(AncestorEvent event) {
     }
     
-    private void setComboValue(Object value, Object projectValue, JComboBox field) {
+    private void setComboValue(T value, T projectValue, JComboBox field) {
         if (value != null) {
             field.setSelectedItem(value);
             component.setToolTipText(""); //NOI18N
             inherited = false;
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
         } else if (projectValue != null) {
             field.setSelectedItem(projectValue);
-            field.setBackground(INHERITED);
+//            field.setBackground(INHERITED);
+            label.setFont(label.getFont().deriveFont(Font.PLAIN));
             component.setToolTipText(org.openide.util.NbBundle.getMessage(ComboBoxUpdater.class, "HINT_inherited"));
             inherited = true;
         } else {
             field.setSelectedItem(field.getModel().getElementAt(0));
             component.setToolTipText(""); //NOI18N
             inherited = false;
-        }
+            label.setFont(label.getFont().deriveFont(Font.BOLD));
+      }
     }
-    
+
 }
