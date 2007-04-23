@@ -400,6 +400,7 @@ public class RunJarPanel extends javax.swing.JPanel {
             assPlugin = new org.apache.maven.model.Plugin();
             assPlugin.setArtifactId("maven-assembly-plugin");
             assPlugin.setGroupId("org.apache.maven.plugins");
+//not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
         //#96834
