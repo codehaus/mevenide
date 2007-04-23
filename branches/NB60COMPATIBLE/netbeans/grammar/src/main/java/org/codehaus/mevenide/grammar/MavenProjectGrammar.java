@@ -504,6 +504,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         assert expandedPath != null : "Shall have path expanded.."; //NOI18N
         File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
         File[] files = folder.listFiles();
+        if (files == null) {
+            //#102112 - the plugin group is not in our cache.
+            return Collections.emptySet();
+        }
         Set<String> toRet = new HashSet<String>();
         Pattern patt = Pattern.compile("([a-zA-Z\\-]*)\\-[0-9]+(.*)");
         for (int i = 0; i < files.length; i++) {
@@ -522,6 +526,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         assert expandedPath != null : "Shall have path expanded.."; //NOI18N
         File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
         File[] files = folder.listFiles();
+        if (files == null) {
+            //#102112 - the plugin group is not in our cache.
+            return Collections.emptySet();
+        }
         Set<String> toRet = new HashSet<String>();
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile() && files[i].getName().startsWith(artifactId)) {
