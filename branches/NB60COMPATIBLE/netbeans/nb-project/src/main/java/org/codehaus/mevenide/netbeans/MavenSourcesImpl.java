@@ -34,6 +34,7 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.ProjectInformation;
+import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.api.queries.SharabilityQuery;
@@ -307,21 +308,27 @@ public class MavenSourcesImpl implements Sources {
         }
         
         public boolean contains(FileObject file)  {
-            if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
+             if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
                 throw new IllegalArgumentException();
             }
-            if (FileOwnerQuery.getOwner(file) != project) {
-                return false;
+            if (project != null) {
+                if (file.isFolder() && file != project.getProjectDirectory() && ProjectManager.getDefault().isProject(file)) {
+                    // #67450: avoid actually loading the nested project.
+                    return false;
+                }
+                if (FileOwnerQuery.getOwner(file) != project) {
+                    return false;
+                }
             }
             File f = FileUtil.toFile(file);
             if (f != null) {
                 // MIXED, UNKNOWN, and SHARABLE -> include it
-                return (SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE &&
-                        VisibilityQuery.getDefault().isVisible(file));
+                return SharabilityQuery.getSharability(f) != SharabilityQuery.NOT_SHARABLE;
             } else {
                 // Not on disk, include it.
                 return true;
             }
+
         }
         
         public void addPropertyChangeListener(PropertyChangeListener l) {
@@ -333,4 +340,4 @@ public class MavenSourcesImpl implements Sources {
         }
         
     }
-}
+        }

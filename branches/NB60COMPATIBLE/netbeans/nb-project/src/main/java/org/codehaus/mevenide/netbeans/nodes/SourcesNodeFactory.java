@@ -17,13 +17,15 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.java.project.support.ui.PackageView;
@@ -46,7 +48,7 @@ public class SourcesNodeFactory implements NodeFactory {
         return  new NList(prj);
     }
     
-    private static class NList extends AbstractMavenNodeList<SourceGroup> implements PropertyChangeListener {
+    private static class NList extends AbstractMavenNodeList<SourceGroup> implements ChangeListener {
         private NbMavenProject project;
         private NList(NbMavenProject prj) {
             project = prj;
@@ -54,19 +56,15 @@ public class SourcesNodeFactory implements NodeFactory {
         
         public List<SourceGroup> keys() {
             List<SourceGroup> list = new ArrayList<SourceGroup>();
-            Sources srcs = project.getLookup().lookup(Sources.class);
-            if (srcs == null) {
-                throw new IllegalStateException("need Sources instance in lookup"); //NOI18N
-            }
+            Sources srcs = ProjectUtils.getSources(project);
             SourceGroup[] javagroup = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
             for (int i = 0; i < javagroup.length; i++) {
-                list.add(javagroup[i]);
-            }
+                    list.add(javagroup[i]);
+                }
             return list;
         }
         
         public Node node(SourceGroup group) {
-            System.out.println("creating node for source group=" + group.getRootFolder());
             return PackageView.createPackageView(group);
         }
         
@@ -77,11 +75,17 @@ public class SourcesNodeFactory implements NodeFactory {
         }
         
         public void addNotify() {
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            Sources srcs = ProjectUtils.getSources(project);
+            srcs.addChangeListener(this);
         }
         
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            Sources srcs = ProjectUtils.getSources(project);
+            srcs.removeChangeListener(this);
+        }
+
+        public void stateChanged(ChangeEvent arg0) {
+            fireChange();
         }
     }
 }
