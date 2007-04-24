@@ -165,7 +165,7 @@ public class BuildHelper {
     private static String getMavenClasspathEntries(String mavenHome, String classpathSeparator) {
         File mavenHomeBootAsFile = new File(mavenHome + System.getProperty("file.separator") + "core"
                 + System.getProperty("file.separator") + "boot");
-        // if the dir "core/boot" does not exist we are using a Maven version > 2.0.4
+        // if the dir "core/boot" does not exist we are using a Maven version > 2.0.5
         // in this case the classpath must be constructed from the dir "boot"
         if (!mavenHomeBootAsFile.exists()) {
           mavenHomeBootAsFile = new File(mavenHome + System.getProperty("file.separator") + "boot");
