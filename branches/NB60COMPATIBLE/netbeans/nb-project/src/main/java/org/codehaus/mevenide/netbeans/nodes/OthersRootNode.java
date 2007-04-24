@@ -19,10 +19,14 @@ package org.codehaus.mevenide.netbeans.nodes;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileSystem;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.lookup.Lookups;
@@ -33,6 +37,7 @@ import org.openide.util.lookup.Lookups;
  */
 class OthersRootNode extends AbstractNode {
     private NbMavenProject project;
+    private FileObject file;
     
     OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
         super(new OthersRootChildren(mavproject, testResource), Lookups.fixed(fo, DataFolder.findFolder(fo)));
@@ -41,6 +46,7 @@ class OthersRootNode extends AbstractNode {
         // can do so, since we depend on it..
 //        setIconBase("org/mevenide/netbeans/project/resources/defaultFolder"); //NOI18N
         project = mavproject;
+        file = fo;
     }
     
     public Action[] getActions(boolean context) {
@@ -68,6 +74,38 @@ class OthersRootNode extends AbstractNode {
 //                      0, 0);
         return retValue;
     }
+    
+    public String getDisplayName () {
+        String s = super.getDisplayName ();
+
+        try {            
+            s = file.getFileSystem ().getStatus ().annotateName (s, Collections.singleton(file));
+        } catch (FileStateInvalidException e) {
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+        }
+
+        return s;
+    }
+
+    public String getHtmlDisplayName() {
+         try {
+             FileSystem.Status stat = file.getFileSystem().getStatus();
+             if (stat instanceof FileSystem.HtmlStatus) {
+                 FileSystem.HtmlStatus hstat = (FileSystem.HtmlStatus) stat;
+
+                 String result = hstat.annotateNameHtml (
+                     super.getDisplayName(), Collections.singleton(file));
+
+                 //Make sure the super string was really modified
+                 if (!super.getDisplayName().equals(result)) {
+                     return result;
+                 }
+             }
+         } catch (FileStateInvalidException e) {
+             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+         }
+         return super.getHtmlDisplayName();
+    }    
     
 }
 
