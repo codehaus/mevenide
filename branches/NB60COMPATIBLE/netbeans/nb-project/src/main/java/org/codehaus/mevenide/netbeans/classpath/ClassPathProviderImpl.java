@@ -104,7 +104,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     public ClassPath findClassPath(FileObject file, String type) {
         int fileType = getType(file);
         if (fileType != TYPE_SRC &&  fileType != TYPE_TESTSRC && fileType != TYPE_WEB) {
-            Logger.getLogger(ClassPathProviderImpl.class.getName()).log(Level.INFO, " bad type=" + type + " for " + file); //NOI18N
+            Logger.getLogger(ClassPathProviderImpl.class.getName()).log(Level.FINEST, " bad type=" + type + " for " + file); //NOI18N
             return null;
         }
         if (type.equals(ClassPath.COMPILE)) {
