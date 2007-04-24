@@ -17,13 +17,20 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
+import java.util.Collections;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
+import org.openide.ErrorManager;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
+import org.openide.filesystems.FileSystem;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 
@@ -33,6 +40,7 @@ import org.openide.util.Utilities;
  */
 class WebAppFilterNode extends FilterNode {
     private boolean isTopLevelNode = false;
+    private FileObject file;
     
     WebAppFilterNode(NbMavenProject proj, Node orig, File root) {
         this(proj, orig, root, true);
@@ -41,15 +49,51 @@ class WebAppFilterNode extends FilterNode {
     private WebAppFilterNode(NbMavenProject proj, Node orig, File root, boolean isTopLevel) {
         super(orig, new WebAppFilterChildren(proj, orig, root));
         isTopLevelNode = isTopLevel;
+        if (isTopLevel) {
+            file = FileUtil.toFileObject(root);
+        }
     }
     
     public String getDisplayName() {
         if (isTopLevelNode) {
-            return org.openide.util.NbBundle.getMessage(WebAppFilterNode.class, "LBL_Web_Pages");
+            String s = NbBundle.getMessage(WebAppFilterNode.class, "LBL_Web_Pages");
+            
+            try {
+                s = file.getFileSystem().getStatus().annotateName(s, Collections.singleton(file));
+            } catch (FileStateInvalidException e) {
+                ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+            }
+            
+            return s;
         }
-        return super.getDisplayName();
+        return getOriginal().getDisplayName();
         
     }
+
+    public String getHtmlDisplayName() {
+        if (!isTopLevelNode) {
+            return getOriginal().getHtmlDisplayName();
+        }
+         try {
+             FileSystem.Status stat = file.getFileSystem().getStatus();
+             if (stat instanceof FileSystem.HtmlStatus) {
+                 FileSystem.HtmlStatus hstat = (FileSystem.HtmlStatus) stat;
+
+                String s = NbBundle.getMessage(WebAppFilterNode.class, "LBL_Web_Pages");
+                 String result = hstat.annotateNameHtml (
+                     s, Collections.singleton(file));
+
+                 //Make sure the super string was really modified
+                 if (!s.equals(result)) {
+                     return result;
+                 }
+             }
+         } catch (FileStateInvalidException e) {
+             ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
+         }
+         return super.getHtmlDisplayName();
+    }    
+    
     
     public javax.swing.Action[] getActions(boolean param) {
 //        if (isTopLevelNode) {
