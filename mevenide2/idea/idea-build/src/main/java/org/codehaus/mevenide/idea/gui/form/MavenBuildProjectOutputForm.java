@@ -97,7 +97,7 @@ public class MavenBuildProjectOutputForm extends AbstractForm implements LogList
 
         builder.addFilter(filters[0]);
         builder.addFilter(filters[1]);
-//        builder.addFilter(filters[2]);
+        builder.addFilter(filters[2]);
 
         return builder.getConsole();
     }
