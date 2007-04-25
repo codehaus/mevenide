@@ -29,8 +29,8 @@ import org.apache.maven.monitor.event.DefaultEventMonitor;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IBuildEnvironment;
-import org.codehaus.mevenide.idea.build.LogListener;
 import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
+import org.codehaus.mevenide.idea.build.LogListener;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
@@ -136,5 +136,9 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
                         LogListener.OUTPUT_TYPE_SYSTEM);
             }
         }
+    }
+
+    public String getCaption() {
+        return BuildConstants.MESSAGE_USING_INTERNAL_MAVEN;
     }
 }

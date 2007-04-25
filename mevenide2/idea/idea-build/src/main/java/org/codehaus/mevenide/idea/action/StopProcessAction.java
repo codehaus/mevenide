@@ -19,13 +19,10 @@
 
 package org.codehaus.mevenide.idea.action;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
+import com.intellij.openapi.project.Project;
+import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.helper.BuildContext;
-import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -34,52 +31,21 @@ import javax.swing.*;
  * @version $Revision$
  */
 public class StopProcessAction extends AbstractBuildAction {
-    public StopProcessAction() {}
 
-    /**
-     * Constructs ...
-     *
-     * @param buildContext Document me!
-     * @param text         Document me!
-     * @param description  Document me!
-     * @param icon         Document me!
-     */
-    public StopProcessAction(BuildContext buildContext, String text, String description, Icon icon) {
-        super(text, description, icon);
-        this.buildContext = buildContext;
-        this.actionContext = buildContext.getActionContext();
-    }
-
-    /**
-     * Method description
-     *
-     * @param actionEvent Document me!
-     */
-    public void actionPerformed(AnActionEvent actionEvent) {
-        String actionText = actionEvent.getPresentation().getText();
-
-        if (actionText.equals(PluginConstants.ACTION_COMMAND_STOP_PROCESS)) {
-            if (buildContext.getBuildTask() != null) {
-                buildContext.setBuildCancelled(true);
-                buildContext.getBuildTask().cancel();
-            }
+    protected void doUpdate(Presentation presentation, Project project, BuildContext buildContext) {
+        AbstractMavenBuildTask mavenBuildTask = buildContext.getBuildTask();
+        if (mavenBuildTask == null || mavenBuildTask.isStopped()) {
+            presentation.setEnabled(false);
+        } else {
+            presentation.setEnabled(true);
         }
     }
 
-    /**
-     * Method description
-     *
-     * @param e Document me!
-     */
-    public void update(AnActionEvent e) {
-        Presentation presentation = e.getPresentation();
-
-        if ((actionContext != null) && (buildContext.getBuildTask() != null)) {
-            if (buildContext.getBuildTask().isStopped()) {
-                presentation.setEnabled(false);
-            } else {
-                presentation.setEnabled(true);
-            }
+    protected void doPerform(Project project, BuildContext buildContext) {
+        AbstractMavenBuildTask mavenBuildTask = buildContext.getBuildTask();
+        if (mavenBuildTask != null) {
+            buildContext.setBuildCancelled(true);
+            mavenBuildTask.cancel();
         }
     }
 }

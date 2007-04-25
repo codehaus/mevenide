@@ -1,15 +1,11 @@
 package org.codehaus.mevenide.idea.component;
 
-import com.intellij.psi.PsiTreeChangeAdapter;
-import com.intellij.psi.PsiTreeChangeEvent;
-import com.intellij.psi.PsiDirectory;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiElement;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.*;
 
 import javax.swing.*;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 public abstract class AbstractFileChangeAdapter extends PsiTreeChangeAdapter {
     private Set<VirtualFile> filesToUpdate = new HashSet<VirtualFile>();
@@ -83,10 +79,12 @@ public abstract class AbstractFileChangeAdapter extends PsiTreeChangeAdapter {
     }
 
     private VirtualFile getPomFile(PsiFile psiFile) {
-        VirtualFile virtualFile = psiFile.getVirtualFile();
-        if (virtualFile != null) {
-            if (matches(virtualFile)) {
-                return virtualFile;
+        if (psiFile != null) {
+            VirtualFile virtualFile = psiFile.getVirtualFile();
+            if (virtualFile != null) {
+                if (matches(virtualFile)) {
+                    return virtualFile;
+                }
             }
         }
         return null;

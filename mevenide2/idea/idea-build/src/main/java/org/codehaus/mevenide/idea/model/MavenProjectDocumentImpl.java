@@ -72,10 +72,6 @@ public class MavenProjectDocumentImpl implements MavenProjectDocument {
         pluginDocumentList.add(plugin);
     }
 
-    public void removePlugin(MavenPluginDocument plugin) {
-        pluginDocumentList.remove(plugin);
-    }
-
     public void reparse() {
         projectDocument = ProjectDocument.Factory.parse(psiFile);
         pluginDocumentList.clear();

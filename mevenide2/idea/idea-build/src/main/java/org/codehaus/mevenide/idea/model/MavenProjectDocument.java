@@ -43,7 +43,5 @@ public interface MavenProjectDocument extends Comparable {
 
     public void addPlugin ( MavenPluginDocument plugin );
 
-    public void removePlugin ( MavenPluginDocument plugin );
-
     void reparse();
 }

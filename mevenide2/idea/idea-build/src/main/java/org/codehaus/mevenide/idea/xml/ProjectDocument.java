@@ -5,7 +5,6 @@ import com.intellij.util.xml.DomElement;
 import com.intellij.util.xml.GenericDomValue;
 import com.intellij.util.xml.JavaNameStrategy;
 import com.intellij.util.xml.NameStrategy;
-import org.codehaus.mevenide.idea.xml.impl.ProjectDocumentImpl;
 
 import java.util.List;
 

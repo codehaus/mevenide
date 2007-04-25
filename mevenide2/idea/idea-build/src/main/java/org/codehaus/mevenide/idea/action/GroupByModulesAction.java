@@ -1,14 +1,14 @@
 package org.codehaus.mevenide.idea.action;
 
-import org.codehaus.mevenide.idea.gui.PomTreeView;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 public class GroupByModulesAction extends PomTreeToggleAction {
 
-    public boolean isSelected(PomTreeView view) {
-        return view.getSettings().groupByModule;
+    public boolean isSelected(PomTreeStructure structure) {
+        return structure.getSettings().groupByModule;
     }
 
-    public void setSelected(PomTreeView view, boolean state) {
-        view.getSettings().groupByModule = state;
+    public void setSelected(PomTreeStructure structure, boolean state) {
+        structure.getSettings().groupByModule = state;
     }
 }

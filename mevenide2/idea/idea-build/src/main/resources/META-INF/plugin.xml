@@ -12,55 +12,34 @@
     <project-components>
         <component>
             <!-- Component's implementation class -->
-            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildProjectComponent
-            </implementation-class>
+            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildProjectComponent</implementation-class>
+            <option name="workspace" value="true"/>
         </component>
     </project-components>
     <depends>Mevenide2 IDEA Core Plugin</depends>
     <actions>
-        <action id="org.codehaus.mevenide.idea.action.AddPluginAction"
-                class="org.codehaus.mevenide.idea.action.AddPluginAction"
-                text="Add plugin to POM"
-                description="Adds a plugin to the selected POM"/>
-        <action id="org.codehaus.mevenide.idea.action.AddPomAction"
-                class="org.codehaus.mevenide.idea.action.AddPomAction" text="Add POM"
-                description="Adds a POM to the tree of Maven projects"/>
-        <action id="org.codehaus.mevenide.idea.action.RemovePomAction"
-                class="org.codehaus.mevenide.idea.action.RemovePomAction"
-                text="Remove POM"
-                description="Removes a POM from the tree of Maven projects"/>
-        <action id="org.codehaus.mevenide.idea.action.RunGoalsAction"
-                class="org.codehaus.mevenide.idea.action.RunGoalsAction"
-                text="Run goal(s)"
-                description="Run selected goal(s) from the given Maven project"/>
-        <action id="org.codehaus.mevenide.idea.action.SortAction"
-                class="org.codehaus.mevenide.idea.action.SortAction"
-                text="Sort ascending"
-                description="Sorts the children of the selected node in ascending order"/>
-        <action id="org.codehaus.mevenide.idea.action.RemovePluginAction"
-                class="org.codehaus.mevenide.idea.action.RemovePluginAction"
-                text="Remove Plugin"
-                description="Removes selected plugins from the POM"/>
-        <action id="org.codehaus.mevenide.idea.action.PauseOutputAction"
-                class="org.codehaus.mevenide.idea.action.PauseOutputAction"
-                text="Pause Output"
-                description="Pauses the output in the build output window"/>
-        <action id="org.codehaus.mevenide.idea.action.StopProcessAction"
-                class="org.codehaus.mevenide.idea.action.StopProcessAction"
-                text="Stop Maven Process"
-                description="Stops the currently running Maven Process"/>
-        <action id="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
-                class="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
-                text="Close Output Panel"
-                description="Closes the output panel"/>
-        <action id="org.codehaus.mevenide.idea.action.RerunMavenAction"
-                class="org.codehaus.mevenide.idea.action.RerunMavenAction"
-                text="Reruns Maven"
-                description="Reruns the previous Maven build"/>
-        <action id="org.codehaus.mevenide.idea.action.FilterAction"
-                class="org.codehaus.mevenide.idea.action.FilterAction" text="Filter Phases and Goals"
-                description="Filters phases and goals"/>
-
+        <group id="org.codehaus.mevenide.idea.action.OutputToolbar" description="Output toolbar">
+            <action id="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                    class="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                    text="Reruns Maven"
+                    description="Reruns the previous Maven build"
+                    icon="/actions/refreshUsages.png"/>
+            <action id="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                    class="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                    text="Pause Output"
+                    description="Pauses the output in the build output window"
+                    icon="/actions/pause.png"/>
+            <action id="org.codehaus.mevenide.idea.action.StopProcessAction"
+                    class="org.codehaus.mevenide.idea.action.StopProcessAction"
+                    text="Stop Maven Process"
+                    description="Stops the currently running Maven Process"
+                    icon="/actions/suspend.png"/>
+            <action id="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                    class="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                    text="Close Output Panel"
+                    description="Closes the output panel"
+                    icon="/actions/cancel.png"/>
+        </group>
         <group id="org.codehaus.mevenide.idea.action.PomTreeToolbar" description="Pom Tree toolbar">
             <action id="org.codehaus.mevenide.idea.action.GroupByModulesAction"
                     class="org.codehaus.mevenide.idea.action.GroupByModulesAction" text="Group by modules"
@@ -69,11 +48,16 @@
             <action id="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction"
                     class="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction" text="Group by directories"
                     description="Group by directories"
-                    icon="/toolbar/folders.png"/>
+                    icon="/nodes/folder.png"/>
             <action id="org.codehaus.mevenide.idea.action.FilterPhasesAction"
                     class="org.codehaus.mevenide.idea.action.FilterPhasesAction" text="Filter standard goals"
                     description="Filter standard goals"
                     icon="/images/filter.png"/>
+            <separator/>
+            <action id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"
+                    class="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction" text="Run selected goals"
+                    description="Run selected goals"
+                    icon="/actions/execute.png"/>
             <action id="org.codehaus.mevenide.idea.action.AttachPluginAction"
                     class="org.codehaus.mevenide.idea.action.AttachPluginAction" text="Attach plugin"
                     description="Attach plugin"
@@ -82,10 +66,11 @@
                     class="org.codehaus.mevenide.idea.action.DetachPluginAction" text="Detach plugin"
                     description="Detach plugin"
                     icon="/images/list-remove.png"/>
-            <action id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"
-                    class="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction" text="Run selected goals"
-                    description="Run selected goals"
-                    icon="/actions/execute.png"/>
+            <separator/>
+            <action id="org.codehaus.mevenide.idea.action.ShowSettingsAction"
+                    class="org.codehaus.mevenide.idea.action.ShowSettingsAction" text="Edit Mevenide settings"
+                    description="Edit Mevenide settings"
+                    icon="/general/applicationSettings.png"/>
         </group>
 
         <group id="org.codehaus.mevenide.idea.action.PomMenu" popup="true">

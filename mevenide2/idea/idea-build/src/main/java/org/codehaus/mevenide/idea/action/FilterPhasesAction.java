@@ -1,14 +1,14 @@
 package org.codehaus.mevenide.idea.action;
 
-import org.codehaus.mevenide.idea.gui.PomTreeView;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 public class FilterPhasesAction extends PomTreeToggleAction {
 
-    public boolean isSelected(PomTreeView view) {
-        return view.getSettings().filterStandardPhases;
+    public boolean isSelected(PomTreeStructure structure) {
+        return structure.getSettings().filterStandardPhases;
     }
 
-    public void setSelected(PomTreeView view, boolean state) {
-        view.getSettings().filterStandardPhases = state;
+    public void setSelected(PomTreeStructure structure, boolean state) {
+        structure.getSettings().filterStandardPhases = state;
     }
 }

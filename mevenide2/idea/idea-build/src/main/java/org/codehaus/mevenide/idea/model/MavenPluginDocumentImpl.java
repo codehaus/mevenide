@@ -21,8 +21,8 @@ package org.codehaus.mevenide.idea.model;
 
 import org.codehaus.mevenide.idea.xml.PluginDocument;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -31,98 +31,33 @@ import java.util.Set;
  * @version $Revision$
  */
 public class MavenPluginDocumentImpl implements MavenPluginDocument {
-    private boolean memberOfPom = true;
-    private Set<PluginGoal> pluginGoalList = new LinkedHashSet<PluginGoal>();
     private PluginDocument pluginDocument;
     private String pluginPath;
+    private List<String> pluginGoalList = new ArrayList<String>();
 
-    /**
-     * Constructs ...
-     *
-     * @param pluginDocument Document me!
-     */
-    public MavenPluginDocumentImpl(PluginDocument pluginDocument) {
+    public MavenPluginDocumentImpl(PluginDocument pluginDocument, String pluginPath ) {
         this.pluginDocument = pluginDocument;
+        this.pluginPath = pluginPath;
+
+        pluginGoalList = new ArrayList<String>();
+        for (PluginDocument.Mojo mojo : pluginDocument.getPlugin().getMojos().getMojoList()) {
+            pluginGoalList.add(mojo.getGoal());
+        }
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public String toString() {
         return pluginDocument.getPlugin().getGoalPrefix();
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public PluginDocument getPluginDocument() {
         return pluginDocument;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public Set<PluginGoal> getPluginGoalList() {
-        return pluginGoalList;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public String getPluginPath() {
         return pluginPath;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public boolean isMemberOfPom() {
-        return memberOfPom;
-    }
-
-    /**
-     * Method description
-     *
-     * @param memberOfPom Document me!
-     */
-    public void setMemberOfPom(boolean memberOfPom) {
-        this.memberOfPom = memberOfPom;
-    }
-
-    /**
-     * Method description
-     *
-     * @param pluginDocument Document me!
-     */
-    public void setPluginDocument(PluginDocument pluginDocument) {
-        this.pluginDocument = pluginDocument;
-    }
-
-    /**
-     * Method description
-     *
-     * @param pluginGoalList Document me!
-     */
-    public void setPluginGoalList(Set<PluginGoal> pluginGoalList) {
-        this.pluginGoalList = pluginGoalList;
-    }
-
-    /**
-     * Method description
-     *
-     * @param pluginPath Document me!
-     */
-    public void setPluginPath(String pluginPath) {
-        this.pluginPath = pluginPath;
+    public List<String> getPluginGoalList() {
+        return pluginGoalList;
     }
 }

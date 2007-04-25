@@ -1,8 +1,7 @@
 package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import org.codehaus.mevenide.idea.gui.PomTreeView;
-import org.codehaus.mevenide.idea.component.PomTreeStructure;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 import java.util.Collection;
 
@@ -14,16 +13,16 @@ abstract public class PomFileAction extends PomTreeAction {
     }
 
     public void update(final AnActionEvent e) {
-        PomTreeView pomTreeView = getView(e);
-        e.getPresentation().setEnabled(pomTreeView != null && isEnabled(pomTreeView.getSelectedNodes(PomTreeStructure.PomNode.class, true)));
+        PomTreeStructure structure = getTreeStructure(e);
+        e.getPresentation().setEnabled(structure != null && isEnabled(structure.getSelectedNodes(PomTreeStructure.PomNode.class, true)));
     }
 
     public void actionPerformed(AnActionEvent e) {
-        PomTreeView pomTreeView = getView(e);
-        if (pomTreeView != null) {
-            Collection<PomTreeStructure.PomNode> selectedNodes = pomTreeView.getSelectedNodes(PomTreeStructure.PomNode.class, true);
+        PomTreeStructure structure = getTreeStructure(e);
+        if (structure != null) {
+            Collection<PomTreeStructure.PomNode> selectedNodes = structure.getSelectedNodes(PomTreeStructure.PomNode.class, true);
             if ( isEnabled(selectedNodes) ) {
-                actOnPoms(pomTreeView, selectedNodes);
+                actOnPoms(structure, selectedNodes);
             }
         }
     }
@@ -32,5 +31,5 @@ abstract public class PomFileAction extends PomTreeAction {
         return selectedNodes.size() > ( multiple ? 0 : 1 );
     }
 
-    protected abstract void actOnPoms(PomTreeView pomTreeView, Collection<PomTreeStructure.PomNode> selectedNodes);
+    protected abstract void actOnPoms(PomTreeStructure stucture, Collection<PomTreeStructure.PomNode> selectedNodes);
 }

@@ -122,6 +122,6 @@ public class BuildConstants {
     public static final String MESSAGE_EMBEDDED_MAVENBUILD_ABORTED = "Maven build aborted by user!";
     public static final String MESSAGE_PROCESS_ABNORMALLY_TERMINATED = "Process terminated abnormally! Exit code ";
     public static final String MESSAGE_EXECUTING_MAVEN = "Executing Maven";
-    public static final String MESSAGE_USING_EXTERNAL_MAVEN = " - Using external configured Maven";
-    public static final String MESSAGE_USING_INTERNAL_MAVEN = " - Using internal embedded Maven";
+    public static final String MESSAGE_USING_EXTERNAL_MAVEN = "Using external configured Maven";
+    public static final String MESSAGE_USING_INTERNAL_MAVEN = "Using internal embedded Maven";
 }

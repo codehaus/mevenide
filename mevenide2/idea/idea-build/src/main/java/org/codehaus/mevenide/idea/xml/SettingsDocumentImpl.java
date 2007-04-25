@@ -1,6 +1,5 @@
-package org.codehaus.mevenide.idea.xml.impl;
+package org.codehaus.mevenide.idea.xml;
 
-import org.codehaus.mevenide.idea.xml.SettingsDocument;
 import org.codehaus.mevenide.idea.xml.impl.JDOMReader;
 
 import java.io.File;

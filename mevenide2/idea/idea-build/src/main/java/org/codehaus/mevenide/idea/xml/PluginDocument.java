@@ -1,7 +1,5 @@
 package org.codehaus.mevenide.idea.xml;
 
-import org.codehaus.mevenide.idea.xml.impl.PluginDocumentImpl;
-
 import java.io.InputStream;
 import java.util.List;
 
@@ -10,7 +8,14 @@ public interface PluginDocument {
 
     interface Plugin {
         String getGoalPrefix();
+
         Mojos getMojos();
+
+        String getGroupId();
+
+        String getArtifactId();
+
+        String getVersion();
     }
 
     interface Mojos {

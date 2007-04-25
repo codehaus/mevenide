@@ -21,15 +21,10 @@ package org.codehaus.mevenide.idea.action;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
-import org.apache.commons.lang.StringUtils;
-
-import org.codehaus.mevenide.idea.common.util.ErrorHandler;
+import com.intellij.openapi.project.Project;
+import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
+import org.codehaus.mevenide.idea.build.MavenRunner;
 import org.codehaus.mevenide.idea.helper.BuildContext;
-import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
-import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -38,68 +33,29 @@ import javax.swing.*;
  * @version $Revision$
  */
 public class RerunMavenAction extends AbstractBuildAction {
-    boolean isProcessFinished;
+    boolean isProcessFinished = true;
 
-    /**
-     * Constructs ...
-     */
-    public RerunMavenAction() {}
 
-    /**
-     * Constructs ...
-     *
-     * @param buildContext Document me!
-     * @param text         Document me!
-     * @param description  Document me!
-     * @param icon         Document me!
-     */
-    public RerunMavenAction(BuildContext buildContext, String text, String description, Icon icon) {
-        super(text, description, icon);
-        this.buildContext = buildContext;
-        this.actionContext = buildContext.getActionContext();
+    public void actionPerformed(AnActionEvent event) {
+        super.actionPerformed(event);
     }
 
-    /**
-     * Method description
-     *
-     * @param actionEvent Document me!
-     */
-    public void actionPerformed(AnActionEvent actionEvent) {
-        String actionText = actionEvent.getPresentation().getText();
-
-        if (actionText.equals(PluginConstants.ACTION_COMMAND_RERUN_MAVEN)) {
-            if (!StringUtils.isBlank(actionContext.getLastExecutedMavenProject())) {
-                MavenRunner runner = new MavenRunner(buildContext);
-
-                try {
-                    runner.execute();
-                    isProcessFinished = false;
-                } catch (IdeaMavenPluginException e) {
-                    ErrorHandler.processAndShowError(actionContext.getPluginProject(), e, false);
-                }
-            }
-        }
-    }
-
-    /**
-     * Method description
-     *
-     * @param e Document me!
-     */
-    public void update(AnActionEvent e) {
-        Presentation presentation = e.getPresentation();
-
-        if ((actionContext != null) && (buildContext.getBuildTask() != null)) {
-            if (StringUtils.isBlank(actionContext.getLastExecutedMavenProject())
-                    || (!buildContext.getBuildTask().isStopped())) {
+    protected void doUpdate(Presentation presentation, Project project, BuildContext buildContext) {
+        AbstractMavenBuildTask mavenBuildTask = buildContext.getBuildTask();
+        if (mavenBuildTask != null) {
+            if (buildContext == null || !mavenBuildTask.isStopped()) {
                 presentation.setEnabled(false);
             } else {
                 presentation.setEnabled(true);
-
                 if (!isProcessFinished) {
                     isProcessFinished = true;
                 }
             }
         }
+    }
+
+    protected void doPerform(Project project, BuildContext buildContext) {
+        MavenRunner.run(project);
+        isProcessFinished = false;
     }
 }

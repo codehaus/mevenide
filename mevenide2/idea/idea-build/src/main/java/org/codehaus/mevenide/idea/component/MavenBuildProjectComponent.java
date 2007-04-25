@@ -18,66 +18,33 @@
 
 package org.codehaus.mevenide.idea.component;
 
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.components.ProjectComponent;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.IconLoader;
-import com.intellij.openapi.util.InvalidDataException;
-import com.intellij.openapi.util.JDOMExternalizable;
-import com.intellij.openapi.util.JDOMExternalizerUtil;
-import com.intellij.openapi.util.WriteExternalException;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.util.*;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowAnchor;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.uiDesigner.core.GridConstraints;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.mevenide.idea.CorePlugin;
 import org.codehaus.mevenide.idea.IMevenideIdeaComponent;
-import org.codehaus.mevenide.idea.action.AddPluginAction;
-import org.codehaus.mevenide.idea.action.AddPomAction;
-import org.codehaus.mevenide.idea.action.FilterAction;
-import org.codehaus.mevenide.idea.action.PluginConfigurationActionListener;
-import org.codehaus.mevenide.idea.action.PomTreeMouseActionListener;
-import org.codehaus.mevenide.idea.action.RemovePluginAction;
-import org.codehaus.mevenide.idea.action.RemovePomAction;
-import org.codehaus.mevenide.idea.action.RunGoalsAction;
-import org.codehaus.mevenide.idea.action.ShowMavenOptionsAction;
-import org.codehaus.mevenide.idea.action.SortAction;
-import org.codehaus.mevenide.idea.action.ToolWindowKeyListener;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.gui.PomTree;
-import org.codehaus.mevenide.idea.gui.PomTreeView;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
-import org.codehaus.mevenide.idea.helper.ActionContext;
-import org.codehaus.mevenide.idea.model.MavenPluginDocument;
-import org.codehaus.mevenide.idea.model.MavenProjectDocument;
-import org.codehaus.mevenide.idea.util.GuiUtils;
+import org.codehaus.mevenide.idea.helper.BuildContext;
+import org.codehaus.mevenide.idea.helper.GuiContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 import org.codehaus.mevenide.idea.xml.SettingsDocument;
 import org.jdom.Element;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JTree;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
-import java.awt.Dimension;
+import javax.swing.*;
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Describe what this class does.
@@ -88,462 +55,207 @@ import java.util.Set;
 public class MavenBuildProjectComponent
         implements IMevenideIdeaComponent, ProjectComponent, JDOMExternalizable {
     private static final Logger LOG = Logger.getLogger(MavenBuildProjectComponent.class);
-    private ActionContext actionContext = new ActionContext();
-    private PomWatcher pomWatcher;
-
-    public PomTreeView getPomTreeView() {
-        return pomTreeView;
-    }
-
-    public PomTreeView pomTreeView;
 
     public static MavenBuildProjectComponent getInstance(Project project) {
         return project.getComponent(MavenBuildProjectComponent.class);
     }
 
-    /**
-     * Constructs ...
-     *
-     * @param project Document me!
-     */
+    private GuiContext guiContext = new GuiContext();
+    private BuildContext buildContext;
+    public PomTreeStructure pomTreeStructure;
+    private MavenBuildPluginSettings projectPluginSettings = new MavenBuildPluginSettings();
+
+    private Project project;
+
+    public PomTreeStructure getPomTreeStructure() {
+        return pomTreeStructure;
+    }
+
+    public BuildContext getBuildContext() {
+        return buildContext;
+    }
+
+    public GuiContext getGuiContext() {
+        return guiContext;
+    }
+
+    public void setBuildContext(BuildContext buildContext) {
+        this.buildContext = buildContext;
+    }
+
+    public MavenBuildPluginSettings getProjectPluginSettings() {
+        return projectPluginSettings;
+    }
+
     public MavenBuildProjectComponent(Project project, CorePlugin corePlugin) {
-        actionContext.setPluginProject(project);
+        this.project = project;
         LOG.info("Trying to register Mevenide component <" + getComponentName() + "> into Mevenide Core");
         corePlugin.registerMevenideComponent(this);
-        actionContext.getProjectPluginSettings().setMavenConfiguration(corePlugin.getMavenConfiguration());
+
+        projectPluginSettings.setMavenConfiguration(corePlugin.getMavenConfiguration());
+        projectPluginSettings.setMavenRepository(findMavenRepository());
+
+        pomTreeStructure = new PomTreeStructure(project, projectPluginSettings);
     }
 
-    private MavenBuildProjectToolWindowForm createMavenToolWindowForm() {
-        MavenBuildProjectToolWindowForm toolWindowForm = new MavenBuildProjectToolWindowForm(actionContext.getPluginProject());
-        DefaultActionGroup group = new DefaultActionGroup();
-        AnAction actionAddPom = new AddPomAction(actionContext, PluginConstants.ACTION_COMMAND_ADD_POM,
-                "Adds a POM to the project", IconLoader.getIcon(PluginConstants.ICON_ADD_POM));
-        AnAction actionRemovePom = new RemovePomAction(actionContext, PluginConstants.ACTION_COMMAND_REMOVE_POM,
-                "Removes a POM from the project",
-                IconLoader.getIcon(PluginConstants.ICON_REMOVE_POM));
-        AnAction actionAddPlugin = new AddPluginAction(actionContext, PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
-                PluginConstants.ACTION_COMMAND_ADD_PLUGIN,
-                IconLoader.getIcon(PluginConstants.ICON_ADD_PLUGIN));
-        AnAction actionRemovePlugin = new RemovePluginAction(actionContext,
-                PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
-                PluginConstants.ACTION_COMMAND_REMOVE_PLUGIN,
-                IconLoader.getIcon(PluginConstants.ICON_REMOVE_PLUGIN));
-        AnAction actionRunGoals = new RunGoalsAction(actionContext, PluginConstants.ACTION_COMMAND_RUN_GOALS,
-                PluginConstants.ACTION_COMMAND_RUN_GOALS,
-                IconLoader.getIcon(PluginConstants.ICON_RUN));
-        AnAction actionSortAsc = new SortAction(actionContext, PluginConstants.ACTION_COMMAND_SORT_ASC,
-                PluginConstants.ACTION_COMMAND_SORT_ASC,
-                IconLoader.getIcon(PluginConstants.ICON_SORT_ASC));
-        AnAction filter = new FilterAction(actionContext, PluginConstants.ACTION_COMMAND_FILTER,
-                PluginConstants.ACTION_COMMAND_FILTER,
-                actionContext.getProjectPluginSettings().isUseFilter()
-                        ? IconLoader.getIcon(PluginConstants.ICON_FILTER_APPLIED)
-                        : IconLoader.getIcon(PluginConstants.ICON_FILTER));
-
-        group.add(actionAddPom);
-        group.add(actionRemovePom);
-        group.addSeparator();
-        group.add(actionAddPlugin);
-        group.add(actionRemovePlugin);
-        group.addSeparator();
-        group.add(actionRunGoals);
-        group.addSeparator();
-        group.add(actionSortAsc);
-        group.add(filter);
-        group.addSeparator();
-
-        ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("Maven Toolbar", group, true);
-
-        actionToolbar.getComponent().setEnabled(false);
-        toolWindowForm.getRootComponent().add(actionToolbar.getComponent(),
-                new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null));
-
-        ToolWindowKeyListener keyListener = new ToolWindowKeyListener(actionContext);
-
-        toolWindowForm.getTextFieldCmdLine().addKeyListener(keyListener);
-
-        return toolWindowForm;
-    }
-
-    /**
-     * Method description
-     *
-     * @throws ConfigurationException
-     */
-    public void apply() throws ConfigurationException {
-        MavenBuildConfigurationForm form =
-                (MavenBuildConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
-
-        if (form != null) {
-            form.getData(pluginSettings);
-        }
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public JComponent createComponent() {
-        return actionContext.getGuiContext().getProjectConfigurationForm().getRootComponent();
+        return guiContext.getProjectConfigurationForm().getRootComponent();
     }
 
-    /**
-     * Method description
-     */
     public void disposeComponent() {
-
         // empty
     }
 
-    /**
-     * Method description
-     */
     public void disposeUIResources() {
-
-//      actionContext.getGuiContext().setProjectConfigurationForm(null);
+        guiContext.setProjectConfigurationForm(null);
     }
 
-    /**
-     * Method description
-     */
+    private MavenBuildConfigurationForm getProjectConfigurationForm() {
+        return (MavenBuildConfigurationForm) guiContext.getProjectConfigurationForm();
+    }
+
     public void initComponent() {
-        actionContext.getGuiContext().setMavenToolWindowForm(createMavenToolWindowForm());
-
-        MavenBuildConfigurationForm form =
-                (MavenBuildConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-
-        if (form == null) {
-            form = new MavenBuildConfigurationForm();
-
-            PluginConfigurationActionListener actionListener = new PluginConfigurationActionListener(form);
-
-            form.getButtonBrowseMavenHomeDirectory().addActionListener(actionListener);
-            actionContext.getGuiContext().setProjectConfigurationForm(form);
-        }
+        LOG.debug("Location of Maven Repository is: " + projectPluginSettings.getMavenRepository());
+        guiContext.setMavenToolWindowForm(createMavenToolWindowForm());
+        guiContext.setProjectConfigurationForm(createMavenBuildConfigurationForm());
     }
 
-    private void initToolWindow(JTree tree, JTree treeNew) {
-        JComponent pomContentPanel;
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(actionContext.getPluginProject());
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
-        MavenBuildProjectToolWindowForm form =
-                (MavenBuildProjectToolWindowForm) actionContext.getGuiContext().getMavenToolWindowForm();
-
-        form.getScrollpane().setViewportView(tree);
-        form.getScrollpaneSimple().setViewportView(treeNew);
-        form.getTextFieldCmdLine().setText(pluginSettings.getMavenCommandLineParams());
-        pomContentPanel = form.getRootComponent();
-
-        // createToolbar(mavenToolWindowForm);
-        ToolWindow pomToolWindow = toolWindowManager.registerToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID,
-                pomContentPanel, ToolWindowAnchor.RIGHT);
-
-        pomToolWindow.setIcon(GuiUtils.createImageIcon(PluginConstants.ICON_APPLICATION_EMBLEM_SMALL));
+    private MavenBuildProjectToolWindowForm createMavenToolWindowForm() {
+        return new MavenBuildProjectToolWindowForm(project, projectPluginSettings);
     }
 
-    /**
-     * Method description
-     */
+    private MavenBuildConfigurationForm createMavenBuildConfigurationForm() {
+        return new MavenBuildConfigurationForm();
+    }
+
+    public void projectOpened() {
+        initToolWindow();
+        new PomWatcher(project, pomTreeStructure);
+    }
+
     public void projectClosed() {
         unregisterToolWindow();
     }
 
-    /**
-     * Method description
-     */
-    public void projectOpened() {
-        Icon goalIcon = GuiUtils.createImageIcon(PluginConstants.ICON_APPLICATION_SMALL);
-        Icon pomIcon = IconLoader.getIcon(PluginConstants.ICON_POM_SMALL);
+    private void initToolWindow() {
+        MavenBuildProjectToolWindowForm form = (MavenBuildProjectToolWindowForm) guiContext.getMavenToolWindowForm();
+        form.getScrollpane().setViewportView(pomTreeStructure.getTree());
 
-        final JTree pomTree = new PomTree(PluginConstants.TREE_ROOT_NODE_TITLE, pomIcon, goalIcon);
-        pomTree.addMouseListener(new PomTreeMouseActionListener(actionContext));
+        ToolWindow pomToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID,
+                form.getRootComponent(), ToolWindowAnchor.RIGHT);
 
-        pomTree.setRootVisible(true);
-        pomTree.expandPath(new TreePath(((DefaultMutableTreeNode) pomTree.getModel().getRoot()).getPath()));
-
-
-        pomTreeView = new PomTreeView(
-                actionContext.getPluginProject(),
-                actionContext.getStandardGoals(),
-                actionContext.getProjectPluginSettings().getStandardPhasesList(),
-                actionContext.getProjectPluginSettings().getMavenRepository());
-
-        initToolWindow(pomTree, pomTreeView.getTree());
-
-        pomWatcher = new PomWatcher( actionContext, pomTreeView );
+        pomToolWindow.setIcon(IconLoader.getIcon(PluginConstants.ICON_APPLICATION_EMBLEM_SMALL));
     }
 
-    /**
-     * Method description
-     *
-     * @param element Document me!
-     * @throws InvalidDataException
-     */
-    public void readExternal(Element element) throws InvalidDataException {
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
+    private void unregisterToolWindow() {
+        ToolWindowManager.getInstance(project).unregisterToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID);
+    }
 
-        pluginSettings.setMavenHome(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE));
-        pluginSettings.setMavenCommandLineParams(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_MAVEN_COMMAND_LINE));
-        pluginSettings.setVmOptions(JDOMExternalizerUtil.readField(element, PluginConstants.CONFIG_ELEMENT_VM_OPTIONS));
-        pluginSettings.setUseMavenEmbedder(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER)));
-        pluginSettings.setUseFilter(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_USE_FILTER)));
-        pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS)));
-        pluginSettings.setScanForExistingPoms(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_SKIP_TESTS)));
-        pluginSettings.setJdkPath(JDOMExternalizerUtil.readField(element,
-                PluginConstants.CONFIG_ELEMENT_JDK_PATH));
-
+    private static String findMavenRepository() {
         String mavenHomeDir = System.getProperty("user.home") + System.getProperty("file.separator") + ".m2";
-        LocalFileSystem localFileSystem = LocalFileSystem.getInstance();
         File settingsFile = new File(mavenHomeDir + System.getProperty("file.separator") + "settings.xml");
-
-        Element mavenPropertiesElement = element.getChild("maven-properties");
-        if (mavenPropertiesElement != null) {
-            List mavenPropertiesElementChildren = mavenPropertiesElement.getChildren();
-            for (Object aMavenPropertiesElementChildren : mavenPropertiesElementChildren) {
-                Element childElement = (Element) aMavenPropertiesElementChildren;
-                if (childElement != null) {
-                    String key = childElement.getAttributeValue("name");
-                    String value = childElement.getAttributeValue("value");
-                    pluginSettings.getMavenProperties().put(key, value);
-                }
-            }
-        }
 
         if (settingsFile.exists()) {
             try {
-                SettingsDocument settingsDocument = SettingsDocument.Factory.parse(new File(mavenHomeDir
-                        + System.getProperty("file.separator")
-                        + "settings.xml"));
-
+                SettingsDocument settingsDocument = SettingsDocument.Factory.parse(settingsFile);
                 if (settingsDocument != null) {
                     if (!StringUtils.isEmpty(settingsDocument.getSettings().getLocalRepository())) {
-                        pluginSettings.setMavenRepository(settingsDocument.getSettings().getLocalRepository());
+                        return settingsDocument.getSettings().getLocalRepository();
                     }
                 }
             } catch (Exception e) {
                 LOG.error(e);
-
-//              throw new InvalidDataException(e.getCause());
             }
-        } else {
-            pluginSettings.setMavenRepository(mavenHomeDir + System.getProperty("file.separator") + "repository");
         }
+        return mavenHomeDir + System.getProperty("file.separator") + "repository";
+    }
 
-        LOG.debug("Location of Maven Repository is: " + pluginSettings.getMavenRepository());
+    public void readExternal(Element element) throws InvalidDataException {
 
-/*
-        Element pomListElement = element.getChild("pom-list");
+        projectPluginSettings.setMavenHome(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE));
+        projectPluginSettings.setMavenCommandLineParams(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_MAVEN_COMMAND_LINE));
+        projectPluginSettings.setVmOptions(JDOMExternalizerUtil.readField(element, PluginConstants.CONFIG_ELEMENT_VM_OPTIONS));
+        projectPluginSettings.setUseMavenEmbedder(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER)));
+        projectPluginSettings.setRunMavenInBackground(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_RUN_MAVEN_IN_BACKGROUND)));
+        projectPluginSettings.setSkipTests(Boolean.valueOf(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_SKIP_TESTS)));
+        projectPluginSettings.setJdkPath(JDOMExternalizerUtil.readField(element,
+                PluginConstants.CONFIG_ELEMENT_JDK_PATH));
 
-        if (pomListElement != null) {
-            List myPomListChildren = pomListElement.getChildren("pom");
-
-            for (Object aPomListChildren : myPomListChildren) {
-                Element childElement = (Element) aPomListChildren;
-
+        Element mavenPropertiesElement = element.getChild("maven-properties");
+        if (mavenPropertiesElement != null) {
+            for (Object child : mavenPropertiesElement.getChildren()) {
+                Element childElement = (Element) child;
                 if (childElement != null) {
-                    Element pomOptionElement = childElement.getChild("option");
-                    String pomPath = pomOptionElement.getAttributeValue("value");
-                    VirtualFile virtualFile = localFileSystem.findFileByPath(pomPath);
-
-                    if (virtualFile != null) {
-                        MavenProjectDocument mavenProjectDocument = new MavenProjectDocumentImpl(virtualFile);
-
-                        mavenPomList.add(mavenProjectDocument);
-                        LOG.debug("Adding POM: " + virtualFile.getPath());
-
-                        Element pluginListChildren = childElement.getChild("plugin-list");
-
-                        if (pluginListChildren != null) {
-                            List myPluginListChildren = pluginListChildren.getChildren("option");
-
-                            for (Object pluginListElement : myPluginListChildren) {
-                                Element pluginChildElement = (Element) pluginListElement;
-                                String pluginPath = pluginChildElement.getAttributeValue("value");
-                                VirtualFile pluginJarArchive = localFileSystem.findFileByPath(pluginPath);
-
-                                try {
-                                    MavenPluginDocument mavenPluginDocument =
-                                            ActionUtils.createMavenPluginDocument(pluginJarArchive, true);
-
-                                    if (mavenPluginDocument != null) {
-                                        mavenProjectDocument.getPluginDocumentList().add(mavenPluginDocument);
-                                    }
-                                } catch (Exception e) {
-                                    LOG.error(e);
-
-                                    throw new InvalidDataException(e.getCause());
-                                }
-
-                                LOG.debug("Adding Plugin: " + pluginPath);
-                            }
-                        }
-                    }
+                    String key = childElement.getAttributeValue("name");
+                    String value = childElement.getAttributeValue("value");
+                    projectPluginSettings.getMavenProperties().put(key, value);
                 }
             }
         }
-*/
+
+        pomTreeStructure.readExternal(element);
     }
 
-    /**
-     * Method description
-     */
-    public void reset() {
-        MavenBuildConfigurationForm form =
-                (MavenBuildConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
-
-        if (form != null) {
-            form.setData(pluginSettings);
-        }
-    }
-
-    private void unregisterToolWindow() {
-        ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(actionContext.getPluginProject());
-
-        toolWindowManager.unregisterToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID);
-    }
-
-    /**
-     * Method description
-     *
-     * @param element Document me!
-     * @throws WriteExternalException
-     */
     public void writeExternal(Element element) throws WriteExternalException {
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
 
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_MAVEN_EXECUTABLE,
-                pluginSettings.getMavenHome());
+                projectPluginSettings.getMavenHome());
         JDOMExternalizerUtil.writeField(element, BuildConstants.MAVEN_OPTION_SETTINGS_FILE,
-                pluginSettings.getMavenSettingsFile());
+                projectPluginSettings.getMavenSettingsFile());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_MAVEN_COMMAND_LINE,
-                pluginSettings.getMavenCommandLineParams());
+                projectPluginSettings.getMavenCommandLineParams());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_VM_OPTIONS,
-                pluginSettings.getVmOptions());
+                projectPluginSettings.getVmOptions());
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_USE_MAVEN_EMBEDDER,
-                Boolean.toString(pluginSettings.isUseMavenEmbedder()));
-        JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_USE_FILTER,
-                Boolean.toString(pluginSettings.isUseFilter()));
-        JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SCAN_FOR_POMS,
-                Boolean.toString(pluginSettings.isScanForExistingPoms()));
+                Boolean.toString(projectPluginSettings.isUseMavenEmbedder()));
+        JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_RUN_MAVEN_IN_BACKGROUND,
+                Boolean.toString(projectPluginSettings.isRunMavenInBackground()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_SKIP_TESTS,
-                Boolean.toString(pluginSettings.isSkipTests()));
+                Boolean.toString(projectPluginSettings.isSkipTests()));
         JDOMExternalizerUtil.writeField(element, PluginConstants.CONFIG_ELEMENT_JDK_PATH,
-                pluginSettings.getJdkPath());
+                projectPluginSettings.getJdkPath());
 
         Element mavenPropertiesElement = new Element("maven-properties");
         element.addContent(mavenPropertiesElement);
-        Map<String, String> mavenProperties = pluginSettings.getMavenProperties();
-        Set keys = mavenProperties.keySet();
-        Iterator iterator = keys.iterator();
-        for (Object key : keys) {
-            String propertyName = (String) key;
-            String propertyValue = mavenProperties.get(propertyName);
-            JDOMExternalizerUtil.writeField(mavenPropertiesElement, propertyName, propertyValue);
+        for ( Map.Entry<String,String> entry : projectPluginSettings.getMavenProperties().entrySet()){
+            JDOMExternalizerUtil.writeField(mavenPropertiesElement, entry.getKey(), entry.getValue());
         }
 
-        Element pomListElement = new Element("pom-list");
+        pomTreeStructure.writeExternal(element);
+    }
 
-        element.addContent(pomListElement);
-
-        List<MavenProjectDocument> pomDocumentList = actionContext.getPomDocumentList();
-
-        for (MavenProjectDocument pomFile : pomDocumentList) {
-            Element pomElement = new Element("pom");
-
-            pomListElement.addContent(pomElement);
-            JDOMExternalizerUtil.writeField(pomElement, "path", pomFile.getPomFile().getPath());
-
-            Element pluginListElement = new Element("plugin-list");
-
-            pomElement.addContent(pluginListElement);
-
-            for (MavenPluginDocument pluginDoc : pomFile.getPlugins()) {
-
-                // Store only those plugins, which were manually added by the user
-                if (!pluginDoc.isMemberOfPom()) {
-                    JDOMExternalizerUtil.writeField(pluginListElement, "path", pluginDoc.getPluginPath());
-                }
-            }
+    public void apply() throws ConfigurationException {
+        MavenBuildConfigurationForm form = getProjectConfigurationForm();
+        if (form != null) {
+            form.getData(projectPluginSettings);
         }
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
+    public void reset() {
+        MavenBuildConfigurationForm form = getProjectConfigurationForm();
+        if (form != null) {
+            form.setData(projectPluginSettings);
+        }
+    }
+
     @NotNull
     public String getComponentName() {
         return PluginConstants.PROJECT_COMPONENT_NAME;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     @Nls
     public String getDisplayName() {
-        return PluginConstants
-                .PLUGIN_PROJECT_DISPLAY_NAME;    // To change body of implemented methods use File | Settings | File Templates.
+        return PluginConstants.PLUGIN_PROJECT_DISPLAY_NAME;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-/*
-    @Nullable @NonNls
-    public String getHelpTopic() {
-        return null;
-    }
-*/
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    /*
-        public Icon getIcon() {
-            return GuiUtils
-                .createImageIcon(PluginConstants
-                    .ICON_APPLICATION_BIG);    // To change body of implemented methods use File | Settings | File Templates.
-        }
-    */
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public boolean isModified() {
-        MavenBuildConfigurationForm form =
-                (MavenBuildConfigurationForm) actionContext.getGuiContext().getProjectConfigurationForm();
-        MavenBuildPluginSettings pluginSettings = actionContext.getProjectPluginSettings();
-
-        return (form != null) && form.isModified(pluginSettings);
-    }
-
-    private boolean isPomInList(Set<MavenProjectDocument> pomFileList, VirtualFile child) {
-        for (MavenProjectDocument existingEntry : pomFileList) {
-            if (existingEntry.getPomFile().getPath().equals(child.getPath())) {
-                return true;
-            }
-        }
-
-        return false;
+        MavenBuildConfigurationForm form = getProjectConfigurationForm();
+        return (form != null) && form.isModified(projectPluginSettings);
     }
 
     public JComponent getMevenideConfigurationComponent() {
@@ -568,9 +280,5 @@ public class MavenBuildProjectComponent
 
     public void resetMevenideConfiguration() {
         reset();
-    }
-
-    public ActionContext getActionContext() {
-        return actionContext;
     }
 }

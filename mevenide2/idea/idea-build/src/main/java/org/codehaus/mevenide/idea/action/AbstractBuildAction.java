@@ -19,9 +19,13 @@
 
 package org.codehaus.mevenide.idea.action;
 
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DataConstants;
+import com.intellij.openapi.actionSystem.Presentation;
+import com.intellij.openapi.project.Project;
+import org.codehaus.mevenide.idea.component.MavenBuildProjectComponent;
 import org.codehaus.mevenide.idea.helper.BuildContext;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -29,14 +33,30 @@ import javax.swing.*;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public abstract class AbstractBuildAction extends AbstractBaseAction {
-    protected BuildContext buildContext;
-
-    protected AbstractBuildAction() {
-        super();
+public abstract class AbstractBuildAction extends AnAction {
+    public void update(AnActionEvent e) {
+        Presentation presentation = e.getPresentation();
+        Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
+        if ( project != null ) {
+            BuildContext buildContext = MavenBuildProjectComponent.getInstance(project).getBuildContext();
+            if ( buildContext != null) {
+                doUpdate (presentation, project, buildContext);
+                return;
+            }
+        }
+        presentation.setEnabled(false);
     }
 
-    protected AbstractBuildAction(String text, String description, Icon icon) {
-        super(text, description, icon);
+    public void actionPerformed(AnActionEvent e) {
+        Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
+        if ( project != null ) {
+            BuildContext buildContext = MavenBuildProjectComponent.getInstance(project).getBuildContext();
+            if ( buildContext != null) {
+                doPerform (project, buildContext);
+            }
+        }
     }
+
+    protected abstract void doUpdate(Presentation presentation, Project project, BuildContext buildContext);
+    protected abstract void doPerform(Project project, BuildContext buildContext);
 }
