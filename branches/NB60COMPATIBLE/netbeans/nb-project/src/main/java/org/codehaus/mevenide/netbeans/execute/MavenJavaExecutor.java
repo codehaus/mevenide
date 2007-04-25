@@ -53,9 +53,13 @@ import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.FileOwnerQuery;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
+import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.windows.InputOutput;
 
 /**
@@ -194,13 +198,13 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             LOGGER.log(Level.FINE, ex.getMessage(), ex);
         } catch (ThreadDeath death) {
 //            cancel();
+            shutdownOutput(ioput);
+            ioput = null;
             throw death;
         } finally {
+            shutdownOutput(ioput);
             handle.finish();
             ProgressTransferListener.clearAggregateHandle();
-            IOBridge.restoreSystemInOutErr();
-            ioput.getOut().close();
-            ioput.getErr().close();
             //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
             // in netbeans.
             if (basedir == null) {
@@ -209,7 +213,6 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 System.setProperty("basedir", basedir);
             }
             actionStatesAtFinish();
-            markFreeTab(ioput);
             EmbedderFactory.resetProjectEmbedder();
             List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
             for (File elem: fireList) {
@@ -227,10 +230,31 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         }
     }
     
+    private void shutdownOutput(InputOutput ioput) {
+        if (ioput == null) {
+            return;
+        }
+        ioput.getOut().close();
+        ioput.getErr().close();
+        markFreeTab(ioput);
+        IOBridge.restoreSystemInOutErr();
+    }
+    
+    /** Number of milliseconds to wait before forcibly halting a runaway process. */
+    private static final int STOP_TIMEOUT = 3000;    
+    
     public boolean cancel() {
         if (out != null) {
             out.requestCancel(task);
-            //TODO add a timeout for this and do a hard kill otherwise
+            // Try stopping at a safe point.
+            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(MavenJavaExecutor.class, "MSG_stopping"));
+            // But if that doesn't do it, double-check later...
+            // Yes Thread.stop() is deprecated; that is why we try to avoid using it.
+            RequestProcessor.getDefault().create(new Runnable() {
+                public void run() {
+                    task.stop();
+                }
+            }).schedule(STOP_TIMEOUT);
         }
         return true;
     }

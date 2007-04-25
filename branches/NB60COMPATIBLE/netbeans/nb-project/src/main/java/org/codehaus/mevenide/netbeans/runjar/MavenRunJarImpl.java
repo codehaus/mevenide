@@ -84,16 +84,23 @@ public class MavenRunJarImpl implements MavenRunJar {
 //        System.out.println("class=" + io.getClass());
 //        System.out.println("classloader=" + io.getClass().getClassLoader().getClass());
 //        System.out.println("executor engine=" + ExecutionEngine.getDefault().getClass());
-        ExecutorTask task =  ExecutionEngine.getDefault().execute("Run " + jarArtifact.getName(), wrapper, io);
+        ExecutorTask task = null;
         try {
-            synchronized (wrapper.semaphor) {
-                wrapper.semaphor.wait();
+            task =  ExecutionEngine.getDefault().execute("Run " + jarArtifact.getName(), wrapper, io);
+            try {
+                synchronized (wrapper.semaphor) {
+                    wrapper.semaphor.wait();
+                }
+            } catch (InterruptedException ex) {
+                //do nothing.
             }
-        } catch (InterruptedException ex) {
-            //do nothing.
-        }
-        if (waitForFinish) {
-            return task.result();
+            if (waitForFinish) {
+                return task.result();
+            }
+        } catch (ThreadDeath td) {
+            if (task != null) {
+                task.stop();
+            }
         }
         // if immediately exiting, cannot figure ut exit code..
         // do we need the immediately exiting stuff?
@@ -151,11 +158,12 @@ public class MavenRunJarImpl implements MavenRunJar {
             String[] cmds;
             Output out = null;
             Output err = null;
+            Process proc = null;
             try {
                 cmds = Commandline.translateCommandline(cmd.toString());
                 log.info("Executing \"" + cmd + "\" in directory " + workDirectory);
                 // IF we get the jdk 1.5 support only, make sure this uses ProcessBuilder
-                Process proc = Runtime.getRuntime().exec(cmds, null, workDirectory);
+                proc = Runtime.getRuntime().exec(cmds, null, workDirectory);
                 synchronized (semaphor) {
                     semaphor.notifyAll();
                 }
@@ -176,13 +184,21 @@ public class MavenRunJarImpl implements MavenRunJar {
                 outTask.waitFinished();
                 errTask.waitFinished();
             } catch (IOException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
 //            System.out.println("IO");
             } catch (InterruptedException ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+                if (proc != null) {
+                    proc.destroy();
+                }
 //            System.out.println("INT");
             } catch (Exception ex) {
-                ex.printStackTrace();
+//                ex.printStackTrace();
+            } catch (ThreadDeath de) {
+                if (proc != null) {
+                    proc.destroy();
+                }
+//                ex.printStackTrace();
             } finally {
                 if (out != null) out.closeWriter();
                 if (err != null) err.closeWriter();
