@@ -21,7 +21,7 @@ package org.codehaus.mevenide.idea.model;
 
 import org.codehaus.mevenide.idea.xml.PluginDocument;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -32,17 +32,7 @@ import java.util.Set;
 public interface MavenPluginDocument {
     PluginDocument getPluginDocument();
 
-    Set<PluginGoal> getPluginGoalList();
-
     String getPluginPath();
 
-    boolean isMemberOfPom();
-
-    void setMemberOfPom(boolean memberOfPom);
-
-    void setPluginDocument(PluginDocument pluginDocument);
-
-    void setPluginGoalList(Set<PluginGoal> pluginGoalList);
-
-    void setPluginPath(String pluginPath);
+    List<String> getPluginGoalList();
 }

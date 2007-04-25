@@ -19,11 +19,6 @@
 
 package org.codehaus.mevenide.idea.helper;
 
-import com.intellij.execution.ui.ConsoleView;
-import com.intellij.openapi.progress.ProgressIndicator;
-
-import org.apache.maven.embedder.MavenEmbedder;
-
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
 
@@ -37,16 +32,12 @@ import java.util.List;
  * @version $Revision$
  */
 public class BuildContext {
-    private ActionContext actionContext;
-    private boolean useMavenEmbedder;
     private boolean buildCancelled = false;
-    private ConsoleView consoleView;
     private AbstractMavenBuildTask buildTask;
     private IMavenBuildLogger logger;
     private List<String> goals = new ArrayList<String>();
     private String pomFile;
     private String workingDir;
-    private ProgressIndicator progressIndicator;
 
     public BuildContext() {}
 
@@ -66,46 +57,18 @@ public class BuildContext {
         this.buildCancelled = buildCancelled;
     }
 
-    public ProgressIndicator getProgressIndicator() {
-        return progressIndicator;
-    }
-
-    public void setProgressIndicator(ProgressIndicator progressIndicator) {
-        this.progressIndicator = progressIndicator;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public List<String> getGoals() {
         return goals;
     }
 
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
     public String getPomFile() {
         return pomFile;
     }
 
-    /**
-     * Method description
-     *
-     * @param goals Document me!
-     */
     public void setGoals(List<String> goals) {
         this.goals = goals;
     }
 
-    /**
-     * Method description
-     *
-     * @param pomFile Document me!
-     */
     public void setPomFile(String pomFile) {
         this.pomFile = pomFile;
     }
@@ -124,29 +87,5 @@ public class BuildContext {
 
     public void setLogger(IMavenBuildLogger logger) {
         this.logger = logger;
-    }
-
-    public ActionContext getActionContext() {
-        return actionContext;
-    }
-
-    public void setActionContext(ActionContext actionContext) {
-        this.actionContext = actionContext;
-    }
-
-    public boolean isUseMavenEmbedder() {
-        return useMavenEmbedder;
-    }
-
-    public void setUseMavenEmbedder(boolean useMavenEmbedder) {
-        this.useMavenEmbedder = useMavenEmbedder;
-    }
-
-    public ConsoleView getConsoleView() {
-        return consoleView;
-    }
-
-    public void setConsoleView(ConsoleView consoleView) {
-        this.consoleView = consoleView;
     }
 }

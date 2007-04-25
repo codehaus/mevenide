@@ -25,7 +25,7 @@ import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,25 +42,33 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
     private Map<String, String> mavenProperties = new LinkedMap();
     private String vmOptions;
     private String mavenSettingsFile;
-    private boolean scanForExistingPoms;
-    private boolean useFilter;
     private boolean useMavenEmbedder;
     private boolean skipTests;
     private String jdkPath;
-    private List<String> standardPhasesList = new ArrayList<String>();
+    private boolean runMavenInBackground = false;
+
     private MavenConfiguration mavenConfiguration = new MavenConfiguration();
 
+    private final String [] standardPhases = {"clean", "compile", "test", "package", "install", "site"};
+    private final String [] standardGoals =
+            {"clean", "validate",
+            "generate-sources", "process-sources", "generate-resources", "process-resources",
+            "compile", "process-classes",
+            "generate-test-sources", "process-test-sources", "generate-test-resources", "process-test-resources",
+            "test-compile", "test",
+            "package",
+            "pre-integration-test", "integration-test", "post-integration-test", 
+            "verify", "install", "site", "deploy"};
+
     public MavenBuildPluginSettings() {
-        standardPhasesList.add("clean");
-        standardPhasesList.add("compile");
-        standardPhasesList.add("test");
-        standardPhasesList.add("package");
-        standardPhasesList.add("install");
-        standardPhasesList.add("site");
     }
 
-    public MavenConfiguration getMavenConfiguration() {
-        return mavenConfiguration;
+    public List<String> getStandardGoalsList() {
+        return Arrays.asList(standardGoals);
+    }
+
+    public List<String> getStandardPhasesList() {
+        return Arrays.asList(standardPhases);
     }
 
     public Map<String, String> getMavenProperties() {
@@ -71,15 +79,17 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
         this.mavenProperties = mavenProperties;
     }
 
+    public MavenConfiguration getMavenConfiguration() {
+        return mavenConfiguration;
+    }
+
     public void setMavenConfiguration(MavenConfiguration mavenConfiguration) {
         this.mavenConfiguration = mavenConfiguration;
     }
 
-
     public String getJdkPath() {
         return this.jdkPath;
     }
-
 
     public void setJdkPath(String jdkPath) {
         this.jdkPath = jdkPath;
@@ -92,7 +102,6 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
     public void setSkipTests(boolean skipTests) {
         this.skipTests = skipTests;
     }
-
 
     public String getMavenSettingsFile() {
         if (StringUtils.isBlank(mavenSettingsFile)) {
@@ -112,96 +121,36 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
         this.mavenSettingsFile = mavenSettingsFile;
     }
 
-    public boolean isUseFilter() {
-        return useFilter;
+    public String getMavenCommandLineParams() {
+        return mavenCommandLineParams;
     }
 
-    public void setUseFilter(boolean useFilter) {
-        this.useFilter = useFilter;
+    public void setMavenCommandLineParams(String mavenCommandLineParams) {
+        this.mavenCommandLineParams = mavenCommandLineParams;
+    }
+
+    public String getMavenHome() {
+        return mavenExecutable;
+    }
+
+    public void setMavenHome(String mavenExecutable) {
+        this.mavenExecutable = mavenExecutable;
+    }
+
+    public String getMavenRepository() {
+        return mavenRepository;
+    }
+
+    public void setMavenRepository(String mavenRepository) {
+        this.mavenRepository = mavenRepository;
     }
 
     public String getVmOptions() {
         return vmOptions;
     }
 
-    public List<String> getStandardPhasesList() {
-        return standardPhasesList;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public String getMavenCommandLineParams() {
-        return mavenCommandLineParams;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public String getMavenHome() {
-        return mavenExecutable;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public String getMavenRepository() {
-        return mavenRepository;
-    }
-
-    /**
-     * Method description
-     *
-     * @return Document me!
-     */
-    public boolean isScanForExistingPoms() {
-        return scanForExistingPoms;
-    }
-
-    /**
-     * Method description
-     *
-     * @param mavenCommandLineParams Document me!
-     */
-    public void setMavenCommandLineParams(String mavenCommandLineParams) {
-        this.mavenCommandLineParams = mavenCommandLineParams;
-    }
-
-    /**
-     * Method description
-     *
-     * @param mavenExecutable Document me!
-     */
-    public void setMavenHome(String mavenExecutable) {
-        this.mavenExecutable = mavenExecutable;
-    }
-
-    /**
-     * Method description
-     *
-     * @param mavenRepository Document me!
-     */
-    public void setMavenRepository(String mavenRepository) {
-        this.mavenRepository = mavenRepository;
-    }
-
     public void setVmOptions(String vmOptions) {
         this.vmOptions = vmOptions;
-    }
-
-    /**
-     * Method description
-     *
-     * @param scanForExistingPoms Document me!
-     */
-    public void setScanForExistingPoms(boolean scanForExistingPoms) {
-        this.scanForExistingPoms = scanForExistingPoms;
     }
 
     public boolean isUseMavenEmbedder() {
@@ -212,6 +161,13 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
         this.useMavenEmbedder = useMavenEmbedder;
     }
 
+    public boolean isRunMavenInBackground() {
+        return runMavenInBackground;
+    }
+
+    public void setRunMavenInBackground(boolean runMavenInBackground) {
+        this.runMavenInBackground = runMavenInBackground;
+    }
 
     @Override
     public String toString() {
@@ -223,12 +179,10 @@ public class MavenBuildPluginSettings implements IMavenBuildConfiguration {
         sb.append(", mavenProperties=").append(mavenProperties);
         sb.append(", vmOptions='").append(vmOptions).append('\'');
         sb.append(", mavenSettingsFile='").append(mavenSettingsFile).append('\'');
-        sb.append(", scanForExistingPoms=").append(scanForExistingPoms);
-        sb.append(", useFilter=").append(useFilter);
         sb.append(", useMavenEmbedder=").append(useMavenEmbedder);
         sb.append(", skipTests=").append(skipTests);
         sb.append(", jdkPath='").append(jdkPath).append('\'');
-        sb.append(", standardPhasesList=").append(standardPhasesList);
+        sb.append(", standardPhasesList=").append(getStandardPhasesList());
         sb.append(", mavenConfiguration=").append(mavenConfiguration);
         sb.append('}');
         return sb.toString();

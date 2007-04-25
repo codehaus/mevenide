@@ -5,26 +5,19 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
 import com.intellij.openapi.project.Project;
 import org.codehaus.mevenide.idea.component.MavenBuildProjectComponent;
-import org.codehaus.mevenide.idea.gui.PomTreeView;
-import org.codehaus.mevenide.idea.helper.ActionContext;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 public abstract class PomTreeAction extends AnAction {
     public void update(final AnActionEvent e) {
-        super.update(e);
         e.getPresentation().setEnabled(isEnabled(e));
     }
 
     protected boolean isEnabled(AnActionEvent e) {
-        return getView(e) != null;
+        return getTreeStructure(e) != null;
     }
 
-    protected PomTreeView getView(AnActionEvent e) {
+    protected PomTreeStructure getTreeStructure(AnActionEvent e) {
         Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
-        return project == null ? null : MavenBuildProjectComponent.getInstance(project).getPomTreeView();
-    }
-
-    protected ActionContext getActionContext(AnActionEvent e) {
-        Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
-        return project == null ? null : MavenBuildProjectComponent.getInstance(project).getActionContext();
+        return project == null ? null : MavenBuildProjectComponent.getInstance(project).getPomTreeStructure();
     }
 }

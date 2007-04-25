@@ -26,26 +26,15 @@ import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.form.CustomizingObject;
 import org.codehaus.mevenide.idea.helper.IForm;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.Dimension;
-import java.util.Enumeration;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.Vector;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.*;
 
 /**
  * Creates the form for the Maven2 build setup and is responsible for updating the
@@ -77,6 +66,7 @@ public class MavenBuildConfigurationForm implements IForm {
     private JTable tableProperties;
     private DefaultTableModel tablePropertiesModel;
     private JScrollPane scrollPaneProperties;
+    private JCheckBox checkBoxRunMavenInBackground;
     private DefaultComboBoxModel comboboxModelModelChooseJdk = new DefaultComboBoxModel();
     private MavenBuildConfigurationTableListener propertiesTableListener;
 
@@ -92,6 +82,22 @@ public class MavenBuildConfigurationForm implements IForm {
         tableProperties.setPreferredSize(null);
         tableProperties.setPreferredScrollableViewportSize(null);
         scrollPaneProperties.setPreferredSize(new Dimension(250, 100));
+
+        getButtonBrowseMavenHomeDirectory().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+                String path = textFieldMavenHomeDirectory.getText();
+                if (!StringUtils.isEmpty(path)) {
+                    fileChooser.setCurrentDirectory(new File(path));
+                }
+
+                if (fileChooser.showOpenDialog(getRootComponent()) == JFileChooser.APPROVE_OPTION) {
+                    textFieldMavenHomeDirectory.setText(fileChooser.getSelectedFile().getPath());
+                }
+            }
+        });
     }
 
     {
@@ -266,6 +272,7 @@ public class MavenBuildConfigurationForm implements IForm {
         }
 
         checkBoxUseEmbeddedMaven.setSelected(data.isUseMavenEmbedder());
+        checkBoxRunMavenInBackground.setSelected(data.isRunMavenInBackground());
         textFieldMavenHomeDirectory.setText(data.getMavenHome());
         textFieldVMParameters.setText(data.getVmOptions());
         checkBoxSkipTests.setSelected(data.isSkipTests());
@@ -297,6 +304,7 @@ public class MavenBuildConfigurationForm implements IForm {
 
     public void getData(MavenBuildPluginSettings data) {
         data.setUseMavenEmbedder(checkBoxUseEmbeddedMaven.isSelected());
+        data.setRunMavenInBackground(checkBoxRunMavenInBackground.isSelected());
         data.setMavenHome(textFieldMavenHomeDirectory.getText());
         data.setVmOptions(textFieldVMParameters.getText());
         data.setSkipTests(checkBoxSkipTests.isSelected());
@@ -330,6 +338,7 @@ public class MavenBuildConfigurationForm implements IForm {
             comboBoxChooseJDK.setEnabled(false);
         }
         if (checkBoxUseEmbeddedMaven.isSelected() != data.isUseMavenEmbedder()) return true;
+        if (checkBoxRunMavenInBackground.isSelected() != data.isRunMavenInBackground()) return true;
         if (textFieldMavenHomeDirectory.getText() != null ?
                 !textFieldMavenHomeDirectory.getText().equals(data.getMavenHome()) : data.getMavenHome() != null)
             return true;

@@ -6,18 +6,16 @@ import com.intellij.openapi.actionSystem.ActionPopupMenu;
 import com.intellij.psi.PsiFile;
 import com.intellij.ui.PopupHandler;
 import com.intellij.ui.treeStructure.SimpleNode;
-import org.codehaus.mevenide.idea.action.RunSelectedGoalsAction;
-import org.codehaus.mevenide.idea.component.PomTreeStructure;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
 
 public class PomTreeMouseAdapter extends PopupHandler {
-    private final PomTreeView pomTreeView;
+    private final PomTreeStructure pomTreeStructure;
 
-    public PomTreeMouseAdapter(PomTreeView treeView) {
-        this.pomTreeView = treeView;
+    public PomTreeMouseAdapter(PomTreeStructure pomTreeStructure) {
+        this.pomTreeStructure = pomTreeStructure;
     }
 
     public void invokePopup(Component comp, int x, int y) {
@@ -35,22 +33,22 @@ public class PomTreeMouseAdapter extends PopupHandler {
     }
 
     protected void doubleClick() {
-        Collection<SimpleNode> selectedNodes = pomTreeView.getSelectedNodes();
+        Collection<SimpleNode> selectedNodes = pomTreeStructure.getSelectedNodes();
 
-        Collection<PomTreeStructure.PomNode> pomNodes = pomTreeView.filterNodes(selectedNodes, PomTreeStructure.PomNode.class, false);
+        Collection<PomTreeStructure.PomNode> pomNodes = pomTreeStructure.filterNodes(selectedNodes, PomTreeStructure.PomNode.class, false);
         if (!pomNodes.isEmpty()) {
             navigate(pomNodes);
             return;
         }
 
-        Collection<PomTreeStructure.GoalNode> goalNodes = pomTreeView.filterNodes(selectedNodes, PomTreeStructure.GoalNode.class, false);
+        Collection<PomTreeStructure.GoalNode> goalNodes = pomTreeStructure.filterNodes(selectedNodes, PomTreeStructure.GoalNode.class, false);
         if (!goalNodes.isEmpty()) {
-            RunSelectedGoalsAction.runSelectedGoals(null, goalNodes);
+            pomTreeStructure.runGoals(goalNodes);
         }
     }
 
     private ActionPopupMenu createPopup() {
-        Collection<SimpleNode> selectedNodes = pomTreeView.getSelectedNodes();
+        Collection<SimpleNode> selectedNodes = pomTreeStructure.getSelectedNodes();
 
         ActionPopupMenu pomMenu = createPopupMenu(selectedNodes, PomTreeStructure.PomNode.class, false, "org.codehaus.mevenide.idea.action.PomMenu");
         if ( pomMenu != null ) return pomMenu;
@@ -63,7 +61,7 @@ public class PomTreeMouseAdapter extends PopupHandler {
     }
 
     protected ActionPopupMenu createPopupMenu(Collection<SimpleNode> selectedNodes, Class<? extends SimpleNode> aClass, boolean strict, String menuId){
-        Collection<? extends SimpleNode> nodes = pomTreeView.filterNodes(selectedNodes, aClass, strict);
+        Collection<? extends SimpleNode> nodes = pomTreeStructure.filterNodes(selectedNodes, aClass, strict);
         if (nodes.isEmpty()) {
             return null;
         } else {

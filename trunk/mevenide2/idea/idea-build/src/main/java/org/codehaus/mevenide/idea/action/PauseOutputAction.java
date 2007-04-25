@@ -19,14 +19,12 @@
 
 package org.codehaus.mevenide.idea.action;
 
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
-
+import com.intellij.openapi.project.Project;
+import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
 import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
 import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
-
-import javax.swing.*;
 
 /**
  * Describe what this class does.
@@ -35,63 +33,26 @@ import javax.swing.*;
  * @version $Revision$
  */
 public class PauseOutputAction extends AbstractBuildAction {
-    public PauseOutputAction() {}
+    protected void doUpdate(Presentation presentation, Project project, BuildContext buildContext) {
+        IMavenBuildLogger logger = buildContext.getLogger();
 
-    /**
-     * Constructs ...
-     *
-     * @param buildContext Document me!
-     * @param text         Document me!
-     * @param description  Document me!
-     * @param icon         Document me!
-     */
-    public PauseOutputAction(BuildContext buildContext, String text, String description, Icon icon) {
-        super(text, description, icon);
-        this.buildContext = buildContext;
-        this.actionContext = buildContext.getActionContext();
-    }
+        AbstractMavenBuildTask mavenBuildTask = buildContext.getBuildTask();
+        if (mavenBuildTask != null && mavenBuildTask.isStopped()) {
+            presentation.setEnabled(false);
+            logger.setOutputPaused(false);
+        } else {
+            presentation.setEnabled(true);
 
-    /**
-     * Method description
-     *
-     * @param actionEvent Document me!
-     */
-    public void actionPerformed(AnActionEvent actionEvent) {
-        String actionText = actionEvent.getPresentation().getText();
-
-        if (actionText.equals(PluginConstants.ACTION_COMMAND_PAUSE_OUTPUT)
-                || actionText.equals(PluginConstants.ACTION_COMMAND_CONTINUE_OUTPUT)) {
-            if (buildContext.getLogger().isOutputPaused()) {
-                buildContext.getLogger().setOutputPaused(false);
+            if (logger.isOutputPaused()) {
+                presentation.setText(PluginConstants.ACTION_COMMAND_CONTINUE_OUTPUT);
             } else {
-                buildContext.getLogger().setOutputPaused(true);
+                presentation.setText(PluginConstants.ACTION_COMMAND_PAUSE_OUTPUT);
             }
         }
     }
 
-    /**
-     * Method description
-     *
-     * @param e Document me!
-     */
-    public void update(AnActionEvent e) {
-        Presentation presentation = e.getPresentation();
-
-        if ((actionContext != null) && (buildContext.getBuildTask() != null)) {
-            IMavenBuildLogger logger = buildContext.getLogger();
-
-            if (buildContext.getBuildTask().isStopped()) {
-                presentation.setEnabled(false);
-                logger.setOutputPaused(false);
-            } else {
-                presentation.setEnabled(true);
-
-                if (logger.isOutputPaused()) {
-                    presentation.setText(PluginConstants.ACTION_COMMAND_CONTINUE_OUTPUT);
-                } else {
-                    presentation.setText(PluginConstants.ACTION_COMMAND_PAUSE_OUTPUT);
-                }
-            }
-        }
+    protected void doPerform(Project project, BuildContext buildContext) {
+        IMavenBuildLogger buildLogger = buildContext.getLogger();
+        buildLogger.setOutputPaused(!buildLogger.isOutputPaused());
     }
 }

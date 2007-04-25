@@ -21,16 +21,13 @@ package org.codehaus.mevenide.idea.build;
 
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
-
 import org.apache.log4j.Logger;
-
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.util.CommonUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-
 import java.util.List;
 
 /**
@@ -62,7 +59,6 @@ public class MavenBuildTask extends AbstractMavenBuildTask implements Runnable {
             if (indicator != null) {
                 indicator.setText(buildEnvironment.getGoals().toString());
                 indicator.setIndeterminate(true);
-                indicator.setFraction(0.5);
             }
 
             LOG.info("Working directory is: " + buildEnvironment.getWorkingDir());
@@ -149,5 +145,9 @@ public class MavenBuildTask extends AbstractMavenBuildTask implements Runnable {
         setStopped(true);
 
         return exitValue;
+    }
+
+    public String getCaption() {
+        return BuildConstants.MESSAGE_USING_EXTERNAL_MAVEN;
     }
 }

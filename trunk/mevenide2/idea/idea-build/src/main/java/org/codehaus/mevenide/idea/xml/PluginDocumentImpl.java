@@ -1,6 +1,5 @@
-package org.codehaus.mevenide.idea.xml.impl;
+package org.codehaus.mevenide.idea.xml;
 
-import org.codehaus.mevenide.idea.xml.PluginDocument;
 import org.codehaus.mevenide.idea.xml.impl.JDOMReader;
 import org.jdom.Element;
 
@@ -34,6 +33,18 @@ public class PluginDocumentImpl extends JDOMReader implements PluginDocument {
                         return list;
                     }
                 };
+            }
+
+            public String getGroupId() {
+                return getChildText(rootElement, "groupId");
+            }
+
+            public String getArtifactId() {
+                return getChildText(rootElement, "artifactId");
+            }
+
+            public String getVersion() {
+                return getChildText(rootElement, "version");
             }
         };
     }

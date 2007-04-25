@@ -18,10 +18,7 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.util.Comparator;
 import java.util.Set;
 import java.util.TreeSet;
@@ -40,6 +37,10 @@ import java.util.TreeSet;
 public class CorePlugin implements ProjectComponent, Configurable, JDOMExternalizable {
     private static final Logger LOG = Logger.getLogger(CorePlugin.class);
 
+    public static CorePlugin getInstance (Project project) {
+        return project.getComponent(CorePlugin.class);
+    }
+
     private final Project corePlugin;
     private Set<IMevenideIdeaComponent> mevenideIdeaComponents =
             new TreeSet<IMevenideIdeaComponent>(new MevenideIdeaComponentComparator());
@@ -47,15 +48,9 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
     private MavenConfiguration mavenConfiguration = new MavenConfiguration();
     private int selectedTabIndex = 0;
 
-    private class MevenideIdeaComponentComparator implements Comparator {
-
-        public int compare(Object mevenideComponent, Object mevenideComponent1) {
-            if (mevenideComponent instanceof IMevenideIdeaComponent &&
-                    mevenideComponent1 instanceof IMevenideIdeaComponent) {
-                return ((IMevenideIdeaComponent) mevenideComponent).getMevenideComponentName()
-                        .compareTo(((IMevenideIdeaComponent) mevenideComponent1).getMevenideComponentName());
-            }
-            return -1;
+    private class MevenideIdeaComponentComparator implements Comparator<IMevenideIdeaComponent> {
+        public int compare(IMevenideIdeaComponent o1, IMevenideIdeaComponent o2) {
+            return o1.getMevenideComponentName().compareTo(o2.getMevenideComponentName());
         }
     }
 
@@ -88,7 +83,7 @@ public class CorePlugin implements ProjectComponent, Configurable, JDOMExternali
 
     @NotNull
     public String getComponentName() {
-        return "CorePlugin";
+        return "MevenideCorePlugin";
     }
 
 

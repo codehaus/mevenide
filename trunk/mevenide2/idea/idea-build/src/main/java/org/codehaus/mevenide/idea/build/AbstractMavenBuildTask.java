@@ -36,6 +36,8 @@ public abstract class AbstractMavenBuildTask implements Runnable {
 
     public abstract void run();
 
+    public abstract String getCaption ();
+
     protected int stop() {
         stopped = true;
 
@@ -57,5 +59,9 @@ public abstract class AbstractMavenBuildTask implements Runnable {
     public void cancel() {
         this.cancelled = true;
         stop();
+    }
+
+    public IMavenBuildLogger getLogger() {
+        return buildEnvironment.getLogger();
     }
 }

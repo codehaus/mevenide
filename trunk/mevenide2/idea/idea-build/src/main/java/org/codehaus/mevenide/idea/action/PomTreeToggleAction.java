@@ -1,37 +1,37 @@
 package org.codehaus.mevenide.idea.action;
 
-import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DataConstants;
+import com.intellij.openapi.actionSystem.ToggleAction;
 import com.intellij.openapi.project.Project;
-import org.codehaus.mevenide.idea.gui.PomTreeView;
 import org.codehaus.mevenide.idea.component.MavenBuildProjectComponent;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 public abstract class PomTreeToggleAction extends ToggleAction {
     public void update(final AnActionEvent e) {
           super.update(e);
-          e.getPresentation().setEnabled(getView(e)!=null);
+          e.getPresentation().setEnabled(getTreeStructure(e)!=null);
       }
 
-    private PomTreeView getView(AnActionEvent e) {
+    private PomTreeStructure getTreeStructure(AnActionEvent e) {
         Project project = (Project) e.getDataContext().getData(DataConstants.PROJECT);
-        return project == null ? null : MavenBuildProjectComponent.getInstance(project).getPomTreeView();
+        return project == null ? null : MavenBuildProjectComponent.getInstance(project).getPomTreeStructure();
     }
 
     public boolean isSelected(AnActionEvent e) {
-        final PomTreeView view = getView(e);
-        return view != null && isSelected(view);
+        final PomTreeStructure structure = getTreeStructure(e);
+        return structure != null && isSelected(structure);
     }
 
     public void setSelected(AnActionEvent e, boolean state) {
-        final PomTreeView view = getView(e);
-        if ( view != null ) {
-            setSelected(view, state);
-            view.updateStructure();
+        final PomTreeStructure structure = getTreeStructure(e);
+        if ( structure != null ) {
+            setSelected(structure, state);
+            structure.updateFromRoot(true);
         }
     }
 
-    public abstract boolean isSelected(PomTreeView view);
+    public abstract boolean isSelected(PomTreeStructure structure);
 
-    public abstract void setSelected(PomTreeView view, boolean state);
+    public abstract void setSelected(PomTreeStructure structure, boolean state);
 }

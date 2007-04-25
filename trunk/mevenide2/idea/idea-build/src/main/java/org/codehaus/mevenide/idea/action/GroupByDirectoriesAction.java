@@ -1,14 +1,14 @@
 package org.codehaus.mevenide.idea.action;
 
-import org.codehaus.mevenide.idea.gui.PomTreeView;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 
 public class GroupByDirectoriesAction extends PomTreeToggleAction {
 
-    public boolean isSelected(PomTreeView view) {
-        return view.getSettings().groupByDirectory;
+    public boolean isSelected(PomTreeStructure structure) {
+        return structure.getSettings().groupByDirectory;
     }
 
-    public void setSelected(PomTreeView view, boolean state) {
-        view.getSettings().groupByDirectory = state;
+    public void setSelected(PomTreeStructure structure, boolean state) {
+        structure.getSettings().groupByDirectory = state;
     }
 }

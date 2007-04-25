@@ -20,9 +20,7 @@
 package org.codehaus.mevenide.idea.common;
 
 import junit.framework.TestCase;
-
 import org.apache.commons.lang.StringUtils;
-
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
@@ -99,13 +97,6 @@ public class MavenBuildPluginSettingsTest extends TestCase {
         settings = new MavenBuildPluginSettings();
         settings.setMavenRepository("Maven Repository");
         assertNotNull(settings.getMavenRepository());
-    }
-
-    public void testIsScanForExistingPoms() {
-        settings = new MavenBuildPluginSettings();
-        assertFalse(settings.isScanForExistingPoms());
-        settings.setScanForExistingPoms(true);
-        assertTrue(settings.isScanForExistingPoms());
     }
 
     public void testIsUseMavenEmbedder() {

@@ -17,16 +17,19 @@
 
 package org.codehaus.mevenide.idea.model;
 
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.jetbrains.annotations.NonNls;
+
 public class MavenConfiguration {
-    public static final String CONFIG_ELEMENT_WORK_OFFLINE = "workOffline";
-    public static final String CONFIG_ELEMENT_LOCAL_REPOSITORY = "localRepository";
-    public static final String CONFIG_ELEMENT_EXCEPTION_ERROR_MESSAGES = "exceptionErrorMessages";
-    public static final String CONFIG_ELEMENT_USE_PLUGIN_REGISTRY = "usePluginRegistry";
-    public static final String CONFIG_ELEMENT_NON_RECURSIVE = "nonRecursive";
-    public static final String CONFIG_ELEMENT_OUTPUT_LEVEL = "outputLevel";
-    public static final String CONFIG_ELEMENT_CHECKSUM_POLICY = "checksumPolicy";
-    public static final String CONFIG_ELEMENT_FAILURE_BEHAVIOR = "failureBehavior";
-    public static final String CONFIG_ELEMENT_PLUGIN_UPDATE_POLICY = "updatePolicy";
+    @NonNls public static final String CONFIG_ELEMENT_WORK_OFFLINE = "workOffline";
+    @NonNls public static final String CONFIG_ELEMENT_LOCAL_REPOSITORY = "localRepository";
+    @NonNls public static final String CONFIG_ELEMENT_EXCEPTION_ERROR_MESSAGES = "exceptionErrorMessages";
+    @NonNls public static final String CONFIG_ELEMENT_USE_PLUGIN_REGISTRY = "usePluginRegistry";
+    @NonNls public static final String CONFIG_ELEMENT_NON_RECURSIVE = "nonRecursive";
+    @NonNls public static final String CONFIG_ELEMENT_OUTPUT_LEVEL = "outputLevel";
+    @NonNls public static final String CONFIG_ELEMENT_CHECKSUM_POLICY = "checksumPolicy";
+    @NonNls public static final String CONFIG_ELEMENT_FAILURE_BEHAVIOR = "failureBehavior";
+    @NonNls public static final String CONFIG_ELEMENT_PLUGIN_UPDATE_POLICY = "updatePolicy";
 
     private boolean workOffline;
     private String localRepository;
@@ -34,9 +37,9 @@ public class MavenConfiguration {
     private boolean usePluginRegistry;
     private boolean nonRecursive;
     private int outputLevel;
-    private String checksumPolicy;
-    private String failureBehavior;
-    private Boolean pluginUpdatePolicy;
+    private String checksumPolicy = "";
+    private String failureBehavior = MavenExecutionRequest.REACTOR_FAIL_FAST;
+    private Boolean pluginUpdatePolicy = false;
 
     public MavenConfiguration() {
     }

@@ -60,12 +60,7 @@ public class PluginConstants {
     /**
      * Field description
      */
-    public static final String PROJECT_COMPONENT_NAME = "MavenBuildProjectComponent";
-
-    /**
-     * Field description
-     */
-    public static final String PLUGIN_CONFIG_FILENAME = "/plugin-config.xml";
+    public static final String PROJECT_COMPONENT_NAME = "MevenindeBuildPlugin";
 
     /**
      * Field description
@@ -281,6 +276,7 @@ public class PluginConstants {
     public static final String CONFIG_ELEMENT_MAVEN_REPOSITORY = "mavenRepository";
     public static final String CONFIG_ELEMENT_SCAN_FOR_POMS = "scanForExistingPoms";
     public static final String CONFIG_ELEMENT_USE_MAVEN_EMBEDDER = "useMavenEmbedder";
+    public static final String CONFIG_ELEMENT_RUN_MAVEN_IN_BACKGROUND = "runMavenInBackground";
     public static final String CONFIG_ELEMENT_SKIP_TESTS = "skipTests";
     public static final String CONFIG_ELEMENT_JDK_PATH = "jdkPath";
     public static final String CONFIG_ELEMENT_USE_FILTER = "useFilter";

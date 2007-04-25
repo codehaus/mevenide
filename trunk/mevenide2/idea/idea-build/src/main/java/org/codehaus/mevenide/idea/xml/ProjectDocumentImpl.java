@@ -1,10 +1,9 @@
-package org.codehaus.mevenide.idea.xml.impl;
+package org.codehaus.mevenide.idea.xml;
 
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.xml.XmlFile;
 import com.intellij.util.xml.DomFileElement;
 import com.intellij.util.xml.DomManager;
-import org.codehaus.mevenide.idea.xml.ProjectDocument;
 
 public class ProjectDocumentImpl implements ProjectDocument {
 
@@ -14,7 +13,7 @@ public class ProjectDocumentImpl implements ProjectDocument {
         if ( psiFile == null ) {
             fileElement = null;
         } else {
-            fileElement = DomManager.getDomManager(psiFile.getProject()).getFileElement((XmlFile) psiFile/*, Project.class*/);
+            fileElement = DomManager.getDomManager(psiFile.getProject()).getFileElement((XmlFile) psiFile, Project.class);
         }
     }
 

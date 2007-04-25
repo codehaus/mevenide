@@ -65,7 +65,11 @@ public interface IMavenBuildConfiguration {
 
     void setVmOptions(String vmOptions);
 
-    public boolean isUseMavenEmbedder();
+    boolean isUseMavenEmbedder();
 
-    public void setUseMavenEmbedder(boolean useMavenEmbedder);
+    void setUseMavenEmbedder(boolean useMavenEmbedder);
+
+    boolean isRunMavenInBackground();
+
+    void setRunMavenInBackground(boolean runMavenInBackground);
 }
