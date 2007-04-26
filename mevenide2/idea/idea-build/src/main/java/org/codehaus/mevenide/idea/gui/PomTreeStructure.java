@@ -62,7 +62,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
     private SimpleTreeBuilder treeBuilder;
     private SimpleTree tree;
 
-    private Map<VirtualFile, PomNode> fileToNode = new HashMap<VirtualFile,PomNode>();
+    private Map<VirtualFile, PomNode> fileToNode = new HashMap<VirtualFile, PomNode>();
     private Element savedConfigElement;
 
     @NonNls private static final String GROUP_ID_ATTR = "groupId";
@@ -73,7 +73,12 @@ public class PomTreeStructure extends SimpleTreeStructure {
     @NonNls private static final String POM_OPTIONS_TAG = "pom-options";
     @NonNls private static final String ID_ATTR = "id";
 
-    Map<String,Integer> standardGoalOrder;
+    @NonNls private static final String POM_TREE_TAG = "pom-tree";
+    @NonNls private static final String GROUP_BY_MODULE_ATTR = "groupByModule";
+    @NonNls private static final String GROUP_BY_DIRECTORY_ATTR = "groupByDirectory";
+    @NonNls private static final String FILTER_STANDARD_PHASES_ATTR = "filterStandardPhases";
+
+    Map<String, Integer> standardGoalOrder;
 
     public PomTreeStructure(Project project, MavenBuildPluginSettings pluginSettings) {
         this.project = project;
@@ -89,10 +94,10 @@ public class PomTreeStructure extends SimpleTreeStructure {
         mavenRepository = pluginSettings.getMavenRepository();
 
         root = new RootNode();
-        SimpleTreeBuilder myBuilder = new SimpleTreeBuilder(tree, (DefaultTreeModel) tree.getModel(), this, null);
-        myBuilder.initRoot();
-        setBuilder (myBuilder);
-        Disposer.register(project, myBuilder);
+
+        treeBuilder = new SimpleTreeBuilder(tree, (DefaultTreeModel) tree.getModel(), this, null);
+        treeBuilder.initRoot();
+        Disposer.register(project, treeBuilder);
     }
 
     public Settings getSettings() {
@@ -111,16 +116,12 @@ public class PomTreeStructure extends SimpleTreeStructure {
         return root;
     }
 
-    public void setBuilder(SimpleTreeBuilder builder) {
-        this.treeBuilder = builder;
-    }
-
-    public void rebuild(Iterable<? extends VirtualFile> files){
+    public void rebuild(Iterable<? extends VirtualFile> files) {
         final Map<VirtualFile, PomNode> oldFileToNode = fileToNode;
         fileToNode = new HashMap<VirtualFile, PomNode>();
         for (VirtualFile pomFile : files) {
             PomNode pomNode = oldFileToNode.get(pomFile);
-            if ( pomNode == null ){
+            if (pomNode == null) {
                 pomNode = new PomNode(pomFile);
             } else {
                 pomNode.unlinkNested();
@@ -128,11 +129,11 @@ public class PomTreeStructure extends SimpleTreeStructure {
             fileToNode.put(pomFile, pomNode);
         }
 
-        if ( savedConfigElement != null) {
+        if (savedConfigElement != null) {
             restorePluginState(savedConfigElement);
             savedConfigElement = null;
         }
-        
+
         root.rebuild();
 
         updateFromRoot(true);
@@ -141,11 +142,11 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
     public void update(VirtualFile file) {
         final PomNode pomNode = fileToNode.get(file);
-        if ( pomNode != null ) {
+        if (pomNode != null) {
             pomNode.onFileUpdate();
         } else {
             final PomNode newNode = new PomNode(file);
-            fileToNode.put( file, newNode);
+            fileToNode.put(file, newNode);
             root.addToStructure(newNode);
         }
     }
@@ -159,7 +160,8 @@ public class PomTreeStructure extends SimpleTreeStructure {
     }
 
     private void updateTreeFrom(SimpleNode node) {
-        final DefaultMutableTreeNode mutableTreeNode = TreeUtil.findNodeWithObject((DefaultMutableTreeNode) tree.getModel().getRoot(), node);
+        final DefaultMutableTreeNode mutableTreeNode =
+                TreeUtil.findNodeWithObject((DefaultMutableTreeNode) tree.getModel().getRoot(), node);
         if (mutableTreeNode != null) {
             treeBuilder.addSubtreeToUpdate(mutableTreeNode);
         } else {
@@ -179,28 +181,28 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
     private static <T extends SimpleNode> void insertSorted(List<T> list, T newObject) {
         int pos = Collections.binarySearch(list, newObject, nodeComparator);
-        list.add (pos >= 0 ? pos : -pos - 1, newObject );
+        list.add(pos >= 0 ? pos : -pos - 1, newObject);
     }
 
-    public static PomNode getCommonParent (Collection<GoalNode> goalNodes) {
+    public static PomNode getCommonParent(Collection<GoalNode> goalNodes) {
         PomNode parent = null;
         for (GoalNode goalNode : goalNodes) {
             PomNode nextParent = goalNode.getParent(PomNode.class);
-            if ( parent == null ) {
+            if (parent == null) {
                 parent = nextParent;
-            } else if ( parent != nextParent ) {
+            } else if (parent != nextParent) {
                 return null;
             }
         }
         return parent;
     }
 
-    private int getStandardGoalOrder (String goal){
-        if ( standardGoalOrder == null ) {
+    private int getStandardGoalOrder(String goal) {
+        if (standardGoalOrder == null) {
             standardGoalOrder = new HashMap<String, Integer>();
             int i = 0;
-            for ( String aGoal : standardGoals){
-                standardGoalOrder.put (aGoal, i++);
+            for (String aGoal : standardGoals) {
+                standardGoalOrder.put(aGoal, i++);
             }
         }
         Integer order = standardGoalOrder.get(goal);
@@ -220,7 +222,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
         return goalList;
     }
 
-    public void runGoals(Collection<PomTreeStructure.GoalNode> goalNodes){
+    public void runGoals(Collection<PomTreeStructure.GoalNode> goalNodes) {
         PomTreeStructure.PomNode pomNode = PomTreeStructure.getCommonParent(goalNodes);
         if (pomNode != null) {
             MavenRunner.setupBuildContext(project, pomNode.getFile(), getSortedGoalList(goalNodes));
@@ -229,8 +231,8 @@ public class PomTreeStructure extends SimpleTreeStructure {
     }
 
     private PomNode findPomById(String id) {
-        for ( PomNode pomNode : fileToNode.values()) {
-            if ( pomNode.getId().equals(id)) {
+        for (PomNode pomNode : fileToNode.values()) {
+            if (pomNode.getId().equals(id)) {
                 return pomNode;
             }
         }
@@ -238,21 +240,21 @@ public class PomTreeStructure extends SimpleTreeStructure {
     }
 
     public void readExternal(Element root) {
-        Element element = root.getChild("pom-tree");
-        if ( element != null ) {
-            settings.groupByModule = Boolean.valueOf(JDOMExternalizerUtil.readField(element, "groupByModule"));
-            settings.groupByDirectory = Boolean.valueOf(JDOMExternalizerUtil.readField(element, "groupByDirectory"));
-            settings.filterStandardPhases = Boolean.valueOf(JDOMExternalizerUtil.readField(element, "filterStandardPhases"));
+        Element element = root.getChild(POM_TREE_TAG);
+        if (element != null) {
+            settings.groupByModule = Boolean.valueOf(JDOMExternalizerUtil.readField(element, GROUP_BY_MODULE_ATTR));
+            settings.groupByDirectory = Boolean.valueOf(JDOMExternalizerUtil.readField(element, GROUP_BY_DIRECTORY_ATTR));
+            settings.filterStandardPhases = Boolean.valueOf(JDOMExternalizerUtil.readField(element, FILTER_STANDARD_PHASES_ATTR));
         }
         savedConfigElement = root;
     }
 
     public void writeExternal(Element root) {
-        Element element = new Element("pom-tree");
+        Element element = new Element(POM_TREE_TAG);
         root.addContent(element);
-        JDOMExternalizerUtil.writeField(element, "groupByModule", Boolean.toString(settings.groupByModule));
-        JDOMExternalizerUtil.writeField(element, "groupByDirectory", Boolean.toString(settings.groupByDirectory));
-        JDOMExternalizerUtil.writeField(element, "filterStandardPhases", Boolean.toString(settings.filterStandardPhases));
+        JDOMExternalizerUtil.writeField(element, GROUP_BY_MODULE_ATTR, Boolean.toString(settings.groupByModule));
+        JDOMExternalizerUtil.writeField(element, GROUP_BY_DIRECTORY_ATTR, Boolean.toString(settings.groupByDirectory));
+        JDOMExternalizerUtil.writeField(element, FILTER_STANDARD_PHASES_ATTR, Boolean.toString(settings.filterStandardPhases));
 
         savePluginsState(root);
     }
@@ -270,7 +272,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
                                 pluginElement.getAttributeValue(GROUP_ID_ATTR),
                                 pluginElement.getAttributeValue(ARTIFACT_ID_ATTR),
                                 pluginElement.getAttributeValue(VERSION_ATTR));
-                        if ( path != null ) {
+                        if (path != null) {
                             node.attachPlugin(path);
                         }
                     }
@@ -281,15 +283,15 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
     private void savePluginsState(Element root) {
         Element pomOptionsElement = null;
-        for ( PomNode pomNode : fileToNode.values()) {
+        for (PomNode pomNode : fileToNode.values()) {
             Element pomElement = null;
-            for ( ExtraPluginNode plugin : pomNode.getExtraPluginNodes()){
-                if ( pomElement == null ){
-                    if ( pomOptionsElement == null ){
+            for (ExtraPluginNode plugin : pomNode.getExtraPluginNodes()) {
+                if (pomElement == null) {
+                    if (pomOptionsElement == null) {
                         pomOptionsElement = new Element(POM_OPTIONS_TAG);
                         root.addContent(pomOptionsElement);
                     }
-                    pomElement = new Element (POM_TAG);
+                    pomElement = new Element(POM_TAG);
                     pomElement.setAttribute(ID_ATTR, pomNode.getId());
                     pomOptionsElement.addContent(pomElement);
                 }
@@ -315,7 +317,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
     }
 
     public <T extends SimpleNode> Collection<T> getSelectedNodes(Class<T> aClass, boolean strict) {
-        return filterNodes ( getSelectedNodes(), aClass, strict );
+        return filterNodes(getSelectedNodes(), aClass, strict);
     }
 
     public <T extends SimpleNode> Collection<T> filterNodes(Collection<SimpleNode> nodes, Class<T> aClass, boolean strict) {
@@ -338,7 +340,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
         } else {
             final ArrayList<Navigatable> navigatables = new ArrayList<Navigatable>();
             for (PomTreeStructure.PomNode pomNode : selectedNodes) {
-                navigatables.add ( pomNode.getDocument().getPsiFile());
+                navigatables.add(pomNode.getDocument().getPsiFile());
             }
             return navigatables.toArray(new Navigatable[navigatables.size()]);
         }
@@ -371,8 +373,14 @@ public class PomTreeStructure extends SimpleTreeStructure {
             }
         }
 
-        protected boolean isVisible () {
+        protected boolean isVisible() {
             return true;
+        }
+
+        protected void display(DisplayList list) {
+            if (isVisible()) {
+                list.insert(this);
+            }
         }
 
         protected void updateSubTree() {
@@ -383,12 +391,34 @@ public class PomTreeStructure extends SimpleTreeStructure {
     interface DisplayList {
         void add(Iterable<? extends CustomNode> nodes);
         void add(CustomNode node);
+        void insert(CustomNode node);
         void sort();
     }
 
-    abstract class ListNode extends CustomNode implements DisplayList {
+    abstract class ListNode extends CustomNode {
 
         List<SimpleNode> displayList = new ArrayList<SimpleNode>();
+
+        DisplayList myDisplayList = new DisplayList() {
+            public void insert(CustomNode node) {
+                displayList.add(node);
+            }
+
+            public void sort() {
+                Collections.sort(displayList, nodeComparator);
+            }
+
+
+            public void add(Iterable<? extends CustomNode> nodes) {
+                for (CustomNode node : nodes) {
+                    add(node);
+                }
+            }
+
+            public void add(CustomNode node) {
+                node.display(this);
+            }
+        };
 
         public ListNode(CustomNode parent) {
             super(parent);
@@ -396,27 +426,11 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
         public SimpleNode[] getChildren() {
             displayList.clear();
-            collect(this);
+            displayChildren(myDisplayList);
             return displayList.toArray(new SimpleNode[displayList.size()]);
         }
 
-        public void add(Iterable<? extends CustomNode> nodes) {
-            for (CustomNode node : nodes) {
-                add(node);
-            }
-        }
-
-        public void add(CustomNode node) {
-            if (node.isVisible()){
-                displayList.add(node);
-            }
-        }
-
-        public void sort() {
-            Collections.sort(displayList, nodeComparator);
-        }
-
-        protected abstract void collect(DisplayList displayList);
+        protected abstract void displayChildren(DisplayList displayList);
     }
 
     class RootNode extends ListNode {
@@ -428,15 +442,9 @@ public class PomTreeStructure extends SimpleTreeStructure {
             addPlainText(BuildBundle.message("node.root"));
         }
 
-        protected void collect(DisplayList displayList) {
-            if (settings.groupByModule) {
-                displayList.add(moduleNodes);
-            } else {
-                for (ModuleNode moduleNode : moduleNodes) {
-                    moduleNode.collect(displayList);
-                }
-                displayList.sort();
-            }
+        protected void displayChildren(DisplayList displayList) {
+            displayList.add(moduleNodes);
+            displayList.sort();
         }
 
         private void rebuild() {
@@ -447,7 +455,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
         }
 
         private void addToStructure(PomNode pomNode) {
-            findModuleNode(VfsUtil.getModuleForFile(project, pomNode.getFile())).addPom(pomNode);
+            findModuleNode(VfsUtil.getModuleForFile(project, pomNode.getFile())).addUnder(pomNode);
         }
 
         private ModuleNode findModuleNode(Module module) {
@@ -471,25 +479,22 @@ public class PomTreeStructure extends SimpleTreeStructure {
             super(parent);
         }
 
-        protected void collectNested(DisplayList displayList) {
+        protected boolean isVisible() {
+            return !pomNodes.isEmpty();
+        }
+
+        protected void displayChildren(DisplayList displayList) {
             displayList.add(pomNodes);
         }
 
-        public void collectNestedRecursively(DisplayList nodes) {
-            collectNested(nodes);
-            for (PomNode pomNode : pomNodes) {
-                pomNode.collectNestedRecursively(nodes);
-            }
-        }
-
-        public void addPom(PomNode newNode) {
+        public void addUnder(PomNode newNode) {
             Collection<PomNode> childrenOfNew = new ArrayList<PomNode>();
             for (PomNode node : pomNodes) {
-                if ( node.isAncestor(newNode)) {
+                if (node.isAncestor(newNode)) {
                     node.addNestedPom(newNode);
                     return;
                 }
-                if ( newNode.isAncestor (node)) {
+                if (newNode.isAncestor(node)) {
                     childrenOfNew.add(node);
                 }
             }
@@ -499,23 +504,36 @@ public class PomTreeStructure extends SimpleTreeStructure {
                 newNode.addNestedPom(child);
             }
 
-            newNode.setStructuralParent(this);
-            insertSorted(pomNodes, newNode);
-            updateSubTree();
+            add(newNode);
+        }
+
+        private void add(PomNode pomNode) {
+            boolean wasVisible = isVisible();
+
+            pomNode.setStructuralParent(this);
+            insertSorted(pomNodes, pomNode);
+
+            updateGroupNode(wasVisible);
         }
 
         public void remove(PomNode pomNode) {
+            boolean wasVisible = isVisible();
+
+            pomNode.setStructuralParent(null);
             pomNodes.remove(pomNode);
+            merge(pomNode.nestedPomsNode);
+
+            updateGroupNode(wasVisible);
         }
 
         public void reinsert(PomNode pomNode) {
-            remove(pomNode);
+            pomNodes.remove(pomNode);
             insertSorted(pomNodes, pomNode);
         }
 
-        public void merge(PomGroupNode groupNode) {
+        private void merge(PomGroupNode groupNode) {
             for (PomNode pomNode : groupNode.pomNodes) {
-              addPom( pomNode);
+                insertSorted(pomNodes, pomNode);
             }
             groupNode.clear();
         }
@@ -523,6 +541,16 @@ public class PomTreeStructure extends SimpleTreeStructure {
         public void clear() {
             pomNodes.clear();
         }
+
+        private void updateGroupNode(boolean wasVisible) {
+            if (wasVisible && isVisible()) {
+                updateSubTree();
+            } else {
+                updateTreeFrom(getVisibleParent());
+            }
+        }
+
+        protected abstract CustomNode getVisibleParent();
     }
 
     class ModuleNode extends PomGroupNode {
@@ -540,13 +568,20 @@ public class PomTreeStructure extends SimpleTreeStructure {
             return module;
         }
 
-        protected void collect(DisplayList displayList) {
-            if (settings.groupByDirectory) {
-                collectNested(displayList);
-            } else {
-                collectNestedRecursively(displayList);
+        protected boolean isVisible() {
+            return super.isVisible() && settings.groupByModule;
+        }
+
+        protected void display(DisplayList displayList) {
+            super.display(displayList);
+            if (!isVisible()) {
+                displayChildren(displayList);
                 displayList.sort();
             }
+        }
+
+        protected CustomNode getVisibleParent() {
+            return root;
         }
     }
 
@@ -572,7 +607,15 @@ public class PomTreeStructure extends SimpleTreeStructure {
             updateNode();
         }
 
-        protected void collect(DisplayList displayList) {
+
+        protected void display(DisplayList displayList) {
+            displayList.insert(this);
+            if (!nestedPomsNode.isVisible()) {
+                nestedPomsNode.displayChildren(displayList);
+            }
+        }
+
+        protected void displayChildren(DisplayList displayList) {
             displayList.add(phasesNode);
             displayList.add(pomPluginNodes);
             displayList.add(extraPluginNodes);
@@ -583,7 +626,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
             return document;
         }
 
-        public String getId () {
+        public String getId() {
             return document.toString();
         }
 
@@ -625,24 +668,13 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
         private void updateText() {
             clearColoredText();
-            addPlainText(document.getProject().getName().getStringValue());
+            addPlainText(document.toString());
             savedPath = getDirectory().getPath();
             addColoredFragment(" (" + savedPath + ")", SimpleTextAttributes.GRAYED_ATTRIBUTES);
         }
 
         public void addNestedPom(PomNode child) {
-            nestedPomsNode.addPom(child);
-        }
-
-        private void updateFromVisibleParent() {
-            updateTreeFrom(getParent(
-                    settings.groupByDirectory ? NestedPomsNode.class :
-                    settings.groupByModule ?    ModuleNode.class :
-                                                RootNode.class));
-        }
-
-        public void collectNestedRecursively(DisplayList displayList) {
-            nestedPomsNode.collectNestedRecursively(displayList);
+            nestedPomsNode.addUnder(child);
         }
 
         void onFileUpdate() {
@@ -651,23 +683,26 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
             updateNode();
 
-            if ( ! oldPath.equals (getSavedPath())){
+            if (!oldPath.equals(getSavedPath())) {
                 removeFromParent();
                 root.addToStructure(this);
             } else if (!oldName.equals(getName())) {
                 PomGroupNode groupNode = getParent(PomGroupNode.class);
                 groupNode.reinsert(this);
-                updateFromVisibleParent();
+                updateTreeFrom(getVisibleParent());
             } else {
                 updateSubTree();
             }
         }
 
+        private ListNode getVisibleParent() {
+            return getParent( settings.groupByDirectory ? NestedPomsNode.class :
+                              settings.groupByModule ? ModuleNode.class :
+                              RootNode.class);
+        }
+
         void removeFromParent() {
-            PomGroupNode groupNode = getParent(PomGroupNode.class);
-            groupNode.remove(this);
-            groupNode.merge(nestedPomsNode);
-            updateFromVisibleParent();
+            getParent(PomGroupNode.class).remove(this);
         }
 
         public void attachPlugin(MavenPluginDocument mavenPluginDocument) {
@@ -688,7 +723,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
             try {
                 MavenPluginDocument mavenPluginDocument = ModelUtils.createMavenPluginDocument(path);
                 if (mavenPluginDocument != null) {
-                   attachPlugin(mavenPluginDocument);
+                    attachPlugin(mavenPluginDocument);
                 }
             } catch (Exception e) {
                 ErrorHandler.processAndShowError(getProject(), e);
@@ -704,12 +739,12 @@ public class PomTreeStructure extends SimpleTreeStructure {
             setIcons(iconFolderClosed, iconFolderOpen);
         }
 
-        protected void collect(DisplayList displayList) {
-            collectNested(displayList);
+        protected boolean isVisible() {
+            return super.isVisible() && settings.groupByDirectory;
         }
 
-        protected boolean isVisible() {
-            return settings.groupByDirectory && ! pomNodes.isEmpty();
+        protected CustomNode getVisibleParent() {
+            return getParent(PomNode.class);
         }
     }
 
@@ -721,7 +756,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
             super(parent);
         }
 
-        protected void collect(DisplayList displayList) {
+        protected void displayChildren(DisplayList displayList) {
             displayList.add(goalNodes);
         }
     }
@@ -761,7 +796,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
         }
 
         public boolean isVisible() {
-            return ! settings.filterStandardPhases || standardPhases.contains(getName());
+            return !settings.filterStandardPhases || standardPhases.contains(getName());
         }
     }
 
