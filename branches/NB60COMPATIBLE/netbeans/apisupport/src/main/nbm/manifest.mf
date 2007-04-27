@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/apisupport/Bundle.properties
 OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/apisupport/layer.xml
+OpenIDE-Module-Public-Packages: -
 
