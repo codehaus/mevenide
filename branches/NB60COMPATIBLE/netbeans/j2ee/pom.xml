@@ -51,7 +51,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-j2eeserver</artifactId>
-            <version>RELEASE60-M9-SNAPSHOT</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>

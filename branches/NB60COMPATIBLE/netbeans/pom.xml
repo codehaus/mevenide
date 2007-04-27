@@ -20,8 +20,6 @@
              <!--module>libs/continuum-rpc</module>
              <module>continuum</module-->
 	     <module>graph</module>
-             <module>j2ee</module>
-            <module>persistence</module>
           </modules>
        </profile>
       
@@ -85,8 +83,8 @@
      <module>libs</module>
      <!--module>continuum</module-->
      <module>grammar</module>
-     <!--module>j2ee</module-->
-    <!--module>persistence</module-->
+     <module>j2ee</module>
+     <module>persistence</module>
      <module>autoupdate</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
@@ -115,7 +113,7 @@
       <!--a fallback to make it work everywhere -->
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE60-M8</netbeans.release>
+       <netbeans.release>RELEASE60-M9</netbeans.release>
        <mevenide.nb.release>3.0.3-SNAPSHOT</mevenide.nb.release>
   </properties>
 </project>
