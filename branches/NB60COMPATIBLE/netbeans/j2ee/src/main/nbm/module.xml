@@ -10,19 +10,15 @@
    <dependencies>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-projectuiapi</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.codehaus.mevenide:nb-mvn-embedder</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-util</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-filesystems</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-dialogs</id>
@@ -38,78 +34,63 @@
         </dependency>
         <dependency>
             <id>org.codehaus.mevenide:nb-project</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-common</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-websvc-websvcapi</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-api-ejbmodule</id>
-            <type>spec</type>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-j2ee-metadata</id>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-api-web-webmodule</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-java-project</id>
-            <type>spec</type>
         </dependency>
         <dependency>        
           <id>org.netbeans.api:org-netbeans-modules-project-ant</id>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-dd</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-api-java</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-java-platform</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-api-debugger</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-api-debugger-jpda</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2eeserver</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-schema2beans</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-jdesktop-layout</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-awt</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.codehaus.mevenide:deployment-bridge</id>
-            <type>spec</type>
         </dependency>
         <dependency>
             <id>org.codehaus.mevenide:debugger-bridge</id>
-            <type>spec</type>
         </dependency>
    </dependencies> 
 </nbm>

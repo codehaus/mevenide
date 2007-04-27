@@ -70,7 +70,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
         }
         initValues();
-        txtContextPath.setText(moduleProvider.getContextPath());
+        txtContextPath.setText(moduleProvider.getWebModuleImplementation().getContextPath());
     }
     
     private void initValues() {

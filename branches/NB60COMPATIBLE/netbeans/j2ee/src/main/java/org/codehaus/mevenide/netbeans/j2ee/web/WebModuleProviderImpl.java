@@ -82,6 +82,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
+            System.out.println("have instances of=" + server + " " + instances);
             String inst = null;
             if (instances != null && instances.length > 0) {
                 inst = instances[0];
@@ -140,36 +141,36 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return moduleChange;
     }
     
-    /**
-     * 
-     * @param name 
-     * @return 
-     */
-    public File getDeploymentConfigurationFile(String name) {
-        if (name == null) {
-            return null;
-        }
-        String path = getConfigSupport().getContentRelativePath(name);
-        if (path == null) {
-            path = name;
-        }
-        return implementation.getDDFile(path);
-    }
-
-    
-    /**
-     * 
-     * @param string 
-     * @return 
-     */
-    public FileObject findDeploymentConfigurationFile(String string) {
-        File fil = getDeploymentConfigurationFile(string);
-        if (fil != null) {
-            return FileUtil.toFileObject(fil);
-        }
-        return null;
-    }
-    
+//    /**
+//     * 
+//     * @param name 
+//     * @return 
+//     */
+//    public File getDeploymentConfigurationFile(String name) {
+//        if (name == null) {
+//            return null;
+//        }
+//        String path = getConfigSupport().getContentRelativePath(name);
+//        if (path == null) {
+//            path = name;
+//        }
+//        return implementation.getDDFile(path);
+//    }
+//
+//    
+//    /**
+//     * 
+//     * @param string 
+//     * @return 
+//     */
+//    public FileObject findDeploymentConfigurationFile(String string) {
+//        File fil = getDeploymentConfigurationFile(string);
+//        if (fil != null) {
+//            return FileUtil.toFileObject(fil);
+//        }
+//        return null;
+//    }
+//    
     /**
      * 
      * @return 
@@ -204,9 +205,9 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
             catch (ConfigurationException ex) {
                 Exceptions.printStackTrace(ex);
             }
-}
+        }
     }
-    
+//    
     public void setServerInstanceID(String str) {
         serverInstanceID = str;
         // TODO write into the private/public profile..

@@ -144,35 +144,6 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         return ejbimpl;
     }
 
-//    /**
-//     * 
-//     * @param name 
-//     * @return 
-//     */
-//    public File getDeploymentConfigurationFile(String name) {
-//        if (name == null) {
-//            return null;
-//        }
-//        String path = getConfigSupport().getContentRelativePath(name);
-//        if (path == null) {
-//            path = name;
-//        }
-//        return ejbimpl.getDDFile(path);
-//    }
-
-    
-//    /**
-//     * 
-//     * @param string 
-//     * @return 
-//     */
-//    public FileObject findDeploymentConfigurationFile(String string) {
-//        File fil = getDeploymentConfigurationFile(string);
-//        if (fil != null) {
-//            return FileUtil.toFileObject(fil);
-//        }
-//        return null;
-//    }
 
     public void setServerInstanceID(String string) {
         // TODO implement when needed
@@ -194,15 +165,6 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         }
         return MavenDeploymentImpl.DEV_NULL;
     }
-    
-//    /**
-//     * 
-//     * @return 
-//     */
-//    public File getEnterpriseResourceDirectory() {
-//        System.out.println("EjbMP: getEnterpriseResourceDirectory");
-//        return null;
-//    }
     
     public boolean useDefaultServer() {
         return serverInstanceID == null;

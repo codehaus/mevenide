@@ -417,7 +417,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        return null;
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        return toRet;
     }
 
     /**

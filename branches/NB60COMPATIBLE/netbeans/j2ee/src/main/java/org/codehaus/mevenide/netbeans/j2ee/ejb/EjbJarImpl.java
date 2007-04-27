@@ -28,6 +28,8 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -39,6 +41,7 @@ import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+import org.netbeans.modules.j2ee.metadata.ClassPathSupport;
 import org.netbeans.modules.j2ee.metadata.MetadataUnit;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
 import org.openide.ErrorManager;
@@ -56,6 +59,10 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     private List versionListeners;
     
     private EjbModuleProviderImpl provider;
+
+    private MetadataUnit metadataUnit;
+    private ClassPath metadataClassPath;
+    
     
     /** Creates a new instance of EjbJarImpl */
     EjbJarImpl(NbMavenProject proj, EjbModuleProviderImpl prov) {
@@ -75,6 +82,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      */
     
     public String getJ2eePlatformVersion() {
+        //TODO??
         return EjbProjectConstants.J2EE_14_LEVEL;
     }
     
@@ -277,10 +285,38 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         return false;
     }
 
-    //55 only..
     public MetadataUnit getMetadataUnit() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        synchronized (this) {
+            if (metadataUnit == null) {
+                metadataUnit = new MetadataUnitImpl();
+            }
+            return metadataUnit;
+        }
     }
+    
+    private class MetadataUnitImpl implements MetadataUnit {
+        public ClassPath getClassPath() {
+            return getMetadataClassPath();
+        }
+        public FileObject getDeploymentDescriptor() {
+            return EjbJarImpl.this.getDeploymentDescriptor();
+        }
+    }
+    
+    private ClassPath getMetadataClassPath() {
+        synchronized (this) {
+            if (metadataClassPath == null) {
+                ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
+                metadataClassPath = ClassPathSupport.createWeakProxyClassPath(new ClassPath[] {
+                    cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+//                    cpProvider.getJ2eePlatformClassPath(),
+                });
+            }
+            return metadataClassPath;
+        }
+    }
+    
+    
 
     //TODO
     private class EjbChange implements EjbChangeDescriptor {
@@ -356,7 +392,8 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        return null;
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        return toRet;
     }
 
     /**
