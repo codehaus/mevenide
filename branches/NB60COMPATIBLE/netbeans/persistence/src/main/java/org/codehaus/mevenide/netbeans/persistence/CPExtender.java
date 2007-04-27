@@ -98,6 +98,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
 
     public boolean addLibrary(Library library) throws IOException {
+        System.out.println("library name=" + library.getName());
         if ("toplink".equals(library.getName())) {
             //TODO would be nice if the toplink lib shipping with netbeans be the same binary
             // then we could just copy the pieces to local repo.
@@ -119,6 +120,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             if (!containsRepository(repo, mp)) {
                 mdl.addRepository(repo);
             }
+            // checking source doesn't work anymore, the wizard requires the level to be 1.5 up front.
             checkSourceLevel(mdl);
             WriterUtils.writePomModel(pom, mdl);
             //TODO have some kind of trigger for download if not locally present?
