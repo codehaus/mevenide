@@ -78,15 +78,11 @@ public final class ProjectURLWatcher {
     }
     
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        synchronized (support) {
-            support.addPropertyChangeListener(propertyChangeListener);
-        }
+        support.addPropertyChangeListener(propertyChangeListener);
     }
     
     public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
-        synchronized (support) {
-            support.removePropertyChangeListener(propertyChangeListener);
-        }
+        support.removePropertyChangeListener(propertyChangeListener);
     }
     
     /**
@@ -133,9 +129,7 @@ public final class ProjectURLWatcher {
     
     //TODO better do in ReqProcessor to break the listener chaining??
     private void fireChange(String path) {
-        synchronized (support) {
-            support.firePropertyChange(NbMavenProject.PROP_RESOURCE, null, path);
-        }
+        support.firePropertyChange(NbMavenProject.PROP_RESOURCE, null, path);
     }
     
     /**
@@ -146,9 +140,7 @@ public final class ProjectURLWatcher {
     }
     
     private void doFireReload() {
-        synchronized (support) {
-            support.firePropertyChange(NbMavenProject.PROP_PROJECT, null, null);
-        }
+        support.firePropertyChange(NbMavenProject.PROP_PROJECT, null, null);
     }
     
     /**
