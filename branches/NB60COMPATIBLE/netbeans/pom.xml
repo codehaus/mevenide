@@ -90,6 +90,7 @@
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
     <module>apisupport</module>
+    <module>feature</module>
      <!--module>nb-repo-browser</module-->
      <!--module>graph</module-->
   </modules>
