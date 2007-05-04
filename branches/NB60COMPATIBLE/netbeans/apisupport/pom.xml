@@ -10,7 +10,7 @@
     <packaging>nbm</packaging>
     <version>3.0.3-SNAPSHOT</version>
     <name>NetBeans Maven2 apisupport</name>
-    <description>x</description>
+    <description>Additional Maven2 support for creating NetBeans modules.</description>
 
     <dependencies>
         <dependency>
