@@ -1,41 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
-    <folder name="Actions">
-        <folder name="Window">
-            <file name="org-codehaus-mevenide-continuum-ContinuumAction.instance"/>
-        </folder>
-    </folder>
-    <folder name="Menu">
-        <folder name="Window">
-            <file name="org-codehaus-mevenide-continuum-ContinuumAction.instance"/>
-        </folder>
-    </folder>
-    
-    <folder name="Windows2">
-        <folder name="Modes">
-            <folder name="output">
-                <file name="ContinuumTopComponent.wstcref" url="ContinuumTopComponentWstcref.xml" />
-            </folder>
-        </folder>
-        <folder name="Components">
-            <file name="ContinuumTopComponent.settings" url="ContinuumTopComponentSettings.xml" />
-        </folder>
-        
-    </folder>
-  <folder name="Services">
-    <file name="org-codehaus-mevenide-continuum-ContinuumSettings.settings" 
-          url="ContinuumSettings.xml">
-        <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.continuum.Bundle"/-->
-        <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
-    </file>
-  </folder>
-    <folder name="OptionsDialog">
-        <folder name="Advanced">
-            <file name="Continuum.instance">
-                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.continuum.options.ContinuumAdvancedOption"/>
+    <folder name="UI">
+        <folder name="Runtime">
+            <file name="org-codehaus-mevenide-continuum-nodes-RootNode.instance">
+                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.continuum.nodes.RootNode"/>
+                <attr name="instanceCreate" methodvalue="org.codehaus.mevenide.continuum.nodes.RootNode.getInstance"/>
             </file>
         </folder>
-   </folder>
-  
+    </folder>
+    <folder name="Services">
+        <file name="org-codehaus-mevenide-continuum-ContinuumSettings2.settings" url="ContinuumSettings2.xml">
+            <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.continuum.Bundle"/-->
+            <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
+        </file>
+    </folder>
 </filesystem>

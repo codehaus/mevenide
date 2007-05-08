@@ -20,6 +20,7 @@ package org.codehaus.mevenide.continuum.options;
 import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
+import org.codehaus.mevenide.continuum.ServerInfo;
 
 /**
  *
@@ -113,13 +114,21 @@ public class SingleServer extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     
     
-    String getURL() {
-        return "http://" + txtServer.getText().trim() + (txtPort.getText().trim().length() > 0 ? (":" + txtPort.getText().trim()) : "");
+    public ServerInfo getServerInfo() {
+        ServerInfo serverInfo = new ServerInfo();
+        serverInfo.setHostname(txtServer.getText().trim());
+        serverInfo.setRpcPort(Integer.parseInt(txtPort.getText()));
+        serverInfo.setWebAppPort(Integer.parseInt(txtPort2.getText()));
+        return serverInfo;
     }
     
-    String getOutputURL() {
-        return "http://" + txtServer.getText().trim() + (txtPort2.getText().trim().length() > 0 ? (":" + txtPort2.getText().trim()) : "") + "/continuum/servlet/browse";
-    }
+//    public String getURL() {
+//        return "http://" + txtServer.getText().trim() + (txtPort.getText().trim().length() > 0 ? (":" + txtPort.getText().trim()) : "");
+//    }
+//    
+//    public String getOutputURL() {
+//        return "http://" + txtServer.getText().trim() + (txtPort2.getText().trim().length() > 0 ? (":" + txtPort2.getText().trim()) : "") + "/continuum/servlet/browse";
+//    }
     
     public void setValues(String url, String output) {
         try {
