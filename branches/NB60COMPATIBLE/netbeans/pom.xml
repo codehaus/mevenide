@@ -17,8 +17,8 @@
           <id>experimental</id>
           <modules>
              <module>nb-repo-browser</module>
-             <!--module>libs/continuum-rpc</module>
-             <module>continuum</module-->
+             <module>libs/continuum-rpc</module>
+             <module>continuum</module>
 	     <module>graph</module>
           </modules>
        </profile>
