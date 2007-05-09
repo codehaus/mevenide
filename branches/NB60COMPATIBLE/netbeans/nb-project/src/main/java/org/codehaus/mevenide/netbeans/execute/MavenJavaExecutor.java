@@ -73,6 +73,8 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     
     private Logger LOGGER = Logger.getLogger(MavenJavaExecutor.class.getName());
     
+    private volatile boolean finishing = false;
+    
     
     public MavenJavaExecutor(RunConfig conf) {
         super(conf);
@@ -88,6 +90,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
      * not to be called directrly.. use execute();
      */
     public void run() {
+        finishing = false;
         InputOutput ioput = getInputOutput();
         actionStatesAtStart();
         String basedir = System.getProperty("basedir");
@@ -202,6 +205,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             ioput = null;
             throw death;
         } finally {
+            finishing = true; //#103460
             shutdownOutput(ioput);
             handle.finish();
             ProgressTransferListener.clearAggregateHandle();
@@ -214,18 +218,22 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             }
             actionStatesAtFinish();
             EmbedderFactory.resetProjectEmbedder();
-            List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
-            for (File elem: fireList) {
-                if (elem == null) {
-                    // during archetype creation?
-                    continue;
+            final List<File> fireList = MyLifecycleExecutor.getAffectedProjects();
+            RequestProcessor.getDefault().post(new Runnable() { //#103460
+                public void run() {
+                    for (File elem: fireList) {
+                        if (elem == null) {
+                            // during archetype creation?
+                            continue;
+                        }
+                        FileObject fo = FileUtil.toFileObject(elem);
+                        if (fo != null) {
+                            //TODO have the firing based on open projects only..
+                            ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
+                        }
+                    }
                 }
-                FileObject fo = FileUtil.toFileObject(elem);
-                if (fo != null) {
-                    //TODO have the firing based on open projects only..
-                    ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
-                }
-            }
+            });
             doRemoveAllShutdownHooks();
         }
     }
@@ -252,7 +260,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             // Yes Thread.stop() is deprecated; that is why we try to avoid using it.
             RequestProcessor.getDefault().create(new Runnable() {
                 public void run() {
-                    task.stop();
+                    if (!finishing) {
+                        task.stop();
+                    }
                 }
             }).schedule(STOP_TIMEOUT);
         }
