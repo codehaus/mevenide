@@ -19,9 +19,12 @@ package org.codehaus.mevenide.netbeans.api;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.netbeans.api.project.Project;
@@ -37,7 +40,7 @@ import org.openide.filesystems.FileUtil;
 public final class ProjectURLWatcher {
     
     private NbMavenProject project;
-    private Collection<String> paths = new ArrayList<String>();
+    private Collection<URI> paths = new ArrayList<URI>();
     private PropertyChangeSupport support;
     
     static {
@@ -113,23 +116,31 @@ public final class ProjectURLWatcher {
     
     
     public synchronized void addWatchedPath(String relPath) {
-        paths.add(relPath);
+        paths.add(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
+    } 
+    
+    public synchronized void addWatchedPath(URI uri) {
+        paths.add(uri);
     } 
     
     public synchronized void removeWatchedPath(String relPath) {
-        paths.remove(relPath);
+        paths.remove(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
     }
+    public synchronized void removeWatchedPath(URI uri) {
+        paths.remove(uri);
+    } 
     
     private synchronized void checkFileObject(FileObject fo) {
-        String relPath = FileUtil.getRelativePath(project.getProjectDirectory(), fo);
-        if (relPath != null && paths.contains(relPath)) {
-            fireChange(relPath);
+        File fil = FileUtil.toFile(fo);
+        URI uri = fil.toURI();
+        if (paths.contains(uri)) {
+            fireChange(uri);
         }
     }
     
     //TODO better do in ReqProcessor to break the listener chaining??
-    private void fireChange(String path) {
-        support.firePropertyChange(NbMavenProject.PROP_RESOURCE, null, path);
+    private void fireChange(URI uri) {
+        support.firePropertyChange(NbMavenProject.PROP_RESOURCE, null, uri);
     }
     
     /**
