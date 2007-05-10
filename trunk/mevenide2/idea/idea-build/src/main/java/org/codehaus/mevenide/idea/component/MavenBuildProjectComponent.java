@@ -30,10 +30,11 @@ import org.apache.log4j.Logger;
 import org.codehaus.mevenide.idea.CorePlugin;
 import org.codehaus.mevenide.idea.IMevenideIdeaComponent;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
+import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.helper.GuiContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
@@ -63,7 +64,7 @@ public class MavenBuildProjectComponent
     private GuiContext guiContext = new GuiContext();
     private BuildContext buildContext;
     public PomTreeStructure pomTreeStructure;
-    private MavenBuildPluginSettings projectPluginSettings = new MavenBuildPluginSettings();
+    private IMavenBuildConfiguration projectPluginSettings = new MavenBuildPluginSettings();
 
     private Project project;
 
@@ -83,7 +84,7 @@ public class MavenBuildProjectComponent
         this.buildContext = buildContext;
     }
 
-    public MavenBuildPluginSettings getProjectPluginSettings() {
+    public IMavenBuildConfiguration getProjectPluginSettings() {
         return projectPluginSettings;
     }
 
@@ -140,6 +141,7 @@ public class MavenBuildProjectComponent
     private void initToolWindow() {
         MavenBuildProjectToolWindowForm form = (MavenBuildProjectToolWindowForm) guiContext.getMavenToolWindowForm();
         form.getScrollpane().setViewportView(pomTreeStructure.getTree());
+        form.setPomTreeStructure(pomTreeStructure);
 
         ToolWindow pomToolWindow = ToolWindowManager.getInstance(project).registerToolWindow(PluginConstants.BUILD_TOOL_WINDOW_ID,
                 form.getRootComponent(), ToolWindowAnchor.RIGHT);
