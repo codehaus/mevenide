@@ -21,7 +21,6 @@ import org.codehaus.mevenide.idea.common.util.ErrorHandler;
 import org.codehaus.mevenide.idea.model.MavenPluginDocument;
 import org.codehaus.mevenide.idea.model.MavenProjectDocument;
 import org.codehaus.mevenide.idea.model.ModelUtils;
-import org.codehaus.mevenide.idea.util.PluginConstants;
 import org.codehaus.mevenide.idea.xml.PluginDocument;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
@@ -47,15 +46,16 @@ public class PomTreeStructure extends SimpleTreeStructure {
 
     private final RootNode root;
 
-    private Icon iconFolderOpen = IconLoader.getIcon("/nodes/folderOpen.png");
-    private Icon iconFolderClosed = IconLoader.getIcon("/nodes/folder.png");
-    private Icon iconPlugin = IconLoader.getIcon("/nodes/plugin.png");
+    private static Icon iconFolderOpen = IconLoader.getIcon("/images/nestedPomsOpen.png");
+    private static Icon iconFolderClosed = IconLoader.getIcon("/images/nestedPomsClosed.png");
+    private static Icon iconPlugin = IconLoader.getIcon("/images/mavenPlugin.png");
 
-    private Icon iconPom = IconLoader.getIcon(PluginConstants.ICON_POM_SMALL);
-    private Icon iconGoal = IconLoader.getIcon(PluginConstants.ICON_APPLICATION_SMALL);
+    private static Icon iconPom = IconLoader.getIcon("/images/mavenProject.png");
+    private static Icon iconPhase = IconLoader.getIcon("/images/phase.png");
+    private static Icon iconPluginGoal = IconLoader.getIcon("/images/pluginGoal.png");
 
-    private Icon iconPhasesOpen = IconLoader.getIcon("/nodes/moduleGroupOpen.png");
-    private Icon iconPhasesClosed = IconLoader.getIcon("/nodes/moduleGroupClosed.png");
+    private static Icon iconPhasesOpen = IconLoader.getIcon("/images/phasesOpen.png");
+    private static Icon iconPhasesClosed = IconLoader.getIcon("/images/phasesClosed.png");
 
     private Collection<String> standardPhases;
     private Collection<String> standardGoals;
@@ -768,7 +768,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
             super(parent);
             this.goal = goal;
             addPlainText(goal);
-            setUniformIcon(iconGoal);
+            setUniformIcon(iconPhase);
         }
 
         public String getGoal() {
@@ -819,6 +819,7 @@ public class PomTreeStructure extends SimpleTreeStructure {
     class PluginGoalNode extends GoalNode {
         public PluginGoalNode(PluginNode parent, String pluginPrefix, String goal) {
             super(parent, pluginPrefix + ":" + goal);
+            setUniformIcon(iconPluginGoal);
         }
     }
 
