@@ -21,6 +21,7 @@ package org.codehaus.mevenide.idea.build;
 import org.codehaus.mevenide.idea.model.MavenConfiguration;
 
 import java.util.Map;
+import java.util.List;
 
 /**
  * Describe what this class does.
@@ -72,4 +73,8 @@ public interface IMavenBuildConfiguration {
     boolean isRunMavenInBackground();
 
     void setRunMavenInBackground(boolean runMavenInBackground);
+
+    List<String> getStandardGoalsList();
+
+    List<String> getStandardPhasesList();
 }

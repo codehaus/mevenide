@@ -23,7 +23,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.Presentation;
 import com.intellij.openapi.project.Project;
 import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
-import org.codehaus.mevenide.idea.build.MavenRunner;
+import org.codehaus.mevenide.idea.component.MavenRunner;
 import org.codehaus.mevenide.idea.helper.BuildContext;
 
 /**

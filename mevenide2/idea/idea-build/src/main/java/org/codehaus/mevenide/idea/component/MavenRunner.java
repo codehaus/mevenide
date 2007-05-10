@@ -16,7 +16,7 @@
  */
 
 
-package org.codehaus.mevenide.idea.build;
+package org.codehaus.mevenide.idea.component;
 
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.progress.PerformInBackgroundOption;
@@ -29,13 +29,18 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.log4j.Logger;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
+import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
+import org.codehaus.mevenide.idea.build.BuildException;
+import org.codehaus.mevenide.idea.build.IBuildEnvironment;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
+import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
+import org.codehaus.mevenide.idea.build.MavenBuildFormattedLogger;
+import org.codehaus.mevenide.idea.build.MavenBuildTask;
 import org.codehaus.mevenide.idea.build.embedder.MavenEmbedderBuildLogger;
 import org.codehaus.mevenide.idea.build.embedder.MavenEmbedderBuildTask;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
-import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
 import org.codehaus.mevenide.idea.common.util.BuildUtils;
 import org.codehaus.mevenide.idea.common.util.ErrorHandler;
-import org.codehaus.mevenide.idea.component.MavenBuildProjectComponent;
 import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectOutputForm;
 import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.helper.GuiContext;
@@ -43,7 +48,7 @@ import org.codehaus.mevenide.idea.helper.IdeaBuildEnvironment;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 
-import javax.swing.*;
+import javax.swing.JComponent;
 import java.io.IOException;
 import java.util.List;
 
@@ -52,7 +57,7 @@ public class MavenRunner {
     private final Project project;
     private BuildContext buildContext;
     private GuiContext guiContext;
-    MavenBuildPluginSettings pluginSettings;
+    private IMavenBuildConfiguration pluginSettings;
 
     public MavenRunner(Project project) {
         this.project = project;
@@ -134,7 +139,7 @@ public class MavenRunner {
         maven.setLogger(logger);
         maven.setClassLoader(classLoader);
         try {
-           maven.start();
+            maven.start();
         } catch (MavenEmbedderException e) {
             LOG.error(e);
         }

@@ -22,19 +22,34 @@ import com.intellij.openapi.projectRoots.ProjectJdkTable;
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.form.CustomizingObject;
 import org.codehaus.mevenide.idea.helper.IForm;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * Creates the form for the Maven2 build setup and is responsible for updating the
@@ -264,7 +279,7 @@ public class MavenBuildConfigurationForm implements IForm {
         return panel;
     }
 
-    public void setData(MavenBuildPluginSettings data) {
+    public void setData(IMavenBuildConfiguration data) {
         tablePropertiesModel.removeTableModelListener(propertiesTableListener);
         fillComboboxJdk();
         for (int i = 0; i < comboboxModelModelChooseJdk.getSize(); i++) {
@@ -308,7 +323,7 @@ public class MavenBuildConfigurationForm implements IForm {
         tablePropertiesModel.addTableModelListener(propertiesTableListener);
     }
 
-    public void getData(MavenBuildPluginSettings data) {
+    public void getData(IMavenBuildConfiguration data) {
         data.setUseMavenEmbedder(checkBoxUseEmbeddedMaven.isSelected());
         data.setRunMavenInBackground(checkBoxRunMavenInBackground.isSelected());
         data.setMavenHome(textFieldMavenHomeDirectory.getText());
@@ -325,7 +340,7 @@ public class MavenBuildConfigurationForm implements IForm {
         }
     }
 
-    public boolean isModified(MavenBuildPluginSettings data) {
+    public boolean isModified(IMavenBuildConfiguration data) {
         if (!checkBoxUseEmbeddedMaven.isSelected()) {
             textFieldMavenHomeDirectory.setEnabled(true);
             textFieldVMParameters.setEnabled(true);
@@ -370,7 +385,7 @@ public class MavenBuildConfigurationForm implements IForm {
      * @param data The data model.
      * @return if and only if both properties object are not holding the same properties.
      */
-    private boolean hasMavenPropertiesChanged(MavenBuildPluginSettings data) {
+    private boolean hasMavenPropertiesChanged(IMavenBuildConfiguration data) {
         Properties tableDataProperties = new Properties();
         Vector<Vector> tableDataVector = tablePropertiesModel.getDataVector();
         for (Vector aDataRow : tableDataVector) {

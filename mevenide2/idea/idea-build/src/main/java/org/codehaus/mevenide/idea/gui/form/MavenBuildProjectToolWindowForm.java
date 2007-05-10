@@ -16,21 +16,27 @@
  */
 
 
-
 package org.codehaus.mevenide.idea.gui.form;
 
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionGroup;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DataConstants;
+import com.intellij.openapi.actionSystem.DataProvider;
 import com.intellij.openapi.project.Project;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.component.MavenBuildProjectComponent;
+import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
 import org.codehaus.mevenide.idea.gui.PomTreeStructure;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -45,29 +51,30 @@ public class MavenBuildProjectToolWindowForm extends AbstractForm {
     private JScrollPane scrollpane;
     private JTextField textFieldCmdLine;
     private Project myProject;
+    private PomTreeStructure pomTreeStructure;
 
     class ProjectPanel extends JPanel implements DataProvider {
 
         @Nullable
         public Object getData(@NonNls String dataId) {
-            if ( dataId.equals(DataConstants.PROJECT)) {
+            if (dataId.equals(DataConstants.PROJECT)) {
                 return myProject;
             }
-            if ( dataId.equals(DataConstants.NAVIGATABLE_ARRAY)){
-                PomTreeStructure treeStructure = MavenBuildProjectComponent.getInstance(myProject).getPomTreeStructure();
-                return treeStructure.getNavigatables();
+            if (dataId.equals(DataConstants.NAVIGATABLE_ARRAY)) {
+                return pomTreeStructure.getNavigatables();
             }
             return null;
         }
     }
 
-    public MavenBuildProjectToolWindowForm(Project project, final MavenBuildPluginSettings settings) {
+    public MavenBuildProjectToolWindowForm(Project project, final IMavenBuildConfiguration settings) {
         this.myProject = project;
         panel = new ProjectPanel();
         panel.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
 
         ActionToolbar actionToolbar = ActionManager.getInstance().createActionToolbar("New Maven Toolbar",
-                (ActionGroup) ActionManager.getInstance().getAction("org.codehaus.mevenide.idea.action.PomTreeToolbar"), true);
+                (ActionGroup) ActionManager.getInstance().getAction("org.codehaus.mevenide.idea.action.PomTreeToolbar"),
+                true);
         panel.add(actionToolbar.getComponent(),
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_SOUTH, GridConstraints.FILL_HORIZONTAL,
                         GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -89,15 +96,15 @@ public class MavenBuildProjectToolWindowForm extends AbstractForm {
 //        textFieldCmdLine.setName(PluginConstants.ACTION_COMMAND_EDIT_MAVEN_COMMAND_LINE);
 
         panel.add(textFieldCmdLine,
-                  new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
-                                      GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                                      GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null));
+                new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(-1, 20), null));
         scrollpane = new JScrollPane();
         panel.add(scrollpane,
-                  new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_BOTH,
-                                      GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-                                      GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
-                                      null, null, null));
+                new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_NORTH, GridConstraints.FILL_BOTH,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW,
+                        null, null, null));
     }
 
     public JTextField getTextFieldCmdLine() {
@@ -110,5 +117,9 @@ public class MavenBuildProjectToolWindowForm extends AbstractForm {
 
     public JComponent getRootComponent() {
         return panel;
+    }
+
+    public void setPomTreeStructure(PomTreeStructure pomTreeStructure) {
+        this.pomTreeStructure = pomTreeStructure;
     }
 }
