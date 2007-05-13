@@ -51,7 +51,15 @@ public final class FileUtilities {
         return null;
     }
     
-    
+
+    public static URI convertStringToUri(String str) {
+        if (str != null) {
+            File fil = new File(str);
+            fil = FileUtil.normalizeFile(fil);
+            return fil.toURI();
+        }
+        return null;
+    }
 
     private static final Pattern RELATIVE_SLASH_SEPARATED_PATH = 
             Pattern.compile("[^:/\\\\.][^:/\\\\]*(/[^:/\\\\.][^:/\\\\]*)*"); // NOI18N
