@@ -98,7 +98,6 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
 
     public boolean addLibrary(Library library) throws IOException {
-        System.out.println("library name=" + library.getName());
         if ("toplink".equals(library.getName())) {
             //TODO would be nice if the toplink lib shipping with netbeans be the same binary
             // then we could just copy the pieces to local repo.
