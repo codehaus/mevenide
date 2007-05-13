@@ -9,9 +9,6 @@
    <licenseFile>license.txt</licenseFile>
    <dependencies>
       <dependency>
-          <id>org.codehaus.mevenide:run-jar-bridge</id>
-      </dependency>
-      <dependency>
           <id>org.codehaus.mevenide:j2ee</id>
       </dependency>
       <dependency>

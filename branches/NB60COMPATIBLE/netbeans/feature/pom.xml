@@ -15,37 +15,12 @@
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>indexer</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>debugger-bridge</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>deployment-bridge</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
             <artifactId>autoupdate</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-repository</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>run-jar-bridge</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>nb-mvn-embedder</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
