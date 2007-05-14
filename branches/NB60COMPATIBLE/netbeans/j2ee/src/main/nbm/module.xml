@@ -46,6 +46,7 @@
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-j2ee-metadata</id>
+            <explicitValue>org.netbeans.modules.j2ee.metadata/0-1 &gt; 1.2</explicitValue>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-netbeans-modules-projectapi</id>
