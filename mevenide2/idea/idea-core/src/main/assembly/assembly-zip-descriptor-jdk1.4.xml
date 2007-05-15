@@ -10,10 +10,17 @@
             <unpack>false</unpack>
             <scope>runtime</scope>
             <includes>
-                <include>org.apache.maven:maven-embedder</include>
                 <include>org.codehaus.mevenide:idea-core</include>
-                <include>commons-lang:commons-lang</include>
             </includes>
         </dependencySet>
     </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>target/lib</directory>
+            <outputDirectory>/mevenide2-idea-core/lib</outputDirectory>
+            <includes>
+                <include>**/*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
 </assembly>

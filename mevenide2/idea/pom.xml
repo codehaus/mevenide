@@ -147,6 +147,10 @@
             <classifier>mevenide</classifier>
         </dependency>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
@@ -204,6 +208,12 @@
                 <artifactId>forms</artifactId>
                 <version>1.0.7</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.3</version>
+                <type>jar</type>
             </dependency>
         </dependencies>
     </dependencyManagement>

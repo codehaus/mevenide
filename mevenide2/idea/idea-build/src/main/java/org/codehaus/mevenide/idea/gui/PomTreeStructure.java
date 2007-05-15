@@ -583,9 +583,11 @@ public class PomTreeStructure extends SimpleTreeStructure {
         public ModuleNode(RootNode parent, Module module) {
             super(parent);
             this.module = module;
-            addPlainText(module.getName());
-            ModuleType moduleType = module.getModuleType();
-            setIcons(moduleType.getNodeIcon(false), moduleType.getNodeIcon(true));
+            if (module != null) {
+                addPlainText(module.getName());
+                ModuleType moduleType = module.getModuleType();
+                setIcons(moduleType.getNodeIcon(false), moduleType.getNodeIcon(true));
+            }
         }
 
         public Module getModule() {
