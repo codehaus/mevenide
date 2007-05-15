@@ -25,14 +25,10 @@ import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import org.apache.maven.artifact.Artifact;
-import org.netbeans.modules.j2ee.dd.api.application.Application;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
-import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
-import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 
-import org.netbeans.modules.schema2beans.BaseBean;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.xml.sax.InputSource;
@@ -47,21 +43,24 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     private String moduleVersion;
     private Artifact artifact;
     private String url;
+    private EarModuleProviderImpl provider;
+    
     
     /** Creates a new instance of NonProjectJ2eeModule */
-    public NonProjectJ2eeModule(Artifact art, String modVer) {
+    public NonProjectJ2eeModule(Artifact art, String modVer, EarModuleProviderImpl prov) {
         artifact = art;
         moduleVersion = modVer;
+        provider = prov;
     }
     
     public String getModuleVersion() {
-        System.out.println("NPJM: get Version=" + moduleVersion);
+//        System.out.println("NPJM: get Version=" + moduleVersion);
         return moduleVersion;
     }
     
     public Object getModuleType() {
         String type = artifact.getType();
-        System.out.println("NPJM: get type=" + type);
+//        System.out.println("NPJM: get type=" + type);
         if ("war".equals(type)) {
             return J2eeModule.WAR;
         }
@@ -78,7 +77,7 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     public String getUrl() {
         //TODO url should be probably based on application.xml??
         String ret = url == null ? artifact.getFile().getName() : url;
-        System.out.println("NPJM: get url=" + ret);
+//        System.out.println("NPJM: get url=" + ret);
         return ret;
     }
     
@@ -87,12 +86,12 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     }
     
     public FileObject getArchive() throws IOException {
-        System.out.println("NPJM: get archive=" + artifact.getFile());
+//        System.out.println("NPJM: get archive=" + artifact.getFile());
         return FileUtil.toFileObject(FileUtil.normalizeFile(artifact.getFile()));
     }
     
     public Iterator getArchiveContents() throws IOException {
-        System.out.println("NPJM: get archive content..");
+//        System.out.println("NPJM: get archive content..");
         return null;
     }
     
@@ -102,7 +101,7 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     }
     
     public RootInterface getDeploymentDescriptor(String location) {
-        System.out.println("NPJM: get DD =" + location);
+//        System.out.println("NPJM: get DD =" + location);
         try {
             JarFile fil = new JarFile(artifact.getFile());
             ZipEntry entry = fil.getEntry(location);
@@ -118,12 +117,12 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     
     
     private RootInterface readBaseBean(InputStream str) {
-        System.out.println("NPJM:   read base bean");
+//        System.out.println("NPJM:   read base bean");
         String type = artifact.getType();
         if ("war".equals(type)) {
             try {
                 FileObject root = FileUtil.getArchiveRoot(getArchive());
-                System.out.println("NPJM:root=" + root);
+//                System.out.println("NPJM:root=" + root);
                 return org.netbeans.modules.j2ee.dd.api.web.DDProvider.getDefault().getDDRoot(root.getFileObject(J2eeModule.WEB_XML));
             } catch (IOException ex) {
                 ex.printStackTrace();
@@ -150,19 +149,28 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     }
 
     public File getResourceDirectory() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return  null;
     }
 
-    public File getDeploymentConfigurationFile(String arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public File getDeploymentConfigurationFile(String name) {
+//       if (name == null) {
+//            return null;
+//        }
+//        String path = provider.getConfigSupport().getContentRelativePath(name);
+//        if (path == null) {
+//            path = name;
+//        }
+        // here we don't really have access to the source deployment configs, as we operate on top of 
+        // maven local repository binaries only..
+        return null;
     }
 
     public void addPropertyChangeListener(PropertyChangeListener arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void removePropertyChangeListener(PropertyChangeListener arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

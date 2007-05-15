@@ -41,6 +41,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationImplementation;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.web.api.webmodule.WebModule;
@@ -178,7 +179,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      * Returns module specification version
      */
     public String getModuleVersion() {
-        System.out.println("earimpl: get module version");
+//        System.out.println("earimpl: get module version");
         //TODO??
         return J2eeModule.J2EE_14;
     }
@@ -187,7 +188,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      * Returns the location of the module within the application archive.
      */
     public String getUrl() {
-        System.out.println("EarImpl: getURL");
+//        System.out.println("EarImpl: getURL");
         return "/";
     }
 
@@ -211,7 +212,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
         File fil = FileUtil.normalizeFile(new File(loc, finalName + ".ear"));
-        System.out.println("ear = get archive=" + fil);
+//        System.out.println("ear = get archive=" + fil);
         return FileUtil.toFileObject(fil);
     }
 
@@ -225,7 +226,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      * @return Iterator through {@link RootedEntry}s
      */
     public Iterator getArchiveContents() throws IOException {
-        System.out.println("ear get archive content");
+  //      System.out.println("ear get archive content");
         FileObject fo = getContentDirectory();
         if (fo != null) {
             return new ContentIterator(fo);
@@ -246,7 +247,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
         File fil = FileUtil.normalizeFile(new File(loc, finalName));
-        System.out.println("earimpl. get content=" + fil);
+//        System.out.println("earimpl. get content=" + fil);
         FileObject fo = FileUtil.toFileObject(fil);
         if (fo != null) {
             fo.refresh();
@@ -295,15 +296,15 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
 
     public J2eeModule[] getModules() {
-        System.out.println("EarImpl.getModules called");
+//        System.out.println("EarImpl.getModules called");
         Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
         List toRet = new ArrayList();
         while (it.hasNext()) {
             Artifact elem = (Artifact) it.next();
             if ("war".equals(elem.getType()) || "ejb".equals(elem.getType())) {
-                System.out.println("adding " + elem.getId());
+//                System.out.println("adding " + elem.getId());
                 //TODO probaby figure out the context root etc..
-                toRet.add(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion()));
+                toRet.add(J2eeModuleFactory.createJ2eeModule(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion(), provider)));
             }
         }
         //TODO need to also consult the pom file for potencial additional modules.
@@ -311,7 +312,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
     
     File getDDFile(String path) {
-        System.out.println("getDD file=" + path);
+//        System.out.println("getDD file=" + path);
         //TODO what is the actual path.. sometimes don't have any sources for deployment descriptors..
         URI dir = project.getEarAppDirectory();
         File fil = new File(new File(dir), path);

@@ -135,7 +135,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
 
     public synchronized J2eeModule getJ2eeModule() {
         if (j2eemodule == null) {
-            j2eemodule = J2eeModuleFactory.createJ2eeModule(earimpl);
+            j2eemodule = J2eeModuleFactory.createJ2eeApplication(earimpl);
         }
         return j2eemodule; 
     }
