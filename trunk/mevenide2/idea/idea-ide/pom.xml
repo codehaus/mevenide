@@ -52,7 +52,80 @@
             <artifactId>extensions</artifactId>
         </dependency>
     </dependencies>
-
+    <profiles>
+        <profile>
+            <id>jdk1.4</id>
+            <dependencies>
+                <dependency>
+                    <groupId>net.sf.retrotranslator</groupId>
+                    <artifactId>retrotranslator-runtime</artifactId>
+                    <version>1.2.1</version>
+                    <type>jar</type>
+                    <scope>runtime</scope>
+                </dependency>
+                <dependency>
+                    <groupId>backport-util-concurrent</groupId>
+                    <artifactId>backport-util-concurrent</artifactId>
+                    <version>3.0</version>
+                    <type>jar</type>
+                    <scope>runtime</scope>
+                </dependency>
+            </dependencies>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>retrotranslator-maven-plugin</artifactId>
+                        <version>1.0-alpha-2</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>translate</goal>
+                                </goals>
+                                <configuration>
+                                    <jarfilesets>
+                                        <jarfileset>
+                                            <directory>${pom.basedir}/target</directory>
+                                            <includes>
+                                                <include>${artifactId}*.jar</include>
+                                            </includes>
+                                        </jarfileset>
+                                    </jarfilesets>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.1</version>
+                        <configuration>
+                            <!--
+                                          <descriptorRefs>
+                                            <descriptorRef>src</descriptorRef>
+                                          </descriptorRefs>
+                            -->
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor-jdk1.4.xml
+                                </descriptor>
+                            </descriptors>
+                            <finalName>mevenide2-${pom.artifactId}</finalName>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>dist</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>directory-inline</goal>
+                                    <goal>attached</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <filters>
             <filter>src/main/filters/plugin.filter</filter>
