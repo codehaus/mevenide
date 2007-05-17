@@ -13,18 +13,24 @@ Building Mevenide2 for IntelliJ IDEA
   * Checkout modules required for Mevenide2 IntelliJ IDEA:
 
 +-------------------------------------------------------------------------------+
-svn checkout http://svn.codehaus.org/mevenide/trunk/mevenide2/idea idea
+svn checkout http://svn.codehaus.org/mevenide/trunk/mevenide2 mevenide2
 +-------------------------------------------------------------------------------+
 
 * Building
 
-  * Go to the created idea directory and run
+  * Go to the created mevenide2 directory and run
 
 +-------------------------------------------------------------------------------+
-mvn install assembly:directory
+mvn install
 +-------------------------------------------------------------------------------+
 
-  That one should build the whole idea support. Make sure you are online when building
+  * After this go to the idea subdirectory of the mevenide2 directory and run
+
++-------------------------------------------------------------------------------+
+mvn assembly:directory
++-------------------------------------------------------------------------------+
+
+  That one should build the whole idea plugin distribution. Make sure you are online when building
   for the first time, it will download multiple IDEA API artifacts.
 
   In the idea directory, you will have a new directory created: <target/mevenide2-idea-version>
