@@ -18,8 +18,6 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -29,7 +27,6 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
-import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
@@ -115,7 +112,6 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
             }
         });
-        ActionToGoalMapping mappings = handle.getActionMappings();
         //TODO remove the NbMavenProject dependency
         run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class));
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
@@ -154,7 +150,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     private void loadComboModel() {
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
         Collection col = new ArrayList();
-        Wrapper selected = null;
+//        Wrapper selected = null;
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);

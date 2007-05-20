@@ -18,10 +18,8 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
 import java.util.Collections;
-import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.queries.VisibilityQuery;
-import org.netbeans.spi.project.ui.support.CommonProjectActions;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;

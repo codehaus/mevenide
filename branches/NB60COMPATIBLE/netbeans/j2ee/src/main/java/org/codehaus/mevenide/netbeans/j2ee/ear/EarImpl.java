@@ -60,6 +60,9 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     private NbMavenProject project;
     private EarModuleProviderImpl provider;
     
+    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
+    private static final String PLUGIN_ART = "maven-ear-plugin"; //NOI18N
+    
     /** Creates a new instance of EarImpl */
     EarImpl(NbMavenProject proj, EarModuleProviderImpl prov) {
         project = proj;
@@ -72,8 +75,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public String getJ2eePlatformVersion() {
         if (isApplicationXmlGenerated()) {
-            String version = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                              "maven-ear-plugin", "version", "generate-application-xml");
+            String version = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
+                                              PLUGIN_ART, "version", "generate-application-xml");
             // the default version in maven plugin is also 1.3
             //TODO what if the default changes?
             if (version != null) {
@@ -100,8 +103,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     /** META-INF folder for the Ear.
      */
     public FileObject getMetaInf() {
-        String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                              "maven-ear-plugin", "earSourceDirectory", "ear");
+        String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
+                                              PLUGIN_ART, "earSourceDirectory", "ear");
         if (appsrcloc == null) {
             appsrcloc = "main/src/application";
         }
@@ -116,8 +119,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public FileObject getDeploymentDescriptor() {
         if (isApplicationXmlGenerated()) {
-            String generatedLoc = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                              "maven-ear-plugin", "generatedDescriptorLocation", "generate-application-xml");
+            String generatedLoc = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
+                                              PLUGIN_ART, "generatedDescriptorLocation", "generate-application-xml");
             if (generatedLoc == null) {
                 generatedLoc = project.getOriginalMavenProject().getBuild().getDirectory();
             }
@@ -129,8 +132,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
                 System.out.println("we don't have the application.xmk generated yet at=" + generatedLoc);
             }
         }
-        String customLoc =  PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                              "maven-ear-plugin", "applicationXml", "ear");
+        String customLoc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
+                                              PLUGIN_ART, "applicationXml", "ear");
         if (customLoc != null) {
             FileObject fo = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), customLoc));
             if (fo != null) {
@@ -158,8 +161,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
     
     private boolean isApplicationXmlGenerated() {
-        String str = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                                                    "maven-ear-plugin", 
+        String str = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
+                                                                    PLUGIN_ART, 
                                                                     "generateApplicationXml", 
                                                                     "generate-application-xml");
             //either the default or explicitly set generation of application.xml file 

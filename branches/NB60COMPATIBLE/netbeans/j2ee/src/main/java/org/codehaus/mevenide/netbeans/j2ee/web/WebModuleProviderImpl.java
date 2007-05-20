@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -38,7 +37,6 @@ import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 

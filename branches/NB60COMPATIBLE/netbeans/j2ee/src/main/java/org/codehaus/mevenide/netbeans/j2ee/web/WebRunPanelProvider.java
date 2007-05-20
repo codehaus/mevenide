@@ -16,7 +16,6 @@
  */
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
