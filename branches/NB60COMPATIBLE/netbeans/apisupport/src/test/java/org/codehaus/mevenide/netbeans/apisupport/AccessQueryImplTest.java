@@ -33,7 +33,6 @@ public class AccessQueryImplTest extends TestCase {
 
 
     public void testGetPublicPackagesPatterns() {
-        System.out.println("getPublicPackagesPatterns");
         List<Pattern> result = AccessQueryImpl.preparePublicPackagesPatterns("org.milos.*");
         assertNotNull(result);
         assertTrue(check(result, new String[] {
@@ -65,7 +64,9 @@ public class AccessQueryImplTest extends TestCase {
             boolean matches = false;
             for (Pattern pattern : patt) {
                 matches = pattern.matcher(vals[i]).matches();
-                if (matches) break;
+                if (matches) {
+                    break;
+                }
             }
             if (! matches) {
                 return false;

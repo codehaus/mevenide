@@ -70,7 +70,9 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
         boolean matches = false;
         for (Pattern pattern : patt) {
             matches = pattern.matcher(value).matches();
-            if (matches) break;
+            if (matches) {
+                break;
+            }
         }
         return matches;
     }

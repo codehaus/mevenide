@@ -241,10 +241,11 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        } else {
+        } else { //NOPMD
             //TODO warn somehow?
             //the pom file is probably being edited..
-        }
+        } 
+
         return true;
     }
 
