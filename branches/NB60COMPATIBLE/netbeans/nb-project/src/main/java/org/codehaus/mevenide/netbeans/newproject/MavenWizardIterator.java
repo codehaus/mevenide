@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.newproject;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -29,9 +30,12 @@ import java.util.Properties;
 import java.util.Set;
 import javax.swing.JComponent;
 import javax.swing.event.ChangeListener;
+import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.netbeans.spi.project.ui.templates.support.Templates;
@@ -39,6 +43,7 @@ import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -105,12 +110,14 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             if (fDir != null) {
                 // the archetype generation didn't fail.
                 resultSet.add(fDir);
+                addJavaRootFolders(fDir);
                 // Look for nested projects to open as well:
                 Enumeration e = fDir.getFolders(true);
                 while (e.hasMoreElements()) {
                     FileObject subfolder = (FileObject) e.nextElement();
                     if (ProjectManager.getDefault().isProject(subfolder)) {
                         resultSet.add(subfolder);
+                        addJavaRootFolders(subfolder);
                     }
                 }
             }
@@ -222,6 +229,32 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             }
         }
         
+    }
+    
+    private void addJavaRootFolders(FileObject fo) {
+        try {
+            Project prj = ProjectManager.getDefault().findProject(fo);
+            ProjectURLWatcher watch = prj.getLookup().lookup(ProjectURLWatcher.class);
+            if (watch != null) {
+                // do not create java/test for pom type projects.. most probably not relevant.
+                if (! ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType())) {
+                    URI mainJava = FileUtilities.convertStringToUri(watch.getMavenProject().getBuild().getSourceDirectory());
+                    URI testJava = FileUtilities.convertStringToUri(watch.getMavenProject().getBuild().getTestSourceDirectory());
+                    File file = new File(mainJava);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                    file = new File(testJava);
+                    if (!file.exists()) {
+                        file.mkdirs();
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IllegalArgumentException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
     
 }
