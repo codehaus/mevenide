@@ -28,13 +28,13 @@ public class ModelUtils {
 
     public static void loadPlugins(MavenProjectDocument mavenProjectDocument, String mavenRepository) {
         ProjectDocument.Project project = mavenProjectDocument.getProject();
-        if ( project == null ) {
+        if (project == null) {
             return;
         }
 
         for (ProjectDocument.Plugin pomPlugin : project.getBuild().getPlugins().getPlugins()) {
             String path = findPluginPath(mavenRepository, pomPlugin.getGroupId().getStringValue(), pomPlugin.getArtifactId().getStringValue(), pomPlugin.getVersion().getStringValue());
-            if ( path != null ) {
+            if (path != null) {
                 try {
                     MavenPluginDocument pluginDocument = createMavenPluginDocument(path);
                     if (pluginDocument != null) {
@@ -43,6 +43,35 @@ public class ModelUtils {
                 } catch (IdeaMavenPluginException e) {
                     LOG.warn(e.getMessage());
                 }
+            }
+        }
+        addAdditionalPlugin(mavenRepository, mavenProjectDocument, "org.apache.maven.plugins", "maven-site-plugin", null);
+    }
+
+    private static void addAdditionalPlugin(String mavenRepository, MavenProjectDocument mavenProjectDocument, String groupId, String artifactId, String version) {
+        /*
+        ProjectDocument.Project project = mavenProjectDocument.getProject();
+        for (ProjectDocument.Plugin pomPlugin : project.getBuild().getPlugins().getPlugins()) {
+            String existingGroupId = pomPlugin.getGroupId().getStringValue();
+            String existingArtifactId = pomPlugin.getArtifactId().getStringValue();
+            // don't add the plugin in case it already was specified in the POM!
+            if (existingGroupId == null) {
+                existingGroupId = "org.apache.maven.plugins";
+            }
+            if (existingGroupId.equals(groupId) && existingArtifactId != null && existingArtifactId.equals(artifactId)) {
+                return;
+            }
+
+        }  */
+        String path = findPluginPath(mavenRepository, groupId, artifactId, version);
+        if (path != null) {
+            try {
+                MavenPluginDocument pluginDocument = createMavenPluginDocument(path);
+                if (pluginDocument != null) {
+                    mavenProjectDocument.addPlugin(pluginDocument);
+                }
+            } catch (IdeaMavenPluginException e) {
+                LOG.warn(e.getMessage());
             }
         }
     }
@@ -79,7 +108,7 @@ public class ModelUtils {
             Collections.sort(directoryList);
 
             final String mostRecentVersion;
-            if (StringUtils.isEmpty(version) &&!directoryList.isEmpty()) {
+            if (StringUtils.isEmpty(version) && !directoryList.isEmpty()) {
                 mostRecentVersion = directoryList.get(directoryList.size() - 1);
             } else {
                 mostRecentVersion = version;

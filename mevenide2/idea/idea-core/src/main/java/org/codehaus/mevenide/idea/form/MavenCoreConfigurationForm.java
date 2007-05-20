@@ -82,8 +82,6 @@ public class MavenCoreConfigurationForm {
 
     private void fillComboboxPluginUpdatePolicy() {
         comboboxModelPluginUpdatePolicy
-                .addElement(new CustomizingObject("false", "No Global Policy"));
-        comboboxModelPluginUpdatePolicy
                 .addElement(new CustomizingObject("true", "Check For Updates"));
         comboboxModelPluginUpdatePolicy
                 .addElement(new CustomizingObject("false", "Supress Checking"));
