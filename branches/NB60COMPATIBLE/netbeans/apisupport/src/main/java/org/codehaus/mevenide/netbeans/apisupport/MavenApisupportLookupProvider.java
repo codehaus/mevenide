@@ -50,6 +50,7 @@ public class MavenApisupportLookupProvider implements LookupProvider {
         private InstanceContent content;
         private String lastType = ProjectURLWatcher.TYPE_JAR;
         private MavenNbModuleImpl lastInstance = null;
+        private AccessQueryImpl lastAccess = null;
         public Provider(NbMavenProject proj, InstanceContent cont) {
             super(cont);
             project = proj;
@@ -75,10 +76,15 @@ public class MavenApisupportLookupProvider implements LookupProvider {
                     lastInstance = new MavenNbModuleImpl(project);
                 }
                 content.add(lastInstance);
+                if (lastAccess == null) {
+                    lastAccess = new AccessQueryImpl(project);
+                }
+                content.add(lastAccess);
             } else if (lastInstance != null && !(
                     ProjectURLWatcher.TYPE_NBM.equals(packaging)))
             {
                 content.remove(lastInstance);
+                content.remove(lastAccess);
             }
             lastType = packaging;
         }
