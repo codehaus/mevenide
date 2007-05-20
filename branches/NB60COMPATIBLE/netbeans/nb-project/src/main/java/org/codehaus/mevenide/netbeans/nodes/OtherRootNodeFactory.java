@@ -42,8 +42,10 @@ public class OtherRootNodeFactory implements NodeFactory {
     
     private static final String KEY_OTHER = "otherRoots"; //NOI18N
     private static final String KEY_OTHER_TEST = "otherTestRoots"; //NOI18N
+    private static final String MAIN = "src/main"; //NOI18N
+    private static final String TEST = "src/test"; //NOI18N
     
-    /** Creates a new instance of DependenciesNodeFactory */
+    /** Creates a new instance of OtherRootNodeFactory */
     public OtherRootNodeFactory() {
     }
     
@@ -63,7 +65,7 @@ public class OtherRootNodeFactory implements NodeFactory {
                 fireChange();
             }
             if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName())) {
-                if ("src/main".equals(evt.getNewValue()) || "src/test".equals(evt.getNewValue())) { //NOI18N
+                if (MAIN.equals(evt.getNewValue()) || TEST.equals(evt.getNewValue())) { //NOI18N
                     fireChange();
                     checkFileObject((String)evt.getNewValue());
                 }
@@ -106,22 +108,22 @@ public class OtherRootNodeFactory implements NodeFactory {
         public void addNotify() {
             ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
             watch.addPropertyChangeListener(project, this);
-            watch.addWatchedPath("src/main"); //NOI18N
-            watch.addWatchedPath("src/test"); //NOI18N    
-            checkFileObject("src/main");
-            checkFileObject("src/test");
+            watch.addWatchedPath(MAIN); //NOI18N
+            watch.addWatchedPath(TEST); //NOI18N    
+            checkFileObject(MAIN);
+            checkFileObject(TEST);
         }
         
         public void removeNotify() {
             ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
             watch.removePropertyChangeListener(project, this);
-            watch.removeWatchedPath("src/main"); //NOI18N
-            watch.removeWatchedPath("src/test"); //NOI18N            
-            FileObject fo = project.getProjectDirectory().getFileObject("src/main");
+            watch.removeWatchedPath(MAIN); //NOI18N
+            watch.removeWatchedPath(TEST); //NOI18N            
+            FileObject fo = project.getProjectDirectory().getFileObject(MAIN);
             if (fo != null) {
                 fo.removeFileChangeListener(this);
             }
-            fo = project.getProjectDirectory().getFileObject("src/test");
+            fo = project.getProjectDirectory().getFileObject(TEST);
             if (fo != null) {
                 fo.removeFileChangeListener(this);
             }

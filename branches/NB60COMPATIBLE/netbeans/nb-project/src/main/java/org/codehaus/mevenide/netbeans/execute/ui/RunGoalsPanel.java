@@ -30,7 +30,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
-import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.PropertySplitter;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -46,7 +45,6 @@ import org.openide.util.Utilities;
  */
 public class RunGoalsPanel extends javax.swing.JPanel {
     
-    private int gridRow = 0;
     private List<NetbeansActionMapping> historyMappings;
     private int historyIndex = 0;
     private TextValueCompleter goalcompleter;

@@ -66,7 +66,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
         if (jarFO != null) {
             File jarFile = FileUtil.toFile(jarFO);
             if (jarFile != null) {
-                String name = jarFile.getName();
+//                String name = jarFile.getName();
                 File parent = jarFile.getParentFile();
                 if (parent != null) {
                     File parentParent = parent.getParentFile();

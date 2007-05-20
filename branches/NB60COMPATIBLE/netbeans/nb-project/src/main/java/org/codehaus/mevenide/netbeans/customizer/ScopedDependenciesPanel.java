@@ -25,7 +25,6 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import org.apache.maven.artifact.Artifact;
@@ -35,7 +34,6 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.nodes.DependencyNode;
 import org.openide.awt.Mnemonics;
-import org.openide.explorer.ExplorerManager;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -51,15 +49,12 @@ public class ScopedDependenciesPanel extends javax.swing.JPanel  {
     static final int RUN = 1;
     private NbMavenProject project;
     private ModelHandle handle;
-    private ExplorerManager manager;
-    private boolean transitive = false;
     /** Creates new form ScopedDependenciesPanel */
     public ScopedDependenciesPanel(int type, NbMavenProject prj, ModelHandle hndl) {
         initComponents();
         this.type = type;
         project = prj;
         handle = hndl;
-        manager = new ExplorerManager();
         lstDependencies.setCellRenderer(new MyRenderer());
         switch (type) {
             case COMPILE :
@@ -112,7 +107,6 @@ public class ScopedDependenciesPanel extends javax.swing.JPanel  {
             
     
     public void setTransitive(boolean trans) {
-        transitive = trans;
         createChildren();
     }
     

@@ -17,9 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.api.customizer;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.model.Activation;
@@ -51,7 +48,6 @@ public final class ModelHandle {
     private MavenProject project;
     private ProfilesRoot profiles; 
     private ActionToGoalMapping mapping;
-    private List listeners;
     private org.apache.maven.model.Profile publicProfile;
     private org.apache.maven.profiles.Profile privateProfile;
     
@@ -82,7 +78,6 @@ public final class ModelHandle {
         project = proj;
         this.mapping = mapping;
         this.profiles = profile;
-        listeners = new ArrayList();
     }
     
     /**

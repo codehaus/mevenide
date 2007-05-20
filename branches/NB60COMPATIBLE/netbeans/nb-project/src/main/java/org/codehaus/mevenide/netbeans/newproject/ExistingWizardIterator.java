@@ -48,7 +48,6 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
     
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
-    private transient WizardDescriptor wiz;
     
     private ExistingWizardIterator() {}
     
@@ -125,7 +124,6 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
     
     
     public void initialize(WizardDescriptor wiz) {
-        this.wiz = wiz;
         index = 0;
         panels = createPanels();
         // Make sure list of steps is accurate.
@@ -149,7 +147,6 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
     }
     
     public void uninitialize(WizardDescriptor wiz) {
-        this.wiz = null;
         panels = null;
     }
     

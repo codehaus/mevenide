@@ -25,7 +25,6 @@ import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
  */
 public class GlobalOutputProcessor implements OutputProcessor {
     
-    private long start;
     /** Creates a new instance of GlobalOutputProcessor */
     public GlobalOutputProcessor() {
     }
@@ -40,39 +39,16 @@ public class GlobalOutputProcessor implements OutputProcessor {
     public void sequenceStart(String sequenceId, OutputVisitor visitor) {
         if (sequenceId.startsWith("project-execute")) {
             visitor.setLine(sequenceId);
-            start = System.currentTimeMillis();
         } else {
             visitor.setLine("[" + sequenceId.substring("mojo-execute#".length()) + "]");
         }
     }
 
     public void sequenceEnd(String sequenceId, OutputVisitor visitor) {
-//        if (sequenceId.startsWith("project-execute")) {
-//            long time = System.currentTimeMillis() - start;
-//            visitor.setLine("-------------------------------------------------------" +
-//                            "\nBUILD SUCCESSFUL - Time: " + convertTime(time) + "\n" +
-//                            "-------------------------------------------------------");
-//        }
     }
 
     public void sequenceFail(String sequenceId, OutputVisitor visitor) {
-//        if (sequenceId.startsWith("project-execute")) {
-//            long time = System.currentTimeMillis() - start;
-//            visitor.setLine("-------------------------------------------------------" +
-//                            "\nBUILD FAILED - Time: " + convertTime(time) + "\n" +
-//                            "-------------------------------------------------------");
-//        }
     }
     
-    private String convertTime(long time) {
-        long secs = time / 1000;
-        if (secs > 59) {
-            long mins = secs / 60;
-            secs = secs - (mins * 60);
-            return "" + mins + " minutes " + secs + " seconds";
-        } else {
-            return "" + secs + " seconds";
-        } 
-    }
     
 }

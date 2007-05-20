@@ -29,12 +29,9 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -68,9 +65,7 @@ import org.openide.util.lookup.Lookups;
 public class CustomizerProviderImpl implements CustomizerProvider {
     
     private final NbMavenProject project;
-    
     private ModelHandle handle;
-    private List visitedPanels = new ArrayList();
     
     
     public CustomizerProviderImpl(NbMavenProject project) {

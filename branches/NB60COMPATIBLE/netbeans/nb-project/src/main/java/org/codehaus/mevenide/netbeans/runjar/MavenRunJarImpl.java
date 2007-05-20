@@ -29,13 +29,8 @@ import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectUtils;
-import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
-import org.netbeans.spi.java.classpath.ClassPathProvider;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
@@ -116,7 +111,6 @@ public class MavenRunJarImpl implements MavenRunJar {
         private String debugJvmParameters;
         private File workDirectory;
         private File jarLocation;
-        private String finalName;
         private MavenProject project;
         private Log log;
         Object semaphor = new Object();
@@ -131,7 +125,6 @@ public class MavenRunJarImpl implements MavenRunJar {
             this.debugJvmParameters = debugJvmParameters;
             this.workDirectory = workDirectory;
             this.jarLocation = jarLocation;
-            this.finalName = finalName;
             this.project = project;
             this.log = log;
         }
@@ -200,8 +193,12 @@ public class MavenRunJarImpl implements MavenRunJar {
                 }
 //                ex.printStackTrace();
             } finally {
-                if (out != null) out.closeWriter();
-                if (err != null) err.closeWriter();
+                if (out != null)  {
+                    out.closeWriter();
+                }
+                if (err != null) { 
+                    err.closeWriter();
+                }
                 
             }
         }

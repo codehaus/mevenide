@@ -38,7 +38,6 @@ import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
-import org.netbeans.spi.project.ui.templates.support.Templates;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
@@ -54,6 +53,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     
     private static final long serialVersionUID = 1L;
     
+    private static final String USER_DIR_PROP = "user.dir"; //NOI18N
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
     private transient WizardDescriptor wiz;
@@ -94,7 +94,6 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             }
             
             Set resultSet = new LinkedHashSet();
-            final FileObject fTtemplate = Templates.getTemplate(wiz);
             final String art = (String)wiz.getProperty("artifactId"); //NOI18N
             final String ver = (String)wiz.getProperty("version"); //NOI18N
             final String gr = (String)wiz.getProperty("groupId"); //NOI18N
@@ -216,16 +215,16 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         config.setProperties(props);
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
-        String oldUserdir = System.getProperty("user.dir"); //NOI18N
-        System.setProperty("user.dir", dirF.getAbsolutePath()); //NOI18N
+        String oldUserdir = System.getProperty(USER_DIR_PROP); //NOI18N
+        System.setProperty(USER_DIR_PROP, dirF.getAbsolutePath()); //NOI18N
         try {
             ExecutorTask task = RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Maven"), config); //NOI18N
             return task.result();
         } finally {
             if (oldUserdir == null) {
-                System.getProperties().remove("user.dir"); //NOI18N
+                System.getProperties().remove(USER_DIR_PROP); //NOI18N
             } else {
-                System.setProperty("user.dir", oldUserdir); //NOI18N
+                System.setProperty(USER_DIR_PROP, oldUserdir); //NOI18N
             }
         }
         

@@ -24,7 +24,6 @@ import java.util.List;
 import javax.swing.event.ChangeListener;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.SourceForBinaryQueryImplementation;
-import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
@@ -55,7 +54,7 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
         if (jarFO != null) {
             File jarFile = FileUtil.toFile(jarFO);
             if (jarFile != null) {
-                String name = jarFile.getName();
+//                String name = jarFile.getName();
                 File parent = jarFile.getParentFile();
                 if (parent != null) {
                     File parentParent = parent.getParentFile();

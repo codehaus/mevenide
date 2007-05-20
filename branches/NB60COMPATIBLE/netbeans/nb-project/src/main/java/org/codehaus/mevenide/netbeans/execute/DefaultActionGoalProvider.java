@@ -30,10 +30,10 @@ public class DefaultActionGoalProvider extends AbstractActionGoalProvider {
     }
     
     public InputStream getActionDefinitionStream() {
-       String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml";
+       String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml"; //NOI18N
        InputStream in = getClass().getResourceAsStream(path);
         if (in == null) {
-            System.out.println("no instream for=" + path);
+            assert false : "No instream for " + path;
             return null;
         }
        return in;

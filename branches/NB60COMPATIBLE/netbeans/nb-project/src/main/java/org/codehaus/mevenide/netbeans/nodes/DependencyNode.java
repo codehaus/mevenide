@@ -712,7 +712,9 @@ public class DependencyNode extends AbstractNode {
                             if (chil.isFolder()) {
                                 index = chil.getFileObject("index.html");
                             }
-                            if (index != null) break;
+                            if (index != null)  {
+                                break;
+                            }
                         }
                         if (index == null) {
                             //oh well, does it contain javadoc in the first place?

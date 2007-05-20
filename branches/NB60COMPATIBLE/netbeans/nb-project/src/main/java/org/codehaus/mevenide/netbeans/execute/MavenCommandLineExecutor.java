@@ -32,7 +32,6 @@ import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
-import org.openide.modules.InstalledFileLocator;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
 

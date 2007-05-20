@@ -23,7 +23,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.charset.Charset;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.IllegalCharsetNameException;
@@ -51,19 +50,21 @@ import org.openide.filesystems.FileUtil;
  */
 public class SourcesPanel extends JPanel {
     
+    private static final String COMPILER_ART = "maven-compiler-plugin"; //NOI18N
+    private static final String RESOURCES_ART = "maven-resources-plugin"; //NOI18N
+    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
+    private static final String ENCODING = "encoding"; //NOI18N
     
     private String encoding;
     private String defaultEncoding = "UTF-8";
     private String defaultSourceLevel = "1.3";
     private String sourceLevel;
     private ModelHandle handle;
-    private NbMavenProject project;
 
 
     public SourcesPanel( ModelHandle handle, NbMavenProject project ) {
         initComponents();
         this.handle = handle;
-        this.project = project;
         FileObject projectFolder = project.getProjectDirectory();
         File pf = FileUtil.toFile( projectFolder );
         txtProjectFolder.setText( pf == null ? "" : pf.getPath() ); // NOI18N
@@ -77,16 +78,15 @@ public class SourcesPanel extends JPanel {
         
         comSourceLevel.setSelectedItem(sourceLevel);
         String enc = PluginPropertyUtils.getPluginProperty(project, 
-                    "org.apache.maven.plugins", 
-                    "maven-compiler-plugin", "encoding", null);
+                    PLUGIN_GR,COMPILER_ART, ENCODING, null);
         Charset chs = null;
         if (enc != null) {
             chs = Charset.forName(enc);
         }
         if (chs == null) {
             String resourceEnc = PluginPropertyUtils.getPluginProperty(project,
-                    "org.apache.maven.plugins",
-                    "maven-resources-plugin", "encoding", null);
+                    PLUGIN_GR,
+                    RESOURCES_ART, ENCODING, null);
             if (resourceEnc != null) {
                 chs = Charset.forName(resourceEnc);
             }
@@ -128,15 +128,14 @@ public class SourcesPanel extends JPanel {
     //TODO copied from persistence' CPExtender. have it at one place only..
     private void checkSourceLevel(Model mdl, String sl) {
         String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                "org.apache.maven.plugins", 
-                "maven-compiler-plugin", 
+                PLUGIN_GR,COMPILER_ART, 
                 "source", "compile");
         if (source != null && source.contains(sl)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId("org.apache.maven.plugins");
-        plugin.setArtifactId("maven-compiler-plugin");
+        plugin.setGroupId(PLUGIN_GR);
+        plugin.setArtifactId(COMPILER_ART);
         plugin.setVersion("RELEASE");
         Plugin old = null;
         Build bld = mdl.getBuild();
@@ -191,19 +190,18 @@ public class SourcesPanel extends JPanel {
     //TODO copied from persistence' CPExtender. have it at one place only..
     private void checkEncoding(Model mdl, String enc) {
         String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                "org.apache.maven.plugins", 
-                "maven-compiler-plugin", 
-                "encoding", null);
+                PLUGIN_GR,COMPILER_ART, 
+                ENCODING, null);
         if (source != null && source.contains(enc)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId("org.apache.maven.plugins");
-        plugin.setArtifactId("maven-compiler-plugin");
+        plugin.setGroupId(PLUGIN_GR);
+        plugin.setArtifactId(COMPILER_ART);
         plugin.setVersion("RELEASE");
         Plugin plugin2 = new Plugin();
-        plugin2.setGroupId("org.apache.maven.plugins");
-        plugin2.setArtifactId("maven-resources-plugin");
+        plugin2.setGroupId(PLUGIN_GR);
+        plugin2.setArtifactId(RESOURCES_ART);
         plugin2.setVersion("RELEASE");
         Plugin old = null;
         Plugin old2 = null;
@@ -229,9 +227,9 @@ public class SourcesPanel extends JPanel {
             dom = new Xpp3Dom("configuration");
             plugin.setConfiguration(dom);
         }
-        Xpp3Dom dom2 = dom.getChild("encoding");
+        Xpp3Dom dom2 = dom.getChild(ENCODING);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("encoding");
+            dom2 = new Xpp3Dom(ENCODING);
             dom.addChild(dom2);
         }
         dom2.setValue(enc);
@@ -241,9 +239,9 @@ public class SourcesPanel extends JPanel {
             dom = new Xpp3Dom("configuration");
             plugin2.setConfiguration(dom);
         }
-        dom2 = dom.getChild("encoding");
+        dom2 = dom.getChild(ENCODING);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("encoding");
+            dom2 = new Xpp3Dom(ENCODING);
             dom.addChild(dom2);
         }
         dom2.setValue(enc);
@@ -280,7 +278,6 @@ public class SourcesPanel extends JPanel {
                     Logger.getLogger(this.getClass().getName()).info("IllegalCharsetName: " + originalEncoding);
                 }
             }
-            System.out.println("def enc=" + defEnc);
             if (defEnc == null) {
                 defEnc = FileEncodingQuery.getDefaultEncoding();
             }

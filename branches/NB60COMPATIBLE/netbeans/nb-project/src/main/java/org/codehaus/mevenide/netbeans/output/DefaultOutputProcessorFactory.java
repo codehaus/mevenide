@@ -36,8 +36,8 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
         Set toReturn = new HashSet();
         toReturn.add(new GlobalOutputProcessor());
         if (project != null) {
-            toReturn.add(new JavaOutputListenerProvider(project));
-            toReturn.add(new TestOutputListenerProvider(project));
+            toReturn.add(new JavaOutputListenerProvider());
+            toReturn.add(new TestOutputListenerProvider());
             toReturn.add(new JavadocOutputProcessor());
             toReturn.add(new SiteOutputProcessor(project));
             toReturn.add(new ExecPluginOutputListenerProvider(project));

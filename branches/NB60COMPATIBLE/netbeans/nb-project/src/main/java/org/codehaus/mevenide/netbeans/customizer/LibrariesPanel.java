@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
-import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 

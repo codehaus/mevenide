@@ -29,7 +29,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -55,12 +54,9 @@ import org.openide.nodes.Node;
  */
 public class ModulesNode extends AbstractNode {
     
-    private NbMavenProject project;
-    
     /** Creates a new instance of ModulesNode */
     public ModulesNode(NbMavenProject proj) {
         super(new ModulesChildren(proj));
-        project = proj;
         setName("Modules");//NOI18N
         setDisplayName("Modules");
     }

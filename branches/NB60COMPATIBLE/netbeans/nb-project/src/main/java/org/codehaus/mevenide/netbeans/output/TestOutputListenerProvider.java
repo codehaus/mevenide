@@ -56,20 +56,18 @@ public class TestOutputListenerProvider implements OutputProcessor {
     private Pattern outDirPattern2;
     private Pattern runningPattern;
     
-    private NbMavenProject project;
     String outputDir;
     String runningTestClass;
     private String delayedLine;
     
     /** Creates a new instance of TestOutputListenerProvider */
-    public TestOutputListenerProvider(NbMavenProject proj) {
+    public TestOutputListenerProvider() {
         failSeparatePattern = Pattern.compile("(?:\\[surefire\\] )?Tests run.*[<]* FAILURE[!]*[\\s]*", Pattern.DOTALL); //NOI18N
         failWindowsPattern1 = Pattern.compile("(?:\\[surefire\\] )?Tests run.*", Pattern.DOTALL); //NOI18N
         failWindowsPattern2 = Pattern.compile(".*[<]* FAILURE [!]*.*", Pattern.DOTALL); //NOI18N
         runningPattern = Pattern.compile("(?:\\[surefire\\] )?Running (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern = Pattern.compile("Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern2 = Pattern.compile("Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N
-        project = proj;
     }
     
     public String[] getWatchedGoals() {
@@ -193,10 +191,8 @@ public class TestOutputListenerProvider implements OutputProcessor {
             String line = null;
             try {
                 reader = new BufferedReader(new InputStreamReader(fo.getInputStream()));
-                Pattern linePattern = Pattern.compile("\\sat (.*)\\((.*)\\.java\\:(.*)\\)"); //NOI18N
                 ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
                 while ((line = reader.readLine()) != null) {
-                    Matcher match = linePattern.matcher(line);
                     OutputListener list = OutputUtils.matchStackTraceLine(line, classPath);
                     if (list != null) {
                         writer.println(line, list);

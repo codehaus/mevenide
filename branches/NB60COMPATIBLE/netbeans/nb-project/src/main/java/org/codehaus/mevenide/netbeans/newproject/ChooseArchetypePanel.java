@@ -24,7 +24,6 @@ import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import javax.swing.tree.TreeSelectionModel;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
@@ -34,7 +33,6 @@ import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.NotifyDescriptor;
 import org.openide.WizardDescriptor;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -43,7 +41,6 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -255,7 +252,6 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Lookup.Result<ArchetypeProvider> res = Lookup.getDefault().lookup(new Lookup.Template<ArchetypeProvider>(ArchetypeProvider.class));
         List<Archetype> archetypes = new ArrayList<Archetype>();
         for (ArchetypeProvider provider : res.allInstances()) {
-            Iterator it2 = provider.getArchetypes().iterator();
             for (Archetype ar : provider.getArchetypes()) {
                 if (!archetypes.contains(ar)) {
                     archetypes.add(ar);

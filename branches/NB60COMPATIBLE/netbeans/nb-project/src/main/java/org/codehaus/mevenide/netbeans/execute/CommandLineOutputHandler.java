@@ -44,9 +44,9 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     private Pattern linePattern = Pattern.compile("\\[(DEBUG|INFO|WARN|ERROR|FATAL)\\] (.*)"); //NOI18N
     private Pattern startPattern = Pattern.compile("\\[INFO\\] \\[(.*):(.*)\\]"); //NOI18N
     
-    private OutputWriter stdOut, stdErr;
+    private OutputWriter stdOut;
     
-    private ProgressHandle handle;
+//    private ProgressHandle handle;
     
     private String currentTag;
 
@@ -59,9 +59,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     public CommandLineOutputHandler(InputOutput io, NbMavenProject proj, ProgressHandle hand)    {
         this();
         inputOutput = io;
-        handle = hand;
         stdOut = inputOutput.getOut();
-        stdErr = inputOutput.getErr();
         initProcessorList(proj);
     }
     

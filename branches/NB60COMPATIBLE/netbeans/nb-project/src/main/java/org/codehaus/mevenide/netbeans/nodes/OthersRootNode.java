@@ -36,7 +36,6 @@ import org.openide.util.lookup.Lookups;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class OthersRootNode extends AbstractNode {
-    private NbMavenProject project;
     private FileObject file;
     
     OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
@@ -45,7 +44,6 @@ class OthersRootNode extends AbstractNode {
         setDisplayName(testResource ? "Other Test Sources" : "Other Sources");
         // can do so, since we depend on it..
 //        setIconBase("org/mevenide/netbeans/project/resources/defaultFolder"); //NOI18N
-        project = mavproject;
         file = fo;
     }
     

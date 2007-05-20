@@ -386,7 +386,6 @@ public class SettingsPanel extends javax.swing.JPanel {
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
                 LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
-                File repo = new File(txtLocalRepository.getText().trim());
                 try {
                     ind.updateIndex();
                 } catch (RepositoryIndexException ex) {

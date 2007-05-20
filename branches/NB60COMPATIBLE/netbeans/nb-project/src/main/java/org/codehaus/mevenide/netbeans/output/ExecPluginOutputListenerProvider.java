@@ -16,8 +16,6 @@
  */
 package org.codehaus.mevenide.netbeans.output;
 
-import java.io.File;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
@@ -25,14 +23,7 @@ import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
-import org.netbeans.api.java.project.JavaProjectConstants;
-import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
-import org.netbeans.api.project.SourceGroup;
-import org.netbeans.api.project.Sources;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.windows.OutputListener;
 
 
@@ -51,7 +42,7 @@ public class ExecPluginOutputListenerProvider implements OutputProcessor {
     private Pattern failPattern;
     private NbMavenProject project;
     
-    /** Creates a new instance of TestOutputListenerProvider */
+    /** Creates a new instance of ExecPluginOutputListenerProvider */
     public ExecPluginOutputListenerProvider(NbMavenProject proj) {
         //[javac] required because of forked compilation
         //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.

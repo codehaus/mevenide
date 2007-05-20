@@ -232,7 +232,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getBootClassPath() {
         ClassPath cp = cache[6];
         if (cp == null) {
-            cp = ClassPathFactory.createClassPath(new BootClassPathImpl(project));
+            cp = ClassPathFactory.createClassPath(new BootClassPathImpl());
             cache[6] = cp;
         }
         return cp;

@@ -58,8 +58,8 @@ public class CompileClassPathImpl extends AbstractProjectClassPathImpl {
                     lst.add(fil.toURI());
                 }
             } else {
-                 //null means dependencies were not resolved..
-            } //NOPMD
+              //NOPMD   //null means dependencies were not resolved..
+            } 
         }
         it = assemblies.iterator();
         while (it.hasNext()) {

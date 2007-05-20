@@ -24,7 +24,6 @@ import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
-import org.openide.windows.InputOutput;
 
 /**
  * Utility method for executing a maven build, using the RunConfig.

@@ -100,6 +100,7 @@ public class ProjectFilesNode extends AbstractNode {
                     FilterNode node = new FilterNode(dobj.getNodeDelegate().cloneNode());
                     return new Node[] { node };
                 } catch (DataObjectNotFoundException e) {
+                    //NOPMD
                 }
                 
             }

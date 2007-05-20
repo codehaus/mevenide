@@ -85,7 +85,7 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
                 File srcFile = FileUtil.normalizeFile(new File(src));
                 File testSrcFile = FileUtil.normalizeFile(new File(testSrc));
                 if (srcFile.equals(fil) || testSrcFile.equals(fil)) {
-                    toReturn = new Res(testSrcFile.equals(fil), project, url);
+                    toReturn = new Res(testSrcFile.equals(fil), project);
                 } else {
                     URI[] gens = project.getGeneratedSourceRoots();
                     for (URI gen : gens) {
@@ -93,7 +93,7 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
                         genfil = FileUtil.normalizeFile(genfil);
                         if (genfil.equals(fil)) {
                             // assume generated sources are not test..
-                            toReturn = new Res(false, project, url);
+                            toReturn = new Res(false, project);
                             break;
                         }
                     }
@@ -114,11 +114,9 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
         private List<ChangeListener> listeners;
         private NbMavenProject project;
         private boolean isTest;
-        private URL url;
-        Res(boolean test, NbMavenProject prj, URL url) {
+        Res(boolean test, NbMavenProject prj) {
             isTest = test;
             project = prj;
-            this.url = url;
         }
         
          /**

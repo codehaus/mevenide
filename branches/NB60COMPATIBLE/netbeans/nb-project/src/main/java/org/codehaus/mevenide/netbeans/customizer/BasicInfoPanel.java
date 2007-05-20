@@ -22,22 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 
 /**
  *
  * @author  mkleint
  */
 public class BasicInfoPanel extends javax.swing.JPanel {
-    private NbMavenProject project;
     private ModelHandle handle;
     private List listeners;
     
     /** Creates new form BasicInfoPanel */
-    public BasicInfoPanel(ModelHandle handle, NbMavenProject project) {
+    public BasicInfoPanel(ModelHandle handle) {
         initComponents();
         this.handle = handle;
-        this.project = project;
         initValues();
     }
     

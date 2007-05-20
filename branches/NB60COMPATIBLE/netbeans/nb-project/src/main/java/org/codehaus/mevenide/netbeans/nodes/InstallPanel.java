@@ -33,9 +33,7 @@ import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.execution.ExecutorTask;
 import org.openide.util.HelpCtx;
-import org.openide.windows.WindowManager;
 
 
 /**
@@ -191,7 +189,7 @@ public class InstallPanel extends javax.swing.JPanel {
         brc.setProperties(props);
         brc.setActivatedProfiles(Collections.EMPTY_LIST);
         
-        ExecutorTask task = RunUtils.executeMaven("Install", brc);
+        RunUtils.executeMaven("Install", brc);
         //TODO how to handle errors
         
     }

@@ -41,7 +41,6 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.codehaus.plexus.util.StringUtils;
 
 /**
  *

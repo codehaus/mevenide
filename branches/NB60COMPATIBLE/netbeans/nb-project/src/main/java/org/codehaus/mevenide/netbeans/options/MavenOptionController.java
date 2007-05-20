@@ -59,7 +59,6 @@ class MavenOptionController extends OptionsPanelController {
             WriterUtils.writeSettingsModel(FileUtil.toFileObject(userDir), setts);
         } catch (IOException ex) {
             ex.printStackTrace();
-        } finally {
         }
     }
     

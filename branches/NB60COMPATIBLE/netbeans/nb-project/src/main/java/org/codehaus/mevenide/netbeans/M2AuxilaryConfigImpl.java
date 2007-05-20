@@ -59,6 +59,8 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     private static final String JUNIT3 = "junit3"; //NOI18N
     private static final String JUNIT4 = "junit4"; //NOI18N
+    
+    private static final String JUNIT_GR_ART = "junit"; //NOI18N
 
     
     private static final String AUX_CONFIG = "AuxilaryConfiguration"; //NOI18N
@@ -76,7 +78,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 List<Artifact> arts = project.getOriginalMavenProject().getTestArtifacts();
                 Artifact artifact = null;
                 for (Artifact art : arts) {
-                    if ("junit".equals(art.getGroupId()) && "junit".equals(art.getArtifactId())) {
+                    if (JUNIT_GR_ART.equals(art.getGroupId()) && JUNIT_GR_ART.equals(art.getArtifactId())) {
                         artifact = art;
                         break;
                     }
@@ -124,7 +126,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 List<Artifact> arts = project.getOriginalMavenProject().getTestArtifacts();
                 Artifact artifact = null;
                 for (Artifact art : arts) {
-                    if ("junit".equals(art.getGroupId()) && "junit".equals(art.getArtifactId())) {
+                    if (JUNIT_GR_ART.equals(art.getGroupId()) && JUNIT_GR_ART.equals(art.getArtifactId())) {
                         artifact = art;
                         break;
                     }
@@ -140,7 +142,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
                 Model model = WriterUtils.loadModel(fo); //NOI18N
                 if (model != null) {
-                    Dependency dep = PluginPropertyUtils.checkModelDependency(model, "junit", "junit", true);
+                    Dependency dep = PluginPropertyUtils.checkModelDependency(model,JUNIT_GR_ART,JUNIT_GR_ART, true);
                     dep.setVersion(attr.equals(JUNIT4) ? "4.1" : "3.8.2");
                     dep.setScope("test");
                     //TODO how to upgrade always to a version that is correct in terms of junit support?

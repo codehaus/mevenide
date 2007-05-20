@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.output;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -44,14 +43,12 @@ public class JavaOutputListenerProvider implements OutputProcessor {
         "mojo-execute#compiler:testCompile"
     };
     private Pattern failPattern;
-    private NbMavenProject project;
     
-    /** Creates a new instance of TestOutputListenerProvider */
-    public JavaOutputListenerProvider(NbMavenProject proj) {
+    /** Creates a new instance of JavaOutputListenerProvider */
+    public JavaOutputListenerProvider() {
         //[javac] required because of forked compilation
         //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
         failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL);
-        project = proj;
     }
     
     public void processLine(String line, OutputVisitor visitor) {

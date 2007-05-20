@@ -87,7 +87,9 @@ public class PropertySplitter {
         private boolean isQuoteChar(char c) {
             for (int i = 0; i < quotes.length; i++) {
                 char quote = quotes[i];
-                if (c == quote) return true;
+                if (c == quote) {
+                    return true;
+                }
             }
             return false;
         }

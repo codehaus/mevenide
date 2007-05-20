@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 
@@ -37,19 +36,13 @@ import org.netbeans.api.java.classpath.ClassPath;
  */
 final class BootClassPathImpl implements ClassPathImplementation {
 
-    private NbMavenProject project;
     private List resourcesCache;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
     
 //    private String lastNonDefault = null;
 //    private String lastNonDefaultPlatform = null;
 
-    public BootClassPathImpl (NbMavenProject proj) {
-        project = proj;
-//        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
-//            public void propertyChange(PropertyChangeEvent evt) {
-//            }
-//        });
+    public BootClassPathImpl () {
     }
 
     public synchronized java.util.List getResources() {

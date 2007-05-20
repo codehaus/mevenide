@@ -22,7 +22,6 @@ import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
@@ -36,6 +35,7 @@ import org.openide.nodes.Node;
  */
 public class SiteDocsNodeFactory implements NodeFactory {
     private static final String KEY_SITE = "SITE"; //NOI18N
+    private static final String SITE = "src/site"; //NOI18N
     
     /** Creates a new instance of SiteDocsNodeFactory */
     public SiteDocsNodeFactory() {
@@ -56,7 +56,7 @@ public class SiteDocsNodeFactory implements NodeFactory {
         
         public List<String> keys() {
             //TODO handle custom locations of sit docs
-            if (project.getProjectDirectory().getFileObject("src/site") != null) {
+            if (project.getProjectDirectory().getFileObject(SITE) != null) {
                 return Collections.singletonList(KEY_SITE);
             }
             return Collections.emptyList();
@@ -71,7 +71,7 @@ public class SiteDocsNodeFactory implements NodeFactory {
                 fireChange();
             }
             if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName()) &&
-                    "src/site".equals(evt.getNewValue())) {
+                    SITE.equals(evt.getNewValue())) {
                 fireChange();
             }
         }
@@ -79,19 +79,19 @@ public class SiteDocsNodeFactory implements NodeFactory {
         public void addNotify() {
             ProjectURLWatcher.addPropertyChangeListener(project, this);
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
-            watcher.addWatchedPath("src/site");
+            watcher.addWatchedPath(SITE);
         }
         
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, this);
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
-            watcher.removeWatchedPath("src/site");
+            watcher.removeWatchedPath(SITE);
         }
         
         private Node createSiteDocsNode() {
             Node n =  null;
             //TODO handle custom locations of sit docs
-            FileObject fo = project.getProjectDirectory().getFileObject("src/site");
+            FileObject fo = project.getProjectDirectory().getFileObject(SITE);
             if (fo != null) {
                 DataFolder fold = DataFolder.findFolder(fo);
                 if (fold != null) {

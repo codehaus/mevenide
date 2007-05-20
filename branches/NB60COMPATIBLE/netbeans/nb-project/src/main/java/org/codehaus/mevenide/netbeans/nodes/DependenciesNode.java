@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.List;
 import java.util.TreeSet;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -43,7 +42,6 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
@@ -80,6 +78,7 @@ public class DependenciesNode extends AbstractNode {
             case TYPE_COMPILE : setDisplayName("Libraries"); break;
             case TYPE_TEST : setDisplayName("Test Libraries"); break;
             case TYPE_RUNTIME : setDisplayName("Runtime Libraries"); break;
+            default : setDisplayName("Libraries"); break;
         }
         project = mavproject;
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/defaultFolder.gif"); //NOI18N
@@ -110,13 +109,8 @@ public class DependenciesNode extends AbstractNode {
         return toRet.toArray(new Action[toRet.size()]);
     }
     
-    private NbMavenProject getProject() {
-        return project;
-    }
-    
     private static class DependenciesChildren extends Children.Keys implements PropertyChangeListener {
         private NbMavenProject project;
-        private List deps;
         private int type;
         public DependenciesChildren(NbMavenProject proj, int type) {
             super();
@@ -298,8 +292,12 @@ public class DependenciesNode extends AbstractNode {
             Artifact art2 = (Artifact)o2;
             boolean transitive1 = art1.getDependencyTrail().size() > 2;
             boolean transitive2 = art2.getDependencyTrail().size() > 2;
-            if (transitive1 && !transitive2) return 1;
-            if (!transitive1 && transitive2) return -1;
+            if (transitive1 && !transitive2) {
+                return 1;
+            }
+            if (!transitive1 && transitive2)  {
+                return -1;
+            }
             return art1.getFile().getName().compareTo(art2.getFile().getName());
         }
         

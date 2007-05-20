@@ -41,7 +41,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.InvalidProjectModelException;
@@ -206,6 +205,7 @@ public final class NbMavenProject implements Project {
                             project = getEmbedder().readProject(fallback);
                         } catch (Exception x) {
                             // oh well..
+                            //NOPMD
                         }
                     }
                 }

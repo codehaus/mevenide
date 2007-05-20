@@ -58,9 +58,9 @@ public class TestCompileClassPathImpl extends AbstractProjectClassPathImpl {
                 } else {
                     lst.add(fil.toURI());
                 }
-            } else {
+            } else { //NOPMD
                 //null means dependencies were not resolved..
-            } //NOPMD
+            } 
         }
         it = assemblies.iterator();
         while (it.hasNext()) {

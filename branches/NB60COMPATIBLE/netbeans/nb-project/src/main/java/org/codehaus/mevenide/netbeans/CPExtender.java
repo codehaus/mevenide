@@ -59,15 +59,15 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
 
     private NbMavenProject project;
     private static final String MD5_ATTR = "MD5"; //NOI18N
+    private static final String POM_XML = "pom.xml";
     
     /** Creates a new instance of CPExtender */
     public CPExtender(NbMavenProject project) {
         this.project = project;
     }
     
-    @SuppressWarnings("deprecation")
     public boolean addLibrary(Library library) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
+        FileObject pom = project.getProjectDirectory().getFileObject(POM_XML);//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = addLibrary(library, model, null);
         if (added) {
@@ -81,13 +81,12 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return added;
     }
     
-    @SuppressWarnings("deprecation")
     public boolean addArchiveFile(FileObject arch) throws IOException {
         FileObject file = FileUtil.getArchiveFile(arch);
         if (file.isFolder()) {
             throw new IOException("Cannot add folders to Maven projects as dependencies: " + file.getURL()); //NOI18N
         }
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+        FileObject fo = project.getProjectDirectory().getFileObject(POM_XML); //NOI18N
         Model model = WriterUtils.loadModel(fo);
         assert model != null;
         boolean added = addArchiveFile(file, model, null);
@@ -191,7 +190,6 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return null;
     }
     
-    @SuppressWarnings("deprecation")
     public boolean addAntArtifact(AntArtifact arg0, URI arg1) throws IOException {
         throw new IOException("Cannot add Ant based projects as subprojecs to Maven projects."); //NOI18N
     }
@@ -210,7 +208,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     public boolean addLibraries(Library[] libraries, SourceGroup grp, String type) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+        FileObject pom = project.getProjectDirectory().getFileObject(POM_XML); //NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = libraries.length > 0;
         String scope = type == ClassPath.EXECUTE ? "runtime" : null; //NOI18N
@@ -235,7 +233,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     public boolean addRoots(URL[] urls, SourceGroup grp, String type) throws IOException {
-        FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");//NOI18N
+        FileObject pom = project.getProjectDirectory().getFileObject(POM_XML);//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = urls.length > 0;
         String scope = type == ClassPath.EXECUTE ? "runtime" : null;//NOI18N

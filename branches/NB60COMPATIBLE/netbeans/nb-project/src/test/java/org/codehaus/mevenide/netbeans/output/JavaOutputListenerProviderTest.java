@@ -35,7 +35,7 @@ public class JavaOutputListenerProviderTest extends TestCase {
     }
 
     protected void setUp() throws java.lang.Exception {
-        provider = new JavaOutputListenerProvider(null);
+        provider = new JavaOutputListenerProvider();
     }
 
     protected void tearDown() throws java.lang.Exception {
