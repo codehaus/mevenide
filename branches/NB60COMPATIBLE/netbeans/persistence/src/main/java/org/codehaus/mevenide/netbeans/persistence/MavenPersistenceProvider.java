@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.persistence;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.io.IOException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -31,7 +30,6 @@ import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopesProvider;
 import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.WeakListeners;
 
 /**
@@ -65,8 +63,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
         propChangeSupport.addPropertyChangeListener(locProvider);
         propChangeSupport.addPropertyChangeListener(scopesProvider);
                 
-        // add FileChangeListener on persistence.xml
-        File persistenceXml = locProvider.getPersistenceXml();
+        //TODO add FileChangeListener on persistence.xml
         ProjectURLWatcher watcher = proj.getLookup().lookup(ProjectURLWatcher.class);
         watcher.addWatchedPath(PersistenceLocationProviderImpl.DEF_PERSISTENCE);
         watcher.addWatchedPath(PersistenceLocationProviderImpl.ALT_PERSISTENCE);

@@ -116,8 +116,6 @@ public class PersistenceLocationProviderImpl implements PersistenceLocationProvi
         File defaultLocation = FileUtilities.resolveFilePath(
                 projectDir, DEF_PERSISTENCE);
  
-        File location = null;
-        
         if (defaultLocation.exists())
         {
             retVal = defaultLocation; 

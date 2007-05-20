@@ -18,8 +18,6 @@ package org.codehaus.mevenide.netbeans.persistence;
 
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
-import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;

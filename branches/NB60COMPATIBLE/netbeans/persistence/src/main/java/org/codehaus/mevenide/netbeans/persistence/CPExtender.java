@@ -37,7 +37,6 @@ import org.netbeans.api.project.ant.AntArtifact;
 import org.netbeans.api.project.libraries.Library;
 import org.netbeans.spi.java.project.classpath.ProjectClassPathExtender;
 import org.netbeans.spi.java.project.classpath.ProjectClassPathModifierImplementation;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -101,7 +100,6 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         if ("toplink".equals(library.getName())) {
             //TODO would be nice if the toplink lib shipping with netbeans be the same binary
             // then we could just copy the pieces to local repo.
-            List<URL> urls = library.getContent("classpath");
             FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
             Model mdl = WriterUtils.loadModel(pom);
             MavenProject mp = project.getOriginalMavenProject();
