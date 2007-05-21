@@ -12,6 +12,10 @@
     <description>Mevenide2 IDEA Support</description>
     <version>0.1-SNAPSHOT</version>
     <inceptionYear>2006</inceptionYear>
+    <issueManagement>
+      <system>Jira</system>
+      <url>http://jira.codehaus.org/browse/MNGIDEA</url>
+    </issueManagement>
     <ciManagement>
         <system>continuum</system>
         <url>${mevenide2.continuum.url}</url>
