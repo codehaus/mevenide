@@ -382,6 +382,70 @@
                 </site>
             </distributionManagement>
         </profile>
+        <profile>
+            <id>mevenide-ci</id>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>tlc</id>
+                    <name>TLC Repository</name>
+                    <url>http://commons.ucalgary.ca/pub/m2</url>
+                </pluginRepository>
+            </pluginRepositories>
+            <distributionManagement>
+                <site>
+                    <id>Mevenide2 IDEA CI Site</id>
+                    <name>Mevenide2 IDEA Plugin</name>
+                    <url>${mevenide2.idea.dist.url}</url>
+                </site>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.myfaces.maven</groupId>
+                        <artifactId>wagon-maven-plugin</artifactId>
+                        <version>1.0.5</version>
+                        <configuration>
+                            <id>mevenide</id>
+                            <inputDirectory>${basedir}/target/</inputDirectory>
+                            <url>dav:https://dav.codehaus.org/mevenide/download/idea/snapshot/</url>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>maven-buildnumber-plugin</artifactId>
+                        <version>0.9.5</version>
+                        <executions>
+                            <execution>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>create</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <doCheck>false</doCheck>
+                            <doUpdate>false</doUpdate>
+                            <format>{0,date,yyyy-MM-dd}</format>
+                            <items>
+                                <item>timestamp</item>
+                            </items>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>2.1</version>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>${basedir}/src/main/assembly/assembly-zip-descriptor.xml
+                                </descriptor>
+                            </descriptors>
+                            <finalName>mevenide2-${pom.artifactId}-${pom.version}-${buildNumber}</finalName>
+                        </configuration>
+                        <inherited>false</inherited>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
     <modules>
         <module>idea-core</module>
