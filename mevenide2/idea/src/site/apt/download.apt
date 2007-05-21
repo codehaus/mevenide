@@ -17,6 +17,4 @@ Download
     Snapshot releases should be used for testing only and are not recommended for production use.
     Keep in mind that not all features are implemented yet and bugs may still arise.
 
-  * Latest snapshot release: {{{http://mevenide.codehaus.org/download/idea/snapshot/mevenide2-idea-0.1-SNAPSHOT-2007-05-15.zip}mevenide2-idea-0.1-SNAPSHOT-2007-05-15}}
-
-  * Older snapshots: {{{http://mevenide.codehaus.org/download/idea/snapshot}Browse snapshot folder}}
+  * Available Snapshots: {{{http://mevenide.codehaus.org/download/idea/snapshot}Browse snapshot folder}}
