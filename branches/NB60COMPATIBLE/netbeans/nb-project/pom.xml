@@ -42,6 +42,7 @@
             <groupId>javax.lang</groupId>
             <artifactId>javac-api</artifactId>
             <version>1.6-NETBEANS-${netbeans.release}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -149,6 +150,7 @@
             <groupId>net.java.dev.swing-layout</groupId>
             <artifactId>swing-layout</artifactId>
             <version>1.0.1</version>
+            <scope>provided</scope>
         </dependency>        
         <dependency>
             <groupId>org.netbeans.api</groupId>
