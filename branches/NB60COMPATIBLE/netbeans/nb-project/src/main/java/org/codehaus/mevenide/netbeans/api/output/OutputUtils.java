@@ -91,7 +91,7 @@ public final class OutputUtils {
             line = ln - 1;
         }
         public void outputLineSelected(OutputEvent ev) {
-            cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
+//            cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
         }
         
         /** Called when some sort of action is performed on a line.
