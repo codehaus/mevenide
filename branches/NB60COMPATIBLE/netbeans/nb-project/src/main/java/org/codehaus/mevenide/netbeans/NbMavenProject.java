@@ -146,6 +146,10 @@ public final class NbMavenProject implements Project {
         updater3 = new Updater(false);
         problemReporter = new ProblemReporter(this);
         watcher = ACCESSOR.createWatcher(this);
+        if (Boolean.getBoolean("debug.104594")) {
+            Exception ex = new Exception("Created instance of Maven Project at " + projectFile.getAbsolutePath());
+            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);
+        }
     }
     
     public File getPOMFile() {
