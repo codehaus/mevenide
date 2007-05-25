@@ -137,7 +137,7 @@ public final class NbMavenProject implements Project {
      * Creates a new instance of MavenProject, should never be called by user code.
      * but only by MavenProjectFactory!!!
      */
-    public NbMavenProject(FileObject projectFO, File projectFile) throws Exception {
+    NbMavenProject(FileObject projectFO, File projectFile) throws Exception {
         this.projectFile = projectFile;
         fileObject = projectFO;
         projectInfo = new Info();
