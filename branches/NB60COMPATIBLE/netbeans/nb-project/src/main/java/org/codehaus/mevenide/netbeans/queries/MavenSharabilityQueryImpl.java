@@ -67,10 +67,10 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
             if (target.equals(file) || file.getAbsolutePath().startsWith(target.getAbsolutePath())) {
                 return false;
             }
-            if (file.equals(new File(basedir, "profiles.xml"))) { //NOI18N
-                //profiles.xml are not meant to be put in version control.
-                return false;
-            }
+        }
+        if (file.equals(new File(basedir, "profiles.xml"))) { //NOI18N
+            //profiles.xml are not meant to be put in version control.
+            return false;
         }
         return true;
     }
