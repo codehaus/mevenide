@@ -41,6 +41,7 @@ import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileSystem;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.Children;
@@ -49,6 +50,7 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
+import org.openide.util.WeakListeners;
 
 /**
  *
@@ -152,6 +154,14 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         
         private List visibleFiles = new ArrayList();
         private FileChangeListener fcl;
+        boolean nolayer = false;
+        
+        private FileChangeListener layerfcl = new FileChangeAdapter() {
+            public void fileDeleted(FileEvent fe) {
+                nolayer = true;
+                refreshKeys();
+            }
+        };
         
         /** Abstract location to display name. */
         private static final java.util.Map<String,String> FILES = new LinkedHashMap();
@@ -194,6 +204,11 @@ public class ImportantFilesNodeFactory implements NodeFactory {
             } else if (key == LAYER) {
                 Node nd = NodeFactoryUtils.createLayersNode(project);
                 if (nd != null) {
+                    DataObject dobj = nd.getLookup().lookup(DataObject.class);
+                    if (dobj != null) {
+                        FileObject fo = dobj.getPrimaryFile();
+                        fo.addFileChangeListener(FileUtil.weakFileChangeListener(layerfcl, fo));
+                    }
                     return new Node[] {nd };
                 }
                 return new Node[0];
@@ -207,7 +222,10 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         private void refreshKeys() {
             Set<FileObject> files = new HashSet();
             List newVisibleFiles = new ArrayList();
-            newVisibleFiles.add(LAYER);
+            if (!nolayer) {
+                newVisibleFiles.add(LAYER);
+                nolayer = false;
+            }
             //TODO figure out location of layer file somehow and ad to files..
             // influences the scm annotations only..
 //            LayerUtils.LayerHandle handle = LayerUtils.layerForProject(project);
