@@ -226,21 +226,21 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         private ArtifactWidget(DependencyGraphScene scene, ArtifactGraphNode node) {
             super(scene);
             Artifact artifact = node.getArtifact();
-            setLayout (LayoutFactory.createVerticalLayout ());
+            setLayout (LayoutFactory.createVerticalFlowLayout());
             setOpaque (true);
             setBackground (Color.WHITE);
             setBorder (BorderFactory.createLineBorder (10));
             
             Widget root = new LevelOfDetailsWidget(scene, 0.05, 0.1, Double.MAX_VALUE, Double.MAX_VALUE);
             addChild(root);
-            root.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
+            root.setLayout(LayoutFactory.createVerticalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
             LabelWidget lbl = new LabelWidget(scene);
             lbl.setLabel(artifact.getArtifactId() + "  ");
 //            lbl.setFont(scene.getDefaultFont().deriveFont(Font.BOLD));
             root.addChild(lbl);
         
             Widget details1 = new LevelOfDetailsWidget(scene, 0.5, 0.7, Double.MAX_VALUE, Double.MAX_VALUE);
-            details1.setLayout(LayoutFactory.createVerticalLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
+            details1.setLayout(LayoutFactory.createVerticalFlowLayout(LayoutFactory.SerialAlignment.JUSTIFY, 1));
             root.addChild(details1);
             LabelWidget lbl2 = new LabelWidget(scene);
             lbl2.setLabel(artifact.getVersion() + "  ");
