@@ -1,0 +1,39 @@
+<nbm>
+   <moduleType>normal</moduleType>
+   <codeNameBase>org.codehaus.mevenide.netbeans.graph/3</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <homepageUrl>http://mevenide.codehaus.org/m2-site</homepageUrl>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+   <libraries>
+       <library>jung:jung</library>
+       <library>commons-collections:commons-collections</library>
+       <library>colt:colt</library>
+       <library>concurrent:concurrent</library>
+   </libraries>
+   <dependencies>
+      <dependency>
+          <id>org.netbeans.api:org-openide-windows</id>
+      </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-netbeans-api-visual</id>
+      </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-util</id>
+        </dependency>
+        <dependency>
+            <id>org.netbeans.api:org-openide-actions</id>
+        </dependency>
+      <dependency>
+          <id>org.netbeans.api:org-jdesktop-layout</id>
+      </dependency>
+      <dependency>
+          <id>org.codehaus.mevenide:nb-mvn-embedder</id>
+      </dependency>
+      <dependency>
+          <id>org.codehaus.mevenide:nb-project</id>
+      </dependency>
+   </dependencies> 
+</nbm>
