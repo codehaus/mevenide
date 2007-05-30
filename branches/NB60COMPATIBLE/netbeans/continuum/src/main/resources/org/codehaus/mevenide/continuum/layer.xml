@@ -9,10 +9,8 @@
             </file>
         </folder>
     </folder>
-    <folder name="Services">
+    <!--folder name="Services">
         <file name="org-codehaus-mevenide-continuum-ContinuumSettings2.settings" url="ContinuumSettings2.xml">
-            <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.continuum.Bundle"/-->
-            <!--attr name="SystemFileSystem.icon" urlvalue="nbresloc:/org/mevenide/netbeans/project/resources/MavenIcon.gif"/-->
         </file>
-    </folder>
+    </folder-->
 </filesystem>

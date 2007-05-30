@@ -19,29 +19,32 @@ package org.codehaus.mevenide.continuum;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.openide.options.SystemOption;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
+import org.openide.util.NbPreferences;
+
 
 /**
  * continuum related settings
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class ContinuumSettings2 extends SystemOption {
+public class ContinuumSettings2  {
     
-    public static final String PROP_SERVERS = "servers"; // NOI18N
+    public static final String PROP_SERVER = "server"; // NOI18N
     
-    private List<ServerInfo> serverInfos;
+    private static ContinuumSettings2 INSTANCE = new ContinuumSettings2();
+    private Preferences preferences;
+//    private List<ServerInfo> serverInfos;
     
-    private static final long serialVersionUID = -4857548488373437L;
-    
-    protected void initialize() {
-        super.initialize();
-        List<ServerInfo> servers = new ArrayList<ServerInfo>();
-        servers.add(new ServerInfo("maven.zones.apache.org",8000,8080));
-//        servers.add(new ServerInfo("localhost",8000,8080));
-        setServers(servers);
-    }
+//    protected void initialize() {
+//        super.initialize();
+//        List<ServerInfo> servers = new ArrayList<ServerInfo>();
+//        servers.add(new ServerInfo("maven.zones.apache.org",8000,8080));
+////        servers.add(new ServerInfo("localhost",8000,8080));
+//        setServers(servers);
+//    }
     
     public String displayName() {
         return NbBundle.getMessage(ContinuumSettings2.class, "LBL_Settings"); //NOI18N
@@ -52,7 +55,7 @@ public class ContinuumSettings2 extends SystemOption {
     }
     
     public static ContinuumSettings2 getDefault() {
-        return (ContinuumSettings2) findObject(ContinuumSettings2.class, true);
+        return INSTANCE;
     }
     
     public String[] getServerArray() {
@@ -65,22 +68,35 @@ public class ContinuumSettings2 extends SystemOption {
     }
     
     public List<ServerInfo> getServers() {
+        try {
         List<ServerInfo> toReturn = new ArrayList<ServerInfo>();
-        String[] servers = (String[])getProperty(PROP_SERVERS);
-        for (String rawServerInfo :  servers ) {
+            String[] keys = getPreferences().keys();
+            for (int i = 0; i < keys.length; i++) {
+                String rawServerInfo = getPreferences().get(keys[i], null);
             toReturn.add(new ServerInfo(rawServerInfo));
         }
         return toReturn;
+        } catch (BackingStoreException ex) {
+            throw new RuntimeException(ex);
+    }
     }
     
     public void setServers(List<ServerInfo> serverInfos) {
+        try {
         String[] servers = new String[serverInfos.size()];
-        int i =0;
+            int i = 0;
         for (ServerInfo serverInfo : serverInfos) {
             servers[i] = serverInfo.toString();
             i++;
         }
-        putProperty(PROP_SERVERS, servers, true);
+            getPreferences().clear();
+            for (int j = 0; j < servers.length; j++) {
+//                IOProvider.getDefault().getStdOut().println("getPreferences().put("+PROP_SERVER + j+", "+servers[j]+")");
+                getPreferences().put(PROP_SERVER + j, servers[j]);
+    }
+        } catch (BackingStoreException ex) {
+           throw new RuntimeException(ex);
+        }
     }
     
     
@@ -101,4 +117,10 @@ public class ContinuumSettings2 extends SystemOption {
         servers.remove(serverInfo);
         setServers(servers);
     }
+    
+    public Preferences getPreferences() {
+        if (preferences == null) preferences = NbPreferences.forModule(ContinuumSettings2.class);
+        return preferences;
+}
+    
 }

@@ -18,9 +18,9 @@
 package org.codehaus.mevenide.continuum.nodes;
 
 import java.awt.event.ActionEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Collections;
+import java.util.prefs.PreferenceChangeEvent;
+import java.util.prefs.PreferenceChangeListener;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.continuum.ContinuumSettings2;
@@ -31,7 +31,6 @@ import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.WeakListeners;
 
 /**
  *
@@ -60,15 +59,13 @@ public class RootNode extends AbstractNode {
     
     private static class RootChildren extends Children.Keys {
         
-        private PropertyChangeListener listener;
+        private PreferenceChangeListener listener;
         
         RootChildren() {
-            listener = new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent evt) {
-                    if (ContinuumSettings2.PROP_SERVERS.equals(evt.getPropertyName())) {
+            listener = new PreferenceChangeListener() {
+                public void preferenceChange(PreferenceChangeEvent evt) {
                         reloadKeys();
                     }
-                }
             };
         }
         
@@ -84,7 +81,7 @@ public class RootNode extends AbstractNode {
         protected void addNotify() {
             super.addNotify();
             reloadKeys();
-            ContinuumSettings2.getDefault().addPropertyChangeListener(WeakListeners.propertyChange(listener, ContinuumSettings2.getDefault()));
+            ContinuumSettings2.getDefault().getPreferences().addPreferenceChangeListener(listener);
         }
         
         void reloadKeys() {
