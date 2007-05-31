@@ -31,11 +31,6 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-options</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-explorer</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
@@ -47,11 +42,6 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-windows</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-options-api</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         <dependency>
@@ -89,14 +79,13 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-jdesktop-layout</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>  
-        <!--  this one has to be added because the org-jdesktop-layout doesn't point to the original -->
+        </dependency>        
         <dependency>
             <groupId>net.java.dev.swing-layout</groupId>
             <artifactId>swing-layout</artifactId>
             <version>1.0.1</version>
             <scope>provided</scope>
-        </dependency>        
+        </dependency>  
     </dependencies>
     
     <build>
