@@ -54,7 +54,6 @@ public class MavenBuildProjectOutputForm extends AbstractForm implements LogList
     private static final String COMPILE_REGEXP_SOURCE = RegexpFilter.FILE_PATH_MACROS + ":\\["
             + RegexpFilter.LINE_MACROS + "," + RegexpFilter.COLUMN_MACROS
             + "]";
-    private static final String COMPILE_REGEXP_JAR = RegexpFilter.FILE_PATH_MACROS + ":" + RegexpFilter.LINE_MACROS;
 
     public MavenBuildProjectOutputForm(Project project) {
         this.project = project;
@@ -93,16 +92,14 @@ public class MavenBuildProjectOutputForm extends AbstractForm implements LogList
 
         Filter[] filters = new Filter[]{
                 new ExceptionFilter(project),
-                new RegexpFilter(project, COMPILE_REGEXP_SOURCE),
-                new RegexpFilter(project, COMPILE_REGEXP_JAR)};
+                new RegexpFilter(project, COMPILE_REGEXP_SOURCE)};
 
         builder.addFilter(filters[0]);
         builder.addFilter(filters[1]);
-        builder.addFilter(filters[2]);
 
         return builder.getConsole();
     }
-
+                            
     public void setLogger(IMavenBuildLogger buildLogger) {
         consoleView.clear();
         buildLogger.removeAllListeners();
