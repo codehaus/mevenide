@@ -61,6 +61,7 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     private WidgetAction zoomAction = ActionFactory.createCenteredZoomAction(1.1);
     private WidgetAction panAction = ActionFactory.createPanAction();
     private WidgetAction selectAction = ActionFactory.createSelectAction(new MySelectProvider());
+    private WidgetAction hoverAction; 
     private FruchtermanReingoldLayout layout;
     
     /** Creates a new instance ofla DependencyGraphScene */
@@ -69,11 +70,13 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         connectionLayer = new LayerWidget(this);
         addChild(mainLayer);
         addChild(connectionLayer);
+        hoverAction = createObjectHoverAction();
         
+        getActions().addAction(hoverAction);
         getActions().addAction(selectAction);
         getActions().addAction(zoomAction);
         getActions().addAction(panAction);
-        addObjectSceneListener(new SceneListener(), ObjectSceneEventType.OBJECT_SELECTION_CHANGED);
+        addObjectSceneListener(new SceneListener(), ObjectSceneEventType.OBJECT_HOVER_CHANGED, ObjectSceneEventType.OBJECT_SELECTION_CHANGED);
     }
 
     void cleanLayout() {
@@ -94,6 +97,7 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         }
         root.setOpaque(true);
         
+        root.getActions().addAction(hoverAction);
         root.getActions().addAction(moveAction);
         root.getActions().addAction(selectAction);
         root.getActions().addAction(popupMenuAction);
@@ -230,6 +234,12 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
             setOpaque (true);
             setBackground (Color.WHITE);
             setBorder (BorderFactory.createLineBorder (10));
+            setToolTipText("<html><i>GroupId:</i><b> " + artifact.getGroupId() + 
+                         "</b><br/><i>ArtifactId:</i><b> "+ artifact.getArtifactId() + 
+                         "</b><br/><i>Version:</i><b> " + artifact.getVersion() + 
+                         "</b><br/><i>Scope:</i><b> " + artifact.getScope() + 
+                         "</b><br/><i>Type:</i><b> " + artifact.getType() + 
+                    "</b></html>");
             
             Widget root = new LevelOfDetailsWidget(scene, 0.05, 0.1, Double.MAX_VALUE, Double.MAX_VALUE);
             addChild(root);
@@ -250,14 +260,6 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     
     public class SceneListener implements ObjectSceneListener {
         
-    
-        public void objectAdded(ObjectSceneEvent arg0, Object arg1) {}
-
-        public void objectRemoved(ObjectSceneEvent arg0, Object arg1) {}
-
-        public void objectStateChanged(ObjectSceneEvent arg0, Object arg1,
-                                       ObjectState arg2, ObjectState arg3) {}
-
         public void selectionChanged(ObjectSceneEvent state,
                                      Set<Object> oldSet,
                                      Set<Object> newSet) {
@@ -279,10 +281,29 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
             
         }
 
-        public void highlightingChanged(ObjectSceneEvent arg0, Set<Object> arg1, Set<Object> arg2) {}
+        public void objectAdded(ObjectSceneEvent event, Object addedObject) {
+        }
 
-        public void hoverChanged(ObjectSceneEvent arg0, Object arg1, Object arg2) {}
+        public void objectRemoved(ObjectSceneEvent event, Object removedObject) {
+        }
 
-        public void focusChanged(ObjectSceneEvent arg0, Object arg1, Object arg2) {}
+        public void objectStateChanged(ObjectSceneEvent event, Object changedObject, ObjectState previousState, ObjectState newState) {
+        }
+
+        public void highlightingChanged(ObjectSceneEvent event, Set<Object> previousHighlighting, Set<Object> newHighlighting) {
+        }
+
+        public void hoverChanged(ObjectSceneEvent event, Object previousHoveredObject, Object newHoveredObject) {
+            ArtifactGraphNode nd = (ArtifactGraphNode)newHoveredObject;
+            if (nd == null) {
+                //hide detail component
+            } else {
+                //show detail component
+            }
+        }
+
+        public void focusChanged(ObjectSceneEvent event, Object previousFocusedObject, Object newFocusedObject) {
+        }
+
     }
 }
