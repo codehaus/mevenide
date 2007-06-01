@@ -50,91 +50,96 @@ public class MavenEmbedderBuildTask extends AbstractMavenBuildTask {
     }
 
     public void run() {
-        MavenEmbedder mavenEmbedder;
-        MavenEmbedderBuildLogger logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
-        MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildConfiguration().getMavenConfiguration();
-        IMavenBuildConfiguration mavenBuildConfig = buildEnvironment.getMavenBuildConfiguration();
+        MavenEmbedderBuildLogger logger = null;
         try {
-            mavenEmbedder = buildEnvironment.getMavenEmbedder();
+            MavenEmbedder mavenEmbedder;
+            logger = (MavenEmbedderBuildLogger) buildEnvironment.getLogger();
+            MavenConfiguration mavenConfig = buildEnvironment.getMavenBuildConfiguration().getMavenConfiguration();
+            IMavenBuildConfiguration mavenBuildConfig = buildEnvironment.getMavenBuildConfiguration();
+            try {
+                mavenEmbedder = buildEnvironment.getMavenEmbedder();
 
-            File pomFile = new File(buildEnvironment.getPomFile());
-            MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+                File pomFile = new File(buildEnvironment.getPomFile());
+                MavenExecutionRequest req = new DefaultMavenExecutionRequest();
 
-            if (pomFile.exists()) {
-                req.setPomFile(pomFile.getAbsolutePath());
-            }
-            req.setBasedir(new File(buildEnvironment.getWorkingDir()));
+                if (pomFile.exists()) {
+                    req.setPomFile(pomFile.getAbsolutePath());
+                }
+                req.setBasedir(new File(buildEnvironment.getWorkingDir()));
 
-            String mavenSettingsFile =
-                    StringUtils.defaultString(mavenBuildConfig.getMavenSettingsFile());
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
-            Settings settings = mavenEmbedder
-                    .buildSettings(new File(mavenSettingsFile), userSettingsPath, mavenConfig.isPluginUpdatePolicy());
-            settings.setOffline(mavenConfig.isWorkOffline());
-            //MEVENIDE-407
-            if (settings.getLocalRepository() == null) {
-                if (!StringUtils.isEmpty(mavenConfig.getLocalRepository())) {
-                    settings.setLocalRepository(new File(mavenConfig.getLocalRepository()).getAbsolutePath());
-                } else {
-                    settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+                String mavenSettingsFile =
+                        StringUtils.defaultString(mavenBuildConfig.getMavenSettingsFile());
+                File userLoc = new File(System.getProperty("user.home"), ".m2");
+                File userSettingsPath = new File(userLoc, "settings.xml");
+                Settings settings = mavenEmbedder
+                        .buildSettings(new File(mavenSettingsFile), userSettingsPath, mavenConfig.isPluginUpdatePolicy());
+                settings.setOffline(mavenConfig.isWorkOffline());
+                //MEVENIDE-407
+                if (settings.getLocalRepository() == null) {
+                    if (!StringUtils.isEmpty(mavenConfig.getLocalRepository())) {
+                        settings.setLocalRepository(new File(mavenConfig.getLocalRepository()).getAbsolutePath());
+                    } else {
+                        settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+                    }
+                }
+
+                req.setSettings(settings);
+                req.setLocalRepositoryPath(mavenEmbedder.getLocalRepositoryPath(settings));
+                req.setRecursive(!mavenConfig.isNonRecursive());
+                req.setShowErrors(mavenConfig.isProduceExceptionErrorMessages());
+                req.setGoals(buildEnvironment.getGoals());
+                req.setFailureBehavior(mavenConfig.getFailureBehavior());
+                req.setGlobalChecksumPolicy(
+                        (StringUtils.isEmpty(mavenConfig.getChecksumPolicy()) ? null : mavenConfig.getChecksumPolicy()));
+                Properties props = new Properties();
+                // add all system properties
+                props.putAll(System.getProperties());
+                // add all configured user properties
+                props.putAll(mavenBuildConfig.getMavenProperties());
+                props.setProperty("idea.execution", "true");
+
+                if (mavenBuildConfig.isSkipTests()) {
+                    props.setProperty("test", "skip");
+                }
+
+                req.setProperties(props);
+                MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
+
+                req.setLoggingLevel(mavenConfig.getOutputLevel());
+                mavenEmbedderLogger.setThreshold(mavenConfig.getOutputLevel());
+                DefaultEventMonitor eventMonitor = new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger));
+                req.addEventMonitor(eventMonitor);
+                req.addEventMonitor(
+                        new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
+                req.setStartTime(new java.util.Date());
+                logger.debug(mavenConfig.toString());
+                mavenEmbedder.execute(req);
+                stop();
+
+                if (logger.isOutputPaused()) {
+                    logger.setOutputPaused(false);
+                    logger.flushBuffer();
+                }
+
+                if (isCancelled()) {
+                    logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
+                            LogListener.OUTPUT_TYPE_SYSTEM);
+                }
+            } catch (Exception e) {
+                stop();
+
+                if (logger.isOutputPaused()) {
+                    logger.setOutputPaused(false);
+                    logger.flushBuffer();
+                }
+
+                if (isCancelled()) {
+                    logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
+                            LogListener.OUTPUT_TYPE_SYSTEM);
                 }
             }
-
-            req.setSettings(settings);
-            req.setLocalRepositoryPath(mavenEmbedder.getLocalRepositoryPath(settings));
-            req.setRecursive(!mavenConfig.isNonRecursive());
-            req.setShowErrors(mavenConfig.isProduceExceptionErrorMessages());
-            req.setGoals(buildEnvironment.getGoals());
-            req.setFailureBehavior(mavenConfig.getFailureBehavior());
-            req.setGlobalChecksumPolicy(
-                    (StringUtils.isEmpty(mavenConfig.getChecksumPolicy()) ? null : mavenConfig.getChecksumPolicy()));
-            Properties props = new Properties();
-            // add all system properties
-            props.putAll(System.getProperties());
-            // add all configured user properties
-            props.putAll(mavenBuildConfig.getMavenProperties());
-            props.setProperty("idea.execution", "true");
-
-            if (mavenBuildConfig.isSkipTests()) {
-                props.setProperty("test", "skip");
-            }
-
-            req.setProperties(props);
-            MavenEmbedderLogger mavenEmbedderLogger = mavenEmbedder.getLogger();
-
-            req.setLoggingLevel(mavenConfig.getOutputLevel());
-            mavenEmbedderLogger.setThreshold(mavenConfig.getOutputLevel());
-            DefaultEventMonitor eventMonitor = new DefaultEventMonitor(new PlexusLoggerAdapter(mavenEmbedderLogger));
-            req.addEventMonitor(eventMonitor);
-            req.addEventMonitor(
-                    new MavenEmbedderBuildEventMonitor(ProgressManager.getInstance().getProgressIndicator(), this));
-            req.setStartTime(new java.util.Date());
-            logger.debug(mavenConfig.toString());
-            mavenEmbedder.execute(req);
-            stop();
-
-            if (logger.isOutputPaused()) {
-                logger.setOutputPaused(false);
-                logger.flushBuffer();
-            }
-
-            if (isCancelled()) {
-                logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
-                        LogListener.OUTPUT_TYPE_SYSTEM);
-            }
-        } catch (Exception e) {
-            stop();
-
-            if (logger.isOutputPaused()) {
-                logger.setOutputPaused(false);
-                logger.flushBuffer();
-            }
-
-            if (isCancelled()) {
-                logger.info(System.getProperty("line.separator") + BuildConstants.MESSAGE_EMBEDDED_MAVENBUILD_ABORTED,
-                        LogListener.OUTPUT_TYPE_SYSTEM);
-            }
+        } finally {
+            logger.restoreStreams();
         }
     }
 
