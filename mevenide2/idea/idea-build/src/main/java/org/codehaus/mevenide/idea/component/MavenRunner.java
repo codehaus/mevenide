@@ -29,13 +29,7 @@ import com.intellij.openapi.wm.ToolWindowManager;
 import org.apache.log4j.Logger;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.codehaus.mevenide.idea.build.AbstractMavenBuildTask;
-import org.codehaus.mevenide.idea.build.BuildException;
-import org.codehaus.mevenide.idea.build.IBuildEnvironment;
-import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
-import org.codehaus.mevenide.idea.build.IMavenBuildLogger;
-import org.codehaus.mevenide.idea.build.MavenBuildFormattedLogger;
-import org.codehaus.mevenide.idea.build.MavenBuildTask;
+import org.codehaus.mevenide.idea.build.*;
 import org.codehaus.mevenide.idea.build.embedder.MavenEmbedderBuildLogger;
 import org.codehaus.mevenide.idea.build.embedder.MavenEmbedderBuildTask;
 import org.codehaus.mevenide.idea.build.util.BuildConstants;
@@ -48,7 +42,7 @@ import org.codehaus.mevenide.idea.helper.IdeaBuildEnvironment;
 import org.codehaus.mevenide.idea.util.IdeaMavenPluginException;
 import org.codehaus.mevenide.idea.util.PluginConstants;
 
-import javax.swing.JComponent;
+import javax.swing.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -163,6 +157,10 @@ public class MavenRunner {
     }
 
     private JComponent createOutputPanel() {
+        MavenBuildProjectOutputForm oldForm = (MavenBuildProjectOutputForm) guiContext.getMavenOutputWindowForm();
+        if(oldForm!=null){
+            oldForm.dispose();
+        }
         MavenBuildProjectOutputForm form = new MavenBuildProjectOutputForm(project);
         guiContext.setMavenOutputWindowForm(form);
         return form.getRootComponent();

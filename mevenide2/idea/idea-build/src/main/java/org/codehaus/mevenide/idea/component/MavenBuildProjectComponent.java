@@ -29,12 +29,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.mevenide.idea.CorePlugin;
 import org.codehaus.mevenide.idea.IMevenideIdeaComponent;
-import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.build.IMavenBuildConfiguration;
+import org.codehaus.mevenide.idea.build.util.BuildConstants;
 import org.codehaus.mevenide.idea.common.MavenBuildPluginSettings;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
-import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.gui.PomTreeStructure;
+import org.codehaus.mevenide.idea.gui.form.MavenBuildConfigurationForm;
+import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectOutputForm;
+import org.codehaus.mevenide.idea.gui.form.MavenBuildProjectToolWindowForm;
 import org.codehaus.mevenide.idea.helper.BuildContext;
 import org.codehaus.mevenide.idea.helper.GuiContext;
 import org.codehaus.mevenide.idea.util.PluginConstants;
@@ -104,7 +105,10 @@ public class MavenBuildProjectComponent
     }
 
     public void disposeComponent() {
-        // empty
+        final MavenBuildProjectOutputForm form = (MavenBuildProjectOutputForm) guiContext.getMavenOutputWindowForm();
+        if(form!=null){
+            form.dispose();
+        }
     }
 
     public void disposeUIResources() {

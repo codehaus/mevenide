@@ -22,6 +22,7 @@ package org.codehaus.mevenide.idea.gui.form;
 import com.intellij.execution.filters.*;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
@@ -42,7 +43,7 @@ import java.util.Hashtable;
  * @author Ralf Quebbemann
  * @version $Revision$
  */
-public class MavenBuildProjectOutputForm extends AbstractForm implements LogListener {
+public class MavenBuildProjectOutputForm extends AbstractForm implements LogListener, Disposable {
     private final Project project;
     private final JPanel panel;
     private final ConsoleView consoleView;
@@ -122,5 +123,9 @@ public class MavenBuildProjectOutputForm extends AbstractForm implements LogList
 
     public JComponent getRootComponent() {
         return panel;
+    }
+
+    public void dispose() {
+        consoleView.dispose();
     }
 }
