@@ -32,7 +32,7 @@ mvn install assembly:assembly
   Now unzip the archive into your Selena EAP plugin folder and restart IDEA.
 
   Make sure to delete or move the existing Selena EAP Maven Integration plugin located
-  at <<$SELENA_EAP_HOME/plugin/maven>>. Otherwise this can interfere with the new
+  at <<$SELENA_EAP_HOME/plugins/maven>>. Otherwise this can interfere with the new
   one you just created.
 
 
