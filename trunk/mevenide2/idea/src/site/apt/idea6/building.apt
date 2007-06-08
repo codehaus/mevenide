@@ -1,6 +1,6 @@
-Building Mevenide2 for IntelliJ IDEA
+Building Mevenide2-IDEA for IntelliJ IDEA 6
 
-  These are instructions to build Mevenide2 for IntelliJ IDEA, the support for Maven2.
+  These are instructions to build Mevenide2-IDEA for IntelliJ IDEA 6, the support for Maven2.
 
   The plugin is actually a set of plugins separating different features into different components.
 
