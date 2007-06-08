@@ -16,11 +16,12 @@
             <item name="Codehaus" href="http://www.codehaus.org/"/>
             <item name="Maven 2.x" href="http://maven.apache.org/"/>
             <item name="IDEA" href="http://www.jetbrains.com/idea/"/>
+            <item name="IDEA Plugins Forum" href="http://www.intellij.net/forums/forum.jspa?forumID=18"/>
+            <item name="IDEA EAP Forum" href="http://www.intellij.net/forums/forum.jspa?forumID=22"/>
             <item name="Maven1 support" href="http://mevenide.codehaus.org"/>
         </links>
         <menu name="Mevenide2-IDEA">
             <item name="Introduction" href="index.html"/>
-            <item name="Download" href="download.html"/>
 <!--
             <item name="Features" href="features.html"/>
             <item name="Installation" href="installation.html"/>
@@ -30,8 +31,14 @@
 -->
         </menu>
 
-        <menu name="Developers">
-            <item name="Building" href="building.html"/>
+        <menu name="Support for IDEA 6">
+            <item name="Download" href="idea6/download.html"/>
+            <item name="Building" href="idea6/building.html"/>
+        </menu>
+
+        <menu name="Support for IDEA 7">
+            <item name="Download" href="idea7/download.html"/>
+            <item name="Building" href="idea7/building.html"/>
         </menu>
 
         ${parentProject}
