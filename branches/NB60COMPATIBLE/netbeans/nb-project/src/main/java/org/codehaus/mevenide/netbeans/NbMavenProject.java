@@ -85,7 +85,7 @@ import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class NbMavenProject implements Project {
-    
+
     /**
      * the only property change fired by the class, means that the pom file
      * has changed.
@@ -97,6 +97,7 @@ public final class NbMavenProject implements Project {
     public static final String PROP_RESOURCE = "RESOURCES"; //NOI18N
     
     private FileObject fileObject;
+    private FileObject folderFileObject;
     private File projectFile;
     private Image icon;
     private Lookup lookup;
@@ -137,21 +138,18 @@ public final class NbMavenProject implements Project {
      * Creates a new instance of MavenProject, should never be called by user code.
      * but only by MavenProjectFactory!!!
      */
-    NbMavenProject(FileObject projectFO, File projectFile) throws Exception {
+    NbMavenProject(FileObject folder, FileObject projectFO, File projectFile) throws Exception {
         this.projectFile = projectFile;
         fileObject = projectFO;
+        folderFileObject = folder;
         projectInfo = new Info();
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
         problemReporter = new ProblemReporter(this);
         watcher = ACCESSOR.createWatcher(this);
-        if (Boolean.getBoolean("debug.104594")) {
-            Exception ex = new Exception("Created instance of Maven Project at " + projectFile.getAbsolutePath());
-            ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, ex);
-        }
     }
-    
+
     public File getPOMFile() {
         return projectFile;
     }
@@ -296,7 +294,7 @@ public final class NbMavenProject implements Project {
      * the root dirtectory of the project.. that;s where the pom resides.
      */
     public FileObject getProjectDirectory() {
-        return fileObject.getParent();
+        return folderFileObject;
     }
     
     public FileObject getHomeDirectory() {
@@ -547,6 +545,13 @@ public final class NbMavenProject implements Project {
         }
         return false;
     }
+    
+    @Override
+    public String toString() {
+        return "Maven[" + fileObject.getPath() + "]"; //NOI18N
+    }
+    
+    
     
     private class Updater implements FileChangeListener {
         

@@ -79,7 +79,7 @@ public class NbMavenProjectFactory implements ProjectFactory {
             return null;
         }
         try {
-            NbMavenProject proj =  new NbMavenProject(projectFile, projectDiskFile);
+            NbMavenProject proj =  new NbMavenProject(fileObject, projectFile, projectDiskFile);
             return proj;
         } catch (Exception exc) {
             ErrorManager.getDefault().getInstance(NbMavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
