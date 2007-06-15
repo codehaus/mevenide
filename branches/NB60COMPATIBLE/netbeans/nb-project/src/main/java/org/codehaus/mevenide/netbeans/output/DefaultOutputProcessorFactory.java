@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.output;
 import java.util.HashSet;
 import java.util.Set;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 
 /**
@@ -33,7 +34,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
     }
 
     public Set createProcessorsSet(NbMavenProject project) {
-        Set toReturn = new HashSet();
+        Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
         toReturn.add(new GlobalOutputProcessor());
         if (project != null) {
             toReturn.add(new JavaOutputListenerProvider());
@@ -41,6 +42,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
             toReturn.add(new JavadocOutputProcessor());
             toReturn.add(new SiteOutputProcessor(project));
             toReturn.add(new ExecPluginOutputListenerProvider(project));
+            toReturn.add(new DependencyAnalyzeOutputProcessor(project));
         }
         return toReturn;
     }

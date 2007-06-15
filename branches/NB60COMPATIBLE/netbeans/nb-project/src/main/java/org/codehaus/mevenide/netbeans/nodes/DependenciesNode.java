@@ -181,19 +181,40 @@ public class DependenciesNode extends AbstractNode {
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (pnl.getOkButton() == ret) {
-                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-                Model model = WriterUtils.loadModel(fo);
-                if (model != null) {
-                    Dependency dep = PluginPropertyUtils.checkModelDependency(
-                            model, pnl.getGroupId(), pnl.getArtifactId(), true);
-                    dep.setVersion(pnl.getVersion());
-                    dep.setScope(pnl.getScope());
-                    try {
-                        WriterUtils.writePomModel(fo, model);
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
+                addDependency(project, pnl.getGroupId(), pnl.getArtifactId(), pnl.getVersion(), null, pnl.getScope(), null);
+            }
+        }
+    }
+    
+    /**
+     * a somewhat api method for adding dependenciy to pom.
+     * TODO: expose exception handling..
+     */
+    public static void addDependency(NbMavenProject project, 
+            String group, 
+            String artifact, 
+            String version, 
+            String type, 
+            String scope, 
+            String classifier) {
+        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+        Model model = WriterUtils.loadModel(fo);
+        if (model != null) {
+            Dependency dep = PluginPropertyUtils.checkModelDependency(model, group, artifact, true);
+            dep.setVersion(version);
+            if (scope != null) {
+                dep.setScope(scope);
+            }
+            if (type != null) {
+                dep.setType(type);
+            }
+            if (classifier != null) {
+                dep.setClassifier(classifier);
+            }
+            try {
+                WriterUtils.writePomModel(fo, model);
+            } catch (IOException ex) {
+                ex.printStackTrace();
             }
         }
     }
