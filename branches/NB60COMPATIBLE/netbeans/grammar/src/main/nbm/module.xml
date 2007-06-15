@@ -12,9 +12,6 @@
     </libraries>
     <dependencies>
         <dependency>
-            <id>org.netbeans.api:org-openide-util-enumerations</id>
-        </dependency>
-        <dependency>
             <id>org.codehaus.mevenide:nb-mvn-embedder</id>
         </dependency>
         <dependency>
