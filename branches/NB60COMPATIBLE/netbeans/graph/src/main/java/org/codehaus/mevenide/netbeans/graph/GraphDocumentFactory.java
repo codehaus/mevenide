@@ -78,7 +78,7 @@ public class GraphDocumentFactory {
         }
         
         public void testArtifact(Artifact node) {
-            System.out.println("test artifact=" + node);
+//            System.out.println("test artifact=" + node);
         }
         
         public void startProcessChildren(Artifact artifact) {
@@ -106,6 +106,7 @@ public class GraphDocumentFactory {
                 Artifact parent = parentChain.get(parentChain.size() - 1);
                 String edge = parent.getId() + "--" + artifact.getId();
                 ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
+                ed.setLevel(parentChain.size());
                 scene.addEdge(ed);
                 scene.setEdgeTarget(ed, getNode(artifact));
                 scene.setEdgeSource(ed, getNode(parent));
@@ -132,6 +133,7 @@ public class GraphDocumentFactory {
                 assert parent != null : "parent for kept=" + kept.getId();
                 String edge = parent.getId() + "--" + omitted.getId();
                 ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
+                ed.setLevel(parentChain.size());
                 scene.addEdge(ed);
                 scene.setEdgeTarget(ed, getNode(kept));
                 scene.setEdgeSource(ed, getNode(parent));
@@ -144,7 +146,7 @@ public class GraphDocumentFactory {
         }
         
         public void updateScope(Artifact artifact, String scope) {
-            System.out.println("update scope");
+//            System.out.println("update scope");
         }
         
         public void manageArtifact(Artifact artifact, Artifact replacement) {
@@ -182,15 +184,15 @@ public class GraphDocumentFactory {
         }
         
         public void updateScopeCurrentPom(Artifact artifact, String scope) {
-            System.out.println("update scope");
+//            System.out.println("update scope");
         }
         
         public void selectVersionFromRange(Artifact artifact) {
-            System.out.println("select version from range");
+//            System.out.println("select version from range");
         }
         
         public void restrictRange(Artifact artifact, Artifact replacement, VersionRange newRange) {
-            System.out.println("RESTRICT RANGE " + artifact + " repl=" + replacement + " range=" + newRange);
+//            System.out.println("RESTRICT RANGE " + artifact + " repl=" + replacement + " range=" + newRange);
         }
         
     }

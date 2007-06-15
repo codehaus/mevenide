@@ -23,14 +23,24 @@ package org.codehaus.mevenide.netbeans.graph;
  */
 public class ArtifactGraphEdge {
     private String edge;
+    private int level = 0;
     
     /** Creates a new instance of ArtifactGraphEdge */
     public ArtifactGraphEdge(String edge) {
         this.edge = edge;
     }
     
+    @Override
     public String toString() {
         return edge;
+    }
+    
+    public void setLevel(int lvl) {
+        level = lvl;
+    }
+    
+    public int getLevel() {
+        return level;
     }
     
 }
