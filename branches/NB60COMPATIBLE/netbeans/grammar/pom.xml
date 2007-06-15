@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
@@ -29,11 +29,11 @@
             <artifactId>org-netbeans-modules-editor</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util-enumerations</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-util</artifactId>
@@ -72,6 +72,21 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-xml-catalog</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>               
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>               
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-loaders</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>               
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
     </dependencies>
