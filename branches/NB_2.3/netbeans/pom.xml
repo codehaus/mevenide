@@ -29,13 +29,19 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>nbm-maven-plugin</artifactId>
-                <version>LATEST</version>
+                <version>2.4</version> <!-- don't upgrade-->
                 <extensions>true</extensions>
                 <configuration>
                     <descriptor>src/main/nbm/module.xml</descriptor>
                     <keystorealias>mevenide2</keystorealias>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.modello</groupId>
+                <artifactId>modello-maven-plugin</artifactId>
+                <version>1.0-alpha-14-20061220.202404-1</version>
+            </plugin>
+            
         </plugins>
       </pluginManagement>
       <plugins>
