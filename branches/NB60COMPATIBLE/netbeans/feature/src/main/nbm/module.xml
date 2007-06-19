@@ -8,26 +8,5 @@
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
    <dependencies>
-      <dependency>
-          <id>org.codehaus.mevenide:j2ee</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:persistence</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:autoupdate</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:grammar</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:netbeans-repository</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:nb-project</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:apisupport</id>
-      </dependency>
    </dependencies> 
 </nbm>

@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
@@ -40,22 +40,12 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-actions</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-loaders</artifactId>
-            <version>${netbeans.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.netbeans.api</groupId>
-            <artifactId>org-openide-io</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         <dependency>
@@ -71,15 +61,21 @@
             <scope>provided</scope>
         </dependency>        
         <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org-netbeans-modules-options-api</artifactId>
+            <artifactId>org-openide-explorer</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         
         <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>nb-mvn-embedder</artifactId>
-            <version>${mevenide.nb.release}</version>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-windows</artifactId>
+            <version>${netbeans.release}</version>
         </dependency>        
     </dependencies>
     

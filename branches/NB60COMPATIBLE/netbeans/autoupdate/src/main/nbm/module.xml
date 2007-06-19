@@ -12,13 +12,5 @@
            <id>org.netbeans.api:org-netbeans-modules-autoupdate</id>
            <type>loose</type>
        </dependency>
-       <dependency>
-           <id>org.netbeans.api:org-openide-modules</id>
-           <type>loose</type>
-       </dependency>
-       <dependency>
-           <id>org.netbeans.api:org-openide-filesystems</id>
-           <type>loose</type>
-       </dependency>
    </dependencies>
 </nbm>

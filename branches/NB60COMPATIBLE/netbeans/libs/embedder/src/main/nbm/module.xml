@@ -11,20 +11,6 @@
       <library>org.apache.maven:maven-embedder</library>
       <library>jdom:jdom</library>
    </libraries> 
-   <dependencies>
-       <dependency>
-           <id>org.netbeans.api:org-netbeans-api-progress</id>
-           <type>spec</type>
-       </dependency>
-       <dependency>
-           <id>org.netbeans.api:org-openide-filesystems</id>
-           <type>spec</type>
-       </dependency>
-       <dependency>
-           <id>org.netbeans.api:org-openide-modules</id>
-           <type>spec</type>
-       </dependency>
-   </dependencies>
    <nbmResources>
        <nbmResource>
            <baseDirectory>src/main/nbm</baseDirectory>

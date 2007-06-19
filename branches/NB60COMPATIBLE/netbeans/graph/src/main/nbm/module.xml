@@ -7,27 +7,4 @@
    <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
-   <dependencies>
-      <dependency>
-          <id>org.netbeans.api:org-openide-windows</id>
-      </dependency>
-      <dependency>
-          <id>org.netbeans.api:org-netbeans-api-visual</id>
-      </dependency>
-        <dependency>
-            <id>org.netbeans.api:org-openide-util</id>
-        </dependency>
-        <dependency>
-            <id>org.netbeans.api:org-openide-actions</id>
-        </dependency>
-      <dependency>
-          <id>org.netbeans.api:org-jdesktop-layout</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:nb-mvn-embedder</id>
-      </dependency>
-      <dependency>
-          <id>org.codehaus.mevenide:nb-project</id>
-      </dependency>
-   </dependencies> 
 </nbm>

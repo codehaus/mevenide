@@ -18,20 +18,20 @@
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-deploy-plugin</artifactId>
             <version>1.2.3</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <!-- mark as dependency to get it built before the nbm gets packaged-->
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-debugger-plugin</artifactId>
             <version>1.2.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>netbeans-run-plugin</artifactId>
             <version>1.1.2</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <!-- have this one as dependency because we want this project to load eagerly 
