@@ -77,17 +77,20 @@ public final class MavenQueryProvider extends GrammarQueryManager {
         
         public GrammarQuery isSupported(GrammarEnvironment env) {
             FileObject fo = env.getFileObject();
-            Project owner = FileOwnerQuery.getOwner(fo);
-            if (fo.getNameExt().equals("pom.xml") &&  //NOI18N
-                owner.getProjectDirectory().equals(fo.getParent())) {
-                //TODO also locate by namespace??
-                return new MavenProjectGrammar(env);
-            }
             if (fo.getNameExt().equals("settings.xml") &&  //NOI18N
                 fo.getParent() != null && ".m2".equalsIgnoreCase(fo.getParent().getNameExt())) { //NOI18N
                 //TODO also locate by namespace??
                 //TODO more proper condition
                 return new MavenSettingsGrammar(env);
+            }
+            Project owner = FileOwnerQuery.getOwner(fo);
+            if (owner == null) { //#107511
+                return null;
+            }
+            if (fo.getNameExt().equals("pom.xml") &&  //NOI18N
+                owner.getProjectDirectory().equals(fo.getParent())) {
+                //TODO also locate by namespace??
+                return new MavenProjectGrammar(env);
             }
             if (fo.getNameExt().equals("profiles.xml") &&  //NOI18N
                 owner.getProjectDirectory().equals(fo.getParent())) {
