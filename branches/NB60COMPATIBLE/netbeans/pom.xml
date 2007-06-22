@@ -89,7 +89,6 @@
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
     <module>apisupport</module>
-    <module>feature</module>
      <!--module>nb-repo-browser</module-->
      <!--module>graph</module-->
   </modules>
@@ -99,7 +98,6 @@
             <name>repository hosting netbeans.org api artifacts</name>
             <url>http://208.44.201.216:18080/maven</url>
             <releases>
-                <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
