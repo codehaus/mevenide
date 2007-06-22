@@ -39,7 +39,6 @@
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
             <version>${mevenide.nb.release}</version>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
     <repositories>
