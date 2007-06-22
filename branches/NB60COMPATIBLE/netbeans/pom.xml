@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0.3-SNAPSHOT</version>
+  <version>3.0.4-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <profiles>
       <profile>
@@ -114,6 +114,6 @@
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
        <netbeans.release>RELEASE60-M9</netbeans.release>
-       <mevenide.nb.release>3.0.3-SNAPSHOT</mevenide.nb.release>
+       <mevenide.nb.release>3.0.4-SNAPSHOT</mevenide.nb.release>
   </properties>
 </project>
