@@ -24,7 +24,7 @@
             <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
-            <groupId>org.netbeans.api</groupId>
+            <groupId>org.netbeans.modules</groupId> <!-- we are friend now -->
             <artifactId>org-netbeans-modules-j2ee-api-ejbmodule</artifactId>
             <version>${netbeans.release}</version>
         </dependency>

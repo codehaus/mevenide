@@ -25,9 +25,17 @@ import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
+import org.netbeans.modules.j2ee.dd.api.ejb.EjbJarMetadata;
+import org.netbeans.modules.j2ee.dd.api.web.WebAppMetadata;
+import org.netbeans.modules.j2ee.dd.spi.MetadataUnit;
+import org.netbeans.modules.j2ee.dd.spi.ejb.EjbJarMetadataModelFactory;
+import org.netbeans.modules.j2ee.dd.spi.web.WebAppMetadataModelFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -172,5 +180,66 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     public void removePropertyChangeListener(PropertyChangeListener arg0) {
 //        throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public synchronized MetadataModel<EjbJarMetadata> getMetadataModel() {
+//TODO        if (ejbJarMetadataModel == null) {
+//            FileObject ddFO = getDeploymentDescriptor();
+//            File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
+//            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+//            MetadataUnit metadataUnit = MetadataUnit.create(
+//                cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+//                cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+//                cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+//                // XXX: add listening on deplymentDescriptor
+//                ddFile);
+//            ejbJarMetadataModel = EjbJarMetadataModelFactory.createMetadataModel(metadataUnit);
+//        }
+        return ejbJarMetadataModel;
+    }
+
+    public <T> MetadataModel<T> getMetadataModel(Class<T> type) {
+        if (type == EjbJarMetadata.class) {
+            @SuppressWarnings("unchecked") // NOI18N
+            MetadataModel<T> model = (MetadataModel<T>)getMetadataModel();
+            return model;
+        }
+        if (type == WebAppMetadata.class) {
+            @SuppressWarnings("unchecked") // NOI18N
+            MetadataModel<T> model = (MetadataModel<T>)getAnnotationMetadataModel();
+            return model;
+//        } else if (type == WebservicesMetadata.class) {
+//            @SuppressWarnings("unchecked") // NOI18N
+//            MetadataModel<T> model = (MetadataModel<T>)getWebservicesMetadataModel();
+//            return model;
+        }
+        return null;
+    }
+        
+    /**
+     * The server plugin needs all models to be either merged on annotation-based. 
+     * Currently only the web model does a bit of merging, other models don't. So
+     * for web we actually need two models (one for the server plugins and another
+     * for everyone else). Temporary solution until merging is implemented
+     * in all models.
+     */
+    public synchronized MetadataModel<WebAppMetadata> getAnnotationMetadataModel() {
+        if (webAppAnnMetadataModel == null) {
+//TODO            FileObject ddFO = getDeploymentDescriptor();
+//            File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
+//            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+//            
+//            MetadataUnit metadataUnit = MetadataUnit.create(
+//                cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+//                cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+//                cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+//                // XXX: add listening on deplymentDescriptor
+//                ddFile);
+//            webAppAnnMetadataModel = WebAppMetadataModelFactory.createMetadataModel(metadataUnit, false);
+        }
+        return webAppAnnMetadataModel;
+    }
+        
+    private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
+    private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
     
 }

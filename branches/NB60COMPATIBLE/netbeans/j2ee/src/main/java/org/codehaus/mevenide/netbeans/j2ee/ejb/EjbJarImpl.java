@@ -37,12 +37,15 @@ import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.ejb.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
+import org.netbeans.modules.j2ee.dd.api.ejb.EjbJarMetadata;
+import org.netbeans.modules.j2ee.dd.spi.MetadataUnit;
+import org.netbeans.modules.j2ee.dd.spi.ejb.EjbJarMetadataModelFactory;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.metadata.ClassPathSupport;
-import org.netbeans.modules.j2ee.metadata.MetadataUnit;
+import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
@@ -60,8 +63,9 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     
     private EjbModuleProviderImpl provider;
 
-    private MetadataUnit metadataUnit;
+//    private MetadataUnit metadataUnit;
     private ClassPath metadataClassPath;
+    private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
     
     
     /** Creates a new instance of EjbJarImpl */
@@ -285,23 +289,23 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         return false;
     }
 
-    public MetadataUnit getMetadataUnit() {
-        synchronized (this) {
-            if (metadataUnit == null) {
-                metadataUnit = new MetadataUnitImpl();
-            }
-            return metadataUnit;
-        }
-    }
-    
-    private class MetadataUnitImpl implements MetadataUnit {
-        public ClassPath getClassPath() {
-            return getMetadataClassPath();
-        }
-        public FileObject getDeploymentDescriptor() {
-            return EjbJarImpl.this.getDeploymentDescriptor();
-        }
-    }
+//    public MetadataUnit getMetadataUnit() {
+//        synchronized (this) {
+//            if (metadataUnit == null) {
+//                metadataUnit = new MetadataUnitImpl();
+//            }
+//            return metadataUnit;
+//        }
+//    }
+//    
+//    private class MetadataUnitImpl implements MetadataUnit {
+//        public ClassPath getClassPath() {
+//            return getMetadataClassPath();
+//        }
+//        public FileObject getDeploymentDescriptor() {
+//            return EjbJarImpl.this.getDeploymentDescriptor();
+//        }
+//    }
     
     private ClassPath getMetadataClassPath() {
         synchronized (this) {
@@ -433,6 +437,35 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      */
     public void removePropertyChangeListener(PropertyChangeListener arg0) {
         //TODO..
+    }
+
+    public synchronized MetadataModel<EjbJarMetadata> getMetadataModel() {
+        if (ejbJarMetadataModel == null) {
+            FileObject ddFO = getDeploymentDescriptor();
+            File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
+            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            MetadataUnit metadataUnit = MetadataUnit.create(
+                cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+                cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+                cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+                // XXX: add listening on deplymentDescriptor
+                ddFile);
+            ejbJarMetadataModel = EjbJarMetadataModelFactory.createMetadataModel(metadataUnit);
+        }
+        return ejbJarMetadataModel;
+    }
+
+    public <T> MetadataModel<T> getMetadataModel(Class<T> type) {
+        if (type == EjbJarMetadata.class) {
+            @SuppressWarnings("unchecked") // NOI18N
+            MetadataModel<T> model = (MetadataModel<T>)getMetadataModel();
+            return model;
+//        } else if (type == WebservicesMetadata.class) {
+//            @SuppressWarnings("unchecked") // NOI18N
+//            MetadataModel<T> model = (MetadataModel<T>)getWebservicesMetadataModel();
+//            return model;
+        }
+        return null;
     }
     
     

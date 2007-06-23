@@ -29,11 +29,13 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.j2ee.ear.model.ApplicationMetadataModelImpl;
 import org.codehaus.plexus.util.StringInputStream;
 import org.netbeans.modules.j2ee.api.ejbjar.Car;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
+import org.netbeans.modules.j2ee.dd.api.application.ApplicationMetadata;
 import org.netbeans.modules.j2ee.dd.api.application.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
@@ -43,6 +45,8 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationImplementation;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
+import org.netbeans.modules.j2ee.metadata.model.spi.MetadataModelFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.openide.ErrorManager;
@@ -59,6 +63,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
 
     private NbMavenProject project;
     private EarModuleProviderImpl provider;
+    private MetadataModel<ApplicationMetadata> metadataModel;
     
     private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
     private static final String PLUGIN_ART = "maven-ear-plugin"; //NOI18N
@@ -462,6 +467,26 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public void removePropertyChangeListener(PropertyChangeListener arg0) {
         //TODO..
+    }
+    
+    /**
+     * Get metadata model of enterprise application.
+     */
+    public synchronized MetadataModel<ApplicationMetadata> getMetadataModel() {
+        if (metadataModel == null) {
+            metadataModel = MetadataModelFactory.createMetadataModel(new ApplicationMetadataModelImpl(project));
+        }
+        return metadataModel;
+    }
+    
+
+    public <T> MetadataModel<T> getMetadataModel(Class<T> type) {
+        if (type == ApplicationMetadata.class) {
+            @SuppressWarnings("unchecked") // NOI18N
+            MetadataModel<T> model = (MetadataModel<T>)getMetadataModel();
+            return model;
+        }
+        return null;
     }
  
 }

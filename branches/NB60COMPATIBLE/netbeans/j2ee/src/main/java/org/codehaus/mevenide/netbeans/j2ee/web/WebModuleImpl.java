@@ -27,18 +27,24 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
+import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
+import org.netbeans.modules.j2ee.dd.api.web.WebAppMetadata;
+import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.netbeans.modules.j2ee.dd.spi.MetadataUnit;
+import org.netbeans.modules.j2ee.dd.spi.web.WebAppMetadataModelFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.openide.filesystems.FileUtil;
@@ -51,6 +57,8 @@ import org.openide.filesystems.FileUtil;
 public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImplementation {
     private NbMavenProject project;
     private WebModuleProviderImpl provider;
+    private MetadataModel<WebAppMetadata> webAppMetadataModel;
+    private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
     
     private String url = "";
 
@@ -147,7 +155,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     
     public String getModuleVersion() {
         WebApp wapp = getWebApp ();
-        String version = WebApp.VERSION_2_5;             //NOI18N
+        String version = WebApp.VERSION_2_5;
         if (wapp != null)
             version = wapp.getVersion();
         return version;
@@ -207,31 +215,12 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         return fo;
     }
     
-    public RootInterface getDeploymentDescriptor(String string) {
-//        System.out.println("get DD");
-        if (J2eeModule.WEB_XML.equals(string)) {
-            try {
-                FileObject content = getContentDirectory();
-                if (content == null) {
-                    content = getDocumentBase();
-                }
-                FileObject deploymentDescriptor = content.getFileObject(J2eeModule.WEB_XML);
-                if(deploymentDescriptor != null) {
-                    return DDProvider.getDefault().getMergedDDRoot(deploymentDescriptor);
-                }
-            } catch (IOException e) {
-                ErrorManager.getDefault().log(e.getLocalizedMessage());
-            }
-        }
-        System.out.println("no dd for=" + string);
-        return null;
-    }
     
     private WebApp getWebApp () {
         try {
             FileObject deploymentDescriptor = getDeploymentDescriptor ();
             if(deploymentDescriptor != null) {
-                return DDProvider.getDefault ().getMergedDDRoot (deploymentDescriptor);
+                WebApp webApp = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
             }
         } catch (java.io.IOException e) {
             org.openide.ErrorManager.getDefault ().log (e.getLocalizedMessage ());
@@ -357,6 +346,59 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
      */
     public void removePropertyChangeListener(PropertyChangeListener arg0) {
         //TODO..
+    }
+
+    public <T> MetadataModel<T> getMetadataModel(Class<T> type) {
+        if (type == WebAppMetadata.class) {
+            @SuppressWarnings("unchecked") // NOI18N
+            MetadataModel<T> model = (MetadataModel<T>)getAnnotationMetadataModel();
+            return model;
+//        } else if (type == WebservicesMetadata.class) {
+//            @SuppressWarnings("unchecked") // NOI18N
+//            MetadataModel<T> model = (MetadataModel<T>)getWebservicesMetadataModel();
+//            return model;
+        }
+        return null;
+    }
+    
+    public synchronized MetadataModel<WebAppMetadata> getMetadataModel() {
+        if (webAppMetadataModel == null) {
+            FileObject ddFO = getDeploymentDescriptor();
+            File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
+            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            MetadataUnit metadataUnit = MetadataUnit.create(
+                cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+                cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+                cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+                // XXX: add listening on deplymentDescriptor
+                ddFile);
+            webAppMetadataModel = WebAppMetadataModelFactory.createMetadataModel(metadataUnit, true);
+        }
+        return webAppMetadataModel;
+    }
+    
+    /**
+     * The server plugin needs all models to be either merged on annotation-based. 
+     * Currently only the web model does a bit of merging, other models don't. So
+     * for web we actually need two models (one for the server plugins and another
+     * for everyone else). Temporary solution until merging is implemented
+     * in all models.
+     */
+    public synchronized MetadataModel<WebAppMetadata> getAnnotationMetadataModel() {
+        if (webAppAnnMetadataModel == null) {
+            FileObject ddFO = getDeploymentDescriptor();
+            File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
+            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            
+            MetadataUnit metadataUnit = MetadataUnit.create(
+                cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
+                cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+                cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+                // XXX: add listening on deplymentDescriptor
+                ddFile);
+            webAppAnnMetadataModel = WebAppMetadataModelFactory.createMetadataModel(metadataUnit, false);
+        }
+        return webAppAnnMetadataModel;
     }
     
 }
