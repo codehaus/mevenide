@@ -46,6 +46,7 @@ import org.openide.windows.OutputWriter;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class TestOutputListenerProvider implements OutputProcessor {
+        
     private static final String[] TESTGOALS = new String[] {
         "mojo-execute#surefire:test" //NOI18N
     };
@@ -130,6 +131,8 @@ public class TestOutputListenerProvider implements OutputProcessor {
     private static class TestOutputListener implements OutputListener {
         private String testname;
         private String outputDir;
+        private Pattern testNamePattern = Pattern.compile(".*\\((.*)\\).*<<< FAILURE!\\s*");
+        
         public TestOutputListener(String test, String outDir) {
             testname = test;
             outputDir = outDir;
@@ -155,17 +158,14 @@ public class TestOutputListenerProvider implements OutputProcessor {
             FileObject report = outDir.getFileObject(testname + ".txt");
             Project prj = FileOwnerQuery.getOwner(outDir);
             if (prj != null) {
-                NbMavenProject nbprj = (NbMavenProject)prj.getLookup().lookup(NbMavenProject.class);
+                NbMavenProject nbprj = prj.getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
                 File testDir = new File(nbprj.getOriginalMavenProject().getBuild().getTestSourceDirectory());
-                String replace = testname.replace('.', File.separatorChar);
-                File testFile = new File(testDir, replace + ".java"); //NOI18N
-                FileObject fo = FileUtil.toFileObject(testFile);
 
                 if (report != null) {
                     String nm = testname.lastIndexOf('.') > -1 
                             ? testname.substring(testname.lastIndexOf('.')) 
                             : testname;
-                    openLog(report, nm, fo);
+                    openLog(report, nm, testDir);
                 } else {
                     //TODO how to report..
                 }
@@ -178,7 +178,7 @@ public class TestOutputListenerProvider implements OutputProcessor {
         public void outputLineCleared(OutputEvent ev) {
         }
         
-        private void openLog(FileObject fo, String title, FileObject testFile) {
+        private void openLog(FileObject fo, String title, File testDir) {
             try {
                 IOProvider.getDefault().getIO(title, false).getOut().reset();
             } catch (Exception exc) {
@@ -191,11 +191,22 @@ public class TestOutputListenerProvider implements OutputProcessor {
             String line = null;
             try {
                 reader = new BufferedReader(new InputStreamReader(fo.getInputStream()));
-                ClassPath classPath = ClassPath.getClassPath(testFile, ClassPath.EXECUTE);
+                ClassPath classPath = null;
                 while ((line = reader.readLine()) != null) {
-                    OutputListener list = OutputUtils.matchStackTraceLine(line, classPath);
-                    if (list != null) {
-                        writer.println(line, list);
+                    Matcher m = testNamePattern.matcher(line);
+                    if (m.matches()) {
+                        String testClassName = m.group(1).replace('.', File.separatorChar) + ".java";
+                        File testClassFile = new File(testDir, testClassName);
+                        FileObject testFileObject = FileUtil.toFileObject(testClassFile);
+                        classPath = ClassPath.getClassPath(testFileObject, ClassPath.EXECUTE);
+                    }
+                    if (classPath != null) {
+                        OutputListener list = OutputUtils.matchStackTraceLine(line, classPath);
+                        if (list != null) {
+                            writer.println(line, list, true);
+                        } else {
+                            writer.println(line);
+                        }
                     } else {
                         writer.println(line);
                     }
