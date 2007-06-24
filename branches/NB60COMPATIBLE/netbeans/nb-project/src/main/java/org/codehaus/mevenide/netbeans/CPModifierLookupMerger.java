@@ -79,7 +79,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
                               Class<?>[] paramTypes,
                               Object... params) throws IOException {
             try {
-                Method meth = impl.getClass().getMethod(methodName, paramTypes);
+                Method meth = impl.getClass().getDeclaredMethod(methodName, paramTypes);
                 meth.setAccessible(true);
                 return meth.invoke(impl, params);
             } catch (InvocationTargetException x) {
@@ -101,7 +101,7 @@ public class CPModifierLookupMerger implements LookupMerger<ProjectClassPathModi
             Collection<SourceGroup> sg = new HashSet<SourceGroup>();
             for (ProjectClassPathModifierImplementation ext : list) {
                 try {
-                    SourceGroup[] sgs = (SourceGroup[])retVal("getExtensibleSourceGroups", ext, new Class<?>[0]);
+                    SourceGroup[] sgs = (SourceGroup[])retVal("getExtensibleSourceGroups", ext, null);
                     sg.addAll(Arrays.asList(sgs));
                 } catch (IOException e) {
                     //should not happen at all.
