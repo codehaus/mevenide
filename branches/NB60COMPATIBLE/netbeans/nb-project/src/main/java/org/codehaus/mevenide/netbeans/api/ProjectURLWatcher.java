@@ -24,6 +24,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.FileChangeSupport;
+import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
+import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -40,8 +43,8 @@ import org.openide.filesystems.FileUtil;
 public final class ProjectURLWatcher {
     
     private NbMavenProject project;
-    private Collection<URI> paths = new ArrayList<URI>();
     private PropertyChangeSupport support;
+    private FCHSL listener = new FCHSL();
     
     static {
         AccessorImpl impl = new AccessorImpl();
@@ -66,8 +69,20 @@ public final class ProjectURLWatcher {
             watcher.doFireReload();
         }
         
-        public void checkFileObject(ProjectURLWatcher watcher, FileObject fo) {
-            watcher.checkFileObject(fo);
+    }
+    
+    private class FCHSL implements FileChangeSupportListener {
+
+        public void fileCreated(FileChangeSupportEvent event) {
+            fireChange(event.getPath().toURI());
+        }
+
+        public void fileDeleted(FileChangeSupportEvent event) {
+            fireChange(event.getPath().toURI());
+        }
+
+        public void fileModified(FileChangeSupportEvent event) {
+            fireChange(event.getPath().toURI());
         }
         
     }
@@ -116,27 +131,20 @@ public final class ProjectURLWatcher {
     
     
     public synchronized void addWatchedPath(String relPath) {
-        paths.add(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
+        addWatchedPath(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
     } 
     
     public synchronized void addWatchedPath(URI uri) {
-        paths.add(uri);
+        FileChangeSupport.DEFAULT.addListener(listener, new File(uri));
     } 
     
     public synchronized void removeWatchedPath(String relPath) {
-        paths.remove(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
+        removeWatchedPath(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
     }
     public synchronized void removeWatchedPath(URI uri) {
-        paths.remove(uri);
+        FileChangeSupport.DEFAULT.removeListener(listener, new File(uri));
     } 
     
-    private synchronized void checkFileObject(FileObject fo) {
-        File fil = FileUtil.toFile(fo);
-        URI uri = fil.toURI();
-        if (paths.contains(uri)) {
-            fireChange(uri);
-        }
-    }
     
     //TODO better do in ReqProcessor to break the listener chaining??
     private void fireChange(URI uri) {
@@ -189,5 +197,4 @@ public final class ProjectURLWatcher {
             assert false : "Attempted to remove PropertyChangeListener from project " + prj; //NOI18N
         }
     }
-    
 }

@@ -131,7 +131,6 @@ public final class NbMavenProject implements Project {
         
         public abstract void doFireReload(ProjectURLWatcher watcher);
         
-        public abstract void checkFileObject(ProjectURLWatcher watcher, FileObject fo);
     }
     
     /**

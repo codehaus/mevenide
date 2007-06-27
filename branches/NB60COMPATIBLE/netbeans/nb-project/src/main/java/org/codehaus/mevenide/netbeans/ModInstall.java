@@ -39,16 +39,14 @@ public class ModInstall extends ModuleInstall {
     private static int MILIS_IN_SEC = 1000;
     private static int MILIS_IN_MIN = MILIS_IN_SEC * 60;
     private transient PropertyChangeListener projectsListener;
-    private transient FileSystemListener filesystemListener;
     /** Creates a new instance of ModInstall */
     public ModInstall() {
     }
     
+    @Override
     public void restored() {
         super.restored();
         projectsListener = new OpenProjectsListener();
-        filesystemListener = new FileSystemListener();
-        filesystemListener.attach();
         OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
         int freq = MavenIndexSettings.getDefault().getIndexUpdateFrequency();
         if (freq != MavenIndexSettings.FREQ_NEVER) {
@@ -81,13 +79,11 @@ public class ModInstall extends ModuleInstall {
         return  (diff < 0 || diff > amount);
     }
 
+    @Override
     public void uninstalled() {
         super.uninstalled();
         if (projectsListener != null) {
             OpenProjects.getDefault().removePropertyChangeListener(projectsListener);
-        }
-        if (filesystemListener != null) {
-            filesystemListener.detach();
         }
     }
     
@@ -97,7 +93,7 @@ public class ModInstall extends ModuleInstall {
             boolean added = false;
             Project[] prjs = OpenProjects.getDefault().getOpenProjects();
             for (int i = 0; i < prjs.length; i++) {
-                NbMavenProject mavProj = (NbMavenProject)prjs[i].getLookup().lookup(NbMavenProject.class);
+                NbMavenProject mavProj = prjs[i].getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
                 if (mavProj != null) {
                     List repos = mavProj.getOriginalMavenProject().getRemoteArtifactRepositories();
                     if (repos != null) {
