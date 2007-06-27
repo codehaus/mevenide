@@ -79,33 +79,43 @@
     <folder name="Projects">
         <folder name="org-codehaus-mevenide-netbeans">
             <folder name="Nodes">
-                <file name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance"/>
+                <file name="org-codehaus-mevenide-netbeans-nodes-SourcesNodeFactory.instance">
+                    <attr name="position" intvalue="100"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-OtherRootNodeFactory.instance">
+                    <attr name="position" intvalue="200"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-GenSourcesNodeFactory.instance">
+                    <attr name="position" intvalue="300"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-ModulesNodeFactory.instance">
+                    <attr name="position" intvalue="400"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-DependenciesNodeFactory.instance">
+                    <attr name="position" intvalue="500"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance">
+                    <attr name="position" intvalue="600"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance">
+                    <attr name="position" intvalue="700"/>
+                </file>
             </folder>    
             <folder name="Lookup">
             </folder>    
             <folder name="Customizer">
-                <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance"/>
-                <!--attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance" boolvalue="true"/-->
-                <!--file name="org-codehaus-mevenide-netbeans-customizer-LibrariesPanelProvider.instance"/-->
-                <attr name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance"/>
-                <!--attr name="org-codehaus-mevenide-netbeans-customizer-LibrariesProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/-->
-                <attr name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance/org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance"/>
+                <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance">
+                    <attr name="position" intvalue="100"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance">
+                    <attr name="position" intvalue="200"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance">
+                    <attr name="position" intvalue="300"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-customizer-ActionMappingsPanelProvider.instance">
+                    <attr name="position" intvalue="400"/>
+                </file>
             </folder>
             <folder name="LibraryPOMs">
                 <folder name="swing-layout">

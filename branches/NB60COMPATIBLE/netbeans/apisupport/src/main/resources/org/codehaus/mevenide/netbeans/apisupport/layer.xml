@@ -8,9 +8,9 @@
                 <file name="org-codehaus-mevenide-netbeans-apisupport-MavenApisupportLookupProvider.instance"/>
             </folder>
             <folder name="Nodes">
-                <file name="org-codehaus-mevenide-netbeans-apisupport-ImportantFilesNodeFactory.instance"/>
-                <attr name="org-codehaus-mevenide-netbeans-apisupport-ImportantFilesNodeFactory.instance/org-codehaus-mevenide-netbeans-nodes-ProjectFilesNodeFactory.instance" boolvalue="true"/>
-                <attr name="org-codehaus-mevenide-netbeans-nodes-SiteDocsNodeFactory.instance/org-codehaus-mevenide-netbeans-apisupport-ImportantFilesNodeFactory.instance" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-netbeans-apisupport-ImportantFilesNodeFactory.instance">
+                    <attr name="position" intvalue="650"/>
+                </file>
             </folder>
         </folder>
     </folder>

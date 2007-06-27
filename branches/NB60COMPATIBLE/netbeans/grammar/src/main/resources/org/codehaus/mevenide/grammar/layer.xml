@@ -7,9 +7,9 @@
         <folder name="XML">
             <folder name="GrammarQueryManagers">
                 <!-- register Maven project grammar -->
-                <attr name="semantics-grammar-to-generic-grammar-separator/org-codehaus-mevenide-grammar-MavenQueryProvider.instance" boolvalue="true"/>
-                <file name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance"/>
-                <attr name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance/generic-grammar-to-universal-grammar-separator" boolvalue="true"/>
+                <file name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance">
+                    <attr name="position" intvalue="729"/>
+                </file>
             </folder>
             <folder name="UserCatalogs">
                 <file name="org-codehaus-mevenide-grammar-catalog-MavenCatalog.instance">
