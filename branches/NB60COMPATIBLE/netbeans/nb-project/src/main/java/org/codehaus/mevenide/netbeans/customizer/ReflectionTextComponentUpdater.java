@@ -21,6 +21,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import javax.swing.JLabel;
 import javax.swing.text.JTextComponent;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 
 /**
  *
@@ -32,8 +33,9 @@ public class ReflectionTextComponentUpdater extends TextComponentUpdater {
     private Method modelgetter;
     private Method defgetter;
     private Method modelsetter;
+    private ModelHandle handle;
     /** Creates a new instance of ReflectionTextComponentUpdater */
-    public ReflectionTextComponentUpdater(String getter, String setter, Object model, Object defaults, JTextComponent field, JLabel label) 
+    public ReflectionTextComponentUpdater(String getter, String setter, Object model, Object defaults, JTextComponent field, JLabel label, ModelHandle handle) 
                         throws NoSuchMethodException {
         super(field, label);
         this.model = model;
@@ -43,6 +45,7 @@ public class ReflectionTextComponentUpdater extends TextComponentUpdater {
         if (defaults != null) {
             defgetter = defaults.getClass().getMethod(getter, new Class[0]);
         }
+        this.handle = handle;
         
     }
     
@@ -78,6 +81,7 @@ public class ReflectionTextComponentUpdater extends TextComponentUpdater {
     public void setValue(String value) {
         try {
             modelsetter.invoke(model, new Object[] { value });
+            handle.markAsModified(model);
         } catch (IllegalArgumentException ex) {
             ex.printStackTrace();
         } catch (InvocationTargetException ex) {

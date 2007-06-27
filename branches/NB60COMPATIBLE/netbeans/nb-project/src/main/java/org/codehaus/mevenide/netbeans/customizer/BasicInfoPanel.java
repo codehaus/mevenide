@@ -29,7 +29,7 @@ import org.apache.maven.project.MavenProject;
  */
 public class BasicInfoPanel extends javax.swing.JPanel {
     private ModelHandle handle;
-    private List listeners;
+    private List<TextComponentUpdater> listeners;
     
     /** Creates new form BasicInfoPanel */
     public BasicInfoPanel(ModelHandle handle) {
@@ -41,14 +41,14 @@ public class BasicInfoPanel extends javax.swing.JPanel {
     private void initValues() {
         Model mdl = handle.getPOMModel();
         MavenProject project = handle.getProject().getParent();
-        listeners = new ArrayList();
+        listeners = new ArrayList<TextComponentUpdater>();
         try {
-            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId, lblGroupId)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId, lblArtifactId)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion, lblVersion)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName, lblName)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging, lblPackaging)); //NOI18N
-            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription, lblDescription)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getGroupId", "setGroupId", mdl, project, txtGroupId, lblGroupId, handle)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getArtifactId", "setArtifactId", mdl, project, txtArtifactId, lblArtifactId, handle)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getVersion", "setVersion", mdl, project, txtVersion, lblVersion, handle)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getName", "setName", mdl, project, txtName, lblName, handle)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getPackaging", "setPackaging", mdl, project, txtPackaging, lblPackaging, handle)); //NOI18N
+            listeners.add(new ReflectionTextComponentUpdater("getDescription", "setDescription", mdl, project, taDescription, lblDescription, handle)); //NOI18N
         } catch (NoSuchMethodException ex) {
             ex.printStackTrace();
         }

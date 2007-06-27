@@ -167,6 +167,7 @@ public class SourcesPanel extends JPanel {
             dom.addChild(dom2);
         }
         dom2.setValue(sl);
+        handle.markAsModified(mdl);
     }
     
     
@@ -245,11 +246,13 @@ public class SourcesPanel extends JPanel {
             dom.addChild(dom2);
         }
         dom2.setValue(enc);
+        handle.markAsModified(mdl);
     }
     
 
     private static class EncodingRenderer extends DefaultListCellRenderer {
         
+        @Override
         public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
             assert value instanceof Charset; 
             return super.getListCellRendererComponent(list, ((Charset)value).displayName(), index, isSelected, cellHasFocus);

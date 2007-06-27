@@ -59,7 +59,7 @@ import org.openide.util.NbBundle;
 public class ActionMappings extends javax.swing.JPanel {
     private NbMavenProject project;
     private ModelHandle handle;
-    private HashMap titles = new HashMap();
+    private HashMap<String, String> titles = new HashMap<String, String>();
     
     private GoalsListener goalsListener;
     private TextValueCompleter goalcompleter;
@@ -118,6 +118,7 @@ public class ActionMappings extends javax.swing.JPanel {
         clearFields();
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
         GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
@@ -277,6 +278,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         nam.setDisplayName(nd.getInputText());
         nam.setActionName("CUSTOM-" + nd.getInputText()); //NOI18N
         handle.getActionMappings().addAction(nam);
+        handle.markAsModified(handle.getActionMappings());
         MappingWrapper wr = new MappingWrapper(nam);
         wr.setUserDefined(true);
         ((DefaultListModel)lstMappings.getModel()).addElement(wr);
@@ -305,6 +307,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                         wr.setMapping(mapp);
                         wr.setUserDefined(false);
                         lstMappingsValueChanged(null);
+                        handle.markAsModified(handle.getActionMappings());
                         break;
                     }
                 }
@@ -513,11 +516,13 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             props.setProperty(PROP_SKIP_TEST, "true"); //NOI18N
         }
         mapp.setProperties(props);
+        handle.markAsModified(handle.getActionMappings());
     }
     
     private static class Renderer extends DefaultListCellRenderer {
         
     
+        @Override
         public Component getListCellRendererComponent(JList list, Object value,
                                                       int arg2, boolean arg3,
                                                       boolean arg4) {
@@ -533,7 +538,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             }
             return supers;
         }
-}
+    }
     
     
     private class MappingWrapper {
@@ -562,9 +567,10 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             return mapping;
         }
         
+        @Override
         public String toString() {
             if (titles.get(action) != null) {
-                return (String)titles.get(action);
+                return titles.get(action);
             }
             if (mapping != null) {
                 if (mapping.getDisplayName() != null) {
@@ -608,6 +614,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                         map.setMapping(mapping);
                     }
                     handle.getActionMappings().addAction(mapping);
+                    handle.markAsModified(handle.getActionMappings());
                     map.setUserDefined(true);
                     updateColor(map);
                 }
@@ -617,42 +624,47 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     private class GoalsListener extends TextFieldListener {
+        @Override
         protected MappingWrapper doUpdate() {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
                 String text = txtGoals.getText();
                 StringTokenizer tok = new StringTokenizer(text, " "); //NOI18N
                 NetbeansActionMapping mapp = wr.getMapping();
-                List goals = new ArrayList();
+                List<String> goals = new ArrayList<String>();
                 while (tok.hasMoreTokens()) {
                     String token = tok.nextToken();
                     goals.add(token);
                 }
                 mapp.setGoals(goals);
+                handle.markAsModified(handle.getActionMappings());
             }
             return wr;
         }
     }
     
     private class ProfilesListener extends TextFieldListener {
+        @Override
         protected MappingWrapper doUpdate() {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
                 String text = txtProfiles.getText();
                 StringTokenizer tok = new StringTokenizer(text, " ,"); //NOI18N
                 NetbeansActionMapping mapp = wr.getMapping();
-                List profs = new ArrayList();
+                List<String> profs = new ArrayList<String>();
                 while (tok.hasMoreTokens()) {
                     String token = tok.nextToken();
                     profs.add(token);
                 }
                 mapp.setActivatedProfiles(profs);
+                handle.markAsModified(handle.getActionMappings());
             }
             return wr;
         }
     }
     
     private class PropertiesListener extends TextFieldListener {
+        @Override
         protected MappingWrapper doUpdate() {
             MappingWrapper wr = super.doUpdate();
             if (wr != null) {
@@ -700,6 +712,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                     updateColor(map);
                 }
                 map.getMapping().setRecursive(cbRecursively.isSelected());
+                handle.markAsModified(handle.getActionMappings());
             }
         }
         

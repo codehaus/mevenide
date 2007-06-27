@@ -38,7 +38,6 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     private NbMavenProject project;
     private ModelHandle handle;
     private EjbJar module;
-    private EjbModuleProviderImpl moduleProvider;
 
     private ArrayList listeners;
 
@@ -50,7 +49,6 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         this.handle = handle;
         this.project = project;
         module = EjbJar.getEjbJar(project.getProjectDirectory());
-        moduleProvider = project.getLookup().lookup(EjbModuleProviderImpl.class);
         loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
@@ -97,6 +95,8 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
                String iID = wr.getServerInstanceID();
                handle.getNetbeansPublicProfile().getProperties().put(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
                handle.getNetbeansPrivateProfile().getProperties().setProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               handle.markAsModified(handle.getProfileModel());
+               handle.markAsModified(handle.getPOMModel());
             }
         });
     }
@@ -123,8 +123,8 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     
     private void loadComboModel() {
         String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] { J2eeModule.EJB });
-        Collection col = new ArrayList();
-        Wrapper selected = null;
+        Collection<Wrapper> col = new ArrayList<Wrapper>();
+//        Wrapper selected = null;
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);
@@ -226,6 +226,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
             return Deployment.getDefault().getServerID(id);
         }
         
+        @Override
         public String toString() {
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }

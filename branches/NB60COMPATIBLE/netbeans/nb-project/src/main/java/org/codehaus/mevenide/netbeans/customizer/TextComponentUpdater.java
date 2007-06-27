@@ -25,6 +25,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 
 /**
  *

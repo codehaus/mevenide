@@ -71,12 +71,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     }
     
     private void initValues() {
-        Model mdl = handle.getPOMModel();
         listeners = new ArrayList();
         listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
             public Wrapper getDefaultValue() {
                 Wrapper wr = null;
-                String id = (String)handle.getProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getProject().getProperties().getProperty(org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
@@ -107,9 +106,10 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             public void setValue(Wrapper wr) {
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
-               System.out.println("setting value to " + sID + " : " + iID);
                handle.getNetbeansPublicProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
                handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               handle.markAsModified(handle.getProfileModel());
+               handle.markAsModified(handle.getPOMModel());
             }
         });
         //TODO remove the NbMavenProject dependency
@@ -149,7 +149,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
     
     private void loadComboModel() {
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
-        Collection col = new ArrayList();
+        Collection<Wrapper> col = new ArrayList<Wrapper>();
 //        Wrapper selected = null;
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
@@ -291,6 +291,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         moduleProvider.loadPersistedServerId();
         moduleProvider.setContextPath(txtContextPath.getText().trim());
+        handle.markAsModified(handle.getActionMappings());
     }
     
     
@@ -323,6 +324,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             return Deployment.getDefault().getServerID(id);
         }
         
+        @Override
         public String toString() {
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }

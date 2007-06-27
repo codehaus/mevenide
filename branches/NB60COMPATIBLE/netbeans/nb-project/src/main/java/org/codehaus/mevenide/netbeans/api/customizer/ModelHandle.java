@@ -50,6 +50,9 @@ public final class ModelHandle {
     private ActionToGoalMapping mapping;
     private org.apache.maven.model.Profile publicProfile;
     private org.apache.maven.profiles.Profile privateProfile;
+    private boolean modMapping = false;
+    private boolean modProfiles = false;
+    private boolean modModel = false;
     
     static {
         AccessorImpl impl = new AccessorImpl();
@@ -126,6 +129,7 @@ public final class ModelHandle {
                 publicProfile.setActivation(act);
                 publicProfile.setBuild(new BuildBase());
                 model.addProfile(publicProfile);
+                markAsModified(model);
             }
         }
         if (publicProfile == null && !addIfNotPresent) {
@@ -164,6 +168,7 @@ public final class ModelHandle {
                 act.setProperty(prop);
                 privateProfile.setActivation(act);
                 profiles.addProfile(privateProfile);
+                markAsModified(profiles);
             }
         }
         if (privateProfile == null && !addIfNotPresent) {
@@ -186,5 +191,31 @@ public final class ModelHandle {
      */ 
     public ActionToGoalMapping getActionMappings() {
         return mapping;
+    }
+    
+    public boolean isModified(Object obj) {
+        if (obj == mapping) {
+            return modMapping; 
+        } else if (obj == profiles) {
+            return modProfiles;
+        } else if (obj == model) {
+            return modModel;
+        }
+        return true;
+    }
+    
+    /**
+     * always after modifying the models, makr them as modified.
+     * without the marking, the particular file will not be saved.
+     * @param obj either getPOMModel(), getActionMappings() or getProfileModel()
+     */ 
+    public void markAsModified(Object obj) {
+        if (obj == mapping) {
+            modMapping = true;
+        } else if (obj == profiles) {
+            modProfiles = true;
+        } else if (obj == model) {
+            modModel = true;
+        }
     }
 }

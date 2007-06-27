@@ -155,9 +155,15 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 try {
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
-                            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
-                            WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
-                            writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
+                            if (handle.isModified(handle.getPOMModel())) {
+                                WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
+                            }
+                            if (handle.isModified(handle.getProfileModel())) {
+                                WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
+                            }
+                            if (handle.isModified(handle.getActionMappings())) {
+                                writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
+                            }
                         }
                     });
                 } catch (IOException ex) {

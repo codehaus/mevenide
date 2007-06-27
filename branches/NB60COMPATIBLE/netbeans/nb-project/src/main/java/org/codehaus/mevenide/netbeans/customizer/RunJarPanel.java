@@ -89,7 +89,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         this.handle = handle;
         this.project = project;
         initValues();
-        lblMainClass.setFont(lblMainClass.getFont().deriveFont((int)Font.BOLD));
+        lblMainClass.setFont(lblMainClass.getFont().deriveFont(Font.BOLD));
         List<FileObject> roots = new ArrayList<FileObject>();
         Sources srcs =  ProjectUtils.getSources(project);
         SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
@@ -341,16 +341,19 @@ public class RunJarPanel extends javax.swing.JPanel {
         if (!newMainClass.equals(oldMainClass)) {
             jarPlugin = checkJarPlugin(jarPlugin, newMainClass);
             assemblyPlugin = checkAssemblyPlugin(assemblyPlugin);
+            handle.markAsModified(handle.getPOMModel());
         }
         String newParams = txtArguments.getText().trim();
         if (!newParams.equals(oldParams)) {
             if (isRunCompatible) {
                 run.getProperties().setProperty(RUN_PARAMS, newParams);
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
             if (isDebugCompatible) {
                 debug.getProperties().setProperty(RUN_PARAMS, newParams);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
         }
         String newVMParams = txtVMOptions.getText().trim();
@@ -358,10 +361,12 @@ public class RunJarPanel extends javax.swing.JPanel {
             if (isRunCompatible) {
                 run.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
             if (isDebugCompatible) {
                 debug.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
         }
     }
