@@ -111,7 +111,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     private void init() throws XmlPullParserException, FileNotFoundException, IOException {
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
-        UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
         handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapping);
     }
@@ -169,9 +169,11 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         
         // Listening to window events ------------------------------------------
         
+        @Override
         public void windowClosed( WindowEvent e) {
         }
         
+        @Override
         public void windowClosing(WindowEvent e) {
             if ( dialog != null ) {
                 dialog.setVisible(false);
