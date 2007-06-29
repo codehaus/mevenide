@@ -22,10 +22,8 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScopes;
-import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopesProvider;
@@ -37,8 +35,7 @@ import org.openide.util.WeakListeners;
  * @author Daniel Mohni
  */
 public class MavenPersistenceProvider implements PersistenceLocationProvider, 
-        PersistenceScopeProvider, PersistenceScopesProvider, 
-        PersistenceClassPathProvider
+        PersistenceScopeProvider, PersistenceScopesProvider 
 {
     public static final String PROP_PERSISTENCE = "MavenPersistence"; //NOI18N
     
@@ -99,13 +96,6 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
         return scopesProvider.getPersistenceScopes();
     }
 
-    /**************************************************************************
-     * PersistenceClasspathProvider methodes
-     *************************************************************************/
-    public ClassPath getClassPath()
-    {
-        return cpProvider.getClassPath();
-    }
     
     //TODO rewrite..
     private class ResourceListener implements PropertyChangeListener {

@@ -20,7 +20,6 @@ import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.persistence.api.metadata.orm.EntityMappingsMetadata;
-import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeImplementation;
 import org.netbeans.modules.j2ee.persistence.spi.support.EntityMappingsMetadataModelHelper;
@@ -34,7 +33,7 @@ import org.openide.filesystems.FileObject;
 public class PersistenceScopeImpl implements PersistenceScopeImplementation
 {
     private PersistenceLocationProvider  locationProvider  = null;
-    private PersistenceClassPathProvider classpathProvider = null;
+    private PersistenceClasspathProviderImpl classpathProvider = null;
     private final EntityMappingsMetadataModelHelper modelHelper;
     private ClassPathProviderImpl cpProvider;
     
@@ -45,7 +44,7 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeImpl(PersistenceLocationProvider locProvider,
-            PersistenceClassPathProvider cpProv, ClassPathProviderImpl imp)
+            PersistenceClasspathProviderImpl cpProv, ClassPathProviderImpl imp)
     {
         this.locationProvider  = locProvider;
         this.classpathProvider = cpProv;

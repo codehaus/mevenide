@@ -23,14 +23,13 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.metadata.ClassPathSupport;
-import org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider;
 
 /**
  * Maven2 Implementation of 
  * <CODE>org.netbeans.modules.j2ee.persistence.spi.PersistenceClassPathProvider</CODE> 
  * @author Daniel Mohni
  */
-public class PersistenceClasspathProviderImpl implements PersistenceClassPathProvider
+public class PersistenceClasspathProviderImpl
 {
     private NbMavenProject project;
     
@@ -56,8 +55,7 @@ public class PersistenceClasspathProviderImpl implements PersistenceClassPathPro
         {
             if (projectSourcesClassPath == null)
             {
-                ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project
-                    .getLookup().lookup(ClassPathProviderImpl.class);
+                ClassPathProviderImpl cpProvider = project.getLookup().lookup(org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl.class);
                 
                 projectSourcesClassPath = ClassPathSupport.createWeakProxyClassPath(
                     getPersistenceClassPaths(cpProvider));
