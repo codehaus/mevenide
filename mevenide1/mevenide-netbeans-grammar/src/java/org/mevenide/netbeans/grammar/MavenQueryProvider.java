@@ -22,7 +22,7 @@ import java.util.Enumeration;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarQueryManager;
-import org.openide.util.enum.SingletonEnumeration;
+import org.openide.util.Enumerations;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -40,7 +40,7 @@ public final class MavenQueryProvider extends GrammarQueryManager {
                 Element root = (Element) next;                
                 if ("project".equals(root.getNodeName())) { // NOI18N
                     // add check for pomversion..
-                    return new SingletonEnumeration(next);
+                    return Enumerations.singleton(next);
                 }
             }
         }

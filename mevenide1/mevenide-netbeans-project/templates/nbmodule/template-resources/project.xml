@@ -52,17 +52,6 @@
              <netbeans.module.dep>spec</netbeans.module.dep>
         </properties>
     </dependency>    
-<!--    <dependency>     
-        <groupId>netbeans</groupId>
-        <artifactId>org-netbeans-api-java</artifactId>
-        <version>1.5-SNAPSHOT</version>
-        <type>jar</type>
-        <url>http://www.netbeans.org</url>
-        <properties>
-            <netbeans.module.dep>spec</netbeans.module.dep>
-        </properties>
-    </dependency>    
-        -->
   </dependencies>
   <build>
     <sourceDirectory>src/java</sourceDirectory>

@@ -133,7 +133,7 @@ public class WebModuleImpl implements WebModuleImplementation {
         SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {
-                fo = FileUtil.toFile(grps[0].getRootFolder());
+                fo = FileUtil.toFile(grps[i].getRootFolder());
                 File toRet = new File(fo, J2eeModule.WEB_XML); //NOI18N
                 if (toRet.exists()) {
                     return toRet;
@@ -143,7 +143,7 @@ public class WebModuleImpl implements WebModuleImplementation {
         grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_GEN_SOURCES);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {
-                fo = FileUtil.toFile(grps[0].getRootFolder());
+                fo = FileUtil.toFile(grps[i].getRootFolder());
                 File toRet = new File(fo, J2eeModule.WEB_XML); //NOI18N
                 if (toRet.exists()) {
                     return toRet;
@@ -153,7 +153,7 @@ public class WebModuleImpl implements WebModuleImplementation {
         grps = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
         if (grps != null) {
             for (int i = 0; i < grps.length; i++) {
-                fo = FileUtil.toFile(grps[0].getRootFolder());
+                fo = FileUtil.toFile(grps[i].getRootFolder());
                 File toRet = new File(fo, J2eeModule.WEB_XML); //NOI18N
                 if (toRet.exists()) {
                     return toRet;
@@ -164,5 +164,17 @@ public class WebModuleImpl implements WebModuleImplementation {
         return  FileUtilities.getFileForProperty("maven.war.webxml", project.getPropertyResolver()); //NOI18N
     }
 
-
+    public FileObject[] getJavaSources() {
+	Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+        SourceGroup[] grps = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
+        FileObject[] toRet = null;
+        if (grps != null) {
+            toRet = new FileObject[grps.length];
+            for (int i = 0; i < grps.length; i++) {
+                toRet[i] = grps[i].getRootFolder();
+            }
+        }
+        return toRet;
+     }
 }
+

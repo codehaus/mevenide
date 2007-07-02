@@ -33,8 +33,7 @@ import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.netbeans.modules.xml.spi.dom.AbstractNode;
-import org.openide.nodes.Node.Property;
-import org.openide.util.enum.EmptyEnumeration;
+import org.openide.util.Enumerations;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
@@ -72,9 +71,9 @@ public class MavenProjectGrammar implements GrammarQuery {
      * @param ctx the hint context node
      * @return an array of properties for this context
      */        
-    public Property[] getProperties(HintContext nodeCtx)
+    public org.openide.nodes.Node.Property[] getProperties(HintContext nodeCtx)
     {
-        return new Property[0];
+        return new org.openide.nodes.Node.Property[0];
     }
     
     public boolean hasCustomizer(HintContext nodeCtx)
@@ -103,7 +102,7 @@ public class MavenProjectGrammar implements GrammarQuery {
      */    
     public Enumeration queryAttributes(HintContext ownerElementCtx)
     {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
    /**
      * query default value for given context. Two context types must be handled:
@@ -154,7 +153,7 @@ public class MavenProjectGrammar implements GrammarQuery {
             }
             return toReturn.elements();
         } else {
-            return EmptyEnumeration.EMPTY;
+            return Enumerations.empty();
         }
     }
     
@@ -242,7 +241,7 @@ public class MavenProjectGrammar implements GrammarQuery {
      */    
     public Enumeration queryEntities(String prefix)
     {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
     /**
      * Allow to get names of <b>declared notations</b>.
@@ -251,12 +250,12 @@ public class MavenProjectGrammar implements GrammarQuery {
      */        
     public Enumeration queryNotations(String prefix)
     {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
     
     public Enumeration queryValues(HintContext virtualTextCtx)
     {
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
     
     /**

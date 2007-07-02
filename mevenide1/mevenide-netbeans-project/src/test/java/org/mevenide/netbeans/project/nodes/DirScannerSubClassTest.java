@@ -67,9 +67,9 @@ public class DirScannerSubClassTest extends TestCase {
         file = new File(tempDir, "hello2.txt");
         file.createNewFile();
         rootTempFO = FileUtil.toFileObject(FileUtil.normalizeFile(rootTempDir));
-        if (rootTempFO == null) {
-            throw new Exception("is null");
-        }
+//        if (rootTempFO == null) {
+//            throw new Exception("is null");
+//        }
     }
 
     protected void tearDown() throws java.lang.Exception {

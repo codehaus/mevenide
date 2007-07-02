@@ -12,9 +12,9 @@
   <dependencies>
    <dependency>     
         <groupId>netbeans</groupId>
-        <artifactId>openide</artifactId>
+        <artifactId>org-openide-util</artifactId>
         <!-- include nb module specification version..-->
-        <version>4.41</version>
+        <version>RELEASE-M10</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
     </dependency>

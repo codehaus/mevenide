@@ -42,9 +42,8 @@ import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarResult;
 import org.netbeans.modules.xml.api.model.HintContext;
 import org.netbeans.modules.xml.spi.dom.AbstractNode;
-import org.openide.nodes.Node.Property;
 import org.openide.util.Utilities;
-import org.openide.util.enum.EmptyEnumeration;
+import org.openide.util.Enumerations;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -123,8 +122,8 @@ public class MavenJellyGrammar implements GrammarQuery {
      * @param ctx the hint context node
      * @return an array of properties for this context
      */
-    public Property[] getProperties(HintContext nodeCtx) {
-        return new Property[0];
+    public org.openide.nodes.Node.Property[] getProperties(HintContext nodeCtx) {
+        return new org.openide.nodes.Node.Property[0];
     }
     
     public boolean hasCustomizer(HintContext nodeCtx) {
@@ -341,7 +340,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      */
     public Enumeration queryEntities(String prefix) {
         logger.debug("query entities");
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
     /**
      * Allow to get names of <b>declared notations</b>.
@@ -350,7 +349,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      */
     public Enumeration queryNotations(String prefix) {
         logger.debug("query notation");
-        return EmptyEnumeration.EMPTY;
+        return Enumerations.empty();
     }
     /**
      * Return options for value at given context.

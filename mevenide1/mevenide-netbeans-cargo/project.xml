@@ -13,16 +13,64 @@
     <dependencies>
         <dependency>
             <groupId>netbeans</groupId>
-            <artifactId>openide</artifactId>
+            <artifactId>org-openide-util</artifactId>
             <!-- include nb module specification version..-->
-            <version>5.9.1</version>
+            <version>RELEASE-M10</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
             <groupId>netbeans</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>	
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-modules</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>			
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-actions</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>		
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>	
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>		
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <!-- include nb module specification version..-->
+            <version>RELEASE-M10</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+        </dependency>			
+        <dependency>
+            <groupId>netbeans</groupId>
             <artifactId>org-openide-io</artifactId>
-            <version>1.6.1</version>
+            <version>RELEASE-M10</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
@@ -60,7 +108,7 @@
         <!--dependency>
             <groupId>netbeans</groupId>
             <artifactId>org-openide-execution</artifactId>
-            <version>1.6</version>
+            <version>RELEASE-M10</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
