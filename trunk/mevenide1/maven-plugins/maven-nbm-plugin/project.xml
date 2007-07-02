@@ -96,8 +96,8 @@ Is able to generate the module information from the pom and additional project p
         </dependency>
         <dependency>
             <groupId>netbeans</groupId>
-            <artifactId>nbantext</artifactId>
-            <version>4.0</version>
+            <artifactId>org-apache-tools-ant-module</artifactId>
+            <version>RELEASE-M10</version>
             <type>jar</type>
             <url>http://nbbuild.netbeans.org</url>
         </dependency>

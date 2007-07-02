@@ -29,6 +29,7 @@ import org.netbeans.modules.j2ee.dd.api.ejb.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
+import org.netbeans.modules.j2ee.metadata.MetadataUnit;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -147,6 +148,11 @@ public class MavenEjbJarImpl implements EjbJarImplementation {
     
     public boolean isValid() {
         return checkMultiProjectType() || getDeploymentDescriptor() != null;
+    }
+
+    //55 only..
+    public MetadataUnit getMetadataUnit() {
+               throw new UnsupportedOperationException("Not supported yet.");
     }
     
 }

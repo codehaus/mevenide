@@ -91,7 +91,7 @@ public class DefaultSysEnvProvider implements SysEnvProvider
         } else 
         {
             // let's assume what is not windows is unix..
-            p = r.exec( "sh -l -c env" );
+            p = r.exec( "sh -c env" );
         }
         BufferedReader br = new BufferedReader
                                     ( new InputStreamReader( p.getInputStream() ) );

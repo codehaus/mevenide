@@ -12,22 +12,38 @@
     <dependencies>
         <dependency>
             <groupId>netbeans</groupId>
-            <artifactId>openide</artifactId>
-            <version>5.9.1</version>
+            <artifactId>org-openide-util</artifactId>
+            <version>RELEASE-M10</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
             <groupId>netbeans</groupId>
-            <artifactId>openide-loaders</artifactId>
+            <artifactId>org-openide-loaders</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>5.2.1</version>
+            <version>RELEASE-M10</version>
             <url>http://www.netbeans.org</url>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
             </properties>
         </dependency>
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <!-- include nb specification version.. that's important for compiling -->
+            <version>RELEASE-M10</version>
+            <url>http://www.netbeans.org</url>
+            <type>jar</type>
+        </dependency>		
+       <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-nodes</artifactId>
+            <!-- include nb specification version.. that's important for compiling -->
+            <version>RELEASE-M10</version>
+            <url>http://www.netbeans.org</url>
+            <type>jar</type>
+        </dependency>		
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-netbeans-project</artifactId>
