@@ -62,7 +62,6 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     private List versionListeners;
     
     private EjbModuleProviderImpl provider;
-    ""
 
 //    private MetadataUnit metadataUnit;
     private ClassPath metadataClassPath;
