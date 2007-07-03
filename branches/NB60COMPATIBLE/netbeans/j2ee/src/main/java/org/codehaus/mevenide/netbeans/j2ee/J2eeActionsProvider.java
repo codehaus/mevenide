@@ -34,7 +34,7 @@ public class J2eeActionsProvider extends AbstractActionGoalProvider {
     public InputStream getActionDefinitionStream() {
         String path = "/org/codehaus/mevenide/netbeans/j2ee/webActionMappings.xml"; //NOI18N
         InputStream in = getClass().getResourceAsStream(path);
-        assert in != null : "no instream for " + path;
+        assert in != null : "no instream for " + path;  //NOI18N
         return in;
     }
     

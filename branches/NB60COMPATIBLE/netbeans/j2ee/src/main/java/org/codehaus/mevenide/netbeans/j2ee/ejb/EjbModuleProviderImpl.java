@@ -115,7 +115,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         }
         if (proj != null && project == proj) {
             if (ejbimpl != null && ejbimpl.isValid()) {
-                System.out.println("EjbMP: findEjbJar");
+//                System.out.println("EjbMP: findEjbJar");
                 return EjbJarFactory.createEjbJar(ejbimpl);
             }
         }
@@ -146,6 +146,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         // TODO implement when needed
     }
     
+    @Override
     public String getServerInstanceID() {
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
@@ -153,6 +154,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         return MavenDeploymentImpl.DEV_NULL;
     }
     
+    @Override
     public String getServerID() {
         if (serverInstanceID != null) {
             String tr = Deployment.getDefault().getServerID(serverInstanceID);
@@ -163,12 +165,14 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
         return MavenDeploymentImpl.DEV_NULL;
     }
     
+    @Override
     public boolean useDefaultServer() {
         return serverInstanceID == null;
     }
     
+    @Override
     public FileObject[] getSourceRoots() {
-        System.out.println("EjbMP: getsourceroots");
+//        System.out.println("EjbMP: getsourceroots");
 
         Sources sources = ProjectUtils.getSources(project);
         SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);

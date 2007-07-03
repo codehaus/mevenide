@@ -81,7 +81,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     public String getJ2eePlatformVersion() {
         if (isApplicationXmlGenerated()) {
             String version = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "version", "generate-application-xml");
+                                              PLUGIN_ART, "version", "generate-application-xml"); //NOI18N
             // the default version in maven plugin is also 1.3
             //TODO what if the default changes?
             if (version != null) {
@@ -101,7 +101,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
             }
         }
         // hardwire?
-        System.out.println("eariml: getj2eepaltform");
+//        System.out.println("eariml: getj2eepaltform");
         return EjbProjectConstants.J2EE_14_LEVEL;
     }
 
@@ -109,13 +109,13 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public FileObject getMetaInf() {
         String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "earSourceDirectory", "ear");
+                                              PLUGIN_ART, "earSourceDirectory", "ear");//NOI18N
         if (appsrcloc == null) {
-            appsrcloc = "main/src/application";
+            appsrcloc = "main/src/application";//NOI18N
         }
         FileObject root = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), appsrcloc));
         if (root != null) {
-            return root.getFileObject("META-INF");
+            return root.getFileObject("META-INF");//NOI18N
         }
         return null;
     }
@@ -125,20 +125,20 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     public FileObject getDeploymentDescriptor() {
         if (isApplicationXmlGenerated()) {
             String generatedLoc = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "generatedDescriptorLocation", "generate-application-xml");
+                                              PLUGIN_ART, "generatedDescriptorLocation", "generate-application-xml");//NOI18N
             if (generatedLoc == null) {
                 generatedLoc = project.getOriginalMavenProject().getBuild().getDirectory();
             }
             FileObject fo = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), generatedLoc));
             if (fo != null) {
-                return fo.getFileObject("application.xml");
+                return fo.getFileObject("application.xml");//NOI18N
             } else {
                 //TODO maybe run the generate-resources phase to get a DD
-                System.out.println("we don't have the application.xmk generated yet at=" + generatedLoc);
+//                System.out.println("we don't have the application.xmk generated yet at=" + generatedLoc);
             }
         }
         String customLoc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "applicationXml", "ear");
+                                              PLUGIN_ART, "applicationXml", "ear");//NOI18N
         if (customLoc != null) {
             FileObject fo = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), customLoc));
             if (fo != null) {
@@ -154,7 +154,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public void addWebModule(WebModule webModule) {
         //TODO this probably means adding the module as dependency to the pom.
-        throw new IllegalStateException("Not implemented for maven based projects.");
+        throw new IllegalStateException("Not implemented for maven based projects.");//NOI18N
     }
 
     /** Add j2ee ejbjar module into application.
@@ -162,14 +162,14 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public void addEjbJarModule(EjbJar ejbJar) {
         //TODO this probably means adding the module as dependency to the pom.
-        throw new IllegalStateException("Not implemented for maven based projects.");
+        throw new IllegalStateException("Not implemented for maven based projects.");//NOI18N
     }
     
     private boolean isApplicationXmlGenerated() {
         String str = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
                                                                     PLUGIN_ART, 
-                                                                    "generateApplicationXml", 
-                                                                    "generate-application-xml");
+                                                                    "generateApplicationXml", //NOI18N
+                                                                    "generate-application-xml");//NOI18N
             //either the default or explicitly set generation of application.xml file 
         return (str == null || Boolean.valueOf(str).booleanValue());
     }
@@ -197,7 +197,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public String getUrl() {
 //        System.out.println("EarImpl: getURL");
-        return "/";
+        return "/";//NOI18N
     }
 
     /**
@@ -207,7 +207,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      * then "/"
      */
     public void setUrl(String url) {
-        throw new IllegalStateException("Cannot set url for maven ear projects");
+        throw new IllegalStateException("Cannot set url for maven ear projects");//NOI18N
     }
 
     /**
@@ -219,7 +219,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         MavenProject proj = project.getOriginalMavenProject();
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
-        File fil = FileUtil.normalizeFile(new File(loc, finalName + ".ear"));
+        File fil = FileUtil.normalizeFile(new File(loc, finalName + ".ear"));//NOI18N
 //        System.out.println("ear = get archive=" + fil);
         return FileUtil.toFileObject(fil);
     }
@@ -280,11 +280,11 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
                 
                 FileObject content = getDeploymentDescriptor();
                 if (content == null) {
-                    System.out.println("getDeploymentDescriptor.application dd is null");
+//                    System.out.println("getDeploymentDescriptor.application dd is null");
                     StringInputStream str = new StringInputStream(
-  "<application xmlns=\"http://java.sun.com/xml/ns/j2ee\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\" version=\"1.4\">" +
-  "<description>description</description>" +
-  "<display-name>application</display-name></application>");
+  "<application xmlns=\"http://java.sun.com/xml/ns/j2ee\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd\" version=\"1.4\">" +//NOI18N
+  "<description>description</description>" +//NOI18N
+  "<display-name>application</display-name></application>");//NOI18N
                     try {
                         return DDProvider.getDefault().getDDRoot(new InputSource(str));
                     } catch (SAXException ex) {
@@ -299,7 +299,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
                 ErrorManager.getDefault().log(e.getLocalizedMessage());
             }
         }
-        System.out.println("no dd for=" + location);
+//        System.out.println("no dd for=" + location);
         return null;
     }
 
@@ -309,7 +309,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         List toRet = new ArrayList();
         while (it.hasNext()) {
             Artifact elem = (Artifact) it.next();
-            if ("war".equals(elem.getType()) || "ejb".equals(elem.getType())) {
+            if ("war".equals(elem.getType()) || "ejb".equals(elem.getType())) {//NOI18N
 //                System.out.println("adding " + elem.getId());
                 //TODO probaby figure out the context root etc..
                 toRet.add(J2eeModuleFactory.createJ2eeModule(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion(), provider)));
@@ -347,7 +347,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
 
     public void addCarModule(Car arg0) {
-        throw new UnsupportedOperationException("Not supported yet.");
+        throw new UnsupportedOperationException("Not supported yet.");//NOI18N
     }
 
     
@@ -426,7 +426,7 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");//NOI18N
         return toRet;
     }
 

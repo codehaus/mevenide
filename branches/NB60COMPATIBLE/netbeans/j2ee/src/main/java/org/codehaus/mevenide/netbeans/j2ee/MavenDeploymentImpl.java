@@ -51,10 +51,10 @@ public class MavenDeploymentImpl implements MavenDeployment {
                               String clientModuleUri,
                               boolean forceRedeploy) throws MojoFailureException {
         ClassLoader originalLoader = null;
-        log.info("Deployment started");
+        log.info("Deployment started"); //NOI18N - no localization in maven build now.
         try {
             // see issue #62448
-            ClassLoader current = (ClassLoader)Lookup.getDefault().lookup(ClassLoader.class);
+            ClassLoader current = Lookup.getDefault().lookup(ClassLoader.class);
             if (current == null) {
                 current = ClassLoader.getSystemClassLoader();
             }
@@ -66,22 +66,22 @@ public class MavenDeploymentImpl implements MavenDeployment {
             FileObject fob = FileUtil.toFileObject(project.getBasedir());
             fob.refresh(); // without this the "target" directory is not found in filesystems
             
-            J2eeModuleProvider jmp = (J2eeModuleProvider) FileOwnerQuery.getOwner(fob).getLookup().lookup(J2eeModuleProvider.class);
+            J2eeModuleProvider jmp = FileOwnerQuery.getOwner(fob).getLookup().lookup(J2eeModuleProvider.class);
             String serverInstanceID = jmp.getServerInstanceID();
             if (DEV_NULL.equals(serverInstanceID)) {
-                log.error("No suitable Deployment Server is defined for the project or globally.");
-                throw new MojoFailureException("No suitable Deployment Server is defined for the project or globally.");
+                log.error("No suitable Deployment Server is defined for the project or globally.");//NOI18N - no localization in maven build now.
+                throw new MojoFailureException("No suitable Deployment Server is defined for the project or globally.");//NOI18N - no localization in maven build now.
             }
-            log.info("Deploying on " + Deployment.getDefault().getServerInstanceDisplayName(serverInstanceID));
+            log.info("Deploying on " + Deployment.getDefault().getServerInstanceDisplayName(serverInstanceID));//NOI18N - no localization in maven build now.
             try {
-                log.info("    debugMode: " + debugmode);
-                log.info("    clientModuleUri: " + clientModuleUri);
-                log.info("    clientUrlPart: " + clientUrlPart);
-                log.info("    forcedeploy: " + forceRedeploy);
+                log.info("    debugMode: " + debugmode);//NOI18N - no localization in maven build now.
+                log.info("    clientModuleUri: " + clientModuleUri);//NOI18N - no localization in maven build now.
+                log.info("    clientUrlPart: " + clientUrlPart);//NOI18N - no localization in maven build now.
+                log.info("    forcedeploy: " + forceRedeploy);//NOI18N - no localization in maven build now.
                 
                 String clientUrl = Deployment.getDefault().deploy(jmp, debugmode, clientModuleUri, clientUrlPart, forceRedeploy, new DLogger(log));
                 if (clientUrl != null) {
-                    log.info("Executing browser to show " + clientUrl);
+                    log.info("Executing browser to show " + clientUrl);//NOI18N - no localization in maven build now.
                     HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(clientUrl));
                 }
                 if (debugmode) {
@@ -97,13 +97,13 @@ public class MavenDeploymentImpl implements MavenDeployment {
                         } else {
                             address = Integer.toString(sdi.getPort());
                         }
-                        MavenDebugger deb = (MavenDebugger)Lookup.getDefault().lookup(MavenDebugger.class);
-                        deb.attachDebugger(project, log, "Debug Deployed app", transport, h, address);
+                        MavenDebugger deb = Lookup.getDefault().lookup(MavenDebugger.class);
+                        deb.attachDebugger(project, log, "Debug Deployed app", transport, h, address);//NOI18N - no localization in maven build now.
                     }
                 }
             } catch (Exception ex) {
                 log.error(ex);
-                throw new MojoFailureException("Failed Deployment:" + ex.getMessage());
+                throw new MojoFailureException("Failed Deployment:" + ex.getMessage());//NOI18N - no localization in maven build now.
             }
         } finally {
             if (originalLoader != null) {

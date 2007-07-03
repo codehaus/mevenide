@@ -62,6 +62,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     private List versionListeners;
     
     private EjbModuleProviderImpl provider;
+    ""
 
 //    private MetadataUnit metadataUnit;
     private ClassPath metadataClassPath;
@@ -98,7 +99,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         if (srcs != null) {
             SourceGroup[] grp = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
             for (int i = 0; i < grp.length; i++) {
-                FileObject fo = grp[i].getRootFolder().getFileObject("META-INF");
+                FileObject fo = grp[i].getRootFolder().getFileObject("META-INF"); //NOI18N
                 if (fo != null) {
                     return fo;
                 }
@@ -111,7 +112,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         URI[] dir = project.getResources(false);
         File fil = new File(new File(dir[0]), path);
         fil = FileUtil.normalizeFile(fil);
-        System.out.println("EjbM:getDDFile=" + fil.getAbsolutePath());
+//        System.out.println("EjbM:getDDFile=" + fil.getAbsolutePath());
         
         return fil;
     }
@@ -121,14 +122,14 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     public FileObject getDeploymentDescriptor() {
         FileObject metaInf = getMetaInf();
         if (metaInf != null) {
-            return metaInf.getFileObject("ejb-jar.xml");
+            return metaInf.getFileObject("ejb-jar.xml"); //NOI18N
         }
         return null;
     }
     
     public FileObject[] getJavaSources() {
         //TODO !!!!
-        System.out.println("EjbM:getJavaSources");
+//        System.out.println("EjbM:getJavaSources");
         
         return new FileObject[0];
     }
@@ -147,8 +148,8 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         } else {
             //look in pom's config.
             String version = PluginPropertyUtils.getPluginProperty(project,
-                    "org.apache.maven.plugins", "maven-ejb-plugin",
-                    "ejbVersion", "ejb");
+                    "org.apache.maven.plugins", "maven-ejb-plugin", //NOI18N
+                    "ejbVersion", "ejb"); //NOI18N
             if (version != null) {
                 return version.trim();
             }
@@ -166,7 +167,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      * Returns the location of the module within the application archive.
      */
     public String getUrl() {
-        return "/" + project.getOriginalMavenProject().getBuild().getFinalName();
+        return "/" + project.getOriginalMavenProject().getBuild().getFinalName(); //NOI18N
     }
     
     /**
@@ -177,7 +178,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      */
     public void setUrl(String url) {
         //
-        throw new IllegalStateException("not implemented for maven projects..");
+        throw new IllegalStateException("not implemented for maven projects.."); //NOI18N
     }
     
     /**
@@ -187,15 +188,15 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     public FileObject getArchive() throws IOException {
         //TODO get the correct values for the plugin properties..
         String jarfile = PluginPropertyUtils.getPluginProperty(project,
-                    "org.apache.maven.plugins", "maven-ejb-plugin",
-                    "jarName", "ejb");
+                    "org.apache.maven.plugins", "maven-ejb-plugin", //NOI18N
+                    "jarName", "ejb"); //NOI18N
         MavenProject proj = project.getOriginalMavenProject();
         if (jarfile == null) {
             jarfile = proj.getBuild().getFinalName();
         }
         String loc = proj.getBuild().getDirectory();
-        File fil = FileUtil.normalizeFile(new File(loc, jarfile + ".jar"));
-        System.out.println("get ejb archive=" + fil);
+        File fil = FileUtil.normalizeFile(new File(loc, jarfile + ".jar")); //NOI18N
+//        System.out.println("get ejb archive=" + fil);
         return FileUtil.toFileObject(fil);
         
     }
@@ -233,7 +234,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     public FileObject getContentDirectory() throws IOException {
         String loc = project.getOriginalMavenProject().getBuild().getOutputDirectory();
         File fil = FileUtil.normalizeFile(new File(loc));
-        System.out.println("ejb jar..get content=" + fil);
+//        System.out.println("ejb jar..get content=" + fil);
         FileObject fo = FileUtil.toFileObject(fil.getParentFile());
         if (fo != null) {
             fo.refresh();
@@ -273,7 +274,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
                 ErrorManager.getDefault().log(e.getLocalizedMessage());
              }
         }
-        System.out.println("no dd for=" + location);
+//        System.out.println("no dd for=" + location);
         return null;
         
     }
@@ -310,7 +311,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     private ClassPath getMetadataClassPath() {
         synchronized (this) {
             if (metadataClassPath == null) {
-                ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
+                ClassPathProviderImpl cpProvider = project.getLookup().lookup(org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl.class);
                 metadataClassPath = ClassPathSupport.createWeakProxyClassPath(new ClassPath[] {
                     cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
 //                    cpProvider.getJ2eePlatformClassPath(),
@@ -396,7 +397,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup"); //NOI18N
         return toRet;
     }
 

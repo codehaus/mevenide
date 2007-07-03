@@ -168,10 +168,10 @@ import org.openide.util.Lookup;
                     String path;
                     if (FileUtil.isParentOf(docBase, parent)) {
                         path = FileUtil.getRelativePath(docBase, fo.getParent()) +
-                            "/" + fe.getName() + "." + fe.getExt();
+                            "/" + fe.getName() + "." + fe.getExt(); //NOI18N
                     }
                     else {
-                        path = fe.getName() + "." + fe.getExt();
+                        path = fe.getName() + "." + fe.getExt(); //NOI18N
                     }
                     if (!isSynchronizationAppropriate(path)) 
                         return;
@@ -204,13 +204,13 @@ import org.openide.util.Lookup;
         }
         
         private boolean isSynchronizationAppropriate(String filePath) {
-            if (filePath.startsWith("WEB-INF/classes")) {
+            if (filePath.startsWith("WEB-INF/classes")) { //NOI18N
                 return false;
             }
-            if (filePath.startsWith("WEB-INF/src")) {
+            if (filePath.startsWith("WEB-INF/src")) { //NOI18N
                 return false;
             }
-            if (filePath.startsWith("WEB-INF/lib")) {
+            if (filePath.startsWith("WEB-INF/lib")) { //NOI18N
                 return false;
             }
             return true;
@@ -278,7 +278,7 @@ import org.openide.util.Lookup;
          */
         private FileObject ensureDestinationFileExists(FileObject webBuildBase, String path, boolean isFolder) throws IOException {
             FileObject current = webBuildBase;
-            StringTokenizer st = new StringTokenizer(path, "/");
+            StringTokenizer st = new StringTokenizer(path, "/"); //NOI18N
             while (st.hasMoreTokens()) {
                 String pathItem = st.nextToken();
                 FileObject newCurrent = current.getFileObject(pathItem);

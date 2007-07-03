@@ -31,6 +31,7 @@ import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.support.GenericSources;
 import org.openide.filesystems.FileObject;
+import org.openide.util.NbBundle;
 
 import org.openide.util.RequestProcessor;
 
@@ -147,7 +148,7 @@ public class J2eeMavenSourcesImpl implements Sources {
         }
         boolean changed = false;
         if (webDocSrcGroup == null || !webDocSrcGroup.getRootFolder().equals(root)) {
-            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, "Web Pages", null, null);
+            webDocSrcGroup = GenericSources.group(project, root, TYPE_DOC_ROOT, NbBundle.getMessage(J2eeMavenSourcesImpl.class, "LBL_WebPages"), null, null);
             changed = true;
         }
         return changed;

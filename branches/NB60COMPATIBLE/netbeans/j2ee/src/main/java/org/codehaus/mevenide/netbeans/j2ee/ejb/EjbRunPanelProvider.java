@@ -27,6 +27,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -44,7 +45,7 @@ public class EjbRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
         if (ProjectURLWatcher.TYPE_EJB.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
-                    "Run",
+                    NbBundle.getMessage(EjbRunPanelProvider.class, "PNL_Run"),
                     null,
                     (ProjectCustomizer.Category[])null);
         }

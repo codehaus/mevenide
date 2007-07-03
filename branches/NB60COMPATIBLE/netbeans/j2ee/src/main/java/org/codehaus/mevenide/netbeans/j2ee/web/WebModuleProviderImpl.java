@@ -80,7 +80,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
-            System.out.println("have instances of=" + server + " " + instances);
+//            System.out.println("have instances of=" + server + " " + instances);
             String inst = null;
             if (instances != null && instances.length > 0) {
                 inst = instances[0];

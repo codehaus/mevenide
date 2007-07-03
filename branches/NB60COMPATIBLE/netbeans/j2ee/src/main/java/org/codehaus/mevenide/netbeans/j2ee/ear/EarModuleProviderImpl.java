@@ -119,7 +119,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
      * @return J2eeModuleProvider object
      */
     public J2eeModuleProvider getChildModuleProvider(String uri) {
-        System.out.println("!!!give me module with uri=" + uri);
+//        System.out.println("!!!give me module with uri=" + uri);
         return null;
     }
 
@@ -129,7 +129,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
      * @return array of J2eeModuleProvider objects.
      */
     public J2eeModuleProvider[] getChildModuleProviders() {
-        System.out.println("!!!give me child module providers..");
+//        System.out.println("!!!give me child module providers..");
         return new J2eeModuleProvider[0];
     }
 
@@ -160,7 +160,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         if (path == null) {
             path = name;
         }
-        System.out.println("EMPI: getDeploymentConfigFile=" + name);
+//        System.out.println("EMPI: getDeploymentConfigFile=" + name);
         return earimpl.getDDFile(path);
     }
 
@@ -185,6 +185,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         // TODO implement when needed
     }
     
+    @Override
     public String getServerInstanceID() {
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
@@ -192,6 +193,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         return MavenDeploymentImpl.DEV_NULL;
     }
     
+    @Override
     public String getServerID() {
         if (serverInstanceID != null) {
             String tr = Deployment.getDefault().getServerID(serverInstanceID);
@@ -202,10 +204,12 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         return MavenDeploymentImpl.DEV_NULL;
     }
     
+    @Override
     public boolean useDefaultServer() {
         return serverInstanceID == null;
     }
     
+    @Override
     public FileObject[] getSourceRoots() {
         //TODO??
         Sources sources = ProjectUtils.getSources(project);

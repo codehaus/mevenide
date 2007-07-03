@@ -25,14 +25,9 @@ import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import org.apache.maven.artifact.Artifact;
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
-import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.ejb.EjbJarMetadata;
 import org.netbeans.modules.j2ee.dd.api.web.WebAppMetadata;
-import org.netbeans.modules.j2ee.dd.spi.MetadataUnit;
-import org.netbeans.modules.j2ee.dd.spi.ejb.EjbJarMetadataModelFactory;
-import org.netbeans.modules.j2ee.dd.spi.web.WebAppMetadataModelFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
@@ -48,11 +43,17 @@ import org.xml.sax.SAXException;
  * @author mkleint
  */
 public class NonProjectJ2eeModule implements J2eeModuleImplementation {
+
+    private static final String WAR = "war"; //NOI18N
+    private static final String EAR = "ear"; //NOI18N
+    private static final String EJB = "ejb"; //NOI18N
     private String moduleVersion;
     private Artifact artifact;
     private String url;
     private EarModuleProviderImpl provider;
-    
+
+    private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
+    private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
     
     /** Creates a new instance of NonProjectJ2eeModule */
     public NonProjectJ2eeModule(Artifact art, String modVer, EarModuleProviderImpl prov) {
@@ -69,13 +70,13 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     public Object getModuleType() {
         String type = artifact.getType();
 //        System.out.println("NPJM: get type=" + type);
-        if ("war".equals(type)) {
+        if (WAR.equals(type)) {
             return J2eeModule.WAR;
         }
-        if ("ejb".equals(type)) {
+        if (EJB.equals(type)) {
             return J2eeModule.EJB;
         }
-        if ("ear".equals(type)) {
+        if (EAR.equals(type)) {
             return J2eeModule.EAR;
         }
         //TODO what to do here?
@@ -104,7 +105,6 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     }
     
     public FileObject getContentDirectory() throws IOException {
-        System.out.println("NPJM: get content..");
         return null;
     }
     
@@ -127,7 +127,7 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     private RootInterface readBaseBean(InputStream str) {
 //        System.out.println("NPJM:   read base bean");
         String type = artifact.getType();
-        if ("war".equals(type)) {
+        if (WAR.equals(type)) {
             try {
                 FileObject root = FileUtil.getArchiveRoot(getArchive());
 //                System.out.println("NPJM:root=" + root);
@@ -135,7 +135,7 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-        } else if ("ejb".equals(type)) {
+        } else if (EJB.equals(type)) {
                 try {
                     return org.netbeans.modules.j2ee.dd.api.ejb.DDProvider.getDefault().getDDRoot(new InputSource(str));
                 } catch (SAXException ex) {
@@ -143,7 +143,7 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
-        } else if ("ear".equals(type)) {
+        } else if (EAR.equals(type)) {
             try {
                 return org.netbeans.modules.j2ee.dd.api.application.DDProvider.getDefault().getDDRoot(new InputSource(str));
             } catch (SAXException ex) {
@@ -239,7 +239,5 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
         return webAppAnnMetadataModel;
     }
         
-    private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
-    private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
     
 }

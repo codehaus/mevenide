@@ -117,8 +117,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
-        oldUrl = isRunCompatible ? run.getProperties().getProperty("netbeans.deploy.clientUrlPart") :
-                                      debug.getProperties().getProperty("netbeans.deploy.clientUrlPart");
+        oldUrl = isRunCompatible ? run.getProperties().getProperty("netbeans.deploy.clientUrlPart") : //NOI18N
+                                      debug.getProperties().getProperty("netbeans.deploy.clientUrlPart"); //NOI18N
         if (oldUrl != null) {
             txtRelativeUrl.setText(oldUrl);
         } else {
@@ -173,6 +173,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblServer = new javax.swing.JLabel();
         comServer = new javax.swing.JComboBox();
         lblJ2EEVersion = new javax.swing.JLabel();
@@ -185,23 +186,22 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         txtRelativeUrl = new javax.swing.JTextField();
         lblHint2 = new javax.swing.JLabel();
 
-        lblServer.setText("Server :");
+        lblServer.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Server")); // NOI18N
 
-        lblJ2EEVersion.setText("J2EE Version :");
+        lblJ2EEVersion.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_J2EE_Version")); // NOI18N
 
         txtJ2EEVersion.setEditable(false);
 
-        lblContextPath.setText("Context Path :");
+        lblContextPath.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Context_Path")); // NOI18N
 
-        cbBrowser.setText("Display Browser on Run");
-        cbBrowser.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbBrowser.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Display_on_Run")); // NOI18N
         cbBrowser.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        lblHint1.setText("Specify the URL relative to the context path to run :");
+        lblHint1.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Hint1")); // NOI18N
 
-        lblRelativeUrl.setText("Relative URL :");
+        lblRelativeUrl.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Relative_URL")); // NOI18N
 
-        lblHint2.setText("(e.g. /admin/login.jsp)");
+        lblHint2.setText(org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "LBL_Hint2")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -270,7 +270,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         Iterator it = map.getGoals().iterator();
         while (it.hasNext()) {
             String goal = (String) it.next();
-            if (goal.indexOf("org.codehaus.mevenide:netbeans-deploy-plugin") > -1) {
+            if (goal.indexOf("org.codehaus.mevenide:netbeans-deploy-plugin") > -1) { //NOI18N
                 return true;
             }
         }
@@ -281,11 +281,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         String newUrl = txtRelativeUrl.getText().trim();
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {
-                run.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl);
+                run.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
             }
             if (isDebugCompatible) {
-                debug.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl);
+                debug.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }

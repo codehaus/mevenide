@@ -57,12 +57,11 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     }
     
     private void initValues() {
-        Model mdl = handle.getPOMModel();
         listeners = new ArrayList();
         listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
             public Wrapper getDefaultValue() {
                 Wrapper wr = null;
-                String id = (String)handle.getProject().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getProject().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
@@ -147,14 +146,15 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblServer = new javax.swing.JLabel();
         comServer = new javax.swing.JComboBox();
         lblJ2EEVersion = new javax.swing.JLabel();
         txtJ2EEVersion = new javax.swing.JTextField();
 
-        lblServer.setText("Server :");
+        lblServer.setText(org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "LBL_Server")); // NOI18N
 
-        lblJ2EEVersion.setText("J2EE Version :");
+        lblJ2EEVersion.setText(org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "LBL_J2EE_Version")); // NOI18N
 
         txtJ2EEVersion.setEditable(false);
 
@@ -197,7 +197,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         Iterator it = map.getGoals().iterator();
         while (it.hasNext()) {
             String goal = (String) it.next();
-            if (goal.indexOf("org.codehaus.mevenide:netbeans-deploy-plugin") > -1) {
+            if (goal.indexOf("org.codehaus.mevenide:netbeans-deploy-plugin") > -1) { //NOI18N
                 return true;
             }
         }

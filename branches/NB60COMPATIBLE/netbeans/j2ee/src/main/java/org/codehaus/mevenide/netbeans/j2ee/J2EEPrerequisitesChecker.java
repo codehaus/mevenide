@@ -47,7 +47,7 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
         if (!applicableActions.contains(actionName)) {
             return true;
         }
-        J2eeModuleProvider provider = (J2eeModuleProvider)config.getProject().getLookup().lookup(J2eeModuleProvider.class);
+        J2eeModuleProvider provider = config.getProject().getLookup().lookup(J2eeModuleProvider.class);
         if (provider != null) {
             checkWarInplace(config, provider);
 //            boolean isReady = provider.getConfigSupport().ensureConfigurationReady();
@@ -62,7 +62,7 @@ public class J2EEPrerequisitesChecker implements PrerequisitesChecker {
             boolean inplace = false;
             while (it.hasNext()) {
                 String goal = (String) it.next();
-                if (goal.indexOf(":inplace") > -1) {
+                if (goal.indexOf(":inplace") > -1) { //NOI18N
                     inplace = true;
                     break;
                 }

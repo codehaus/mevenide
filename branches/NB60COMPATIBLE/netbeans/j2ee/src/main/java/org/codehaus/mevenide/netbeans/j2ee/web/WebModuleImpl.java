@@ -60,7 +60,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     private MetadataModel<WebAppMetadata> webAppMetadataModel;
     private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
     
-    private String url = "";
+    private String url = ""; //NOI18N
 
     private boolean inplace = false;
     
@@ -72,7 +72,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     public FileObject getWebInf() {
         FileObject root = getDocumentBase();
         if (root != null) {
-            return root.getFileObject("WEB-INF");
+            return root.getFileObject("WEB-INF"); //NOI18N
         }
         return null;
     }
@@ -112,14 +112,14 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         if (grp.length > 0) {
             return grp[0].getRootFolder();
         }
-        System.out.println("NO DOCUMENT BASE!!! " + project.getProjectDirectory());
+//        System.out.println("NO DOCUMENT BASE!!! " + project.getProjectDirectory());
         return null;
     }
     
     File getDDFile(final String path) {
         String webxmlDefined = PluginPropertyUtils.getPluginProperty(project,
-                "org.apache.maven.plugins", "maven-war-plugin",
-                "webXml", "war");
+                "org.apache.maven.plugins", "maven-war-plugin", //NOI18N
+                "webXml", "war"); //NOI18N
         if (webxmlDefined != null) {
             //TODO custom location.. relative or absolute? what the *&#! is the default resolved to?
         }
@@ -139,7 +139,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     }
     
     public String getContextPath() {
-        String toRet =  "/" + project.getOriginalMavenProject().getBuild().getFinalName();
+        String toRet =  "/" + project.getOriginalMavenProject().getBuild().getFinalName(); //NOI18N
 //        System.out.println("get context path=" + toRet);
         return toRet;
     }
@@ -178,7 +178,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         MavenProject proj = project.getOriginalMavenProject();
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
-        File fil = FileUtil.normalizeFile(new File(loc, finalName + ".war"));
+        File fil = FileUtil.normalizeFile(new File(loc, finalName + ".war")); //NOI18N
 //        System.out.println("get archive=" + fil);
         return FileUtil.toFileObject(fil);
     }
@@ -305,7 +305,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup"); //NOI18N
         return toRet;
     }
 
