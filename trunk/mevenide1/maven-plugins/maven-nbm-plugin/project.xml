@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
-    <extend>${basedir}/../mevenide-plugin-parent/project.xml</extend>
+    <extend>${basedir}/../../mevenide-plugin-parent/project.xml</extend>
     <pomVersion>3</pomVersion>
     <id>maven-nbm-plugin</id>
     <artifactId>maven-nbm-plugin</artifactId>
     <name>Maven NBM Plugin</name>
-    <currentVersion>1.4</currentVersion>
+    <currentVersion>1.5</currentVersion>
     <package>org.mevenide.tags</package>
     <description>This plugin creates a netbeans module artifact for the project, 
 also generates nbm file for distribution of the module.
@@ -95,16 +95,9 @@ Is able to generate the module information from the pom and additional project p
             <!--    		<version>1.0-beta-4</version> -->
         </dependency>
         <dependency>
-            <groupId>netbeans</groupId>
-            <artifactId>org-apache-tools-ant-module</artifactId>
-            <version>RELEASE-M10</version>
-            <type>jar</type>
-            <url>http://nbbuild.netbeans.org</url>
-        </dependency>
-        <dependency>
             <groupId>maven</groupId>
             <artifactId>maven-artifact-plugin</artifactId>
-            <version>1.4.1</version>
+            <version>1.7</version>
             <type>plugin</type>
         </dependency>
     </dependencies>
