@@ -2,7 +2,7 @@
 <project>
     <extend>${basedir}/../mevenide-parent/project.xml</extend>
     <artifactId>mevenide-netbeans-devel</artifactId>
-    <currentVersion>1.0</currentVersion>
+    <currentVersion>1.1</currentVersion>
     <inceptionYear>2005</inceptionYear>
     <name>Mevenide Developer Support</name>
     <package>org.mevenide.netbeans.devel</package>

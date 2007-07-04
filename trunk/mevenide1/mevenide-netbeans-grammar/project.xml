@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <name>Mevenide XML grammar</name>
     <artifactId>mevenide-netbeans-grammar</artifactId>
-    <currentVersion>0.7</currentVersion>
+    <currentVersion>0.8</currentVersion>
     <package>org.mevenide.netbeans.grammar</package>
     <description>Maven files XML grammar and code-completion for Netbeans. (project.xml, maven.xml and plugin.jelly files completion.</description>
     <shortDescription>Maven files XML grammar and code-completion for Netbeans</shortDescription>
