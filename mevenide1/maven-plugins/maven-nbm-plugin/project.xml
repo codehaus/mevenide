@@ -94,6 +94,13 @@ Is able to generate the module information from the pom and additional project p
             <version>20030902.160215</version>
             <!--    		<version>1.0-beta-4</version> -->
         </dependency>
+        <dependency>        
+            <groupId>netbeans</groupId>
+            <artifactId>nbantext</artifactId>
+            <version>4.0</version>
+            <type>jar</type>
+            <url>http://nbbuild.netbeans.org</url>
+        </dependency>
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven-artifact-plugin</artifactId>
