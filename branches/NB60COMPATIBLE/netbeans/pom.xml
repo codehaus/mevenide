@@ -61,9 +61,6 @@
                 <artifactId>modello-maven-plugin</artifactId>
                 <version>1.0-alpha-14-20061220.202404-1</version>
             </plugin>
-        </plugins>
-      </pluginManagement>
-      <plugins>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -76,6 +73,7 @@
               </configuration>
           </plugin>
         </plugins>
+      </pluginManagement>
   </build>
   <modules>
      <module>nb-project</module>
