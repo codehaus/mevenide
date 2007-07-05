@@ -257,8 +257,8 @@ public class MavenSourcesImpl implements Sources {
             return false;
         }
         boolean changed = false;
-        if (genSrcGroup == null || !genSrcGroup.getRootFolder().equals(root)) {
-            genSrcGroup = GenericSources.group(project, root, NAME_GENERATED_SOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Generated_Sources"), null, null);
+        if (genSrcGroup == null || !genSrcGroup.getRootFolder().isValid() || !genSrcGroup.getRootFolder().equals(root)) {
+            genSrcGroup = new GeneratedGroup(project, root, NAME_GENERATED_SOURCE, NbBundle.getMessage(MavenSourcesImpl.class, "SG_Generated_Sources"));
             changed = true;
         }
         return changed;
@@ -339,4 +339,76 @@ public class MavenSourcesImpl implements Sources {
         }
         
     }
+    
+    /**
+     * MEVENIDE-536 - cannot use default implementation of SourceGroup because it
+     * won't include non-shareable folders..
+     */ 
+    public static final class GeneratedGroup implements SourceGroup {
+        
+        private final FileObject rootFolder;
+        private File rootFile;
+        private final String name;
+        private final String displayName;
+        private final Icon icon = null;
+        private final Icon openedIcon = null;
+        private NbMavenProject project;
+        
+        GeneratedGroup(NbMavenProject p, FileObject rootFold, String nm, String displayNm/*,
+                Icon icn, Icon opened*/) {
+            project = p;
+            rootFolder = rootFold;
+            rootFile = FileUtil.toFile(rootFolder);
+            name = nm;
+            displayName = displayNm != null ? displayNm : NbBundle.getMessage(MavenSourcesImpl.class, "SG_Root_not_defined");
+//            icon = icn;
+//            openedIcon = opened;
         }
+        
+        public FileObject getRootFolder() {
+            return rootFolder;
+        }
+        
+        public File getRootFolderFile() {
+            return rootFile;
+        }
+        
+        public String getName() {
+            return name;
+        }
+        
+        public String getDisplayName() {
+            return displayName;
+        }
+        
+        public Icon getIcon(boolean opened) {
+            return opened ? icon : openedIcon;
+        }
+        
+        public boolean contains(FileObject file)  {
+             if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
+                throw new IllegalArgumentException();
+            }
+            if (project != null) {
+                if (file.isFolder() && file != project.getProjectDirectory() && ProjectManager.getDefault().isProject(file)) {
+                    // #67450: avoid actually loading the nested project.
+                    return false;
+                }
+                if (FileOwnerQuery.getOwner(file) != project) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        public void addPropertyChangeListener(PropertyChangeListener l) {
+            // XXX should react to ProjectInformation changes
+        }
+        
+        public void removePropertyChangeListener(PropertyChangeListener l) {
+            // XXX
+        }
+        
+    }
+    
+}
