@@ -78,6 +78,23 @@ public class PluginPropertyUtils {
                 }
             }
         }
+        if (toRet == null && 
+                //TODO - the plugin configuration probably applies to 
+                //lifecycle plugins only. always checking is wrong, how to get a list of lifecycle plugins though?
+                ("maven-compiler-plugin".equals(artifactId) ||
+                 "maven-surefire-plugin".equals(artifactId) ||
+                 "maven-resources-plugin".equals(artifactId))) {
+            if (prj.getPluginManagement() != null) {
+                for (Object obj : prj.getPluginManagement().getPlugins()) {
+                    Plugin plug = (Plugin)obj;
+                    if (artifactId.equals(plug.getArtifactId()) &&
+                        groupId.equals(plug.getGroupId())) {
+                        toRet = checkConfiguration(plug.getConfiguration(), property);
+                        break;
+                    }
+                }
+            }
+        }
         return toRet;
     }
     
