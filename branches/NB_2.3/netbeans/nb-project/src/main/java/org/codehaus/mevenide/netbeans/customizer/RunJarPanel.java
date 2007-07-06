@@ -326,12 +326,13 @@ public class RunJarPanel extends javax.swing.JPanel implements M2CustomizerPanel
         return jarPlugin;
     }
 
-    private Plugin checkAssemblyPlugin(Plugin assemblyPlugin) {
-        if (assemblyPlugin == null) {
-            assemblyPlugin = new Plugin();
-            assemblyPlugin.setArtifactId("maven-assembly-plugin");
-            assemblyPlugin.setGroupId("org.apache.maven.plugins");
-            handle.getNetbeansPublicProfile().getBuild().addPlugin(assemblyPlugin);
+    private Plugin checkAssemblyPlugin(Plugin assPlugin) {
+        if (assPlugin == null) {
+            assPlugin = new org.apache.maven.model.Plugin();
+            assPlugin.setArtifactId("maven-assembly-plugin");
+            assPlugin.setGroupId("org.apache.maven.plugins");
+//not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
+            handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
         PluginExecution exec = (PluginExecution)assemblyPlugin.getExecutionsAsMap().get("nb");
         if (exec == null) {
