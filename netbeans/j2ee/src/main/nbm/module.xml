@@ -48,6 +48,10 @@
             <type>spec</type>
         </dependency>
         <dependency>
+            <id>org.netbeans.api:org-netbeans-modules-projectuiapi</id>
+            <type>spec</type>
+        </dependency>
+        <dependency>
             <id>org.netbeans.api:org-netbeans-api-web-webmodule</id>
             <type>spec</type>
         </dependency>
