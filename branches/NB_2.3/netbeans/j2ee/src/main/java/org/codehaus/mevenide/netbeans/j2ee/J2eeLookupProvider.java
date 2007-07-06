@@ -22,6 +22,7 @@ import org.codehaus.mevenide.netbeans.AdditionalM2LookupProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
+import org.codehaus.mevenide.netbeans.j2ee.web.POHImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Lookup;
@@ -43,6 +44,7 @@ public class J2eeLookupProvider implements AdditionalM2LookupProvider {
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         ic.add(new J2EEPrerequisitesChecker());
+        ic.add(new POHImpl(project));
         return new Provider(project, ic);
     }
     

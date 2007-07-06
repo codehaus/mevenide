@@ -18,23 +18,15 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.URI;
 import java.util.ArrayList;
-import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
-import org.netbeans.modules.j2ee.deployment.common.api.SourceFileMap;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
@@ -42,7 +34,6 @@ import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
-import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
@@ -70,7 +61,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         project = proj;
         implementation = new WebModuleImpl(project);
         moduleChange = new ModuleChangeReporterImpl();
-        loadPersistedServerId(false);
+//        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
@@ -251,6 +242,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
             }
         }
         return (FileObject[])toRet.toArray(new FileObject[toRet.size()]);
+    }
+    
+    public File getEnterpriseResourceDirectory() {
+        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");
+        return toRet;
     }
     
     

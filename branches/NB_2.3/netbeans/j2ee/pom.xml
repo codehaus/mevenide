@@ -8,7 +8,7 @@
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>2.3.1</version>
+    <version>2.3.2</version>
     <name>Netbeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
