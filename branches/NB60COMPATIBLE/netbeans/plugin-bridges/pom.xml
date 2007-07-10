@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>3.0.4-SNAPSHOT</version>
+    <version>3.0.5-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>plugin-bridges</artifactId>
   <packaging>pom</packaging>
   <description>NetBeans functionality bridges that can be reused in maven plugins.</description>
   <name>NetBeans Plugin Bridges</name>
-  <version>3.0.4-SNAPSHOT</version>
+  <version>3.0.5-SNAPSHOT</version>
   <modules>
       <module>deployment-bridge</module>
       <module>debugger-bridge</module>
