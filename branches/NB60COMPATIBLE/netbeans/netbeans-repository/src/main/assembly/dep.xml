@@ -4,6 +4,8 @@
       <repository>
           <includeMetadata>true</includeMetadata>
           <outputDirectory>m2-repository</outputDirectory>
+          <useStrictFiltering>true</useStrictFiltering>
+          <scope>compile</scope>
         <includes>
             <include>org.codehaus.mevenide:netbeans-run-plugin</include>
             <include>org.codehaus.mevenide:netbeans-debugger-plugin</include>
@@ -13,7 +15,6 @@
             <exclude>org.apache.maven:maven-plugin-api</exclude>
             <exclude>org.apache.maven:maven-project</exclude>
         </excludes>
-          
       </repository>
   </repositories>
 </assembly>
