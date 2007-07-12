@@ -51,6 +51,14 @@ public final class FileUtilities {
         return null;
     }
     
+    public static File convertStringToFile(String str) {
+        if (str != null) {
+            File fil = new File(str);
+            return FileUtil.normalizeFile(fil);
+        }
+        return null;
+    }
+    
 
     public static URI convertStringToUri(String str) {
         if (str != null) {

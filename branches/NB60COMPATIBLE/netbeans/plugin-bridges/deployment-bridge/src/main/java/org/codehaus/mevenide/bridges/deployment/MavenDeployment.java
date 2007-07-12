@@ -17,7 +17,7 @@
 
 package org.codehaus.mevenide.bridges.deployment;
 
-import java.io.File;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -33,6 +33,6 @@ public interface MavenDeployment {
                               boolean debugMode,
                               String clientUrlPart,
                               String clientModuleUri,
-                              boolean forceRedeploy) throws MojoFailureException;
+                              boolean forceRedeploy) throws MojoExecutionException, MojoFailureException;
     
 }

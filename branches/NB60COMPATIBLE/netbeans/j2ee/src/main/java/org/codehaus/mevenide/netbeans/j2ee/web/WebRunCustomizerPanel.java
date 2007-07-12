@@ -75,7 +75,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
             public Wrapper getDefaultValue() {
                 Wrapper wr = null;
-                String id = handle.getProject().getProperties().getProperty(org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
@@ -104,6 +104,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
             
             public void setValue(Wrapper wr) {
+                System.out.println("setting value in combo..");
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
                handle.getNetbeansPublicProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
@@ -290,7 +291,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
         }
         moduleProvider.loadPersistedServerId();
-        moduleProvider.setContextPath(txtContextPath.getText().trim());
+        moduleProvider.getWebModuleImplementation().setContextPath(txtContextPath.getText().trim());
         handle.markAsModified(handle.getActionMappings());
     }
     

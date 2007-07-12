@@ -45,9 +45,11 @@ import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.modules.j2ee.dd.spi.MetadataUnit;
 import org.netbeans.modules.j2ee.dd.spi.web.WebAppMetadataModelFactory;
+import org.netbeans.modules.j2ee.deployment.common.api.ConfigurationException;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 
 
 /**
@@ -139,10 +141,33 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     }
     
     public String getContextPath() {
+        if(getDeploymentDescriptor() != null) {
+            try {
+                String path = provider.getConfigSupport().getWebContextRoot();
+                if (path != null) {
+                    return path;
+                }
+            } catch (ConfigurationException e) {
+                // TODO #95280: inform the user that the context root cannot be retrieved
+            }        
+        }
         String toRet =  "/" + project.getOriginalMavenProject().getBuild().getFinalName(); //NOI18N
 //        System.out.println("get context path=" + toRet);
         return toRet;
     }
+    
+    public void setContextPath(String newPath) {
+        //TODO store as pom profile configuration, probably for the deploy-plugin.
+        if (getDeploymentDescriptor() != null) {
+            try {
+                provider.getConfigSupport().setWebContextRoot(newPath);
+            }
+            catch (ConfigurationException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    } 
+    
     
     public boolean isValid() {
         //TODO any checks necessary?
@@ -232,13 +257,13 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     public FileObject[] getJavaSources() {
         Sources srcs = ProjectUtils.getSources(project);
         SourceGroup[] gr = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-        List toRet = new ArrayList();
+        List<FileObject> toRet = new ArrayList<FileObject>();
         if (gr != null) {
             for (int i = 0; i < gr.length; i++) {
                 toRet.add(gr[i].getRootFolder());
             }
         }
-        return (FileObject[])toRet.toArray(new FileObject[toRet.size()]);
+        return toRet.toArray(new FileObject[toRet.size()]);
     }
     
     

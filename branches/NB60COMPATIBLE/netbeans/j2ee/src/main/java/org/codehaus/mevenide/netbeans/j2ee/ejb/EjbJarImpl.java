@@ -63,8 +63,6 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     
     private EjbModuleProviderImpl provider;
 
-//    private MetadataUnit metadataUnit;
-    private ClassPath metadataClassPath;
     private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
     
     
@@ -289,40 +287,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         return false;
     }
 
-//    public MetadataUnit getMetadataUnit() {
-//        synchronized (this) {
-//            if (metadataUnit == null) {
-//                metadataUnit = new MetadataUnitImpl();
-//            }
-//            return metadataUnit;
-//        }
-//    }
-//    
-//    private class MetadataUnitImpl implements MetadataUnit {
-//        public ClassPath getClassPath() {
-//            return getMetadataClassPath();
-//        }
-//        public FileObject getDeploymentDescriptor() {
-//            return EjbJarImpl.this.getDeploymentDescriptor();
-//        }
-//    }
-    
-    private ClassPath getMetadataClassPath() {
-        synchronized (this) {
-            if (metadataClassPath == null) {
-                ClassPathProviderImpl cpProvider = project.getLookup().lookup(org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl.class);
-                metadataClassPath = ClassPathSupport.createWeakProxyClassPath(new ClassPath[] {
-                    cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
-//                    cpProvider.getJ2eePlatformClassPath(),
-                });
-            }
-            return metadataClassPath;
-        }
-    }
-    
-    
-
-    //TODO
+//TODO
     private class EjbChange implements EjbChangeDescriptor {
         public boolean ejbsChanged() {
             return false;

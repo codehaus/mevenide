@@ -17,7 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
@@ -26,7 +26,6 @@ import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
-import org.netbeans.modules.j2ee.deployment.common.api.ConfigurationException;
 import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -37,7 +36,6 @@ import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebModuleFactory;
 import org.netbeans.modules.web.spi.webmodule.WebModuleProvider;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
 
 
 /**
@@ -65,7 +63,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         project = proj;
         implementation = new WebModuleImpl(project, this);
         moduleChange = new ModuleChangeReporterImpl();
-        loadPersistedServerId(false);
+//        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
@@ -93,20 +91,22 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                 instanceFound = inst;
             }
         }
-        if (instanceFound == null) {
-            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.WAR});
-            if (ids != null && ids.length > 0) {
-                instanceFound = ids[0];
-            }
-        }
+//        if (instanceFound == null) {
+//            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.WAR});
+//            if (ids != null && ids.length > 0) {
+//                instanceFound = ids[0];
+//            }
+//        }
         serverInstanceID = instanceFound;
+        System.out.println("loadPersistedServerID" + serverInstanceID);
+        System.out.println("old =" + oldId);
         if (oldId != null) {
+            System.out.println("firedServerChange()." + instanceFound);
             fireServerChange(oldSer, getServerID());
         }
         if (ensureReady) {
+            System.out.println("ensureconfigready");
             getConfigSupport().ensureConfigurationReady();
-            val = (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
-            setContextPathImpl(val != null ? val : implementation.getContextPath());
         }
     }
     
@@ -139,96 +139,25 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         return moduleChange;
     }
     
-//    /**
-//     * 
-//     * @param name 
-//     * @return 
-//     */
-//    public File getDeploymentConfigurationFile(String name) {
-//        if (name == null) {
-//            return null;
-//        }
-//        String path = getConfigSupport().getContentRelativePath(name);
-//        if (path == null) {
-//            path = name;
-//        }
-//        return implementation.getDDFile(path);
-//    }
-//
-//    
-//    /**
-//     * 
-//     * @param string 
-//     * @return 
-//     */
-//    public FileObject findDeploymentConfigurationFile(String string) {
-//        File fil = getDeploymentConfigurationFile(string);
-//        if (fil != null) {
-//            return FileUtil.toFileObject(fil);
-//        }
-//        return null;
-//    }
-//    
-    /**
-     * 
-     * @return 
-     */
-    public String getContextPath() {
-        if(implementation.getDeploymentDescriptor() == null) {
-            return (String)project.getProjectDirectory().getAttribute(ATTRIBUTE_CONTEXT_PATH);
-        }
-        try {
-            return getConfigSupport().getWebContextRoot();
-        } catch (ConfigurationException e) {
-            // TODO #95280: inform the user that the context root cannot be retrieved
-            return null;
-        }
-    }
-    
-    public void setContextPath(String path) {
-        try {
-            // remember the path for next time..
-            project.getProjectDirectory().setAttribute(ATTRIBUTE_CONTEXT_PATH, path);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        setContextPathImpl(path);
-    }
-    
-    private void setContextPathImpl(String path) {
-        if (implementation.getDeploymentDescriptor() != null) {
-            try         {
-                getConfigSupport().setWebContextRoot(path);
-            }
-            catch (ConfigurationException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-    }
-//    
     public void setServerInstanceID(String str) {
+        String newone = Deployment.getDefault().getServerID(str);
+        String oldone = null;
+        if (serverInstanceID != null) {
+            oldone = Deployment.getDefault().getServerID(serverInstanceID);
+        }
         serverInstanceID = str;
+        if (oldone != null) {
+            System.out.println("fireServerChnge in setServerInstanceID");
+            fireServerChange(oldone, getServerID());            
+        }
         // TODO write into the private/public profile..
-//        try {
-//            // remember the instance for next time..
-//            project.getProjectDirectory().setAttribute(ATTRIBUTE_DEPLOYMENT_SERVER, serverInstanceID);
-//            Model mdl = project.getEmbedder().readModel(project.getPOMFile());
-//            mdl.getProperties().put(ATTRIBUTE_DEPLOYMENT_SERVER, Deployment.getDefault().getServerID(serverInstanceID));
-//            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), mdl);
-//        } catch (FileNotFoundException ex) {
-//            ex.printStackTrace();
-//        } catch (XmlPullParserException ex) {
-//            ex.printStackTrace();
-//        } catch (IOException ex) {
-//            ex.printStackTrace();
-//        } finally {
-//        }
-        
+
     }
     
     /** If the module wants to specify a target server instance for deployment
      * it needs to override this method to return false.
      */
+    @Override
     public boolean useDefaultServer() {
         return serverInstanceID == null;
     }
@@ -238,6 +167,7 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
      * The return value may not be null.
      * If modules override this method they also need to override {@link useDefaultServer}.
      */
+    @Override
     public String getServerInstanceID() {
         if (serverInstanceID != null && Deployment.getDefault().getServerID(serverInstanceID) != null) {
             return serverInstanceID;
@@ -248,9 +178,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     /** This method is used to determin type of target server.
      * The return value must correspond to value returned from {@link getServerInstanceID}.
      */
+    @Override
     public String getServerID() {
         if (serverInstanceID != null) {
             String tr = Deployment.getDefault().getServerID(serverInstanceID);
+            System.out.println("getServerId=" + tr);
             if (tr != null) {
                 return tr;
             }
@@ -266,8 +198,9 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
      *  the returned list.
      */
     
+    @Override
     public FileObject[] getSourceRoots() {
-        ArrayList toRet = new ArrayList();
+        ArrayList<FileObject> toRet = new ArrayList<FileObject>();
         Sources srcs = ProjectUtils.getSources(project);
         SourceGroup[] webs = srcs.getSourceGroups(J2eeMavenSourcesImpl.TYPE_DOC_ROOT);
         if (webs != null) {
@@ -281,10 +214,10 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
                 toRet.add(grps[i].getRootFolder());
             }
         }
-        return (FileObject[])toRet.toArray(new FileObject[toRet.size()]);
+        return toRet.toArray(new org.openide.filesystems.FileObject[toRet.size()]);
     }
     
-    
+
     // TODO
     private class ModuleChangeReporterImpl implements ModuleChangeReporter {
         public EjbChangeDescriptor getEjbChanges(long param) {

@@ -53,7 +53,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     public EjbModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         ejbimpl = new EjbJarImpl(project, this);
-        loadPersistedServerId(false);
+//        loadPersistedServerId(false);
     }
     
     /**

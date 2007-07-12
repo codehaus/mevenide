@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.net.URL;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
@@ -49,7 +50,7 @@ public class MavenDeploymentImpl implements MavenDeployment {
                               boolean debugmode,
                               String clientUrlPart,
                               String clientModuleUri,
-                              boolean forceRedeploy) throws MojoFailureException {
+                              boolean forceRedeploy) throws MojoExecutionException, MojoFailureException {
         ClassLoader originalLoader = null;
         log.info("Deployment started"); //NOI18N - no localization in maven build now.
         try {
@@ -102,8 +103,8 @@ public class MavenDeploymentImpl implements MavenDeployment {
                     }
                 }
             } catch (Exception ex) {
-                log.error(ex);
-                throw new MojoFailureException("Failed Deployment:" + ex.getMessage());//NOI18N - no localization in maven build now.
+                log.error("", ex);
+                throw new MojoExecutionException("Failed Deployment:" + ex.getMessage(), ex);//NOI18N - no localization in maven build now.
             }
         } finally {
             if (originalLoader != null) {

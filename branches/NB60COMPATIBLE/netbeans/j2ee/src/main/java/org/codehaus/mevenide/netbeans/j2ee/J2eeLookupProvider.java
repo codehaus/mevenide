@@ -23,6 +23,7 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
+import org.codehaus.mevenide.netbeans.j2ee.web.POHImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.filesystems.FileStateInvalidException;
@@ -49,6 +50,7 @@ public class J2eeLookupProvider implements LookupProvider {
         ic.add(new J2EEPrerequisitesChecker());
         ic.add(new J2eeRecoPrivTemplates(project));
         ic.add(new J2eeMavenSourcesImpl(project));
+        ic.add(new POHImpl(project));
         return new Provider(project, ic);
     }
     
