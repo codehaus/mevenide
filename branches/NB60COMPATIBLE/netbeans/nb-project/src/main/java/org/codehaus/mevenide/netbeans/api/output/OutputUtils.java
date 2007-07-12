@@ -37,7 +37,7 @@ import org.openide.windows.OutputListener;
  * @author mkleint
  */
 public final class OutputUtils {
-    static final Pattern linePattern = Pattern.compile("\\sat (.*)\\((.*)\\.java\\:(.*)\\)"); //NOI18N
+    static final Pattern linePattern = Pattern.compile("(\\[catch\\])*\\sat (.*)\\((.*)\\.java\\:(.*)\\)"); //NOI18N
     
     /** Creates a new instance of OutputUtils */
     private OutputUtils() {
@@ -66,7 +66,7 @@ public final class OutputUtils {
                         if (javaFo != null) {
                             try {
                                 DataObject obj = DataObject.find(javaFo);
-                                EditorCookie cook = (EditorCookie) obj.getCookie(EditorCookie.class);
+                                EditorCookie cook = obj.getCookie(EditorCookie.class);
                                 int lineInt = Integer.parseInt(lineNum);
                                 list = new OutputUtils.StacktraceOutputListener(cook, lineInt);
                             }
