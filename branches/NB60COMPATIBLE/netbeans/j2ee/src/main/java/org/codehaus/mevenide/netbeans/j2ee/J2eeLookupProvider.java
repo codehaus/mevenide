@@ -50,11 +50,12 @@ public class J2eeLookupProvider implements LookupProvider {
         ic.add(new J2EEPrerequisitesChecker());
         ic.add(new J2eeRecoPrivTemplates(project));
         ic.add(new J2eeMavenSourcesImpl(project));
-        ic.add(new POHImpl(project));
-        return new Provider(project, ic);
+        Provider prov = new Provider(project, ic);
+        ic.add(new POHImpl(project, prov));
+        return prov;
     }
     
-    private static class Provider extends AbstractLookup implements  PropertyChangeListener {
+    public static class Provider extends AbstractLookup implements  PropertyChangeListener {
         private NbMavenProject project;
         private InstanceContent content;
         private String lastType = ProjectURLWatcher.TYPE_JAR;
@@ -77,6 +78,22 @@ public class J2eeLookupProvider implements LookupProvider {
         private void checkJ2ee() {
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
             String packaging = watcher.getPackagingType();
+            doCheckJ2ee(packaging);
+        }
+        
+        public void hackWebModuleServerChange() {
+            //#
+            doCheckJ2ee(null);
+            checkJ2ee();
+        }
+        
+        public void hackEjbModuleServerChange() {
+            //#
+            doCheckJ2ee(null);
+            checkJ2ee();
+        }
+        
+        private void doCheckJ2ee(String packaging) {
             if (packaging == null) {
                 packaging = ProjectURLWatcher.TYPE_JAR;
             }

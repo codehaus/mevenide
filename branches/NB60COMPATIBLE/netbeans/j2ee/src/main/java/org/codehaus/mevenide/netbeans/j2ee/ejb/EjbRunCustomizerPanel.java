@@ -21,11 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
-import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
+import org.codehaus.mevenide.netbeans.j2ee.web.POHImpl;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -90,10 +91,18 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
             }
             
             public void setValue(Wrapper wr) {
+                if (wr == null) {
+                    return;
+                }
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
-               handle.getNetbeansPublicProfile().getProperties().put(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
-               handle.getNetbeansPrivateProfile().getProperties().setProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
+                   handle.getNetbeansPublicProfile().getProperties().remove(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                   handle.getNetbeansPrivateProfile().getProperties().remove(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+               } else {
+                   handle.getNetbeansPublicProfile().getProperties().put(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+                   handle.getNetbeansPrivateProfile().getProperties().setProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               }
                handle.markAsModified(handle.getProfileModel());
                handle.markAsModified(handle.getPOMModel());
             }
@@ -124,6 +133,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] { J2eeModule.EJB });
         Collection<Wrapper> col = new ArrayList<Wrapper>();
 //        Wrapper selected = null;
+        col.add(new Wrapper(MavenDeploymentImpl.DEV_NULL));
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);
@@ -137,6 +147,16 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
 //            comServer.setSelectedItem(selected);
 //        }
     }
+    
+    void applyChanges() {
+        //#109507 workaround
+        POHImpl poh = project.getLookup().lookup(POHImpl.class);
+        poh.hackEjbModuleServerChange();
+        EjbModuleProviderImpl moduleProvider = project.getLookup().lookup(EjbModuleProviderImpl.class);
+        
+        moduleProvider.loadPersistedServerId();
+    }
+        
     
     
     /** This method is called from within the constructor to
@@ -223,11 +243,17 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         }
         
         public String getServerID() {
+            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
+                return MavenDeploymentImpl.DEV_NULL;
+            }
             return Deployment.getDefault().getServerID(id);
         }
         
         @Override
         public String toString() {
+            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
+                return "<No Server Selected>";
+            }
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }
                 

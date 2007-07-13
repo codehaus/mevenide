@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.j2ee.J2eeLookupProvider;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
@@ -30,11 +31,21 @@ import org.netbeans.spi.project.ui.ProjectOpenedHook;
  */
 public class POHImpl extends ProjectOpenedHook {
     private NbMavenProject project;
+    private J2eeLookupProvider.Provider provider;
 
-    public POHImpl(NbMavenProject prj) {
+    public POHImpl(NbMavenProject prj, J2eeLookupProvider.Provider prov) {
         project = prj;
+        provider = prov;
+    }
+    
+    public void hackWebModuleServerChange() {
+        provider.hackWebModuleServerChange();
     }
 
+    public void hackEjbModuleServerChange() {
+        provider.hackEjbModuleServerChange();
+    }
+    
     protected void projectOpened() {
         String val = project.getOriginalMavenProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
@@ -53,18 +64,11 @@ public class POHImpl extends ProjectOpenedHook {
                 instanceFound = inst;
             }
         }
-//        if (instanceFound == null) {
-//            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.WAR});
-//            if (ids != null && ids.length > 0) {
-//                instanceFound = ids[0];
-//            }
-//        }
-        System.out.println("project opened called for " + project.getProjectDirectory());
+
         if (instanceFound != null) {
             WebModuleProviderImpl impl = project.getLookup().lookup(WebModuleProviderImpl.class);
             if (impl != null) {
                 impl.setServerInstanceID(instanceFound);
-                System.out.println("ensureconfigreadyonopen");
                 impl.getConfigSupport().ensureConfigurationReady();
             }
             EjbModuleProviderImpl ejb = project.getLookup().lookup(EjbModuleProviderImpl.class);
@@ -84,5 +88,6 @@ public class POHImpl extends ProjectOpenedHook {
 
     protected void projectClosed() {
     }
+
 
 }

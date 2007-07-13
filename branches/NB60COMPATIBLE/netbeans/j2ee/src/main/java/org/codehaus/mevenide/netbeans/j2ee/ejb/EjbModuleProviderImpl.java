@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
+import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -41,8 +42,8 @@ import org.openide.filesystems.FileObject;
 
 public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarProvider  {
     
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER = WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID; //NOI18N
     
     private EjbJarImpl ejbimpl;
     private NbMavenProject project;
@@ -53,7 +54,6 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     public EjbModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         ejbimpl = new EjbJarImpl(project, this);
-//        loadPersistedServerId(false);
     }
     
     /**
@@ -67,7 +67,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
      * 
      * @param ensureReady 
      */
-    public void loadPersistedServerId(boolean ensureReady) {
+    private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -87,18 +87,18 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
                 instanceFound = inst;
             }
         }
-        if (instanceFound == null) {
-            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.EJB});
-            if (ids != null && ids.length > 0) {
-                instanceFound = ids[0];
-            }
-        }
+//        if (instanceFound == null) {
+//            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.EJB});
+//            if (ids != null && ids.length > 0) {
+//                instanceFound = ids[0];
+//            }
+//        }
         serverInstanceID = instanceFound;
-        if (oldSer != null && serverInstanceID != null && ensureReady) {
-            getConfigSupport().ensureConfigurationReady();
-        }
         if (oldId != null) {
             fireServerChange(oldSer, getServerID());
+        }
+        if (oldSer != null && serverInstanceID != null && ensureReady) {
+            getConfigSupport().ensureConfigurationReady();
         }
     }
     
@@ -143,7 +143,14 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
 
 
     public void setServerInstanceID(String string) {
-        // TODO implement when needed
+        String oldone = null;
+        if (serverInstanceID != null) {
+            oldone = Deployment.getDefault().getServerID(serverInstanceID);
+        }
+        serverInstanceID = string;
+        if (oldone != null) {
+            fireServerChange(oldone, getServerID());            
+        }
     }
     
     @Override

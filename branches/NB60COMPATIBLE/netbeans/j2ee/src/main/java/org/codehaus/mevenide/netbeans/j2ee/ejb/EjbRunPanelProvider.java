@@ -54,13 +54,14 @@ public class EjbRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        final NbMavenProject project = context.lookup(NbMavenProject.class);
+        NbMavenProject project = context.lookup(NbMavenProject.class);
+        final EjbRunCustomizerPanel panel =  new EjbRunCustomizerPanel(handle, project);
         category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                project.getLookup().lookup(EjbModuleProviderImpl.class).loadPersistedServerId();
+                panel.applyChanges();
             }
         });
-        return new EjbRunCustomizerPanel(handle, project);
+        return panel;
     }
     
 }

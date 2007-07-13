@@ -22,12 +22,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
-import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.web.api.webmodule.WebModule;
@@ -104,11 +104,18 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
             
             public void setValue(Wrapper wr) {
-                System.out.println("setting value in combo..");
+                if (wr == null) {
+                    return;
+                }
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
-               handle.getNetbeansPublicProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
-               handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
+                   handle.getNetbeansPublicProfile().getProperties().remove(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                   handle.getNetbeansPrivateProfile().getProperties().remove(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+               } else {
+                   handle.getNetbeansPublicProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+                   handle.getNetbeansPrivateProfile().getProperties().setProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+               }
                handle.markAsModified(handle.getProfileModel());
                handle.markAsModified(handle.getPOMModel());
             }
@@ -152,6 +159,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         String[] ids = Deployment.getDefault().getServerInstanceIDs();
         Collection<Wrapper> col = new ArrayList<Wrapper>();
 //        Wrapper selected = null;
+        col.add(new Wrapper(MavenDeploymentImpl.DEV_NULL));
         for (int i = 0; i < ids.length; i++) {
             Wrapper wr = new Wrapper(ids[i]);
             col.add(wr);
@@ -290,6 +298,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }
+        //#109507 workaround
+        POHImpl poh = project.getLookup().lookup(POHImpl.class);
+        poh.hackWebModuleServerChange();
+        moduleProvider = project.getLookup().lookup(WebModuleProviderImpl.class);
+        //---
         moduleProvider.loadPersistedServerId();
         moduleProvider.getWebModuleImplementation().setContextPath(txtContextPath.getText().trim());
         handle.markAsModified(handle.getActionMappings());
@@ -322,11 +335,17 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         
         public String getServerID() {
+            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
+                return MavenDeploymentImpl.DEV_NULL;
+            }
             return Deployment.getDefault().getServerID(id);
         }
         
         @Override
         public String toString() {
+            if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
+                return "<No Server Selected>";
+            }
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }
                 

@@ -55,15 +55,14 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private String serverInstanceID;
 
     static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
+    public static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
+    public static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
     
     
     public WebModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         implementation = new WebModuleImpl(project, this);
         moduleChange = new ModuleChangeReporterImpl();
-//        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
@@ -98,14 +97,10 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
 //            }
 //        }
         serverInstanceID = instanceFound;
-        System.out.println("loadPersistedServerID" + serverInstanceID);
-        System.out.println("old =" + oldId);
         if (oldId != null) {
-            System.out.println("firedServerChange()." + instanceFound);
             fireServerChange(oldSer, getServerID());
         }
         if (ensureReady) {
-            System.out.println("ensureconfigready");
             getConfigSupport().ensureConfigurationReady();
         }
     }
@@ -140,14 +135,12 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     }
     
     public void setServerInstanceID(String str) {
-        String newone = Deployment.getDefault().getServerID(str);
         String oldone = null;
         if (serverInstanceID != null) {
             oldone = Deployment.getDefault().getServerID(serverInstanceID);
         }
         serverInstanceID = str;
         if (oldone != null) {
-            System.out.println("fireServerChnge in setServerInstanceID");
             fireServerChange(oldone, getServerID());            
         }
         // TODO write into the private/public profile..
@@ -182,7 +175,6 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     public String getServerID() {
         if (serverInstanceID != null) {
             String tr = Deployment.getDefault().getServerID(serverInstanceID);
-            System.out.println("getServerId=" + tr);
             if (tr != null) {
                 return tr;
             }
