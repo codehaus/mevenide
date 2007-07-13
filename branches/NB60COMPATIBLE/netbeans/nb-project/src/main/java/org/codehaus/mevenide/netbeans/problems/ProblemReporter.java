@@ -41,7 +41,6 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
-import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -72,19 +71,25 @@ public final class ProblemReporter implements Comparator {
     }
     
     public void addReport(ProblemReport report) {
-        reports.add(report);
+        synchronized (reports) {
+            reports.add(report);
+        }
         fireChange();
     }
     
     public void addReports(ProblemReport[] report) {
-        for (int i = 0; i < report.length; i++) {
-            reports.add(report[i]);
+        synchronized (reports) {
+            for (int i = 0; i < report.length; i++) {
+                reports.add(report[i]);
+            }
         }
         fireChange();
     }
     
     public void removeReport(ProblemReport report) {
-        reports.add(report);
+        synchronized (reports) {
+            reports.add(report);
+        }
         fireChange();
     }
     
@@ -95,11 +100,15 @@ public final class ProblemReporter implements Comparator {
     }
     
     public Collection getReports() {
-        return new ArrayList<ProblemReport>(reports);
+        synchronized (reports) {
+            return new ArrayList<ProblemReport>(reports);
+        }
     }
     
     public void clearReports() {
-        reports.clear();
+        synchronized (reports) {
+            reports.clear();
+        }
         fireChange();
     }
     
@@ -231,7 +240,7 @@ public final class ProblemReporter implements Comparator {
             if (fo != null) {
                 try {
                     DataObject dobj = DataObject.find(fo);
-                    EditCookie edit = (EditCookie)dobj.getCookie(EditCookie.class);
+                    EditCookie edit = dobj.getCookie(EditCookie.class);
                     edit.edit();
                 } catch (DataObjectNotFoundException ex) {
                     ex.printStackTrace();
