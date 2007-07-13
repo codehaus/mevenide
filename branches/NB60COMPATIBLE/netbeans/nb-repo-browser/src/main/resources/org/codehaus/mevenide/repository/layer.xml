@@ -11,15 +11,15 @@
     </folder>
     <folder name="Menu">
         <folder name="Edit">
-            <attr name="org-netbeans-modules-search-project-ProjectsSearchAction.instance/org-codehaus-mevenide-repository-search-SearchAction.shadow" boolvalue="true"/>
             <file name="org-codehaus-mevenide-repository-search-SearchAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Edit/org-codehaus-mevenide-repository-search-SearchAction.instance"/>
+                <attr name="position" intvalue="2219"/>
             </file>
-            <attr name="org-codehaus-mevenide-repository-search-SearchAction.shadow/SeparatorAfterProjectsSearch.instance" boolvalue="true"/>
         </folder>
         <folder name="Window">
             <file name="M2RepositoryBrowserAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-codehaus-mevenide-repository-M2RepositoryBrowserAction.instance"/>
+                <attr name="position" intvalue="519"/>
             </file>
         </folder>
     </folder>
