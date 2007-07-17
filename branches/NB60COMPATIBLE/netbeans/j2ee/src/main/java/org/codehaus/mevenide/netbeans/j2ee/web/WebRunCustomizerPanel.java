@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
+import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.util.ArrayList;
 import java.util.Collection;

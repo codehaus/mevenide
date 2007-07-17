@@ -15,10 +15,12 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.j2ee.web;
+package org.codehaus.mevenide.netbeans.j2ee;
 
+import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeLookupProvider;
+import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
@@ -73,6 +75,11 @@ public class POHImpl extends ProjectOpenedHook {
             }
             EjbModuleProviderImpl ejb = project.getLookup().lookup(EjbModuleProviderImpl.class);
             if (ejb != null) {
+                impl.setServerInstanceID(instanceFound);
+                impl.getConfigSupport().ensureConfigurationReady();
+            }
+            EarModuleProviderImpl ear = project.getLookup().lookup(EarModuleProviderImpl.class);
+            if (ear != null) {
                 impl.setServerInstanceID(instanceFound);
                 impl.getConfigSupport().ensureConfigurationReady();
             }

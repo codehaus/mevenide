@@ -26,7 +26,7 @@ import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
-import org.codehaus.mevenide.netbeans.j2ee.web.POHImpl;
+import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;

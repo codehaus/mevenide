@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ear;
 import java.io.File;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
+import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -45,8 +46,8 @@ import org.openide.filesystems.FileUtil;
 
 public class EarModuleProviderImpl extends J2eeApplicationProvider implements EarProvider  {
     
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
-    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER = WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER; //NOI18N
+    static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID; //NOI18N
     private EarImpl earimpl;
     private NbMavenProject project;
     private String serverInstanceID;
@@ -57,14 +58,13 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     public EarModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         earimpl = new EarImpl(project, this);
-        loadPersistedServerId(false);
     }
     
     public void loadPersistedServerId() {
         loadPersistedServerId(true);
     }
     
-    public void loadPersistedServerId(boolean ensureReady) {
+    private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
@@ -82,12 +82,6 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
                     }
                 }
                 instanceFound = inst;
-            }
-        }
-        if (instanceFound == null) {
-            String[] ids = Deployment.getDefault().getServerInstanceIDs(new Object[] {J2eeModule.EAR});
-            if (ids != null && ids.length > 0) {
-                instanceFound = ids[0];
             }
         }
         serverInstanceID = instanceFound;
@@ -164,7 +158,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         return earimpl.getDDFile(path);
     }
 
-    
+
 
     /**
      * Finds source deployment configuration file object for the given deployment 
@@ -182,7 +176,14 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     }
 
     public void setServerInstanceID(String string) {
-        // TODO implement when needed
+       String oldone = null;
+        if (serverInstanceID != null) {
+            oldone = Deployment.getDefault().getServerID(serverInstanceID);
+        }
+        serverInstanceID = string;
+        if (oldone != null) {
+            fireServerChange(oldone, getServerID());            
+        }
     }
     
     @Override
