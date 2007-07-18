@@ -37,23 +37,11 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         project = proj;
     }
     
-    public Boolean isSharable(FileObject fileObject) {
-        File file = FileUtil.toFile(fileObject);
-        return Boolean.valueOf(checkShare(file));
-    }
-    
-    public Boolean willBeSharable(FileObject fileObject, String str, boolean directory) {
-        File parent = FileUtil.toFile(fileObject);
-        File child = new File(parent, str);
-        return Boolean.valueOf(checkShare(child));
-    }
-
-    
-    private boolean checkShare(File file) {
+    private Boolean checkShare(File file) {
         File basedir = FileUtil.toFile(project.getProjectDirectory());
         // is this condition necessary?
         if (!file.getAbsolutePath().startsWith(basedir.getAbsolutePath())) {
-            return false;
+            return null;
         }
         if (basedir.equals(file.getParentFile()) && "nbproject".equals(file.getName())) {
             // screw the netbeans profiler directory creation.
@@ -76,7 +64,11 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
     }
     
     public int getSharability(File file) {
-        if (checkShare(file)) {
+        Boolean check = checkShare(file);
+        if (check == null) {
+            return SharabilityQuery.UNKNOWN;
+        }
+        if (Boolean.TRUE.equals(check)) {
             return SharabilityQuery.SHARABLE;
         }
         //TODO

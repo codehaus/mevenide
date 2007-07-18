@@ -120,19 +120,6 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         }
     }
     
-    /**
-     * @param child fileobject for the child..
-     * @param possibleParents List of Strings denoting files..
-     */
-    private boolean isChildOf(FileObject child, List<String> possibleParents) {
-        FileObject[] dirs = convertStringsToFileObjects(possibleParents);
-        for (int i =0; i < dirs.length; i++) {
-            if (dirs[i] != null  && dirs[i].isFolder() && (dirs[i].equals(child) || FileUtil.isParentOf(dirs[i], child))) {
-                return true;
-            }
-        }
-        return false;
-    }
     
     private boolean isChildOf(FileObject child, URI[] uris) {
         for (int i = 0; i < uris.length; i++) {
@@ -160,12 +147,12 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     
     private int getType(FileObject file) {
-        if (isChildOf(file, project.getOriginalMavenProject().getCompileSourceRoots()) ||
+        if (isChildOf(file, project.getSourceRoots(false)) ||
             isChildOf(file, project.getGeneratedSourceRoots()) ||
             isChildOf(file, project.getResources(false))) {
             return TYPE_SRC;
         }
-        if (isChildOf(file, project.getOriginalMavenProject().getTestCompileSourceRoots()) ||
+        if (isChildOf(file, project.getSourceRoots(true)) ||
             isChildOf(file, project.getResources(true))) {
             return TYPE_TESTSRC;
         }

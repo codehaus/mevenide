@@ -327,6 +327,20 @@ public final class NbMavenProject implements Project {
     }
     
     
+    public URI[] getSourceRoots(boolean test) {
+        List srcs = test ? getOriginalMavenProject().getCompileSourceRoots() : 
+                           getOriginalMavenProject().getTestCompileSourceRoots();
+        URI[] uris = new URI[srcs.size()];
+        Iterator it = srcs.iterator();
+        int count = 0;
+        while (it.hasNext()) {
+            String str = (String)it.next();
+            File fil = FileUtil.normalizeFile(new File(str));
+            uris[count] = fil.toURI();
+            count = count + 1;
+        }
+        return uris;
+    }
     
     public URI[] getGeneratedSourceRoots() {
         //TODO more or less a hack.. should be better supported by embedder itself.

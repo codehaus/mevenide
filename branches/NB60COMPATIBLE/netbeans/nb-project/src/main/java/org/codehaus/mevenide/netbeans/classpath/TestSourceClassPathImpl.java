@@ -17,20 +17,17 @@
 
 package org.codehaus.mevenide.netbeans.classpath;
 
-import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
+class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
     
     /**
      * Creates a new instance of TestSourceClassPathImpl
@@ -41,13 +38,7 @@ public class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
     
     URI[] createPath() {
         Collection col = new ArrayList();
-        List srcs = getMavenProject().getOriginalMavenProject().getTestCompileSourceRoots();
-        Iterator it = srcs.iterator();
-        while (it.hasNext()) {
-            String str = (String)it.next();
-            File fil = FileUtil.normalizeFile(new File(str));
-            col.add(fil.toURI());
-        }
+        col.addAll(Arrays.asList(getMavenProject().getSourceRoots(true)));
         
         //needed for form module to find the bundle files..
         URI[] res = getMavenProject().getResources(true);

@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Stack;
 import java.util.regex.Pattern;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -111,8 +112,26 @@ public final class FileUtilities {
    public static URI getDirURI(FileObject root, String path) {
        return getDirURI(FileUtil.toFile(root), path);
    }
-    
+
+//copied from o.o.f.FileUtil    
+    public static String getRelativePath(final File dir, final File file) {
+        Stack<String> stack = new Stack<String>();
+        File tempFile = file;
+        while(tempFile != null && !tempFile.equals(dir)) {
+            stack.push (tempFile.getName());
+            tempFile = tempFile.getParentFile();
+        }
+        if (tempFile == null) {
+            return null;
+        }
+        StringBuilder retval = new StringBuilder();
+        while (!stack.isEmpty()) {
+            retval.append(stack.pop());
+            if (!stack.isEmpty()) {
+                retval.append('/');//NOI18N
+            }
+        }                        
+        return retval.toString();
+    }
    
-   
-    
 }

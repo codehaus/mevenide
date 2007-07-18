@@ -16,13 +16,22 @@
  */
 package org.codehaus.mevenide.netbeans;
 
+import java.io.File;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.classpath.GlobalPathRegistry;
+import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * openhook implementation, register global classpath and also
@@ -33,6 +42,8 @@ import org.openide.filesystems.FileObject;
 class ProjectOpenedHookImpl extends ProjectOpenedHook {
    
     private NbMavenProject project;
+    private List<URI> uriReferences = new ArrayList<URI>();
+
     ProjectOpenedHookImpl(NbMavenProject proj) {
         project = proj;
     }
@@ -45,8 +56,22 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         } else {
             ErrorManager.getDefault().log("MavenFileOwnerQueryImpl not found..");  //NOI18N
         }
+        Set<URI> uris = new HashSet<URI>();
+        uris.addAll(Arrays.asList(project.getSourceRoots(false)));
+        uris.addAll(Arrays.asList(project.getSourceRoots(true)));
+        URI rootUri = FileUtil.toFile(project.getProjectDirectory()).toURI();
+        File rootDir = new File(rootUri);
+        for (URI uri : uris) {
+            if (FileUtilities.getRelativePath(rootDir, new File(uri)) == null) {
+                FileOwnerQuery.markExternalOwner(uri, project, FileOwnerQuery.EXTERNAL_ALGORITHM_TRANSIENT);
+                //TODO we do not handle properly the case when someone changes a
+                // ../../src path to ../../src2 path in the lifetime of the project.
+                uriReferences.add(uri);
+            }
+        }
+        
         // register project's classpaths to GlobalPathRegistry
-        ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
+        ClassPathProviderImpl cpProvider = project.getLookup().lookup(org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl.class);
         GlobalPathRegistry.getDefault().register(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
         GlobalPathRegistry.getDefault().register(ClassPath.SOURCE, cpProvider.getProjectClassPaths(ClassPath.SOURCE));
         GlobalPathRegistry.getDefault().register(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));
@@ -55,6 +80,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
     }
     
     protected void projectClosed() {
+        uriReferences.clear();
         MavenFileOwnerQueryImpl q = MavenFileOwnerQueryImpl.getInstance();
         if (q != null) {
             q.removeMavenProject(project);
@@ -63,7 +89,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         }
         detachUpdater();
         // unregister project's classpaths to GlobalPathRegistry
-        ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
+        ClassPathProviderImpl cpProvider = project.getLookup().lookup(org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl.class);
         GlobalPathRegistry.getDefault().unregister(ClassPath.BOOT, cpProvider.getProjectClassPaths(ClassPath.BOOT));
         GlobalPathRegistry.getDefault().unregister(ClassPath.SOURCE, cpProvider.getProjectClassPaths(ClassPath.SOURCE));
         GlobalPathRegistry.getDefault().unregister(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));

@@ -22,16 +22,13 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.openide.filesystems.FileUtil;
 
 /**
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class SourceClassPathImpl extends AbstractProjectClassPathImpl {
+class SourceClassPathImpl extends AbstractProjectClassPathImpl {
     
     /**
      * Creates a new instance of SourceClassPathImpl
@@ -42,13 +39,7 @@ public class SourceClassPathImpl extends AbstractProjectClassPathImpl {
     
     URI[] createPath() {
         Collection col = new ArrayList();
-        List srcs = getMavenProject().getOriginalMavenProject().getCompileSourceRoots();
-        Iterator it = srcs.iterator();
-        while (it.hasNext()) {
-            String str = (String)it.next();
-            File fil = FileUtil.normalizeFile(new File(str));
-            col.add(fil.toURI());
-        }
+        col.addAll(Arrays.asList(getMavenProject().getSourceRoots(false)));
         //TODO temporary solution
         col.addAll(Arrays.asList(getMavenProject().getGeneratedSourceRoots()));
         URI webSrc = getMavenProject().getWebAppDirectory();
