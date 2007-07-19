@@ -45,6 +45,7 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public final class ActionToGoalUtils {
+    private static final String FO_ATTR_CUSTOM_MAPP = "customActionMappings"; //NOI18N
     
     /** Creates a new instance of ActionToGoalUtils */
     private ActionToGoalUtils() {
@@ -52,7 +53,7 @@ public final class ActionToGoalUtils {
     
     public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
         RunConfig rc = null;
-        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         rc = user.createConfigForDefaultAction(action, project, lookup);
         if (rc == null) {
             // for build and rebuild check the pom for default goal and run that one..
@@ -65,13 +66,13 @@ public final class ActionToGoalUtils {
                         BeanRunConfig brc = new BeanRunConfig();
                         brc.setExecutionDirectory(FileUtil.toFile(project.getProjectDirectory()));
                         brc.setProject(project);
-                        StringTokenizer tok = new StringTokenizer(goal, " ", false);
-                        List toRet = new ArrayList();
+                        StringTokenizer tok = new StringTokenizer(goal, " ", false); //NOI18N
+                        List<String> toRet = new ArrayList<String>();
                         while (tok.hasMoreTokens()) {
                             toRet.add(tok.nextToken());
                         }
                         if (ActionProvider.COMMAND_REBUILD.equals(action)) {
-                            toRet.add(0, "clean");
+                            toRet.add(0, "clean"); //NOI18N 
                         }
                         brc.setGoals(toRet);
                         brc.setExecutionName(project.getName());
@@ -96,7 +97,7 @@ public final class ActionToGoalUtils {
     
     public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
-        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         na = user.getMappingForAction(action, project);
         if (na == null) {
             na = getDefaultMapping(action, project);
@@ -105,7 +106,7 @@ public final class ActionToGoalUtils {
     }
     
     public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
-        UserActionGoalProvider user = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+        UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         // no active custom mappings shall be in the default providers... just the nbactions.xml file counts
         //TODO possible usecase for custom mappings are update-site creation for nbm typed projects or their parents..
         return user.getCustomMappings();
@@ -150,7 +151,7 @@ public final class ActionToGoalUtils {
      *
      */
     public static ActionToGoalMapping readMappingsFromFileAttributes(FileObject fo) {
-        String string = (String)fo.getAttribute("customActionMappings");
+        String string = (String)fo.getAttribute(FO_ATTR_CUSTOM_MAPP);
         ActionToGoalMapping mapp = null;
         if (string != null) {
             NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
@@ -185,7 +186,7 @@ public final class ActionToGoalUtils {
         }
         if (!error) {
             try {
-                fo.setAttribute("customActionMappings", string.toString());
+                fo.setAttribute(FO_ATTR_CUSTOM_MAPP, string.toString());
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

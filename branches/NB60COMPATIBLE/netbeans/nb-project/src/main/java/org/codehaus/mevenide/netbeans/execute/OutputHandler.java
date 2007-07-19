@@ -43,6 +43,9 @@ import org.openide.windows.OutputWriter;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 class OutputHandler extends AbstractOutputHandler implements EventMonitor, MavenEmbedderLogger {
+    private static final String SEC_MOJO_EXEC = "mojo-execute";//NOI18N
+    private static final String SEC_PRJ_EXEC = "project-execute";//NOI18N
+    private static final String SEC_REAC_EXEC = "reactor-execute";//NOI18N
     
     private InputOutput inputOutput;
     
@@ -96,10 +99,10 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     public void startEvent(String eventName, String target, long l)    {
         processStart(getEventId(eventName, target), stdOut);
         if (handle != null) {
-            if ("reactor-execute".equals(eventName)) { //NOI18N
+            if (SEC_REAC_EXEC.equals(eventName)) { //NOI18N
                 isReactor = true;
             }
-            if (isReactor && "project-execute".equals(eventName)) { //NOI18N
+            if (isReactor && SEC_PRJ_EXEC.equals(eventName)) { //NOI18N
                 isReactor = false;
                 int bufferSize = MyLifecycleExecutor.getAffectedProjects().size();
                 for (int i = 0; i < bufferSize; i++) {
@@ -108,7 +111,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
                     progress.add(contr);
                 }
             }
-            if ("project-execute".equals(eventName)) { //NOI18N
+            if (SEC_PRJ_EXEC.equals(eventName)) { //NOI18N
                 if (progress.size() > 0) {
                     cont = progress.remove(0);
                     cont.start(1);
@@ -119,7 +122,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
                 count = 0;
                 cont.start(total);
             }
-            if ("mojo-execute".equals(eventName)) {
+            if (SEC_MOJO_EXEC.equals(eventName)) {
                 count = count + 1;
                 if (count < total) {
                     cont.progress(target, count);
@@ -133,7 +136,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     
     public void endEvent(String eventName, String target, long l)    {
         processEnd(getEventId(eventName, target), stdOut);
-        if ("project-execute".equals(eventName) &&  cont != null) { //NOI18N
+        if (SEC_PRJ_EXEC.equals(eventName) &&  cont != null) { //NOI18N
             total = count;
             cont.finish();
         }
@@ -145,13 +148,13 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     
     public void debug(String string) {
         if (isDebugEnabled()) {
-            processMultiLine(string, stdOut, "DEBUG");
+            processMultiLine(string, stdOut, "DEBUG");//NOI18N
         }
     }
     
     public void debug(String string, Throwable throwable) {
         if (isDebugEnabled()) {
-            processMultiLine(string, stdOut, "DEBUG");
+            processMultiLine(string, stdOut, "DEBUG");//NOI18N
             throwable.printStackTrace(stdOut);
         }
     }
@@ -161,11 +164,11 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     }
     
     public void info(String string)    {
-        processMultiLine(string, stdOut, /*"INFO"*/ "");
+        processMultiLine(string, stdOut, /*"INFO"*/ "");//NOI18N
     }
     
     public void info(String string, Throwable throwable)    {
-        processMultiLine( string, stdOut, /*"INFO"*/ "");
+        processMultiLine( string, stdOut, /*"INFO"*/ "");//NOI18N
         throwable.printStackTrace(stdOut);
     }
     
@@ -174,11 +177,11 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     }
     
     public void warn(String string)    {
-        processMultiLine(string, stdOut, "WARN");
+        processMultiLine(string, stdOut, "WARN");//NOI18N
     }
     
     public void warn(String string, Throwable throwable)    {
-        processMultiLine(string, stdOut, "WARN");
+        processMultiLine(string, stdOut, "WARN");//NOI18N
         throwable.printStackTrace(stdOut);
     }
     
@@ -187,11 +190,11 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     }
     
     public void error(String string)    {
-        processMultiLine(string, stdErr, "ERROR");
+        processMultiLine(string, stdErr, "ERROR");//NOI18N
     }
     
     public void error(String string, Throwable throwable)    {
-        processMultiLine(string, stdErr, "ERROR");
+        processMultiLine(string, stdErr, "ERROR");//NOI18N
         throwable.printStackTrace(stdErr);
     }
     
@@ -200,11 +203,11 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     }
     
     public void fatalError(String string)    {
-        processMultiLine(string, stdErr, "FATAL");
+        processMultiLine(string, stdErr, "FATAL");//NOI18N
     }
     
     public void fatalError(String string, Throwable throwable)    {
-        processMultiLine(string, stdErr, "FATAL");
+        processMultiLine(string, stdErr, "FATAL");//NOI18N
         throwable.printStackTrace(stdErr);
     }
     
@@ -364,7 +367,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
         }
         
         private void doPrint() {
-            processMultiLine(buff.toString(), writer, "");
+            processMultiLine(buff.toString(), writer, "");//NOI18N
             buff.setLength(0);
         }
         

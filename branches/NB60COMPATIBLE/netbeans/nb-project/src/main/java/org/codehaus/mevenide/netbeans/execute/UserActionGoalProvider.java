@@ -38,7 +38,7 @@ import org.openide.filesystems.FileObject;
  */
 public class UserActionGoalProvider extends AbstractActionGoalProvider {
     
-    public static final String FILENAME = "nbactions.xml";
+    public static final String FILENAME = "nbactions.xml"; //NOI18N
     
     private NbMavenProject project;
     private Date lastModified = new Date();
@@ -95,6 +95,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
         return fallbackActions;
     }
     
+    @Override
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
         return (fo == null || fo.lastModified().after(lastModified));

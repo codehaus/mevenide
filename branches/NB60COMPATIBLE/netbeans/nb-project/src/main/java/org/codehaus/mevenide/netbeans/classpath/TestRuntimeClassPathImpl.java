@@ -32,7 +32,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class TestRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
+class TestRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     
     /**
      * Creates a new instance of TestRuntimeClassPathImpl

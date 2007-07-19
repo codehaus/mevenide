@@ -31,7 +31,7 @@ import org.openide.filesystems.FileUtil;
  * class path def for runtime..
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class RuntimeClassPathImpl extends AbstractProjectClassPathImpl {
+class RuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     
     /** Creates a new instance of SrcClassPathImpl */
     public RuntimeClassPathImpl(NbMavenProject proj) {

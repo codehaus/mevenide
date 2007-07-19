@@ -51,6 +51,13 @@ import javax.swing.event.DocumentListener;
  */
 
 public class TextValueCompleter implements DocumentListener {
+    private static final String ACTION_FILLIN = "fill-in"; //NOI18N
+    private static final String ACTION_HIDEPOPUP = "hidepopup"; //NOI18N
+    private static final String ACTION_LISTDOWN = "listdown"; //NOI18N
+    private static final String ACTION_LISTPAGEDOWN = "listpagedown"; //NOI18N
+    private static final String ACTION_LISTUP = "listup"; //NOI18N
+    private static final String ACTION_LISTPAGEUP = "listpageup"; //NOI18N
+    private static final String ACTION_SHOWPOPUP = "showpopup"; //NOI18N
     private Pattern pattern;
     private Collection<String> completions;
     private JList completionList;
@@ -66,6 +73,7 @@ public class TextValueCompleter implements DocumentListener {
         this.field = fld;
         field.getDocument().addDocumentListener(this);
         field.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 hidePopup();
             }
@@ -96,12 +104,12 @@ public class TextValueCompleter implements DocumentListener {
         listScroller =new JScrollPane(completionList,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "listdown");
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "listup");
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), "listpageup");
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), "listpagedown");
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK), "showpopup");
-        field.getActionMap().put("listdown", new AbstractAction() {
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),ACTION_LISTDOWN);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),ACTION_LISTUP); 
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0),ACTION_LISTPAGEUP); 
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0),ACTION_LISTPAGEDOWN);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK),ACTION_SHOWPOPUP);
+        field.getActionMap().put(ACTION_LISTDOWN, new AbstractAction() { //NOI18N
             public void actionPerformed(ActionEvent e) {
                 if (popup == null) {
                     buildAndShowPopup();
@@ -110,7 +118,7 @@ public class TextValueCompleter implements DocumentListener {
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
-        field.getActionMap().put("listup",  new AbstractAction() {
+        field.getActionMap().put(ACTION_LISTUP,  new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 if (popup == null) {
                     buildAndShowPopup();
@@ -119,19 +127,19 @@ public class TextValueCompleter implements DocumentListener {
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
-        field.getActionMap().put("listpagedown", new AbstractAction() {
+        field.getActionMap().put(ACTION_LISTPAGEDOWN, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 completionList.setSelectedIndex(Math.min(completionList.getSelectedIndex() + completionList.getVisibleRowCount(), completionList.getModel().getSize()));
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
-        field.getActionMap().put("listpageup", new AbstractAction() {
+        field.getActionMap().put(ACTION_LISTPAGEUP, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 completionList.setSelectedIndex(Math.max(completionList.getSelectedIndex() - completionList.getVisibleRowCount(), 0));
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
-        field.getActionMap().put("fill-in", new AbstractAction() {
+        field.getActionMap().put(ACTION_FILLIN, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
                 if (completionList.getSelectedValue() != null) {
@@ -141,12 +149,12 @@ public class TextValueCompleter implements DocumentListener {
                 field.getDocument().addDocumentListener(TextValueCompleter.this);
             }
         });
-        field.getActionMap().put("hidepopup", new AbstractAction() {
+        field.getActionMap().put(ACTION_HIDEPOPUP, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 hidePopup();
             }
         });
-        field.getActionMap().put("showpopup", new AbstractAction() {
+        field.getActionMap().put(ACTION_SHOWPOPUP, new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 buildAndShowPopup();
             }
@@ -160,7 +168,7 @@ public class TextValueCompleter implements DocumentListener {
     
     
     private void buildPopup() {
-        pattern = Pattern.compile(getCompletionPrefix() + ".+");
+        pattern = Pattern.compile(getCompletionPrefix() + ".+"); //NOI18N
         int entryindex = 0;
         for (String completion : completions) {
             // check if match
@@ -184,7 +192,7 @@ public class TextValueCompleter implements DocumentListener {
             String currentText = field.getText();
             StringTokenizer tok = new StringTokenizer(currentText, separators, true);
             int count = 0;
-            String newValue = "";
+            String newValue = ""; //NOI18N
             while (tok.hasMoreTokens()) {
                 String token = tok.nextToken();
                 if (count + token.length() >= pos) {
@@ -219,12 +227,12 @@ public class TextValueCompleter implements DocumentListener {
             String currentText = field.getText();
             StringTokenizer tok = new StringTokenizer(currentText, separators, true);
             int count = 0;
-            String lastToken = "";
+            String lastToken = ""; //NOI18N
             while (tok.hasMoreTokens()) {
                 String token = tok.nextToken();
                 if (count + token.length() >= pos) {
                     if (separators.indexOf(token.charAt(0)) != -1) {
-                        return "";
+                        return ""; //NOI18N
                     }
                     return token.substring(0, pos - count);
                 } else {
@@ -235,7 +243,7 @@ public class TextValueCompleter implements DocumentListener {
             if (lastToken.length() > 0 && separators.indexOf(lastToken.charAt(0)) == -1) {
                 return lastToken;
             }
-            return "";
+            return ""; //NOI18N
         } else {
             return field.getText().trim();
         }
@@ -252,8 +260,8 @@ public class TextValueCompleter implements DocumentListener {
         int popX = los.x;
         int popY = los.y + field.getHeight();
         popup = PopupFactory.getSharedInstance().getPopup(field, listScroller, popX, popY);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "hidepopup");
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "fill-in");
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),ACTION_HIDEPOPUP);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),ACTION_FILLIN);
         popup.show();
         if (completionList.getSelectedIndex() != -1) {
             completionList.ensureIndexIsVisible(completionList.getSelectedIndex());

@@ -32,7 +32,7 @@ import org.openide.util.Lookup;
  */
 public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
     
-    /** Creates a new instance of BasicPanelProvider */
+    /** Creates a new instance of RunJarPanelProvider */
     public RunJarPanelProvider() {
     }
     
@@ -40,7 +40,7 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
         NbMavenProject project = context.lookup(NbMavenProject.class);
         ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
         
-        if (ProjectURLWatcher.TYPE_JAR.equalsIgnoreCase(watcher.getPackagingType())) { //NOI18N
+        if (ProjectURLWatcher.TYPE_JAR.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
                     org.openide.util.NbBundle.getMessage(RunJarPanelProvider.class, "TIT_Run"),

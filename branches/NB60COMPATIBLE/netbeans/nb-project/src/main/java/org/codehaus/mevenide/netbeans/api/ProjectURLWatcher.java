@@ -21,8 +21,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
@@ -31,8 +29,6 @@ import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.netbeans.api.project.Project;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 
 /**
  * an instance resides in project lookup, allows to get notified on project and 
@@ -113,12 +109,12 @@ public final class ProjectURLWatcher {
         return project.getOriginalMavenProject();
     }
     
-    public static final String TYPE_JAR = "jar";
-    public static final String TYPE_WAR = "war";
-    public static final String TYPE_EAR = "ear";
-    public static final String TYPE_EJB = "ejb";
-    public static final String TYPE_NBM = "nbm";
-    public static final String TYPE_POM = "pom";
+    public static final String TYPE_JAR = "jar"; //NOI18N
+    public static final String TYPE_WAR = "war"; //NOI18N
+    public static final String TYPE_EAR = "ear"; //NOI18N
+    public static final String TYPE_EJB = "ejb"; //NOI18N
+    public static final String TYPE_NBM = "nbm"; //NOI18N
+    public static final String TYPE_POM = "pom"; //NOI18N
     
     /**
      * get the user level packaging type for the project, allows to get the same UI support

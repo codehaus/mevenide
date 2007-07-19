@@ -59,7 +59,7 @@ public class IOBridge {
      * @param err new temporary error stream for this thread group
      * @see "#36396"
      */
-    public static synchronized void pushSystemInOutErr(OutputHandler ioput) {
+    static synchronized void pushSystemInOutErr(OutputHandler ioput) {
         if (delegating++ == 0) {
             origIn = System.in;
             origOut = System.out;
@@ -117,7 +117,7 @@ public class IOBridge {
         Thread t = Thread.currentThread();
         //assert delegateOuts.containsKey(t.getThreadGroup()) : "Not currently delegating in " + t;
         // This is still valid: suspendedDelegationTasks must have *at least one* copy of t.
-        assert suspendedDelegationTasks.contains(t) : "Have not suspended delegation in " + t;
+        assert suspendedDelegationTasks.contains(t) : "Have not suspended delegation in " + t; //NOI18N
         suspendedDelegationTasks.remove(t);
     }
 
@@ -148,34 +148,42 @@ public class IOBridge {
             return delegate().read();
         }        
         
+        @Override
         public int read(byte[] b) throws IOException {
             return delegate().read(b);
         }
         
+        @Override
         public int read(byte[] b, int off, int len) throws IOException {
             return delegate().read(b, off, len);
         }
         
+        @Override
         public int available() throws IOException {
             return delegate().available();
         }
         
+        @Override
         public boolean markSupported() {
             return delegate().markSupported();
         }        
         
+        @Override
         public void mark(int readlimit) {
             delegate().mark(readlimit);
         }
         
+        @Override
         public void close() throws IOException {
             delegate().close();
         }
         
+        @Override
         public long skip(long n) throws IOException {
             return delegate().skip(n);
         }
         
+        @Override
         public void reset() throws IOException {
             delegate().reset();
         }
@@ -216,102 +224,127 @@ public class IOBridge {
             }
         }
         
+        @Override
         public boolean checkError() {
             return delegate().checkError();
         }
         
+        @Override
         public void close() {
             delegate().close();
         }
         
+        @Override
         public void flush() {
             delegate().flush();
         }
         
+        @Override
         public void print(long l) {
             delegate().print(l);
         }
         
+        @Override
         public void print(char[] s) {
             delegate().print(s);
         }
         
+        @Override
         public void print(int i) {
             delegate().print(i);
         }
         
+        @Override
         public void print(boolean b) {
             delegate().print(b);
         }
         
+        @Override
         public void print(char c) {
             delegate().print(c);
         }
         
+        @Override
         public void print(float f) {
             delegate().print(f);
         }
         
+        @Override
         public void print(double d) {
             delegate().print(d);
         }
         
+        @Override
         public void print(Object obj) {
             delegate().print(obj);
         }
         
+        @Override
         public void print(String s) {
             delegate().print(s);
         }
         
+        @Override
         public void println(double x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(Object x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(float x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(int x) {
             delegate().println(x);
         }
 
+        @Override
         public void println(char x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(boolean x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(String x) {
             delegate().println(x);
         }
         
+        @Override
         public void println(char[] x) {
             delegate().println(x);
         }
         
+        @Override
         public void println() {
             delegate().println();
         }
         
+        @Override
         public void println(long x) {
             delegate().println(x);
         }
         
+        @Override
         public void write(int b) {
             delegate().write(b);
         }
         
+        @Override
         public void write(byte[] b) throws IOException {
             delegate().write(b);
         }
         
+        @Override
         public void write(byte[] b, int off, int len) {
             delegate().write(b, off, len);
         }

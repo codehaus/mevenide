@@ -67,6 +67,9 @@ import org.openide.windows.InputOutput;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenJavaExecutor extends AbstractMavenExecutor {
+    private static final String BASEDIR = "basedir";
+    private static final String PROFILE_PRIVATE = "netbeans-private";
+    private static final String PROFILE_PUBLIC = "netbeans-public";
     
     private AggregateProgressHandle handle;
     private OutputHandler out;
@@ -78,10 +81,10 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     
     public MavenJavaExecutor(RunConfig conf) {
         super(conf);
-        String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
-                                                  "Execute Maven";  
+        String name = conf.getProject() != null ? NbBundle.getMessage(MavenJavaExecutor.class, "TXT_Build",conf.getProject().getOriginalMavenProject().getArtifactId()) :
+                                                  NbBundle.getMessage(MavenJavaExecutor.class, "TXT_Execute_maven");  
         handle = AggregateProgressFactory.createHandle(name, new ProgressContributor[0], this, null);
-        ProgressContributor backupContrib = AggregateProgressFactory.createProgressContributor("backup");
+        ProgressContributor backupContrib = AggregateProgressFactory.createProgressContributor("backup"); //NOI18N
         handle.addContributor(backupContrib);
     }
     
@@ -93,7 +96,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         finishing = false;
         InputOutput ioput = getInputOutput();
         actionStatesAtStart();
-        String basedir = System.getProperty("basedir");
+        String basedir = System.getProperty(BASEDIR);//NOI18N
         handle.start();
         try {
             MavenEmbedder embedder;
@@ -110,31 +113,31 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                     LOGGER.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
-            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);
+            File repoRoot = InstalledFileLocator.getDefault().locate("m2-repository", null, false);//NOI18N
             //TODO we should get completely rid of this..
             Profile myProfile = new Profile();
             if (repoRoot != null) {
                 //can happen when users don't install the repository module.
-                myProfile.setId("netbeans-public");
+                myProfile.setId(PROFILE_PUBLIC);//NOI18N
                 Repository repo = new Repository();
-                repo.setUrl("file://" + repoRoot.getAbsolutePath());
-                repo.setId("netbeansIDE-repo-internal");
+                repo.setUrl("file://" + repoRoot.getAbsolutePath());//NOI18N
+                repo.setId("netbeansIDE-repo-internal");//NOI18N
                 RepositoryPolicy snap = new RepositoryPolicy();
                 snap.setEnabled(false);
                 repo.setSnapshots(snap);
-                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");
+                repo.setName("NetBeans IDE internal Repository hosting plugins that are executable in NetBeans IDE only.");//NOI18N
                 myProfile.addPluginRepository(repo);
                 Activation act = new Activation();
                 ActivationProperty prop = new ActivationProperty();
-                prop.setName("netbeans.execution");
-                prop.setValue("true");
+                prop.setName("netbeans.execution");//NOI18N
+                prop.setValue("true");//NOI18N
                 act.setProperty(prop);
                 myProfile.setActivation(act);
             }
             
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
+            File userLoc = new File(System.getProperty("user.home"), ".m2");//NOI18N
+            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);//NOI18N
             
             Settings settings = embedder.buildSettings( userSettingsPath,
                     globalSettingsPath,
@@ -145,7 +148,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
             //MEVENIDE-407
             if (settings.getLocalRepository() == null) {
-                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());
+                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());//NOI18N
             }
             if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
                 //TODO
@@ -153,7 +156,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             MavenExecutionRequest req = new DefaultMavenExecutionRequest();
             req.addActiveProfiles(config.getActivatedProfiles());
 			// TODO remove explicit activation
-            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
+            req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
                 settings.setOffline(config.isOffline().booleanValue());
@@ -166,11 +169,11 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             Properties props = new Properties();
             props.putAll(System.getProperties());
             props.putAll(config.getProperties());
-            props.setProperty("netbeans.execution", "true");
+            props.setProperty("netbeans.execution", "true");//NOI18N
             
             req.setProperties(props);
             req.setBasedir(config.getExecutionDirectory());
-            File pom = new File(config.getExecutionDirectory(), "pom.xml");
+            File pom = new File(config.getExecutionDirectory(), "pom.xml");//NOI18N
             if (pom.exists()) {
                 req.setPomFile(pom.getAbsolutePath());
             }
@@ -212,9 +215,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
             // in netbeans.
             if (basedir == null) {
-                System.getProperties().remove("basedir");
+                System.getProperties().remove(BASEDIR);
             } else {
-                System.setProperty("basedir", basedir);
+                System.setProperty( BASEDIR,basedir);
             }
             actionStatesAtFinish();
             EmbedderFactory.resetProjectEmbedder();
@@ -271,10 +274,10 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     
     
     private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
-        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {
+        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
             JPDAStart start = new JPDAStart();
             start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
-            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));
+            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
             start.setLog(handler);
             String val = start.execute(config.getProject());
             Enumeration en = config.getProperties().propertyNames();
@@ -282,18 +285,18 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 String key = (String)en.nextElement();
                 String value = config.getProperties().getProperty(key);
                 StringBuffer buf = new StringBuffer(value);
-                String replaceItem = "${jpda.address}";
+                String replaceItem = "${jpda.address}";//NOI18N
                 int index = buf.indexOf(replaceItem);
                 while (index > -1) {
                     String newItem = val;
-                    newItem = newItem == null ? "" : newItem;
+                    newItem = newItem == null ? "" : newItem;//NOI18N
                     buf.replace(index, index + replaceItem.length(), newItem);
                     index = buf.indexOf(replaceItem);
                 }
                 //                System.out.println("setting property=" + key + "=" + buf.toString());
                 config.getProperties().setProperty(key, buf.toString());
             }
-            config.getProperties().put("jpda.address", val);
+            config.getProperties().put("jpda.address", val);//NOI18N
         }
     }
 
@@ -343,7 +346,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         }
         catch (Exception ex) {
             LOGGER.log(Level.INFO,
-                "Error removing shutdown hook originated from Maven build. " + ex.getMessage(), 
+                "Error removing shutdown hook originated from Maven build. " + ex.getMessage(), //NOI18N
                 ex);
         }
     }

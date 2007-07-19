@@ -68,6 +68,10 @@ import org.openide.util.NbBundle;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class RunJarPanel extends javax.swing.JPanel {
+    private static final String ARTFACTID_JAR = "maven-jar-plugin";//NOI18N
+    private static final String ARITFACTID_ASSEMBLY = "maven-assembly-plugin";//NOI18N
+    private static final String CONFIGURATION_EL = "configuration";//NOI18N
+    private static final String GROUPID_PLUGINS = "org.apache.maven.plugins";//NOI18N
 
     private static final String RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
     private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams"; //NOI18N
@@ -138,10 +142,10 @@ public class RunJarPanel extends javax.swing.JPanel {
             Iterator it = bld.getPlugins().iterator();
             while (it.hasNext()) {
                 Plugin elem = (Plugin)it.next();
-                if ("maven-jar-plugin".equals(elem.getArtifactId())) { //NOI18N
+                if (ARTFACTID_JAR.equals(elem.getArtifactId())) { //NOI18N
                     jarPlugin = elem;
                 }
-                if ("maven-assembly-plugin".equals(elem.getArtifactId())) { //NOI18N
+                if (ARITFACTID_ASSEMBLY.equals(elem.getArtifactId())) { //NOI18N
                     assemblyPlugin = elem;
                 }
             }
@@ -205,7 +209,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         lblMainClass.setLabelFor(txtMainClass);
         org.openide.awt.Mnemonics.setLocalizedText(lblMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_MainClass")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnMainClass, "Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "BTN_Browse")); // NOI18N
         btnMainClass.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnMainClassActionPerformed(evt);
@@ -235,37 +239,35 @@ public class RunJarPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(lblMainClass)
-                    .add(lblArguments)
-                    .add(lblWorkDir)
-                    .add(lblVMOptions))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                    .add(layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblArguments)
+                            .add(lblMainClass)
+                            .add(lblWorkDir)
+                            .add(lblVMOptions))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblHint)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 57, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(btnMainClass)
-                    .add(btnWorkDir))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                            .add(txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                            .add(txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                            .add(txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(btnWorkDir)
+                            .add(btnMainClass)))
+                    .add(layout.createSequentialGroup()
+                        .add(87, 87, 87)
+                        .add(lblHint)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(lblMainClass)
-                        .add(txtMainClass, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(btnMainClass))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblMainClass)
+                    .add(btnWorkDir)
+                    .add(txtMainClass, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblArguments)
@@ -273,15 +275,15 @@ public class RunJarPanel extends javax.swing.JPanel {
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblWorkDir)
-                    .add(btnWorkDir)
-                    .add(txtWorkDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(txtWorkDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnMainClass))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblVMOptions)
                     .add(txtVMOptions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblHint)
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap(181, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -385,12 +387,12 @@ public class RunJarPanel extends javax.swing.JPanel {
     private Plugin checkJarPlugin(Plugin jarPlugin, String val) {
         if (jarPlugin == null) {
             jarPlugin = new Plugin();
-            jarPlugin.setArtifactId("maven-jar-plugin"); //NOI18N
-            jarPlugin.setGroupId("org.apache.maven.plugins"); //NOI18N
+            jarPlugin.setArtifactId(ARTFACTID_JAR); 
+            jarPlugin.setGroupId(GROUPID_PLUGINS); 
             handle.getNetbeansPublicProfile().getBuild().addPlugin(jarPlugin);
         }
         if (jarPlugin.getConfiguration() == null) {
-            jarPlugin.setConfiguration(new Xpp3Dom("configuration")); //NOI18N
+            jarPlugin.setConfiguration(new Xpp3Dom(CONFIGURATION_EL)); 
         }
         Xpp3Dom configuration = (Xpp3Dom) jarPlugin.getConfiguration();
         Xpp3Dom manifest = getOrCreateXppDomChild(getOrCreateXppDomChild(configuration, "archive"), "manifest"); //NOI18N
@@ -403,8 +405,8 @@ public class RunJarPanel extends javax.swing.JPanel {
     private Plugin checkAssemblyPlugin(Plugin assPlugin) {
         if (assPlugin == null) {
             assPlugin = new org.apache.maven.model.Plugin();
-            assPlugin.setArtifactId("maven-assembly-plugin");
-            assPlugin.setGroupId("org.apache.maven.plugins");
+            assPlugin.setArtifactId(ARITFACTID_ASSEMBLY); 
+            assPlugin.setGroupId(GROUPID_PLUGINS); 
 //not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
@@ -420,7 +422,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         exec.setPhase("package"); //NOI18N
         exec.setGoals(Collections.singletonList("directory")); //NOI18N
         if (exec.getConfiguration() == null) {
-            exec.setConfiguration(new Xpp3Dom("configuration")); //NOI18N
+            exec.setConfiguration(new Xpp3Dom(CONFIGURATION_EL)); 
         }
         Xpp3Dom configuration = (Xpp3Dom) exec.getConfiguration();
         getOrCreateXppDomChild(configuration, "descriptor").setValue("${basedir}/src/main/assemblies/netbeans-run.xml"); //NOI18N

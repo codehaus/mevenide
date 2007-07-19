@@ -32,6 +32,7 @@ import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
 
@@ -50,8 +51,8 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
     
     public MavenCommandLineExecutor(RunConfig conf) {
         super(conf);
-        String name = conf.getProject() != null ? "Build " + conf.getProject().getOriginalMavenProject().getArtifactId() :
-                                                  "Execute Maven";  
+        String name = conf.getProject() != null ? NbBundle.getMessage(MavenCommandLineExecutor.class, "TXT_Build", conf.getProject().getOriginalMavenProject().getArtifactId()) :
+                                                  org.openide.util.NbBundle.getMessage(MavenCommandLineExecutor.class, "TXT_Execute_maven");  
         handle = ProgressHandleFactory.createHandle(name, this);
     }
     
@@ -74,8 +75,8 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
 //                }
 //            }
             //TODO we might need to copy and update settings file..
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
+            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
+            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
             
             
             File workingDir = config.getExecutionDirectory();
@@ -85,8 +86,8 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             builder.directory(workingDir);
             //TODO set the JDK of choice in env
 //            builder.environment();
-            ioput.getOut().println("WARNING: You are running Maven builds externally, some UI functionality will not be available.");
-            ioput.getOut().println("Executing:" + StringUtils.join(builder.command().iterator(), " "));
+            ioput.getOut().println("WARNING: You are running Maven builds externally, some UI functionality will not be available."); //NOI18N - to be shown in log.
+            ioput.getOut().println("Executing:" + StringUtils.join(builder.command().iterator(), " "));//NOI18N - to be shown in log.
             process = builder.start();
             out.setStdOut(process.getInputStream());
             out.setStdErr(process.getInputStream());
@@ -122,10 +123,10 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
     }
     
     private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
-        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {
+        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N 
             JPDAStart start = new JPDAStart();
             start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
-            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));
+            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
             start.setLog(handler);
             String val = start.execute(config.getProject());
             Enumeration en = config.getProperties().propertyNames();
@@ -133,18 +134,18 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
                 String key = (String)en.nextElement();
                 String value = config.getProperties().getProperty(key);
                 StringBuffer buf = new StringBuffer(value);
-                String replaceItem = "${jpda.address}";
+                String replaceItem = "${jpda.address}";//NOI18N
                 int index = buf.indexOf(replaceItem);
                 while (index > -1) {
                     String newItem = val;
-                    newItem = newItem == null ? "" : newItem;
+                    newItem = newItem == null ? "" : newItem;//NOI18N
                     buf.replace(index, index + replaceItem.length(), newItem);
                     index = buf.indexOf(replaceItem);
                 }
                 //                System.out.println("setting property=" + key + "=" + buf.toString());
                 config.getProperties().setProperty(key, buf.toString());
             }
-            config.getProperties().put("jpda.address", val);
+            config.getProperties().put("jpda.address", val);//NOI18N
         }
     }
     
@@ -153,52 +154,52 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         assert mavenHome != null;
         
         //Do we care?
-        String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");
+        String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");//NOI18N
         List<String> toRet = new ArrayList<String>();
         String ex = Utilities.isWindows() ? "mvn.exe" : "mvn"; //NOI18N
-        File bin = new File(mavenHome, "bin" + File.separator + ex);
+        File bin = new File(mavenHome, "bin" + File.separator + ex);//NOI18N
         toRet.add(bin.getAbsolutePath());
         
         for (Object key : config.getProperties().keySet()) {
             String val = config.getProperties().getProperty((String)key);
-            toRet.add("-D" + key + "=" + val);
+            toRet.add("-D" + key + "=" + val);//NOI18N
         }
 
         if (config.isOffline() != null && config.isOffline().booleanValue()) {
-            toRet.add("--offline");
+            toRet.add("--offline");//NOI18N
         }
         if (!config.isRecursive()) {
-            toRet.add("--non-recursive");
+            toRet.add("--non-recursive");//NOI18N
         }
         if (config.isShowDebug()) {
-            toRet.add("--debug");
+            toRet.add("--debug");//NOI18N
         }
         if (config.isShowError()) {
-            toRet.add("--errors");
+            toRet.add("--errors");//NOI18N
         }
         if (!MavenExecutionSettings.getDefault().isUsePluginRegistry()) {
-            toRet.add("--no-plugin-registry");
+            toRet.add("--no-plugin-registry");//NOI18N
         }
         String checksum = MavenExecutionSettings.getDefault().getChecksumPolicy();
         if (checksum != null) {
             if (MavenExecutionRequest.CHECKSUM_POLICY_FAIL.equals(checksum)) {
-                toRet.add("--strict-checksums");
+                toRet.add("--strict-checksums");//NOI18N
             }
             if (MavenExecutionRequest.CHECKSUM_POLICY_WARN.equals(checksum)) {
-                toRet.add("--lax-checksums");
+                toRet.add("--lax-checksums");//NOI18N
             }
         }
         if (config.isUpdateSnapshots()) {
-            toRet.add("--update-snapshots");
+            toRet.add("--update-snapshots");//NOI18N
         }
         
-        String profiles = "";
+        String profiles = "";//NOI18N
         for (Object profile : config.getActivatedProfiles()) {
-            profiles = profiles + "," + profile;
+            profiles = profiles + "," + profile;//NOI18N
         }
         if (profiles.length() > 0) {
             profiles = profiles.substring(1);
-            toRet.add("-P" + profiles);
+            toRet.add("-P" + profiles);//NOI18N
         }
         
         for (String goal : config.getGoals()) {

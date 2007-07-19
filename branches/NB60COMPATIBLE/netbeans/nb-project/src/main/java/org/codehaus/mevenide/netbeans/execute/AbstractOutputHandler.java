@@ -34,30 +34,31 @@ import org.openide.windows.OutputWriter;
  * @author mkleint
  */
 abstract class AbstractOutputHandler {
+    private static final String PRJ_EXECUTE = "project-execute"; //NOI18N
     
-    protected HashMap processors;
+    protected HashMap<String, Set> processors;
     protected Set currentProcessors;
     protected OutputVisitor visitor;
 
     protected AbstractOutputHandler() {
-        processors = new HashMap();
+        processors = new HashMap<String, Set>();
         currentProcessors = new HashSet();
         visitor = new OutputVisitor();
     }
 
     protected final String getEventId(String eventName, String target) {
-        if ("project-execute".equals(eventName)) {
+        if (PRJ_EXECUTE.equals(eventName)) {
             return eventName;
         }
-        return eventName + "#" + target;
+        return eventName + "#" + target; //NOI18N
     }
     
     protected final void initProcessorList(NbMavenProject proj) {
         // get the registered processors.
-        Lookup.Result result  = Lookup.getDefault().lookup(new Lookup.Template(OutputProcessorFactory.class));
-        Iterator it = result.allInstances().iterator();
+        Lookup.Result<OutputProcessorFactory> result  = Lookup.getDefault().lookup(new Lookup.Template<OutputProcessorFactory>(OutputProcessorFactory.class));
+        Iterator<? extends OutputProcessorFactory> it = result.allInstances().iterator();
         while (it.hasNext()) {
-            OutputProcessorFactory factory = (OutputProcessorFactory)it.next();
+            OutputProcessorFactory factory = it.next();
             Set procs = factory.createProcessorsSet(proj);
             Iterator it2 = procs.iterator();
             while (it2.hasNext()) {
@@ -65,7 +66,7 @@ abstract class AbstractOutputHandler {
                 String[] regs = proc.getRegisteredOutputSequences();
                 for (int i = 0; i < regs.length; i++) {
                     String str = regs[i];
-                    Set set = (Set) processors.get(str);
+                    Set set = processors.get(str);
                     if (set == null) {
                         set = new HashSet();
                         processors.put(str, set);
@@ -77,7 +78,7 @@ abstract class AbstractOutputHandler {
     }
     
     protected final void processStart(String id, OutputWriter writer) {
-        Set set = (Set) processors.get(id);
+        Set set = processors.get(id);
         if (set != null) {
             currentProcessors.addAll(set);
         }
@@ -118,7 +119,7 @@ abstract class AbstractOutputHandler {
                 writer.println(visitor.getLine());
             }
         }
-        Set set = (Set) processors.get(id);
+        Set set = processors.get(id);
         if (set != null) {
             //TODO a bulletproof way would be to keep a list of currently started
             // sections and compare to the list of getRegisteredOutputSequences fo each of the
@@ -145,7 +146,7 @@ abstract class AbstractOutputHandler {
                 writer.println(visitor.getLine());
             }
         }
-        Set set = (Set) processors.get(id);
+        Set set = processors.get(id);
         if (set != null) {
             Set retain = new HashSet();
             retain.addAll(set);
@@ -162,7 +163,7 @@ abstract class AbstractOutputHandler {
         if (input == null) {
             return;
         }
-        String[] strs = input.split(System.getProperty("line.separator"));
+        String[] strs = input.split(System.getProperty("line.separator")); //NOI18N
         for (int i = 0; i < strs.length; i++) {
             processLine(strs[i], writer, levelText);
         }
@@ -179,12 +180,12 @@ abstract class AbstractOutputHandler {
             String line = visitor.getLine() == null ? input : visitor.getLine();
             if (visitor.getOutputListener() != null) {
                 try {
-                    writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant());
+                    writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line, visitor.getOutputListener(), visitor.isImportant()); //NOI18N
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
             } else {
-                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line);
+                writer.println((levelText.length() == 0 ? "" : ("[" + levelText + "]")) + line); //NOI18N
             }
         }
     }

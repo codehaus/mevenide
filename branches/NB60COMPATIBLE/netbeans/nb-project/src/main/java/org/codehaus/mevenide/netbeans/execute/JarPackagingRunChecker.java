@@ -26,6 +26,7 @@ import org.apache.maven.model.Profile;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 
 /**
  * checks if the run/debug actions with default mappings can be sucessfully executed or not.
@@ -49,21 +50,20 @@ public class JarPackagingRunChecker implements PrerequisitesChecker {
             Iterator it = config.getGoals().iterator();
             while (it.hasNext()) {
                 String goal = (String) it.next();
-                if (goal.indexOf("org.codehaus.mevenide:netbeans-run-plugin") > -1) {
+                if (goal.indexOf("org.codehaus.mevenide:netbeans-run-plugin") > -1) { //NOI18N
                     List profiles = config.getProject().getOriginalMavenProject().getModel().getProfiles();
                     Iterator it2 = profiles.iterator();
                     boolean warn = true;
                     while (it2.hasNext()) {
                         Profile prof = (Profile) it2.next();
-                        if ("netbeans-public".equals(prof.getId())) {
+                        if ("netbeans-public".equals(prof.getId())) { //NOI18N
                             // consider correct if profile is in..
                             warn = false;
                             break;
                         }
                     }
                     if (warn) {
-                        NotifyDescriptor nd = new NotifyDescriptor.Message("In order to run the project, Netbeans needs a custom profile in your pom.xml. " +
-                                "To create and customize the profile, go to the project's Properties dialog and update the Run panel.");
+                        NotifyDescriptor nd = new NotifyDescriptor.Message(NbBundle.getMessage(JarPackagingRunChecker.class, "MSG_Need_Project_Customizer"));
                         DialogDisplayer.getDefault().notify(nd);
                         return false;
                     }

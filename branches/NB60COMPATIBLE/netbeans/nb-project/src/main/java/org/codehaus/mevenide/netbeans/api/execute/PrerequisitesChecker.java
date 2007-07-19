@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.api.execute;
 
-import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.*;
 
 /**

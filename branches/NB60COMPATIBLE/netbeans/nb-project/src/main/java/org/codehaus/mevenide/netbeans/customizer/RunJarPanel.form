@@ -14,44 +14,43 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="lblMainClass" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblArguments" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblWorkDir" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblVMOptions" alignment="0" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="lblHint" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="57" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="lblArguments" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblMainClass" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblWorkDir" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblVMOptions" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="txtVMOptions" alignment="0" pref="304" max="32767" attributes="0"/>
+                          <Component id="txtWorkDir" alignment="0" pref="304" max="32767" attributes="2"/>
+                          <Component id="txtArguments" alignment="0" pref="304" max="32767" attributes="2"/>
+                          <Component id="txtMainClass" alignment="0" pref="304" max="32767" attributes="2"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="btnWorkDir" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnMainClass" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
                   </Group>
-                  <Component id="txtVMOptions" alignment="1" pref="155" max="32767" attributes="0"/>
-                  <Component id="txtWorkDir" alignment="1" pref="155" max="32767" attributes="1"/>
-                  <Component id="txtArguments" alignment="1" pref="155" max="32767" attributes="1"/>
-                  <Component id="txtMainClass" alignment="1" pref="155" max="32767" attributes="1"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="87" pref="87" max="87" attributes="0"/>
+                      <Component id="lblHint" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="btnMainClass" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnWorkDir" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                      <Component id="lblMainClass" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="txtMainClass" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="btnMainClass" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblMainClass" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnWorkDir" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtMainClass" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -61,8 +60,8 @@
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblWorkDir" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnWorkDir" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtWorkDir" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnMainClass" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
@@ -71,7 +70,7 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="lblHint" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="161" max="32767" attributes="0"/>
+              <EmptySpace pref="181" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -91,7 +90,9 @@
     </Component>
     <Component class="javax.swing.JButton" name="btnMainClass">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Browse..."/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/codehaus/mevenide/netbeans/customizer/Bundle.properties" key="BTN_Browse" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMainClassActionPerformed"/>

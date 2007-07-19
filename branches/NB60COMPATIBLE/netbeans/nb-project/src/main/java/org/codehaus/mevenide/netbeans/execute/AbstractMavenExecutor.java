@@ -34,6 +34,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Cancellable;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
@@ -153,10 +154,10 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
         public ReRunAction(boolean debug) {
             this.debug  = debug;
             this.putValue(Action.SMALL_ICON, debug ? 
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) :
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));
-            putValue(Action.NAME, debug ? "Re-run with different parameters" : "Re-run the goals.");
-            putValue(Action.SHORT_DESCRIPTION, debug ? "Re-run with different parameters": "Re-run the goals.");
+                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) : //NOI18N
+                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));//NOI18N
+            putValue(Action.NAME, debug ? NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Rerun_extra") : NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Rerun"));
+            putValue(Action.SHORT_DESCRIPTION, debug ? NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun_Extra"): NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun"));
             setEnabled(false);
             
         }
@@ -168,7 +169,7 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
         public void actionPerformed(ActionEvent e) {
             if (debug) {
                 RunGoalsPanel pnl = new RunGoalsPanel();
-                DialogDescriptor dd = new DialogDescriptor(pnl, "Run Maven");
+                DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "TIT_Run_maven"));
                 pnl.readConfig(config);
                 Object retValue = DialogDisplayer.getDefault().notify(dd);
                 if (retValue == DialogDescriptor.OK_OPTION) {
@@ -177,11 +178,11 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
                     newConfig.setExecutionName(config.getExecutionName());
                     newConfig.setProject(config.getProject());
                     pnl.applyValues(newConfig);
-                    RunUtils.executeMaven("Maven", newConfig);
+                    RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "LBL_Maven"), newConfig);
                 }
             } else {
                 RunConfig newConfig = config;
-                RunUtils.executeMaven("Maven", newConfig);
+                RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "LBL_Maven"), newConfig);
             }
             //TODO the waiting on tasks won't work..
         }
@@ -190,9 +191,9 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
     static class StopAction extends AbstractAction {
         private AbstractMavenExecutor exec;
         StopAction() {
-            putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/stop.gif")));
-            putValue(Action.NAME, "Stop execution");
-            putValue(Action.SHORT_DESCRIPTION, "Stop the currently executing build");
+            putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/stop.gif"))); //NOi18N
+            putValue(Action.NAME, NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Stop_execution"));
+            putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Stop_Execution"));
             setEnabled(false);
         }
         

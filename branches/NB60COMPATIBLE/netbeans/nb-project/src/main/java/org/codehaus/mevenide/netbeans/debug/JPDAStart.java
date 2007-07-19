@@ -93,7 +93,7 @@ public class JPDAStart implements Runnable {
                     lock.wait();
 //                    getLog().debug("Wait finished"); //NOI18N
                     if (lock [1] != null) {
-                        throw new MojoExecutionException("", (Throwable) lock [1]);
+                        throw new MojoExecutionException("", (Throwable) lock [1]); //NOI18N
                     }
                 } catch (InterruptedException e) {
                     throw new MojoExecutionException("Interrupted.", e); //NOI18N
@@ -131,7 +131,7 @@ public class JPDAStart implements Runnable {
                 try {
                     port = Integer.parseInt(address.substring(address.indexOf(':') + 1));
 //                    getProject ().setNewProperty (getAddressProperty (), "localhost:" + port);
-                    Connector.IntegerArgument portArg = (Connector.IntegerArgument) args.get("port");
+                    Connector.IntegerArgument portArg = (Connector.IntegerArgument) args.get("port"); //NOI18N
                     portArg.setValue(port);
                     lock[0] = Integer.toString(port);
                 } catch (Exception e) {
@@ -139,8 +139,8 @@ public class JPDAStart implements Runnable {
 //                    getProject ().setNewProperty (getAddressProperty (), address);
                     lock[0] = address;
                 }
-                getLog().info("JPDA Address: " + address);
-                getLog().info("Port:" + lock[0]);
+                getLog().info("JPDA Address: " + address); //NOI18N
+                getLog().info("Port:" + lock[0]); //NOI18N
                 
                 ClassPath sourcePath = Utils.createSourcePath(project, project.getOriginalMavenProject());
                 ClassPath jdkSourcePath = Utils.createJDKSourcePath(project);
@@ -154,9 +154,9 @@ public class JPDAStart implements Runnable {
                 
                 
                 final Map properties = new HashMap();
-                properties.put("sourcepath", sourcePath);
-                properties.put("name", getName());
-                properties.put("jdksources", jdkSourcePath);
+                properties.put("sourcepath", sourcePath); //NOI18N
+                properties.put("name", getName()); //NOI18N
+                properties.put("jdksources", jdkSourcePath); //NOI18N
                 
                 final ListeningConnector flc = lc;
                 RequestProcessor.getDefault().post(new Runnable() {
@@ -172,7 +172,7 @@ public class JPDAStart implements Runnable {
                     }
                 });
             } catch (java.io.IOException ioex) {
-                getLog().error("IO Error", ioex);
+                getLog().error("IO Error", ioex); //NOI18N
 //                org.openide.ErrorManager.getDefault().notify(ioex);
                 lock[1] = ioex;
             } catch (com.sun.jdi.connect.IllegalConnectorArgumentsException icaex) {
@@ -204,7 +204,7 @@ public class JPDAStart implements Runnable {
         }
         
         public void propertyChange(PropertyChangeEvent e) {
-            if (e.getPropertyName() == JPDADebugger.PROP_STATE) {
+            if (JPDADebugger.PROP_STATE.equals(e.getPropertyName())) {
                 int state = ((Integer) e.getNewValue()).intValue();
                 if ( (state == JPDADebugger.STATE_DISCONNECTED) ||
                         (state == JPDADebugger.STATE_STOPPED)
@@ -252,6 +252,7 @@ public class JPDAStart implements Runnable {
             debuggers.add(debugger);
         }
         
+        @Override
         public void engineRemoved(DebuggerEngine engine) {
             JPDADebugger debugger = (JPDADebugger) engine.lookupFirst
                     (null, JPDADebugger.class);

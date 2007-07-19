@@ -113,7 +113,7 @@ public class ActionProviderImpl implements ActionProvider {
         
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         if (rc == null) {
-            Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.FINE, "No handling for action:" + action + ". Ignoring.");
+            Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.FINE, "No handling for action:" + action + ". Ignoring."); //NOI18N
         } else {
             runGoal(action, lookup, rc);
         }
@@ -125,17 +125,15 @@ public class ActionProviderImpl implements ActionProvider {
         LifecycleManager.getDefault().saveAll();
         
         // check the prerequisites
-        Lookup.Result result = config.getProject().getLookup().lookup(new Lookup.Template(PrerequisitesChecker.class));
-        Iterator it = result.allInstances().iterator();
-        while (it.hasNext()) {
-            PrerequisitesChecker elem = (PrerequisitesChecker) it.next();
+        Lookup.Result<PrerequisitesChecker> result = config.getProject().getLookup().lookup(new Lookup.Template<PrerequisitesChecker>(PrerequisitesChecker.class));
+        for (PrerequisitesChecker elem : result.allInstances()) {
             if (!elem.checkRunConfig(action, config)) {
                 return;
             }
         }
         
         // setup executor now..
-        ExecutorTask task = RunUtils.executeMaven("Maven", config);
+        ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(ActionProviderImpl.class, "TIT_Maven_Runtime_title"), config);
         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
@@ -243,9 +241,9 @@ public class ActionProviderImpl implements ActionProvider {
                 ActionToGoalUtils.writeMappingsToFileAttributes(project.getProjectDirectory(), maps);
                 if (pnl.isRememberedAs() != null) {
                     try {
-                        UserActionGoalProvider usr = (UserActionGoalProvider)project.getLookup().lookup(UserActionGoalProvider.class);
+                        UserActionGoalProvider usr = project.getLookup().lookup(UserActionGoalProvider.class);
                         ActionToGoalMapping mappings = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-                        String tit = "CUSTOM-" + pnl.isRememberedAs();
+                        String tit = "CUSTOM-" + pnl.isRememberedAs(); //NOI18N
                         mapping.setActionName(tit);
                         Iterator it = mappings.getActions().iterator();
                         NetbeansActionMapping exist = null;
@@ -281,7 +279,7 @@ public class ActionProviderImpl implements ActionProvider {
     private final class CustomPopupActions extends AbstractAction implements Presenter.Popup {
         
         private CustomPopupActions() {
-            putValue(Action.NAME, "Custom");
+            putValue(Action.NAME, NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -289,7 +287,7 @@ public class ActionProviderImpl implements ActionProvider {
     
         public JMenuItem getPopupPresenter() {
             //TODO have some caching/lazy construction strategy
-            JMenu menu = new JMenu("Custom");
+            JMenu menu = new JMenu(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
             NetbeansActionMapping[] maps = ActionToGoalUtils.getActiveCustomMappings(project);
             for (int i = 0; i < maps.length; i++) {
                 NetbeansActionMapping mapp = maps[i];
@@ -298,7 +296,7 @@ public class ActionProviderImpl implements ActionProvider {
                 item.setText(mapp.getDisplayName() == null ? mapp.getActionName() : mapp.getDisplayName());
                 menu.add(item);
             }
-            menu.add(new JMenuItem(createCustomMavenAction("Goals...", new NetbeansActionMapping())));
+            menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
             return menu;
         }
     }

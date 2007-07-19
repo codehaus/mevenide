@@ -53,7 +53,7 @@ import org.openide.util.RequestProcessor;
  */
 public class MavenSourcesImpl implements Sources {
     //TODO remove when upgrading to later milestone..
-    public static final String TYPE_RESOURCES="resources";
+    public static final String TYPE_RESOURCES="resources";//NOI18N
     public static final String TYPE_OTHER = "Resources"; //NOI18N
     public static final String TYPE_TEST_OTHER = "TestResources"; //NOI18N
     public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
@@ -210,7 +210,8 @@ public class MavenSourcesImpl implements Sources {
                     root.mkdirs();
                 }
                 FileObject fo = FileUtil.toFileObject(root);
-                return new SourceGroup[] { GenericSources.group(project, fo, "resources", "Project Resources", null, null) };
+                return new SourceGroup[] { GenericSources.group(project, fo, "resources",  //NOI18N
+                        NbBundle.getMessage(MavenSourcesImpl.class, "SG_Project_Resources"), null, null) };
             }
         }
 //        logger.warn("unknown source type=" + str);

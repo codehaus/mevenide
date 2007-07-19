@@ -85,11 +85,11 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 }
                 if (artifact != null) {
                     String version = artifact.getVersion();
-                    if (version.startsWith("3.")) {
+                    if (version.startsWith("3.")) { //NOI18N
                         return createJUnitElement(JUNIT3);
                     } 
                     else if (version.startsWith("4.")) {
-                        return createJUnitElement(JUNIT4);
+                        return createJUnitElement(JUNIT4); //NOI18N
                     } else {
                         ErrorManager.getDefault().log("AuxilaryConfiguration: Unknown version of junit artifact found in project:" + version); //NOI18N
                     }
@@ -133,18 +133,18 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                 }
                 if (artifact != null) {
                     String ver = artifact.getVersion();
-                    if ((attr.equals(JUNIT4) && ver.startsWith("4.")) ||
-                        (attr.equals(JUNIT3) && ver.startsWith("3."))) {
+                    if ((attr.equals(JUNIT4) && ver.startsWith("4.")) || //NOI18N
+                        (attr.equals(JUNIT3) && ver.startsWith("3."))) { //NOI18N
                         //don't update anything, somewhere the stuff is correctly set.
                         return;
                     }
                 }
-                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+                FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
                 Model model = WriterUtils.loadModel(fo); //NOI18N
                 if (model != null) {
                     Dependency dep = PluginPropertyUtils.checkModelDependency(model,JUNIT_GR_ART,JUNIT_GR_ART, true);
-                    dep.setVersion(attr.equals(JUNIT4) ? "4.1" : "3.8.2");
-                    dep.setScope("test");
+                    dep.setVersion(attr.equals(JUNIT4) ? "4.1" : "3.8.2"); //NOI18N
+                    dep.setScope("test"); //NOI18N
                     //TODO how to upgrade always to a version that is correct in terms of junit support?
                     try {
                         WriterUtils.writePomModel(fo, model);

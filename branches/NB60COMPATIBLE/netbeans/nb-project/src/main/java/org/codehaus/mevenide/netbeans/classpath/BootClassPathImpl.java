@@ -29,6 +29,7 @@ import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 /**
  *
@@ -36,7 +37,7 @@ import org.netbeans.api.java.classpath.ClassPath;
  */
 final class BootClassPathImpl implements ClassPathImplementation {
 
-    private List resourcesCache;
+    private List<? extends PathResourceImplementation> resourcesCache;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
     
 //    private String lastNonDefault = null;
@@ -45,14 +46,14 @@ final class BootClassPathImpl implements ClassPathImplementation {
     public BootClassPathImpl () {
     }
 
-    public synchronized java.util.List getResources() {
+    public synchronized List<? extends PathResourceImplementation> getResources() {
         if (this.resourcesCache == null) {
             JavaPlatform jp = findActivePlatform ();
             if (jp != null) {
                 //TODO May also listen on CP, but from Platform it should be fixed.
                 ClassPath cp = jp.getBootstrapLibraries();
                 List entries = cp.entries();
-                ArrayList result = new ArrayList (entries.size());
+                ArrayList<PathResourceImplementation> result = new ArrayList<PathResourceImplementation> (entries.size());
                 for (Iterator it = entries.iterator(); it.hasNext();) {
                     ClassPath.Entry entry = (ClassPath.Entry) it.next();
                     result.add (ClassPathSupport.createResource(entry.getURL()));

@@ -53,6 +53,10 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsProvider {
+    private static final String WEB_PATH = "webpagePath";//NOI18N
+    private static final String CLASSNAME = "className";//NOI18N
+    private static final String CLASSNAME_EXT = "classNameWithExtension";//NOI18N
+    private static final String PACK_CLASSNAME = "packageClassName";//NOI18N
     protected ActionToGoalMapping originalMappings;
     protected NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
     private NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
@@ -65,14 +69,14 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
      * just gets the array of FOs from lookup.
      */
     private static FileObject[] extractFileObjectsfromLookup(Lookup lookup) {
-        List files = new ArrayList();
-        Iterator it = lookup.lookup(new Lookup.Template(DataObject.class)).allInstances().iterator();
+        List<FileObject> files = new ArrayList<FileObject>();
+        Iterator<? extends DataObject> it = lookup.lookup(new Lookup.Template<DataObject>(DataObject.class)).allInstances().iterator();
         while (it.hasNext()) {
             DataObject d = (DataObject)it.next();
             FileObject f = d.getPrimaryFile();
             files.add(f);
         }
-        return (FileObject[])files.toArray(new FileObject[files.size()]);
+        return files.toArray(new FileObject[files.size()]);
     }
     
     
@@ -80,36 +84,36 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         FileObject[] fos = extractFileObjectsfromLookup(lookup);
         String relPath = null;
         String group = null;
-        HashMap replaceMap = new HashMap();
+        HashMap<String, String> replaceMap = new HashMap<String, String>();
         if (fos.length > 0) {
-            Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+            Sources srcs = project.getLookup().lookup(Sources.class);
             SourceGroup[] grp = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
             for (int i = 0; i < grp.length; i++) {
                 relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
                 if (relPath != null) {
                     group = grp[i].getName();
-                    replaceMap.put("classNameWithExtension", fos[0].getNameExt());
-                    replaceMap.put("className", fos[0].getName());
-                    replaceMap.put("packageClassName", (FileUtil.getRelativePath(grp[i].getRootFolder(),
+                    replaceMap.put(CLASSNAME_EXT, fos[0].getNameExt());
+                    replaceMap.put(CLASSNAME, fos[0].getName());
+                    replaceMap.put(PACK_CLASSNAME, (FileUtil.getRelativePath(grp[i].getRootFolder(),
                             fos[0].getParent())
-                            + "." + fos[0].getName()).replace('/','.'));
+                            + "." + fos[0].getName()).replace('/','.')); //NOI18N
                     break;
                 }
             }
             if (relPath == null) {
-                replaceMap.put("classNameWithExtension", "");
-                replaceMap.put("className", "");
-                replaceMap.put("packageClassName", "");
+                replaceMap.put(CLASSNAME_EXT,"");//NOI18N
+                replaceMap.put(CLASSNAME,"");//NOI18N
+                replaceMap.put(PACK_CLASSNAME,"");//NOI18N
                 grp = srcs.getSourceGroups("doc_root"); //NOI18N J2EE
                 for (int i = 0; i < grp.length; i++) {
                     relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
                     if (relPath != null) {
-                        replaceMap.put("webpagePath", relPath);
+                        replaceMap.put( WEB_PATH,relPath);
                         break;
                     }
                 }
                 if (relPath == null) {
-                    replaceMap.put("webpagePath", "");
+                    replaceMap.put(WEB_PATH,"");//NOI18N
                 }
             }
             
@@ -196,7 +200,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
                         (elem.getPackagings().contains(prjPack.trim()) ||
-                        elem.getPackagings().contains("*"))) {
+                        elem.getPackagings().contains("*"))) {//NOI18N
                     action = elem;
                 }
             }
@@ -227,7 +231,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
                         (elem.getPackagings().contains(prjPack.trim()) ||
-                        elem.getPackagings().contains("*") || elem.getPackagings().size() == 0)) {
+                        elem.getPackagings().contains("*") || elem.getPackagings().size() == 0)) {//NOI18N
                     action = elem;
                 }
             }
@@ -250,14 +254,14 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         Iterator it = replaceMap.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry elem = (Map.Entry) it.next();
-            String replaceItem = "${" + elem.getKey() + "}";
+            String replaceItem = "${" + elem.getKey() + "}";//NOI18N
             int index = buf.indexOf(replaceItem);
             while (index > -1) {
                 String newItem = (String)elem.getValue();
                 if (newItem == null) {
-                    System.out.println("no value for key=" + replaceItem);
+//                    System.out.println("no value for key=" + replaceItem);
                 }
-                newItem = newItem == null ? "" : newItem;
+                newItem = newItem == null ? "" : newItem;//NOI18N
                 buf.replace(index, index + replaceItem.length(), newItem);
                 index = buf.indexOf(replaceItem);
             }

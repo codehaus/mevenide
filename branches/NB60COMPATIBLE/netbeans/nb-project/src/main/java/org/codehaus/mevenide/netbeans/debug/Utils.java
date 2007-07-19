@@ -37,6 +37,7 @@ import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.project.Project;
+import org.netbeans.spi.java.classpath.PathResourceImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.ErrorManager;
@@ -57,7 +58,7 @@ public class Utils {
     static MethodBreakpoint createBreakpoint(String stopClassName) {
         MethodBreakpoint breakpoint = MethodBreakpoint.create(
                 stopClassName,
-                "*"
+                "*" //NOI18N
                 );
         breakpoint.setHidden(true);
         DebuggerManager.getDebuggerManager().addBreakpoint(breakpoint);
@@ -143,12 +144,12 @@ public class Utils {
     }
     
     private static ClassPath convertToClassPath(File[] roots) {
-        List l = new ArrayList();
+        List<URL> l = new ArrayList<URL>();
         for (int i = 0; i < roots.length; i++) {
             URL url = Utils.fileToURL(roots[i]);
             l.add(url);
         }
-        URL[] urls = (URL[]) l.toArray(new URL[l.size()]);
+        URL[] urls = l.toArray(new URL[l.size()]);
         return ClassPathSupport.createClassPath(urls);
     }
     
@@ -159,8 +160,8 @@ public class Utils {
      *
      */
     private static ClassPath convertToSourcePath(File[] fs)  {
-        List lst = new ArrayList();
-        Set existingSrc = new HashSet();
+        List<PathResourceImplementation> lst = new ArrayList<PathResourceImplementation>();
+        Set<URL> existingSrc = new HashSet<URL>();
         for (int i = 0; i < fs.length; i++) {
             URL url = Utils.fileToURL(fs[i]);
             try {
@@ -207,8 +208,8 @@ public class Utils {
             if (FileUtil.isArchiveFile(url)) {
                 url = FileUtil.getArchiveRoot(url);
             }
-            if  (!url.toExternalForm().endsWith("/")) {
-                url = new URL(url.toExternalForm() + "/");
+            if  (!url.toExternalForm().endsWith("/")) { //NOI18N
+                url = new URL(url.toExternalForm() + "/"); //NOI18N
             }
             return url;
         } catch (MalformedURLException ex) {

@@ -76,6 +76,7 @@ import org.codehaus.mevenide.netbeans.queries.MavenBinaryForSourceQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
+import org.openide.util.NbBundle;
 
 
 
@@ -168,14 +169,14 @@ public final class NbMavenProject implements Project {
                     project = getEmbedder().readProjectWithDependencies(projectFile);
                 } catch (ArtifactResolutionException ex) {
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
+                            NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
                     //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
                     project = getEmbedder().readProject(projectFile);
                 } catch (ArtifactNotFoundException ex) {
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
+                            NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
                             ex.getMessage(), null);
                     problemReporter.addReport(report);
                     //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
@@ -187,7 +188,7 @@ public final class NbMavenProject implements Project {
             } catch (ProjectBuildingException ex) {
                 //igonre if the problem is in the project validation codebase, we handle that later..
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Cannot_load_project_properly"),
+                            NbBundle.getMessage(NbMavenProject.class, "TXT_Cannot_load_project_properly"),
                         ex.getMessage(), null);
                 problemReporter.addReport(report);
             } finally {
@@ -235,7 +236,7 @@ public final class NbMavenProject implements Project {
     public String getDisplayName() {
         String displayName = projectInfo.getDisplayName();
         if (displayName == null) {
-            displayName = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "LBL_NoProjectName");
+            displayName = NbBundle.getMessage(NbMavenProject.class, "LBL_NoProjectName");
         }
         return displayName;
     }
@@ -246,7 +247,7 @@ public final class NbMavenProject implements Project {
             desc = getOriginalMavenProject().getDescription();
         }
         if (desc == null) {
-            desc = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "LBL_DefaultDescription");
+            desc = NbBundle.getMessage(NbMavenProject.class, "LBL_DefaultDescription");
         }
         return desc;
     }
@@ -548,10 +549,12 @@ public final class NbMavenProject implements Project {
     // no idea why, it's supposed to be ProjectManager job.. maybe related to
     // maven impl of SubProjectProvider or FileOwnerQueryImplementation
     //TODO need to investigate why it's like that..
+    @Override
     public int hashCode() {
         return getProjectDirectory().hashCode() * 13;
     }
     
+    @Override
     public boolean equals(Object obj) {
         if (obj instanceof Project) {
             return getProjectDirectory().equals(((Project)obj).getProjectDirectory());
@@ -690,27 +693,27 @@ public final class NbMavenProject implements Project {
         RecommendedTemplatesImpl(NbMavenProject proj) {
             project = proj;
             prohibited = new ArrayList<String>();
-            prohibited.add(ProjectURLWatcher.TYPE_EAR); //NOI18N
-            prohibited.add(ProjectURLWatcher.TYPE_EJB); //NOI18N
-            prohibited.add(ProjectURLWatcher.TYPE_WAR); //NOI18N
-            prohibited.add(ProjectURLWatcher.TYPE_NBM); //NOI18N
+            prohibited.add(ProjectURLWatcher.TYPE_EAR); 
+            prohibited.add(ProjectURLWatcher.TYPE_EJB); 
+            prohibited.add(ProjectURLWatcher.TYPE_WAR); 
+            prohibited.add(ProjectURLWatcher.TYPE_NBM); 
         }
         
         public String[] getRecommendedTypes() {
             String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR; //NOI18N
+                packaging = ProjectURLWatcher.TYPE_JAR; 
             }
             packaging = packaging.trim();
-            if ("pom".equals(packaging)) { //NOI18N
+            if (ProjectURLWatcher.TYPE_POM.equals(packaging)) { 
                 return POM_APPLICATION_TYPES;
             }
-            if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) { //NOI18N
+            if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) { 
                 return JAR_APPLICATION_TYPES;
             }
 			//TODO when apisupport module becomes 'non-experimental', delete this block..
             //NBM also fall under this I guess..
-            if ("nbm".equals(packaging)) { //NOI18N
+            if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
                 return JAR_APPLICATION_TYPES;
             }
             
@@ -727,10 +730,10 @@ public final class NbMavenProject implements Project {
         public String[] getPrivilegedTemplates() {
             String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR; //NOI18N
+                packaging = ProjectURLWatcher.TYPE_JAR;
             }
             packaging = packaging.trim();
-            if ("pom".equals(packaging)) { //NOI18N
+            if (ProjectURLWatcher.TYPE_POM.equals(packaging)) { 
                 return POM_PRIVILEGED_NAMES;
             }
             if (prohibited.contains(packaging)) {
@@ -743,7 +746,7 @@ public final class NbMavenProject implements Project {
     
     private class RefreshAction extends AbstractAction {
         public RefreshAction() {
-            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
+            putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
         }
         
         public void actionPerformed(java.awt.event.ActionEvent event) {

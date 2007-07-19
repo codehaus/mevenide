@@ -52,7 +52,7 @@ public final class OutputUtils {
             String lineNum = match.group(3);
             int index = method.indexOf(file);
             if (index > -1) {
-                String packageName = method.substring(0, index).replace('.', '/');
+                String packageName = method.substring(0, index).replace('.', '/'); //NOI18N
                 String resourceName = packageName  + file + ".class"; //NOI18N
                 FileObject resource = classPath.findResource(resourceName);
                 if (resource != null) {
@@ -61,7 +61,7 @@ public final class OutputUtils {
                     SourceForBinaryQuery.Result res = SourceForBinaryQuery.findSourceRoots(url);
                     FileObject[] rootz = res.getRoots();
                     for (int i = 0; i < rootz.length; i++) {
-                        String path = packageName + file + ".java";
+                        String path = packageName + file + ".java"; //NOI18N
                         FileObject javaFo = rootz[i].getFileObject(path);
                         if (javaFo != null) {
                             try {

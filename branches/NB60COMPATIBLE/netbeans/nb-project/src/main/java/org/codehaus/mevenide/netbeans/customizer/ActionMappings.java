@@ -57,6 +57,7 @@ import org.openide.util.NbBundle;
  * @author  mkleint@codehaus.org
  */
 public class ActionMappings extends javax.swing.JPanel {
+    private static final String CUSTOM_ACTION_PREFIX = "CUSTOM-"; //NOI18N
     private NbMavenProject project;
     private ModelHandle handle;
     private HashMap<String, String> titles = new HashMap<String, String>();
@@ -114,7 +115,7 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProfiles.addFocusListener(focus);
         txtProperties.addFocusListener(focus);
         
-        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " ");
+        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " "); //NOI18N
         clearFields();
     }
     
@@ -186,17 +187,15 @@ public class ActionMappings extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(lblProperties, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblProperties.text")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(cbRecursively, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbRecursively.text")); // NOI18N
-        cbRecursively.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbRecursively.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbSkipTests.text")); // NOI18N
-        cbSkipTests.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
         lblHint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         lblMappings.setLabelFor(lstMappings);
-        org.openide.awt.Mnemonics.setLocalizedText(lblMappings, "Ac&tions:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblMappings, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_Actions")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -207,14 +206,14 @@ public class ActionMappings extends javax.swing.JPanel {
                     .add(lblMappings)
                     .add(layout.createSequentialGroup()
                         .add(116, 116, 116)
-                        .add(cbRecursively, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))
+                        .add(cbRecursively, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(116, 116, 116)
                         .add(cbSkipTests)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 573, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 582, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(116, 116, 116)
-                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))
+                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE))
                     .add(lblGoals)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -222,16 +221,15 @@ public class ActionMappings extends javax.swing.JPanel {
                             .add(lblProperties))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
-                            .add(txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE)
-                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 652, Short.MAX_VALUE))))
-                .addContainerGap())
-            .add(layout.createSequentialGroup()
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(btnAdd)
-                    .add(btnRemove))
+                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+                            .add(txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
+                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)))
+                    .add(layout.createSequentialGroup()
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 655, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(btnAdd)
+                            .add(btnRemove))))
                 .addContainerGap())
         );
 
@@ -271,12 +269,12 @@ public class ActionMappings extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
     
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine("Action Name:", "Enter action name");
+    NotifyDescriptor.InputLine nd = new NotifyDescriptor.InputLine(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TIT_Add_action"), org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_AddAction"));
     Object ret = DialogDisplayer.getDefault().notify(nd);
     if (ret == NotifyDescriptor.OK_OPTION) {
         NetbeansActionMapping nam = new NetbeansActionMapping();
         nam.setDisplayName(nd.getInputText());
-        nam.setActionName("CUSTOM-" + nd.getInputText()); //NOI18N
+        nam.setActionName(CUSTOM_ACTION_PREFIX + nd.getInputText()); 
         handle.getActionMappings().addAction(nam);
         handle.markAsModified(handle.getActionMappings());
         MappingWrapper wr = new MappingWrapper(nam);
@@ -292,7 +290,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         MappingWrapper wr = (MappingWrapper)obj;
         NetbeansActionMapping mapp = wr.getMapping();
         if (mapp != null) {
-            if (mapp.getActionName().startsWith("CUSTOM-")) {
+            if (mapp.getActionName().startsWith(CUSTOM_ACTION_PREFIX)) { 
                 ((DefaultListModel)lstMappings.getModel()).removeElement(wr);
             }
             // try removing from model, if exists..
@@ -336,7 +334,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             txtGoals.setText(createSpaceSeparatedList(mapp != null ? mapp.getGoals() : Collections.EMPTY_LIST));
             txtProfiles.setText(createSpaceSeparatedList(mapp != null ? mapp.getActivatedProfiles() : Collections.EMPTY_LIST));
             txtProperties.setText(createPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
-            if ("pom".equals(handle.getProject().getPackaging())) {
+            if ("pom".equals(handle.getProject().getPackaging())) { //NOI18N
                 cbRecursively.setEnabled(true);
                 cbRecursively.setSelected(mapp != null ? mapp.isRecursive() : true);
             }
@@ -369,7 +367,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
             Iterator it = customs.iterator();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
-                if (elem.getActionName().startsWith("CUSTOM-")) {
+                if (elem.getActionName().startsWith(CUSTOM_ACTION_PREFIX)) {
                     MappingWrapper wr = new MappingWrapper(elem);
                     model.addElement(wr);
                     wr.setUserDefined(true);
@@ -408,12 +406,12 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     private String createSpaceSeparatedList(List list) {
-        String str = "";
+        String str = ""; //NOI18N
         if (list != null) {
             Iterator it = list.iterator();
             while (it.hasNext()) {
                 String elem = (String) it.next();
-                str = str + elem + " ";
+                str = str + elem + " "; //NOI18N
             }
         }
         return str;
@@ -449,7 +447,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     private String createPropertiesList(Properties properties) {
-        String str = "";
+        String str = ""; //NOI18N
         if (properties != null) {
             Iterator it = properties.keySet().iterator();
             while (it.hasNext()) {

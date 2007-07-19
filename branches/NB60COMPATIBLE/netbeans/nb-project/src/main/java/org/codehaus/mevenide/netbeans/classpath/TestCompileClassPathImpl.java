@@ -30,7 +30,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public class TestCompileClassPathImpl extends AbstractProjectClassPathImpl {
+class TestCompileClassPathImpl extends AbstractProjectClassPathImpl {
     
     /** Creates a new instance of SrcClassPathImpl */
     public TestCompileClassPathImpl(NbMavenProject proj) {

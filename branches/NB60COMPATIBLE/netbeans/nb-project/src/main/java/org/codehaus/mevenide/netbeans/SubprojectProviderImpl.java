@@ -109,7 +109,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             if (mv != null) {
                 // ignore the pom type projects when resolving subprojects..
                 // maybe make an user settable option??
-                if (! "pom".equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
+                if (! ProjectURLWatcher.TYPE_POM.equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
                     resultset.add(proj);
                 }
                 addProjectModules(FileUtil.toFile(mv.getProjectDirectory()), 

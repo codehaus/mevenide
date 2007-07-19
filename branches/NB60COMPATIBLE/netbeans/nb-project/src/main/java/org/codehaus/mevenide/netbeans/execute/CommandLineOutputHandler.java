@@ -37,7 +37,7 @@ import org.openide.windows.OutputWriter;
  */
 class CommandLineOutputHandler extends AbstractOutputHandler {
     
-    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven ComandLine Output Redirection", 5);
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("Maven ComandLine Output Redirection", 5); //NOI18N
     
     private InputOutput inputOutput;
     
@@ -82,6 +82,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     }
     
     private class Output implements Runnable {
+        private static final String SEC_MOJO_EXEC = "mojo-execute"; //NOI18N
         private BufferedReader str;
         public Output(InputStream instream) {
             str = new BufferedReader(new InputStreamReader(instream));
@@ -91,29 +92,29 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
             try {
                 String line = str.readLine();
                 while (line != null) {
-                    if (line.startsWith("[INFO] ---------------------------------")) {
+                    if (line.startsWith("[INFO] ---------------------------------")) { //NOI18N
                         //heuristics..
                         if (currentTag != null) {
-                            CommandLineOutputHandler.this.processEnd(getEventId("mojo-execute", currentTag), stdOut);
+                            CommandLineOutputHandler.this.processEnd(getEventId( SEC_MOJO_EXEC,currentTag), stdOut);
                         }
                         currentTag = null;
                     }
                     Matcher match = startPattern.matcher(line);
                     if (match.matches()) {
-                        String tag = match.group(1) + ":" + match.group(2);
+                        String tag = match.group(1) + ":" + match.group(2); //NOi18N
                         if (currentTag != null) {
-                            CommandLineOutputHandler.this.processEnd(getEventId("mojo-execute", currentTag), stdOut);
+                            CommandLineOutputHandler.this.processEnd(getEventId( SEC_MOJO_EXEC,currentTag), stdOut);
                         }
-                        CommandLineOutputHandler.this.processStart(getEventId("mojo-execute", tag), stdOut);
+                        CommandLineOutputHandler.this.processStart(getEventId( SEC_MOJO_EXEC,tag), stdOut);
                         currentTag = tag;
                     } else {
                         match = linePattern.matcher(line);
                         if (match.matches()) {
                             String level = match.group(1);
-                            processLine(match.group(2), stdOut, "INFO".equals(level) ? "" : level);
+                            processLine(match.group(2), stdOut, "INFO".equals(level) ? "" : level); //NOI18N
                         } else {
                             // oh well..
-                            processLine(line, stdOut, "");
+                            processLine(line, stdOut, ""); //NOI18N
                         }
                     }
                     line = str.readLine();

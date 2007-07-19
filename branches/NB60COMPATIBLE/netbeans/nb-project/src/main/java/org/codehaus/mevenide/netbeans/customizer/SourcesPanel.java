@@ -51,13 +51,17 @@ import org.openide.filesystems.FileUtil;
 public class SourcesPanel extends JPanel {
     
     private static final String COMPILER_ART = "maven-compiler-plugin"; //NOI18N
+    private static final String CONFIGURATION_EL = "configuration";//NOI18N
+    private static final String RELEASE_VERSION = "RELEASE";//NOI18N
     private static final String RESOURCES_ART = "maven-resources-plugin"; //NOI18N
     private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
     private static final String ENCODING = "encoding"; //NOI18N
+    private static final String SOURCE_PARAM = "source";//NOI18N
+    private static final String TARGET_PARAM = "target";//NOI18N
     
     private String encoding;
-    private String defaultEncoding = "UTF-8";
-    private String defaultSourceLevel = "1.3";
+    private String defaultEncoding = "UTF-8"; //NOI18N
+    private String defaultSourceLevel = "1.3";//NOI18N
     private String sourceLevel;
     private ModelHandle handle;
 
@@ -73,7 +77,7 @@ public class SourcesPanel extends JPanel {
         comSourceLevel.setEditable(false);
         sourceLevel = SourceLevelQuery.getSourceLevel(project.getProjectDirectory());
         comSourceLevel.setModel(new DefaultComboBoxModel(new String[] {
-            "1.3", "1.4", "1.5", "1.6"
+            "1.3", "1.4", "1.5", "1.6" //NOI18N
         }));
         
         comSourceLevel.setSelectedItem(sourceLevel);
@@ -128,15 +132,15 @@ public class SourcesPanel extends JPanel {
     //TODO copied from persistence' CPExtender. have it at one place only..
     private void checkSourceLevel(Model mdl, String sl) {
         String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                PLUGIN_GR,COMPILER_ART, 
-                "source", "compile");
+                PLUGIN_GR,COMPILER_ART,SOURCE_PARAM, 
+                "compile"); //NOI18N
         if (source != null && source.contains(sl)) {
             return;
         }
         Plugin plugin = new Plugin();
         plugin.setGroupId(PLUGIN_GR);
         plugin.setArtifactId(COMPILER_ART);
-        plugin.setVersion("RELEASE");
+        plugin.setVersion(RELEASE_VERSION);
         Plugin old = null;
         Build bld = mdl.getBuild();
         if (bld != null) {
@@ -151,19 +155,19 @@ public class SourcesPanel extends JPanel {
         }
         Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
         if (dom == null) {
-            dom = new Xpp3Dom("configuration");
+            dom = new Xpp3Dom(CONFIGURATION_EL);
             plugin.setConfiguration(dom);
         }
-        Xpp3Dom dom2 = dom.getChild("source");
+        Xpp3Dom dom2 = dom.getChild(SOURCE_PARAM);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("source");
+            dom2 = new Xpp3Dom(SOURCE_PARAM);
             dom.addChild(dom2);
         }
         dom2.setValue(sl);
         
-        dom2 = dom.getChild("target");
+        dom2 = dom.getChild(TARGET_PARAM);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("target");
+            dom2 = new Xpp3Dom(TARGET_PARAM);
             dom.addChild(dom2);
         }
         dom2.setValue(sl);
@@ -199,11 +203,11 @@ public class SourcesPanel extends JPanel {
         Plugin plugin = new Plugin();
         plugin.setGroupId(PLUGIN_GR);
         plugin.setArtifactId(COMPILER_ART);
-        plugin.setVersion("RELEASE");
+        plugin.setVersion(RELEASE_VERSION);
         Plugin plugin2 = new Plugin();
         plugin2.setGroupId(PLUGIN_GR);
         plugin2.setArtifactId(RESOURCES_ART);
-        plugin2.setVersion("RELEASE");
+        plugin2.setVersion(RELEASE_VERSION);
         Plugin old = null;
         Plugin old2 = null;
         Build bld = mdl.getBuild();
@@ -225,7 +229,7 @@ public class SourcesPanel extends JPanel {
         }
         Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
         if (dom == null) {
-            dom = new Xpp3Dom("configuration");
+            dom = new Xpp3Dom(CONFIGURATION_EL);
             plugin.setConfiguration(dom);
         }
         Xpp3Dom dom2 = dom.getChild(ENCODING);
@@ -237,7 +241,7 @@ public class SourcesPanel extends JPanel {
         
         dom = (Xpp3Dom) plugin2.getConfiguration();
         if (dom == null) {
-            dom = new Xpp3Dom("configuration");
+            dom = new Xpp3Dom(CONFIGURATION_EL);
             plugin2.setConfiguration(dom);
         }
         dom2 = dom.getChild(ENCODING);
@@ -278,7 +282,7 @@ public class SourcesPanel extends JPanel {
                     addElement(defEnc);
                 } catch (IllegalCharsetNameException e) {
                     //The source.encoding property is completely broken
-                    Logger.getLogger(this.getClass().getName()).info("IllegalCharsetName: " + originalEncoding);
+                    Logger.getLogger(this.getClass().getName()).info("IllegalCharsetName: " + originalEncoding); //NOI18N
                 }
             }
             if (defEnc == null) {

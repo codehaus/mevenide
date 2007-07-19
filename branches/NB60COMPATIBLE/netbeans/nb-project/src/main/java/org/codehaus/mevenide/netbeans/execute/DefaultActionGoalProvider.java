@@ -33,7 +33,7 @@ public class DefaultActionGoalProvider extends AbstractActionGoalProvider {
        String path = "/org/codehaus/mevenide/netbeans/execute/defaultActionMappings.xml"; //NOI18N
        InputStream in = getClass().getResourceAsStream(path);
         if (in == null) {
-            assert false : "No instream for " + path;
+            assert false : "No instream for " + path; //NOI18N
             return null;
         }
        return in;

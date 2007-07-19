@@ -25,7 +25,7 @@ import javax.swing.event.AncestorListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.JTextComponent;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -54,7 +54,7 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
             inherited = false;
 //            component.setBackground(DEFAULT);
             label.setFont(label.getFont().deriveFont(Font.BOLD));
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
         }
         setValue(component.getText().trim().length() == 0 ? null : component.getText());
         if (component.getText().trim().length() == 0) {
@@ -96,7 +96,7 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
     private void setTextFieldValue(String value, String projectValue, JTextComponent field) {
         if (value != null) {
             field.setText(value);
-            component.setToolTipText("");
+            component.setToolTipText(""); //NOI18N
             inherited = false;
             label.setFont(label.getFont().deriveFont(Font.BOLD));
         } else if (projectValue != null) {
@@ -105,11 +105,11 @@ public abstract class TextComponentUpdater implements DocumentListener, Ancestor
             field.setSelectionStart(0);
 //            field.setBackground(INHERITED);
             label.setFont(label.getFont().deriveFont(Font.PLAIN));
-            component.setToolTipText("Value is inherited from parent POM.");
+            component.setToolTipText(NbBundle.getMessage(TextComponentUpdater.class, "MSG_Value_Inherited"));
             inherited = true;
         } else {
-            field.setText("");
-            component.setToolTipText("");
+            field.setText("");//NOI18N
+            component.setToolTipText("");//NOI18N
             inherited = false;
             label.setFont(label.getFont().deriveFont(Font.BOLD));
         }

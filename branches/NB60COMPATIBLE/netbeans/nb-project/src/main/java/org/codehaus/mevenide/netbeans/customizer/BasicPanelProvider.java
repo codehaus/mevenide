@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -35,7 +36,7 @@ public class BasicPanelProvider implements ProjectCustomizer.CompositeCategoryPr
     public Category createCategory(Lookup context) {
         return ProjectCustomizer.Category.create(
                 ModelHandle.PANEL_BASIC, 
-                org.openide.util.NbBundle.getMessage(BasicPanelProvider.class, "TIT_Basic"), 
+                NbBundle.getMessage(BasicPanelProvider.class, "TIT_Basic"), 
                 null,
                 (ProjectCustomizer.Category[])null);
     }

@@ -59,7 +59,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
 
     private NbMavenProject project;
     private static final String MD5_ATTR = "MD5"; //NOI18N
-    private static final String POM_XML = "pom.xml";
+    private static final String POM_XML = "pom.xml"; //NOI18N
     
     /** Creates a new instance of CPExtender */
     public CPExtender(NbMavenProject project) {
@@ -102,7 +102,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private boolean addLibrary(Library library, Model model, String scope) throws IOException {
-        List<URL> urls = library.getContent("classpath");
+        List<URL> urls = library.getContent("classpath"); //NOI18N
         boolean added = urls.size() > 0;
         assert model != null;
         for (URL url : urls) {
@@ -195,7 +195,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     public SourceGroup[] getExtensibleSourceGroups() {
-        Sources s = (Sources) this.project.getLookup().lookup(Sources.class);
+        Sources s = this.project.getLookup().lookup(Sources.class);
         assert s != null;
         return s.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
     }
@@ -211,7 +211,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         FileObject pom = project.getProjectDirectory().getFileObject(POM_XML); //NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = libraries.length > 0;
-        String scope = type == ClassPath.EXECUTE ? "runtime" : null; //NOI18N
+        String scope = ClassPath.EXECUTE.equals(type) ? "runtime" : null; //NOI18N
         for (Library library : libraries) {
             added = added && addLibrary(library, model, scope);
         }
@@ -236,7 +236,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         FileObject pom = project.getProjectDirectory().getFileObject(POM_XML);//NOI18N
         Model model = WriterUtils.loadModel(pom);
         boolean added = urls.length > 0;
-        String scope = type == ClassPath.EXECUTE ? "runtime" : null;//NOI18N
+        String scope = ClassPath.EXECUTE.equals(type) ? "runtime" : null;//NOI18N
         for (URL url : urls) {
             FileObject fo  = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
             assert fo != null;

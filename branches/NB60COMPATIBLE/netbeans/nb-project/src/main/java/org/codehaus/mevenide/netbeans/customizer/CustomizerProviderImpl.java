@@ -223,7 +223,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                     Format form = Format.getRawFormat().setEncoding(encoding);
                     writer.write(mapping, doc, outStr, form);
                 } catch (JDOMException exc){
-                    throw (IOException) new IOException("Cannot parse the nbactions.xml by JDOM.").initCause(exc);
+                    throw (IOException) new IOException("Cannot parse the nbactions.xml by JDOM.").initCause(exc); //NOI18N
                 } finally {
                     IOUtil.close(inStr);
                     IOUtil.close(outStr);
