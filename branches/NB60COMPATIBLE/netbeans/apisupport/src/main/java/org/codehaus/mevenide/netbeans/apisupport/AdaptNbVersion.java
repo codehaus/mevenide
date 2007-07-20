@@ -33,9 +33,9 @@ public class AdaptNbVersion {
     private static final String SNAPSHOT = "SNAPSHOT"; //NOI18N
     
     public static String adaptVersion(String version, Object type) {
-        StringTokenizer tok = new StringTokenizer(version,".");
+        StringTokenizer tok = new StringTokenizer(version,"."); //NOI18N
         if (SNAPSHOT.equals(version) && TYPE_IMPLEMENTATION.equals(type)) {
-            return "0.0.0." + generateSnapshotValue();
+            return "0.0.0." + generateSnapshotValue(); //NOI18N
         }
         StringBuffer toReturn = new StringBuffer();
         while (tok.hasMoreTokens()) {
@@ -53,35 +53,35 @@ public class AdaptNbVersion {
             if (TYPE_SPECIFICATION.equals(type)) {
                 // strip the trailing -RC1, -BETA5, -SNAPSHOT
                 if (token.indexOf('-') > 0) {
-                    token = token.substring(0, token.indexOf('-'));
+                    token = token.substring(0, token.indexOf('-')); //NOI18N
                 }
-                else if (token.indexOf('_') > 0) {
-                    token = token.substring(0, token.indexOf('_'));
+                else if (token.indexOf('_') > 0) { //NOI18N
+                    token = token.substring(0, token.indexOf('_')); //NOI18N
                 }
                 try {
                     Integer intValue = Integer.valueOf(token);
                     token = intValue.toString();
                 } catch (NumberFormatException exc) {
                     // ignore, will just not be added to the
-                    token = "";
+                    token = ""; //NOI18N
                 }
             }
             if (token.length() > 0) {
                 if (toReturn.length() != 0) {
-                    toReturn.append(".");
+                    toReturn.append("."); //NOI18N
                 }
                 toReturn.append(token);
             }
             
         }
         if (toReturn.length() == 0) {
-            toReturn.append("0.0.0");
+            toReturn.append("0.0.0"); //NOI18N
         }
         return toReturn.toString();
     }
     
     private static String generateSnapshotValue() {
-        return new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return new SimpleDateFormat("yyyyMMdd").format(new Date()); //NOI18N
     }
     
 }

@@ -40,18 +40,14 @@ import org.openide.windows.OutputListener;
 public class IDEOutputListenerProvider implements OutputProcessor {
     
     private static final String[] EXECGOALS = new String[] {
-        "mojo-execute#nbm:run-ide",
-        "mojo-execute#nbm:run-platform"
+        "mojo-execute#nbm:run-ide", //NOI18N
+        "mojo-execute#nbm:run-platform" //NOI18N
     };
-    private Pattern failPattern;
     private NbMavenProject project;
     private ClassPath classpath;
     
     /** Creates a new instance of TestOutputListenerProvider */
     public IDEOutputListenerProvider(NbMavenProject proj) {
-        //[javac] required because of forked compilation
-        //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
-        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL);
         project = proj;
         classpath = createCP(project);
     }

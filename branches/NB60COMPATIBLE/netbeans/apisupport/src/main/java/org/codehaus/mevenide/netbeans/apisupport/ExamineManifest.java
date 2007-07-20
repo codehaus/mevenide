@@ -93,7 +93,7 @@ public class ExamineManifest  {
         if (mf != null) {
             processManifest(mf);
         } else {
-            throw new MojoExecutionException("Cannot read jar file or manifest file");
+            throw new MojoExecutionException("Cannot read jar file or manifest file"); //NOI18N
         }
     }
     
@@ -110,34 +110,34 @@ public class ExamineManifest  {
     
     void processManifest(Manifest mf) {
         Attributes attrs = mf.getMainAttributes();
-        setModule(attrs.getValue("OpenIDE-Module"));
+        setModule(attrs.getValue("OpenIDE-Module")); //NOI18N
         setNetbeansModule(getModule() != null);
         if (isNetbeansModule()) {
-            setLocBundle(attrs.getValue("OpenIDE-Module-Localizing-Bundle"));
+            setLocBundle(attrs.getValue("OpenIDE-Module-Localizing-Bundle")); //NOI18N
             setLocalized((getLocBundle() == null ? false : true));
-            setSpecVersion(attrs.getValue("OpenIDE-Module-Specification-Version"));
-            setImplVersion(attrs.getValue("OpenIDE-Module-Implementation-Version"));
-            setModuleDeps(attrs.getValue("OpenIDE-Module-Module-Dependencies"));
-            String value = attrs.getValue("OpenIDE-Module-Public-Packages");
-            if (attrs.getValue("OpenIDE-Module-Friends") != null || value == null || value.trim().equals("-")) {
+            setSpecVersion(attrs.getValue("OpenIDE-Module-Specification-Version")); //NOI18N
+            setImplVersion(attrs.getValue("OpenIDE-Module-Implementation-Version")); //NOI18N
+            setModuleDeps(attrs.getValue("OpenIDE-Module-Module-Dependencies")); //NOI18N
+            String value = attrs.getValue("OpenIDE-Module-Public-Packages"); //NOI18N
+            if (attrs.getValue("OpenIDE-Module-Friends") != null || value == null || value.trim().equals("-")) { //NOI18N
                 setPublicPackages(false);
             } else {
                 setPublicPackages(true);
             }
             if (isPopulateDependencies()) {
-                String deps = attrs.getValue("OpenIDE-Module-Module-Dependencies");
+                String deps = attrs.getValue("OpenIDE-Module-Module-Dependencies"); //NOI18N
                 if (deps != null) {
-                    StringTokenizer tokens = new StringTokenizer(deps, ",");
+                    StringTokenizer tokens = new StringTokenizer(deps, ","); //NOI18N
                     List depList = new ArrayList();
                     while (tokens.hasMoreTokens()) {
                         String tok = tokens.nextToken();
                         //we are just interested in specification and loose dependencies.
-                        int spec = tok.indexOf(">");
-                        if (spec > 0 || (tok.indexOf("=") == -1 && spec == -1)) {
+                        int spec = tok.indexOf(">"); //NOI18N
+                        if (spec > 0 || (tok.indexOf("=") == -1 && spec == -1)) { //NOI18N
                             if (spec > 0) {
                                 tok = tok.substring(0, spec - 1);
                             }
-                            int slash = tok.indexOf("/");
+                            int slash = tok.indexOf("/"); //NOI18N
                             if (slash > 0) {
                                 tok = tok.substring(0, slash - 1);
                             }
@@ -150,9 +150,9 @@ public class ExamineManifest  {
             
         } else {
             // for non-netbeans jars.
-            setSpecVersion(attrs.getValue("Specification-Version"));
-            setImplVersion(attrs.getValue("Implementation-Version"));
-            setModule(attrs.getValue("Package"));
+            setSpecVersion(attrs.getValue("Specification-Version")); //NOI18N
+            setImplVersion(attrs.getValue("Implementation-Version")); //NOI18N
+            setModule(attrs.getValue("Package")); //NOI18N
             setPublicPackages(false);
         /*    if (module != null) {
                 // now we have the package to make it a module definition, add the version there..
@@ -161,7 +161,7 @@ public class ExamineManifest  {
          */
             if (getModule() == null) {
                 // do we want to do that?
-                setModule(attrs.getValue("Extension-Name"));
+                setModule(attrs.getValue("Extension-Name")); //NOI18N
             }
         }
         

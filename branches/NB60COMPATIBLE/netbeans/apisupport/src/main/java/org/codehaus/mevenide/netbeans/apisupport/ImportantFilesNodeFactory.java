@@ -50,7 +50,6 @@ import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
-import org.openide.util.WeakListeners;
 
 /**
  *
@@ -118,29 +117,34 @@ public class ImportantFilesNodeFactory implements NodeFactory {
             super(ch);
         }
         
+        @Override
         public String getName() {
             return IMPORTANT_FILES_NAME;
         }
         
         private Image getIcon(boolean opened) {
-            Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/apisupport/config-badge.gif", true);
+            Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/apisupport/config-badge.gif", true); //NOI18N
             return Utilities.mergeImages(getTreeFolderIcon(opened), badge, 8, 8);
         }
         
         private static final String DISPLAY_NAME = NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_important_files");
         
+        @Override
         public String getDisplayName() {
             return annotateName(DISPLAY_NAME);
         }
         
+        @Override
         public String getHtmlDisplayName() {
             return computeAnnotatedHtmlDisplayName(DISPLAY_NAME, getFiles());
         }
         
+        @Override
         public Image getIcon(int type) {
             return annotateIcon(getIcon(false), type);
         }
         
+        @Override
         public Image getOpenedIcon(int type) {
             return annotateIcon(getIcon(true), type);
         }
@@ -166,8 +170,8 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         /** Abstract location to display name. */
         private static final java.util.Map<String,String> FILES = new LinkedHashMap();
         static {
-            FILES.put("src/main/nbm/manifest.mf", NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_module_manifest"));
-            FILES.put("src/main/nbm/module.xml", NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_module.xml"));
+            FILES.put("src/main/nbm/manifest.mf", NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_module_manifest")); //NOI18N
+            FILES.put("src/main/nbm/module.xml", NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_module.xml")); //NOI18N
         }
         
         private final Project project;
@@ -176,12 +180,14 @@ public class ImportantFilesNodeFactory implements NodeFactory {
             this.project = project;
         }
         
+        @Override
         protected void addNotify() {
             super.addNotify();
             attachListeners();
             refreshKeys();
         }
         
+        @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
             removeListeners();
@@ -195,7 +201,7 @@ public class ImportantFilesNodeFactory implements NodeFactory {
                 if (file != null) {
                     try {
                         Node orig = DataObject.find(file).getNodeDelegate();
-                        return new Node[] {new SpecialFileNode(orig, (String) FILES.get(loc))};
+                        return new Node[] {new SpecialFileNode(orig, FILES.get(loc))};
                     } catch (DataObjectNotFoundException e) {
                         throw new AssertionError(e);
                     }
@@ -220,7 +226,7 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         }
         
         private void refreshKeys() {
-            Set<FileObject> files = new HashSet();
+            Set<FileObject> files = new HashSet<FileObject>();
             List newVisibleFiles = new ArrayList();
             if (!nolayer) {
                 newVisibleFiles.add(LAYER);
@@ -298,6 +304,7 @@ public class ImportantFilesNodeFactory implements NodeFactory {
             this.displayName = displayName;
         }
         
+        @Override
         public String getDisplayName() {
             if (displayName != null) {
                 return displayName;
@@ -306,21 +313,25 @@ public class ImportantFilesNodeFactory implements NodeFactory {
             }
         }
         
+        @Override
         public boolean canRename() {
             return false;
         }
         
+        @Override
         public boolean canDestroy() {
             return false;
         }
         
+        @Override
         public boolean canCut() {
             return false;
         }
         
+        @Override
         public String getHtmlDisplayName() {
             String result = null;
-            DataObject dob = (DataObject) getLookup().lookup(DataObject.class);
+            DataObject dob = getLookup().lookup(DataObject.class);
             if (dob != null) {
                 Set files = dob.files();
                 result = computeAnnotatedHtmlDisplayName(getDisplayName(), files);

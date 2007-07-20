@@ -42,7 +42,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/platformActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
-            assert in != null : "no instream for " + path;
+            assert in != null : "no instream for " + path; //NOI18N
             return in;
         }
     };
@@ -51,7 +51,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/ideActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
-            assert in != null : "no instream for " + path;
+            assert in != null : "no instream for " + path; //NOI18N
             return in;
         }
     };

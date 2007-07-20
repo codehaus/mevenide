@@ -103,21 +103,21 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
     static List<Pattern> preparePublicPackagesPatterns(String value) {
         List<Pattern> toRet = new ArrayList<Pattern>();
         if (value != null) {
-            StringTokenizer tok = new StringTokenizer(value, " ,", false);
+            StringTokenizer tok = new StringTokenizer(value, " ,", false); //NOI18N
             while (tok.hasMoreTokens()) {
                 String token = tok.nextToken();
                 token = token.trim();
                 boolean recursive = false;
-                if (token.endsWith(".*")) {
-                    token = token.substring(0, token.length() - ".*".length());
+                if (token.endsWith(".*")) { //NOI18N
+                    token = token.substring(0, token.length() - ".*".length()); //NOI18N
                     recursive = false;
-                } else if (token.endsWith(".**")) {
-                    token = token.substring(0, token.length() - ".**".length());
+                } else if (token.endsWith(".**")) { //NOI18N
+                    token = token.substring(0, token.length() - ".**".length()); //NOI18N
                     recursive = true;
                 }
-                token = token.replace(".","\\.");
+                token = token.replace(".","\\."); //NOI18N
                 if (recursive) {
-                    token = token + ".*";
+                    token = token + ".*"; //NOI18N
                 }
                 toRet.add(Pattern.compile(token));
             }

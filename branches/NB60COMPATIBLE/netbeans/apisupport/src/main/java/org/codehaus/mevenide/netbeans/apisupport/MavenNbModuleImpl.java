@@ -73,9 +73,9 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     
     private File getModuleXmlLocation() {
         String file = PluginPropertyUtils.getPluginProperty(project, 
-                "org.codehaus.mojo", 
-                "nbm-maven-plugin",
-                "descriptor", null);
+                "org.codehaus.mojo", //NOI18N
+                "nbm-maven-plugin", //NOI18N
+                "descriptor", null); //NOI18N
         if (file == null) {
             file = "src/main/nbm/module.xml"; //NOI18N
         }
@@ -92,7 +92,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             return null;
         }
         FileInputStream is = new FileInputStream(getModuleXmlLocation());
-        Reader reader = new InputStreamReader(is, "UTF-8");
+        Reader reader = new InputStreamReader(is, "UTF-8"); //NOI18N
         try {
             return Xpp3DomBuilder.build(reader);
         } finally {
@@ -110,11 +110,11 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         try {
             Xpp3Dom dom = getModuleDom();
             if (dom != null) {
-                Xpp3Dom cnb = dom.getChild("codeNameBase");
+                Xpp3Dom cnb = dom.getChild("codeNameBase"); //NOI18N
                 if (cnb != null) {
                     String val = cnb.getValue();
-                    if (val.indexOf( "/") > -1) {
-                        val = val.substring(0, val.indexOf("/"));
+                    if (val.indexOf( "/") > -1) { //NOI18N
+                        val = val.substring(0, val.indexOf("/")); //NOI18N
                     }
                     return val;
                 }
@@ -124,12 +124,12 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         }
         MavenProject prj = project.getLookup().lookup(ProjectURLWatcher.class).getMavenProject();
         //same fallback is in nbm-maven-plugin
-        return prj.getGroupId() + "." + prj.getArtifact();
+        return prj.getGroupId() + "." + prj.getArtifact(); //NOI18N
     }
 
     public String getSourceDirectoryPath() {
         //TODO
-        return "src/main/java";
+        return "src/main/java"; //NOI18N
     }
 
     public FileObject getSourceDirectory() {
@@ -147,12 +147,12 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     }
 
     public FileObject getManifestFile() {
-        String path = "src/main/nbm/manifest.mf"; 
+        String path = "src/main/nbm/manifest.mf";  //NOI18N
 
         try {
             Xpp3Dom dom = getModuleDom();
             if (dom != null) {
-                Xpp3Dom cnb = dom.getChild("manifest");
+                Xpp3Dom cnb = dom.getChild("manifest"); //NOI18N
                 if (cnb != null) {
                     path = cnb.getValue();
                 }
@@ -165,22 +165,22 @@ public class MavenNbModuleImpl implements NbModuleProvider {
 
     public String getResourceDirectoryPath(boolean isTest) {
         if (isTest) {
-            return "src/test/resources";
+            return "src/test/resources"; //NOI18N
         }
-        return "src/main/resources";
+        return "src/main/resources"; //NOI18N
     }
 
     public boolean addDependency(String codeNameBase, String releaseVersion,
                                  SpecificationVersion version,
                                  boolean useInCompiler) throws IOException {
-        String artifactId = codeNameBase.replaceAll("\\.", "-");
+        String artifactId = codeNameBase.replaceAll("\\.", "-"); //NOI18N
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
             Iterator it = set.iterator();
             while (it.hasNext()) {
                 Artifact art = (Artifact)it.next();
-                if (art.getGroupId().startsWith("org.netbeans") && art.getArtifactId().equals(artifactId)) {
+                if (art.getGroupId().startsWith("org.netbeans") && art.getArtifactId().equals(artifactId)) { //NOI18N
                     //TODO
                     //not sure we ought to check for spec or release version.
                     // just ignore for now, not any easy way to upgrade anyway I guess.
@@ -212,7 +212,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         if (dep == null) {
             //TODO try to guess 
             dep = new Dependency();
-            dep.setGroupId("org.netbeans.api");
+            dep.setGroupId("org.netbeans.api"); //NOI18N
             dep.setArtifactId(artifactId);
             if (version != null) {
                 dep.setVersion(version.toString());
@@ -223,7 +223,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                     Iterator it = deps.iterator();
                     while (it.hasNext()) {
                         Dependency d = (Dependency)it.next();
-                        if ("org.netbeans.api".equals(d.getGroupId())) {
+                        if ("org.netbeans.api".equals(d.getGroupId())) { //NOI18N
                             dep.setVersion(d.getVersion());
                         }
                     }
@@ -231,7 +231,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             }
         }
         
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml");
+        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
         Model model = WriterUtils.loadModel(fo); //NOI18N
         if (model != null) {
             Dependency mdlDep = PluginPropertyUtils.checkModelDependency(model, dep.getGroupId(), dep.getArtifactId(), true);
@@ -255,7 +255,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
 
 
     public String getProjectFilePath() {
-        return "pom.xml";
+        return "pom.xml"; //NOI18N
     }
 
     /**
@@ -264,14 +264,14 @@ public class MavenNbModuleImpl implements NbModuleProvider {
      * netbeans platform.
      */ 
     public SpecificationVersion getDependencyVersion(String codenamebase) throws IOException {
-        String artifactId = codenamebase.replaceAll("\\.", "-");
+        String artifactId = codenamebase.replaceAll("\\.", "-"); //NOI18N
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
             Iterator it = set.iterator();
             while (it.hasNext()) {
                 Artifact art = (Artifact)it.next();
-                if (art.getGroupId().startsWith("org.netbeans") && art.getArtifactId().equals(artifactId)) {
+                if (art.getGroupId().startsWith("org.netbeans") && art.getArtifactId().equals(artifactId)) { //NOI18N
                     ExamineManifest exa = new ExamineManifest();
                     exa.setJarFile(art.getFile());
                     if (exa.getSpecVersion() != null) {
@@ -291,7 +291,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         //TODO search local repository?? that's probably irrelevant here..
         
         //we're completely clueless.
-        return new SpecificationVersion("1.0");
+        return new SpecificationVersion("1.0"); //NOI18N
     }
     
     private File lookForModuleInPlatform(String artifactId) {
@@ -300,7 +300,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             DirectoryScanner walk = new DirectoryScanner();
             walk.setBasedir(actPlatform);
             walk.setIncludes(new String[] {
-                "**/" + artifactId + ".jar"
+                "**/" + artifactId + ".jar" //NOI18N
             });
             walk.scan();
             String[] candidates = walk.getIncludedFiles();
