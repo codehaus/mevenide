@@ -48,6 +48,7 @@ public class MavenAssemblyGrammar extends AbstractSchemaBasedGrammar {
         return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/assembly-1.0.0.xsd"); //NOI18N
     }
     
+    @Override
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element element) {
         if ("/assembly/dependencySets/dependencySet/includes/include".equals(path) || //NOI18N
             "/assembly/dependencySets/dependencySet/excludes/exclude".equals(path)) { //NOI18N

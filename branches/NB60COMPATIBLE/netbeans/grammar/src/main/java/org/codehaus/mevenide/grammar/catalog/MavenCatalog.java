@@ -18,6 +18,9 @@
 
 package org.codehaus.mevenide.grammar.catalog;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import org.netbeans.modules.xml.catalog.spi.*;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
@@ -49,13 +52,13 @@ public class MavenCatalog implements CatalogReader, CatalogDescriptor, org.xml.s
      * Get String iterator representing all public IDs registered in catalog.
      * @return null if cannot proceed, try later.
      */
-    public java.util.Iterator getPublicIDs() {
-        java.util.List list = new java.util.ArrayList();
+    public Iterator getPublicIDs() {
+        List<String> list = new ArrayList<String>();
         list.add(ID_POM_4_0_0);
         list.add(ID_SETTINGS_1_0_0);
         list.add(ID_PROFILES_1_0_0);
         list.add(ID_ASSEMBLY_1_0_0);
-        return list.listIterator();
+        return list.iterator();
     }
     
     /**

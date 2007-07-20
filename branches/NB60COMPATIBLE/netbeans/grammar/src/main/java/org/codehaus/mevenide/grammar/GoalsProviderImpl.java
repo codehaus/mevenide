@@ -97,7 +97,7 @@ public class GoalsProviderImpl implements GoalsProvider {
                         }
                     });
                     String prefix = doc.getRootElement().getChildTextTrim("goalPrefix"); //NOI18N
-                    assert prefix != null : "No prefix for " + file.getAbsolutePath();
+                    assert prefix != null : "No prefix for " + file.getAbsolutePath(); //NOI18N
                     while (it.hasNext()) {
                         Element goal = (Element)it.next();
                         list.add(prefix + ":" + goal.getText());

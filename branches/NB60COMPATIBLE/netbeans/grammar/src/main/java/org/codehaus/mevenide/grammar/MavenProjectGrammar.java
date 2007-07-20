@@ -254,7 +254,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                         verStrings.add(versions[i].getName());
                     }
                 }
-                if (path.endsWith("plugins/plugin/version")) {
+                if (path.endsWith("plugins/plugin/version")) { //NOI18N
                     verStrings.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginVersions(hold.getGroupId(), hold.getArtifactId())));
                 }
                 Collection elems = new ArrayList();
@@ -396,7 +396,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
             assert expandedPath != null : "Shall have path expanded.."; //NOI18N
             File folder = new File(expandedPath, info.getGroupId().replace('.', File.separatorChar));
-            File file = new File(folder, info.getArtifactId() + "-" + info.getVersion() + ".xml");
+            File file = new File(folder, info.getArtifactId() + "-" + info.getVersion() + ".xml"); //NOI18N
             if (file.exists()) {
                 InputStream str = null;
                 try {
@@ -410,7 +410,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 }
             }
             
-            Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar");
+            Artifact art = embedder.createArtifact(info.getGroupId(), info.getArtifactId(), info.getVersion(), null, "jar"); //NOI18N
             String repopath = embedder.getLocalRepository().pathOf(art);
             
             File fil = new File(embedder.getLocalRepository().getBasedir(), repopath);
@@ -465,7 +465,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
             assert expandedPath != null : "Shall have path expanded.."; //NOI18N
             cached = new HashSet<String>();
-            checkFolder(expandedPath, "", cached);
+            checkFolder(expandedPath, "", cached); //NOI18N
             pluginGroupIdRef = new WeakReference<Set<String>>(cached);
         }
         return cached;
@@ -477,7 +477,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
             if (file.isDirectory()) {
-                String group = groupId + (groupId.length() == 0 ? "" : ".") + file.getName();
+                String group = groupId + (groupId.length() == 0 ? "" : ".") + file.getName(); //NOI18N
                 checkFolder(file, group, list);
             }
             if (file.isFile()) {
@@ -509,7 +509,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             return Collections.emptySet();
         }
         Set<String> toRet = new HashSet<String>();
-        Pattern patt = Pattern.compile("([a-zA-Z\\-]*)\\-[0-9]+(.*)");
+        Pattern patt = Pattern.compile("([a-zA-Z\\-]*)\\-[0-9]+(.*)"); //NOI18N
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile()) {
                 Matcher match = patt.matcher(files[i].getName());
@@ -534,8 +534,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         for (int i = 0; i < files.length; i++) {
             if (files[i].isFile() && files[i].getName().startsWith(artifactId)) {
                 String vers = files[i].getName().substring(artifactId.length() + 1);
-                if (vers.endsWith(".xml")) {
-                    vers = vers.substring(0, vers.length() - ".xml".length());
+                if (vers.endsWith(".xml")) { //NOI18N
+                    vers = vers.substring(0, vers.length() - ".xml".length()); //NOI18N
                 }
                 toRet.add(vers);
             }

@@ -57,7 +57,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 return false;
             }
             TokenItem previous = token.getPrevious();
-            if (previous != null && previous.getImage().equals(">")) {
+            if (previous != null && previous.getImage().equals(">")) { //NOI18N
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
                 if (getPath(fo, token.getImage()) != null) {
@@ -92,7 +92,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 return null;
             }
             TokenItem previous = token.getPrevious();
-            if (previous != null && previous.getImage().equals(">")) {
+            if (previous != null && previous.getImage().equals(">")) {//NOI18N
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
                 if (getPath(fo, token.getImage()) != null) {
@@ -124,7 +124,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 return;
             }
             TokenItem previous = token.getPrevious();
-            if (previous != null && previous.getImage().equals(">")) {
+            if (previous != null && previous.getImage().equals(">")) { //NOI18N
                 //we are in element text
                 FileObject fo = getProjectDir(doc);
                 String path = token.getImage();
@@ -136,7 +136,7 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                     DataObject dobj;
                     try {
                         dobj = DataObject.find(file);
-                        EditCookie edit = (EditCookie)dobj.getCookie(EditCookie.class);
+                        EditCookie edit = dobj.getCookie(EditCookie.class);
                         if (edit != null) {
                             edit.edit();
                         }
@@ -146,8 +146,8 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
                 } 
             }
             if (token.getImage() != null && 
-                    (token.getImage().startsWith("http://") ||
-                    (token.getImage().startsWith("https://")))) {
+                    (token.getImage().startsWith("http://") || //NOI18N
+                    (token.getImage().startsWith("https://")))) { //NOI18N
                 try {
                     URL url = new URL(token.getImage());
                     HtmlBrowser.URLDisplayer.getDefault().showURL(url);
