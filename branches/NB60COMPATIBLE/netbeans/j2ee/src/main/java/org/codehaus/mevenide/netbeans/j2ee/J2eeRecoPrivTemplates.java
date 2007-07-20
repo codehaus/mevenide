@@ -42,8 +42,8 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
     };
     
     private static final String[] EAR_PRIVILEGED_NAMES = new String[] {
-                "Templates/XML/XMLWizard",
-                "Templates/Other/Folder"
+                "Templates/XML/XMLWizard", //NOI18N
+                "Templates/Other/Folder" //NOI18N
     };
     
     private static final String[] EJB_TYPES = new String[] {

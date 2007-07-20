@@ -19,13 +19,13 @@ package org.codehaus.mevenide.netbeans.j2ee;
 
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.j2ee.J2eeLookupProvider;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -86,8 +86,8 @@ public class POHImpl extends ProjectOpenedHook {
         } else if (server != null) {
             ProblemReporter report = project.getLookup().lookup(ProblemReporter.class);
             ProblemReport rep = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
-                    "Cannot find app server \'" + Deployment.getDefault().getServerDisplayName(server) +"\'", 
-                    "The app server defined for the project is not available in your IDE. Please go to Tools/Server manager and add it.", 
+                    NbBundle.getMessage(POHImpl.class, "MSG_AppServer", Deployment.getDefault().getServerDisplayName(server)),
+                    NbBundle.getMessage(POHImpl.class, "HINT_AppServer"),
                     null);
             report.addReport(rep);
         }

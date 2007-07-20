@@ -17,7 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
-import java.io.File;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;

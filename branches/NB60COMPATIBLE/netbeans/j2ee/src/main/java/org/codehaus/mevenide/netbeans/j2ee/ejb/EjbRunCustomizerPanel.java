@@ -252,7 +252,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         @Override
         public String toString() {
             if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
-                return "<No Server Selected>";
+                return org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "MSG_No_Server");
             }
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }

@@ -32,7 +32,6 @@ import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.ProjectUtils;
-import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
 import org.netbeans.modules.j2ee.dd.api.web.WebAppMetadata;
@@ -245,7 +244,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         try {
             FileObject deploymentDescriptor = getDeploymentDescriptor ();
             if(deploymentDescriptor != null) {
-                WebApp webApp = DDProvider.getDefault().getDDRoot(deploymentDescriptor);
+                return DDProvider.getDefault().getDDRoot(deploymentDescriptor);
             }
         } catch (java.io.IOException e) {
             org.openide.ErrorManager.getDefault ().log (e.getLocalizedMessage ());

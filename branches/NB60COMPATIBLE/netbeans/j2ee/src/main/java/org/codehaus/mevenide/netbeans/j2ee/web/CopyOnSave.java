@@ -53,7 +53,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileRenameEvent;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -78,10 +77,6 @@ import org.openide.util.Lookup;
         
         private J2eeModule getJ2eeModule() {
             return provider.getJ2eeModule();
-        }
-        
-        private Lookup getLookup() {
-            return project.getLookup();
         }
         
         private boolean isInPlace() throws IOException {
@@ -131,6 +126,7 @@ import org.openide.util.Lookup;
         /** Fired when a file is changed.
         * @param fe the event describing context where action has taken place
         */
+        @Override
         public void fileChanged (FileEvent fe) {
             try {
                 if (!isInPlace()) {
@@ -142,6 +138,7 @@ import org.openide.util.Lookup;
             }
         }
 
+        @Override
         public void fileDataCreated (FileEvent fe) {
             try {
                 if (!isInPlace()) {
@@ -153,6 +150,7 @@ import org.openide.util.Lookup;
             }
         }
         
+        @Override
         public void fileRenamed(FileRenameEvent fe) {
             try {
                 if (isInPlace()) {
@@ -183,16 +181,17 @@ import org.openide.util.Lookup;
             }
         }
         
+        @Override
         public void fileDeleted(FileEvent fe) {
             try {
                 if (isInPlace()) {
                     return ;
                 }
                 FileObject fo = fe.getFile();
-                FileObject docBase = getWebModule().getDocumentBase();
-                if (docBase != null && FileUtil.isParentOf(docBase, fo)) {
+                FileObject ducumentBase = getWebModule().getDocumentBase();
+                if (ducumentBase != null && FileUtil.isParentOf(ducumentBase, fo)) {
                     // inside docbase
-                    String path = FileUtil.getRelativePath(docBase, fo);
+                    String path = FileUtil.getRelativePath(ducumentBase, fo);
                     if (!isSynchronizationAppropriate(path)) 
                         return;
                     handleDeleteFileInDestDir(path);
@@ -232,16 +231,16 @@ import org.openide.util.Lookup;
          */
         private void handleCopyFileToDestDir(FileObject fo) throws IOException {
             if (!fo.isVirtual()) {
-                FileObject docBase = getWebModule().getDocumentBase();
-                if (docBase != null && FileUtil.isParentOf(docBase, fo)) {
+                FileObject documentBase = getWebModule().getDocumentBase();
+                if (documentBase != null && FileUtil.isParentOf(documentBase, fo)) {
                     // inside docbase
-                    String path = FileUtil.getRelativePath(docBase, fo);
+                    String path = FileUtil.getRelativePath(documentBase, fo);
                     if (!isSynchronizationAppropriate(path)) 
                         return;
                     FileObject webBuildBase = getJ2eeModule().getContentDirectory();
                     if (webBuildBase != null) {
                         // project was built
-                        if (FileUtil.isParentOf(docBase, webBuildBase) || FileUtil.isParentOf(webBuildBase, docBase)) {
+                        if (FileUtil.isParentOf(documentBase, webBuildBase) || FileUtil.isParentOf(webBuildBase, documentBase)) {
                             //cannot copy into self
                             return;
                         }

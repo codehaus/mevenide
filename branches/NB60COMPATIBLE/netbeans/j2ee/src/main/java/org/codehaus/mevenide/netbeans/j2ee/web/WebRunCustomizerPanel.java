@@ -131,7 +131,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         if (oldUrl != null) {
             txtRelativeUrl.setText(oldUrl);
         } else {
-            oldUrl = "";
+            oldUrl = ""; //NOI18N
         }
         
     }
@@ -345,7 +345,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         @Override
         public String toString() {
             if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
-                return "<No Server Selected>";
+                return org.openide.util.NbBundle.getMessage(WebRunCustomizerPanel.class, "MSG_No_Server");
             }
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }

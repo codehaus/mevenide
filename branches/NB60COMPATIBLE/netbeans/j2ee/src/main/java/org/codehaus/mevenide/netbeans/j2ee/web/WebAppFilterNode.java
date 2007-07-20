@@ -52,6 +52,7 @@ class WebAppFilterNode extends FilterNode {
         }
     }
     
+    @Override
     public String getDisplayName() {
         if (isTopLevelNode) {
             String s = NbBundle.getMessage(WebAppFilterNode.class, "LBL_Web_Pages");
@@ -68,6 +69,7 @@ class WebAppFilterNode extends FilterNode {
         
     }
 
+    @Override
     public String getHtmlDisplayName() {
         if (!isTopLevelNode) {
             return getOriginal().getHtmlDisplayName();
@@ -93,6 +95,7 @@ class WebAppFilterNode extends FilterNode {
     }    
     
     
+    @Override
     public javax.swing.Action[] getActions(boolean param) {
 //        if (isTopLevelNode) {
 //            Action[] toReturn = new Action[1];
@@ -103,6 +106,7 @@ class WebAppFilterNode extends FilterNode {
 //        }
     }    
 
+    @Override
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
@@ -113,6 +117,7 @@ class WebAppFilterNode extends FilterNode {
         return retValue;
     }
 
+    @Override
     public java.awt.Image getOpenedIcon(int param) {
         java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
@@ -133,7 +138,7 @@ class WebAppFilterNode extends FilterNode {
         }
         
         protected Node[] createNodes(Node obj) {
-            DataObject dobj = (DataObject)obj.getLookup().lookup(DataObject.class);
+            DataObject dobj = obj.getLookup().lookup(DataObject.class);
         
             if (dobj != null) {
                 if (!VisibilityQuery.getDefault().isVisible(dobj.getPrimaryFile())) {
