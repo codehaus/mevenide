@@ -56,7 +56,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
      */
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
         URL binRoot = url;
-        if ("jar".equals(url.getProtocol())) {
+        if ("jar".equals(url.getProtocol())) { //NOI18N
             binRoot = FileUtil.getArchiveFile(url);
         } else {
             // null for directories.
@@ -77,7 +77,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
 //                        File pom = new File(parent, artifact + "-" + version + ".pom");
 //                        // maybe this condition is already overkill..
 //                        if (pom.exists()) {
-                            File javadoc = new File(parent, artifact + "-" + version + "-javadoc.jar");
+                            File javadoc = new File(parent, artifact + "-" + version + "-javadoc.jar"); //NOI18N
                             return new DocResult(javadoc);
 //                        }
                     }
@@ -90,11 +90,11 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
     
     private class DocResult implements JavadocForBinaryQuery.Result  {
         private File file;
-        private List listeners;
+        private List<ChangeListener> listeners;
 
         public DocResult(File javadoc) {
             file = javadoc;
-            listeners = new ArrayList();
+            listeners = new ArrayList<ChangeListener>();
         }
         public void addChangeListener(ChangeListener changeListener) {
             synchronized (listeners) {
@@ -116,7 +116,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     // however there are non-maven built javadocs that have the docs in the root.
                     // don't examine here, just return 2 places..
                     url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
-                    url[1] = new URL(url[0] + "apidocs/");
+                    url[1] = new URL(url[0] + "apidocs/"); //NOI18N
                     
                     //TODO there are also some other possible layout in the remote repository
                     // eg. jung/jung jas javadoc i "doc" subfolder, not sure we can cater for everything..

@@ -24,23 +24,24 @@ import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class GlobalOutputProcessor implements OutputProcessor {
+    private static final String SECTION_PROJECT = "project-execute"; //NOI18N
     
     /** Creates a new instance of GlobalOutputProcessor */
     public GlobalOutputProcessor() {
     }
 
     public String[] getRegisteredOutputSequences() {
-        return new String[] {"project-execute"};
+        return new String[] {SECTION_PROJECT};
     }
 
     public void processLine(String line, OutputVisitor visitor) {
     }
 
     public void sequenceStart(String sequenceId, OutputVisitor visitor) {
-        if (sequenceId.startsWith("project-execute")) {
+        if (sequenceId.startsWith(SECTION_PROJECT)) {
             visitor.setLine(sequenceId);
         } else {
-            visitor.setLine("[" + sequenceId.substring("mojo-execute#".length()) + "]");
+            visitor.setLine("[" + sequenceId.substring("mojo-execute#".length()) + "]"); //NOI18N
         }
     }
 

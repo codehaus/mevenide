@@ -84,7 +84,7 @@ public class OtherRootNodeFactory implements NodeFactory {
         }
         
         public Node node(String key) {
-            if (key == KEY_OTHER) {
+            if (KEY_OTHER.equals(key)) {
                 File[] fls = project.getOtherRoots(false);
                 // the content of OtherRoots can change from keys() to node(String)
                 if (fls.length > 0) {
@@ -92,7 +92,7 @@ public class OtherRootNodeFactory implements NodeFactory {
                     return new OthersRootNode(project, false, fo);
                 }
                 return null;
-            } else if (key == KEY_OTHER_TEST) {
+            } else if (KEY_OTHER_TEST.equals(key)) {
                 File[] fls = project.getOtherRoots(false);
                 // the content of OtherRoots can change from keys() to node(String)
                 if (fls.length > 0) {
@@ -101,10 +101,11 @@ public class OtherRootNodeFactory implements NodeFactory {
                 }
                 return null;
             }
-            assert false: "Wrong key for Dependencies NodeFactory: " + key;
+            assert false: "Wrong key for Dependencies NodeFactory: " + key; //NOI18N
             return null;
         }
         
+        @Override
         public void addNotify() {
             ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
             watch.addPropertyChangeListener(project, this);
@@ -114,6 +115,7 @@ public class OtherRootNodeFactory implements NodeFactory {
             checkFileObject(TEST);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
             watch.removePropertyChangeListener(project, this);

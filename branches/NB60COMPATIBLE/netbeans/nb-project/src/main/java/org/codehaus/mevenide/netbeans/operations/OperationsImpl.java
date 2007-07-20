@@ -128,7 +128,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
         if (possibleParent != null) {
             NbMavenProject par = possibleParent.getLookup().lookup(NbMavenProject.class);
             if (par != null) {
-                FileObject pomFO = par.getProjectDirectory().getFileObject("pom.xml");
+                FileObject pomFO = par.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
                 Model mdl = WriterUtils.loadModel(pomFO);
                 MavenProject prj = par.getOriginalMavenProject();
                 if ((prj.getModules() != null && prj.getModules().contains(prjLoc)) == delete) {

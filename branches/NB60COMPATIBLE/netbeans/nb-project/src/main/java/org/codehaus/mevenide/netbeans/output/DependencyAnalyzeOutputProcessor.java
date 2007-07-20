@@ -17,8 +17,6 @@
 
 package org.codehaus.mevenide.netbeans.output;
 
-import java.io.File;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -27,10 +25,6 @@ import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
-import org.openide.awt.HtmlBrowser;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.URLMapper;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 
@@ -41,7 +35,7 @@ import org.openide.windows.OutputListener;
 public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
     
     private static final String[] DEPGOALS = new String[] {
-        "mojo-execute#dependency:analyze"
+        "mojo-execute#dependency:analyze" //NOI18N
     };
     private Pattern start;
     private boolean started;
@@ -51,8 +45,8 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
     /** Creates a new instance of JavadocOutputProcessor */
     DependencyAnalyzeOutputProcessor(NbMavenProject project) {
         started = false;
-        start = Pattern.compile(".*Used undeclared dependencies.*", Pattern.DOTALL);
-        dependency = Pattern.compile("\\s*(.*):(.*):(.*):(.*):(.*)", Pattern.DOTALL);
+        start = Pattern.compile(".*Used undeclared dependencies.*", Pattern.DOTALL); //NOI18N
+        dependency = Pattern.compile("\\s*(.*):(.*):(.*):(.*):(.*)", Pattern.DOTALL); //NOI18N
         this.project = project;
     }
 
@@ -69,7 +63,7 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
                 String type = match.group(3);
                 String ver = match.group(4);
                 String sc = match.group(5);
-                visitor.setLine(line + " (Click to add to pom.xml)");
+                visitor.setLine(line + " (Click to add to pom.xml)"); //NOI18N - part of maven output
                 visitor.setOutputListener(new Listener(project, gr, ar, type, ver, sc), false);
             } else {
                 started = false;
@@ -114,7 +108,7 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
         
         public void outputLineAction(OutputEvent arg0) {
             DependenciesNode.addDependency(project, group, artifact, version, type, scope, null);
-            NotifyDescriptor nd = new NotifyDescriptor.Message("Dependency " + group + ":" + artifact + " added to project's POM.");
+            NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(DependencyAnalyzeOutputProcessor.class, "MSG_Dependency", group + ":" + artifact));
             DialogDisplayer.getDefault().notify(nd);
         }
         

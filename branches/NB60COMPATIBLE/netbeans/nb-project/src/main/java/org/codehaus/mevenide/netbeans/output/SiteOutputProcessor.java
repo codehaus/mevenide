@@ -36,7 +36,7 @@ import org.openide.windows.OutputListener;
 public class SiteOutputProcessor implements OutputProcessor {
     
     private static final String[] SITEGOALS = new String[] {
-        "mojo-execute#site:site"
+        "mojo-execute#site:site" //NOI18N
     };
     private Project project;
     
@@ -56,7 +56,7 @@ public class SiteOutputProcessor implements OutputProcessor {
     }
     
     public void sequenceEnd(String sequenceId, OutputVisitor visitor) {
-        visitor.setLine("     View Generated Project Site");
+        visitor.setLine("     View Generated Project Site"); //NOI18N shows up in maven output.
         visitor.setOutputListener(new Listener(project), false);
     }
     
@@ -67,7 +67,7 @@ public class SiteOutputProcessor implements OutputProcessor {
         private File root;
         private Listener(Project prj) {
             File fl = FileUtil.toFile(prj.getProjectDirectory());
-            root = new File(fl, "target" + File.separator + "site");
+            root = new File(fl, "target" + File.separator + "site"); //NOI18N
         }
         public void outputLineSelected(OutputEvent arg0) {
             

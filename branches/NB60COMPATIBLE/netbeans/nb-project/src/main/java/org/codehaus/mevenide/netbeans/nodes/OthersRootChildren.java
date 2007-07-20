@@ -54,12 +54,14 @@ class OthersRootChildren extends Children.Keys {
         };
     }
     
+    @Override
     protected void addNotify() {
         super.addNotify();
         ProjectURLWatcher.addPropertyChangeListener(project, changeListener);
         regenerateKeys();
     }
     
+    @Override
     protected void removeNotify() {
         setKeys(Collections.EMPTY_SET);
         ProjectURLWatcher.removePropertyChangeListener(project, changeListener);
@@ -68,8 +70,8 @@ class OthersRootChildren extends Children.Keys {
     }
     
     private void regenerateKeys() {
-        List list = new ArrayList();
-        Sources srcs = (Sources)project.getLookup().lookup(Sources.class);
+        List<SourceGroup> list = new ArrayList<SourceGroup>();
+        Sources srcs = project.getLookup().lookup(Sources.class);
         if (srcs == null) {
             throw new IllegalStateException("need Sources instance in lookup"); //NOI18N
         }

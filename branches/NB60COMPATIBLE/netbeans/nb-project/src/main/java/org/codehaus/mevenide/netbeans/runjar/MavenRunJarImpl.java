@@ -45,7 +45,7 @@ import org.openide.windows.OutputWriter;
 
 public class MavenRunJarImpl implements MavenRunJar {
     
-    private static final RequestProcessor PROCESSOR = new RequestProcessor("NetBeans-Run-Plugin IO redirection", 5);
+    private static final RequestProcessor PROCESSOR = new RequestProcessor("NetBeans-Run-Plugin IO redirection", 5); //NOI18N
     
     public MavenRunJarImpl() {
     }
@@ -55,24 +55,24 @@ public class MavenRunJarImpl implements MavenRunJar {
             String jvmParameters, String debugJvmParameters, boolean waitForFinish) throws MojoFailureException, MojoExecutionException 
     {
         if (!jarLocation.exists()) {
-            File alternate = new File(jarLocation.getAbsolutePath() + ".dir");
+            File alternate = new File(jarLocation.getAbsolutePath() + ".dir");//NOI18N
             if (alternate.exists()) {
                 //MEVENIDE-523
                 jarLocation = alternate;
             }
         }
         if (!workDirectory.exists()) {
-            File alternate = new File(workDirectory.getAbsolutePath() + ".dir");
+            File alternate = new File(workDirectory.getAbsolutePath() + ".dir");//NOI18N
             if (alternate.exists()) {
                 //MEVENIDE-523
                 workDirectory = alternate;
             }
         }
-        File jarArtifact = new File(jarLocation, finalName + ".jar");
+        File jarArtifact = new File(jarLocation, finalName + ".jar");//NOI18N
         if (jarArtifact == null || !jarArtifact.exists()) {
-            throw new MojoExecutionException("Badly configured, need existing jar at " + jarArtifact);
+            throw new MojoExecutionException("Badly configured, need existing jar at " + jarArtifact);//NOI18N
         }
-        InputOutput io = IOProvider.getDefault().getIO("Run " + jarArtifact.getName(), true);
+        InputOutput io = IOProvider.getDefault().getIO(org.openide.util.NbBundle.getMessage(MavenRunJarImpl.class, "TAB_Run", jarArtifact.getName()), true);
         io.select();
         Wrapper wrapper = new Wrapper(io, jarArtifact, executable, parameters, jvmParameters, debugJvmParameters, 
                                       workDirectory, jarLocation, finalName, project, log);
@@ -81,7 +81,7 @@ public class MavenRunJarImpl implements MavenRunJar {
 //        System.out.println("executor engine=" + ExecutionEngine.getDefault().getClass());
         ExecutorTask task = null;
         try {
-            task =  ExecutionEngine.getDefault().execute("Run " + jarArtifact.getName(), wrapper, io);
+            task =  ExecutionEngine.getDefault().execute(org.openide.util.NbBundle.getMessage(MavenRunJarImpl.class, "TIT_Run", jarArtifact.getName()), wrapper, io);
             try {
                 synchronized (wrapper.semaphor) {
                     wrapper.semaphor.wait();
@@ -132,21 +132,21 @@ public class MavenRunJarImpl implements MavenRunJar {
         public void run() {
             StringBuffer cmd = new StringBuffer();
             cmd.append(executable);
-            cmd.append(" ");
+            cmd.append(" ");//NOI18N
             if (jvmParameters != null) {
                 cmd.append(jvmParameters);
-                cmd.append(" ");
+                cmd.append(" ");//NOI18N
             }
             if (debugJvmParameters != null) {
                 cmd.append(debugJvmParameters);
-                cmd.append(" ");
+                cmd.append(" ");//NOI18N
             }
-            cmd.append("-jar ");
+            cmd.append("-jar ");//NOI18N
             cmd.append(jarArtifact.getName());
-            cmd.append(" ");
+            cmd.append(" ");//NOI18N
             if (parameters != null) {
                 cmd.append(parameters);
-                cmd.append(" ");
+                cmd.append(" ");//NOI18N
             }
             String[] cmds;
             Output out = null;
@@ -154,7 +154,7 @@ public class MavenRunJarImpl implements MavenRunJar {
             Process proc = null;
             try {
                 cmds = Commandline.translateCommandline(cmd.toString());
-                log.info("Executing \"" + cmd + "\" in directory " + workDirectory);
+                log.info("Executing \"" + cmd + "\" in directory " + workDirectory); //NOI18N
                 // IF we get the jdk 1.5 support only, make sure this uses ProcessBuilder
                 proc = Runtime.getRuntime().exec(cmds, null, workDirectory);
                 synchronized (semaphor) {

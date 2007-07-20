@@ -53,11 +53,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     public RunGoalsPanel() {
         initComponents();
         historyMappings = new ArrayList<NetbeansActionMapping>();
-        btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png")));
-        btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png")));
+        btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png"))); //NOI18N
+        btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png"))); //NOI18N
         
         //maybe do lazy..
-        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " ");
+        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " "); //NOI18N
         GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
         if (provider != null) {
             Set<String> strs = provider.getAvailableGoals();
@@ -72,18 +72,19 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
     }
 
+    @Override
     public void addNotify() {
         super.addNotify();
         txtGoals.requestFocus();
     }
     
     private String createSpaceSeparatedList(List list) {
-        String str = "";
+        String str = ""; //NOI18N
         if (list != null) {
             Iterator it = list.iterator();
             while (it.hasNext()) {
                 String elem = (String) it.next();
-                str = str + elem + " ";
+                str = str + elem + " "; //NOI18N
             }
         }
         return str;
@@ -108,14 +109,14 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             Iterator it = config.getProperties().keySet().iterator();
             while (it.hasNext()) {
                 String key = (String)it.next();
-                buf.append(key).append("=").append(config.getProperties().getProperty(key)).append("\n");
+                buf.append(key).append("=").append(config.getProperties().getProperty(key)).append("\n"); //NOI18N
             }
             taProperties.setText(buf.toString());
-            if (buf.toString().matches(".*maven\\.test\\.skip\\s*=\\s*true\\s*.*")) {
+            if (buf.toString().matches(".*maven\\.test\\.skip\\s*=\\s*true\\s*.*")) { //NOI18N
                 cbSkipTests.setSelected(true);
             }
         } else {
-            taProperties.setText("");
+            taProperties.setText(""); //NOI18N
         }
         txtProfiles.setText(createSpaceSeparatedList(config.getActivatedProfiles()));
         setUpdateSnapshots(config.isUpdateSnapshots());
@@ -131,21 +132,21 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             Iterator it = mapp.getProperties().keySet().iterator();
             while (it.hasNext()) {
                 String key = (String)it.next();
-                buf.append(key).append("=").append(mapp.getProperties().getProperty(key)).append("\n");
+                buf.append(key).append("=").append(mapp.getProperties().getProperty(key)).append("\n"); //NOI18N
             }
             taProperties.setText(buf.toString());
-            if (buf.toString().matches(".*maven\\.test\\.skip\\s*=\\s*true\\s*.*")) {
+            if (buf.toString().matches(".*maven\\.test\\.skip\\s*=\\s*true\\s*.*")) { //NOI18N
                 cbSkipTests.setSelected(true);
             }
         } else {
-            taProperties.setText("");
+            taProperties.setText(""); //NOI18N
         }
         txtProfiles.setText(createSpaceSeparatedList(mapp.getActivatedProfiles()));
     }
     
     public void applyValues(NetbeansActionMapping mapp) {
         StringTokenizer tok = new StringTokenizer(txtGoals.getText().trim());
-        List lst = new ArrayList();
+        List<String> lst = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             lst.add(tok.nextToken());
         }
@@ -167,7 +168,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         mapp.setProperties(props);
         
         tok = new StringTokenizer(txtProfiles.getText().trim());
-        lst = new ArrayList();
+        lst = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             lst.add(tok.nextToken());
         }
@@ -177,13 +178,13 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     
     public void applyValues(BeanRunConfig rc) {
         StringTokenizer tok = new StringTokenizer(txtGoals.getText().trim());
-        List lst = new ArrayList();
+        List<String> lst = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             lst.add(tok.nextToken());
         }
-        rc.setGoals(lst.size() > 0 ? lst : Collections.singletonList("install"));
+        rc.setGoals(lst.size() > 0 ? lst : Collections.singletonList("install")); //NOI18N
         tok = new StringTokenizer(txtProfiles.getText().trim());
-        lst = new ArrayList();
+        lst = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             lst.add(tok.nextToken());
         }
@@ -235,33 +236,33 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         txtRemember = new javax.swing.JTextField();
         jSeparator1 = new javax.swing.JSeparator();
 
-        org.openide.awt.Mnemonics.setLocalizedText(lblGoals, "&Goals:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblGoals, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Goals")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(lblProfiles, "&Profiles:");
+        org.openide.awt.Mnemonics.setLocalizedText(lblProfiles, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Profiles")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, "P&roperties:");
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Properties")); // NOI18N
 
         taProperties.setColumns(20);
         taProperties.setRows(5);
         jScrollPane1.setViewportView(taProperties);
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbRecursive, "Re&cursive (with Modules)");
+        org.openide.awt.Mnemonics.setLocalizedText(cbRecursive, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Recursive")); // NOI18N
         cbRecursive.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbRecursive.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbOffline, "&Build Offline");
+        org.openide.awt.Mnemonics.setLocalizedText(cbOffline, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Offline")); // NOI18N
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbOffline.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbDebug, "Show &Debug Output");
+        org.openide.awt.Mnemonics.setLocalizedText(cbDebug, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Debug")); // NOI18N
         cbDebug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbDebug.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbUpdateSnapshots, "&Update Snapshots");
+        org.openide.awt.Mnemonics.setLocalizedText(cbUpdateSnapshots, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Update_Snapshots")); // NOI18N
         cbUpdateSnapshots.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbUpdateSnapshots.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, "&Skip Tests");
+        org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Skip_Tests")); // NOI18N
         cbSkipTests.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbSkipTests.addActionListener(new java.awt.event.ActionListener() {
@@ -270,7 +271,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
         });
 
-        btnNext.setToolTipText("Get next entry");
+        btnNext.setToolTipText(org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "TIP_Next")); // NOI18N
         btnNext.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnNext.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -278,7 +279,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
         });
 
-        btnPrev.setToolTipText("Get previous entry");
+        btnPrev.setToolTipText(org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "TIP_Prev")); // NOI18N
         btnPrev.setMargin(new java.awt.Insets(2, 2, 2, 2));
         btnPrev.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -286,7 +287,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
         });
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbRemember, "Remember &as:");
+        org.openide.awt.Mnemonics.setLocalizedText(cbRemember, org.openide.util.NbBundle.getMessage(RunGoalsPanel.class, "LBL_Remember")); // NOI18N
         cbRemember.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbRemember.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -367,9 +368,9 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     private void cbSkipTestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSkipTestsActionPerformed
         String current = taProperties.getText();
         if (current.contains(ActionMappings.PROP_SKIP_TEST)) {
-            taProperties.setText(current.replaceAll(".*maven\\.test\\.skip\\s*=\\s*[a-z]*\\s*.*", "maven.test.skip=" + (cbSkipTests.isSelected() ? "true" : "false")));
+            taProperties.setText(current.replaceAll(".*maven\\.test\\.skip\\s*=\\s*[a-z]*\\s*.*", "maven.test.skip=" + (cbSkipTests.isSelected() ? "true" : "false"))); //NOI18N
         } else if (cbSkipTests.isSelected()) {
-            taProperties.setText(taProperties.getText() + "\nmaven.test.skip=true");
+            taProperties.setText(taProperties.getText() + "\nmaven.test.skip=true"); //NOI18N
         }
         
     }//GEN-LAST:event_cbSkipTestsActionPerformed

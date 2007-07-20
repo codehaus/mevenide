@@ -128,7 +128,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * 1 - test source
      */
     private int checkURL(URL url) {
-        if ("file".equals(url.getProtocol())) {
+        if ("file".equals(url.getProtocol())) { //NOI18N
             // true for directories.
             try {
                 MavenProject proj = project.getOriginalMavenProject();
@@ -137,8 +137,8 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                     if (build != null && build.getOutputDirectory() != null) {
                         File src = FileUtil.normalizeFile(new File(build.getOutputDirectory()));
                         URL srcUrl = src.toURI().toURL();
-                        if  (!srcUrl.toExternalForm().endsWith("/")) {
-                            srcUrl = new URL(srcUrl.toExternalForm() + "/");
+                        if  (!srcUrl.toExternalForm().endsWith("/")) { //NOI18N
+                            srcUrl = new URL(srcUrl.toExternalForm() + "/"); //NOI18N
                         }
                         
                         if (url.equals(srcUrl)) {
@@ -147,8 +147,8 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                         File test = FileUtil.normalizeFile(new File(build.getTestOutputDirectory()));
                         // can be null in some obscrure cases.
                         URL testsrcUrl = test.toURI().toURL();
-                        if  (!testsrcUrl.toExternalForm().endsWith("/")) {
-                            testsrcUrl = new URL(testsrcUrl.toExternalForm() + "/");
+                        if  (!testsrcUrl.toExternalForm().endsWith("/")) { //NOI18N
+                            testsrcUrl = new URL(testsrcUrl.toExternalForm() + "/"); //NOI18N
                         }
                         
                         if (url.equals(testsrcUrl)) {
@@ -161,10 +161,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             }
             return -1;
         }
-        if ("jar".equals(url.getProtocol())) {
+        if ("jar".equals(url.getProtocol())) { //NOI18N
             URL binRoot = FileUtil.getArchiveFile(url);
             File file = new File(URI.create(binRoot.toString()));
-            String filepath = file.getAbsolutePath().replace('\\', '/');
+            String filepath = file.getAbsolutePath().replace('\\', '/'); //NOI18N
             String path = project.getArtifactRelativeRepositoryPath();
             return filepath.endsWith(path) ? 0 : -1;
         }

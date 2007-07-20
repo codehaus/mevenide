@@ -76,12 +76,14 @@ public class SiteDocsNodeFactory implements NodeFactory {
             }
         }
         
+        @Override
         public void addNotify() {
             ProjectURLWatcher.addPropertyChangeListener(project, this);
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
             watcher.addWatchedPath(SITE);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, this);
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);

@@ -89,7 +89,7 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
     }
     
     private void tryOpenProject() {
-        final Action act = findAction("Actions/Project/org-netbeans-modules-project-ui-OpenProject.instance");
+        final Action act = findAction("Actions/Project/org-netbeans-modules-project-ui-OpenProject.instance"); //NOI18N
         if (act != null) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
@@ -105,7 +105,7 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
         if (fo != null && fo.isValid()) {
             try {
                 DataObject dob = DataObject.find(fo);
-                InstanceCookie ic = (InstanceCookie) dob.getCookie(InstanceCookie.class);
+                InstanceCookie ic = dob.getCookie(InstanceCookie.class);
                 
                 if (ic != null) {
                     Object instance = ic.instanceCreate();
@@ -139,9 +139,9 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
             if (c instanceof JComponent) { // assume Swing components
                 JComponent jc = (JComponent) c;
                 // Step #.
-                jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i));
+                jc.putClientProperty("WizardPanel_contentSelectedIndex", new Integer(i)); //NOI18N
                 // Step name (actually the whole list for reference).
-                jc.putClientProperty("WizardPanel_contentData", steps);
+                jc.putClientProperty("WizardPanel_contentData", steps); //NOI18N
             }
         }
     }
@@ -151,7 +151,7 @@ public class ExistingWizardIterator implements WizardDescriptor.ProgressInstanti
     }
     
     public String name() {
-        return MessageFormat.format("{0} of {1}",
+        return MessageFormat.format(NbBundle.getMessage(ExistingWizardIterator.class, "MSG_One_of_Many"),
                 new Object[] {new Integer(index + 1), new Integer(panels.length)});
     }
     

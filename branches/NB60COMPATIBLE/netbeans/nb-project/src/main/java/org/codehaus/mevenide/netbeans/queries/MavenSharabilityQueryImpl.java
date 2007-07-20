@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2007 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
-import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -43,7 +42,7 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         if (!file.getAbsolutePath().startsWith(basedir.getAbsolutePath())) {
             return null;
         }
-        if (basedir.equals(file.getParentFile()) && "nbproject".equals(file.getName())) {
+        if (basedir.equals(file.getParentFile()) && "nbproject".equals(file.getName())) { //NOI18N
             // screw the netbeans profiler directory creation.
             // #98662
             return false;

@@ -73,11 +73,13 @@ public class SourcesNodeFactory implements NodeFactory {
             }
         }
         
+        @Override
         public void addNotify() {
             Sources srcs = ProjectUtils.getSources(project);
             srcs.addChangeListener(this);
         }
         
+        @Override
         public void removeNotify() {
             Sources srcs = ProjectUtils.getSources(project);
             srcs.removeChangeListener(this);

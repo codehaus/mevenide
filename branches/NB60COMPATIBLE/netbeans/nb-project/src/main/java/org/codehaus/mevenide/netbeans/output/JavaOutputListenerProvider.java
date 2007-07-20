@@ -39,8 +39,8 @@ import org.openide.filesystems.FileUtil;
 public class JavaOutputListenerProvider implements OutputProcessor {
     
     private static final String[] JAVAGOALS = new String[] {
-        "mojo-execute#compiler:compile",
-        "mojo-execute#compiler:testCompile"
+        "mojo-execute#compiler:compile", //NOI18N
+        "mojo-execute#compiler:testCompile" //NOI18N
     };
     private Pattern failPattern;
     
@@ -48,7 +48,7 @@ public class JavaOutputListenerProvider implements OutputProcessor {
     public JavaOutputListenerProvider() {
         //[javac] required because of forked compilation
         //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
-        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL);
+        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL); //NOI18N
     }
     
     public void processLine(String line, OutputVisitor visitor) {
@@ -58,8 +58,8 @@ public class JavaOutputListenerProvider implements OutputProcessor {
                 String lineNum = match.group(2);
                 String text = match.group(4);
                 visitor.setOutputListener(new CompileAnnotation(clazz, lineNum, 
-                        text), text.indexOf("[deprecation]") < 0);
-                File clazzfile = new File(clazz + ".java");
+                        text), text.indexOf("[deprecation]") < 0); //NOI18N
+                File clazzfile = new File(clazz + ".java"); //NOI18N
                 FileObject file = FileUtil.toFileObject(FileUtil.normalizeFile(clazzfile));
                 String newclazz = clazz;
                 if (file != null) {

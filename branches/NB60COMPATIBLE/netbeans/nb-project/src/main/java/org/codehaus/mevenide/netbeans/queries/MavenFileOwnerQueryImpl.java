@@ -47,7 +47,7 @@ import org.openide.util.Lookup;
  */
 public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
-    private Set set;
+    private Set<NbMavenProject> set;
     private Object lock = new Object();
     private Object cacheLock = new Object();
     private List<ChangeListener> listeners;
@@ -56,7 +56,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
-        set = new HashSet();
+        set = new HashSet<NbMavenProject>();
         listeners = new ArrayList<ChangeListener>();
         cachedProjects = null;
         projectListener = new PropertyChangeListener() {
@@ -71,10 +71,11 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     public static MavenFileOwnerQueryImpl getInstance() {
-        Lookup.Result implementations = Lookup.getDefault().lookup(new Lookup.Template(FileOwnerQueryImplementation.class));
-        Iterator it = implementations.allInstances().iterator();
+        Lookup.Result<FileOwnerQueryImplementation> implementations = 
+                Lookup.getDefault().lookup(new Lookup.Template<FileOwnerQueryImplementation>(FileOwnerQueryImplementation.class));
+        Iterator<? extends FileOwnerQueryImplementation> it = implementations.allInstances().iterator();
         while (it.hasNext()) {
-            Object obj = it.next();
+            FileOwnerQueryImplementation obj = it.next();
             if (obj instanceof MavenFileOwnerQueryImpl) {
                 return (MavenFileOwnerQueryImpl)obj;
             }
@@ -142,7 +143,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     public Project getOwner(URI uri) {
         //logger.debug("getOwner of uri=" + uri);
-        if (uri.getScheme() != null && "file".equals(uri.getScheme())) {
+        if (uri.getScheme() != null && "file".equals(uri.getScheme())) { //NOI18N
             File file = new File(uri);
             return getOwner(file);
         }
@@ -184,7 +185,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                 return new HashSet(cachedProjects);
             }
             synchronized (lock) {
-                currentProjects = new HashSet(set);
+                currentProjects = new HashSet<NbMavenProject>(set);
                 iterating = new ArrayList(set);
             }
             int index = 0;
@@ -192,7 +193,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             //TODO performance.. this could be expensive, maybe cache somehow
             while (index < iterating.size()) {
                 NbMavenProject prj = (NbMavenProject)iterating.get(index);
-                SubprojectProvider sub = (SubprojectProvider)prj.getLookup().lookup(SubprojectProvider.class);
+                SubprojectProvider sub = prj.getLookup().lookup(SubprojectProvider.class);
                 if (sub != null) {
                     Set subs = sub.getSubprojects();
                     subs.removeAll(currentProjects);

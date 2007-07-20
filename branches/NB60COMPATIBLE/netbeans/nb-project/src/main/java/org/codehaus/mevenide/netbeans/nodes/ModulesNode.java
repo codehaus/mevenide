@@ -58,9 +58,10 @@ public class ModulesNode extends AbstractNode {
     public ModulesNode(NbMavenProject proj) {
         super(new ModulesChildren(proj));
         setName("Modules");//NOI18N
-        setDisplayName("Modules");
+        setDisplayName(org.openide.util.NbBundle.getMessage(ModulesNode.class, "LBL_Modules"));
     }
 
+    @Override
     public Action[] getActions(boolean bool) {
         return new Action[] {
         };
@@ -83,11 +84,13 @@ public class ModulesNode extends AbstractNode {
             };
         }
         
+        @Override
         public void addNotify() {
             loadModules();
             ProjectURLWatcher.addPropertyChangeListener(project, listener);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, listener);
             setKeys(Collections.EMPTY_LIST);
@@ -97,7 +100,7 @@ public class ModulesNode extends AbstractNode {
             if (object instanceof NbMavenProject) {
                 NbMavenProject proj = (NbMavenProject)object;
                 boolean isPom = "pom".equals(proj.getOriginalMavenProject().getPackaging());
-                LogicalViewProvider prov = (LogicalViewProvider) proj.getLookup().lookup(LogicalViewProvider.class);
+                LogicalViewProvider prov = proj.getLookup().lookup(LogicalViewProvider.class);
                 return  new Node[] { new ProjectFilterNode(project, proj, prov.createLogicalView(), isPom) };
             }
             return new Node[0];
@@ -139,14 +142,16 @@ public class ModulesNode extends AbstractNode {
             this.parent = parent;
         }
 
+        @Override
         public Action[] getActions(boolean b) {
-            ArrayList lst = new ArrayList();
+            ArrayList<Action> lst = new ArrayList<Action>();
             lst.add(new OpenProjectAction(project));
             lst.add(new RemoveModuleAction(parent, project));
 //            lst.addAll(Arrays.asList(super.getActions(b)));
-            return (Action[])lst.toArray(new Action[lst.size()]);
+            return lst.toArray(new Action[lst.size()]);
         }
         
+        @Override
         public Action getPreferredAction() {
             return new OpenProjectAction(project);
         }
@@ -158,13 +163,13 @@ public class ModulesNode extends AbstractNode {
         private NbMavenProject project;
         private NbMavenProject parent;
         public RemoveModuleAction(NbMavenProject parent, NbMavenProject proj) {
-            putValue(Action.NAME, "Remove Module");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Remove_Module"));
             project = proj;
             this.parent = parent;
         }
 
         public void actionPerformed(ActionEvent e) {
-            NotifyDescriptor nd = new NotifyDescriptor.Confirmation("Do you want to remove the module from parent pom?", NotifyDescriptor.YES_NO_OPTION);
+            NotifyDescriptor nd = new NotifyDescriptor.Confirmation(org.openide.util.NbBundle.getMessage(ModulesNode.class, "MSG_Remove_Module"), NotifyDescriptor.YES_NO_OPTION);
             Object ret = DialogDisplayer.getDefault().notify(nd);
             if (ret == NotifyDescriptor.YES_OPTION) {
                 try {
@@ -196,7 +201,7 @@ public class ModulesNode extends AbstractNode {
     private static class OpenProjectAction extends AbstractAction {
         private NbMavenProject project;
         public OpenProjectAction(NbMavenProject proj) {
-            putValue(Action.NAME, "Open Project");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Open_Project"));
             project = proj;
         }
 

@@ -39,7 +39,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private BasicWizardPanel panel;
     private int type;
 
-    private String lastProjectName = "";
+    private String lastProjectName = ""; //NOI18N
 
     private boolean changedPackage = false;
     
@@ -235,6 +235,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private javax.swing.JTextField txtVersion;
     // End of variables declaration//GEN-END:variables
     
+    @Override
     public void addNotify() {
         super.addNotify();
         //same problem as in 31086, initial focus on Cancel button
@@ -294,7 +295,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                     org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_version"));
             return false;
         }
-        wizardDescriptor.putProperty(ERROR_MSG, "");
+        wizardDescriptor.putProperty(ERROR_MSG, ""); //NOI18N
         return true;
     }
     
@@ -311,7 +312,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     }
     
     void read(WizardDescriptor settings) {
-        File projectLocation = (File) settings.getProperty("projdir");
+        File projectLocation = (File) settings.getProperty("projdir"); //NOI18N
         if (projectLocation == null || projectLocation.getParentFile() == null || !projectLocation.getParentFile().isDirectory()) {
             projectLocation = ProjectChooser.getProjectsFolder();
         } else {

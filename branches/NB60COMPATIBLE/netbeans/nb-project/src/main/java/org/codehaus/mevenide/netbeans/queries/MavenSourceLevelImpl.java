@@ -36,13 +36,13 @@ public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
     
     public String getSourceLevel(FileObject javaFile) {
         //TODO differenciate between test sources and main sources
-        String goal = true ? "compile" : "test-compile";
-        String toRet = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins", 
-                                                              "maven-compiler-plugin", 
-                                                              "source", 
+        String goal = true ? "compile" : "test-compile"; //NOI18N
+        String toRet = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins",  //NOI18N
+                                                              "maven-compiler-plugin",  //NOI18N
+                                                              "source",  //NOI18N
                                                               goal);
         //null is allowed to be returned but junit tests module asserts not null
-        return toRet == null ? "1.4" : toRet;
+        return toRet == null ? "1.4" : toRet; //NOI18N
     }
     
 }

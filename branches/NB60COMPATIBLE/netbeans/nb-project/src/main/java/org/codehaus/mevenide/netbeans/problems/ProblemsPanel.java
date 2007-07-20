@@ -31,8 +31,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.codehaus.mevenide.netbeans.problems.ProblemReport;
-import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.openide.util.NbBundle;
 
 /**
@@ -50,6 +48,7 @@ public class ProblemsPanel extends javax.swing.JPanel {
         taDescription.setLineWrap(true);
         taDescription.setWrapStyleWord(true);
         lstProblems.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
             public Component getListCellRendererComponent(
                     JList list, Object value,
                     int index, boolean isSelected, boolean cellHasFocus) {
@@ -71,7 +70,7 @@ public class ProblemsPanel extends javax.swing.JPanel {
                           button.setAction(new NoopAction());
                       }
                   } else {
-                      taDescription.setText("");
+                      taDescription.setText(""); //NOI18N
                       button.setAction(new NoopAction());
                   }
               }
@@ -87,12 +86,14 @@ public class ProblemsPanel extends javax.swing.JPanel {
         button = butt;
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
         populateUI();
         reporter.addChangeListener(change);
     }
     
+    @Override
     public void removeNotify() {
         super.removeNotify();
         reporter.removeChangeListener(change);

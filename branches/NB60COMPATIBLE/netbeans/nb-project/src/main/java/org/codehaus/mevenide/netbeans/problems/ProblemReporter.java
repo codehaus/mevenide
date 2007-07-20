@@ -51,7 +51,7 @@ import org.openide.loaders.DataObjectNotFoundException;
  *
  * @author mkleint
  */
-public final class ProblemReporter implements Comparator {
+public final class ProblemReporter implements Comparator<ProblemReport> {
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
     private Set<ProblemReport> reports;
     private NbMavenProject nbproject;
@@ -112,11 +112,9 @@ public final class ProblemReporter implements Comparator {
         fireChange();
     }
     
-    public int compare(Object o1, Object o2) {
-        assert o1 instanceof ProblemReport;
-        assert o2 instanceof ProblemReport;
-        int ret = new Integer(((ProblemReport)o1).getSeverityLevel()).compareTo(
-                new Integer(((ProblemReport)o2).getSeverityLevel()));
+    public int compare(ProblemReport o1, ProblemReport o2) {
+        int ret = new Integer(o1.getSeverityLevel()).compareTo(
+                new Integer(o2.getSeverityLevel()));
         if (ret != 0) {
             return ret;
         }
@@ -147,7 +145,7 @@ public final class ProblemReporter implements Comparator {
             }
             List compileArts = project.getTestArtifacts();
             if (compileArts != null) {
-                List missingJars = new ArrayList();
+                List<Artifact> missingJars = new ArrayList<Artifact>();
                 Iterator it = compileArts.iterator();
                 while (it.hasNext()) {
                     NbArtifact art = (NbArtifact) it.next();
@@ -164,10 +162,10 @@ public final class ProblemReporter implements Comparator {
                 }
                 if (missingJars.size() > 0) {
                     //TODO create a correction action for this.
-                    Iterator it2 = missingJars.iterator();
+                    Iterator<Artifact> it2 = missingJars.iterator();
                     String mess = ""; //NOI18N
                     while (it2.hasNext()) {
-                        Artifact ar = (Artifact)it2.next();
+                        Artifact ar = it2.next();
                         mess = mess + ar.getId() + "\n"; //NOI18N
                     }
                     AbstractAction act = new DependenciesNode.ResolveDepsAction(nbproject);
@@ -248,5 +246,6 @@ public final class ProblemReporter implements Comparator {
             }
         }
     }
+
     
 }

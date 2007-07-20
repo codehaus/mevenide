@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.options;
 
 import org.netbeans.spi.options.AdvancedOption;
 import org.netbeans.spi.options.OptionsPanelController;
+import org.openide.util.NbBundle;
 
 /**
  * advanced option UI,registred in the layer file.
@@ -31,11 +32,11 @@ public class MavenAdvancedOption extends AdvancedOption {
     }
 
     public String getDisplayName() {
-        return "Maven 2";
+        return NbBundle.getMessage(MavenAdvancedOption.class, "TIT_Maven_Category");
     }
 
     public String getTooltip() {
-        return "Setting up of default Maven execution options.";
+        return NbBundle.getMessage(MavenAdvancedOption.class, "TIP_Maven_Category");
     }
 
     public OptionsPanelController create() {

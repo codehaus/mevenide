@@ -56,6 +56,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -75,15 +76,16 @@ public class DependenciesNode extends AbstractNode {
         super(new DependenciesChildren(mavproject, type), Lookups.fixed(mavproject));
         setName("Dependencies" + type); //NOI18N
         switch (type) {
-            case TYPE_COMPILE : setDisplayName("Libraries"); break;
-            case TYPE_TEST : setDisplayName("Test Libraries"); break;
-            case TYPE_RUNTIME : setDisplayName("Runtime Libraries"); break;
-            default : setDisplayName("Libraries"); break;
+            case TYPE_COMPILE : setDisplayName(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Libraries")); break;
+            case TYPE_TEST : setDisplayName(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Test_Libraries")); break;
+            case TYPE_RUNTIME : setDisplayName(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Runtime_Libraries")); break;
+            default : setDisplayName(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Libraries")); break;
         }
         project = mavproject;
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/defaultFolder.gif"); //NOI18N
     }
     
+    @Override
     public Image getIcon(int param) {
         Image retValue = Utilities.mergeImages(getTreeFolderIcon(false),
                 Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
@@ -91,6 +93,7 @@ public class DependenciesNode extends AbstractNode {
         return retValue;
     }
     
+    @Override
     public Image getOpenedIcon(int param) {
         Image retValue = Utilities.mergeImages(getTreeFolderIcon(true),
                 Utilities.loadImage("org/codehaus/mevenide/netbeans/libraries-badge.png"), //NOI18N
@@ -98,6 +101,7 @@ public class DependenciesNode extends AbstractNode {
         return retValue;
     }
     
+    @Override
     public Action[] getActions(boolean context) {
         ArrayList<Action> toRet = new ArrayList<Action>();
         toRet.add(new AddDependencyAction());
@@ -109,7 +113,7 @@ public class DependenciesNode extends AbstractNode {
         return toRet.toArray(new Action[toRet.size()]);
     }
     
-    private static class DependenciesChildren extends Children.Keys implements PropertyChangeListener {
+    private static class DependenciesChildren extends Children.Keys<Artifact> implements PropertyChangeListener {
         private NbMavenProject project;
         private int type;
         public DependenciesChildren(NbMavenProject proj, int type) {
@@ -118,8 +122,7 @@ public class DependenciesNode extends AbstractNode {
             this.type = type;
         }
         
-        protected Node[] createNodes(Object obj) {
-            Artifact art = (Artifact)obj;
+        protected Node[] createNodes(Artifact art) {
             Lookup look = Lookups.fixed(new Object[] {
                 art,
                 project
@@ -134,12 +137,14 @@ public class DependenciesNode extends AbstractNode {
             }
         }
         
+        @Override
         protected void addNotify() {
             super.addNotify();
             ProjectURLWatcher.addPropertyChangeListener(project, this);
             regenerateKeys();
         }
         
+        @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
             ProjectURLWatcher.removePropertyChangeListener(project, this);
@@ -165,12 +170,12 @@ public class DependenciesNode extends AbstractNode {
     
     private class AddDependencyAction extends AbstractAction {
         public AddDependencyAction() {
-            putValue(Action.NAME, "Add Library...");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependenciesNode.class, "BTN_Add_Library"));
         }
         public void actionPerformed(ActionEvent event) {
             AddDependencyPanel pnl = new AddDependencyPanel();
         
-            DialogDescriptor dd = new DialogDescriptor(pnl, "Add Library");
+            DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(DependenciesNode.class, "TIT_Add_Library"));
             dd.setClosingOptions(new Object[] {
                 pnl.getOkButton(),
                 DialogDescriptor.CANCEL_OPTION
@@ -222,7 +227,7 @@ public class DependenciesNode extends AbstractNode {
     private class DownloadJavadocSrcAction extends AbstractAction {
         private boolean javadoc;
         public DownloadJavadocSrcAction(boolean javadoc) {
-            putValue(Action.NAME, javadoc ? "Download All Library Javadoc" : "Download All Library Sources");
+            putValue(Action.NAME, javadoc ? org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Download_Javadoc") : org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Download__Sources"));
             this.javadoc = javadoc;
         }
         
@@ -233,9 +238,10 @@ public class DependenciesNode extends AbstractNode {
                     Node[] nds = getChildren().getNodes();
                     ProgressContributor[] contribs = new ProgressContributor[nds.length];
                     for (int i = 0; i < nds.length; i++) {
-                        contribs[i] = AggregateProgressFactory.createProgressContributor("multi-" + i);
+                        contribs[i] = AggregateProgressFactory.createProgressContributor("multi-" + i); //NOI18N
                     }
-                    AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download " + (javadoc ? "Javadoc" : "Sources"), 
+                    String label = javadoc ? NbBundle.getMessage(DependenciesNode.class, "Progress_Javadoc") : NbBundle.getMessage(DependenciesNode.class, "Progress_Source");
+                    AggregateProgressHandle handle = AggregateProgressFactory.createHandle(label, 
                             contribs, null, null);
                     handle.start();
                     try {
@@ -264,7 +270,7 @@ public class DependenciesNode extends AbstractNode {
     public static class ResolveDepsAction extends AbstractAction {
         private Project project;
         public ResolveDepsAction(Project prj) {
-            putValue(Action.NAME, "Download All Libraries");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependenciesNode.class, "LBL_Download"));
             project = prj;
         }
         
@@ -273,7 +279,7 @@ public class DependenciesNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
-                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle("Downloading Libraries", 
+                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "Progress_Download"), 
                             new ProgressContributor[] {
                                 AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
                             null, null);
@@ -286,21 +292,21 @@ public class DependenciesNode extends AbstractNode {
                     } catch (ArtifactNotFoundException ex) {
                         ex.printStackTrace();
                         ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
                     } catch (ArtifactResolutionException ex) {
                         ex.printStackTrace();
                         ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
                     } catch (ProjectBuildingException ex) {
                         ex.printStackTrace();
                         ok = false;
-                        StatusDisplayer.getDefault().setStatusText("Failed to download - " + ex.getLocalizedMessage());
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
                     } finally {
                         hndl.finish();
                         ProgressTransferListener.clearAggregateHandle();
                     }
                     if (ok) {
-                        StatusDisplayer.getDefault().setStatusText("Done retrieving dependencies from remote repositories.");
+                        StatusDisplayer.getDefault().setStatusText(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "MSG_Done"));
                     }
                     ProjectURLWatcher.fireMavenProjectReload(project);
                 }

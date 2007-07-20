@@ -53,6 +53,7 @@ class SiteDocsNode extends FilterNode {
     }
     
    
+    @Override
     public String getDisplayName() {
         if (isTopLevelNode) {
             String s = NbBundle.getMessage(SiteDocsNode.class, "LBL_Site_Pages");
@@ -70,6 +71,7 @@ class SiteDocsNode extends FilterNode {
         
     }
 
+    @Override
     public String getHtmlDisplayName() {
         if (!isTopLevelNode) {
             return getOriginal().getHtmlDisplayName();
@@ -98,37 +100,39 @@ class SiteDocsNode extends FilterNode {
     
     public javax.swing.Action[] getActions(boolean param) {
         if (isTopLevelNode) {
-            ActionProviderImpl impl = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
+            ActionProviderImpl impl = project.getLookup().lookup(ActionProviderImpl.class);
             Action[] toReturn = new Action[4];
             toReturn[0] = CommonProjectActions.newFileAction();
             toReturn[1] = null;
             NetbeansActionMapping mapp = new NetbeansActionMapping();
-            mapp.addGoal("site");
-            toReturn[2] = impl.createCustomMavenAction("Generate Site", mapp);
+            mapp.addGoal("site"); //NOI18N
+            toReturn[2] = impl.createCustomMavenAction(org.openide.util.NbBundle.getMessage(SiteDocsNode.class, "BTN_Generate_Site"), mapp);
             mapp = new NetbeansActionMapping();
-            mapp.addGoal("site:deploy");
-            toReturn[3] = impl.createCustomMavenAction("Deploy Site", mapp);
+            mapp.addGoal("site:deploy"); //NOI18N
+            toReturn[3] = impl.createCustomMavenAction(org.openide.util.NbBundle.getMessage(SiteDocsNode.class, "BTN_Deploy_Site"), mapp);
             return toReturn;
         } else {
             return super.getActions(param);
         }
     }    
 
+    @Override
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), 
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
                                              8, 8);
         } 
         return retValue;
     }
 
+    @Override
     public java.awt.Image getOpenedIcon(int param) {
         java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), 
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
                                              8, 8);
         } 
         return retValue;
@@ -141,8 +145,9 @@ class SiteDocsNode extends FilterNode {
             project = proj;
         }
         
+        @Override
         protected Node[] createNodes(Node obj) {
-            DataObject dobj = (DataObject)(obj).getLookup().lookup(DataObject.class);
+            DataObject dobj = (obj).getLookup().lookup(DataObject.class);
         
             if (dobj != null) {
                 if (!VisibilityQuery.getDefault().isVisible(dobj.getPrimaryFile())) {
@@ -151,7 +156,7 @@ class SiteDocsNode extends FilterNode {
                 Node n = new SiteDocsNode(project, obj, false);
                 return new Node[] {n};
             }
-            Node origos = (Node)obj;
+            Node origos = obj;
             return new Node[] { origos.cloneNode() };
         }        
     }    

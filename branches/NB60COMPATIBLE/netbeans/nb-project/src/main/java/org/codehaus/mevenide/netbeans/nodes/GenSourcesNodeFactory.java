@@ -75,10 +75,12 @@ public class GenSourcesNodeFactory implements NodeFactory {
             }
         }
         
+        @Override
         public void addNotify() {
             ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, this);
         }

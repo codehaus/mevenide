@@ -77,21 +77,23 @@ public class DependenciesNodeFactory implements NodeFactory {
         }
         
         public Node node(String key) {
-            if (key == KEY_DEPENDENCIES) {
+            if (KEY_DEPENDENCIES.equals(key)) {
                 return  new DependenciesNode(project, DependenciesNode.TYPE_COMPILE);
-            } else if (key == KEY_TEST_DEPENDENCIES) {
+            } else if (KEY_TEST_DEPENDENCIES.equals(key)) {
                 return  new DependenciesNode(project, DependenciesNode.TYPE_TEST);
-            } else if (key == KEY_RUNTIME_DEPENDENCIES) {
+            } else if (KEY_RUNTIME_DEPENDENCIES.equals(key)) {
                 return  new DependenciesNode(project, DependenciesNode.TYPE_RUNTIME);
             }
             assert false: "Wrong key for Dependencies NodeFactory: " + key; //NOI18N
             return null;
         }
         
+        @Override
         public void addNotify() {
             ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, this);
         }

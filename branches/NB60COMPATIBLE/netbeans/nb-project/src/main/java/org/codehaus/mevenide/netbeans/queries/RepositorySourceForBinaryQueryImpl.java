@@ -44,7 +44,7 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
 
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         URL binRoot = url;
-        if ("jar".equals(url.getProtocol())) {
+        if ("jar".equals(url.getProtocol())) { //NOI18N
             binRoot = FileUtil.getArchiveFile(url);
         } else {
             // null for directories.
@@ -65,7 +65,7 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
 //                        File pom = new File(parent, artifact + "-" + version + ".pom");
 //                        // maybe this condition is already overkill..
 //                        if (pom.exists()) {
-                            File srcs = new File(parent, artifact + "-" + version + "-sources.jar");
+                            File srcs = new File(parent, artifact + "-" + version + "-sources.jar"); //NOI18N
                             if (srcs.exists()) {
                                 return new SrcResult(srcs);
                             }
@@ -80,11 +80,11 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
     
     private class SrcResult implements SourceForBinaryQuery.Result  {
         private File file;
-        private List listeners;
+        private List<ChangeListener> listeners;
         
         public SrcResult(File src) {
             file = src;
-            listeners = new ArrayList();
+            listeners = new ArrayList<ChangeListener>();
         }
         public void addChangeListener(ChangeListener changeListener) {
             synchronized (listeners) {

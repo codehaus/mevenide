@@ -29,6 +29,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -47,18 +48,20 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         artifactCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtArtifactId);
         versionCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtVersion);
         txtGroupId.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 populateArtifact();
                 populateVersion();
             }
         });
         txtArtifactId.addFocusListener(new FocusAdapter() {
+            @Override
             public void focusLost(FocusEvent e) {
                 populateVersion();
             }
         });
         
-        okButton = new JButton("Ok");
+        okButton = new JButton(NbBundle.getMessage(AddDependencyPanel.class, "BTN_OK"));
         
         DocumentListener docList = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {

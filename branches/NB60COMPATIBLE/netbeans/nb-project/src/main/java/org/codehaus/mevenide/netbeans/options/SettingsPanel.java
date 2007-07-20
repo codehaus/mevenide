@@ -36,6 +36,7 @@ import org.openide.util.RequestProcessor;
  * @author  mkleint
  */
 public class SettingsPanel extends javax.swing.JPanel {
+    private static final String CP_SELECTED = "wasSelected"; //NOI18N
     private boolean changed;
     private ActionListener listener;
     
@@ -48,11 +49,11 @@ public class SettingsPanel extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 if (cbDebug.isSelected()) {
                     cbErrors.setEnabled(false);
-                    cbErrors.putClientProperty("wasSelected", Boolean.valueOf(cbErrors.isSelected()));
+                    cbErrors.putClientProperty(CP_SELECTED, Boolean.valueOf(cbErrors.isSelected())); 
                     cbErrors.setSelected(true);
                 } else {
                     cbErrors.setEnabled(true);
-                    cbErrors.setSelected(((Boolean)cbErrors.getClientProperty("wasSelected")).booleanValue());
+                    cbErrors.setSelected(((Boolean)cbErrors.getClientProperty(CP_SELECTED)).booleanValue());
                 }
             }
         });
@@ -125,38 +126,38 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbSnapshots = new javax.swing.JCheckBox();
         cbSynchProxy = new javax.swing.JCheckBox();
 
-        cbOffline.setText("Work Offline");
+        org.openide.awt.Mnemonics.setLocalizedText(cbOffline, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbOffline.text")); // NOI18N
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbOffline.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbOffline.setOpaque(false);
 
-        cbDebug.setText("Produce Debug Output");
+        org.openide.awt.Mnemonics.setLocalizedText(cbDebug, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbDebug.text")); // NOI18N
         cbDebug.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbDebug.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbDebug.setOpaque(false);
 
-        cbErrors.setText("Produce Exception Error Messages");
+        org.openide.awt.Mnemonics.setLocalizedText(cbErrors, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbErrors.text")); // NOI18N
         cbErrors.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbErrors.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbErrors.setOpaque(false);
 
-        pnlChecksums.setBorder(javax.swing.BorderFactory.createTitledBorder("Checksum policy"));
+        pnlChecksums.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.pnlChecksums.border.title"))); // NOI18N
         pnlChecksums.setOpaque(false);
 
         bgChecksums.add(rbChecksumStrict);
-        rbChecksumStrict.setText("Strict (Fail)");
+        org.openide.awt.Mnemonics.setLocalizedText(rbChecksumStrict, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbChecksumStrict.text")); // NOI18N
         rbChecksumStrict.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbChecksumStrict.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbChecksumStrict.setOpaque(false);
 
         bgChecksums.add(rbChecksumLax);
-        rbChecksumLax.setText("Lax (Warn only)");
+        org.openide.awt.Mnemonics.setLocalizedText(rbChecksumLax, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbChecksumLax.text")); // NOI18N
         rbChecksumLax.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbChecksumLax.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbChecksumLax.setOpaque(false);
 
         bgChecksums.add(rbChecksumNone);
-        rbChecksumNone.setText("No Global policy");
+        org.openide.awt.Mnemonics.setLocalizedText(rbChecksumNone, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbChecksumNone.text")); // NOI18N
         rbChecksumNone.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbChecksumNone.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbChecksumNone.setOpaque(false);
@@ -184,23 +185,23 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
-        pnlPlugins.setBorder(javax.swing.BorderFactory.createTitledBorder("Plugin Update Policy"));
+        pnlPlugins.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.pnlPlugins.border.title"))); // NOI18N
         pnlPlugins.setOpaque(false);
 
         bgPlugins.add(rbPluginUpdate);
-        rbPluginUpdate.setText("Check For Updates");
+        org.openide.awt.Mnemonics.setLocalizedText(rbPluginUpdate, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbPluginUpdate.text")); // NOI18N
         rbPluginUpdate.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbPluginUpdate.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbPluginUpdate.setOpaque(false);
 
         bgPlugins.add(rbNoPluginUpdate);
-        rbNoPluginUpdate.setText("Supress Checking");
+        org.openide.awt.Mnemonics.setLocalizedText(rbNoPluginUpdate, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbNoPluginUpdate.text")); // NOI18N
         rbNoPluginUpdate.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbNoPluginUpdate.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbNoPluginUpdate.setOpaque(false);
 
         bgPlugins.add(rbPluginNone);
-        rbPluginNone.setText("No Global policy");
+        org.openide.awt.Mnemonics.setLocalizedText(rbPluginNone, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbPluginNone.text")); // NOI18N
         rbPluginNone.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbPluginNone.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbPluginNone.setOpaque(false);
@@ -228,23 +229,23 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        pnlFail.setBorder(javax.swing.BorderFactory.createTitledBorder("Multiproject build fail policy"));
+        pnlFail.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.pnlFail.border.title"))); // NOI18N
         pnlFail.setOpaque(false);
 
         bgFailure.add(rbFailFast);
-        rbFailFast.setText("Stop at first failure");
+        org.openide.awt.Mnemonics.setLocalizedText(rbFailFast, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbFailFast.text")); // NOI18N
         rbFailFast.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbFailFast.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbFailFast.setOpaque(false);
 
         bgFailure.add(rbFailEnd);
-        rbFailEnd.setText("Fail at the end");
+        org.openide.awt.Mnemonics.setLocalizedText(rbFailEnd, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbFailEnd.text")); // NOI18N
         rbFailEnd.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbFailEnd.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbFailEnd.setOpaque(false);
 
         bgFailure.add(rbFailNever);
-        rbFailNever.setText("Never fail");
+        org.openide.awt.Mnemonics.setLocalizedText(rbFailNever, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.rbFailNever.text")); // NOI18N
         rbFailNever.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         rbFailNever.setMargin(new java.awt.Insets(0, 0, 0, 0));
         rbFailNever.setOpaque(false);
@@ -272,37 +273,37 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
-        cbPluginRegistry.setText("Use plugin registry");
+        org.openide.awt.Mnemonics.setLocalizedText(cbPluginRegistry, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbPluginRegistry.text")); // NOI18N
         cbPluginRegistry.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbPluginRegistry.setMargin(new java.awt.Insets(0, 0, 0, 0));
         cbPluginRegistry.setOpaque(false);
 
-        lblLocalRepository.setText("Local Repository :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblLocalRepository, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lblLocalRepository.text")); // NOI18N
 
-        btnLocalRepository.setText("Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnLocalRepository, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnLocalRepository.text")); // NOI18N
         btnLocalRepository.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnLocalRepositoryActionPerformed(evt);
             }
         });
 
-        lblIndex.setText("Index :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lblIndex.text")); // NOI18N
 
         comIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Once a week", "Once a day", "On every startup", "Never" }));
 
-        btnIndex.setText("Index Now");
+        org.openide.awt.Mnemonics.setLocalizedText(btnIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnIndex.text")); // NOI18N
         btnIndex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIndexActionPerformed(evt);
             }
         });
 
-        cbSnapshots.setText("Include Snapshots");
+        org.openide.awt.Mnemonics.setLocalizedText(cbSnapshots, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbSnapshots.text")); // NOI18N
         cbSnapshots.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSnapshots.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        cbSynchProxy.setText("Use IDE's proxy settings");
-        cbSynchProxy.setToolTipText("Use NetBeans Proxy settings in case Maven doesn't define any proxies in Maven's own setting file at ~/.m2/settings.xml");
+        org.openide.awt.Mnemonics.setLocalizedText(cbSynchProxy, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbSynchProxy.text")); // NOI18N
+        cbSynchProxy.setToolTipText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbSynchProxy.toolTipText")); // NOI18N
         cbSynchProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSynchProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -377,7 +378,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(btnIndex))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cbSnapshots)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addContainerGap(63, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -404,12 +405,12 @@ public class SettingsPanel extends javax.swing.JPanel {
     private void btnLocalRepositoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalRepositoryActionPerformed
         JFileChooser chooser = new JFileChooser();
         FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
-        chooser.setDialogTitle("Select Local Repository Location");
+        chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "TIT_Select"));
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setFileHidingEnabled(false);
         String path = txtLocalRepository.getText();
         if (path.trim().length() == 0) {
-            path = new File(System.getProperty("user.home"), ".m2").getAbsolutePath();
+            path = new File(System.getProperty("user.home"), ".m2").getAbsolutePath(); //NOI18N
         }
         if (path.length() > 0) {
             File f = new File(path);
@@ -461,7 +462,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbPluginRegistry.setSelected(MavenExecutionSettings.getDefault().isUsePluginRegistry());
         txtLocalRepository.setText(sett.getLocalRepository());
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
-        cbErrors.putClientProperty("wasSelected", Boolean.valueOf(cbErrors.isSelected()));
+        cbErrors.putClientProperty(CP_SELECTED, Boolean.valueOf(cbErrors.isSelected()));
         cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
         cbSnapshots.setSelected(MavenIndexSettings.getDefault().isIncludeSnapshots());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();

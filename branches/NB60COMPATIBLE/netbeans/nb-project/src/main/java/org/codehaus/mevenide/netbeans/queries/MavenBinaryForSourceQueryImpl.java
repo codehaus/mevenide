@@ -74,7 +74,7 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
         if (results.containsKey(url)) {
             return results.get(url);
         }
-        if ("file".equals(url.getProtocol())) {
+        if ("file".equals(url.getProtocol())) { //NOI18N
             try {
                 Res toReturn = null;
                 File fil = new File(url.toURI());
@@ -158,6 +158,6 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
                 listen.stateChanged(new ChangeEvent(this));
             }
         }
-}
+    }
     
 }

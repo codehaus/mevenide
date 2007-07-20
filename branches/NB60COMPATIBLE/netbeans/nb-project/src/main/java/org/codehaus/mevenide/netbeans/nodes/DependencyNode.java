@@ -72,6 +72,7 @@ import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.openide.util.WeakListeners;
@@ -159,7 +160,7 @@ public class DependencyNode extends AbstractNode {
     }
     
     private boolean isJarDependency() {
-        return "jar".equalsIgnoreCase(art.getType());
+        return "jar".equalsIgnoreCase(art.getType()); //NOI18N
     }
     
     boolean isDependencyProjectOpen() {
@@ -184,12 +185,13 @@ public class DependencyNode extends AbstractNode {
 //        }
     }
     
+    @Override
     public String getHtmlDisplayName() {
-        String version = "";
-        if (ArtifactUtils.isSnapshot(art.getVersion()) && art.getVersion().indexOf("SNAPSHOT") < 0) {
-            version = " <b>[" + art.getVersion() + "]</b>";
+        String version = ""; //NOI18N
+        if (ArtifactUtils.isSnapshot(art.getVersion()) && art.getVersion().indexOf("SNAPSHOT") < 0) { //NOI18N
+            version = " <b>[" + art.getVersion() + "]</b>"; //NOI18N
         }
-        return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>";
+        return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>"; // - not sure if shall ne translated..
     }
     
     private String createName() {
@@ -269,14 +271,14 @@ public class DependencyNode extends AbstractNode {
         File artifact = art.getFile();
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
-        return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");
+        return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");  //NOI18N
     }
     
     public File getSourceFile() {
         File artifact = art.getFile();
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
-        return  new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar");
+        return  new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar"); //NOI18N
     }
     
     public boolean hasSourceInRepository() {
@@ -299,8 +301,8 @@ public class DependencyNode extends AbstractNode {
                     art.getArtifactId(),
                     art.getVersion(),
                     art.getType(),
-                    "javadoc");
-                progress.progress("Checking Javadoc for " + art.getId(), 1);
+                    "javadoc"); //NOI18N
+                progress.progress(org.openide.util.NbBundle.getMessage(DependencyNode.class, "MSG_Checking_Javadoc", art.getId()), 1);
                 online.resolve(javadoc, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
             } else {
                 Artifact sources = project.getEmbedder().createArtifactWithClassifier(
@@ -308,8 +310,8 @@ public class DependencyNode extends AbstractNode {
                     art.getArtifactId(),
                     art.getVersion(),
                     art.getType(),
-                    "sources");
-                progress.progress("Checking Sources for " + art.getId(), 1);
+                    "sources"); //NOI18N
+                progress.progress(org.openide.util.NbBundle.getMessage(DependencyNode.class, "MSG_Checking_Sources",art.getId()), 1);
                 online.resolve(sources, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
             }
         } catch (ArtifactNotFoundException ex) {
@@ -330,14 +332,14 @@ public class DependencyNode extends AbstractNode {
                 art.getType(),
                 art.getClassifier());
         try {
-            StatusDisplayer.getDefault().setStatusText("Checking for " + art.getId());
+            StatusDisplayer.getDefault().setStatusText(org.openide.util.NbBundle.getMessage(DependencyNode.class, "MSG_Checking", art.getId()));
             online.resolve(art2, project.getOriginalMavenProject().getRemoteArtifactRepositories(), project.getEmbedder().getLocalRepository());
         } catch (ArtifactNotFoundException ex) {
             ex.printStackTrace();
         } catch (ArtifactResolutionException ex) {
             ex.printStackTrace();
         } finally {
-            StatusDisplayer.getDefault().setStatusText("");
+            StatusDisplayer.getDefault().setStatusText(""); //NOI18N
         }
         refreshNode();
     }
@@ -349,18 +351,18 @@ public class DependencyNode extends AbstractNode {
         if (isLocal()) {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"), //NOI18N
                         12, 12);
             }
             if (hasSourceInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"),
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"), //NOI18N
                         12, 8);
             }
             return retValue;
         } else {
             return Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
+                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"), //NOI18N
                     0, 0);
         }
     }
@@ -371,18 +373,18 @@ public class DependencyNode extends AbstractNode {
         if (isLocal()) {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"),
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"), //NOI18N
                         12, 12);
             }
             if (hasSourceInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
-                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"),
+                        Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencySrcIncluded.png"), //NOI18N
                         12, 8);
             }
             return retValue;
         } else {
             return Utilities.mergeImages(retValue,
-                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"),
+                    Utilities.loadImage("org/codehaus/mevenide/netbeans/ResourceNotIncluded.gif"), //NOI18N
                     0,0);
         }
     }
@@ -395,36 +397,36 @@ public class DependencyNode extends AbstractNode {
         Sheet sheet = Sheet.createDefault();
         Sheet.Set basicProps = sheet.get(Sheet.PROPERTIES);
         try {
-            PropertySupport.Reflection artifactId = new PropertySupport.Reflection(art, String.class, "getArtifactId", null);
-            artifactId.setName("artifactId");
-            artifactId.setDisplayName("Artifact Id");
-            artifactId.setShortDescription("");
-            PropertySupport.Reflection groupId = new PropertySupport.Reflection(art, String.class, "getGroupId", null);
-            groupId.setName("groupId");
-            groupId.setDisplayName("Group Id");
-            groupId.setShortDescription("");
-            PropertySupport.Reflection version = new PropertySupport.Reflection(art, String.class, "getVersion", null);
-            version.setName("version");
-            version.setDisplayName("Version");
-            version.setShortDescription("Version of the current artifact");
-            PropertySupport.Reflection type = new PropertySupport.Reflection(art, String.class, "getType", null);
-            type.setName("type");
-            type.setDisplayName("Type");
-            PropertySupport.Reflection scope = new PropertySupport.Reflection(art, String.class, "getScope", null);
-            scope.setName("scope");
-            scope.setDisplayName("Scope");
-            PropertySupport.Reflection classifier = new PropertySupport.Reflection(art, String.class, "getClassifier", null);
-            classifier.setName("classifier");
-            classifier.setDisplayName("Classifier");
-            PropertySupport.Reflection hasJavadoc = new PropertySupport.Reflection(this, Boolean.TYPE, "hasJavadocInRepository", null);
-            hasJavadoc.setName("javadoc");
-            hasJavadoc.setDisplayName("Javadoc Locally");
-            PropertySupport.Reflection hasSources = new PropertySupport.Reflection(this, Boolean.TYPE, "hasSourceInRepository", null);
-            hasSources.setName("sources");
-            hasSources.setDisplayName("Sources Locally");
-            PropertySupport.Reflection transitive = new PropertySupport.Reflection(this, Boolean.TYPE, "isTransitive", null);
-            transitive.setName("transitive");
-            transitive.setDisplayName("Transitive Dependency");
+            PropertySupport.Reflection artifactId = new PropertySupport.Reflection<String>(art, String.class, "getArtifactId", null); //NOI18N
+            artifactId.setName("artifactId"); //NOI18N
+            artifactId.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Artifact"));
+            artifactId.setShortDescription("");//NOI18N
+            PropertySupport.Reflection groupId = new PropertySupport.Reflection<String>(art, String.class, "getGroupId", null); //NOI18N
+            groupId.setName("groupId"); //NOI18N
+            groupId.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Group"));
+            groupId.setShortDescription(""); //NOI18N
+            PropertySupport.Reflection version = new PropertySupport.Reflection<String>(art, String.class, "getVersion", null); //NOI18N
+            version.setName("version"); //NOI18N
+            version.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Version"));
+            version.setShortDescription(org.openide.util.NbBundle.getMessage(DependencyNode.class, "HINT_Version"));
+            PropertySupport.Reflection type = new PropertySupport.Reflection<String>(art, String.class, "getType", null); //NOI18N
+            type.setName("type"); //NOI18N
+            type.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Type"));
+            PropertySupport.Reflection scope = new PropertySupport.Reflection<String>(art, String.class, "getScope", null); //NOI18N
+            scope.setName("scope"); //NOI18N
+            scope.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Scope"));
+            PropertySupport.Reflection classifier = new PropertySupport.Reflection<String>(art, String.class, "getClassifier", null); //NOI18N
+            classifier.setName("classifier"); //NOI18N
+            classifier.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Classifier"));
+            PropertySupport.Reflection hasJavadoc = new PropertySupport.Reflection<Boolean>(this, Boolean.TYPE, "hasJavadocInRepository", null); //NOI18N
+            hasJavadoc.setName("javadoc"); //NOI18N
+            hasJavadoc.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Javadoc_Locally"));
+            PropertySupport.Reflection hasSources = new PropertySupport.Reflection<Boolean>(this, Boolean.TYPE, "hasSourceInRepository", null); //NOI18N
+            hasSources.setName("sources"); //NOI18N
+            hasSources.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Sources_Locally"));
+            PropertySupport.Reflection transitive = new PropertySupport.Reflection<Boolean>(this, Boolean.TYPE, "isTransitive", null); //NOI18N
+            transitive.setName("transitive"); //NOI18N
+            transitive.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Transitive"));
             
             basicProps.put(new Node.Property[] {
                 artifactId, groupId, version, type, scope, classifier, transitive, hasJavadoc, hasSources
@@ -456,11 +458,12 @@ public class DependencyNode extends AbstractNode {
     
     private class RemoveDependencyAction extends AbstractAction {
         public RemoveDependencyAction() {
-            putValue(Action.NAME, "Remove Dependency");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Remove_Dependency"));
         }
         
         public void actionPerformed(ActionEvent event) {
-            NotifyDescriptor nd = new NotifyDescriptor.Confirmation("Are you sure you want to remove the dependency " + art.getGroupId() + ":" + art.getArtifactId() + "?", "Confirm");
+            NotifyDescriptor nd = new NotifyDescriptor.Confirmation(
+                    NbBundle.getMessage(DependencyNode.class, "MSG_Remove_Dependency", art.getGroupId() + ":" + art.getArtifactId()), NbBundle.getMessage(DependencyNode.class, "TIT_Remove_Dependency")); //NOI18N
             nd.setOptionType(NotifyDescriptor.YES_NO_OPTION);
             Object ret = DialogDisplayer.getDefault().notify(nd);
             if (ret != NotifyDescriptor.YES_OPTION) {
@@ -488,12 +491,12 @@ public class DependencyNode extends AbstractNode {
             }
             if (mproject == null) {
                 //how come..
-                StatusDisplayer.getDefault().setStatusText("Was not able to locate the dependency in POM file(s). Ignoring...");
+                StatusDisplayer.getDefault().setStatusText(org.openide.util.NbBundle.getMessage(DependencyNode.class, "ERR_Cannot_Locate_Dep"));
                 return;
             }
             if (mproject != project.getOriginalMavenProject()) {
                 //TODO warn that we are to modify the parent pom.
-                nd = new NotifyDescriptor.Confirmation("The dependency is specified in parent POM. A change there can infuence other projects as well. Proceed?", "Dependency in Parent POM");
+                nd = new NotifyDescriptor.Confirmation(org.openide.util.NbBundle.getMessage(DependencyNode.class, "MSG_Located_In_Parent"), org.openide.util.NbBundle.getMessage(DependencyNode.class, "TIT_Located_In_Parent"));
                 nd.setOptionType(NotifyDescriptor.YES_NO_OPTION);
                 ret = DialogDisplayer.getDefault().notify(nd);
                 if (ret != NotifyDescriptor.YES_OPTION) {
@@ -526,14 +529,14 @@ public class DependencyNode extends AbstractNode {
     
     private class ExcludeTransitiveAction extends AbstractAction  {
         public ExcludeTransitiveAction() {
-            putValue(Action.NAME, "Exclude Dependency");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Exclude_Dependency"));
         }
         
         public void actionPerformed(ActionEvent event) {
             try {
                 List trail = art.getDependencyTrail();
                 String str = (String)trail.get(1);
-                StringTokenizer tok = new StringTokenizer(str, ":");
+                StringTokenizer tok = new StringTokenizer(str, ":"); //NOI18N
                 String groupId = tok.nextToken();
                 String artifactId = tok.nextToken();
                 File fil = DependencyNode.this.project.getPOMFile();
@@ -603,7 +606,7 @@ public class DependencyNode extends AbstractNode {
     
     private class InstallLocalArtifactAction extends AbstractAction {
         public InstallLocalArtifactAction() {
-            putValue(Action.NAME, "Manually install artifact");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Manually_install"));
         }
         
         public void actionPerformed(ActionEvent event) {
@@ -617,7 +620,7 @@ public class DependencyNode extends AbstractNode {
     private class InstallLocalJavadocAction extends AbstractAction implements Runnable {
         private File source;
         public InstallLocalJavadocAction() {
-            putValue(Action.NAME, "Add local javadoc");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Add_javadoc"));
         }
         
         public void actionPerformed(ActionEvent event) {
@@ -644,7 +647,7 @@ public class DependencyNode extends AbstractNode {
         
         private File source;
         public InstallLocalSourcesAction() {
-            putValue(Action.NAME, "Add local sources");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Add_sources"));
         }
         
         public void actionPerformed(ActionEvent event) {
@@ -694,7 +697,7 @@ public class DependencyNode extends AbstractNode {
 //
     private class ViewJavadocAction extends AbstractAction {
         public ViewJavadocAction() {
-            putValue(Action.NAME, "View Javadoc");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_View_Javadoc"));
             setEnabled(hasJavadocInRepository());
         }
         public void actionPerformed(ActionEvent event) {
@@ -710,7 +713,7 @@ public class DependencyNode extends AbstractNode {
                     if (index == null) {
                         for (FileObject chil : jarfo.getChildren()) {
                             if (chil.isFolder()) {
-                                index = chil.getFileObject("index.html");
+                                index = chil.getFileObject("index.html"); //NOI18N
                             }
                             if (index != null)  {
                                 break;

@@ -41,22 +41,24 @@ class OthersRootNode extends AbstractNode {
     OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
         super(new OthersRootChildren(mavproject, testResource), Lookups.fixed(fo, DataFolder.findFolder(fo)));
         setName(testResource ? "OtherTestRoots" : "OtherRoots"); //NOI18N
-        setDisplayName(testResource ? "Other Test Sources" : "Other Sources");
+        setDisplayName(testResource ? org.openide.util.NbBundle.getMessage(OthersRootNode.class, "LBL_Other_Test_Sources") : org.openide.util.NbBundle.getMessage(OthersRootNode.class, "LBL_Other_Sources"));
         // can do so, since we depend on it..
 //        setIconBase("org/mevenide/netbeans/project/resources/defaultFolder"); //NOI18N
         file = fo;
     }
     
+    @Override
     public Action[] getActions(boolean context) {
-            List supers = Arrays.asList(super.getActions(context));
-            List lst = new ArrayList(supers.size() + 5);
+            List<Action> supers = Arrays.asList(super.getActions(context));
+            List<Action> lst = new ArrayList<Action>(supers.size() + 5);
             lst.addAll(supers);
             Action[] retValue = new Action[lst.size()];
-            retValue = (Action[])lst.toArray(retValue);
+            retValue = lst.toArray(retValue);
             return retValue;
 
     }
     
+    @Override
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
 //        retValue = Utilities.mergeImages(retValue,
@@ -65,6 +67,7 @@ class OthersRootNode extends AbstractNode {
         return retValue;
     }
     
+    @Override
     public java.awt.Image getOpenedIcon(int param) {
         java.awt.Image retValue = super.getOpenedIcon(param);
 //        retValue = Utilities.mergeImages(retValue,
@@ -73,6 +76,7 @@ class OthersRootNode extends AbstractNode {
         return retValue;
     }
     
+    @Override
     public String getDisplayName () {
         String s = super.getDisplayName ();
 
@@ -85,6 +89,7 @@ class OthersRootNode extends AbstractNode {
         return s;
     }
 
+    @Override
     public String getHtmlDisplayName() {
          try {
              FileSystem.Status stat = file.getFileSystem().getStatus();

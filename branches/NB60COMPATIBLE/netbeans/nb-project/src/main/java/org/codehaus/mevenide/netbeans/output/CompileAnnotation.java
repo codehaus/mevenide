@@ -45,7 +45,7 @@ import org.openide.windows.OutputListener;
  */
 public final class CompileAnnotation extends Annotation implements PropertyChangeListener, OutputListener {
     
-    private static final Set hyperlinks = new WeakSet(); // Set<Hyperlink>
+    private static final Set<CompileAnnotation> hyperlinks = new WeakSet<CompileAnnotation>(); // Set<Hyperlink>
     private boolean dead = false;
     
     public static void detachAllAnnotations() {
@@ -62,7 +62,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
     private String text;
     
     public CompileAnnotation(String clazz, String line, String textAnn) {
-        clazzfile = FileUtil.normalizeFile(new File(clazz + ".java"));
+        clazzfile = FileUtil.normalizeFile(new File(clazz + ".java")); //NOI18N
         text = textAnn;
         try {
             lineNum = Integer.parseInt(line);
@@ -92,7 +92,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
         }
         try {
             DataObject dob = DataObject.find(file);
-            EditorCookie ed = (EditorCookie) dob.getCookie(EditorCookie.class);
+            EditorCookie ed = dob.getCookie(EditorCookie.class);
             if (ed != null && file == dob.getPrimaryFile()) {
                 if (lineNum == -1) {
                     ed.open();
@@ -120,9 +120,9 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
     }
     
     private static void attachAllInFile(EditorCookie cook, CompileAnnotation annot) {
-        Set newSet = null;
+        Set<CompileAnnotation> newSet = null;
         synchronized (hyperlinks) {
-            newSet = new HashSet(hyperlinks);
+            newSet = new HashSet<CompileAnnotation>(hyperlinks);
         }
         Iterator it = newSet.iterator();
         while (it.hasNext()) {
@@ -199,6 +199,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
         return lineNum;
     }
     
+    @Override
     public String toString() {
         return "javaerror[" + clazzfile + ":" + lineNum + ":" + text + "]"; // NOI18N
     }

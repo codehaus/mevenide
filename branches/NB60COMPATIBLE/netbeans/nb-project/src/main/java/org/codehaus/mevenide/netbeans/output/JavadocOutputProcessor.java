@@ -37,14 +37,14 @@ import org.openide.windows.OutputListener;
 public class JavadocOutputProcessor implements OutputProcessor {
     
     private static final String[] JAVADOCGOALS = new String[] {
-        "mojo-execute#javadoc:javadoc"
+        "mojo-execute#javadoc:javadoc" //NOI18N
     };
     private Pattern index;
     private String path;
     
     /** Creates a new instance of JavadocOutputProcessor */
     public JavadocOutputProcessor() {
-        index = Pattern.compile("Generating (.*)index\\.html.*", Pattern.DOTALL);
+        index = Pattern.compile("Generating (.*)index\\.html.*", Pattern.DOTALL); //NOI18N
     }
     
     public String[] getRegisteredOutputSequences() {
@@ -64,7 +64,7 @@ public class JavadocOutputProcessor implements OutputProcessor {
     
     public void sequenceEnd(String sequenceId, OutputVisitor visitor) {
         if (path != null) {
-            visitor.setLine("View Generated javadoc at " + path);
+            visitor.setLine("View Generated javadoc at " + path); //NOI18N - shows up in maven output.
             visitor.setOutputListener(new Listener(path), false);
         }
     }

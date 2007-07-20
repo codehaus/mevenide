@@ -36,17 +36,13 @@ import org.openide.windows.OutputListener;
 public class ExecPluginOutputListenerProvider implements OutputProcessor {
     
     private static final String[] EXECGOALS = new String[] {
-        "mojo-execute#exec:exec",
-        "mojo-execute#exec:java"
+        "mojo-execute#exec:exec", //NOI18N
+        "mojo-execute#exec:java" //NOI18N
     };
-    private Pattern failPattern;
     private NbMavenProject project;
     
     /** Creates a new instance of ExecPluginOutputListenerProvider */
     public ExecPluginOutputListenerProvider(NbMavenProject proj) {
-        //[javac] required because of forked compilation
-        //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
-        failPattern = failPattern.compile("\\s*(?:\\[javac\\])?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL);
         project = proj;
     }
     

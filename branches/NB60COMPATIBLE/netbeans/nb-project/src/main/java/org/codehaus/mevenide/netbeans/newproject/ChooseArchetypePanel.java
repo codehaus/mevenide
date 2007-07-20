@@ -83,6 +83,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         updateDescription();
     }
     
+    @Override
     public void addNotify() {
         super.addNotify();
         tv.requestFocusInWindow();
@@ -290,7 +291,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             taDescription.setText(NbBundle.getMessage(ChooseArchetypePanel.class, "MSG_Description", 
                     new Object[] {
                             (arch.getName() != null ? arch.getName() : arch.getArtifactId()),
-                             arch.getDescription() == null ? "" : arch.getDescription(),
+                             arch.getDescription() == null ? "" : arch.getDescription(), //NOI18N
                              arch.getGroupId(),
                              arch.getArtifactId(),
                              arch.getVersion()
@@ -302,15 +303,17 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
     }
     
-    private static class Childs extends Children.Keys {
+    private static class Childs extends Children.Keys<Archetype> {
         private List<Archetype> keys;
         public Childs(List<Archetype> keys) {
             this.keys = keys;
         }
+        @Override
         public void addNotify() {
             setKeys(keys);
         }
         
+        @Override
         public void removeNotify() {
             setKeys(Collections.EMPTY_LIST);
         }
@@ -327,8 +330,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             refresh();
         }
         
-        public Node[] createNodes(Object key) {
-            Archetype arch = (Archetype)key;
+        public Node[] createNodes(Archetype arch) {
             AbstractNode nd = new AbstractNode(Children.LEAF);
             String dn = arch.getName() == null ? arch.getArtifactId() : arch.getName();
             nd.setName(dn);

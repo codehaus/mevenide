@@ -64,6 +64,7 @@ import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.util.actions.SystemAction;
+import org.openide.util.lookup.Lookups;
 
 
 /** A node to represent project root.
@@ -78,7 +79,7 @@ public class MavenProjectNode extends AbstractNode {
      public MavenProjectNode(Lookup lookup, NbMavenProject proj) {
         super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
         this.project = proj;
-        info = (ProjectInformation)project.getLookup().lookup(ProjectInformation.class);
+        info = project.getLookup().lookup(ProjectInformation.class);
         ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
                 if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
@@ -87,7 +88,7 @@ public class MavenProjectNode extends AbstractNode {
                 }
             }
         });
-        reporter = (ProblemReporter)proj.getLookup().lookup(ProblemReporter.class);
+        reporter = proj.getLookup().lookup(ProblemReporter.class);
         reporter.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {
@@ -103,10 +104,12 @@ public class MavenProjectNode extends AbstractNode {
     }
     
     
+    @Override
     public String getDisplayName() {
         return project.getDisplayName();
     }
     
+    @Override
     public Image getIcon(int param) {
         //HACK - 1. getImage call
         // 2. assume project root folder, should be Generic Sources root (but is the same)
@@ -123,6 +126,7 @@ public class MavenProjectNode extends AbstractNode {
         return img;
     }
     
+    @Override
     public Image getOpenedIcon(int param) {
         //HACK - 1. getImage call
         // 2. assume project root folder, should be Generic Sources root (but is the same)
@@ -139,16 +143,17 @@ public class MavenProjectNode extends AbstractNode {
         return img;
     }
     
+    @Override
     public javax.swing.Action[] getActions(boolean param) {
-        ArrayList lst = new ArrayList();
-        ActionProviderImpl provider = (ActionProviderImpl)project.getLookup().lookup(ActionProviderImpl.class);
+        ArrayList<Action> lst = new ArrayList<Action>();
+        ActionProviderImpl provider = project.getLookup().lookup(ActionProviderImpl.class);
         lst.add(CommonProjectActions.newFileAction());
         lst.add(null);
     
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_BUILD, NbBundle.getMessage(MavenProjectNode.class, "ACT_Build"), null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_REBUILD, NbBundle.getMessage(MavenProjectNode.class, "ACT_Clean_Build"), null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_CLEAN, NbBundle.getMessage(MavenProjectNode.class, "ACT_Clean"), null));
-        lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", NbBundle.getMessage(MavenProjectNode.class, "ACT_Javadoc"), null));
+        lst.add(ProjectSensitiveActions.projectCommandAction("javadoc", NbBundle.getMessage(MavenProjectNode.class, "ACT_Javadoc"), null)); //NOI18N
         lst.add(null);
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_RUN, NbBundle.getMessage(MavenProjectNode.class, "ACT_Run"), null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, NbBundle.getMessage(MavenProjectNode.class, "ACT_Debug"), null));
@@ -183,7 +188,7 @@ public class MavenProjectNode extends AbstractNode {
         
         lst.add(CommonProjectActions.customizeProjectAction());
         
-        return (Action[])lst.toArray(new Action[lst.size()]);
+        return lst.toArray(new Action[lst.size()]);
     }
     
     public static void loadLayerActions(String path, ArrayList lst) {
@@ -213,37 +218,38 @@ public class MavenProjectNode extends AbstractNode {
         }
     }
 
+    @Override
     public String getShortDescription() {
         StringBuffer buf = new StringBuffer();
-        buf.append("<html><i>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project1")).append("</i><b> ").append(project.getProjectDirectory().getPath()).append("</b><br><i>");
-        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project2")).append("</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br><i>");
-        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project3")).append("</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br><i>");
-        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project4")).append("</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br><i>");
+        buf.append("<html><i>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project1")).append("</i><b> ").append(project.getProjectDirectory().getPath()).append("</b><br><i>"); //NOI18N
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project2")).append("</i><b> ").append(project.getOriginalMavenProject().getGroupId()).append("</b><br><i>");//NOI18N
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project3")).append("</i><b> ").append(project.getOriginalMavenProject().getArtifactId()).append("</b><br><i>");//NOI18N
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project4")).append("</i><b> ").append(project.getOriginalMavenProject().getVersion()).append("</b><br><i>");//NOI18N
         //TODO escape the short description
-        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5")).append("</i> ").append(breakPerLine(project.getShortDescription(), NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5").length()));
+        buf.append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5")).append("</i> ").append(breakPerLine(project.getShortDescription(), NbBundle.getMessage(MavenProjectNode.class, "DESC_Project5").length()));//NOI18N
         if (reporter.getReports().size() > 0) {
-            buf.append("<br><b>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project6")).append("</b><br><ul>");
+            buf.append("<br><b>").append(NbBundle.getMessage(MavenProjectNode.class, "DESC_Project6")).append("</b><br><ul>");//NOI18N
             Iterator it = reporter.getReports().iterator();
             while (it.hasNext()) {
                 ProblemReport elem = (ProblemReport) it.next();
-                buf.append("<li>" + elem.getShortDescription() + "</li>");
+                buf.append("<li>" + elem.getShortDescription() + "</li>");//NOI18N
             }
-            buf.append("</ul>");
+            buf.append("</ul>");//NOI18N
         }
-        buf.append("</html>");
+        buf.append("</html>");//NOI18N
         return buf.toString();
     }
 
     private String breakPerLine(String string, int start) {
         StringBuffer buf = new StringBuffer();
-        StringTokenizer tok = new StringTokenizer(string, " ", true);
+        StringTokenizer tok = new StringTokenizer(string, " ", true);//NOI18N
         int charCount = start;
         while (tok.hasMoreTokens()) {
             String token = tok.nextToken();
             charCount = charCount + token.length();
             if (charCount > 50) {
                 charCount = 0;
-                buf.append("<br>");
+                buf.append("<br>");//NOI18N
             }
             buf.append(token);
         }
@@ -257,7 +263,7 @@ public class MavenProjectNode extends AbstractNode {
         }
 
         public void actionPerformed(ActionEvent e) {
-            SubprojectProvider subs = (SubprojectProvider)project.getLookup().lookup(SubprojectProvider.class);
+            SubprojectProvider subs = project.getLookup().lookup(SubprojectProvider.class);
             Set lst = subs.getSubprojects();
             Project[] arr = (Project[]) lst.toArray(new Project[lst.size()]);
             OpenProjects.getDefault().close(arr);

@@ -57,7 +57,7 @@ public class ModulesNodeFactory implements NodeFactory {
         }
         
         public List<String> keys() {
-            if ("pom".equals(project.getOriginalMavenProject().getPackaging())) {
+            if ("pom".equals(project.getOriginalMavenProject().getPackaging())) { //NOI18N
                 return Collections.singletonList(KEY_MODULES);
             }
             return Collections.emptyList();
@@ -67,10 +67,12 @@ public class ModulesNodeFactory implements NodeFactory {
             return  new ModulesNode(project);
         }
         
+        @Override
         public void addNotify() {
             ProjectURLWatcher.addPropertyChangeListener(project, this);
         }
         
+        @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, this);
         }

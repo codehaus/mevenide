@@ -131,7 +131,7 @@ public class TestOutputListenerProvider implements OutputProcessor {
     private static class TestOutputListener implements OutputListener {
         private String testname;
         private String outputDir;
-        private Pattern testNamePattern = Pattern.compile(".*\\((.*)\\).*<<< FAILURE!\\s*");
+        private Pattern testNamePattern = Pattern.compile(".*\\((.*)\\).*<<< FAILURE!\\s*"); //NOI18N
         
         public TestOutputListener(String test, String outDir) {
             testname = test;
@@ -155,15 +155,15 @@ public class TestOutputListenerProvider implements OutputProcessor {
                 return;
             }
             outDir.refresh();
-            FileObject report = outDir.getFileObject(testname + ".txt");
+            FileObject report = outDir.getFileObject(testname + ".txt"); //NOI18N
             Project prj = FileOwnerQuery.getOwner(outDir);
             if (prj != null) {
                 NbMavenProject nbprj = prj.getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
                 File testDir = new File(nbprj.getOriginalMavenProject().getBuild().getTestSourceDirectory());
 
                 if (report != null) {
-                    String nm = testname.lastIndexOf('.') > -1 
-                            ? testname.substring(testname.lastIndexOf('.')) 
+                    String nm = testname.lastIndexOf('.') > -1  //NOI18N
+                            ? testname.substring(testname.lastIndexOf('.'))  //NOI18N
                             : testname;
                     openLog(report, nm, testDir);
                 } else {
@@ -195,7 +195,7 @@ public class TestOutputListenerProvider implements OutputProcessor {
                 while ((line = reader.readLine()) != null) {
                     Matcher m = testNamePattern.matcher(line);
                     if (m.matches()) {
-                        String testClassName = m.group(1).replace('.', File.separatorChar) + ".java";
+                        String testClassName = m.group(1).replace('.', File.separatorChar) + ".java"; //NOI18N
                         File testClassFile = new File(testDir, testClassName);
                         FileObject testFileObject = FileUtil.toFileObject(testClassFile);
                         classPath = ClassPath.getClassPath(testFileObject, ClassPath.EXECUTE);
@@ -225,33 +225,4 @@ public class TestOutputListenerProvider implements OutputProcessor {
             }
         }
     }
-    
-    private static class StacktraceOutputListener implements OutputListener {
-        
-        private EditorCookie cookie;
-        private int line;
-        public StacktraceOutputListener(EditorCookie cook, int ln) {
-            cookie = cook;
-            line = ln - 1;
-        }
-        public void outputLineSelected(OutputEvent ev) {
-            cookie.getLineSet().getCurrent(line).show(Line.SHOW_SHOW);
-        }
-        
-        /** Called when some sort of action is performed on a line.
-         * @param ev the event describing the line
-         */
-        public void outputLineAction(OutputEvent ev) {
-            cookie.getLineSet().getCurrent(line).show(Line.SHOW_GOTO);
-        }
-        
-        /** Called when a line is cleared from the buffer of known lines.
-         * @param ev the event describing the line
-         */
-        public void outputLineCleared(OutputEvent ev) {
-        }
-        
-    }
-    
-    
 }

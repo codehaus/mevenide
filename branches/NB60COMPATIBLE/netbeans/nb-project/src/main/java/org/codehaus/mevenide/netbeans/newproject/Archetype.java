@@ -94,10 +94,12 @@ public final class Archetype {
         return repository;
     }
     
+    @Override
     public int hashCode() {
         return getGroupId().trim().hashCode() + 13 * getArtifactId().trim().hashCode() + 23 * getVersion().trim().hashCode();
     }
     
+    @Override
     public boolean equals(Object obj) {
         Archetype ar1 = (Archetype)obj;
         boolean gr = ar1.getGroupId().trim().equals(getGroupId().trim());

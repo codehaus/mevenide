@@ -43,6 +43,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -56,23 +57,23 @@ public class ProjectFilesNode extends AbstractNode {
     public ProjectFilesNode(NbMavenProject project) {
         super(new ProjectFilesChildren(project), Lookups.fixed(project.getProjectDirectory()));
         setName("projectfiles"); //NOI18N
-        setDisplayName("Project Files");
+        setDisplayName(org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "LBL_Project_Files"));
         setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif"); //NOI18N
         this.project = project;
     }
     
     public Action[] getActions(boolean context) {
-        Collection col = new ArrayList();
+        Collection<Action> col = new ArrayList<Action>();
         if (project.getProjectDirectory().getFileObject("profiles.xml") == null) { //NOI18N
             col.add(new AddProfileXmlAction());
         };
         if (! new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml").exists()) { //NOI18N
             col.add(new AddSettingsXmlAction());
         };
-        return (Action[])col.toArray(new Action[col.size()]);
+        return col.toArray(new Action[col.size()]);
     }
     
-    private static class ProjectFilesChildren extends Children.Keys implements PropertyChangeListener {
+    private static class ProjectFilesChildren extends Children.Keys<File> implements PropertyChangeListener {
         private NbMavenProject project;
         private FileChangeAdapter fileChangeListener;
         
@@ -80,10 +81,12 @@ public class ProjectFilesNode extends AbstractNode {
             super();
             project = proj;
             fileChangeListener = new FileChangeAdapter() {
+                @Override
                 public void fileDataCreated(FileEvent fe) {
                     regenerateKeys();
                     refresh();
                 }
+                @Override
                 public void fileDeleted(FileEvent fe) {
                     regenerateKeys();
                     refresh();
@@ -91,8 +94,7 @@ public class ProjectFilesNode extends AbstractNode {
             };
         }
         
-        protected Node[] createNodes(Object obj) {
-            File fil = (File)obj;
+        protected Node[] createNodes(File fil) {
             FileObject fo = FileUtil.toFileObject(fil);
             if (fo != null) {
                 try {
@@ -123,6 +125,7 @@ public class ProjectFilesNode extends AbstractNode {
 //            }
 //        }
         
+        @Override
         protected void addNotify() {
             super.addNotify();
             ProjectURLWatcher.addPropertyChangeListener(project, this);
@@ -130,6 +133,7 @@ public class ProjectFilesNode extends AbstractNode {
             regenerateKeys();
         }
         
+        @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
             ProjectURLWatcher.removePropertyChangeListener(project, this);
@@ -138,7 +142,7 @@ public class ProjectFilesNode extends AbstractNode {
         }
         
         private void regenerateKeys() {
-            Collection keys = new ArrayList();
+            Collection<File> keys = new ArrayList<File>();
             keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")); //NOI18N
             keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")); //NOI18N
             keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")); //NOI18N
@@ -148,7 +152,7 @@ public class ProjectFilesNode extends AbstractNode {
     
     private class AddProfileXmlAction extends AbstractAction {
         AddProfileXmlAction() {
-            putValue(Action.NAME, "Create profiles.xml");
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "BTN_Create_profile_xml"));
         }
         public void actionPerformed(ActionEvent e) {
             try {
@@ -157,7 +161,7 @@ public class ProjectFilesNode extends AbstractNode {
                 FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/profiles.xml"); //NOI18N
                 DataObject dobj = DataObject.find(temp);
                 DataObject newOne = dobj.createFromTemplate(folder);
-                EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
+                EditCookie cook = newOne.getCookie(EditCookie.class);
                 if (cook != null) {
                     cook.edit();
                 }
@@ -173,7 +177,7 @@ public class ProjectFilesNode extends AbstractNode {
     
     private class AddSettingsXmlAction extends AbstractAction {
         AddSettingsXmlAction() {
-            putValue(Action.NAME, "Create settings.xml");
+            putValue(Action.NAME, NbBundle.getMessage(ProjectFilesNode.class, "BTN_Create_settings_xml"));
         }
         
         public void actionPerformed(ActionEvent e) {
@@ -191,7 +195,7 @@ public class ProjectFilesNode extends AbstractNode {
                 FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml"); //NOI18N
                 DataObject dobj = DataObject.find(temp);
                 DataObject newOne = dobj.createFromTemplate(folder);
-                EditCookie cook = (EditCookie)newOne.getCookie(EditCookie.class);
+                EditCookie cook = newOne.getCookie(EditCookie.class);
                 if (cook != null) {
                     cook.edit();
                 }

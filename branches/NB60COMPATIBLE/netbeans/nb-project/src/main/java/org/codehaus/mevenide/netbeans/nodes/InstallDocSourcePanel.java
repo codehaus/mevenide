@@ -27,6 +27,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
 
 
 /**
@@ -35,7 +36,7 @@ import org.openide.util.HelpCtx;
  */
 public class InstallDocSourcePanel extends javax.swing.JPanel {
 
-    private static File lastFolder = new File(System.getProperty("user.home"));
+    private static File lastFolder = new File(System.getProperty("user.home")); //NOI18N
 
     private boolean docs;
     
@@ -44,9 +45,9 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
         initComponents();
         docs = javadoc;
         if (javadoc) {
-            lblFile.setText("Javadoc Jar/Zip Location:");
+            lblFile.setText(org.openide.util.NbBundle.getMessage(InstallDocSourcePanel.class, "TXT_Javadoc_Loc"));
         } else {
-            lblFile.setText("Sources Jar/Zip Location");
+            lblFile.setText(org.openide.util.NbBundle.getMessage(InstallDocSourcePanel.class, "TXT_Sources_Loc"));
         }
     }
     
@@ -61,13 +62,14 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblFile = new javax.swing.JLabel();
         txtFile = new javax.swing.JTextField();
         btnFile = new javax.swing.JButton();
 
-        lblFile.setText("Javadoc Location :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblFile, "Javadoc Location :");
 
-        btnFile.setText("Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnFile, org.openide.util.NbBundle.getMessage(InstallDocSourcePanel.class, "BTN_Browse")); // NOI18N
         btnFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFileActionPerformed(evt);
@@ -82,7 +84,7 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
                 .addContainerGap()
                 .add(lblFile)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(txtFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                .add(txtFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(btnFile)
                 .addContainerGap())
@@ -100,16 +102,18 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileActionPerformed
-// TODO add your handling code here:
         JFileChooser chooser = new JFileChooser(lastFolder);
-        chooser.setDialogTitle("Select zip/jar file with " + (isJavadoc() ? " javadocs" : "sources"));
+        chooser.setDialogTitle(isJavadoc() ? NbBundle.getMessage(InstallDocSourcePanel.class, "TIT_Select_javadoc_zip")
+                                           : NbBundle.getMessage(InstallDocSourcePanel.class, "TIT_Select_source_zip"));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setFileFilter(new FileFilter() {
             public boolean accept(File f) {
-                return (f.isDirectory() || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".zip"));
+                return (f.isDirectory() || f.getName().toLowerCase().endsWith(".jar") || f.getName().toLowerCase().endsWith(".zip")); //NOI18N
             }
             public String getDescription() {
-                return "Jar/zip files with " + (isJavadoc() ? " javadocs" : "sources");
+                
+                return isJavadoc() ? NbBundle.getMessage(InstallDocSourcePanel.class, "LBL_Select_javadoc_zip")
+                                   : NbBundle.getMessage(InstallDocSourcePanel.class, "LBL_Select_source_zip");
             }
         });
         chooser.setMultiSelectionEnabled(false);
@@ -119,7 +123,7 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
                 chooser.setSelectedFile(fil);
             }
         }
-        int ret = chooser.showDialog(SwingUtilities.getWindowAncestor(this), "Select");
+        int ret = chooser.showDialog(SwingUtilities.getWindowAncestor(this), org.openide.util.NbBundle.getMessage(InstallDocSourcePanel.class, "BTN_Select"));
         if (ret == JFileChooser.APPROVE_OPTION) {
             txtFile.setText(chooser.getSelectedFile().getAbsolutePath());
             txtFile.requestFocusInWindow();
@@ -134,7 +138,7 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
     
     public static File showInstallDialog(boolean javadoc) {
         final InstallDocSourcePanel panel = new InstallDocSourcePanel(javadoc);
-        final JButton btnSelect  = new JButton("Select");
+        final JButton btnSelect  = new JButton(org.openide.util.NbBundle.getMessage(InstallDocSourcePanel.class, "BTN_Select"));
         btnSelect.setEnabled(panel.getFile() != null);
         panel.addDocListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
@@ -151,7 +155,9 @@ public class InstallDocSourcePanel extends javax.swing.JPanel {
             btnSelect,
             NotifyDescriptor.CANCEL_OPTION
         };
-        DialogDescriptor dd = new DialogDescriptor(panel, "Use local " + (panel.isJavadoc() ? "javadocs" : "sources"),
+        String tit = panel.isJavadoc() ? NbBundle.getMessage(InstallDocSourcePanel.class, "TIT_Use_local_docs")
+                                 : NbBundle.getMessage(InstallDocSourcePanel.class, "TIT_Use_local_source");
+        DialogDescriptor dd = new DialogDescriptor(panel, tit,
                 true,
                 options,
                 btnSelect, 0, HelpCtx.DEFAULT_HELP, null);

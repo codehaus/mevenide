@@ -34,6 +34,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.HelpCtx;
+import org.openide.util.NbBundle;
 
 
 /**
@@ -42,7 +43,7 @@ import org.openide.util.HelpCtx;
  */
 public class InstallPanel extends javax.swing.JPanel {
 
-    private static File lastFolder = new File(System.getProperty("user.home"));
+    private static File lastFolder = new File(System.getProperty("user.home")); //NOI18N
     
     /** Creates new form InstallPanel */
     private InstallPanel() {
@@ -56,21 +57,22 @@ public class InstallPanel extends javax.swing.JPanel {
      */
     // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
     private void initComponents() {
+
         lblFile = new javax.swing.JLabel();
         txtFile = new javax.swing.JTextField();
         btnFile = new javax.swing.JButton();
         lblHint = new javax.swing.JLabel();
 
-        lblFile.setText("Artifact to Install :");
+        org.openide.awt.Mnemonics.setLocalizedText(lblFile, org.openide.util.NbBundle.getMessage(InstallPanel.class, "InstallPanel.lblFile.text")); // NOI18N
 
-        btnFile.setText("Browse...");
+        org.openide.awt.Mnemonics.setLocalizedText(btnFile, org.openide.util.NbBundle.getMessage(InstallPanel.class, "InstallPanel.btnFile.text")); // NOI18N
         btnFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnFileActionPerformed(evt);
             }
         });
 
-        lblHint.setText("<html>Please enter path to the binary for dependency: <p></html>");
+        org.openide.awt.Mnemonics.setLocalizedText(lblHint, org.openide.util.NbBundle.getMessage(InstallPanel.class, "InstallPanel.lblHint.text")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -84,11 +86,9 @@ public class InstallPanel extends javax.swing.JPanel {
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(txtFile, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnFile)
-                        .addContainerGap())
-                    .add(layout.createSequentialGroup()
-                        .add(lblHint)
-                        .addContainerGap(175, Short.MAX_VALUE))))
+                        .add(btnFile))
+                    .add(lblHint))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -107,14 +107,14 @@ public class InstallPanel extends javax.swing.JPanel {
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileActionPerformed
 // TODO add your handling code here:
         JFileChooser chooser = new JFileChooser(lastFolder);
-        chooser.setDialogTitle("Select binary artifact to install in local repository.");
+        chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(InstallPanel.class, "TIT_Select_Artifact"));
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setFileFilter(new FileFilter() {
             public boolean accept(File f) {
-                return (f.isDirectory() || f.getName().toLowerCase().endsWith(".jar"));
+                return (f.isDirectory() || f.getName().toLowerCase().endsWith(".jar"));//NOI18N
             }
             public String getDescription() {
-                return "Jar files";
+                return org.openide.util.NbBundle.getMessage(InstallPanel.class, "SEL_Jars");
             }
         });
         chooser.setMultiSelectionEnabled(false);
@@ -124,7 +124,7 @@ public class InstallPanel extends javax.swing.JPanel {
                 chooser.setSelectedFile(fil);
             }
         }
-        int ret = chooser.showDialog(SwingUtilities.getWindowAncestor(this), "Select");
+        int ret = chooser.showDialog(SwingUtilities.getWindowAncestor(this), org.openide.util.NbBundle.getMessage(InstallPanel.class, "TIT_Select"));
         if (ret == JFileChooser.APPROVE_OPTION) {
             txtFile.setText(chooser.getSelectedFile().getAbsolutePath());
             txtFile.requestFocusInWindow();
@@ -139,11 +139,11 @@ public class InstallPanel extends javax.swing.JPanel {
     
     public static File showInstallDialog(Artifact art) {
         final InstallPanel panel = new InstallPanel();
-        panel.setExplainText("<html>Please enter path to jar file that represents the dependency with <br>groupId: <b>" + 
-                art.getGroupId() + "</b>,<br>artifactId: <b>" + art.getArtifactId() + "</b> and <br>version: <b>" + art.getVersion() +  
-                "</b><br>This jar will be copied to  your local repository. " +
-                "<br>Please note that having non-repository based jars as dependencies is bad for build reproducibility.</html>");
-        final JButton btnSelect  = new JButton("Install locally");
+        panel.setExplainText(NbBundle.getMessage(InstallPanel.class, "MSG_Instructions", 
+                art.getGroupId(), art.getArtifactId(), art.getVersion()));
+                
+                
+        final JButton btnSelect  = new JButton(org.openide.util.NbBundle.getMessage(InstallPanel.class, "BTN_Install_locally"));
         btnSelect.setEnabled(panel.getFile() != null);
         panel.addDocListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
@@ -160,7 +160,7 @@ public class InstallPanel extends javax.swing.JPanel {
             btnSelect,
             NotifyDescriptor.CANCEL_OPTION
         };
-        DialogDescriptor dd = new DialogDescriptor(panel, "Install locally",
+        DialogDescriptor dd = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(InstallPanel.class, "TIT_Install_locally"),
                 true,
                 options,
                 btnSelect, 0, HelpCtx.DEFAULT_HELP, null);
@@ -177,19 +177,19 @@ public class InstallPanel extends javax.swing.JPanel {
         BeanRunConfig brc = new BeanRunConfig();
         brc.setExecutionDirectory(project.getPOMFile().getParentFile());
         brc.setProject(project);
-        brc.setGoals(Collections.singletonList("install:install-file"));
-        brc.setExecutionName("install-artifact");
+        brc.setGoals(Collections.singletonList("install:install-file")); //NOI18N
+        brc.setExecutionName("install-artifact"); //NOI18N
         Properties props = new Properties();
-        props.put("artifactId", art.getArtifactId());
-        props.put("groupId", art.getGroupId());
-        props.put("version", art.getVersion());
-        props.put("packaging", art.getType());
-        props.put("file", fil.getAbsolutePath());
-        props.put("generatePom", "false");
+        props.put("artifactId", art.getArtifactId()); //NOI18N
+        props.put("groupId", art.getGroupId()); //NOI18N
+        props.put("version", art.getVersion()); //NOI18N
+        props.put("packaging", art.getType()); //NOI18N
+        props.put("file", fil.getAbsolutePath()); //NOI18N
+        props.put("generatePom", "false"); //NOI18N
         brc.setProperties(props);
         brc.setActivatedProfiles(Collections.EMPTY_LIST);
         
-        RunUtils.executeMaven("Install", brc);
+        RunUtils.executeMaven("Install", brc); //NOI18N
         //TODO how to handle errors
         
     }
