@@ -44,6 +44,12 @@ import org.openide.filesystems.FileObject;
  * @author mkleint
  */
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
+    private static final String EL_CONFIG = "configuration"; //NOI18N
+    private static final String EL_SOURCE = "source"; //NOI18N
+    private static final String EL_TARGET = "target"; //NOI18N
+    private static final String PLUGIN_AR = "maven-compiler-plugin"; //NOI18N
+    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
+    private static final String SL_15 = "1.5"; //NOI18N
     private NbMavenProject project;
     /** Creates a new instance of CPExtender */
     public CPExtender(NbMavenProject project) {
@@ -97,23 +103,23 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
 
     public boolean addLibrary(Library library) throws IOException {
-        if ("toplink".equals(library.getName())) {
+        if ("toplink".equals(library.getName())) { //NOI18N
             //TODO would be nice if the toplink lib shipping with netbeans be the same binary
             // then we could just copy the pieces to local repo.
-            FileObject pom = project.getProjectDirectory().getFileObject("pom.xml");
+            FileObject pom = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
             Model mdl = WriterUtils.loadModel(pom);
             MavenProject mp = project.getOriginalMavenProject();
             Dependency dep = new Dependency();
-            dep.setGroupId("toplink.essentials");
-            dep.setArtifactId("toplink-essentials");
-            dep.setVersion("2.0-36");
+            dep.setGroupId("toplink.essentials"); //NOI18N
+            dep.setArtifactId("toplink-essentials"); //NOI18N
+            dep.setVersion("2.0-36"); //NOI18N
             if (!containsDependency(dep, mp)) {
                 mdl.addDependency(dep);
             }
             Repository repo = new Repository();
-            repo.setId("m1-java.net");
-            repo.setUrl("https://maven-repository.dev.java.net/nonav/repository");
-            repo.setLayout("legacy");
+            repo.setId("m1-java.net"); //NOI18N
+            repo.setUrl("https://maven-repository.dev.java.net/nonav/repository"); //NOI18N
+            repo.setLayout("legacy"); //NOI18N
             if (!containsRepository(repo, mp)) {
                 mdl.addRepository(repo);
             }
@@ -163,17 +169,16 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private void checkSourceLevel(Model mdl) {
-        String source = PluginPropertyUtils.getPluginProperty(project, 
-                "org.apache.maven.plugins", 
-                "maven-compiler-plugin", 
-                "source", "compile");
-        if (source != null && source.contains("1.5")) {
+        String source = PluginPropertyUtils.getPluginProperty(project,
+                PLUGIN_GR,PLUGIN_AR, EL_SOURCE, 
+                "compile"); //NOI18N
+        if (source != null && source.contains(SL_15)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId("org.apache.maven.plugins");
-        plugin.setArtifactId("maven-compiler-plugin");
-        plugin.setVersion("RELEASE");
+        plugin.setGroupId(PLUGIN_GR);
+        plugin.setArtifactId(PLUGIN_AR);
+        plugin.setVersion("RELEASE"); //NOI18N
         Plugin old = null;
         Build bld = mdl.getBuild();
         if (bld != null) {
@@ -188,22 +193,22 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
         if (dom == null) {
-            dom = new Xpp3Dom("configuration");
+            dom = new Xpp3Dom(EL_CONFIG);
             plugin.setConfiguration(dom);
         }
-        Xpp3Dom dom2 = dom.getChild("source");
+        Xpp3Dom dom2 = dom.getChild(EL_SOURCE);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("source");
+            dom2 = new Xpp3Dom(EL_SOURCE);
             dom.addChild(dom2);
         }
-        dom2.setValue("1.5");
+        dom2.setValue(SL_15);
         
-        dom2 = dom.getChild("target");
+        dom2 = dom.getChild(EL_TARGET);
         if (dom2 == null) {
-            dom2 = new Xpp3Dom("target");
+            dom2 = new Xpp3Dom(EL_TARGET);
             dom.addChild(dom2);
         }
-        dom2.setValue("1.5");
+        dom2.setValue(SL_15);
     }
 
 }
