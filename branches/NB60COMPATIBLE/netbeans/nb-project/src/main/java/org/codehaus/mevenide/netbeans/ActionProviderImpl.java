@@ -168,7 +168,11 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public Action createCustomMavenAction(String name, NetbeansActionMapping mapping) {
-        return new CustomAction(name, mapping);
+        return createCustomMavenAction(name, mapping, false);
+    }
+    
+    public Action createCustomMavenAction(String name, NetbeansActionMapping mapping, boolean showUI) {
+        return new CustomAction(name, mapping, showUI);
     }
     
     public Action createCustomPopupAction() {
@@ -216,14 +220,22 @@ public class ActionProviderImpl implements ActionProvider {
     
     private final class CustomAction extends AbstractAction {
         private NetbeansActionMapping mapping;
+        private boolean showUI;
         
-        
-        private CustomAction(String name, NetbeansActionMapping mapp) {
+        private CustomAction(String name, NetbeansActionMapping mapp, boolean showUI) {
             mapping = mapp;
             putValue(Action.NAME, name);
+            this.showUI = showUI;
         }
         
         public void actionPerformed(java.awt.event.ActionEvent e) {
+            if (!showUI) {
+                ModelRunConfig rc = new ModelRunConfig(project, mapping);
+                rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
+                
+                runGoal("custom", Lookup.EMPTY, rc); //NOI18N
+                return;
+            }
             RunGoalsPanel pnl = new RunGoalsPanel();
             DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ActionProviderImpl.class, "TIT_Run_Maven"));
             ActionToGoalMapping maps = ActionToGoalUtils.readMappingsFromFileAttributes(project.getProjectDirectory());
@@ -291,7 +303,7 @@ public class ActionProviderImpl implements ActionProvider {
             NetbeansActionMapping[] maps = ActionToGoalUtils.getActiveCustomMappings(project);
             for (int i = 0; i < maps.length; i++) {
                 NetbeansActionMapping mapp = maps[i];
-                Action act = createCustomMavenAction(mapp.getActionName(), mapp);
+                Action act = createCustomMavenAction(mapp.getActionName(), mapp, false);
                 JMenuItem item = new JMenuItem(act);
                 item.setText(mapp.getDisplayName() == null ? mapp.getActionName() : mapp.getDisplayName());
                 menu.add(item);
