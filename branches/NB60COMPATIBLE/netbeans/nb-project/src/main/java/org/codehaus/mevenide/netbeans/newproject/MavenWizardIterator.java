@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.newproject;
 
+import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;

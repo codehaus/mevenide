@@ -17,6 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.newproject;
 
+import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
+import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
 import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

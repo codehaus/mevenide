@@ -15,10 +15,11 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.newproject;
+package org.codehaus.mevenide.netbeans.api.archetype;
 
 /**
- *
+ * Simple model class to describe a Maven archetype. To be created by ArchetypeProvider 
+ * implementations, consumed by the New Maven Project wizard.
  * @author mkleint
  */
 public final class Archetype {
@@ -29,7 +30,7 @@ public final class Archetype {
     private String name;
     private String description;
     private String repository;
-    boolean deletable;
+    public final boolean deletable;
     
     /** Creates a new instance of Archetype */
     public Archetype(boolean deletable) {
@@ -39,6 +40,7 @@ public final class Archetype {
     public Archetype() {
         this(true);
     }
+    
     
     public String getArtifactId() {
         return artifactId;

@@ -15,15 +15,23 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.newproject;
+package org.codehaus.mevenide.netbeans.api.archetype;
 
 import java.util.List;
 
 /**
- * componentized provider of list of available archetypes.
+ * Componentized provider of list of available archetypes.
+ * It is used in New Maven project wizard to populate the list of available archetypes.
+ * The providers are expected to be registered in META-INF/services of the module.
+ * There are 2 default implementations registered: One lists 3 basic archetypes 
+ * (simple, webapp and mojo) and the other lists all archetypes it find in local repository index.
  * @author mkleint
  */
 public interface ArchetypeProvider {
-    
+
+    /**
+     * return Archetype instances known to this provider. Is called once per
+     * New Maven Project wizard invokation.
+     */ 
     List<Archetype> getArchetypes();
 }
