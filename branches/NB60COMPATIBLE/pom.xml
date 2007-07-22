@@ -13,14 +13,8 @@
         <url>http://jira.codehaus.org/browse/MEVENIDE</url>
     </issueManagement>
     <ciManagement>
-        <system>continuum</system>
-        <notifiers>
-            <notifier>
-                <configuration>
-                    <address>mkleint@codehaus.org</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <system>hudson</system>
+        <url>http://deadlock.netbeans.org/hudson/job/mevenide/</url>
     </ciManagement>
     <scm>
         <connection>scm:svn:http://svn.codehaus.org/mevenide/trunk/mevenide2</connection>
