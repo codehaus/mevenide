@@ -95,7 +95,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
         } catch (MalformedURLException malformedURLException) {
             Exceptions.printStackTrace(malformedURLException);
         }
-        return null; //or defEnc?
+        return Charset.defaultCharset();
     }
     
     private boolean isWithin(URI[] res, FileObject file) throws MalformedURLException {
