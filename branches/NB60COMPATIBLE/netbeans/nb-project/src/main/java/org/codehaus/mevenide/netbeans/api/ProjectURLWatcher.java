@@ -21,6 +21,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
@@ -41,6 +43,7 @@ public final class ProjectURLWatcher {
     private NbMavenProject project;
     private PropertyChangeSupport support;
     private FCHSL listener = new FCHSL();
+    private List<File> files = new ArrayList<File>();
     
     static {
         AccessorImpl impl = new AccessorImpl();
@@ -131,14 +134,36 @@ public final class ProjectURLWatcher {
     } 
     
     public synchronized void addWatchedPath(URI uri) {
-        FileChangeSupport.DEFAULT.addListener(listener, new File(uri));
+        //#110599
+        boolean addListener = false;
+        File fil = new File(uri);
+        synchronized (files) {
+            if (!files.contains(fil)) {
+                addListener = true;
+            }
+            files.add(fil);
+        }
+        if (addListener) {
+            FileChangeSupport.DEFAULT.addListener(listener, fil);
+        }
     } 
     
     public synchronized void removeWatchedPath(String relPath) {
         removeWatchedPath(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));
     }
     public synchronized void removeWatchedPath(URI uri) {
-        FileChangeSupport.DEFAULT.removeListener(listener, new File(uri));
+        //#110599
+        boolean removeListener = false;
+        File fil = new File(uri);
+        synchronized (files) {
+            boolean rem = files.remove(fil);
+            if (rem && !files.contains(fil)) {
+                removeListener = true;
+            }
+        }
+        if (removeListener) {
+            FileChangeSupport.DEFAULT.removeListener(listener, fil);
+        }
     } 
     
     
