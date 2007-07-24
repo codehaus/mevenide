@@ -60,7 +60,7 @@ public class SourcesPanel extends JPanel {
     private static final String TARGET_PARAM = "target";//NOI18N
     
     private String encoding;
-    private String defaultEncoding = "UTF-8"; //NOI18N
+    private String defaultEncoding;
     private String defaultSourceLevel = "1.3";//NOI18N
     private String sourceLevel;
     private ModelHandle handle;
@@ -99,9 +99,9 @@ public class SourcesPanel extends JPanel {
             encoding = chs.name();
         }
         if (encoding == null) {
-            encoding = FileEncodingQuery.getDefaultEncoding().name();
+            encoding = Charset.defaultCharset().toString();
         }
-        defaultEncoding = FileEncodingQuery.getDefaultEncoding().name();
+        defaultEncoding = Charset.defaultCharset().toString();
         
         comEncoding.setModel(new EncodingModel(encoding));
         comEncoding.setRenderer(new EncodingRenderer());
