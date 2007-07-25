@@ -329,8 +329,8 @@ public final class NbMavenProject implements Project {
     
     
     public URI[] getSourceRoots(boolean test) {
-        List srcs = test ? getOriginalMavenProject().getCompileSourceRoots() : 
-                           getOriginalMavenProject().getTestCompileSourceRoots();
+        List srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : 
+                           getOriginalMavenProject().getCompileSourceRoots();
         URI[] uris = new URI[srcs.size()];
         Iterator it = srcs.iterator();
         int count = 0;
