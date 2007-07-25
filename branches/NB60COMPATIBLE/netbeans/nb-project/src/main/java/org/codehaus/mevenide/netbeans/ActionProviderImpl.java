@@ -168,7 +168,7 @@ public class ActionProviderImpl implements ActionProvider {
     }
     
     public Action createCustomMavenAction(String name, NetbeansActionMapping mapping) {
-        return createCustomMavenAction(name, mapping, false);
+        return createCustomMavenAction(name, mapping, true);
     }
     
     public Action createCustomMavenAction(String name, NetbeansActionMapping mapping, boolean showUI) {
