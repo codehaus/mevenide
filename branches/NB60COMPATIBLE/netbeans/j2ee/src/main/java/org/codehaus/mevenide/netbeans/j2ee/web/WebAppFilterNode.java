@@ -111,7 +111,7 @@ class WebAppFilterNode extends FilterNode {
         java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/j2ee/web/webPagesBadge.png"), //NOI18N
                                              8, 8);
         } 
         return retValue;
@@ -122,7 +122,7 @@ class WebAppFilterNode extends FilterNode {
         java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/j2ee/web/webPagesBadge.png"), //NOI18N
                                              8, 8);
         } 
         return retValue;
@@ -137,6 +137,7 @@ class WebAppFilterNode extends FilterNode {
             project = proj;
         }
         
+        @Override
         protected Node[] createNodes(Node obj) {
             DataObject dobj = obj.getLookup().lookup(DataObject.class);
         

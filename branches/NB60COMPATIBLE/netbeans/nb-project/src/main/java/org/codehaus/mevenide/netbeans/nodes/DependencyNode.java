@@ -111,8 +111,8 @@ public class DependencyNode extends AbstractNode {
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
         super(createChildren(lookup, isLongLiving), lookup);
 //        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
-        project = (NbMavenProject)lookup.lookup(NbMavenProject.class);
-        art = (Artifact)lookup.lookup(Artifact.class);
+        project = lookup.lookup(NbMavenProject.class);
+        art = lookup.lookup(Artifact.class);
         longLiving = isLongLiving;
         if (longLiving) {
             listener = new PropertyChangeListener() {
@@ -151,11 +151,11 @@ public class DependencyNode extends AbstractNode {
         } else if (longLiving && isDependencyProjectOpen()) {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/Maven2Icon.gif"); //NOI18N
         } else if (isTransitive()) {
-            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveDependencyIcon.gif"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveDependencyIcon.png"); //NOI18N
         } else if (isJarDependency()) { //NOI18N
-            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyJar.gif"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
         } else {
-            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.gif"); //NOI18N
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
         }
     }
     
@@ -204,8 +204,9 @@ public class DependencyNode extends AbstractNode {
         return art.getFile().getName();
     }
     
+    @Override
     public Action[] getActions( boolean context ) {
-        Collection acts = new ArrayList();
+        Collection<Action> acts = new ArrayList<Action>();
         acts.add(new ViewJavadocAction());
         InstallLocalArtifactAction act = new InstallLocalArtifactAction();
         acts.add(act);
@@ -229,26 +230,31 @@ public class DependencyNode extends AbstractNode {
         }
         acts.add(null);
         acts.add(PropertiesAction.get(PropertiesAction.class));
-        return (Action[])acts.toArray(new Action[acts.size()]);
+        return acts.toArray(new Action[acts.size()]);
     }
     
+    @Override
     public boolean canDestroy() {
         return true;
     }
     
+    @Override
     public boolean canRename() {
         return false;
     }
     
     
+    @Override
     public boolean canCut() {
         return false;
     }
     
+    @Override
     public boolean canCopy() {
         return false;
     }
     
+    @Override
     public boolean hasCustomizer() {
         return false;
     }
@@ -345,8 +351,9 @@ public class DependencyNode extends AbstractNode {
     }
     
     
-    public java.awt.Image getIcon(int param) {
-        java.awt.Image retValue;
+    @Override
+    public Image getIcon(int param) {
+        Image retValue;
         retValue = super.getIcon(param);
         if (isLocal()) {
             if (hasJavadocInRepository()) {
@@ -367,8 +374,9 @@ public class DependencyNode extends AbstractNode {
         }
     }
     
+    @Override
     public Image getOpenedIcon(int type) {
-        java.awt.Image retValue;
+        Image retValue;
         retValue = super.getOpenedIcon(type);
         if (isLocal()) {
             if (hasJavadocInRepository()) {
@@ -389,10 +397,12 @@ public class DependencyNode extends AbstractNode {
         }
     }
     
+    @Override
     public Component getCustomizer() {
         return null;
     }
     
+    @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
         Sheet.Set basicProps = sheet.get(Sheet.PROPERTIES);

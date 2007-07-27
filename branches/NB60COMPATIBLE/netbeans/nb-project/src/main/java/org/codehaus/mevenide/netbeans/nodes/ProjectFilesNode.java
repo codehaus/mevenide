@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -44,6 +45,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -62,6 +64,7 @@ public class ProjectFilesNode extends AbstractNode {
         this.project = project;
     }
     
+    @Override
     public Action[] getActions(boolean context) {
         Collection<Action> col = new ArrayList<Action>();
         if (project.getProjectDirectory().getFileObject("profiles.xml") == null) { //NOI18N
@@ -72,6 +75,22 @@ public class ProjectFilesNode extends AbstractNode {
         };
         return col.toArray(new Action[col.size()]);
     }
+    
+    private Image getIcon(boolean opened) {
+        Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/projectfiles-badge.png", true); //NOI18N
+        return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
+    }
+
+    @Override
+    public Image getIcon(int type) {
+        return getIcon(false);
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(true);
+    }
+    
     
     private static class ProjectFilesChildren extends Children.Keys<File> implements PropertyChangeListener {
         private NbMavenProject project;

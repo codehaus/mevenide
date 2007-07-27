@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -47,32 +48,47 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
+import org.openide.util.Utilities;
 
 /**
  * display the modules for pom packaged project
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class ModulesNode extends AbstractNode {
-    
+
     /** Creates a new instance of ModulesNode */
     public ModulesNode(NbMavenProject proj) {
         super(new ModulesChildren(proj));
-        setName("Modules");//NOI18N
+        setName("Modules"); //NOI18N
         setDisplayName(org.openide.util.NbBundle.getMessage(ModulesNode.class, "LBL_Modules"));
     }
 
     @Override
     public Action[] getActions(boolean bool) {
-        return new Action[] {
-        };
+        return new Action[]{};
     }
-    
-    
-    static class ModulesChildren extends Children.Keys {
-        
+
+    private Image getIcon(boolean opened) {
+        Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/modules-badge.png", true); //NOI18N
+        return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
+    }
+
+    @Override
+    public Image getIcon(int type) {
+        return getIcon(false);
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(true);
+    }
+
+
+    static class ModulesChildren extends Children.Keys<NbMavenProject> {
+
         private NbMavenProject project;
         private PropertyChangeListener listener;
-        
+
         ModulesChildren(NbMavenProject proj) {
             project = proj;
             listener = new PropertyChangeListener() {
@@ -83,31 +99,27 @@ public class ModulesNode extends AbstractNode {
                 }
             };
         }
-        
+
         @Override
         public void addNotify() {
             loadModules();
             ProjectURLWatcher.addPropertyChangeListener(project, listener);
         }
-        
+
         @Override
         public void removeNotify() {
             ProjectURLWatcher.removePropertyChangeListener(project, listener);
             setKeys(Collections.EMPTY_LIST);
         }
-        
-        protected Node[] createNodes(Object object) {
-            if (object instanceof NbMavenProject) {
-                NbMavenProject proj = (NbMavenProject)object;
-                boolean isPom = "pom".equals(proj.getOriginalMavenProject().getPackaging());
-                LogicalViewProvider prov = proj.getLookup().lookup(LogicalViewProvider.class);
-                return  new Node[] { new ProjectFilterNode(project, proj, prov.createLogicalView(), isPom) };
-            }
-            return new Node[0];
+
+        protected Node[] createNodes(NbMavenProject proj) {
+            boolean isPom = "pom".equals(proj.getOriginalMavenProject().getPackaging());
+            LogicalViewProvider prov = proj.getLookup().lookup(LogicalViewProvider.class);
+            return new Node[]{new ProjectFilterNode(project, proj, prov.createLogicalView(), isPom)};
         }
 
         private void loadModules() {
-            Collection modules = new ArrayList();
+            Collection<NbMavenProject> modules = new ArrayList<NbMavenProject>();
             File base = project.getOriginalMavenProject().getBasedir();
             for (Iterator it = project.getOriginalMavenProject().getModules().iterator(); it.hasNext();) {
                 String elem = (String) it.next();
@@ -117,7 +129,7 @@ public class ModulesNode extends AbstractNode {
                     try {
                         Project prj = ProjectManager.getDefault().findProject(fo);
                         if (prj != null && prj.getLookup().lookup(NbMavenProject.class) != null) {
-                            modules.add(prj);
+                            modules.add((NbMavenProject) prj);
                         }
                     } catch (IllegalArgumentException ex) {
                         ex.printStackTrace();
@@ -131,10 +143,12 @@ public class ModulesNode extends AbstractNode {
             setKeys(modules);
         }
     }
-    
+
     private static class ProjectFilterNode extends FilterNode {
+
         private NbMavenProject project;
         private NbMavenProject parent;
+
         ProjectFilterNode(NbMavenProject parent, NbMavenProject proj, Node original, boolean isPom) {
             super(original, isPom ? new ModulesChildren(proj) : Children.LEAF);
 //            disableDelegation(DELEGATE_GET_ACTIONS);
@@ -150,18 +164,18 @@ public class ModulesNode extends AbstractNode {
 //            lst.addAll(Arrays.asList(super.getActions(b)));
             return lst.toArray(new Action[lst.size()]);
         }
-        
+
         @Override
         public Action getPreferredAction() {
             return new OpenProjectAction(project);
         }
-        
-        
     }
-    
+
     private static class RemoveModuleAction extends AbstractAction {
+
         private NbMavenProject project;
         private NbMavenProject parent;
+
         public RemoveModuleAction(NbMavenProject parent, NbMavenProject proj) {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Remove_Module"));
             project = proj;
@@ -197,18 +211,18 @@ public class ModulesNode extends AbstractNode {
             }
         }
     }
-    
+
     private static class OpenProjectAction extends AbstractAction {
+
         private NbMavenProject project;
+
         public OpenProjectAction(NbMavenProject proj) {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Open_Project"));
             project = proj;
         }
 
         public void actionPerformed(ActionEvent e) {
-            OpenProjects.getDefault().open(new Project[] {project}, false);
+            OpenProjects.getDefault().open(new Project[]{project}, false);
         }
     }
-    
-    
 }

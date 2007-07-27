@@ -25,9 +25,8 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import javax.swing.Icon;
-import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
+import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.apisupport.project.spi.NbModuleProvider;
 import org.netbeans.modules.apisupport.project.spi.NodeFactoryUtils;
@@ -124,7 +123,7 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         
         private Image getIcon(boolean opened) {
             Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/apisupport/config-badge.gif", true); //NOI18N
-            return Utilities.mergeImages(getTreeFolderIcon(opened), badge, 8, 8);
+            return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
         }
         
         private static final String DISPLAY_NAME = NbBundle.getMessage(ImportantFilesNodeFactory.class, "LBL_important_files");
@@ -370,32 +369,5 @@ public class ImportantFilesNodeFactory implements NodeFactory {
         return result;
     }
     
-    /**
-     * Returns default folder icon as {@link java.awt.Image}. Never returns
-     * <code>null</code>.
-     *
-     * @param opened wheter closed or opened icon should be returned.
-     */
-    public static Image getTreeFolderIcon(boolean opened) {
-        Image base = null;
-        Icon baseIcon = UIManager.getIcon(opened ? OPENED_ICON_KEY_UIMANAGER : ICON_KEY_UIMANAGER); // #70263
-        if (baseIcon != null) {
-            base = Utilities.icon2Image(baseIcon);
-        } else {
-            base = (Image) UIManager.get(opened ? OPENED_ICON_KEY_UIMANAGER_NB : ICON_KEY_UIMANAGER_NB); // #70263
-            if (base == null) { // fallback to our owns
-                base = Utilities.loadImage(opened ? OPENED_ICON_PATH : ICON_PATH, true);
-            }
-        }
-        assert base != null;
-        return base;
-    }
-    
-    private static final String ICON_KEY_UIMANAGER = "Tree.closedIcon"; // NOI18N
-    private static final String OPENED_ICON_KEY_UIMANAGER = "Tree.openIcon"; // NOI18N
-    private static final String ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.icon"; // NOI18N
-    private static final String OPENED_ICON_KEY_UIMANAGER_NB = "Nb.Explorer.Folder.openedIcon"; // NOI18N
-    private static final String ICON_PATH = "org/codehaus/mevenide/netbeans/defaultFolder.gif"; // NOI18N
-    private static final String OPENED_ICON_PATH = "org/codehaus/mevenide/netbeans/defaultFolderOpen.gif"; // NOI18N
     
 }
