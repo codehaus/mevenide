@@ -249,9 +249,11 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                     }
                 });
                 Set<String> verStrings = new HashSet<String>();
-                for (int i = 0; i < versions.length; i++) {
-                    if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
-                        verStrings.add(versions[i].getName());
+                if (versions != null) {
+                    for (int i = 0; i < versions.length; i++) {
+                        if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
+                            verStrings.add(versions[i].getName());
+                        }
                     }
                 }
                 if (path.endsWith("plugins/plugin/version")) { //NOI18N
