@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import org.openide.execution.ExecutorTask;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputListener;
 
 /**
  * What the executors have in common.
@@ -29,4 +30,6 @@ public interface MavenExecutor extends Runnable {
     void setTask(ExecutorTask task);
     
     InputOutput getInputOutput();
+    
+    void addInitialMessage(String line, OutputListener listener);
 }

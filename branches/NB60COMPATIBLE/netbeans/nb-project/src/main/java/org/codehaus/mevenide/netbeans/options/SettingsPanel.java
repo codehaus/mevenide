@@ -88,6 +88,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbChecksumNone.setSelected(true);
         comIndex.setSelectedIndex(0);
         cbSnapshots.setSelected(true);
+        cbUseCommandLine.setSelected(false);
     }
     
     /** This method is called from within the constructor to
@@ -125,6 +126,10 @@ public class SettingsPanel extends javax.swing.JPanel {
         btnIndex = new javax.swing.JButton();
         cbSnapshots = new javax.swing.JCheckBox();
         cbSynchProxy = new javax.swing.JCheckBox();
+        lblCommandLine = new javax.swing.JLabel();
+        txtCommandLine = new javax.swing.JTextField();
+        btnCommandLine = new javax.swing.JButton();
+        cbUseCommandLine = new javax.swing.JCheckBox();
 
         org.openide.awt.Mnemonics.setLocalizedText(cbOffline, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbOffline.text")); // NOI18N
         cbOffline.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
@@ -182,7 +187,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbChecksumStrict)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbChecksumLax, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 23, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pnlPlugins.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.pnlPlugins.border.title"))); // NOI18N
@@ -226,7 +231,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbPluginUpdate)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbNoPluginUpdate)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         pnlFail.setBorder(javax.swing.BorderFactory.createTitledBorder(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.pnlFail.border.title"))); // NOI18N
@@ -270,7 +275,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(rbFailEnd)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbFailNever)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         org.openide.awt.Mnemonics.setLocalizedText(cbPluginRegistry, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbPluginRegistry.text")); // NOI18N
@@ -307,6 +312,21 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbSynchProxy.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbSynchProxy.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
+        org.openide.awt.Mnemonics.setLocalizedText(lblCommandLine, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lblCommandLine.text")); // NOI18N
+
+        txtCommandLine.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.txtCommandLine.text")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnCommandLine, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnCommandLine.text")); // NOI18N
+        btnCommandLine.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCommandLineActionPerformed(evt);
+            }
+        });
+
+        org.openide.awt.Mnemonics.setLocalizedText(cbUseCommandLine, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.cbUseCommandLine.text")); // NOI18N
+        cbUseCommandLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbUseCommandLine.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -327,7 +347,9 @@ public class SettingsPanel extends javax.swing.JPanel {
                             .add(pnlChecksums, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .add(cbPluginRegistry)
                     .add(layout.createSequentialGroup()
-                        .add(lblLocalRepository)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(lblLocalRepository)
+                            .add(lblCommandLine))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
@@ -336,15 +358,19 @@ public class SettingsPanel extends javax.swing.JPanel {
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                                     .add(cbSnapshots)
-                                    .add(comIndex, 0, 174, Short.MAX_VALUE))))
+                                    .add(comIndex, 0, 174, Short.MAX_VALUE)))
+                            .add(txtCommandLine, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 227, Short.MAX_VALUE)
+                            .add(cbUseCommandLine))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(btnLocalRepository)
-                            .add(btnIndex))))
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(btnCommandLine)
+                            .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                                .add(btnLocalRepository)
+                                .add(btnIndex)))))
                 .addContainerGap())
         );
 
-        layout.linkSize(new java.awt.Component[] {btnIndex, btnLocalRepository}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
+        layout.linkSize(new java.awt.Component[] {btnCommandLine, btnIndex, btnLocalRepository}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
 
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -378,7 +404,14 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(btnIndex))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(cbSnapshots)
-                .addContainerGap(63, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(txtCommandLine, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(btnCommandLine)
+                    .add(lblCommandLine))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbUseCommandLine)
+                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -423,12 +456,36 @@ public class SettingsPanel extends javax.swing.JPanel {
             txtLocalRepository.setText(FileUtil.normalizeFile(projectDir).getAbsolutePath());
         }
     }//GEN-LAST:event_btnLocalRepositoryActionPerformed
+
+    private void btnCommandLineActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCommandLineActionPerformed
+        JFileChooser chooser = new JFileChooser();
+        FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
+        chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "TIT_Select"));
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        chooser.setFileHidingEnabled(false);
+        String path = txtCommandLine.getText();
+        if (path.trim().length() == 0) {
+            path = new File(System.getProperty("user.home")).getAbsolutePath(); //NOI18N
+        }
+        if (path.length() > 0) {
+            File f = new File(path);
+            if (f.exists()) {
+                chooser.setSelectedFile(f);
+            }
+        }
+        if (JFileChooser.APPROVE_OPTION == chooser.showOpenDialog(this)) {
+            File projectDir = chooser.getSelectedFile();
+            txtCommandLine.setText(FileUtil.normalizeFile(projectDir).getAbsolutePath());
+        }
+        
+    }//GEN-LAST:event_btnCommandLineActionPerformed
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup bgChecksums;
     private javax.swing.ButtonGroup bgFailure;
     private javax.swing.ButtonGroup bgPlugins;
+    private javax.swing.JButton btnCommandLine;
     private javax.swing.JButton btnIndex;
     private javax.swing.JButton btnLocalRepository;
     private javax.swing.JCheckBox cbDebug;
@@ -437,7 +494,9 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JCheckBox cbPluginRegistry;
     private javax.swing.JCheckBox cbSnapshots;
     private javax.swing.JCheckBox cbSynchProxy;
+    private javax.swing.JCheckBox cbUseCommandLine;
     private javax.swing.JComboBox comIndex;
+    private javax.swing.JLabel lblCommandLine;
     private javax.swing.JLabel lblIndex;
     private javax.swing.JLabel lblLocalRepository;
     private javax.swing.JPanel pnlChecksums;
@@ -452,6 +511,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     private javax.swing.JRadioButton rbNoPluginUpdate;
     private javax.swing.JRadioButton rbPluginNone;
     private javax.swing.JRadioButton rbPluginUpdate;
+    private javax.swing.JTextField txtCommandLine;
     private javax.swing.JTextField txtLocalRepository;
     // End of variables declaration//GEN-END:variables
     
@@ -464,6 +524,9 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbErrors.setSelected(MavenExecutionSettings.getDefault().isShowErrors());
         cbErrors.putClientProperty(CP_SELECTED, Boolean.valueOf(cbErrors.isSelected()));
         cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
+        cbUseCommandLine.setSelected(MavenExecutionSettings.getDefault().isUseCommandLine());
+        File command = MavenExecutionSettings.getDefault().getCommandLinePath();
+        txtCommandLine.setText(command != null ? command.getAbsolutePath() : "");
         cbSnapshots.setSelected(MavenIndexSettings.getDefault().isIncludeSnapshots());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();
         if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(failureBehaviour)) {
@@ -504,6 +567,16 @@ public class SettingsPanel extends javax.swing.JPanel {
         MavenExecutionSettings.getDefault().setShowDebug(cbDebug.isSelected());
         MavenExecutionSettings.getDefault().setSynchronizeProxy(cbSynchProxy.isSelected());
         MavenExecutionSettings.getDefault().setShowErrors(cbErrors.isSelected());
+        MavenExecutionSettings.getDefault().setUseCommandLine(cbUseCommandLine.isSelected());
+        String cl = txtCommandLine.getText().trim();
+        if (cl.length() == 0) {
+            cl = null;
+        }
+        File command = new File(cl);
+        if (command.exists()) {
+            MavenExecutionSettings.getDefault().setCommandLinePath(command);
+        }
+        
         String checksums = null;
         checksums = rbChecksumStrict.isSelected() ? MavenExecutionRequest.CHECKSUM_POLICY_FAIL : checksums;
         checksums = rbChecksumLax.isSelected() ? MavenExecutionRequest.CHECKSUM_POLICY_WARN : checksums;

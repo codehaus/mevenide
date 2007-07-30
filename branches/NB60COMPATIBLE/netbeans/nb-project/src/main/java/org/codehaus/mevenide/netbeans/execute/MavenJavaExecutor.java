@@ -98,6 +98,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         actionStatesAtStart();
         String basedir = System.getProperty(BASEDIR);//NOI18N
         handle.start();
+        processInitialMessage();
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);

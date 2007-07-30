@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import javax.swing.AbstractAction;
@@ -34,10 +35,12 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Cancellable;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
+import org.openide.windows.OutputListener;
 
 /**
  * common code for MAvenExecutors, sharing tabs and actions..
@@ -49,6 +52,8 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
     protected ReRunAction rerun;
     protected ReRunAction rerunDebug;
     protected StopAction stop;
+    private List<String> messages = new ArrayList<String>();
+    private List<OutputListener> listeners = new ArrayList<OutputListener>();
 
     /**
      * All tabs which were used for some process which has now ended.
@@ -73,6 +78,30 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
         }
         return io;
     }
+    
+    public final void addInitialMessage(String line, OutputListener listener) {
+        messages.add(line);
+        listeners.add(listener);
+    }
+    
+    protected final void processInitialMessage() {
+        Iterator<String> it1 = messages.iterator();
+        Iterator<OutputListener> it2 = listeners.iterator();
+        InputOutput ioput = getInputOutput();
+        try {
+            while (it1.hasNext()) {
+                OutputListener ol = it2.next();
+                if (ol != null) {
+                    ioput.getErr().println(it1.next(), ol, true);
+                } else {
+                    ioput.getErr().println(it1.next());
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }
+    
     
     protected final void actionStatesAtStart() {
         rerun.setEnabled(false);
