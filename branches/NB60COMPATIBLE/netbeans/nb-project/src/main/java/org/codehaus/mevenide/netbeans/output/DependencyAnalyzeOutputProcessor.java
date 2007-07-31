@@ -25,6 +25,7 @@ import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.util.NbBundle;
 import org.openide.windows.OutputEvent;
 import org.openide.windows.OutputListener;
 
@@ -108,7 +109,7 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
         
         public void outputLineAction(OutputEvent arg0) {
             DependenciesNode.addDependency(project, group, artifact, version, type, scope, null);
-            NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(DependencyAnalyzeOutputProcessor.class, "MSG_Dependency", group + ":" + artifact));
+            NotifyDescriptor nd = new NotifyDescriptor.Message(NbBundle.getMessage(DependencyAnalyzeOutputProcessor.class, "MSG_Dependency", group + ":" + artifact));
             DialogDisplayer.getDefault().notify(nd);
         }
         
