@@ -31,10 +31,16 @@ public final class Archetype {
     private String description;
     private String repository;
     public final boolean deletable;
+    public final boolean archetypeNg;
     
     /** Creates a new instance of Archetype */
-    public Archetype(boolean deletable) {
+    public Archetype(boolean deletable, boolean isArchetypeNg) {
         this.deletable = deletable;
+        archetypeNg = isArchetypeNg;
+    }
+    
+    public Archetype(boolean deletable) {
+        this(deletable, false);
     }
     
     public Archetype() {

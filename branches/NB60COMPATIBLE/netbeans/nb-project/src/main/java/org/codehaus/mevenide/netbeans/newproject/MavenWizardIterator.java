@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
+import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -44,6 +45,7 @@ import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -55,6 +57,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     private static final long serialVersionUID = 1L;
     
     private static final String USER_DIR_PROP = "user.dir"; //NOI18N
+    static final String PROPERTY_CUSTOM_CREATOR = "customCreator"; //NOI18N
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
     private transient WizardDescriptor wiz;
@@ -103,7 +106,12 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             dirF.getParentFile().mkdirs();
             
             handle.progress(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
-            runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
+            ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
+            if (customCreator != null) {
+                customCreator.runArchetype(dirF.getParentFile(), wiz);
+            } else {
+                runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
+            }
             handle.progress(3);
             // Always open top dir as a project:
             FileObject fDir = FileUtil.toFileObject(dirF);
@@ -129,6 +137,10 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     
     public void initialize(WizardDescriptor wiz) {
         this.wiz = wiz;
+        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
+        if (customCreator != null) {
+            wiz.putProperty(PROPERTY_CUSTOM_CREATOR, Boolean.TRUE);
+        }
         index = 0;
         panels = createPanels();
         // Make sure list of steps is accurate.
@@ -197,7 +209,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         BeanRunConfig config = new BeanRunConfig();
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
-        config.setExecutionName(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
+        config.setExecutionName(NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
         //TODO externalize somehow to allow advanced users to change the value..
         config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create")); //NOI18N
         Properties props = new Properties();
@@ -219,7 +231,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         String oldUserdir = System.getProperty(USER_DIR_PROP); //NOI18N
         System.setProperty(USER_DIR_PROP, dirF.getAbsolutePath()); //NOI18N
         try {
-            ExecutorTask task = RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "RUN_Maven"), config); //NOI18N
+            ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(MavenWizardIterator.class, "RUN_Maven"), config); //NOI18N
             return task.result();
         } finally {
             if (oldUserdir == null) {

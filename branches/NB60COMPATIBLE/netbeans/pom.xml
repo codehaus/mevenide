@@ -20,6 +20,7 @@
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
 	     <module>graph</module>
+             <module>archetypeng</module>
           </modules>
        </profile>
       
@@ -62,7 +63,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>l10n-maven-plugin</artifactId>
-                        <version>1.0-20070724.085932-5</version>
+                        <version>1.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -78,7 +79,7 @@
                   <plugin>
                       <groupId>org.codehaus.mojo</groupId>
                       <artifactId>l10n-maven-plugin</artifactId>
-                      <version>1.0-20070724.085932-5</version>
+                      <version>1.0-SNAPSHOT</version>
                       <configuration>
                           <aggregate>true</aggregate>
                           <locales>
@@ -163,4 +164,17 @@
        <netbeans.release>RELEASE-60-M10</netbeans.release>
        <mevenide.nb.release>3.0.5-SNAPSHOT</mevenide.nb.release>
   </properties>
+  <reporting>
+      <plugins>
+          <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>RELEASE</version>
+              <configuration>
+                  <aggregate>true</aggregate>
+              </configuration>
+          </plugin>
+      </plugins>
+  </reporting>
+
 </project>
