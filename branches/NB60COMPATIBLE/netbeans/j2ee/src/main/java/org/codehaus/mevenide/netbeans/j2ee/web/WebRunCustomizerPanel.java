@@ -63,6 +63,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         this.project = project;
         module = WebModule.getWebModule(project.getProjectDirectory());
         moduleProvider = project.getLookup().lookup(WebModuleProviderImpl.class);
+        assert moduleProvider != null;
+        assert module != null;
         loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
