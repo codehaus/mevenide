@@ -37,9 +37,11 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.StringTokenizer;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -231,8 +233,8 @@ import org.openide.filesystems.FileUtil;
          */
         private void handleCopyFileToDestDir(FileObject fo) throws IOException {
             if (!fo.isVirtual()) {
-                FileObject documentBase = getWebModule().getDocumentBase();
-                if (documentBase != null && FileUtil.isParentOf(documentBase, fo)) {
+                FileObject documentBase = findAppropriateResourceRoots(fo);
+                if (documentBase != null) {
                     // inside docbase
                     String path = FileUtil.getRelativePath(documentBase, fo);
                     if (!isSynchronizationAppropriate(path)) 
@@ -271,6 +273,22 @@ import org.openide.filesystems.FileUtil;
                     }
                 }
             }
+        }
+        
+        //#106522 make sure we also copy src/main/resource.. TODO for now ignore resource filtering or repackaging..
+        private FileObject findAppropriateResourceRoots(FileObject child) {
+            FileObject documentBase = getWebModule().getDocumentBase();
+            if (documentBase != null && FileUtil.isParentOf(documentBase, child)) {
+                return documentBase;
+            }
+            URI[] uris = project.getResources(false);
+            for (URI uri : uris) {
+                FileObject fo = FileUtil.toFileObject(new File(uri));
+                if (fo != null && FileUtil.isParentOf(fo, child)) {
+                    return fo;
+                }
+            }
+            return null;
         }
 
         /** Returns the destination (parent) directory needed to create file with relative path path under webBuilBase
