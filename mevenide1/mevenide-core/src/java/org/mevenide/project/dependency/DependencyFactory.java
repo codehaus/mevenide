@@ -29,55 +29,54 @@ import org.apache.maven.project.Dependency;
  */
 public final class DependencyFactory {
 	
+    private DependencyFactory() {
+    }
 
-	private DependencyFactory() {
-	}
-	
-	private static DependencyFactory factory = new DependencyFactory();
-	
-	public static DependencyFactory getFactory() {
-		return factory;
-	}
-		
-	/**
-	 * return the Dependency instance associated with a given path.
-	 * however this seems hard if not impossible to achieve in a 100% way.
-	 * 
-	 * Also if a file is found in local repo that match the fileName passed 
-	 * as parameters, we'll use ${absoluteFileName.parent.parent.name} as 
-	 * groupId. in either case we have to guess artifactId and version from the fileName.
-	 * 
-	 * 
-	 * @param absoluteFileName
-	 * @return
-	 */
-	public Dependency getDependency(String absoluteFileName) throws Exception {
-		IDependencyResolver dependencyResolver = DependencyResolverFactory.getFactory().newInstance(absoluteFileName);
-		
-		String groupId = dependencyResolver.guessGroupId();
-		
-		String artifactId = dependencyResolver.guessArtifactId();
-		String version = dependencyResolver.guessVersion();
-		String extension = dependencyResolver.guessExtension();
-		
-		Dependency dependency = new Dependency();
-		
+    private static DependencyFactory factory = new DependencyFactory();
+
+    public static DependencyFactory getFactory() {
+        return factory;
+    }
+
+    /**
+     * return the Dependency instance associated with a given path.
+     * however this seems hard if not impossible to achieve in a 100% way.
+     *
+     * Also if a file is found in local repo that match the fileName passed
+     * as parameters, we'll use ${absoluteFileName.parent.parent.name} as 
+     * groupId. in either case we have to guess artifactId and version from the fileName.
+     *
+     *
+     * @param absoluteFileName
+     * @return
+     */
+    public Dependency getDependency(String absoluteFileName) throws Exception {
+        IDependencyResolver dependencyResolver = DependencyResolverFactory.getFactory().newInstance(absoluteFileName);
+
+        String groupId = dependencyResolver.guessGroupId();
+        String artifactId = dependencyResolver.guessArtifactId();
+        String version = dependencyResolver.guessVersion();
+        String extension = dependencyResolver.guessExtension();
+        Dependency dependency = new Dependency();
+
         if (groupId == null) {
+            dependency.setGroupId(artifactId);
+            dependency.setArtifactId(artifactId);
             dependency.setId(artifactId);
-        } else {
-    		dependency.setGroupId(groupId); 
-        	dependency.setArtifactId(artifactId);
         }
-		dependency.setVersion(version);
-		dependency.setType(extension);
+        else {
+            dependency.setGroupId(groupId);
+            dependency.setArtifactId(artifactId);
+            dependency.setId(groupId + ":" + artifactId);
+        }
+        dependency.setVersion(version);
+        dependency.setType(extension);
 
         String filename = new File(absoluteFileName).getName();
         if (!dependency.getArtifact().equals(filename)) {
             dependency.setJar(filename);
         }
-		
-		return dependency;
-	}
 
-
+        return dependency;
+    }
 }

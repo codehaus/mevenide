@@ -17,8 +17,7 @@
 
 package org.mevenide.environment;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.environment.sysenv.DefaultSysEnvProvider;
 import org.mevenide.environment.sysenv.SysEnvProvider;
 
@@ -27,7 +26,7 @@ import org.mevenide.environment.sysenv.SysEnvProvider;
  * @author Gilles Dodinet (gdodinet@wanadoo.fr)
  */
 public class SysEnvLocationFinder extends AbstractLocationFinder {
-    private static Log LOGGER = LogFactory.getLog(SysEnvLocationFinder.class);
+    private static Logger LOGGER = Logger.getLogger(SysEnvLocationFinder.class.getName());
 
     private static SysEnvLocationFinder locationFinder;
     private static SysEnvProvider defaultProvider = null;
@@ -68,7 +67,7 @@ public class SysEnvLocationFinder extends AbstractLocationFinder {
                 // if setting provider later in the game, discard the created
                 // LocationFinder, just ignore or set to the current singleton?
                 locationFinder = null;
-                LOGGER.warn("Setting defaultSysEnvProvider while the singleton isntance of SysEnvLocationFinder exists");
+                LOGGER.warning("Setting defaultSysEnvProvider while the singleton isntance of SysEnvLocationFinder exists");
             }
         }
     }

@@ -52,13 +52,17 @@ public class FileUtilitiesTest extends TestCase {
         File repo = new File("/home");
         Dependency dep = new Dependency();
         dep.setId("junit");
+        dep.setGroupId("junit");
+        dep.setArtifactId("junit");
         dep.setVersion("3.8.1");
         URI uri = FileUtilities.getDependencyURI(dep, repo, res);
         File result = new File("/home/junit/jars/junit-3.8.1.jar");
         assertEquals(result.toURI(), uri);
-        
+
         dep = new Dependency();
         dep.setId("springframework");
+        dep.setGroupId("springframework");
+        dep.setArtifactId("springframework");
         dep.setVersion("1.0.2");
         dep.setType("jar");
         uri = FileUtilities.getDependencyURI(dep, repo, res);
@@ -67,6 +71,7 @@ public class FileUtilitiesTest extends TestCase {
         
         dep = new Dependency();
         dep.setId("ibatis");
+        dep.setGroupId("ibatis");
         dep.setArtifactId("ibatis-sqlmap");
         dep.setVersion("2.0.2");
         dep.setType("jar");
@@ -76,6 +81,8 @@ public class FileUtilitiesTest extends TestCase {
         
         dep = new Dependency();
         dep.setId("tiles");
+        dep.setGroupId("tiles");
+        dep.setArtifactId("tiles");
         dep.setJar("tiles.jar");
         dep.setType("jar");
         uri = FileUtilities.getDependencyURI(dep, repo, res);

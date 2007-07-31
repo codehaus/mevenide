@@ -18,8 +18,7 @@
 package org.mevenide.properties.resolver;
 
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.mevenide.properties.IPropertyFinder;
@@ -31,7 +30,7 @@ import org.mevenide.properties.IPropertyResolver;
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLocator {
-    private static final Log logger = LogFactory.getLog(PropertyFilesAggregator.class);
+    private static final Logger LOGGER = Logger.getLogger(PropertyFilesAggregator.class.getName());
     
     private IPropertyFinder defaults;
     private IPropertyFinder projectWalker;
@@ -146,10 +145,10 @@ public class PropertyFilesAggregator implements IPropertyResolver, IPropertyLoca
                     toReturn.replace(index, end + 1, keyvalue);
                     return resolve(toReturn);
                 } else {
-                    logger.warn("cannot resolve key? '" + key + "'");
+                    LOGGER.warning("cannot resolve key? '" + key + "'");
                 }
             } else {
-                logger.warn("badly formed value? '" + value + "'");
+                LOGGER.warning("badly formed value? '" + value + "'");
             }
         } 
         return toReturn;

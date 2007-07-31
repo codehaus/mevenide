@@ -22,9 +22,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
@@ -42,7 +42,7 @@ import org.openide.filesystems.URLMapper;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQueryImplementation {
-    private static final Log logger = LogFactory.getLog(RepositoryJavadocForBinaryQueryImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(RepositoryJavadocForBinaryQueryImpl.class.getName());
     
     public RepositoryJavadocForBinaryQueryImpl() {
     }
@@ -60,7 +60,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
      *         be listened to, or null if the binary root is not recognized
      */
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
-        logger.debug("checkurl=" + url);
+        LOGGER.fine("checkurl=" + url);
         URL binRoot = url;
         if ("jar".equals(url.getProtocol())) {
             binRoot = FileUtil.getArchiveFile(url);
@@ -103,7 +103,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                         
                     }
                 } catch (Exception exc) {
-                    logger.debug("exception", exc);
+                    LOGGER.log(Level.FINE, "exception", exc);
                 }
             }
         }
@@ -138,7 +138,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
                     return url;
                 } catch (MalformedURLException exc) {
-                    logger.debug("exception", exc);
+                    LOGGER.log(Level.FINE, "exception", exc);
                 }
             }
             return new URL[0];

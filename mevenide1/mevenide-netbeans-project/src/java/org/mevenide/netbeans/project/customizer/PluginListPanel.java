@@ -26,6 +26,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTable;
@@ -34,8 +35,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.project.MavenProject;
@@ -54,7 +53,7 @@ import org.openide.nodes.Node;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class PluginListPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(PluginListPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(PluginListPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;

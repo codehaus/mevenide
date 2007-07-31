@@ -17,10 +17,9 @@
 package org.mevenide.util;
 
 import java.io.File;
-import java.lang.reflect.Field;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Document;
 import org.jdom.input.SAXBuilder;
@@ -35,59 +34,34 @@ import org.mevenide.context.IQueryContext;
  * 
  */
 public class ProjectUtils {
-	private static Log log = LogFactory.getLog(ProjectUtils.class);
+	private static Logger LOGGER = Logger.getLogger(ProjectUtils.class.getName());
 	
     private ProjectUtils() {}
     
     /**
-     * resolve a whole project including its ancestors. 
+     * resolve a whole project including its ancestors.
      * @param pomFile the POM to read
      */
     public static Project resolveProjectTree(File pomFile) {
         IQueryContext queryContext = new DefaultQueryContext(pomFile.getParentFile());
-        
+
         IProjectContext projectContext = queryContext.getPOMContext();
         Project pom = projectContext.getFinalProject();
         pom.setFile(pomFile);
         return pom;
     }
-    
-    public static void setGroupId(Project pom, String groupId) {
-	    try {
-			Field f = pom.getClass().getDeclaredField("groupId");
-			f.setAccessible(true);
-			f.set(pom, groupId);
-			f.setAccessible(false);
-		} 
-		catch (Exception e) {
-			log.error("unable to retrieve groupId", e);
-		}
-    }
-    
-    public static String getGroupId(Project pom) {
-	    String groupId = null;
-		try {
-           Field f = pom.getClass().getDeclaredField("groupId");
-           f.setAccessible(true);
-           groupId = (String) f.get(pom);
-           f.setAccessible(false);
-		} 
-		catch (Exception e) {
-			log.error("unable to retrieve groupId", e);
-		} 
-        return groupId;
-    }
-    
+
+
     public static String parseGroupId(File pomFile) {
         String groupId = null;
         try {
-           SAXBuilder builder = new SAXBuilder();
-           Document doc = builder.build(pomFile);
-           groupId = doc.getRootElement().getChildText("groupId");
-        } 
+            SAXBuilder builder = new SAXBuilder();
+            Document doc = builder.build(pomFile);
+            groupId = doc.getRootElement().getChildText("groupId");
+        }
         catch (Exception e) {
-            log.error("unable to retrieve groupId", e);
-        } 
+            LOGGER.log(Level.SEVERE, "unable to retrieve groupId", e);
+        }
         return groupId;
     }
     

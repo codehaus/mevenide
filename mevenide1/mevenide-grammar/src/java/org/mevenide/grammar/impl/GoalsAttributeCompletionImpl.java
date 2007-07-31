@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
@@ -42,7 +41,7 @@ import org.mevenide.grammar.AttributeCompletion;
  */
 public class GoalsAttributeCompletionImpl implements AttributeCompletion {
 
-    private static Log logger = LogFactory.getLog(GoalsAttributeCompletionImpl.class);
+    private static Logger LOGGER = Logger.getLogger(GoalsAttributeCompletionImpl.class.getName());
     
     /** primary grabber that handles both global and custom goals */
     private IGoalsGrabber grabber;
@@ -70,7 +69,7 @@ public class GoalsAttributeCompletionImpl implements AttributeCompletion {
         }
         catch (Exception e) {
             grabber = defaultGrabber;
-            logger.error("Unable to set basedir. It is highly probable that maven.xml is badly formed.");
+            LOGGER.severe("Unable to set basedir. It is highly probable that maven.xml is badly formed.");
         }
     }
     

@@ -19,9 +19,8 @@ package org.mevenide.project.io;
 import java.io.File;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.context.IQueryContext;
@@ -38,7 +37,7 @@ import org.mevenide.util.StringUtils;
  *
  */
 public final class JarOverrideReader2 {
-    private static Log log = LogFactory.getLog(JarOverrideReader2.class);
+    private static Logger LOGGER = Logger.getLogger(JarOverrideReader2.class.getName());
     
     private static JarOverrideReader2 instance;
     JarOverrideReader2() {
@@ -88,10 +87,10 @@ public final class JarOverrideReader2 {
      */
     public String processOverride(Dependency dependency, IPropertyResolver resolver, ILocationFinder finder) {
         boolean isJarOverrideOn = isJarOverrideOn(resolver);
-        log.debug("jar override " + (isJarOverrideOn ? " on " : " off"));
+        LOGGER.fine("jar override " + (isJarOverrideOn ? " on " : " off"));
         if ( isJarOverrideOn ) {
                 String dependencyOverrideValue = getOverrideValue(dependency, resolver, finder);
-                log.debug("overriding jar for dep : " + dependency.getId() + " : " + dependencyOverrideValue);
+                LOGGER.fine("overriding jar for dep : " + dependency.getId() + " : " + dependencyOverrideValue);
                 return dependencyOverrideValue;
         }
         return null;

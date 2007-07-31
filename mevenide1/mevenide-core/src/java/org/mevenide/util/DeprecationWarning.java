@@ -1,7 +1,3 @@
-package org.mevenide.util;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /* ====================================================================
  * The Apache Software License, Version 1.1
@@ -59,12 +55,16 @@ import org.apache.commons.logging.LogFactory;
  * ====================================================================
  */
 
+package org.mevenide.util;
+
+import java.util.logging.Logger;
+
 /**
  * @author <a href="bwalding@jakarta.org">Ben Walding</a>
  * @version $Id$
  */
 public final class DeprecationWarning {
-	private static final Log log = LogFactory.getLog(DeprecationWarning.class);
+	private static final Logger LOGGER = Logger.getLogger(DeprecationWarning.class.getName());
 	private DeprecationWarning() { }
 	
 	/** return code for use of a completely deprecated item - eg. you must not be using it anymore */
@@ -72,7 +72,7 @@ public final class DeprecationWarning {
 		
     public static final void warn( String message )
     {
-        log.warn( "DEPRECATION WARNING: " + message );   
+        LOGGER.warning( "DEPRECATION WARNING: " + message );   
     }
 
     public static final void fail( String message )

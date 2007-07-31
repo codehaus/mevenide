@@ -20,9 +20,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.logging.Level;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 
 /**
  * Default implementation of SysEnvProvider, will execute an external process and
@@ -32,7 +32,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class DefaultSysEnvProvider implements SysEnvProvider
 {
-    private static Log log = LogFactory.getLog(DefaultSysEnvProvider.class);
+    private static Logger LOGGER = Logger.getLogger(DefaultSysEnvProvider.class.getName());
     
     private Properties envProperties;
     
@@ -49,7 +49,7 @@ public class DefaultSysEnvProvider implements SysEnvProvider
         try {
             envProperties = getEnvVars();
         } catch (Exception exc) {
-            log.error("Problem while looking for env. variables.", exc);
+            LOGGER.log(Level.SEVERE,"Problem while looking for env. variables.", exc);
             envProperties = new Properties();
         }
     }

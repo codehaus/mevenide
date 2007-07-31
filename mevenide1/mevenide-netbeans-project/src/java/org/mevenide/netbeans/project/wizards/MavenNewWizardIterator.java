@@ -16,8 +16,8 @@
  */
 package org.mevenide.netbeans.project.wizards;
 import java.io.File;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
+
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.genapp.GenAppTemplateFinder;
 import org.mevenide.genapp.TemplateInfo;
@@ -34,7 +34,7 @@ import org.openide.modules.InstalledFileLocator;
  */
 public class MavenNewWizardIterator extends GenAppWizardIterator {
 
-    private static final Log logger = LogFactory.getLog(MavenNewWizardIterator.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenNewWizardIterator.class.getName());
 //    private static final String TEMPLATE_LOC_ATTR = "MavenTemplateLocation"; //NOI18N
 
     private static final long serialVersionUID = 13334234343323432L;

@@ -22,8 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.properties.util.Utils;
 
 /**
@@ -33,7 +32,7 @@ import org.mevenide.properties.util.Utils;
  *  
  */
 public final class PropertyModelFactory {
-    private static final Log log = LogFactory.getLog(PropertyModelFactory.class);
+    private static final Logger LOGGER = Logger.getLogger(PropertyModelFactory.class.getName());
 
     private static final PropertyModelFactory factory = new PropertyModelFactory();
 
@@ -125,14 +124,14 @@ public final class PropertyModelFactory {
                         String value = line.substring(sepIndex + 1);
                         currComment = null;
                         if ( key.trim().length() == 0 ) {
-                            log.warn("strange line - key is whitespace");
+                            LOGGER.warning("strange line - key is whitespace");
                             continue;
                         }
                         currKeyPair = model.newKeyPair(key, line.charAt(sepIndex), value);
                         appendingMode = continueLine(line);
                     }
                     else {
-                        log.warn("A non-comment non key-pair line encountered:'" + line + "'");
+                        LOGGER.warning("A non-comment non key-pair line encountered:'" + line + "'");
                     }
                 }
             }

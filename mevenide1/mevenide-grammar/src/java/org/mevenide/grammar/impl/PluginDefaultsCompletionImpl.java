@@ -21,8 +21,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.WeakHashMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.grammar.AttributeCompletion;
@@ -36,7 +35,7 @@ import org.mevenide.properties.resolver.PropertyLocatorFactory;
  */
 public class PluginDefaultsCompletionImpl implements AttributeCompletion {
 
-    private static Log logger = LogFactory.getLog(PluginDefaultsCompletionImpl.class);
+    private static final Logger logger = Logger.getLogger(PluginDefaultsCompletionImpl.class.getName());
     private IPropertyLocator locator;
     private WeakHashMap subSetsMap;
     /** Creates a new instance of GoalsAttributeCompletionImpl */

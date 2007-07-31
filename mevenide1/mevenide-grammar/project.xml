@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-grammar</artifactId>
     <name>Mevenide Grammar</name>
-    <currentVersion>0.7</currentVersion>
+    <currentVersion>0.8</currentVersion>
     <package>org.mevenide.grammar</package>
     <description>Maven files XML grammar and code-completion hints provider</description>
     <versions>
@@ -24,7 +24,13 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.0.2</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -33,16 +39,6 @@
             <version>3.8.1</version>
             <type>jar</type>
             <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.3</version>
-            <type>jar</type>
-            <properties>
-                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
@@ -57,18 +53,9 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.11</version>
+            <version>0.2</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -78,7 +65,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.12</version>
+            <version>0.2</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

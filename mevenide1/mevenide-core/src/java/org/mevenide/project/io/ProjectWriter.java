@@ -21,9 +21,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.MavenUtils;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Dependency;
@@ -54,7 +53,7 @@ import org.mevenide.project.source.SourceDirectoryUtil;
  * 
  */
 public class ProjectWriter {
-	private static Log log = LogFactory.getLog(ProjectWriter.class);
+	private static Logger LOGGER = Logger.getLogger(ProjectWriter.class.getName());
 	
 	private static ProjectWriter projectWriter = null;
 	
@@ -202,7 +201,7 @@ public class ProjectWriter {
 	}
 
 	public void updateExtend(File pomFile, boolean isInherited, String parentPom) throws Exception {
-		log.debug("isInherited = " + (isInherited) + " ; parentPom = " + parentPom);
+		LOGGER.fine("isInherited = " + (isInherited) + " ; parentPom = " + parentPom);
 		ProjectReader reader = ProjectReader.getReader();
 		Project project = reader.read(pomFile);
 		if ( !isInherited ) {
@@ -320,7 +319,7 @@ public class ProjectWriter {
 		}
 		
 		if ( warn ) {
-		    log.warn("specified dependency not found");
+		    LOGGER.warning("specified dependency not found");
 		}
 		else {
 		    ProjectWriter.getWriter().write(project);

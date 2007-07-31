@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -37,7 +37,7 @@ import org.mevenide.context.IQueryContext;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class FindbugsResult {
-    private static final Log logger = LogFactory.getLog(FindbugsResult.class);
+    private static final Logger LOGGER = Logger.getLogger(FindbugsResult.class.getName());
     
     private IQueryContext context;
     private boolean loaded;
@@ -106,7 +106,7 @@ public final class FindbugsResult {
                     }
                 }
             } catch (Exception exc) {
-                logger.error("exception when loading report=", exc);
+                LOGGER.log(Level.SEVERE, "exception when loading report=", exc);
             }
         }
     }

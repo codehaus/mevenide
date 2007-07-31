@@ -19,11 +19,10 @@ package org.mevenide.netbeans.project.customizer;
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
@@ -36,7 +35,7 @@ import org.openide.util.Utilities;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class FilesPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(FilesPanel.class);
+    private static Logger LOGGER = Logger.getLogger(FilesPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;

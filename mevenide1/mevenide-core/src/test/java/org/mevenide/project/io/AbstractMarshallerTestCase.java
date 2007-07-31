@@ -50,8 +50,33 @@ public abstract class AbstractMarshallerTestCase extends TestCase {
         Writer writer = new StringWriter();
     	marshaller.marshall(writer, testProject);
     	Reader reader = new StringReader(writer.toString());
-    	assertEquals(testProject, new DefaultProjectUnmarshaller().parse(reader));
-    	//System.out.print(writer.toString());
+        Project result = new DefaultProjectUnmarshaller().parse(reader);
+
+        assertEquals(testProject.getArtifactId(), testProject.getArtifactId());
+        assertEquals(testProject.getArtifacts(), testProject.getArtifacts());
+        assertEquals(testProject.getDevelopers(), testProject.getDevelopers());
+        assertEquals(testProject.getExtend(), testProject.getExtend());
+        assertEquals(testProject.getDescription(), testProject.getDescription());
+        assertEquals(testProject.getBuild(), testProject.getBuild());
+        assertEquals(testProject.getId(), testProject.getId());
+        assertEquals(testProject.getInceptionYear(), testProject.getInceptionYear());
+        assertEquals(testProject.getDistributionSite(), testProject.getDistributionSite());
+        assertEquals(testProject.getDistributionDirectory(), testProject.getDistributionDirectory());
+        assertEquals(testProject.getGroupId(), testProject.getGroupId());
+        assertEquals(testProject.getLogo(), testProject.getLogo());
+        assertEquals(testProject.getName(), testProject.getName());
+        assertEquals(testProject.getOrganization(), testProject.getOrganization());
+        assertEquals(testProject.getPomVersion(), testProject.getPomVersion());
+        assertEquals(testProject.getGumpRepositoryId(), testProject.getGumpRepositoryId());
+        assertEquals(testProject.getShortDescription(), testProject.getShortDescription());
+        assertEquals(testProject.getUrl(), testProject.getUrl());
+        assertEquals(testProject.getSiteDirectory(), testProject.getSiteDirectory());
+        assertEquals(testProject.getSiteAddress(), testProject.getSiteAddress());
+        assertEquals(testProject.getShortDescription(), testProject.getShortDescription());
+        assertEquals(testProject.getPackage(), testProject.getPackage());
+        assertEquals(testProject.getReports(), testProject.getReports());
+        assertEquals(testProject.getRepository(), testProject.getRepository());
+        assertEquals(testProject.getContributors(), testProject.getContributors());
     }
    
 }

@@ -20,8 +20,7 @@ package org.mevenide.netbeans.project.classpath;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.netbeans.api.project.MavenProject;
 
 /**
@@ -29,7 +28,7 @@ import org.mevenide.netbeans.api.project.MavenProject;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SrcClassPathImpl extends AbstractProjectClassPathImpl {
-    private static final Log logger = LogFactory.getLog(SrcClassPathImpl.class);
+    private static final Logger logger = Logger.getLogger(SrcClassPathImpl.class.getName());
     
     /** Creates a new instance of SrcClassPathImpl */
     public SrcClassPathImpl(MavenProject proj) {

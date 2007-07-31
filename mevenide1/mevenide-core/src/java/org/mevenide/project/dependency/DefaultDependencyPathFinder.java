@@ -18,9 +18,9 @@ package org.mevenide.project.dependency;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.properties.KeyValuePair;
@@ -42,7 +42,7 @@ import org.mevenide.properties.PropertyModelFactory;
  * 
  */
 public class DefaultDependencyPathFinder implements IDependencyPathFinder {
-	private static final Log log = LogFactory.getLog(DefaultDependencyPathFinder.class);
+	private static final Logger LOGGER = Logger.getLogger(DefaultDependencyPathFinder.class.getName());
 	
 	private Dependency dependency;
 	private File declaringPom;
@@ -100,7 +100,7 @@ public class DefaultDependencyPathFinder implements IDependencyPathFinder {
 				model = factory.newPropertyModel(projectProperties);
 			} 
 			catch (IOException e) {
-				log.error("Unable to mount project PropertyModel", e);
+				LOGGER.log(Level.SEVERE, "Unable to mount project PropertyModel", e);
 			}
 		}
 		

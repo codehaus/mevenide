@@ -51,8 +51,10 @@ public class TestOutputListenerProviderTest extends TestCase {
         assertTrue(provider.isInWatchedGoals("   hello"));
         assertTrue(provider.isInWatchedGoals("untest:my"));
         assertTrue(provider.isInWatchedGoals(" untest:my"));
+        assertTrue(provider.isInWatchedGoals("test:compile:"));
         assertFalse(provider.isInWatchedGoals("untest:my:"));
         assertFalse(provider.isInWatchedGoals(" hello"));
+        assertTrue(provider.isInWatchedGoals("test:compile:"));
     }
     
     public void testRecognizeLine() {
@@ -72,15 +74,18 @@ public class TestOutputListenerProviderTest extends TestCase {
         visitor.resetVisitor();
         provider.processLine("    [junit] Tests run: 1, Failures: 1, Errors: 0, Time elapsed: 0.027 sec", visitor);
         assertNull(visitor.getOutputListener());
+//        visitor.resetVisitor();
+//        provider.processLine("    [junit] [ERROR] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
+//        assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("    [junit] [ERROR] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
+        provider.processLine(">> Test org.mevenide.netbeans.project.FileUtilitiesTest failed", visitor);
         assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
-        provider.processLine("    [junit] [ERROR] Test org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
+        provider.processLine(">> Test org.mevenide.netbeans.project.FileUtilitiesTest failed          ", visitor);
         assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
         provider.processLine("    [junit] TEST org.mevenide.netbeans.project.exec.TestOutputListenerProviderTest FAILED        ", visitor);
-        assertNotNull(visitor.getOutputListener());        
+        assertNull(visitor.getOutputListener());        
     }
     
 }

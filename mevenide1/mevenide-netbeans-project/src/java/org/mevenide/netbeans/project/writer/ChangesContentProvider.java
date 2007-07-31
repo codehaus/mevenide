@@ -20,8 +20,7 @@ package org.mevenide.netbeans.project.writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.netbeans.project.customizer.DependencyPOMChange;
 import org.mevenide.netbeans.api.customizer.changes.MavenPOMSingleChange;
 import org.mevenide.netbeans.api.customizer.changes.MavenPOMTreeChange;
@@ -34,7 +33,7 @@ import org.mevenide.project.io.IContentProvider;
  */
 public class ChangesContentProvider implements IContentProvider {
     
-    private static final Log log = LogFactory.getLog(ChangesContentProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(ChangesContentProvider.class.getName());
     
     private IContentProvider provider;
     private List changes;

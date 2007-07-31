@@ -129,8 +129,4 @@ public class DefaultDependencyResolver implements IDependencyResolver {
 		}
 		return shortFileName;
 	}
-	
-	
-	
-
 }

@@ -23,9 +23,9 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
@@ -41,7 +41,7 @@ import org.w3c.dom.Node;
  */
 public class MavenProjectGrammar implements GrammarQuery {
  
-   private static Log logger = LogFactory.getLog(MavenProjectGrammar.class); 
+   private static final Logger LOGGER = Logger.getLogger(MavenProjectGrammar.class.getName()); 
 
    private Document schemaDoc3;
    private Document schemaDoc4;
@@ -52,13 +52,13 @@ public class MavenProjectGrammar implements GrammarQuery {
        try {
            SAXBuilder builder = new SAXBuilder();
            InputStream stream = getClass().getResourceAsStream("/org/mevenide/netbeans/grammar/resources/maven-project-3.xsd");
-           logger.debug("stream is not null=" + (stream != null));
+           LOGGER.fine("stream is not null=" + (stream != null));
            schemaDoc3 = builder.build(stream);
            stream = getClass().getResourceAsStream("/org/mevenide/netbeans/grammar/resources/maven-project-4.xsd");
            schemaDoc4 = builder.build(stream);
        } catch (Exception exc)
        {
-           logger.error("cannot read schema for maven project", exc);
+           LOGGER.log(Level.SEVERE, "cannot read schema for maven project", exc);
        }
    }
    
@@ -126,17 +126,17 @@ public class MavenProjectGrammar implements GrammarQuery {
     public Enumeration queryElements(HintContext virtualElementCtx)
     {
         String start = virtualElementCtx.getCurrentPrefix();
-        logger.debug("start=" + start);
+        LOGGER.fine("start=" + start);
         
         Document schemaDoc = (findPomVersion(virtualElementCtx) == 4 ? schemaDoc4 : schemaDoc3);
         Node parentNode = virtualElementCtx.getParentNode();
         if (parentNode != null && schemaDoc != null)
         {
             String parentName = parentNode.getNodeName();
-            logger.debug("parent name=" + parentName);
+            LOGGER.fine("parent name=" + parentName);
             org.jdom.Element schemaRoot = schemaDoc.getRootElement();
             List content = schemaRoot.getContent(new RootDefinitionElementFilter(parentName));
-            logger.debug("returned items=" + content.size());
+            LOGGER.fine("returned items=" + content.size());
             Vector toReturn = new Vector();
             Iterator it = content.iterator();
             while (it.hasNext())
@@ -148,7 +148,7 @@ public class MavenProjectGrammar implements GrammarQuery {
                 {
                     processSequence(start, seq, toReturn, schemaRoot);
                 } else {
-                    logger.warn("no complexType/sequence subelements defined in the found element");
+                    LOGGER.warning("no complexType/sequence subelements defined in the found element");
                 }
             }
             return toReturn.elements();
@@ -159,10 +159,10 @@ public class MavenProjectGrammar implements GrammarQuery {
     
     private org.jdom.Element findSequenceElement(org.jdom.Element parent) 
     {
-        logger.debug("findSequence parent name=" + parent.getAttributeValue("name"));
-        logger.debug("findSequence parent content size=" + parent.getChildren().size());
+        LOGGER.fine("findSequence parent name=" + parent.getAttributeValue("name"));
+        LOGGER.fine("findSequence parent content size=" + parent.getChildren().size());
         org.jdom.Element complex = parent.getChild("complexType", parent.getNamespace());
-        logger.debug("findSequence complex found" + (complex != null));
+        LOGGER.fine("findSequence complex found" + (complex != null));
         if (complex != null) {
             return  complex.getChild("sequence", parent.getNamespace()); //NOI18N
         } 
@@ -174,7 +174,7 @@ public class MavenProjectGrammar implements GrammarQuery {
         if (childEl.getName().equals("element")) //NOI18N
         {
             String childRefAttr = childEl.getAttributeValue("ref"); //NOI18N
-            logger.debug("child ref attr=" + childRefAttr);
+            LOGGER.fine("child ref attr=" + childRefAttr);
             if (childRefAttr == null)
             {
                 // if ref not defined, go check name attribute..
@@ -203,10 +203,10 @@ public class MavenProjectGrammar implements GrammarQuery {
                     }
                 }
                 if (!found) {
-                    logger.warn("No schema group matches " + grName);
+                    LOGGER.warning("No schema group matches " + grName);
                 }
             } else {
-                logger.warn("No schema group reference");
+                LOGGER.warning("No schema group reference");
                 //TODO what to do if it's not a ref?
             }
         }
@@ -224,7 +224,7 @@ public class MavenProjectGrammar implements GrammarQuery {
     private void processSequence(String matches, org.jdom.Element seqEl, Vector suggestions, org.jdom.Element rootSchemaElement)
     {
         List availables = seqEl.getContent(new DefinitionContentElementFilter());
-        logger.debug("content size=" + availables.size());
+        LOGGER.fine("content size=" + availables.size());
         Iterator availIt = availables.iterator();
         while (availIt.hasNext())
         {
@@ -273,25 +273,25 @@ public class MavenProjectGrammar implements GrammarQuery {
 //            if (current.getNodeName() != null && current.getNodeName().equals("project")) {
 //                break;
 //            }
-//            logger.debug("findPomVersion:curr rootNode is=" + current.getNodeName());
+//            LOGGER.fine("findPomVersion:curr rootNode is=" + current.getNodeName());
 //            current = current.getParentNode();
 //        }
 //        rootNode = current;
 //        if (rootNode != null) {
-//            logger.debug("findPomVersion:rootNode is=" + rootNode.getNodeName());
+//            LOGGER.fine("findPomVersion:rootNode is=" + rootNode.getNodeName());
 //            Node child = rootNode.getFirstChild();
 //            while (child != null && !"pomVersion".equals(child.getNodeName())) {
 //                child = child.getNextSibling();
 //            }
 //            if (child != null) {
 //                org.w3c.dom.Element childEl = (org.w3c.dom.Element)child;
-//                logger.debug("findPomVersion:has pomVersion subNode=" + child);
-//                logger.debug("findPomVersion:pomversion content size=" + child.getChildNodes().getLength());
+//                LOGGER.fine("findPomVersion:has pomVersion subNode=" + child);
+//                LOGGER.fine("findPomVersion:pomversion content size=" + child.getChildNodes().getLength());
 //                Node pomNodeContent = child.getChildNodes().getLength() > 0 ? child.getChildNodes().item(0) : null;
 //                if (pomNodeContent != null && pomNodeContent instanceof Text) {
 //                    // this is the text for the pom version?
 //                    String pomVersion = pomNodeContent.getNodeValue();
-//                    logger.debug("findPomVersion:getting text for pomversion=" + pomVersion);
+//                    LOGGER.fine("findPomVersion:getting text for pomversion=" + pomVersion);
 //                    if (pomVersion != null) {
 //                        try {
 //                            toReturn = Integer.parseInt(pomVersion.trim());
@@ -385,9 +385,9 @@ public class MavenProjectGrammar implements GrammarQuery {
                 if ("element".equals(el.getName()))
                 {
                     String elName = el.getAttributeValue("name");
-//                    logger.debug("it's name is=" + elName);
+//                    LOGGER.fine("it's name is=" + elName);
                     if (elName != null && text.equals(elName)) {
-//                        logger.debug("including this one");
+//                        LOGGER.fine("including this one");
                         toReturn = true;
                     }
                 }

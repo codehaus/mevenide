@@ -30,7 +30,6 @@ public class AllTests {
         
         suite.addTestSuite(DefaultsResolverTest.class);
         suite.addTestSuite(PropertyFilesAggregatorTest.class);
-        suite.addTestSuite(ProjectWalkerTest.class);
         suite.addTestSuite(ProjectWalker2Test.class);
         return suite;
         

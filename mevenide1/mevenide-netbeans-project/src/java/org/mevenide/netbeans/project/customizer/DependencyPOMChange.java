@@ -95,7 +95,7 @@ public final class DependencyPOMChange implements MavenPOMTreeChange {
             vals.put("type", dep.getType());
             vals.put("jar", dep.getJar());
             vals.put("url", dep.getUrl());  
-            Map map = dep.resolvedProperties();
+            Map map = dep.getProperties();
             if (map != null) {
                 Iterator it2 = map.entrySet().iterator();
             while (it2.hasNext()) {

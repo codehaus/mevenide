@@ -21,9 +21,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 
 
@@ -42,7 +42,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public final class OptionsRegistry {
-    private static Log log = LogFactory.getLog(OptionsRegistry.class);
+    private final static Logger LOGGER = Logger.getLogger(OptionsRegistry.class.getName());
     
     private static OptionsRegistry registry = new OptionsRegistry();
     private Map options = new TreeMap();
@@ -58,19 +58,19 @@ public final class OptionsRegistry {
 			props.load(stream);
 			
 			Iterator keys = props.keySet().iterator();
-			log.debug("Found " + props.keySet().size() + " total keys");
+			LOGGER.fine("Found " + props.keySet().size() + " total keys");
 			while ( keys.hasNext() ) {
 				String key = (String) keys.next();
-				log.debug("current key = " + key);
+				LOGGER.fine("current key = " + key);
 				
 				Character optionChar = new Character(key.charAt(key.length() - 1));
-				log.debug("Found optionChar " + optionChar);
+				LOGGER.fine("Found optionChar " + optionChar);
 				
 				this.registerCharOption(optionChar.charValue(), (String) props.get(key));
 			}
 		} 
 		catch (Exception e) {
-			log.debug("Unable to init options map due to : " + e);
+			LOGGER.log(Level.FINE, "Unable to init options map due to : " + e);
 		}
 	}
 
@@ -87,7 +87,7 @@ public final class OptionsRegistry {
     * @return the description associated with the given option passed as a single character
     */
 	public String getDescription(char option) throws InvalidOptionException {
-	   log.debug("Looking up through " + options.size() + " keys ");
+	   LOGGER.fine("Looking up through " + options.size() + " keys ");
 	   String description = (String) options.get(new Character(option));
        if ( description == null ) {
            throw new InvalidOptionException(option);

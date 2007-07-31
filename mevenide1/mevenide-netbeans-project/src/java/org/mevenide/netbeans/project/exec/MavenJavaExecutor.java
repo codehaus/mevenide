@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.output.OutputProcessor;
 import org.mevenide.netbeans.api.output.OutputVisitor;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -46,7 +46,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Cancellable;
 
-import org.openide.util.MapFormat;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.Utilities;
@@ -62,7 +61,7 @@ import org.openide.windows.OutputWriter;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenJavaExecutor implements Runnable, Cancellable {
-    private static final Log logger = LogFactory.getLog(MavenExecutor.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenExecutor.class.getName());
     
     public static final String FORMAT_MAVEN_HOME = "MAVEN_HOME"; //NOI18N
     public static final String FORMAT_GOAL = "goal"; //NOI18N
@@ -259,7 +258,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
         try {
             newio.getOut().reset();
         } catch (IOException exc) {
-            logger.error("Cannot reset InputOutput", exc);
+            LOGGER.log(Level.SEVERE, "Cannot reset InputOutput", exc);
         }
         return newio;
     }
@@ -404,7 +403,7 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                                          Boolean.valueOf(visitor.isImportant())};
                                          method.invoke(writer, objs);
                             } catch (Exception exc) {
-                                logger.error("Error while doing reflection", exc);
+                                LOGGER.log(Level.SEVERE, "Error while doing reflection", exc);
                             }
                         } else {
                             writer.println(line, visitor.getOutputListener());
@@ -417,13 +416,13 @@ public class MavenJavaExecutor implements Runnable, Cancellable {
                 }
                 read.close();
             } catch (IOException ioexc) {
-                logger.error(ioexc);
+                LOGGER.log(Level.SEVERE,"IOException", ioexc);
             } finally {
                 try {
                     read.close();
                     writer.close();
                 } catch (IOException ioexc) {
-                    logger.error(ioexc);
+                    LOGGER.log(Level.SEVERE,"IOException", ioexc);
                 }
             }
         }

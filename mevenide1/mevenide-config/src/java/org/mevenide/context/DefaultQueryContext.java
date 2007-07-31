@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.DefaultJDOMFactory;
@@ -42,7 +42,7 @@ import org.jdom.JDOMFactory;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public class DefaultQueryContext extends AbstractQueryContext {
-    private static final Log logger = LogFactory.getLog(DefaultQueryContext.class);
+    private static final Logger LOGGER = Logger.getLogger(DefaultQueryContext.class.getName());
     private static final Project EMPTY_PROJECT = new Project();
 
     private IQueryErrorCallback callback;
@@ -248,7 +248,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
                     try {
                         str.close();
                     } catch (IOException exc) {
-                        logger.error("Cannot close " + propFile, exc);
+                        LOGGER.log(Level.SEVERE, "Cannot close " + propFile, exc);
                     }
                 }
             }
@@ -274,7 +274,7 @@ public class DefaultQueryContext extends AbstractQueryContext {
                     try {
                         str.close();
                     } catch (IOException exc) {
-                        logger.error("Cannot close " + propFile, exc);
+                        LOGGER.log(Level.SEVERE, "Cannot close " + propFile, exc);
                     }
                 }
             }

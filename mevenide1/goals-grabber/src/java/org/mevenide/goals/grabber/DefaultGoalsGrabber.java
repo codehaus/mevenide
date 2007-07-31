@@ -23,10 +23,9 @@ import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.xmlpull.v1.XmlPullParser;
@@ -41,7 +40,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
  *
  */
 public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
-    private static Log log = LogFactory.getLog(DefaultGoalsGrabber.class);
+    private static Logger LOGGER = Logger.getLogger(DefaultGoalsGrabber.class.getName());
     
     private ILocationFinder finder;
     private XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
@@ -65,7 +64,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
         //File pluginsLocal = new File(Environment.getMavenHome(), "plugins");
         File goalsCache = new File(finder.getMavenPluginsDir(), "goals.cache");
         if ( goalsCache.exists() ) {
-            log.debug("Grabbing goals from : " + goalsCache.getAbsolutePath());
+            LOGGER.fine("Grabbing goals from : " + goalsCache.getAbsolutePath());
             
             Properties props = new Properties();
             props.load(new FileInputStream(goalsCache));
@@ -79,7 +78,7 @@ public class DefaultGoalsGrabber extends AbstractGoalsGrabber {
             }
             
         } else {
-            log.debug("No goals.cache file found in : " + finder.getMavenPluginsDir());
+            LOGGER.fine("No goals.cache file found in : " + finder.getMavenPluginsDir());
             loadFromDir(finder.getPluginJarsDir());
             loadFromDir(finder.getUserPluginsDir());
         }

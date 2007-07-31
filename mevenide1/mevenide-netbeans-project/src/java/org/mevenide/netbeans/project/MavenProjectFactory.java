@@ -20,8 +20,9 @@ package org.mevenide.netbeans.project;
 
 import java.io.File;
 import java.io.IOException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ProjectFactory;
@@ -37,7 +38,7 @@ import org.openide.filesystems.FileUtil;
  */
 public class MavenProjectFactory implements ProjectFactory
 {
-    private static final Log logger = LogFactory.getLog(MavenProjectFactory.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenProjectFactory.class.getName());
     
     /** Creates a new instance of MavenProjectFactory */
     public MavenProjectFactory()
@@ -72,9 +73,10 @@ public class MavenProjectFactory implements ProjectFactory
         }
         try {
             MavenProject proj =  new MavenProject(projectFile, projectDiskFile);
+            //LOGGER.log(Level.SEVERE, ">>>>>>" + projectDiskFile.getAbsolutePath() + " ? " + FileUtil.toFile(fileObject).getAbsolutePath(), new Exception());
             return proj;
         } catch (Exception exc) {
-            logger.error("Cannot load project=" + projectDiskFile, exc);
+            LOGGER.log(Level.SEVERE, "Cannot load project=" + projectDiskFile, exc);
             ErrorManager.getDefault().getInstance(MavenProjectFactory.class.getName()).notify(ErrorManager.INFORMATIONAL, exc);
             return null;
         }
@@ -83,5 +85,6 @@ public class MavenProjectFactory implements ProjectFactory
     public void saveProject(Project project) throws IOException {
         // what to do here??
     }
+    
     
 }

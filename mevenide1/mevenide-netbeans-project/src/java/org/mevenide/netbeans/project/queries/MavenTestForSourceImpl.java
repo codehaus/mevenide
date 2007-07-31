@@ -20,8 +20,8 @@ package org.mevenide.netbeans.project.queries;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.spi.java.queries.UnitTestForSourceQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -32,7 +32,7 @@ import org.openide.filesystems.FileObject;
  */
 public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementation {
     
-    private static final Log logger = LogFactory.getLog(MavenTestForSourceImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenTestForSourceImpl.class.getName());
                                                           
     private MavenProject project;
     /** Creates a new instance of MavenTestForSourceImpl */
@@ -48,7 +48,7 @@ public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementat
                 return uri.toURL();
             }
         } catch (MalformedURLException exc) {
-            logger.warn("wrong src->unit uri", exc);
+            LOGGER.log(Level.WARNING, "wrong src->unit uri", exc);
         }
         return null;
     }
@@ -60,7 +60,7 @@ public class MavenTestForSourceImpl implements UnitTestForSourceQueryImplementat
                 return uri.toURL();
             }
         } catch (MalformedURLException exc) {
-            logger.warn("wrong unti->src uri", exc);
+            LOGGER.log(Level.WARNING, "wrong unti->src uri", exc);
         }
         return null;
     }

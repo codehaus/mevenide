@@ -21,7 +21,7 @@
     <dependency>     
         <groupId>mevenide</groupId>
         <artifactId>mevenide-netbeans-project</artifactId>
-        <version>0.6</version>
+        <version>1.1</version>
         <type>jar</type>
         <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
          property in order for the maven-nbm-plugin to generate the correct Module's manifest entries.

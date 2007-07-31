@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
-    <currentVersion>0.11</currentVersion>
+    <currentVersion>0.2</currentVersion>
     <package>org.mevenide</package>
     <description>Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.</description>
     <versions>
@@ -50,31 +50,12 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>xerces</groupId>
-            <artifactId>xerces</artifactId>
-            <version>2.4.0</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>commons-discovery</groupId>
             <artifactId>commons-discovery</artifactId>
             <version>0.1</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>true</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.3</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
             </properties>
         </dependency>
         <dependency>
@@ -98,24 +79,34 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
+            <groupId>mevenide</groupId>
+            <artifactId>maven-nb-module</artifactId>
+            <version>1.1</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.spec>spec</netbeans.module.spec>
             </properties>
         </dependency>
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec</netbeans.module.dep>
+                <netbeans.module.ext>false</netbeans.module.ext>
             </properties>
         </dependency>
+        <dependency>
+          <groupId>maven</groupId>
+          <artifactId>maven-model</artifactId>
+          <version>3.0.2</version>
+          <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.ext>false</netbeans.module.ext>
+          </properties>
+        </dependency>        
         <!-- 
         	Following dependencies are required since we have copied 
         	DefaultProjectUnmarshaller into org.mevenide.util
@@ -124,7 +115,7 @@
         <dependency>
             <groupId>ant</groupId>
             <artifactId>ant</artifactId>
-            <version>1.5.3-1</version>
+            <version>1.6.5</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -135,19 +126,46 @@
         	please possibly explain which class needs it
         -->
         <dependency>
-            <groupId>commons-grant</groupId>
-            <artifactId>commons-grant</artifactId>
-            <version>1.0-beta-4</version>
-            <type>jar</type>
+          <groupId>maven</groupId>
+          <artifactId>commons-jelly</artifactId>
+          <version>1.0.1-20060717</version>
+          <url>http://jakarta.apache.org/commons/jelly/</url>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly</artifactId>
-            <version>20030902.160215</version>
-            <type>jar</type>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-ant</artifactId>
+          <version>1.1</version>
+          <url>http://jakarta.apache.org/commons/jelly/tags/ant/</url>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-define</artifactId>
+          <version>1.0</version>
+          <url>http://jakarta.apache.org/commons/jelly/tags/define/</url>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-util</artifactId>
+          <version>1.0</version>
+          <url>http://jakarta.apache.org/commons/jelly/tags/util/</url>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+          <groupId>commons-jelly</groupId>
+          <artifactId>commons-jelly-tags-xml</artifactId>
+          <version>1.1</version>
+          <url>http://jakarta.apache.org/commons/jelly/tags/util/</url>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
@@ -155,29 +173,22 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>1.0.1</version>
+            <version>2.0</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.0.4</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
         <!-- needed at runtime for MavenUtils -->
-        <dependency>
-            <groupId>commons-betwixt</groupId>
-            <artifactId>commons-betwixt</artifactId>
-            <version>1.0-beta-1</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>commons-digester</groupId>
-            <artifactId>commons-digester</artifactId>
-            <version>1.4.1</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
         <!-- 
         	note GD : i needed those to make ArtifactListBuilder work correctly. 
         	i cannot include them in mevenide-ui-eclipse because maven library is 
@@ -195,7 +206,7 @@
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>2.1</version>
+            <version>3.0</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
@@ -209,17 +220,10 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>werkz</groupId>
-            <artifactId>werkz</artifactId>
-            <version>1.0-beta-10</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>dom4j</groupId>
-            <artifactId>dom4j</artifactId>
-            <version>1.4</version>
+              <groupId>maven</groupId>
+              <artifactId>dom4j</artifactId>
+              <version>1.7-20060614</version>
+              <url>http://www.dom4j.org/</url>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
@@ -227,7 +231,7 @@
         <dependency>
             <groupId>commons-jexl</groupId>
             <artifactId>commons-jexl</artifactId>
-            <version>1.0-beta-1</version>
+            <version>1.1</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
@@ -236,7 +240,7 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>goals-grabber</artifactId>
-            <version>0.12</version>
+            <version>0.2</version>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
@@ -263,27 +267,11 @@
         <dependency>
             <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.11</version>
+            <version>0.2</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>commons-jelly</groupId>
-            <artifactId>commons-jelly-tags-ant</artifactId>
-            <version>20030625.032346</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-            </properties>
-        </dependency>
-        <dependency>
-            <groupId>ant</groupId>
-            <artifactId>ant-optional</artifactId>
-            <version>1.5.3-1</version>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
             </properties>
         </dependency>
     </dependencies>

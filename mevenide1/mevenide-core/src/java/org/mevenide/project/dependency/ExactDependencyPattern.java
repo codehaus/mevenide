@@ -42,7 +42,7 @@ public class ExactDependencyPattern implements IDependencyPattern {
         boolean matches = true;
         matches = matches && matchOne(artifact, dependency.getArtifactId());
         matches = matches && matchOne(group, dependency.getGroupId());
-        matches  = matches && matchOne(version, dependency.getVersion());
+        matches = matches && matchOne(version, dependency.getVersion());
         return matches;
     }
     

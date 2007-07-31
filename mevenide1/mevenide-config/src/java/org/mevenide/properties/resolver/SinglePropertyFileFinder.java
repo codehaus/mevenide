@@ -20,8 +20,8 @@ package org.mevenide.properties.resolver;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.properties.IPropertyFinder;
 import org.mevenide.properties.KeyValuePair;
 import org.mevenide.properties.PropertyModel;
@@ -34,7 +34,7 @@ import org.mevenide.properties.PropertyModelFactory;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 final class SinglePropertyFileFinder implements IPropertyFinder {
-    private static final Log logger = LogFactory.getLog(SinglePropertyFileFinder.class);
+    private static final Logger LOGGER = Logger.getLogger(SinglePropertyFileFinder.class.getName());
     
     private File propFile = null;
     private PropertyModel propModel = null;
@@ -54,7 +54,7 @@ final class SinglePropertyFileFinder implements IPropertyFinder {
                     readModel();
                 }
             } catch (IOException exc) {
-                logger.error("Cannot read file", exc);
+                LOGGER.log(Level.SEVERE,"Cannot read file", exc);
                 skip = true;
                 return null;
             }

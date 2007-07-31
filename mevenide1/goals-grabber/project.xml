@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>goals-grabber</artifactId>
     <name>Mevenide Goals Grabber</name>
-    <currentVersion>0.12</currentVersion>
+    <currentVersion>0.2</currentVersion>
     <package>org.mevenide.goals</package>
     <description>This project provides generic Goals Grabbing mechanism. It is articulated around IGoalsGrabber interface.</description>
     <shortDescription>Gets all the available goals and reports</shortDescription>
@@ -38,8 +38,18 @@
     <dependencies>
         <dependency>
             <groupId>mevenide</groupId>
+            <artifactId>maven-nb-module</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+            <properties>
+                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
+        </dependency>
+        <dependency>
+            <groupId>mevenide</groupId>
             <artifactId>mevenide-config</artifactId>
-            <version>0.11</version>
+            <version>0.2</version>
             <type>jar</type>
             <properties>
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
@@ -49,11 +59,14 @@
         <dependency>
             <groupId>maven</groupId>
             <artifactId>maven</artifactId>
-            <version>1.0.2</version>
+            <version>1.1</version>
             <type>jar</type>
-            <properties>
-                <netbeans.module.dep>spec</netbeans.module.dep>
-            </properties>
+        </dependency>
+        <dependency>
+            <groupId>maven</groupId>
+            <artifactId>maven-model</artifactId>
+            <version>3.0.2</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
@@ -65,16 +78,6 @@
             </properties>
         </dependency>
         <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.0.3</version>
-            <type>jar</type>
-            <properties>
-                <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
-                <netbeans.module.dep>spec=org.netbeans.libs.commons_logging/1 &gt; 1.0</netbeans.module.dep>
-            </properties>
-        </dependency>
-        <dependency>
             <groupId>xpp3</groupId>
             <artifactId>xpp3</artifactId>
             <version>1.1.2a</version>
@@ -83,12 +86,6 @@
                 <eclipse.plugin.bundle>false</eclipse.plugin.bundle>
                 <netbeans.module.ext>true</netbeans.module.ext>
             </properties>
-        </dependency>
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.8</version>
-            <url>http://jakarta.apache.org/log4j/</url>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

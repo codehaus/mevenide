@@ -16,13 +16,7 @@
  */
 package org.mevenide.netbeans.grammar;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.environment.SysEnvLocationFinder;
 import org.openide.modules.ModuleInstall;
 
@@ -35,7 +29,7 @@ import org.openide.modules.ModuleInstall;
  */
 public class MavenGrammarModule extends ModuleInstall
 {
-    private static Log log = LogFactory.getLog(MavenGrammarModule.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenGrammarModule.class.getName());
  
     private static final long serialVersionUID = -485754848837354747L;
     

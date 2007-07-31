@@ -20,14 +20,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.CheckBoxPropertyChange;
@@ -44,7 +43,7 @@ import org.openide.util.NbBundle;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class BuildPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(BuildPanel.class);
+    private static final Logger LOGGER = Logger.getLogger(BuildPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private DocumentListener listener;
@@ -350,7 +349,7 @@ public class BuildPanel extends JPanel implements ProjectPanel {
     }
     
     private void doValidate() {
-        logger.debug("Listener called");
+        LOGGER.fine("Listener called");
         ProjectValidateObserver obs = valObserver;
         if (obs != null) {
             obs.resetValidState(isInValidState(), getValidityMessage());

@@ -25,14 +25,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.queries.MavenFileOwnerQueryImpl;
 import org.mevenide.properties.IPropertyLocator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.commons.lang.StringUtils;
 import org.mevenide.properties.IPropertyResolver;
 import org.netbeans.api.project.Project;
@@ -51,7 +52,7 @@ import org.openide.util.WeakListeners;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
-    private static final Log logger = LogFactory.getLog(SubprojectProviderImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(SubprojectProviderImpl.class.getName());
     
     private static final String MULTIPROJECT_INCLUDES = "maven.multiproject.includes"; //NOI18N
     private static final String MULTIPROJECT_EXCLUDES = "maven.multiproject.excludes"; //NOI18N
@@ -114,7 +115,7 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     }
     
     public Set getSubprojects() {
-        logger.debug("getSubProjects()");
+        LOGGER.fine("getSubProjects()");
         String includes = project.getPropertyResolver().getResolvedValue(NBPROJECT_INCLUDES);
         String excludes = project.getPropertyResolver().getResolvedValue(NBPROJECT_EXCLUDES);
         String basedir = project.getPropertyResolver().getResolvedValue(NBPROJECT_BASEDIR);
@@ -183,16 +184,16 @@ public class SubprojectProviderImpl implements SubprojectProvider {
                         Project proj = ProjectManager.getDefault().findProject(projectDir);
                         return proj;
                     } catch (IOException exc) {
-                        logger.debug("IO exc. while loading project", exc);
+                        LOGGER.log(Level.FINE, "IO exc. while loading project", exc);
                     }
                 }
             } else {
                 // HUH?
-                logger.debug("fileobject not found=" + relPath + " in basedir=" + basefile);
+                LOGGER.log(Level.FINE, "fileobject not found=" + relPath + " in basedir=" + basefile);
             }
             
         } else {
-            logger.debug("project file not found=" + relPath + " in basedir=" + basefile);
+            LOGGER.log(Level.FINE, "project file not found=" + relPath + " in basedir=" + basefile);
         }
         return null;
     }

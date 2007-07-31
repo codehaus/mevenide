@@ -25,8 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * 
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  * 
  */
 public final class MevenideUtils {
-    private static final Log logger = LogFactory.getLog(MevenideUtils.class);
+    private static final Logger LOGGER = Logger.getLogger(MevenideUtils.class.getName());
     
 	public static final String EMPTY_STR = "";
 	public static final String PROPERTY_SEPARATOR = ":";
@@ -55,7 +55,7 @@ public final class MevenideUtils {
                     try {
                         file = file.getCanonicalFile();
                     } catch (IOException e) {
-                        logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
+                        LOGGER.log(Level.SEVERE, "getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
                         // OK, so at least try to absolutize the path
                         file = file.getAbsoluteFile();
                     }

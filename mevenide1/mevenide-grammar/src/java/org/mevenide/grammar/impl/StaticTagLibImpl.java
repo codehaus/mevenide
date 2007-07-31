@@ -27,8 +27,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -41,7 +40,7 @@ import org.mevenide.grammar.TagLib;
  */
 public final class StaticTagLibImpl implements TagLib {
 
-    private static Log logger = LogFactory.getLog(TagLib.class);
+    private static final Logger LOGGER = Logger.getLogger(TagLib.class.getName());
     
 	private static final String COMPLETION_ID_SEPARATOR = "|";
 

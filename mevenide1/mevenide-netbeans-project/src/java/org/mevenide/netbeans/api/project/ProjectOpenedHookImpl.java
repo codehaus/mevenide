@@ -17,8 +17,7 @@
 package org.mevenide.netbeans.api.project;
 
 import java.io.File;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.project.*;
 import org.mevenide.netbeans.project.classpath.ClassPathProviderImpl;
@@ -35,7 +34,7 @@ import org.openide.filesystems.FileUtil;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 class ProjectOpenedHookImpl extends ProjectOpenedHook {
-    private static final Log logger = LogFactory.getLog(ProjectOpenedHookImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(ProjectOpenedHookImpl.class.getName());
    
     private MavenProject project;
     ProjectOpenedHookImpl(MavenProject proj) {
@@ -43,13 +42,13 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
     }
     
     protected void projectOpened() {
-        logger.debug("Project opened.");
+        LOGGER.fine("Project opened.");
         attachUpdater();
         MavenFileOwnerQueryImpl q = MavenFileOwnerQueryImpl.getInstance();
         if (q != null) {
             q.addMavenProject(project);
         } else {
-            logger.error("no query MavenFileOwnerQueryImpl :(");
+            LOGGER.severe("no query MavenFileOwnerQueryImpl :(");
         }
         // register project's classpaths to GlobalPathRegistry
         ClassPathProviderImpl cpProvider = (ClassPathProviderImpl)project.getLookup().lookup(ClassPathProviderImpl.class);
@@ -61,12 +60,12 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
     }
     
     protected void projectClosed() {
-        logger.debug("Project closed.");
+        LOGGER.fine("Project closed.");
         MavenFileOwnerQueryImpl q = MavenFileOwnerQueryImpl.getInstance();
         if (q != null) {
             q.removeMavenProject(project);
         } else {
-            logger.error("no query MavenFileOwnerQueryImpl :(");
+            LOGGER.severe("no query MavenFileOwnerQueryImpl :(");
         }
         detachUpdater();
         // unregister project's classpaths to GlobalPathRegistry
@@ -139,7 +138,7 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
             } else {
                 file = new File(FileUtilities.getDependencyURI(dep, project));
             }
-            logger.debug("dep path=" + path);
+            LOGGER.fine("dep path=" + path);
             return /*file.getName().endsWith(".jar") && */ file.exists();
         }
         return false;

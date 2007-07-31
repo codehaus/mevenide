@@ -28,20 +28,22 @@ import java.util.regex.Pattern;
 public class DependencySplitter implements IDependencySplitter {
 	
 	private String fileName;
+        /**
+	 * we assume that fileName follows that kind of pattern that is pretty 
+	 * general : "^(.*)-(\\d.*)\\.(\\w+)$"
+	 *  (.|(-\\D)*)-((\\d)+(.*))\\.(\\w+)
+	 * so we have $2 => version ; $2 => extension 
+         * 
+	 * This assumes also that the file has not a multi-extension (e.g. tar.gz)
+	 * someone please provide with a more correct pattern$
+         */
+        private static final Pattern p = Pattern.compile("^((?:[^-]|(?:-\\D))*)-(\\d+(?:-|\\.|\\w)*)\\.(\\w+)$");
 	
 	public DependencySplitter(String fileNameToSplit) {
 		this.fileName = fileNameToSplit;
 	}
 
 	/**
-	 * we assume that fileName follows that kind of pattern that is pretty 
-	 * general : "(.|(-\\D)*)-((\\d)+(.*))\\.(\\w+)"
-	 * 
-	 * so we have $4 => version ; $7 => extension 
-	 * 
-	 * This assumes also that the file has not a multi-extension (e.g. tar.gz)
-	 * someone please provide with a more correct pattern$
-	 * 
 	 *  
 	 * we should provide a mecanism to allow the user to specify more patterns that
 	 * will be successfully applied still success considering, e.g.,
@@ -50,29 +52,13 @@ public class DependencySplitter implements IDependencySplitter {
 	 * @see IDependencySplitter#split()
 	 */
 	public DependencyParts split() {
-	
-		Pattern p = Pattern.compile("(.|(-\\D)*)-((\\d)+(.*))\\.(\\w+)");
-		
-		return applySplitStrategy(p, 3, 6);
-		
-	}
-
-	private DependencyParts applySplitStrategy(Pattern p, int expectedVersionIndex, int expectedExtensionIndex) {
 		Matcher m = p.matcher(fileName);
 		
-		String[] allGroups = new String[m.groupCount() + 1];
-		
-		int i = 0;
-		while ( i < m.groupCount() + 1 && m.find(i) ) {
-			allGroups[i] = m.group(i);
-			i++;
-		}
-		
 		DependencyParts dependencyParts = new DependencyParts();
-		dependencyParts.version = allGroups[expectedVersionIndex];
-		dependencyParts.extension = allGroups[expectedExtensionIndex];
-		if ( dependencyParts.version != null ) {
-			dependencyParts.artifactId = fileName.substring(0, fileName.indexOf(dependencyParts.version) - 1);
+                if (m.matches()) {
+                    dependencyParts.artifactId = m.group(1);
+                    dependencyParts.version = m.group(2);
+                    dependencyParts.extension = m.group(3);
 		}
 		
 		return dependencyParts;

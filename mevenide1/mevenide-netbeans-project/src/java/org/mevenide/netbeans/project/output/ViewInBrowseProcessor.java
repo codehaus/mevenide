@@ -19,9 +19,10 @@ package org.mevenide.netbeans.project.output;
 
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.openide.awt.HtmlBrowser;
 import org.openide.filesystems.FileUtil;
 import org.mevenide.netbeans.api.output.OutputVisitor;
@@ -32,7 +33,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class ViewInBrowseProcessor extends AbstractOutputProcessor implements OutputProcessor {
-    private static final Log logger = LogFactory.getLog(ViewInBrowseProcessor.class);
+    private static final Logger logger = Logger.getLogger(ViewInBrowseProcessor.class.getName());
     
     private String[] goalsToWatch;
     private File file;
@@ -72,7 +73,7 @@ public class ViewInBrowseProcessor extends AbstractOutputProcessor implements Ou
                 try {
                     HtmlBrowser.URLDisplayer.getDefault().showURL(fil.toURI().toURL());
                 } catch (MalformedURLException exc) {
-                    logger.error(exc);
+                    logger.log(Level.SEVERE, "MalformedURLException", exc);
                 }
             }
             

@@ -17,9 +17,8 @@
 package org.mevenide.netbeans.project.dependencies;
 
 import java.beans.Customizer;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Dependency;
 import org.mevenide.netbeans.api.project.MavenProject;
 
@@ -29,7 +28,7 @@ import org.mevenide.netbeans.api.project.MavenProject;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class DependencyPanel extends JPanel implements Customizer {
-    private static final Log logger = LogFactory.getLog(DependencyPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(DependencyPanel.class.getName());
     
 
     /** Creates new form CustomGoalsPanel */

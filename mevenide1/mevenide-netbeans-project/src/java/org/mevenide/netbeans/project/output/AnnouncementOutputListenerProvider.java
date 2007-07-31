@@ -20,10 +20,10 @@ package org.mevenide.netbeans.project.output;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileObject;
@@ -42,7 +42,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class AnnouncementOutputListenerProvider extends AbstractOutputProcessor {
-    private static final Log logger = LogFactory.getLog(AnnouncementOutputListenerProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(AnnouncementOutputListenerProvider.class.getName());
     
     private static final String[] ANNOUNCEGOALS = new String[] {
         "announcement:generate:",
@@ -103,9 +103,9 @@ public class AnnouncementOutputListenerProvider extends AbstractOutputProcessor 
                     Toolkit.getDefaultToolkit().beep();
                 }
             } catch (DataObjectNotFoundException donfe) {
-                logger.warn("DO not found.", donfe);
+                LOGGER.log(Level.WARNING, "DO not found.", donfe);
             } catch (IOException ioe) {
-                logger.warn(ioe);
+                LOGGER.log(Level.WARNING, "IOException", ioe);
             }
         }
         

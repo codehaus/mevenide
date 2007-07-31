@@ -24,13 +24,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 
 
 import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.MavenChange;
@@ -48,7 +48,7 @@ import org.openide.awt.HtmlBrowser;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class DescriptionPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(DescriptionPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(DescriptionPanel.class.getName());
 
     private ProjectValidateObserver valObserver;
     private MavenProject project;

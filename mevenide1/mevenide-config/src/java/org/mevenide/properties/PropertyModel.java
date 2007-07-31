@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 /**
  * Model of properties file.
@@ -35,7 +35,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class PropertyModel
 {
-    private static final Log log = LogFactory.getLog(PropertyModel.class);
+    private static final Logger LOGGER = Logger.getLogger(PropertyModel.class.getName());
     
     private List list;
 
@@ -158,7 +158,7 @@ public class PropertyModel
         }
         catch (IOException e) {
             String message = "unable to write model to Stream"; 
-            log.error(message, e);
+            LOGGER.log(Level.SEVERE, message, e);
         }
         finally {
             if ( bos != null ) {
@@ -167,7 +167,7 @@ public class PropertyModel
                 }
                 catch (IOException e1) {
                     String message = "Cannot close stream"; 
-                    log.error(message, e1);
+                    LOGGER.log(Level.SEVERE, message, e1);
                 }
             }
         }

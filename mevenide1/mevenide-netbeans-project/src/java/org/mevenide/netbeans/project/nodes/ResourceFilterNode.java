@@ -22,9 +22,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.CharConversionException;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.maven.project.Resource;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -40,7 +41,7 @@ import org.openide.xml.XMLUtil;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ResourceFilterNode extends FilterNode {
-    private static Log logger = LogFactory.getLog(ResourceFilterNode.class);
+    private static final Logger logger = Logger.getLogger(ResourceFilterNode.class.getName());
     private Resource resource;
     private File root;
     private boolean isIncluded;
@@ -98,7 +99,7 @@ class ResourceFilterNode extends FilterNode {
             try {
                 retValue = "<I>" + XMLUtil.toAttributeValue(retValue) + "</I>";
             } catch (CharConversionException exc) {
-                logger.debug("conversion failed for =" + retValue, exc);
+                logger.log(Level.FINE, "conversion failed for =" + retValue, exc);
             }
         } else {
             retValue = super.getHtmlDisplayName();

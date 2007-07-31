@@ -22,10 +22,10 @@ import java.util.Iterator;
 
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.MavenChange;
@@ -43,7 +43,7 @@ import org.mevenide.properties.IPropertyLocator;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class DefaultPluginPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(DefaultPluginPanel.class);
+    private static Logger LOGGER = Logger.getLogger(DefaultPluginPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;
@@ -73,7 +73,7 @@ public class DefaultPluginPanel extends JPanel implements ProjectPanel {
                 }
             } catch (Exception e) {
             }
-            logger.error("Cannot load default properties.", exc);
+            LOGGER.log(Level.SEVERE, "Cannot load default properties.", exc);
         }
             
         populateChangeInstances();
@@ -198,7 +198,7 @@ public class DefaultPluginPanel extends JPanel implements ProjectPanel {
     }
     
     private void doValidate() {
-        logger.debug("Listener called");
+        LOGGER.fine("Listener called");
         ProjectValidateObserver obs = valObserver;
         if (obs != null) {
             obs.resetValidState(isInValidState(), getValidityMessage());

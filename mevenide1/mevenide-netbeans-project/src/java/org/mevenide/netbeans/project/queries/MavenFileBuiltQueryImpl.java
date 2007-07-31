@@ -16,9 +16,9 @@
  */
 package org.mevenide.netbeans.project.queries;
 
+import java.util.logging.Logger;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.queries.FileBuiltQuery;
 import org.netbeans.spi.queries.FileBuiltQueryImplementation;
@@ -29,7 +29,7 @@ import org.openide.filesystems.FileObject;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
-     private static final Log logger = LogFactory.getLog(MavenFileBuiltQueryImpl.class);
+     private static final Logger logger = Logger.getLogger(MavenFileBuiltQueryImpl.class.getName());
    
     private MavenProject project;
     /** Creates a new instance of MavenFileBuiltQueryImpl */
@@ -51,7 +51,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
      *         or null for no answer
      */   
     public FileBuiltQuery.Status getStatus(FileObject fileObject) {
-        logger.debug("status for=" + fileObject); //NOI18N
+        logger.fine("status for=" + fileObject); //NOI18N
         return new Status();
     }
     
@@ -59,7 +59,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
     private class Status implements FileBuiltQuery.Status {
         
         public void addChangeListener(ChangeListener changeListener) {
-            logger.warn("adding listeenr=" + changeListener.getClass()); //NOI18N
+            logger.fine("adding listener=" + changeListener.getClass()); //NOI18N
         }
         
         public boolean isBuilt() {
@@ -67,7 +67,7 @@ public class MavenFileBuiltQueryImpl implements FileBuiltQueryImplementation {
         }
         
         public void removeChangeListener(ChangeListener changeListener) {
-            logger.warn("removing listeenr=" + changeListener.getClass()); //NOI18N
+            logger.fine("removing listener=" + changeListener.getClass()); //NOI18N
         }
         
     }

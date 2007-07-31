@@ -26,8 +26,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.properties.IPropertyFinder;
 
 /**
@@ -40,7 +40,7 @@ import org.mevenide.properties.IPropertyFinder;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public final class PluginPropertiesFinder implements IPropertyFinder {
-    private static final Log logger = LogFactory.getLog(PluginPropertiesFinder.class);
+    private static final Logger LOGGER = Logger.getLogger(PluginPropertiesFinder.class.getName());
     
     private File unpackedPluginDir;
     private File pluginDir;
@@ -109,7 +109,7 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
             try {
                 pros.load(new BufferedInputStream(new FileInputStream(propFile)));
             } catch (IOException exc) {
-                logger.warn("Cannot read defaults from file:" + propFile, exc); //NOI18N
+                LOGGER.log(Level.WARNING, "Cannot read defaults from file:" + propFile, exc); //NOI18N
             }
         }
     }
@@ -123,7 +123,7 @@ public final class PluginPropertiesFinder implements IPropertyFinder {
                 pros.load(new BufferedInputStream(jf.getInputStream(je)));
             }
         } catch (IOException exc) {
-            logger.warn("Cannot read defaults from file:" + jarFile, exc); //NOI18N
+            LOGGER.log(Level.WARNING, "Cannot read defaults from file:" + jarFile, exc); //NOI18N
         } finally {
             if (jf != null) {
                 try {

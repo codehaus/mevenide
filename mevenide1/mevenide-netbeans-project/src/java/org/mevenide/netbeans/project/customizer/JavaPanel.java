@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -32,8 +33,6 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.CheckBoxPropertyChange;
@@ -56,7 +55,7 @@ import org.openide.util.Utilities;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class JavaPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(BuildPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(BuildPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;

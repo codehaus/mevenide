@@ -21,10 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -43,7 +43,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class CheckstyleOutputListenerProvider extends AbstractOutputProcessor {
-    private static final Log logger = LogFactory.getLog(CheckstyleOutputListenerProvider.class);
+    private static final Logger logger = Logger.getLogger(CheckstyleOutputListenerProvider.class.getName());
     
     private static final String[] CHECKSTYLEGOALS = new String[] {
         "checkstyle:run:"
@@ -100,7 +100,7 @@ public class CheckstyleOutputListenerProvider extends AbstractOutputProcessor {
             try {
                 IOProvider.getDefault().getIO(title, false).getOut().reset();
             } catch (Exception exc) {
-                logger.error("Exception while resetting output", exc);
+                logger.log(Level.SEVERE, "Exception while resetting output", exc);
             }
             InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
@@ -130,7 +130,7 @@ public class CheckstyleOutputListenerProvider extends AbstractOutputProcessor {
                     writer.println(" ");
                 }
             } catch (IOException exc) {
-                logger.error("Exception while writing output", exc);
+                logger.log(Level.SEVERE, "Exception while writing output", exc);
             } finally {
                 writer.close();
             }

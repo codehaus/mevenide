@@ -23,9 +23,14 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.project.Dependency;
-import org.apache.maven.util.DownloadMeter;
-import org.apache.maven.util.HttpUtils;
+import org.apache.maven.wagon.ConnectionException;
+import org.apache.maven.wagon.events.TransferListener;
+import org.apache.maven.wagon.providers.http.HttpWagon;
+import org.apache.maven.wagon.proxy.ProxyInfo;
+import org.apache.maven.wagon.repository.Repository;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.ProxyUtilities;
@@ -39,6 +44,8 @@ import org.mevenide.repository.RepositoryReaderFactory;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class RepositoryUtilities {
+    
+    private static final Logger LOGGER = Logger.getLogger(RepositoryUtilities.class.getName());
     
     /** Creates a new instance of RepositoryUtilities */
     private RepositoryUtilities() {
@@ -182,9 +189,35 @@ public final class RepositoryUtilities {
         if (passwd != null && passwd.length() == 0) {
             passwd = null;
         } 
-        DownloadMeter meter = new StatusBarDownloadMeter(repoElement.getRelativeURIPath());
-        HttpUtils.getFile(uri.toURL().toString(), destinationFile, 
-                          false, true, host, port, user, passwd, null, null, meter);
+        ProxyInfo proxyInfo = null;
+        if (host != null) {
+            proxyInfo = new ProxyInfo();
+            proxyInfo.setHost(host);
+            proxyInfo.setPort(Integer.valueOf(port).intValue());
+            proxyInfo.setUserName(user);
+            proxyInfo.setPassword(passwd);
+        }
+        
+        String url = uri.toURL().toString();
+        int index = url.lastIndexOf( "/" );
+        String file = url.substring( index + 1 );
+        url = url.substring( 0, index );
+
+        Repository repository = new Repository( "httputils", url );
+        
+        TransferListener meter = new StatusBarTransferListener();
+        HttpWagon wagon = new HttpWagon();
+        wagon.addTransferListener(meter);
+        try {
+            wagon.connect(repository, proxyInfo);
+            wagon.getIfNewer(file, destinationFile, -1);
+        } finally {
+            try {
+                wagon.disconnect();
+            } catch (ConnectionException ex) {
+                LOGGER.log(Level.FINE, "Failed to disconnect", ex);
+            }
+        }
         return true;
     }        
 }

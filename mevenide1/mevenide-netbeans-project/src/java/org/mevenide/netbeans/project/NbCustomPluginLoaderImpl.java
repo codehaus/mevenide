@@ -24,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -41,7 +42,7 @@ import org.openide.filesystems.Repository;
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 public final class NbCustomPluginLoaderImpl implements ICustomPluginLoader {
-    private static Log logger = LogFactory.getLog(NbCustomPluginLoaderImpl.class);
+    private static Logger LOGGER = Logger.getLogger(NbCustomPluginLoaderImpl.class.getName());
     
     private static final String ROOT = "Plugins/Maven/PluginProperties"; //NOI18N
     
@@ -107,13 +108,13 @@ public final class NbCustomPluginLoaderImpl implements ICustomPluginLoader {
                     
             }
         } catch (Exception exc) {
-            logger.error("Exception while reading file " + fo.getPath(), exc);
+            LOGGER.log(Level.SEVERE, "Exception while reading file " + fo.getPath(), exc);
         } finally {
             if (stream != null) {
                 try {
                     stream.close();
                 } catch (IOException x) {
-                    logger.error("Cannot close", x);
+                    LOGGER.log(Level.SEVERE, "Cannot close", x);
                 }
             }
         }

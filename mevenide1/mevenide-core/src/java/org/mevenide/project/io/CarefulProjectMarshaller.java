@@ -25,9 +25,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.DefaultJDOMFactory;
 import org.jdom.Document;
@@ -38,7 +37,6 @@ import org.jdom.filter.Filter;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
-import org.mevenide.util.ProjectUtils;
 
 /**
  * a pom marshaller that attempts to preserve formatting and add items to the correct positions.
@@ -48,7 +46,7 @@ import org.mevenide.util.ProjectUtils;
  */
 public class CarefulProjectMarshaller implements IProjectMarshaller {
     
-    private static final Log log = LogFactory.getLog(CarefulProjectMarshaller.class);
+    private static final Logger LOGGER = Logger.getLogger(CarefulProjectMarshaller.class.getName());
 
     private XMLOutputter outputter;
     private JDOMFactory factory;
@@ -68,37 +66,37 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
     }
 
     public void marshall(Writer pom, Project project) throws Exception {
-        log.debug("do Marshall()");
+        LOGGER.fine("do Marshall()");
         Document originalDoc = factory.document(factory.element("project"));
-        log.debug("  updating document");
+        LOGGER.fine("  updating document");
         doUpdateDocument(originalDoc, new BeanContentProvider(project));
-        log.debug("  saving document");
+        LOGGER.fine("  saving document");
         saveDocument(pom, originalDoc);
     }
     
     public void marshall(Writer pom, Project project, InputStream source) throws Exception {
-        log.debug("do Marshall2()");
+        LOGGER.fine("do Marshall2()");
         Document originalDoc = builder.build(source);
-        log.debug("  updating document");
+        LOGGER.fine("  updating document");
         doUpdateDocument(originalDoc, new BeanContentProvider(project));
-        log.debug("  saving document");
+        LOGGER.fine("  saving document");
         saveDocument(pom, originalDoc);
     }
 
     public void marshall(Writer pom, IContentProvider provider) throws Exception {
-        log.debug("do Marshall()");
+        LOGGER.fine("do Marshall()");
         Document originalDoc = factory.document(factory.element("project"));
-        log.debug("  updating document");
+        LOGGER.fine("  updating document");
         doUpdateDocument(originalDoc, provider);
-        log.debug("  saving document");
+        LOGGER.fine("  saving document");
         saveDocument(pom, originalDoc);
     }
     
     public void marshall(Writer pom, IContentProvider provider, Document originalDoc) throws Exception {
-        log.debug("do Marshall2()");
-        log.debug("  updating document");
+        LOGGER.fine("do Marshall2()");
+        LOGGER.fine("  updating document");
         doUpdateDocument(originalDoc, provider);
-        log.debug("  saving document");
+        LOGGER.fine("  saving document");
         saveDocument(pom, originalDoc);
     }    
     
@@ -122,7 +120,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
         
         if ( project instanceof BeanContentProvider && ((BeanContentProvider) project).getBean() instanceof Project ) {
             Project mavenProject = (Project) ((BeanContentProvider) project).getBean(); 
-            findAndReplaceSimpleElement(counter, root, "groupId", ProjectUtils.getGroupId(mavenProject));
+            findAndReplaceSimpleElement(counter, root, "groupId", mavenProject.getGroupId());
         }
         else {
             findAndReplaceSimpleElement(counter, root, "groupId", project.getValue("groupId"));
@@ -199,7 +197,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 List list = parentElement.getContent(new SpecificElementFilter(childName, childKey, id));
                 if (list != null && !list.isEmpty()) {
                     if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + id);
+                        LOGGER.info("filter returned multiple instances, the primary key is not unique - key=" + id);
                         // what to do, we found multiple ones instead of one..
                     } else {
                         Element child = (Element)list.get(0);
@@ -213,7 +211,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
 
                         doUpdateChild(child, newValue);
                         usedElems.add(child);
-                        log.debug("updating element " + child.getChildText(childKey));
+                        LOGGER.fine("updating element " + child.getChildText(childKey));
                     }
                 } else {
                     //create a new version element
@@ -221,7 +219,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                     doUpdateChild(child, newValue);
                     usedElems.add(child);
                     currentChildren.add(i, child);
-                    log.debug("creating new element " + child.getChildText(childKey));
+                    LOGGER.fine("creating new element " + child.getChildText(childKey));
                 }
             } // end iterator
             removeNonUsedSubelements(parentElement, childName, usedElems);
@@ -329,7 +327,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                         new DependencyElementFilter(dep.getValue("id"), dep.getValue("artifactId"), dep.getValue("groupId"), dep.getValue("type")));
                 if (list != null && !list.isEmpty()) {
                     if (list.size() > 1) {
-                        log.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
+                        LOGGER.info("filter returned multiple instances, the primary key is not unique - key=" + dep.getValue("id"));
                         // what to do, we found multiple ones instead of one..
                     } else {
                         Element vElem = (Element)list.get(0);
@@ -343,7 +341,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
 
                         doUpdateSingleDependency(vElem, dep);
                         usedElems.add(vElem);
-                        log.debug("updating element " + vElem.getChildText("artifactId"));
+                        LOGGER.fine("updating element " + vElem.getChildText("artifactId"));
                     }
                 } else {
                     //create a new version element
@@ -351,7 +349,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                     doUpdateSingleDependency(vElem, dep);
                     usedElems.add(vElem);
                     currentChildren.add(i, vElem);
-                    log.debug("creating new element " + vElem.getChildText("artifactId"));
+                    LOGGER.fine("creating new element " + vElem.getChildText("artifactId"));
                 }
             } // end iterator
             removeNonUsedSubelements(dependenciesElem, "dependency", usedElems);
@@ -472,7 +470,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
                 Element el = (Element)tgtIterator.next();
                 IContentProvider res = (IContentProvider)srcIterator.next();
                 doUpdateSingleResource(el, res);
-                log.debug("updating element " + el.getChildText("directory"));
+                LOGGER.fine("updating element " + el.getChildText("directory"));
             } // end iterator
 
             while (tgtIterator.hasNext()) {
@@ -638,7 +636,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
 //            Element currElement = (Element)children.get(counter.getCurrentIndex());
 //            List content = parent.getContent();
 //            int index = content.indexOf(currElement);
-            log.debug("inserting " + child.getName() + " with pref loc=" + counter.getCurrentIndex());
+            LOGGER.fine("inserting " + child.getName() + " with pref loc=" + counter.getCurrentIndex());
 //            content.add(index, element);
 //            parent.setContent(content);
 //            parent.addContent(child);
@@ -668,7 +666,7 @@ public class CarefulProjectMarshaller implements IProjectMarshaller {
             if (!preserveList.contains(el))
             {
                 parent.removeContent(el);
-                log.debug("removing not used element " + el);
+                LOGGER.fine("removing not used element " + el);
             }
         }
     }

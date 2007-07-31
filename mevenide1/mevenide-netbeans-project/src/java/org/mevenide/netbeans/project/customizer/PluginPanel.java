@@ -23,10 +23,9 @@ import java.util.Iterator;
 
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.table.TableColumn;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.netbeans.api.customizer.CustomPluginPanelProvider;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
@@ -48,7 +47,7 @@ import org.openide.util.Lookup;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class PluginPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(PluginPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(PluginPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;
@@ -171,7 +170,7 @@ public class PluginPanel extends JPanel implements ProjectPanel {
     }
     
     private void doValidate() {
-        logger.debug("Listener called");
+        LOGGER.fine("Listener called");
         ProjectValidateObserver obs = valObserver;
         if (obs != null) {
             obs.resetValidState(isInValidState(), getValidityMessage());
