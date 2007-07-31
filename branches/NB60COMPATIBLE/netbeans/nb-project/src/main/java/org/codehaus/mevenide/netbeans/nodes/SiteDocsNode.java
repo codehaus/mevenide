@@ -121,7 +121,7 @@ class SiteDocsNode extends FilterNode {
         java.awt.Image retValue = super.getIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/projectsite-badge.png"), //NOI18N
                                              8, 8);
         } 
         return retValue;
@@ -132,7 +132,7 @@ class SiteDocsNode extends FilterNode {
         java.awt.Image retValue = super.getOpenedIcon(param);
         if (isTopLevelNode) {
             retValue = Utilities.mergeImages(retValue, 
-                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/webPagesBadge.gif"), //NOI18N
+                                             Utilities.loadImage("org/codehaus/mevenide/netbeans/projectsite-badge.png"), //NOI18N
                                              8, 8);
         } 
         return retValue;

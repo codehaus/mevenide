@@ -60,7 +60,6 @@ public class ProjectFilesNode extends AbstractNode {
         super(new ProjectFilesChildren(project), Lookups.fixed(project.getProjectDirectory()));
         setName("projectfiles"); //NOI18N
         setDisplayName(org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "LBL_Project_Files"));
-        setIconBaseWithExtension("org/codehaus/mevenide/netbeans/MavenFiles.gif"); //NOI18N
         this.project = project;
     }
     

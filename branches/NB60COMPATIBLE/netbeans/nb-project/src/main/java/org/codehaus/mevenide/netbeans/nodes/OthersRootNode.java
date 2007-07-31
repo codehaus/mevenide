@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileSystem;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
 /**
@@ -58,22 +60,19 @@ class OthersRootNode extends AbstractNode {
 
     }
     
-    @Override
-    public java.awt.Image getIcon(int param) {
-        java.awt.Image retValue = super.getIcon(param);
-//        retValue = Utilities.mergeImages(retValue,
-//                        Utilities.loadImage("org/mevenide/netbeans/project/resources/resources.gif"),
-//                        0, 0);
-        return retValue;
+    private Image getIcon(boolean opened) {
+        Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/others-badge.png", true); //NOI18N
+        return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
     }
-    
+
     @Override
-    public java.awt.Image getOpenedIcon(int param) {
-        java.awt.Image retValue = super.getOpenedIcon(param);
-//        retValue = Utilities.mergeImages(retValue,
-//                      Utilities.loadImage("org/mevenide/netbeans/project/resources/resources.gif"),
-//                      0, 0);
-        return retValue;
+    public Image getIcon(int type) {
+        return getIcon(false);
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(true);
     }
     
     @Override

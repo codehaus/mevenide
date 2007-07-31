@@ -359,7 +359,7 @@ public class DependencyNode extends AbstractNode {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
                         Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"), //NOI18N
-                        12, 12);
+                        12, 0);
             }
             if (hasSourceInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
@@ -382,7 +382,7 @@ public class DependencyNode extends AbstractNode {
             if (hasJavadocInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
                         Utilities.loadImage("org/codehaus/mevenide/netbeans/DependencyJavadocIncluded.png"), //NOI18N
-                        12, 12);
+                        12, 0);
             }
             if (hasSourceInRepository()) {
                 retValue = Utilities.mergeImages(retValue,
