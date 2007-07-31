@@ -24,9 +24,8 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.properties.Element;
 import org.mevenide.properties.ElementFactory;
 import org.mevenide.properties.KeyValuePair;
@@ -39,7 +38,7 @@ import org.mevenide.properties.PropertyModelFactory;
  */
 public class CarefulPropertiesWriter implements IPropertiesWriter
 {   
-    private static Log logger = LogFactory.getLog(CarefulPropertiesWriter.class);
+    private static Logger LOGGER = Logger.getLogger(CarefulPropertiesWriter.class.getName());
     
     /** Creates a new instance of CarefulPropertiesWriter */
     public CarefulPropertiesWriter()

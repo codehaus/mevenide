@@ -22,8 +22,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.grammar.TagLib;
 import org.mevenide.grammar.TagLibProvider;
@@ -37,7 +37,7 @@ import org.mevenide.grammar.TagLibProvider;
  */
 public class MavenTagLibProvider implements TagLibProvider {
 	
-	private static Log logger = LogFactory.getLog(MavenTagLibProvider.class);
+	private static final Logger LOGGER = Logger.getLogger(MavenTagLibProvider.class.getName());
 	
 	private File cacheFile;
 	private File pluginDir;
@@ -83,15 +83,15 @@ public class MavenTagLibProvider implements TagLibProvider {
 				} 
 				catch (Exception exc) {
 					// just ignore, something went wrong, no CC.
-					logger.error("Cannot cached plugin.jelly.", exc);
+					LOGGER.log(Level.SEVERE, "Cannot cached plugin.jelly.", exc);
 				}
 			} 
 			else {
-				logger.warn("cannot read plugin jelly file=" + jellyFileLoc.getAbsolutePath());
+				LOGGER.warning("cannot read plugin jelly file=" + jellyFileLoc.getAbsolutePath());
 			}
 		} 
 		else {
-			logger.warn("no content in taglibs=" + taglibs.size() + "name="
+			LOGGER.warning("no content in taglibs=" + taglibs.size() + "name="
 					+ name + "=");
 		}
 		return null;
@@ -104,7 +104,7 @@ public class MavenTagLibProvider implements TagLibProvider {
 				cacheRead = true;
 			} 
 			catch (Exception exc) {
-				logger.error("Cannot read dynatag cache.", exc);
+				LOGGER.log(Level.SEVERE, "Cannot read dynatag cache.", exc);
 			}
 		}
 	}
@@ -122,7 +122,7 @@ public class MavenTagLibProvider implements TagLibProvider {
 				continue;
 			}
 			taglibs.put(key, pros.getProperty(key));
-			logger.debug("readCache:key=" + key + "=value=" + pros.getProperty(key));
+			LOGGER.fine("readCache:key=" + key + "=value=" + pros.getProperty(key));
 		}
 	}
 

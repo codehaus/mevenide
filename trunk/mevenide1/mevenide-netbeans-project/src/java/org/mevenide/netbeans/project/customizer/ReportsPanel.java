@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -35,8 +37,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
 import org.mevenide.netbeans.api.customizer.changes.ListModelPOMChange;
@@ -54,7 +54,7 @@ import org.openide.NotifyDescriptor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class ReportsPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(ReportsPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(ReportsPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private Listener listener;
@@ -298,7 +298,7 @@ public class ReportsPanel extends JPanel implements ProjectPanel {
                         }
                     }
                 } catch (Exception exc) {
-                    logger.error("exception while retrieving reports", exc);
+                    LOGGER.log(Level.SEVERE, "exception while retrieving reports", exc);
                 }
             }
         }

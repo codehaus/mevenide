@@ -31,8 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -47,7 +47,7 @@ import org.mevenide.grammar.TagLib;
  */
 public class JellyDefineTagLibImpl implements TagLib {
 
-    private static Log logger = LogFactory.getLog(JellyDefineTagLibImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(JellyDefineTagLibImpl.class.getName());
     private Element rootElement;
     private URLClassLoader classLoader;
     private Map cachedTagAttributes;
@@ -93,7 +93,7 @@ public class JellyDefineTagLibImpl implements TagLib {
         }
         Element tagLibEl = findTagLibElement(root, dynaNS); //NOI18N
         if (tagLibEl == null) {
-            logger.error("The supposedly defined taglibrary was not found");
+            LOGGER.severe("The supposedly defined taglibrary was not found");
         }
         return tagLibEl;
     }
@@ -213,12 +213,12 @@ public class JellyDefineTagLibImpl implements TagLib {
             if (tagElement != null) {
                 if (tagElement.getName().equals("jellybean")) { //NOI18N
                     // do the jellybean stuff..
-                    logger.debug("introspectJellyBean");
+                    LOGGER.fine("introspectJellyBean");
                     introspectBean(tagElement, toReturn, classLoader);
                 }
                 if (tagElement.getName().equals("bean")) { //NOI18N
                     // do the bean stuff..
-                    logger.debug("introspectBean");
+                    LOGGER.fine("introspectBean");
                     introspectBean(tagElement, toReturn, classLoader);
                 }
                 //                if (tagElement.getName().equals("dynabean")) { //NOI18N
@@ -248,13 +248,13 @@ public class JellyDefineTagLibImpl implements TagLib {
                     }
                     catch (Exception e) {
                         // no getter?? just ignore.. process the next one..
-                        logger.warn("No getter, probably ignore", e);
+                        LOGGER.log(Level.WARNING, "No getter, probably ignore", e);
                     }
                 }
             }
         }
         catch (Exception exc) {
-            logger.error("Cannot examine jelly bean", exc);
+            LOGGER.log(Level.SEVERE, "Cannot examine jelly bean", exc);
         }
     }
 

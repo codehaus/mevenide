@@ -23,10 +23,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.reports.FindbugsResult;
 import org.openide.DialogDisplayer;
@@ -50,7 +51,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class FindbugsOutputListenerProvider extends AbstractOutputProcessor {
-    private static Log logger = LogFactory.getLog(FindbugsOutputListenerProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(FindbugsOutputListenerProvider.class.getName());
     
     private static final String[] FINDBUGSGOALS = new String[] {
         "maven-findbugs-plugin:report:"
@@ -112,7 +113,7 @@ public class FindbugsOutputListenerProvider extends AbstractOutputProcessor {
             try {
                 IOProvider.getDefault().getIO(title, false).getOut().reset();
             } catch (Exception exc) {
-                logger.error("Exception while resetting output", exc);
+                LOGGER.log(Level.SEVERE, "Exception while resetting output", exc);
             }
             InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
@@ -142,7 +143,7 @@ public class FindbugsOutputListenerProvider extends AbstractOutputProcessor {
                     writer.println(" ");
                 }
             } catch (IOException exc) {
-                logger.error("Exception while writing output", exc);
+                LOGGER.log(Level.SEVERE, "Exception while writing output", exc);
             } finally {
                 writer.close();
             }

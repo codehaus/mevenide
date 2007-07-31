@@ -20,8 +20,7 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Project;
 import org.mevenide.environment.ConfigUtils;
@@ -35,7 +34,7 @@ import org.mevenide.util.StringUtils;
  * 
  */
 public final class DependencyUtil {
-	private static Log log = LogFactory.getLog(DependencyUtil.class);
+	private static Logger log = Logger.getLogger(DependencyUtil.class.getName());
 	
 	private DependencyUtil() {}
 	
@@ -89,7 +88,7 @@ public final class DependencyUtil {
 	
 	public static boolean isValid(Dependency d) {
 		if ( d == null ) { 
-			log.debug("null dependency found");
+			log.fine("null dependency found");
 			return false;
 		} 
 		boolean valid = /*!StringUtils.isNull(d.getId())
@@ -137,7 +136,7 @@ public final class DependencyUtil {
 	 * @return
 	 */
 	public static boolean isDependencyPresent(Project project, Dependency dependency) {
-		log.debug("searched dependency : " + DependencyUtil.toString(dependency));
+		log.fine("searched dependency : " + DependencyUtil.toString(dependency));
 		List dependencies = project.getDependencies();
 		if ( dependencies == null ) {
 			return false;
@@ -148,7 +147,7 @@ public final class DependencyUtil {
 			String version = declaredDependency.getVersion(); 
 			String artifactId = declaredDependency.getArtifactId();
 			
-			log.debug("found dependency : " + DependencyUtil.toString(declaredDependency));
+			log.fine("found dependency : " + DependencyUtil.toString(declaredDependency));
 			
 			if (  artifactId != null && artifactId.equals(dependency.getArtifactId()) 
 				  && version != null && version.equals(dependency.getVersion())) {
@@ -166,7 +165,7 @@ public final class DependencyUtil {
 			}
 		}
 		catch ( Exception ex ) {
-			log.debug("Still unable to resolve groupId due to : " + ex);
+			log.fine("Still unable to resolve groupId due to : " + ex);
 		}	
 	}
 	

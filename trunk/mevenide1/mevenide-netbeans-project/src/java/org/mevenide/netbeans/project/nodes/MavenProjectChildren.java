@@ -24,8 +24,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.project.FileUtilities;
@@ -51,7 +51,7 @@ import org.openide.nodes.Children;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 class MavenProjectChildren extends Children.Keys {
-    private static final Log logger = LogFactory.getLog(MavenProjectChildren.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenProjectChildren.class.getName());
     
     private static final String KEY_JELLY_SCRIPT = "jellyScript"; //NOI18N
     private static final String KEY_RESOURCES = "resources"; //NOI18N
@@ -74,7 +74,7 @@ class MavenProjectChildren extends Children.Keys {
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (MavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
-                    logger.debug("regenerating project children keys");
+                    LOGGER.fine("regenerating project children keys");
                     regenerateKeys();
                     refresh();
                 }
@@ -202,7 +202,7 @@ class MavenProjectChildren extends Children.Keys {
                 return DataFolder.findFolder(folder);
             }
         } catch (MalformedURLException exc) {
-            logger.warn("malformed URI=" + path, exc);
+            LOGGER.log(Level.WARNING, "malformed URI=" + path, exc);
         }
         //TODO - create the folder if it doesn't exist? and do it here? I'd rather do it when opening project..
         return null;
@@ -220,7 +220,7 @@ class MavenProjectChildren extends Children.Keys {
                 }
             }
         } catch (MalformedURLException exc) {
-            logger.debug("malformed webapp rootfile url", exc);
+            LOGGER.log(Level.FINE, "malformed webapp rootfile url", exc);
             n = null;
         }
         return n;
@@ -238,7 +238,7 @@ class MavenProjectChildren extends Children.Keys {
                 }
             }
         } catch (MalformedURLException exc) {
-            logger.debug("malformed ear rootfile url", exc);
+            LOGGER.log(Level.FINE, "malformed ear rootfile url", exc);
             n = null;
         }
         return n;
@@ -256,7 +256,7 @@ class MavenProjectChildren extends Children.Keys {
                 }
             }
         } catch (MalformedURLException exc) {
-            logger.debug("malformed ejb rootfile url", exc);
+            LOGGER.log(Level.FINE, "malformed ejb rootfile url", exc);
             n = null;
         }
         return n;

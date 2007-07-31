@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/mevenide/config/Bundle.properties
-OpenIDE-Module-IDE-Dependencies: IDE/1 > 3.40
 OpenIDE-Module-Public-Packages: org.mevenide.**

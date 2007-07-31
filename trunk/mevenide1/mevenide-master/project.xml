@@ -23,7 +23,7 @@
   <name>Mevenide Master</name>
   <id>mevenide-master</id>
   <artifactId>mevenide-master</artifactId>
-  <currentVersion>0.2.2</currentVersion>
+  <currentVersion>0.3</currentVersion>
   <url>http://mevenide.codehaus.org/</url>
   
   <siteDirectory>/home/projects/mevenide/public_html</siteDirectory>
@@ -49,7 +49,7 @@
   	<dependency>
   	  <groupId>mevenide</groupId>
       <artifactId>maven-nbm-plugin</artifactId>
-  	  <version>1.3</version>
+  	  <version>1.5</version>
   	  <type>plugin</type>
   	</dependency>
    

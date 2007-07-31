@@ -27,10 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.apache.maven.project.Project;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
@@ -50,7 +51,7 @@ import org.openide.filesystems.URLMapper;
  */
 public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementation, 
                                                       JavadocForBinaryQueryImplementation {
-    private static final Log logger = LogFactory.getLog(MavenForBinaryQueryImpl.class);
+    private static final Logger logger = Logger.getLogger(MavenForBinaryQueryImpl.class.getName());
                                                           
     private MavenProject project;
     private BinResult srcResult;
@@ -86,7 +87,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     public SourceForBinaryQuery.Result findSourceRoots(URL url) {
         if (url.getProtocol().equals("jar") && checkURL(url) != -1) { //NOI18N
             if (jarResult == null) {
-                logger.debug("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
+                logger.fine("MavenSourceForBinaryQueryImpl project=" + project.getDisplayName() + "url=" + url);
                 jarResult = new BinResult(url);
             }
             return jarResult;
@@ -123,7 +124,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      */    
     public JavadocForBinaryQuery.Result findJavadoc(URL url) {
         if (checkURL(url) != -1) {
-            logger.debug("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
+            logger.fine("JavadocForBinaryQueryImplementation project=" + project.getDisplayName() + "url=" + url);
             return new DocResult(url);
         }
         return null;
@@ -135,7 +136,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
      * 1 - test source
      */
     private int checkURL(URL url) {
-        logger.debug("checkurl=" + url);
+        logger.fine("checkurl=" + url);
         if ("file".equals(url.getProtocol())) {
             // true for directories.
             try {
@@ -154,7 +155,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                     }
                 }
             } catch (MalformedURLException exc) {
-                logger.warn("exception maplformed url.", exc);
+                logger.log(Level.FINE, "exception maplformed url.", exc);
             }
             return -1;
         }
@@ -162,7 +163,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             URL binRoot = FileUtil.getArchiveFile(url);
             FileObject fo = URLMapper.findFileObject(binRoot);
             if (fo != null) {
-                logger.debug("checkurl fo=" + fo);
+                logger.fine("checkurl fo=" + fo);
                 Project mavproj = project.getOriginalMavenProject();
                 File file = FileUtil.toFile(fo);
                 try {
@@ -176,7 +177,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                                       || doCompare(depRes.guessVersion(), res.resolveString(mavproj.getCurrentVersion()))));
                     return found ? 0 : -1;
                 } catch (Exception exc) {
-                    logger.error("exception", exc);
+                    logger.log(Level.SEVERE, "exception", exc);
                     return -1;
                 }
             }
@@ -185,7 +186,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     }
     
     private FileObject[] getSrcRoot() {
-        logger.debug("getsrcRoot");
+        logger.fine("getsrcRoot");
         Collection toReturn = new ArrayList();
         Collection uris = new ArrayList();
         URI uri = project.getSrcDirectory();
@@ -209,7 +210,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
                     toReturn.add(fo);
                 }
             } catch (MalformedURLException exc) {
-                logger.warn("malforrmed uri=" + uri);
+                logger.warning("malforrmed uri=" + uri);
             }
         }
         FileObject[] fos = new FileObject[toReturn.size()];
@@ -218,18 +219,18 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     }
     
     private FileObject[] getTestSrcRoot() {
-        logger.debug("gettestsrcRoot");
+        logger.fine("gettestsrcRoot");
         URI uri = project.getTestSrcDirectory();
         if (uri != null) {
             try {
-                logger.debug("gettestsrcRoot uri=" + uri);
+                logger.fine("gettestsrcRoot uri=" + uri);
                 FileObject foRoot = URLMapper.findFileObject(uri.toURL());
                 if (foRoot != null) {
-                    logger.debug("returning fo=" + foRoot);
+                    logger.fine("returning fo=" + foRoot);
                     return new FileObject[] {foRoot};
                 }
             } catch (MalformedURLException exc) {
-                logger.warn("malforrmed uri=" + uri);
+                logger.warning("malforrmed uri=" + uri);
             }
         }
         return new FileObject[0];
@@ -237,7 +238,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
 
     
     private URL[] getJavadocRoot() {
-        logger.debug("getjavadocRoot");
+        logger.fine("getjavadocRoot");
         String destDir = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
         if (destDir != null) {
             File fil = new File(destDir);
@@ -245,10 +246,10 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             try {
                 return new URL[] {fil.toURI().toURL()};
             } catch (MalformedURLException exc) {
-                logger.warn("malforrmed file uri=" + fil.toURI());
+                logger.warning("malforrmed file uri=" + fil.toURI());
             }
         } else {
-            logger.error("Cannot resolve maven.javadoc.destdir. How come?");
+            logger.severe("Cannot resolve maven.javadoc.destdir. How come?");
         }
         return new URL[0];
     }    

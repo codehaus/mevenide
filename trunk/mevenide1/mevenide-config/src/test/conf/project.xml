@@ -35,14 +35,14 @@
     <dependency>
       <groupId>mevenide</groupId>
       <artifactId>goals-grabber</artifactId>
-      <version>1.0</version>
+      <version>0.2</version>
       <url>http://sf.net/projects/mevenide</url>
     </dependency>
         
     <dependency>
       <groupId>jdom</groupId>
       <artifactId>jdom</artifactId>
-      <version>1.0b8</version>
+      <version>1.0</version>
       <url>http://jdom.org/</url>
     </dependency>
 

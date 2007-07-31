@@ -29,12 +29,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.api.project.MavenProject;
@@ -56,7 +56,7 @@ import org.openide.util.RequestProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenSourcesImpl implements Sources {
-    private static final Log logger = LogFactory.getLog(MavenSourcesImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenSourcesImpl.class.getName());
     public static final String TYPE_RESOURCES = "Resources"; //NOI18N
     public static final String TYPE_TEST_RESOURCES = "TestResources"; //NOI18N
     public static final String TYPE_XDOCS = "XDocs"; //NOI18N
@@ -116,7 +116,7 @@ public class MavenSourcesImpl implements Sources {
                 folder = URLMapper.findFileObject(project.getGeneratedSourcesDir().toURL());
                 changed = changed | checkGeneratedGroupCache(folder);
             } catch (MalformedURLException exc) {
-                logger.error("Malformed URL", exc);
+                LOGGER.log(Level.SEVERE, "Malformed URL", exc);
                 changed = false;
                 // don't fire or one gets into a cycle here..
             }
@@ -191,7 +191,7 @@ public class MavenSourcesImpl implements Sources {
                     return new SourceGroup[0];
                 }
             } catch (MalformedURLException exc) {
-                logger.error("Malformed URL", exc);
+                LOGGER.log(Level.SEVERE, "Malformed URL", exc);
                 return new SourceGroup[0];
             }
         }
@@ -236,7 +236,7 @@ public class MavenSourcesImpl implements Sources {
             grp = (SourceGroup[])toReturn.toArray(grp);
             return grp;
         }
-        logger.warn("unknown source type=" + str);
+        LOGGER.warning("unknown source type=" + str);
         return new SourceGroup[0];
     }
     
@@ -281,7 +281,7 @@ public class MavenSourcesImpl implements Sources {
                 return new SourceGroup[0];
             }
         } catch (MalformedURLException exc) {
-            logger.error("Malformed URL", exc);
+            LOGGER.log(Level.SEVERE, "Malformed URL", exc);
             return new SourceGroup[0];
         }
     }
@@ -397,7 +397,7 @@ public class MavenSourcesImpl implements Sources {
         }
         
         public boolean contains(FileObject file)  {
-            logger.debug("Resourcegroup.contains()=" + file);
+            LOGGER.fine("Resourcegroup.contains()=" + file);
             if (file != rootFolder && !FileUtil.isParentOf(rootFolder, file)) {
                 throw new IllegalArgumentException();
             }

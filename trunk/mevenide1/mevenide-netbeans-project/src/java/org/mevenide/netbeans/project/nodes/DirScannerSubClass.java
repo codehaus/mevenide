@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.apache.maven.project.Resource;
 import org.apache.tools.ant.DirectoryScanner;
 import org.openide.filesystems.FileObject;
@@ -35,7 +34,7 @@ import org.openide.filesystems.FileUtil;
  */
 // was made public just because of MavenSourcesImpl, prolly better to move there..
 public final class DirScannerSubClass extends DirectoryScanner {
-    private static Log logger = LogFactory.getLog(DirScannerSubClass.class);
+    private static final Logger LOGGER = Logger.getLogger(DirScannerSubClass.class.getName());
     /** Creates a new instance of DirScannerSubClass */
     public DirScannerSubClass() {
         super();
@@ -64,7 +63,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
     }
     
     public static boolean checkIncluded(FileObject file, FileObject rootFile, Resource resource) {
-        logger.debug("chceckIncluded");
+        LOGGER.fine("chceckIncluded");
         return checkIncludedImpl(file, rootFile, resource.getIncludes(), resource.getExcludes());
     }
     
@@ -79,7 +78,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
             Iterator it = includes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
-                logger.debug("include=" + pattern);
+                LOGGER.fine("include=" + pattern);
                 // exact match or pattern match
                 if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     doInclude = true;
@@ -105,7 +104,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
         }
         
         if (!doInclude) {
-            logger.debug("do not include");
+            LOGGER.fine("do not include");
             return false;
         }
         
@@ -113,7 +112,7 @@ public final class DirScannerSubClass extends DirectoryScanner {
             Iterator it = excludes.iterator();
             while (it.hasNext()) {
                 String pattern = (String)it.next();
-                logger.debug("exclude=" + pattern);
+                LOGGER.fine("exclude=" + pattern);
                 if (pattern.equals(relPath) || DirectoryScanner.match(pattern, relPath)) {
                     return false;
                 }

@@ -23,12 +23,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JSeparator;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.AdditionalActionsProvider;
 import org.mevenide.properties.IPropertyLocator;
 import org.mevenide.netbeans.project.ActionProviderImpl;
@@ -57,7 +56,7 @@ import org.openide.util.actions.SystemAction;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenProjectNode extends AbstractNode {
-     private static Log log = LogFactory.getLog(MavenProjectNode.class);
+     private static final Logger LOGGER = Logger.getLogger(MavenProjectNode.class.getName());
      
      
      private MavenProject project;

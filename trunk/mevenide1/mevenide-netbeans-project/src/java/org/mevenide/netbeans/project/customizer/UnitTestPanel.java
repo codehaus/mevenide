@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -27,12 +28,11 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import javax.swing.event.DocumentListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.UnitTest;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
@@ -58,7 +58,7 @@ import org.openide.nodes.Children;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class UnitTestPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(UnitTestPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(UnitTestPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private DocumentListener listener;

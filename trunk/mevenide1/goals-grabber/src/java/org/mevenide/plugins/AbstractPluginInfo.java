@@ -27,15 +27,16 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 
 /**
  * abstract plugininfo implementation
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 abstract class AbstractPluginInfo implements IPluginInfo {
-     private static Log logger = LogFactory.getLog(AbstractPluginInfo.class);
+    private final static Logger LOGGER = Logger.getLogger(AbstractPluginInfo.class.getName());
    
     private String artifactId;
     private String version;
@@ -107,13 +108,13 @@ abstract class AbstractPluginInfo implements IPluginInfo {
                     stream = new BufferedInputStream(stream);
                     props.load(stream);
                 } catch (Exception exc) {
-                    logger.error("Cannot read", exc);
+                    LOGGER.log(Level.SEVERE,"Cannot read", exc);
                 } finally {
                     if (stream != null) {
                         try {
                             stream.close();
                         } catch (Exception exc) {
-                            logger.error("Cannot close", exc);
+                            LOGGER.log(Level.SEVERE, "Cannot close", exc);
                         }
                     }
                 }
@@ -208,13 +209,13 @@ abstract class AbstractPluginInfo implements IPluginInfo {
                 line = read.readLine();
             }
         } catch (Exception exc) {
-            logger.error("Cannot read", exc);            
+            LOGGER.log(Level.SEVERE, "Cannot read", exc);            
         } finally {
             if (read != null) {
                 try {
                     read.close();
                 } catch (IOException exc) {
-                    logger.error("Cannot close", exc);            
+                    LOGGER.log(Level.SEVERE, "Cannot close", exc);            
                 }
             }
         }

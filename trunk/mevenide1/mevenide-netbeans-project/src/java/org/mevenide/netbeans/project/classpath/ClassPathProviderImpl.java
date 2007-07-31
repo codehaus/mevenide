@@ -21,8 +21,8 @@ import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
+
 import org.mevenide.netbeans.project.FileUtilities;
 import org.mevenide.netbeans.api.project.MavenProject;
 
@@ -38,7 +38,7 @@ import org.openide.filesystems.FileUtil;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public final class ClassPathProviderImpl implements ClassPathProvider {
-    private static final Log logger = LogFactory.getLog(ClassPathProviderImpl.class);
+    private static final Logger logger = Logger.getLogger(ClassPathProviderImpl.class.getName());
   
 //    private static final String SRC = "src.dir";
 //    private static final String TEST_SRC = "test.src.dir";    
@@ -74,36 +74,36 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     public ClassPath[] getProjectClassPaths(String type) {
         if (ClassPath.BOOT.equals(type)) {
             //TODO
-            logger.debug("get boot path");
+            logger.fine("get boot path");
             return new ClassPath[]{ getBootClassPath() };
         }
-        logger.debug("getProjectClassPaths type =" + type);
+        logger.fine("getProjectClassPaths type =" + type);
         if (ClassPath.COMPILE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            logger.debug("COMPILEgetProjectClassPaths src");
+            logger.fine("COMPILEgetProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("COMPILEgetProjectClassPaths src adding1=" + d);
+                logger.fine("COMPILEgetProjectClassPaths src adding1=" + d);
                 l.add(getCompileTimeClasspath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("COMPILEgetProjectClassPaths src adding2=" + d);
+                logger.fine("COMPILEgetProjectClassPaths src adding2=" + d);
                 l.add(getCompileTimeClasspath(d));
             }
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         if (ClassPath.EXECUTE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            logger.debug("EXECUTEgetProjectClassPaths src");
+            logger.fine("EXECUTEgetProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("EXECUTEgetProjectClassPaths src adding1=" + d);
+                logger.fine("EXECUTEgetProjectClassPaths src adding1=" + d);
                 l.add(getRuntimeClasspath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("EXECUTEgetProjectClassPaths src adding2=" + d);
+                logger.fine("EXECUTEgetProjectClassPaths src adding2=" + d);
                 l.add(getRuntimeClasspath(d));
             }
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
@@ -111,26 +111,26 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
         
         if (ClassPath.SOURCE.equals(type)) {
             List/*<ClassPath>*/ l = new ArrayList(2);
-            logger.debug("getProjectClassPaths src");
+            logger.fine("getProjectClassPaths src");
             FileObject d = FileUtilities.convertURItoFileObject(project.getSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding1=" + d);
+                logger.fine("getProjectClassPaths src adding1=" + d);
                 l.add(getSourcepath(d));
             }
             d = FileUtilities.convertURItoFileObject(project.getTestSrcDirectory());
             if (d != null) {
-                logger.debug("getProjectClassPaths src adding2=" + d);
+                logger.fine("getProjectClassPaths src adding2=" + d);
                 l.add(getSourcepath(d));
             }
-            logger.debug("getProjectClassPaths src lenght=" + l.size());
+            logger.fine("getProjectClassPaths src lenght=" + l.size());
             return (ClassPath[])l.toArray(new ClassPath[l.size()]);
         }
         return new ClassPath[0];
     }
     
     public ClassPath findClassPath(FileObject file, String type) {
-        logger.debug("findClassPath type =" + type);
-        logger.debug("findClassPath file =" + file.getName());
+        logger.fine("findClassPath type =" + type);
+        logger.fine("findClassPath file =" + file.getName());
         if (type.equals(ClassPath.COMPILE)) {
             return getCompileTimeClasspath(file);
         } else if (type.equals(ClassPath.EXECUTE)) {
@@ -205,18 +205,18 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private ClassPath getSourcepath(FileObject file) {
         int type = getType(file);
-        logger.debug("getSourcepath type=" + type);
+        logger.fine("getSourcepath type=" + type);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC ) {
             return null;
         }
         ClassPath cp = cache[type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                logger.debug("create Sourcepath src for " + file);
+                logger.fine("create Sourcepath src for " + file);
                 cp = ClassPathFactory.createClassPath(new SrcClassPathImpl(project));
             }
             else {
-                logger.debug("create Sourcepath testsrc");
+                logger.fine("create Sourcepath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcClassPathImpl(project));
             }
             cache[type] = cp;
@@ -226,18 +226,18 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
 
     private ClassPath getCompileTimeClasspath(FileObject file) {
         int type = getType(file);
-        logger.debug("getCompileTimeClasspath type=" + type);
+        logger.fine("getCompileTimeClasspath type=" + type);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
             return null;
         }
         ClassPath cp = cache[2+type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                logger.debug("create CompileTimeClasspath src");
+                logger.fine("create CompileTimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcBuildClassPathImpl(project));
             }
             else {
-                logger.debug("create CompileTimeClasspath testsrc");
+                logger.fine("create CompileTimeClasspath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcBuildClassPathImpl(project));
             }
             cache[2+type] = cp;
@@ -247,18 +247,18 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private ClassPath getRuntimeClasspath(FileObject file) {
         int type = getType(file);
-        logger.debug("getRuntimeTimeClasspath type=" + type);
+        logger.fine("getRuntimeTimeClasspath type=" + type);
         if (type != TYPE_SRC &&  type != TYPE_TESTSRC) {
             return null;
         }
         ClassPath cp = cache[4+type];
         if (cp == null) {
             if (type == TYPE_SRC) {
-                logger.debug("create RumtimeClasspath src");
+                logger.fine("create RumtimeClasspath src");
                 cp = ClassPathFactory.createClassPath(new SrcRuntimeClassPathImpl(project));
             }
             else {
-                logger.debug("create RumtimeClasspath testsrc");
+                logger.fine("create RumtimeClasspath testsrc");
                 cp = ClassPathFactory.createClassPath(new TestSrcRuntimeClassPathImpl(project));
             }
             cache[4+type] = cp;

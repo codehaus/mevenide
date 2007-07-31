@@ -380,8 +380,7 @@ public class DefaultProjectUnmarshaller implements IProjectUnmarshaller {
                                     while (parser.nextTag() == XmlPullParser.START_TAG) {
                                         String pname = parser.getName();
                                         String pvalue = parser.nextText();
-                                        String combinedProperty = pname + ":" + pvalue;
-                                        d.addProperty(combinedProperty);
+                                        d.addProperty(pname, pvalue);
                                         //crappy trick to initialize properly
                                         // the map..
                                         //shouldnot be necessary. however if i
@@ -389,13 +388,14 @@ public class DefaultProjectUnmarshaller implements IProjectUnmarshaller {
                                         //that it doesnot seem to work
                                         //anyway this is only a temp solution
                                         // (see above)
-                                        d.resolvedProperties().put(pname, pvalue);
+                                        d.getProperties().put(pname, pvalue);
                                     }
                                 }
                                 else {
                                     parser.nextText();
                                 }
                             }
+                            d.setId(d.getGroupId() +":" +d.getArtifactId());
                             project.addDependency(d);
                         }
                         else {

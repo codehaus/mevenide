@@ -18,8 +18,7 @@ package org.mevenide.grammar;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.mevenide.grammar.impl.EmptyAttributeCompletionImpl;
 import org.mevenide.grammar.impl.EmptyTagLibImpl;
 
@@ -30,7 +29,7 @@ import org.mevenide.grammar.impl.EmptyTagLibImpl;
  */
 public final class TagLibManager {
     
-    private static Log logger = LogFactory.getLog(TagLibManager.class);
+    private static final Logger LOGGER = Logger.getLogger(TagLibManager.class.getName());
     
     private TagLibProvider provider;
     private AttrCompletionProvider attrComplProvider;
@@ -78,7 +77,7 @@ public final class TagLibManager {
         if (lib == null) {
             lib = provider.retrieveTagLib(name);
             if (lib == null) {
-                logger.error("No such taglibrary defined by provider:" + name);
+                LOGGER.severe("No such taglibrary defined by provider:" + name);
                 // create empty impl
                 lib = new EmptyTagLibImpl(name);
             } 
@@ -93,7 +92,7 @@ public final class TagLibManager {
         if (compl == null) {
             compl = attrComplProvider.retrieveAttributeCompletion(name);
             if (compl == null) {
-                logger.error("No such attribute completion defined by provider:" + name);
+                LOGGER.severe("No such attribute completion defined by provider:" + name);
                 // create empty impl
                 compl = new EmptyAttributeCompletionImpl(name);
             } 
@@ -104,7 +103,7 @@ public final class TagLibManager {
     
     private void assertHasProvider() {
         if (provider == null) {
-            logger.fatal("No taglib provider assigned.");
+            LOGGER.severe("No taglib provider assigned.");
             throw new RuntimeException("No taglib provider assigned.");
         }
     }

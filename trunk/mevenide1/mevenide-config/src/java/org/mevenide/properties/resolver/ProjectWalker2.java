@@ -18,8 +18,7 @@ package org.mevenide.properties.resolver;
 
 import java.util.List;
 import java.util.StringTokenizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.jdom.Element;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
@@ -33,7 +32,7 @@ import org.mevenide.properties.IPropertyFinder;
  *
  */
 public class ProjectWalker2 implements IPropertyFinder {
-    private static final Log logger = LogFactory.getLog(ProjectWalker2.class);
+    private static final Logger LOGGER = Logger.getLogger(ProjectWalker2.class.getName());
     
     private IQueryContext context;
     public ProjectWalker2(IQueryContext qcontext) {
@@ -85,7 +84,7 @@ public class ProjectWalker2 implements IPropertyFinder {
         if (currentElement != null) {
             return currentElement.getText();
         }
-        logger.debug("could not find=" + key + ". Maybe it's not defined in the current POM or it's badly formed");
+        LOGGER.fine("could not find=" + key + ". Maybe it's not defined in the current POM or it's badly formed");
         return null;
     }
     

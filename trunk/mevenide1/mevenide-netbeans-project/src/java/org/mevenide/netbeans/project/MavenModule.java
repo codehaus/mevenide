@@ -20,8 +20,8 @@ package org.mevenide.netbeans.project;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.tools.ant.util.FileUtils;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.SysEnvLocationFinder;
@@ -43,7 +43,7 @@ import org.openide.modules.ModuleInstall;
  * @author Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenModule extends ModuleInstall {
-    private static Log log = LogFactory.getLog(MavenModule.class);
+    private static Logger LOGGER = Logger.getLogger(MavenModule.class.getName());
     
     private static final long serialVersionUID = -485754848837354747L;
     
@@ -109,7 +109,7 @@ public class MavenModule extends ModuleInstall {
             });
             File current = InstalledFileLocator.getDefault().locate("maven-plugins/" + CURRENT_VERSION, null, false);
             if (current == null) {
-                log.error("cannot copy maven-mevenide-plugin - the assumed version is not present -" + CURRENT_VERSION);
+                LOGGER.severe("cannot copy maven-mevenide-plugin - the assumed version is not present -" + CURRENT_VERSION);
                 return;
             }
             File cache = new File(finder.getMavenPluginsDir());
@@ -138,7 +138,7 @@ public class MavenModule extends ModuleInstall {
                     }
                 }
             } catch (IOException exc) {
-                log.error("cannot copy maven-mevenide-plugin", exc);
+                LOGGER.log(Level.SEVERE, "cannot copy maven-mevenide-plugin", exc);
             }
             
         }

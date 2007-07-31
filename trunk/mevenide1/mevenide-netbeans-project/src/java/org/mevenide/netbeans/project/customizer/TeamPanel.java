@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 
@@ -38,8 +39,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Contributor;
 import org.apache.maven.project.Developer;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
@@ -60,7 +59,7 @@ import org.openide.util.NbBundle;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class TeamPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(TeamPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(TeamPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MultiTextComponentPOMChange currentContDev;

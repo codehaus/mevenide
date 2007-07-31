@@ -43,13 +43,13 @@ public class ProjectComparatorFactory {
 		if (project == null) {
 			return null;
 		}
-		ProjectComparator comparator = (ProjectComparator) comparatorMap.get(project);
+		ProjectComparator comparator = (ProjectComparator) comparatorMap.get(project.getId()); // Cannot use project in the map due to bad(?!) equals test in Project in M1.1
 		if (comparator == null) {
 			comparator = new ProjectComparator(project);
 				
 			// put new comparator in map with project as key
 			// @fixme: this will be problematic if the id of the project changes
-			comparatorMap.put(project, comparator);
+			comparatorMap.put(project.getId(), comparator);
 		}
 		return comparator;
 	}
@@ -62,8 +62,8 @@ public class ProjectComparatorFactory {
 	protected static void updateComparator(Project originalProject, Project newProject) {
 		ProjectComparator comparator = getComparator(originalProject);
 		if (comparator != null && newProject != null) {
-			comparatorMap.remove(originalProject);
-			comparatorMap.put(newProject, comparator);
+			comparatorMap.remove(originalProject.getId());
+			comparatorMap.put(newProject.getId(), comparator);
 		} else {
 			getComparator(newProject);
 		}

@@ -25,8 +25,8 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
@@ -46,7 +46,7 @@ import org.openide.windows.OutputListener;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public final class CompileAnnotation extends Annotation implements PropertyChangeListener, OutputListener {
-    private static final Log logger = LogFactory.getLog(CompileAnnotation.class);
+    private static final Logger LOGGER = Logger.getLogger(CompileAnnotation.class.getName());
     
     private static final Set hyperlinks = new WeakSet(); // Set<Hyperlink>
     private boolean dead = false;
@@ -118,9 +118,9 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
                 Toolkit.getDefaultToolkit().beep();
             }
         } catch (DataObjectNotFoundException donfe) {
-            logger.warn("DO not found.", donfe);
+            LOGGER.log(Level.WARNING, "DO not found.", donfe);
         } catch (IOException ioe) {
-            logger.warn(ioe);
+            LOGGER.log(Level.SEVERE, "IOException", ioe);
         }
     }
     

@@ -17,14 +17,15 @@
 package org.mevenide.project;
 
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Properties;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
@@ -49,7 +50,7 @@ import org.mevenide.util.MevenideUtils;
  */
 public class ProjectComparator {
 
-    private static final Log log = LogFactory.getLog(ProjectComparator.class);
+    private static final Logger LOGGER = Logger.getLogger(ProjectComparator.class.getName());
 
     public static final String PROJECT = "PROJECT";
     public static final String ORGANIZATION = "ORGANIZATION";
@@ -104,8 +105,8 @@ public class ProjectComparator {
     }
 
     private void fireProjectChangeEvent(Project newProject, String subModel) {
-    	if (log.isDebugEnabled()) {
-    		log.debug("Firing ProjectChangeEvent with change in " + subModel);
+    	if (LOGGER.isLoggable(Level.FINE)) {
+    		LOGGER.fine("Firing ProjectChangeEvent with change in " + subModel);
     	}
     	ProjectChangeEvent e = null;
         if (newProject != null) {
@@ -161,10 +162,16 @@ public class ProjectComparator {
             throw new ShortCircuitException();
         }
     }
+    
+    private void detectPropertiesChange(Properties newValue, Properties oldValue) throws ShortCircuitException {
+        if (oldValue.size() != newValue.size()) {
+            throw new ShortCircuitException();
+        }
+    }    
 
     public void compare(Project newProject) {
-        if (log.isDebugEnabled()) {
-            log.debug("Computing project difference...");
+    	if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Computing project difference...");
         }
 
         // same reference or both null? treat as identical projects
@@ -199,8 +206,8 @@ public class ProjectComparator {
     private void updateProject(Project newProject)
 	{
     	if (projectChanged) {
-    		if (log.isDebugEnabled()) {
-    			log.debug("Projects differ.  Updating comparator with new project.");
+            if (LOGGER.isLoggable(Level.FINE)) {
+    			LOGGER.fine("Projects differ.  Updating comparator with new project.");
     		}
     		ProjectComparatorFactory.updateComparator(originalProject, newProject);
 			originalProject = newProject;
@@ -256,7 +263,6 @@ public class ProjectComparator {
         if (comparable(newRepo, originalRepo)) {
             try {
 				detectObjectChange(newRepo, originalRepo);
-                detectAttributeChange(newRepo.getName(), originalRepo.getName());
                 detectAttributeChange(newRepo.getConnection(), originalRepo.getConnection());
                 detectAttributeChange(newRepo.getDeveloperConnection(), originalRepo.getDeveloperConnection());
                 detectAttributeChange(newRepo.getUrl(), originalRepo.getUrl());
@@ -278,7 +284,6 @@ public class ProjectComparator {
 	            for (int i = 0; i < origBranches.size(); i++) {
 	                Branch newBranch = (Branch) newBranches.get(i);
 	                Branch origBranch = (Branch) origBranches.get(i);
-	                detectAttributeChange(newBranch.getName(), origBranch.getName());
 	                detectAttributeChange(newBranch.getTag(), origBranch.getTag());
 	            }
             }
@@ -360,8 +365,8 @@ public class ProjectComparator {
             detectAttributeChange(newContributor.getTimezone(), origContributor.getTimezone());
             detectAttributeChange(newContributor.getUrl(), origContributor.getUrl());
 
-            SortedSet origRoles = origContributor.getRoles();
-            SortedSet newRoles = newContributor.getRoles();
+            List origRoles = origContributor.getRoles();
+            List newRoles = newContributor.getRoles();
             detectObjectChange(newRoles, origRoles);
             detectCollectionChange(newRoles, origRoles);
             Iterator itrOrig = origRoles.iterator();
@@ -427,7 +432,7 @@ public class ProjectComparator {
 	                Dependency newDependency = (Dependency) newDependencies.get(i);
 	                Dependency origDependency = (Dependency) origDependencies.get(i);
 	                detectAttributeChange(newDependency.getId(), origDependency.getId());
-	                detectAttributeChange(newDependency.getName(), origDependency.getName());
+	                detectAttributeChange(newDependency.getExtension(), origDependency.getExtension());
 	                detectAttributeChange(newDependency.getArtifactId(), origDependency.getArtifactId());
 	                detectAttributeChange(newDependency.getGroupId(), origDependency.getGroupId());
 	                detectAttributeChange(newDependency.getJar(), origDependency.getJar());
@@ -526,7 +531,6 @@ public class ProjectComparator {
 	    	detectObjectChange(newResource, origResource);
 	        detectAttributeChange(newResource.getDirectory(), origResource.getDirectory());
 	        detectAttributeChange(newResource.getTargetPath(), origResource.getTargetPath());
-	        detectAttributeChange(newResource.getFiltering(), origResource.getFiltering());
 	        detectObjectChange(newResource.getIncludes(), origResource.getIncludes());
 	        detectCollectionChange(newResource.getIncludes(), origResource.getIncludes());
 	        for (int j = 0; j < origResource.getIncludes().size(); j++) {
@@ -539,6 +543,25 @@ public class ProjectComparator {
 	        }
     	}
     }
+    
+    private void compareResource(SourceModification origSourceModification, SourceModification newSourceModification) throws ShortCircuitException {
+    	if ( comparable(newSourceModification, origSourceModification) ) {
+	    	detectObjectChange(newSourceModification, origSourceModification);
+	        detectAttributeChange(newSourceModification.getDirectory(), origSourceModification.getDirectory());
+	        detectAttributeChange(newSourceModification.getClassName(), origSourceModification.getClassName());
+                detectAttributeChange(newSourceModification.getProperty(), origSourceModification.getProperty());
+	        detectObjectChange(newSourceModification.getIncludes(), origSourceModification.getIncludes());
+	        detectCollectionChange(newSourceModification.getIncludes(), origSourceModification.getIncludes());
+	        for (int j = 0; j < origSourceModification.getIncludes().size(); j++) {
+	            detectAttributeChange(origSourceModification.getIncludes().get(j), newSourceModification.getIncludes().get(j));
+	        }
+	        detectObjectChange(newSourceModification.getExcludes(), origSourceModification.getExcludes());
+	        detectCollectionChange(newSourceModification.getExcludes(), origSourceModification.getExcludes());
+	        for (int j = 0; j < origSourceModification.getExcludes().size(); j++) {
+	            detectAttributeChange(origSourceModification.getExcludes().get(j), newSourceModification.getExcludes().get(j));
+	        }
+    	}
+    }    
 
     private void compareReports(Project newProject) {
         List newReports = newProject.getReports();
@@ -560,21 +583,20 @@ public class ProjectComparator {
         }
     }
 
-    private void compareProperties(List newProps, List origProps) throws ShortCircuitException {
+    private void compareProperties(Properties newProps, Properties origProps) throws ShortCircuitException {
     	if ( comparable(newProps, origProps) ) {
-    	    detectObjectChange(newProps, origProps);
-	        detectCollectionChange(newProps, origProps);
+                detectObjectChange(newProps, origProps);
+	        detectPropertiesChange(newProps, origProps);
 	        // just assume order is significant
 	        // FIXME: ?? properties in BaseObject are stored as 'name:value',
 	        // so we could parse the retrieved props apart and compare property
 	        // for property.  Kinda silly that Maven does not provide a
 	        // getPropertyNames() method
-	        for (int i = 0; i < origProps.size(); i++) {
-	            String origProp = (String) origProps.get(i);
-	            String newProp = (String) newProps.get(i);
-	            detectAttributeChange(newProp, origProp);
-	        }
+                Enumeration propertyNames = newProps.propertyNames();
+                while (propertyNames.hasMoreElements()) {
+                    String name = (String) propertyNames.nextElement();
+                    detectAttributeChange(newProps.getProperty(name), origProps.getProperty(name));
+                }
     	}
     }
-
 }

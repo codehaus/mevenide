@@ -450,7 +450,7 @@ public class DependencyNode extends AbstractNode {
                             }
                         } catch (FileNotFoundException e) {
                            StatusDisplayer.getDefault().setStatusText(dep.getArtifact() 
-                                   + " is not available in repote repositories.");
+                                   + " is not available in remote repositories.");
                         } catch (Exception exc) {
                            StatusDisplayer.getDefault().setStatusText("Error downloading " 
                                    + dep.getArtifact() + " : " + exc.getLocalizedMessage());

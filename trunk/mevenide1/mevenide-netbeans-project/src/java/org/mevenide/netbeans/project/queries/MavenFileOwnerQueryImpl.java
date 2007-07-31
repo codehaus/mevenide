@@ -26,10 +26,11 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.project.dependency.DependencyResolverFactory;
 import org.mevenide.project.dependency.IDependencyResolver;
@@ -50,7 +51,7 @@ import org.openide.util.Lookup;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
-    private static final Log logger = LogFactory.getLog(MavenFileOwnerQueryImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenFileOwnerQueryImpl.class.getName());
     
     private Set set;
     private Object lock = new Object();
@@ -61,7 +62,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
-        logger.debug("MavenFileOwnerQueryImpl()");
+        LOGGER.fine("MavenFileOwnerQueryImpl()");
         set = new HashSet();
         listeners = new ArrayList();
         cachedProjects = null;
@@ -82,7 +83,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             if (obj instanceof MavenFileOwnerQueryImpl) {
                 return (MavenFileOwnerQueryImpl)obj;
             }
-            logger.debug("fileOwnwequeryImpl=" + obj.getClass());
+            LOGGER.fine("fileOwnwequeryImpl=" + obj.getClass());
         }
         return null;
     }
@@ -148,7 +149,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     public Project getOwner(URI uri) {
-        //logger.debug("getOwner of uri=" + uri);
+        //logger.fine("getOwner of uri=" + uri);
         File file = new File(uri);
         return getOwner(file);
     }
@@ -156,7 +157,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     public Project getOwner(FileObject fileObject) {
         File file = FileUtil.toFile(fileObject);
         if (file != null) {
-            //logger.fatal("getOwner of fileobject=" + fileObject.getNameExt());
+            //logger.severe("getOwner of fileobject=" + fileObject.getNameExt());
             return getOwner(file);
         }
         return null;
@@ -170,7 +171,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
             String version = resolver.guessVersion();
             String artifactid = resolver.guessArtifactId();
             String groupid = resolver.guessGroupId();
- //           logger.debug("version=" + version + "  artifact=" + artifactid + "  groupid=" + groupid);
+ //           logger.fine("version=" + version + "  artifact=" + artifactid + "  groupid=" + groupid);
             Iterator it = currentProjects.iterator();
             while (it.hasNext()) {
                 MavenProject project = (MavenProject)it.next();
@@ -184,12 +185,12 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                         || doCompare(artifactid, res.resolveString(proj.getId())))
                         && groupid != null
                         && (doCompare(groupid, res.resolveString(proj.getGroupId())) || groupid.equals(artifactid))) {
-                    logger.debug("found project=" + project.getDisplayName());
+                    LOGGER.fine("found project=" + project.getDisplayName());
                     return project;
                 }
             }
         } catch (Exception exc) {
-            logger.error("Something wrong with resolver.", exc);
+            LOGGER.log(Level.FINE, "Something wrong with resolver.", exc);
         }
         return null;
         

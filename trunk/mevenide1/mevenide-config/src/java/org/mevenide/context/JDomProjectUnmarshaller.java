@@ -22,10 +22,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.Properties;
+import java.util.logging.Logger;
 
-import org.apache.maven.project.BaseObject;
+//import org.apache.maven.project.BaseObject;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
@@ -52,14 +52,14 @@ import org.xml.sax.SAXException;
  * @version $Id: JDomProjectUnmarshaller.java,v 1.1 2004/05/09 20:16:15
  */
 public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
-    private static final Log logger = LogFactory.getLog(JDomProjectUnmarshaller.class);
+    private static final Logger LOGGER = Logger.getLogger(JDomProjectUnmarshaller.class.getName());
     /**
      * @deprecated no way to create a reasonable entity resolver.
      */
     public Project parse(Reader reader) throws Exception {
         SAXBuilder builder = new SAXBuilder();
         builder.setExpandEntities(true);
-        logger.fatal("deprecated. no way to create a reasonable entity resolver.");
+        LOGGER.severe("deprecated. no way to create a reasonable entity resolver.");
 //        builder.setEntityResolver(new EntResolver(file.getParentFile()));
         Document document = builder.build(reader);
         return generateProject(document.getRootElement());
@@ -105,10 +105,8 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         mavenProject.setExtend(projectElement.getChildText("extend"));
         mavenProject.setPomVersion(projectElement.getChildText("pomVersion"));
         mavenProject.setName(projectElement.getChildText("name"));
-        String id = projectElement.getChildText("id");
         String groupId = projectElement.getChildText("groupId");
         String artifactId = projectElement.getChildText("artifactId");
-        mavenProject.setId(id);
         mavenProject.setGroupId(groupId);
         mavenProject.setArtifactId(artifactId);
         mavenProject.setCurrentVersion(projectElement.getChildText("currentVersion"));
@@ -137,23 +135,23 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         mavenProject.setDependencies(parseDependencies(projectElement));
         mavenProject.setBuild(parseBuild(projectElement));
         mavenProject.setReports(parseReports(projectElement));
-        List properties = parseProperties(projectElement);
+        Properties properties = parseProperties(projectElement);
         if ( properties != null && properties.size() > 0 )  {
 	        mavenProject.setProperties(properties);
-	        populateResolvedProperties(mavenProject, properties);
+//	        populateResolvedProperties(mavenProject, properties);
 	    }
 	    
         return mavenProject;
     }
 
-    private void populateResolvedProperties(BaseObject obj, List properties) {
-        if ( properties != null && properties.size() > 0 ) {
-            for (int i = 0; i < properties.size(); i++) {
-                String[] prop = resolveProperty((String) properties.get(i));
-                obj.resolvedProperties().put(prop[0], prop[1]);
-            }
-        }
-    }
+//    private void populateResolvedProperties(BaseObject obj, List properties) {
+//        if ( properties != null && properties.size() > 0 ) {
+//            for (int i = 0; i < properties.size(); i++) {
+//                String[] prop = resolveProperty((String) properties.get(i));
+//                obj.resolvedProperties().put(prop[0], prop[1]);
+//            }
+//        }
+//    }
 
     private Organization parseOrganization(Element projectElement) {
         Organization organization = null;
@@ -291,10 +289,10 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
 					}                    
                     dependency.setType(dependencyElement.getChildText("type"));
                     dependency.setUrl(dependencyElement.getChildText("url"));
-                    List properties = parseProperties(dependencyElement);
+                    Properties properties = parseProperties(dependencyElement);
                     if ( properties != null && properties.size() > 0 ) {
 	                    dependency.setProperties(properties);
-	                    populateResolvedProperties(dependency, properties);
+//	                    populateResolvedProperties(dependency, properties);
 	                } 	
                     dependencies.add(dependency);
                 }
@@ -379,20 +377,21 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
         return mailingLists;
     }
     
-    private List parseProperties(Element element) {
-        List properties = null;
+    private Properties parseProperties(Element element) {
+        Properties properties = null;
         Element propertiesElement = element.getChild("properties");
         if ( propertiesElement != null ) {
             List propertiesElements = propertiesElement.getChildren();
             if ( propertiesElements != null && propertiesElements.size() > 0 ) {
-                properties = new ArrayList();
+                properties = new Properties();
                 for (int i = 0; i < propertiesElements.size(); i++) {
                     Element propertyElement = (Element) propertiesElements.get(i);
-                    String property = propertyElement.getName() + ":" +
-                            (propertyElement.getText() == null || propertyElement.getText().length() == 0 
+                    String key = propertyElement.getName();
+                    String value = (propertyElement.getText() == null || propertyElement.getText().length() == 0 
                                   ? " " //HACK it seems empty string won't do..mkleint 
                                   : propertyElement.getText());
-                    properties.add(property);
+                    properties.setProperty(key, value);
+                    
                 }                
             }
         }
@@ -418,7 +417,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
             build = new Build();
             build.setNagEmailAddress(buildElement.getChildText("nagEmailAddress"));
             build.setSourceDirectory(buildElement.getChildText("sourceDirectory"));
-            build.setSourceModification(parseSourceModifications(buildElement));
+            build.setSourceModifications(parseSourceModifications(buildElement));
             build.setUnitTestSourceDirectory(buildElement.getChildText("unitTestSourceDirectory"));
             build.setAspectSourceDirectory(buildElement.getChildText("aspectSourceDirectory"));
             build.setUnitTest(parseUnitTest(buildElement));
@@ -555,7 +554,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
             directory = dir;
         }
         public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
-            logger.debug("resolver" + systemId);
+            LOGGER.fine("resolver" + systemId);
             if (systemId.startsWith("file:")) {
                 String path = systemId.substring("file:".length()); //NOI18N
                 File file = new File(directory, path);
@@ -566,7 +565,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     path = path.substring(0, index) + path.substring(index + "file:".length()); //NOI18N
                     file = new File(path);
                 }
-                logger.debug("path=" + path);
+                LOGGER.fine("path=" + path);
                 file = normalizeFile(file);
                 if (file.exists()) {
                     return new InputSource(new FileReader(file));
@@ -614,7 +613,7 @@ public class JDomProjectUnmarshaller implements IProjectUnmarshaller {
                     try {
                         file = file.getCanonicalFile();
                     } catch (IOException e) {
-                        logger.warn("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
+                        LOGGER.warning("getCanonicalFile() on file "+file+" failed. "+ e.toString()); // NOI18N
                         // OK, so at least try to absolutize the path
                         file = file.getAbsoluteFile();
                     }

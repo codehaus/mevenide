@@ -25,17 +25,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.exec.DefaultRunConfig;
 import org.mevenide.netbeans.project.exec.MavenJavaExecutor;
 import org.mevenide.netbeans.project.exec.ProjectRunContext;
 import org.mevenide.netbeans.project.exec.RunConfig;
 import org.mevenide.netbeans.project.output.AttachDebuggerOutputHook;
-import org.mevenide.netbeans.project.exec.MavenExecutor;
 import org.mevenide.netbeans.api.output.OutputProcessor;
 import org.mevenide.netbeans.project.output.DefaultOutputProcessorFactory;
 import org.mevenide.properties.IPropertyLocator;
@@ -57,7 +56,7 @@ import org.openide.windows.InputOutput;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class ActionProviderImpl implements ActionProvider {
-    private static final Log logger = LogFactory.getLog(ActionProviderImpl.class);
+    private static final Logger LOGGER = Logger.getLogger(ActionProviderImpl.class.getName());
     private static final Properties defaultIDEGoals = new Properties();
     
     public static final String COMMAND_MULTIPROJECTBUILD = "multiprojectbuild"; //NOI18N
@@ -148,7 +147,7 @@ public class ActionProviderImpl implements ActionProvider {
                     goal = goal.substring(0, index) + path + goal.substring(index + "%TESTCLASS%".length()); //NOI18N
                 } else {
                     StatusDisplayer.getDefault().setStatusText("Cannot execute Maven goal:" + goal);
-                    logger.debug("cannot execute:" + goal);
+                    LOGGER.fine("cannot execute:" + goal);
                     return;
                 }
             }
@@ -159,7 +158,7 @@ public class ActionProviderImpl implements ActionProvider {
                     goal = goal.substring(0, index) + path + goal.substring(index + "%CLASS%".length());
                 } else {
                     StatusDisplayer.getDefault().setStatusText("Cannot execute Maven goal:" + goal); //NOI18N
-                    logger.debug("cannot execute:" + goal);
+                    LOGGER.fine("cannot execute:" + goal);
                     return;
                 }
             }
@@ -181,7 +180,7 @@ public class ActionProviderImpl implements ActionProvider {
                 runGoal(goal, lookup);
             }
         } else {
-            logger.error("cannot find the action=" + str);
+            LOGGER.severe("cannot find the action=" + str);
         }
     }
     
@@ -207,7 +206,7 @@ public class ActionProviderImpl implements ActionProvider {
             procs.add(filter);
             runGoal(goal, lookup, procs, null, new DefaultRunConfig());
         } catch (NumberFormatException exc) {
-            logger.error("Cannot parse", exc);
+            LOGGER.log(Level.SEVERE, "Cannot parse", exc);
         }
     }
 
@@ -345,16 +344,16 @@ public class ActionProviderImpl implements ActionProvider {
             try {
                 defaultIDEGoals.load(str);
             } catch (IOException exc) {
-                logger.error("cannot read the default props file", exc);
+                LOGGER.log(Level.SEVERE, "cannot read the default props file", exc);
             } finally {
                 try {
                     str.close();
                 } catch (IOException exc) {
-                    logger.error("cannot read the default props file2", exc);
+                    LOGGER.log(Level.SEVERE, "cannot read the default props file2", exc);
                 }
             }
         } else {
-            logger.error("cannot read the default props file");
+            LOGGER.log(Level.SEVERE, "cannot read the default props file");
         }
     }
     

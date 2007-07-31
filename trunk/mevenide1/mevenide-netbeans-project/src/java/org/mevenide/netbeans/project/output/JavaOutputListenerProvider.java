@@ -16,10 +16,10 @@
  */
 package org.mevenide.netbeans.project.output;
 
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.api.output.OutputVisitor;
 import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
@@ -32,7 +32,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class JavaOutputListenerProvider extends AbstractOutputProcessor {
-    private static final Log logger = LogFactory.getLog(JavaOutputListenerProvider.class);
+    private static final Logger logger = Logger.getLogger(JavaOutputListenerProvider.class.getName());
     
     private static final String[] JAVAGOALS = new String[] {
         "java:compile:",

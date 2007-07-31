@@ -22,9 +22,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Branch;
 import org.apache.maven.project.Build;
 import org.apache.maven.project.Contributor;
@@ -53,7 +52,7 @@ import org.xmlpull.v1.XmlSerializer;
  */
 public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
-	private static final Log log = LogFactory.getLog(DefaultProjectMarshaller.class);
+	private static final Logger LOGGER = Logger.getLogger(DefaultProjectMarshaller.class.getName());
 	private static final String NAMESPACE = null;
 	//private static final String ENCODING = null;
 	//private static final Boolean STANDALONE = null;
@@ -124,7 +123,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 		
 // 		properties element not managed by DefaultProjectUnmarshaller
 //		should we do it here ?
-		marshallProperties(project.resolvedProperties());
+		marshallProperties(project.getProperties());
 		
 		serializer.endTag(NAMESPACE, "project");
 		serializer.endDocument();
@@ -268,7 +267,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	}
 	
 	private  void marshallRoles(Contributor contributor) throws IOException {
-		SortedSet roles = contributor.getRoles();
+		List roles = contributor.getRoles();
 		if ( roles != null ) {
 			serializer.startTag(NAMESPACE, "roles");
 			
@@ -338,7 +337,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	
 	private void marshallProperties(Dependency dependency) throws Exception {
-		marshallProperties(dependency.resolvedProperties());
+		marshallProperties(dependency.getProperties());
 	}
 	
 	private void marshallProperties(Map properties) throws Exception {
@@ -429,8 +428,6 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 					marshallIncludes(resource.getIncludes());
 					marshallExcludes(resource.getExcludes());
 
-					marshallString(Boolean.toString(resource.getFiltering()), "filtering");
-
 					serializer.endTag(NAMESPACE, "resource");
 				}
 			}
@@ -479,7 +476,7 @@ public class DefaultProjectMarshaller implements IProjectMarshaller {
 	
 	private  void marshallRequiredString(String line, String tag) throws IOException {
 		if ( isNull(line) ) {
-			log.warn(tag + " should not be null");
+			LOGGER.warning(tag + " should not be null");
 		}
 		marshallString(line, tag);
 	}

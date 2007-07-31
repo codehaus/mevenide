@@ -21,10 +21,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -43,7 +43,7 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class PmdOutputListenerProvider extends AbstractOutputProcessor {
-    private static final Log logger = LogFactory.getLog(PmdOutputListenerProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(PmdOutputListenerProvider.class.getName());
     
     private static final String[] PMDGOALS = new String[] {
         "pmd:report:"
@@ -100,7 +100,7 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
             try {
                 IOProvider.getDefault().getIO(title, false).getOut().reset();
             } catch (Exception exc) {
-                logger.error("Exception while resetting output", exc);
+                LOGGER.log(Level.SEVERE, "Exception while resetting output", exc);
             }
             InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
@@ -130,7 +130,7 @@ public class PmdOutputListenerProvider extends AbstractOutputProcessor {
                     writer.println(" ");
                 }
             } catch (IOException exc) {
-                logger.error("Exception while writing output", exc);
+                LOGGER.log(Level.SEVERE, "Exception while writing output", exc);
             } finally {
                 writer.close();
             }

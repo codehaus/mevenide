@@ -28,12 +28,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.grammar.AttributeCompletion;
 import org.mevenide.grammar.GrammarUtilities;
 import org.mevenide.grammar.TagLib;
@@ -54,7 +53,7 @@ import org.w3c.dom.Text;
  */
 public class MavenJellyGrammar implements GrammarQuery {
     
-    private static Log logger = LogFactory.getLog(MavenJellyGrammar.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenJellyGrammar.class.getName());
     
     private static TagLibManager manager;
     
@@ -88,7 +87,7 @@ public class MavenJellyGrammar implements GrammarQuery {
             if (current.getNodeName() != null && current.getNodeName().equals("project")) {
                 break;
             }
-            logger.debug("findRootNode:curr rootNode is=" + current.getNodeName());
+            LOGGER.fine("findRootNode:curr rootNode is=" + current.getNodeName());
             current = current.getParentNode();
         }
         return current;
@@ -106,7 +105,7 @@ public class MavenJellyGrammar implements GrammarQuery {
                 String attrName = attrNode.getNodeName();
                 if (attrName.startsWith("xmlns:")) {
                     toReturn.put(attrName.substring("xmlns:".length()), attrNode.getNodeValue());
-                    logger.debug("namespace name=" + attrName.substring("xmlns:".length()) + " value=" + attrNode.getNodeValue());
+                    LOGGER.fine("namespace name=" + attrName.substring("xmlns:".length()) + " value=" + attrNode.getNodeValue());
                 }
             }
         }
@@ -150,7 +149,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      */
     public Enumeration queryAttributes(HintContext ownerElementCtx) {
         String start = ownerElementCtx.getCurrentPrefix();
-        logger.debug("start=" + start);
+        LOGGER.fine("start=" + start);
         Set toReturn = new TreeSet(new SimpleComparator());
         String elName = ownerElementCtx.getNodeName();
         int separ = elName.indexOf(':');
@@ -183,7 +182,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      * @return default value or <code>null</code>
      */
     public GrammarResult queryDefault(HintContext parentNodeCtx) {
-        logger.debug("query default");
+        LOGGER.fine("query default");
         return null;
     }
     
@@ -213,7 +212,7 @@ public class MavenJellyGrammar implements GrammarQuery {
                 int separ = name.indexOf(':');
                 if (separ > 0) {
                     String nameSpace = name.substring(0, separ);
-                    logger.debug("findParentInSameNamespace-" + nameSpace );
+                    LOGGER.fine("findParentInSameNamespace-" + nameSpace );
                     if (nameSpace.equals(ns)) {
                         return parent;
                     }
@@ -263,19 +262,19 @@ public class MavenJellyGrammar implements GrammarQuery {
      */
     public Enumeration queryElements(HintContext virtualElementCtx) {
         String start = virtualElementCtx.getCurrentPrefix();
-        logger.debug("start=" + start);
+        LOGGER.fine("start=" + start);
         Collection toReturn = new TreeSet(new ElementComparator());
         int separ = start.indexOf(':');
         if (separ > 0) {
             //it's a namespace element..
             String ns = start.substring(0, separ);
             String tag = (separ == start.length() ? "" : start.substring(separ + 1));
-            logger.debug("namespace is " + ns);
+            LOGGER.fine("namespace is " + ns);
             TagLib lib = findTagLib(ns, virtualElementCtx);
             createSubTagsElements(ns, virtualElementCtx, toReturn, lib, tag);
             createTagElements(lib.getRootTags(), toReturn, ns, tag);
         } else {
-            logger.debug("no namespace yet");
+            LOGGER.fine("no namespace yet");
             Map libs = findTagLibs(start, virtualElementCtx);
             Collection singleTags = new ArrayList();
             if (libs.size() > 0) {
@@ -284,10 +283,10 @@ public class MavenJellyGrammar implements GrammarQuery {
                 while (it.hasNext()) {
                     String ns = (String)it.next();
                     TagLib lb = (TagLib)libs.get(ns);
-                    logger.debug("adding namespace=" + ns);
+                    LOGGER.fine("adding namespace=" + ns);
                     toReturn.add(new TagLibElement(ns));
                     // add the tags as well, tothe end however.
-                    logger.debug("adding lib=" + lb);
+                    LOGGER.fine("adding lib=" + lb);
                     // add all elements for given namespace.. that's why the last parameter is null.
                     createTagElements(lb.getRootTags(), singleTags, ns, null);
                     createSubTagsElements(ns, virtualElementCtx, singleTags, lb, null);
@@ -326,7 +325,7 @@ public class MavenJellyGrammar implements GrammarQuery {
             if (separ > -1) {
                 parentTag = parentTag.substring(separ + 1);
             }
-            logger.debug("parenttag=" + parentTag);
+            LOGGER.fine("parenttag=" + parentTag);
             Collection col = lib.getSubTags(parentTag);
             if (col != null) {
                 createTagElements(col, ccList, ns, start);
@@ -339,7 +338,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      * @return enumeration of <code>GrammarResult</code>s (ENTITY_REFERENCE_NODEs)
      */
     public Enumeration queryEntities(String prefix) {
-        logger.debug("query entities");
+        LOGGER.fine("query entities");
         return Enumerations.empty();
     }
     /**
@@ -348,7 +347,7 @@ public class MavenJellyGrammar implements GrammarQuery {
      * @return enumeration of <code>GrammarResult</code>s (NOTATION_NODEs)
      */
     public Enumeration queryNotations(String prefix) {
-        logger.debug("query notation");
+        LOGGER.fine("query notation");
         return Enumerations.empty();
     }
     /**
@@ -366,17 +365,17 @@ public class MavenJellyGrammar implements GrammarQuery {
         Node parent = virtualTextCtx;
         String start = virtualTextCtx.getCurrentPrefix();
         Set toReturn = new TreeSet(new SimpleComparator());
-        //        logger.debug("parent node=" + parent);
-        //        logger.debug("document=" + parent.getOwnerDocument());
-        //        logger.debug("parent's parent=" + parent.getParentNode());
-        //        logger.debug("document element=" + parent.getOwnerDocument().getDocumentElement());
+        //        logger.fine("parent node=" + parent);
+        //        logger.fine("document=" + parent.getOwnerDocument());
+        //        logger.fine("parent's parent=" + parent.getParentNode());
+        //        logger.fine("document element=" + parent.getOwnerDocument().getDocumentElement());
         if (parent != null && parent.getNodeType() == Node.ATTRIBUTE_NODE) {
             // completion for the namespaces..
             if (parent.getNodeName().startsWith("xmlns:")) {
                 // now we offer jelly taglibs
                 String[] libs = getManager().getAvailableTagLibs();
                 for (int i = 0; i < libs.length; i++) {
-                    logger.debug("lib=" + libs[i]);
+                    LOGGER.fine("lib=" + libs[i]);
                     if (libs[i].startsWith(start)) {
                         toReturn.add(new TextNode(libs[i]));
                     }
@@ -402,12 +401,12 @@ public class MavenJellyGrammar implements GrammarQuery {
                 String lastWord = GrammarUtilities.extractLastWord(start);
                 String initialPart = start.substring(0, start.length() - lastWord.length());
                 if (lib != null) {
-                    logger.debug("found taglib" + lib.getName());
+                    LOGGER.fine("found taglib" + lib.getName());
                     Collection types = lib.getAttrCompletionTypes(tagName, virtualTextCtx.getNodeName());
                     Iterator it = types.iterator();
                     while (it.hasNext()) {
                         String type = (String)it.next();
-                        logger.debug("attr compl type=" + type);
+                        LOGGER.fine("attr compl type=" + type);
                         AttributeCompletion compl = getManager().getAttributeCompletion(type);
                         Collection col = compl.getValueHints(lastWord);
                         Iterator valIt = col.iterator();

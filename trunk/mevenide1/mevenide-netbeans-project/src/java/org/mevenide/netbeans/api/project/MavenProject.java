@@ -28,12 +28,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.context.IQueryErrorCallback;
@@ -68,7 +68,7 @@ import org.openide.util.lookup.ProxyLookup;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public final class MavenProject implements Project {
-    private static final Log logger = LogFactory.getLog(MavenProject.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenProject.class.getName());
     
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
     
@@ -216,7 +216,7 @@ public final class MavenProject implements Project {
         // this one should not fail
         String path = properties.getResolvedValue("maven.src.dir");
         if (path == null) {
-            logger.warn("Strange thing here. src dir not found.");
+            LOGGER.warning("Strange thing here. src dir not found.");
             return null;
         }
         File fl = new File(path, "java");
@@ -233,7 +233,7 @@ public final class MavenProject implements Project {
         // this one should not fail
         String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
         if (path == null) {
-            logger.warn("Strange thing here. testsrc dir not found.");
+            LOGGER.warning("Strange thing here. testsrc dir not found.");
             return null;
         }
         File fl = new File(path, "test/java"); //NOI18N
@@ -250,7 +250,7 @@ public final class MavenProject implements Project {
         // this one should not fail
         String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
         if (path == null) {
-            logger.warn("Strange thing here. src dir not found.");
+            LOGGER.warning("Strange thing here. src dir not found.");
             return null;
         }
         // TODO - huh? what is the default location of the aspects? is there any?
@@ -268,7 +268,7 @@ public final class MavenProject implements Project {
        // this one should not fail
        String path = properties.getResolvedValue("maven.src.dir"); //NOI18N
        if (path == null) {
-           logger.warn("Strange thing here. src dir not found.");
+           LOGGER.warning("Strange thing here. src dir not found.");
            return null;
        }
        // TODO - huh? what is the default location of the integration tests? is there any?
@@ -340,7 +340,7 @@ public final class MavenProject implements Project {
             File fl = new File(path);
             return FileUtil.normalizeFile(fl).toURI();
         }
-        logger.warn("maven.build.dest not defined.");
+        LOGGER.warning("maven.build.dest not defined.");
         return null;
     }
     
@@ -353,7 +353,7 @@ public final class MavenProject implements Project {
             File fl = new File(path);
             return FileUtil.normalizeFile(fl).toURI();
         }
-        logger.warn("maven.build.src not defined.");
+        LOGGER.warning("maven.build.src not defined.");
         return null;
     }    
    
@@ -386,7 +386,7 @@ public final class MavenProject implements Project {
             File fl = new File(path);
             return FileUtil.normalizeFile(fl).toURI();
         }
-        logger.warn("maven.test.dest not defined.");
+        LOGGER.warning("maven.test.dest not defined.");
         return null;
     }
     

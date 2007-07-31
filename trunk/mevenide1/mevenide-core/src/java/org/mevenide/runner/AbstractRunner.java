@@ -17,9 +17,9 @@
 package org.mevenide.runner;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.environment.CustomLocationFinder;
 
 
@@ -30,7 +30,7 @@ import org.mevenide.environment.CustomLocationFinder;
  * 
  */
 public abstract class AbstractRunner extends CustomLocationFinder {
-	private static final Log log =  LogFactory.getLog(AbstractRunner.class);
+	private static final Logger LOGGER =  Logger.getLogger(AbstractRunner.class.getName());
 	
 	
     /** unmodifiable Maven options */
@@ -65,7 +65,7 @@ public abstract class AbstractRunner extends CustomLocationFinder {
 			launchVM(options, goals);
 		} 
         catch (Exception e) {
-			log.debug("Cannot run Maven due to : " + e, e);
+			LOGGER.log(Level.FINE, "Cannot run Maven due to : " + e, e);
 		}
 	}
     

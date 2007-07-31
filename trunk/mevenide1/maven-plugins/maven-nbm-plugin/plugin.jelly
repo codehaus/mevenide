@@ -184,7 +184,7 @@
           <ant:attribute name="OpenIDE-Module-Implementation-Version" value="${maven.nbm.version.impl}"/>
           <ant:attribute name="OpenIDE-Module-Build-Version" value="${maven.nbm.timestamp}"/>
           <ant:attribute name="OpenIDE-Module" value="${modulepackage}"/>
-          <ant:attribute name="OpenIDE-Module-IDE-Dependencies" value="IDE/1 > 3.40"/>
+<!--          <ant:attribute name="OpenIDE-Module-IDE-Dependencies" value="IDE/1 > 3.40"/> -->
 <!--          <ant:attribute name="OpenIDE-Module-Public-Packages" value="-"/> -->
           
           <!-- generate Class-Path manifest entry -->

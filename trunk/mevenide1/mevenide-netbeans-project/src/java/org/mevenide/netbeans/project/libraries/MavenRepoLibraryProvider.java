@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.context.DefaultQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.environment.LocationFinderAggregator;
@@ -42,7 +42,7 @@ import org.openide.filesystems.FileUtil;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class MavenRepoLibraryProvider implements LibraryProvider {
-    private static final Log logger = LogFactory.getLog(MavenRepoLibraryProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(MavenRepoLibraryProvider.class.getName());
     
     public static final String TYPE = "MavenRepository"; //NOI18N
     public static final String VOLUME_TYPE_CLASSPATH = "classpath";       //NOI18N
@@ -56,8 +56,8 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
         SysEnvLocationFinder.setDefaultSysEnvProvider(new NbSysEnvProvider());
         support = new PropertyChangeSupport(this);
         locRepoFile = findRepo();
-        logger.debug("created instance");
-        logger.debug("repo=" + locRepoFile);
+        LOGGER.fine("created instance");
+        LOGGER.fine("repo=" + locRepoFile);
     }
     
     //    public static MavenRepoLibraryProvider createInstance() {
@@ -94,7 +94,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     }
     
     public LibraryImplementation[] getLibraries() {
-        logger.debug("getLibraries");
+        LOGGER.fine("getLibraries");
         File obj = locRepoFile;
         if (obj != null) {
             Set toReturn = new HashSet();
@@ -115,7 +115,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     }
     
     private void processGroup(FileObject fo, Set libraries) {
-        logger.debug("processGroup:" + fo.getName());
+        LOGGER.fine("processGroup:" + fo.getName());
         FileObject[] types = fo.getChildren();
         if (types != null && types.length > 0) {
             for (int i = 0; i < types.length; i++) {
@@ -134,11 +134,11 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
     }
     
     private void processType(FileObject type, String typStr, Set libraries) {
-        logger.debug("processType" + type.getName() + " typ=" + typStr);
+        LOGGER.fine("processType" + type.getName() + " typ=" + typStr);
         FileObject[] artifacts = type.getChildren();
         if (artifacts != null && artifacts.length > 0) {
             for (int i = 0; i < artifacts.length; i++) {
-                logger.debug("Artifact=" + artifacts[i].getNameExt() + " isdata=" + artifacts[i].isData());
+                LOGGER.fine("Artifact=" + artifacts[i].getNameExt() + " isdata=" + artifacts[i].isData());
                 if (artifacts[i].isData() && artifacts[i].getExt().equals(typStr)) {
                     try {
 //                        IDependencyResolver res = DependencyResolverFactory.getFactory().newInstance(
@@ -161,12 +161,12 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                         URL url = FileUtil.toFile(artifacts[i]).toURI().toURL();
                         url = FileUtil.getArchiveRoot(url);
                         urls.add(url);
-                        logger.debug("url=" + url);
+                        LOGGER.fine("url=" + url);
                         library.setContent("classpath", urls);
                         checkJavadocAndSrc(library, artifacts[i]);
                         libraries.add(library);
                     } catch (Exception exc) {
-                        logger.error("Error while creating library", exc);
+                        LOGGER.log(Level.SEVERE, "Error while creating library", exc);
                     }
                 }
             }
@@ -185,7 +185,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                 URL url = FileUtil.toFile(javadocFile).toURI().toURL();
                 url = FileUtil.getArchiveRoot(url);
                 urls.add(url);
-                logger.debug("javadoc url=" + url);
+                LOGGER.fine("javadoc url=" + url);
                 library.setContent("javadoc", urls);
             }
         }
@@ -196,7 +196,7 @@ public class MavenRepoLibraryProvider implements LibraryProvider {
                 URL url = FileUtil.toFile(srcFile).toURI().toURL();
                 url = FileUtil.getArchiveRoot(url);
                 urls.add(url);
-                logger.debug("src url=" + url);
+                LOGGER.fine("src url=" + url);
                 library.setContent("src", urls);
             }
         }

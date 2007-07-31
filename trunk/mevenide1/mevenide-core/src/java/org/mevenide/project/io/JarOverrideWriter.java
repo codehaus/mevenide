@@ -18,9 +18,8 @@ package org.mevenide.project.io;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.mevenide.properties.PropertyModel;
 import org.mevenide.properties.PropertyModelFactory;
@@ -32,7 +31,7 @@ import org.mevenide.properties.PropertyModelFactory;
  * 
  */
 class JarOverrideWriter {
-	private static Log log = LogFactory.getLog(JarOverrideWriter.class);
+	private final static Logger LOGGER = Logger.getLogger(JarOverrideWriter.class.getName());
 	
 	private ProjectWriter writer;
 	

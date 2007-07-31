@@ -33,8 +33,8 @@ import java.io.File;
 import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
+
 import org.apache.maven.project.Dependency;
 import org.apache.maven.project.Resource;
 import org.mevenide.netbeans.project.FileUtilities;
@@ -44,7 +44,7 @@ import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 
 abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
-    private static final Log logger = LogFactory.getLog(AbstractProjectClassPathImpl.class);    
+    private static final Logger LOGGER = Logger.getLogger(AbstractProjectClassPathImpl.class.getName());    
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
     private List resources;
     private MavenProject project;
@@ -55,7 +55,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
             public void propertyChange(PropertyChangeEvent evt) {
                 List newValues = getPath();
                 if (hasChanged(resources, newValues)) {
-                    logger.debug("fire PROP_RSOURCES-" + AbstractProjectClassPathImpl.this.getClass());
+                    LOGGER.fine("fire PROP_RSOURCES-" + AbstractProjectClassPathImpl.this.getClass());
                     List oldvalue = resources;
                     resources = newValues;
                     support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
@@ -105,7 +105,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     }
     
     public synchronized List /*<PathResourceImplementation>*/ getResources() {
-        logger.debug("getresources");
+        LOGGER.fine("getresources");
         if (resources == null) {
             resources = this.getPath();
         }
@@ -138,7 +138,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                     if (checkFile.exists()) {
                         result.add(ClassPathSupport.createResource(entry));
                     } else {
-                        logger.debug("pointing to non-existing resource=" + checkFile);
+                        LOGGER.fine("pointing to non-existing resource=" + checkFile);
                     }
                 }
             } catch (MalformedURLException mue) {
@@ -150,21 +150,21 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     public void addPropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
-            logger.debug("project=" + project.getDisplayName() + " adding propchange=" + propertyChangeListener.getClass());
+            LOGGER.fine("project=" + project.getDisplayName() + " adding propchange=" + propertyChangeListener.getClass());
             support.addPropertyChangeListener(propertyChangeListener);
         }
     }
     
     public void removePropertyChangeListener(java.beans.PropertyChangeListener propertyChangeListener) {
         synchronized (support) {
-            logger.debug("removing propchange=" + propertyChangeListener.getClass());
+            LOGGER.fine("removing propchange=" + propertyChangeListener.getClass());
             support.removePropertyChangeListener(propertyChangeListener);
         }
     }
     
     
     protected URI checkOneDependency(Dependency dep) {
-        logger.debug("dependency " + dep.getArtifactId() + " is added to classpath? " + dep.isAddedToClasspath());
+        LOGGER.fine("dependency " + dep.getArtifactId() + " is added to classpath? " + dep.isAddedToClasspath());
         // for some reason non-typed dependencies are also added to classpath even though they don't match the 
         // isAddedToClassPath() check.
         if (dep.isAddedToClasspath() || dep.getType() == null) {

@@ -64,7 +64,8 @@ public class ExactDependencyPatternTest extends TestCase {
         assertFalse(pattern.matches(dep, context));
         
         dep = new Dependency();
-        dep.setId("grId:artId");
+        dep.setArtifactId("artId");
+        dep.setGroupId("grId");
         dep.setVersion("0.1");
         assertTrue(pattern.matches(dep, context));
         
@@ -74,7 +75,8 @@ public class ExactDependencyPatternTest extends TestCase {
         
         pattern = new ExactDependencyPattern("myid", "myid", "0.1");
         dep = new Dependency();
-        dep.setId("myid");
+        dep.setGroupId("myid");
+        dep.setArtifactId("myid");
         dep.setVersion("0.1");
         assertTrue(pattern.matches(dep, context));
         

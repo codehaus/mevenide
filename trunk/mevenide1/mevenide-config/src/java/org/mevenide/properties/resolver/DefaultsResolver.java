@@ -22,8 +22,9 @@ import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.mevenide.context.IQueryContext;
 import org.mevenide.properties.IPropertyFinder;
 
@@ -36,7 +37,7 @@ import org.mevenide.properties.IPropertyFinder;
  * @author  <a href="mailto:ca206216@tiscali.cz">Milos Kleint</a>
  */
 public final class DefaultsResolver implements IPropertyFinder {
-    private static final Log logger = LogFactory.getLog(DefaultsResolver.class);
+    private static final Logger LOGGER = Logger.getLogger(DefaultsResolver.class.getName());
     
     private PluginPropertiesFinder pluginDefaults;
     private static Properties defaults;
@@ -53,7 +54,7 @@ public final class DefaultsResolver implements IPropertyFinder {
             defaults = new Properties();
             defaults.load(stream);
         } catch (Exception exc) {
-            logger.error("Cannot load default properties.", exc);
+            LOGGER.log(Level.SEVERE, "Cannot load default properties.", exc);
         }
     } 
     /** Creates a new instance of DefaultsResolver 

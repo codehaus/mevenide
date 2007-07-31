@@ -23,13 +23,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.Logger;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.tree.TreeSelectionModel;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.netbeans.project.goals.GoalsGrabberProvider;
 import org.mevenide.netbeans.project.goals.GoalNameCookie;
@@ -48,7 +49,7 @@ import org.openide.util.RequestProcessor;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class CustomGoalsPanel extends JPanel {
-    private static final Log logger = LogFactory.getLog(CustomGoalsPanel.class);
+    private static final Logger logger = Logger.getLogger(CustomGoalsPanel.class.getName());
     /**
      * Action name, fired when the text in the goals textfield changes.
      */
@@ -197,7 +198,7 @@ public class CustomGoalsPanel extends JPanel {
                 try {
                     final IGoalsGrabber grabber = provider.getGoalsGrabber();
                     if (grabber == null) {
-                        logger.error("No grabber");
+                        logger.severe("No grabber");
                         throw new Exception("no grabber");
                     }
                     grabber.refresh();
@@ -208,7 +209,7 @@ public class CustomGoalsPanel extends JPanel {
                     });
                 } catch (Exception exc) {
                     ErrorManager.getDefault().notify(exc);
-                    logger.error("Error while retrieving goals", exc);
+                    logger.log(Level.SEVERE, "Error while retrieving goals", exc);
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             epGoals.getExplorerManager().setRootContext(createNoGoalsNode());
@@ -274,7 +275,7 @@ public class CustomGoalsPanel extends JPanel {
                 String currSelected = txtEnter.getSelectedText();
                 int selStart = currSelected == null ? currPos : txtEnter.getSelectionStart();
                 int selEnd = currSelected == null ? currPos : txtEnter.getSelectionEnd();
-                logger.debug("selstart=" + selStart + "  selEnd=" + selEnd);
+                logger.fine("selstart=" + selStart + "  selEnd=" + selEnd);
                 String text = txtEnter.getText();
                 if (selStart > 0) {
                     goals.insert(0, text.substring(0, selStart));

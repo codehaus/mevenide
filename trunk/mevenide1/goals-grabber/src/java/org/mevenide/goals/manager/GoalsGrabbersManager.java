@@ -21,9 +21,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
+import java.util.logging.Logger;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.context.IQueryContext;
 import org.mevenide.environment.ILocationFinder;
 import org.mevenide.goals.grabber.DefaultGoalsGrabber;
@@ -38,7 +37,7 @@ import org.mevenide.goals.grabber.ProjectGoalsGrabber;
  * 
  */
 public final class GoalsGrabbersManager {
-    private static Log log = LogFactory.getLog(GoalsGrabbersManager.class);
+    private static final Logger log = Logger.getLogger(GoalsGrabbersManager.class.getName());
     
     private static Map goalsGrabbers = new HashMap();
     
@@ -72,7 +71,7 @@ public final class GoalsGrabbersManager {
                 ProjectGoalsGrabber projectGoalsGrabber = new ProjectGoalsGrabber();
                 projectGoalsGrabber.setMavenXmlFile(mavenXmlPath);
                 aggregator.addGoalsGrabber(projectGoalsGrabber);
-                log.debug("maven.xml not found. aggregator only aggregates defaultGoalsGrabber.");
+                log.fine("maven.xml not found. aggregator only aggregates defaultGoalsGrabber.");
             }
             
             goalsGrabbers.put(projectDescriptorPath, aggregator);

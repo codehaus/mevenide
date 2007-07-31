@@ -24,14 +24,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeListener;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.mevenide.goals.grabber.IGoalsGrabber;
 import org.mevenide.goals.grabber.ProjectGoalsGrabber;
 import org.mevenide.netbeans.project.ActionProviderImpl;
@@ -55,7 +55,7 @@ import org.openide.util.actions.Presenter;
  */
 public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
     
-    private static Log log = LogFactory.getLog(RunGoalsAction.class);
+    private static Logger LOGGER = Logger.getLogger(RunGoalsAction.class.getName());
     
     private static final int MAX_ITEMS_IN_POPUP = 17;
     private static final int MAX_LENGTH_OF_ITEM = 30;
@@ -127,7 +127,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
             }
             String mgoal = item.getGoals();
             RunConfig config = null;
-            log.debug("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
+            LOGGER.fine("item=" + item.getGoals() + " of type " + item.getType()); //NOI18N
             if (item.getType() == ACTION_SHOW_CUSTOM_DIALOG) {
                 GoalsGrabberProvider goalProvider = GoalUtils.createProjectGoalsProvider(project.getContext(), 
                         project.getLocFinder());
@@ -195,7 +195,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                     MavenSettings.getDefault().setShowAddFavouriteHint(false);
                 }
             } catch (Exception exc) {
-                log.error("Cannot create goals grabber", exc);
+                LOGGER.log(Level.SEVERE, "Cannot create goals grabber", exc);
                 ErrorManager.getDefault().notify(ErrorManager.EXCEPTION, exc);
             }
         }
@@ -231,7 +231,7 @@ public class RunGoalsAction extends AbstractAction implements Presenter.Popup {
                             targets.add(null);
                         }
                     } catch (Exception ioe) {
-                        log.error("Error loading project-specific goals",ioe);
+                        LOGGER.log(Level.SEVERE, "Error loading project-specific goals",ioe);
                     }
                 }
             }

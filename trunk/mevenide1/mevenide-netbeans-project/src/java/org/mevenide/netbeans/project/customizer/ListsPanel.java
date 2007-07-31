@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.DefaultListCellRenderer;
 
 import javax.swing.DefaultListModel;
@@ -38,8 +39,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.MailingList;
 import org.mevenide.netbeans.api.customizer.ProjectPanel;
 import org.mevenide.netbeans.api.customizer.ProjectValidateObserver;
@@ -59,7 +58,7 @@ import org.openide.util.NbBundle;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public class ListsPanel extends JPanel implements ProjectPanel {
-    private static Log logger = LogFactory.getLog(ListsPanel.class);
+    private final static Logger LOGGER = Logger.getLogger(ListsPanel.class.getName());
     
     private ProjectValidateObserver valObserver;
     private MavenProject project;

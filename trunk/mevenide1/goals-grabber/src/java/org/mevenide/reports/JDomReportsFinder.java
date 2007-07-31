@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringTokenizer;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -44,7 +44,7 @@ import org.mevenide.environment.ILocationFinder;
  */
 public class JDomReportsFinder implements IReportsFinder {
     
-    private static final Log log = LogFactory.getLog(JDomReportsFinder.class);
+    private static final Logger LOGGER = Logger.getLogger(JDomReportsFinder.class.getName());
     
     private ILocationFinder finder;
     private File pluginsDir;
@@ -104,7 +104,7 @@ public class JDomReportsFinder implements IReportsFinder {
         }
         catch (JDOMException e) {
             String message = "Unable to build Document"; 
-            log.error(message, e);
+            LOGGER.log(Level.SEVERE, message, e);
             return false;
         }
         return checkDocument(registarGoal, pluginHome, document);

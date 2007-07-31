@@ -17,22 +17,22 @@
 
 package org.mevenide.context;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author  <a href="mailto:mkleint@gmail.com">Milos Kleint</a>
  */
 class LoggerErrorHandlerCallback implements IQueryErrorCallback {
-    private static final Log logger = LogFactory.getLog(LoggerErrorHandlerCallback.class);
+    private static final Logger LOGGER = Logger.getLogger(LoggerErrorHandlerCallback.class.getName());
     
     /** Creates a new instance of NoopErrorHandlerCallback */
     public LoggerErrorHandlerCallback() {
     }
 
     public void handleError(int errorNumber, Exception exception) {
-        logger.error("exception while reading IQueryContext", exception);
+        LOGGER.log(Level.SEVERE, "exception while reading IQueryContext", exception);
     }
     
     public void discardError(int errorNumber) {

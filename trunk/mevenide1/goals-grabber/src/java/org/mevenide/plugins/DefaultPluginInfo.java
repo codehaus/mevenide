@@ -19,9 +19,9 @@ package org.mevenide.plugins;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import java.io.FileNotFoundException;
+import java.util.logging.Logger;
 
 /**
  * default implementation of IPluginInfo that is based on the directories
@@ -29,7 +29,7 @@ import java.io.FileNotFoundException;
  * @author  <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  */
 public class DefaultPluginInfo extends AbstractPluginInfo {
-    private static Log logger = LogFactory.getLog(DefaultPluginInfo.class);
+    private static final Logger LOGGER = Logger.getLogger(DefaultPluginInfo.class.getName());
    
     private File cacheDir;
     

@@ -20,8 +20,7 @@ package org.mevenide.project.io;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 
 /**
  * provider of values for the CarefulProjectMarshaller, that proxies another content provider,
@@ -30,7 +29,7 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ProxyContentProvider implements IContentProvider {
     
-    private static final Log log = LogFactory.getLog(ProxyContentProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(ProxyContentProvider.class.getName());
     
     protected IContentProvider provider;
     /** Creates a new instance of ElementContentProvider */

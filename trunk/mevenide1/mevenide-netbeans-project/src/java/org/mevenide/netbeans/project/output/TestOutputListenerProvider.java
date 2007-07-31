@@ -21,10 +21,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
@@ -49,18 +50,19 @@ import org.mevenide.netbeans.api.output.AbstractOutputProcessor;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class TestOutputListenerProvider extends AbstractOutputProcessor {
-    private static final Log logger = LogFactory.getLog(TestOutputListenerProvider.class);    
+    private static final Logger LOGGER = Logger.getLogger(TestOutputListenerProvider.class.getName());    
     private static final String[] TESTGOALS = new String[] {
         "test:test:", //NOI18N
         "test:single:", //NOI18N
-        "test:match:" //NOI18N
+        "test:match:", //NOI18N
+        "test:compile:" //NOI18N
     };
     private Pattern failPattern;
     private MavenProject project;
     
     /** Creates a new instance of TestOutputListenerProvider */
     public TestOutputListenerProvider(MavenProject proj) {
-        failPattern = Pattern.compile("\\s*\\[junit\\](?: \\[ERROR\\])? (?:TEST|Test) (.*) FAILED.*"); //NOI18N
+        failPattern = Pattern.compile("^\\s*>> Test (.*) failed\\s*$"); //NOI18N
         project = proj;
     }
     
@@ -112,7 +114,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
             String repDir = project.getPropertyResolver().getResolvedValue("maven.test.reportsDirectory"); //NOI18N
             if (repDir == null) {
                 StatusDisplayer.getDefault().setStatusText("Maven: Cannot resolve property maven.test.reportsDirectory.");
-                logger.error("Cannot resolve property maven.test.reportsDirectory.");
+                LOGGER.severe("Cannot resolve property maven.test.reportsDirectory.");
                 return;
             }
             File dir = new File(repDir);
@@ -136,7 +138,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
             try {
                 IOProvider.getDefault().getIO(title, false).getOut().reset();
             } catch (Exception exc) {
-                logger.error("Exception while resetting output", exc);
+                LOGGER.log(Level.SEVERE, "Exception while resetting output", exc);
             }
             InputOutput io = IOProvider.getDefault().getIO(title, false);
             io.select();
@@ -187,7 +189,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                     }
                 }
             } catch (IOException exc) {
-                logger.warn("exception IO", exc);
+                LOGGER.log(Level.WARNING, "exception IO", exc);
             } finally {
                 writer.close();
                 try {
@@ -195,7 +197,7 @@ public class TestOutputListenerProvider extends AbstractOutputProcessor {
                         reader.close();
                     }
                 } catch (IOException ex) {
-                    logger.warn("exception IO", ex);
+                    LOGGER.log(Level.WARNING, "exception IO", ex);
                 }
             }
         }

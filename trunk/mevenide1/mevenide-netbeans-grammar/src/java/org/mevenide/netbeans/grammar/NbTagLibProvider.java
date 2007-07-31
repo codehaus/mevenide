@@ -20,8 +20,8 @@ package org.mevenide.netbeans.grammar;
 import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.mevenide.environment.ConfigUtils;
 import org.mevenide.grammar.AttrCompletionProvider;
 import org.mevenide.grammar.AttributeCompletion;
@@ -42,7 +42,7 @@ import org.openide.filesystems.Repository;
 
 public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider {
     
-    private static Log logger = LogFactory.getLog(NbTagLibProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(NbTagLibProvider.class.getName());
     
     private File dynaTagFile;
     private MavenTagLibProvider mavenProvider;
@@ -89,13 +89,13 @@ public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider 
         name = name.replace(':', '-');
         FileObject tagLib = Repository.getDefault().getDefaultFileSystem().findResource("Plugins/Mevenide-Grammar/" + name + ".xml");
         if (tagLib == null) {
-                logger.error("cannot find taglib with name=" + name + "  (no fileobject found)");
+                LOGGER.severe("cannot find taglib with name=" + name + "  (no fileobject found)");
                 return null;
         }
         try {
             toReturn = new StaticTagLibImpl(tagLib.getInputStream());
         } catch (Exception exc) {
-            logger.error("cannot retrieve the taglibrary=" + name, exc);
+            LOGGER.log(Level.SEVERE, "cannot retrieve the taglibrary=" + name, exc);
         }
         return toReturn;
         
@@ -108,7 +108,7 @@ public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider 
             try {
                 completion = new GoalsAttributeCompletionImpl();
             } catch (Exception exc) {
-                logger.error("Cannot create new instance of GoalsAttributeCompletionImpl", exc);
+                LOGGER.log(Level.SEVERE, "Cannot create new instance of GoalsAttributeCompletionImpl", exc);
             }
         }
         if ("pluginDefaults".equals(name)) {
@@ -116,7 +116,7 @@ public class NbTagLibProvider implements TagLibProvider, AttrCompletionProvider 
         }
         if (completion == null) {
             // fallback implementation.
-            logger.warn("AttributeCompletion: using a fallback implementation, no impl for type=" + name);
+            LOGGER.warning("AttributeCompletion: using a fallback implementation, no impl for type=" + name);
             completion = new EmptyAttributeCompletionImpl(name);
         }
         return completion;

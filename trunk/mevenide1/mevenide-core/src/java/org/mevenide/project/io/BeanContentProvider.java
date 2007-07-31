@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * provider of values for the CarefulProjectMarshaller, 
@@ -31,7 +31,7 @@ import org.apache.commons.logging.LogFactory;
  * @author  Milos Kleint (ca206216@tiscali.cz)
  */
 public final class BeanContentProvider implements IContentProvider {
-    private static final Log log = LogFactory.getLog(BeanContentProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(BeanContentProvider.class.getName());
     
     private Object bean;
     
@@ -70,12 +70,17 @@ public final class BeanContentProvider implements IContentProvider {
             return null;
         }
         try {
-            Method method = bean.getClass().getMethod(createGetter(key), null);
+            Method method;
+            if ("filtering".equals(key)) {
+                method = bean.getClass().getMethod(createIs(key), null);
+            } else {
+                method = bean.getClass().getMethod(createGetter(key), null);
+            }
             Object returned = method.invoke(bean, null);
             return returned;
         } catch (Exception exc) {
             String err = "Called " + createGetter(key) + " on " + bean.getClass().getName() + " and failed";
-            log.error(err, exc);
+            LOGGER.log(Level.SEVERE, err, exc);
         }
         return null;
     }
@@ -84,13 +89,18 @@ public final class BeanContentProvider implements IContentProvider {
         return "get" + key.substring(0, 1).toUpperCase() + key.substring(1);
     }
 
+    private String createIs(String key) {
+        return "is" + key.substring(0, 1).toUpperCase() + key.substring(1);
+    }
+
+    
     public List getValueList(String parentKey, String childKey) {
         Object toReturn = retrieveValue(parentKey);
         if (toReturn instanceof List) {
             return (List)toReturn;
         } else {
             if (toReturn != null) {
-                log.error("Called " + createGetter(parentKey) + " on " + bean.getClass().getName() + " and failed returning " + toReturn.getClass());
+                LOGGER.fine("Called " + createGetter(parentKey) + " on " + bean.getClass().getName() + " and failed returning " + toReturn.getClass());
             }
         }
         return null;
@@ -102,7 +112,7 @@ public final class BeanContentProvider implements IContentProvider {
             return (List)toReturn;
         } else {
             if (toReturn != null) {
-                log.error("Called getProperties on " + bean.getClass().getName() + " and failed returning " + toReturn.getClass());
+                LOGGER.severe("Called getProperties on " + bean.getClass().getName() + " and failed returning " + toReturn.getClass());
             }
         }
         return null;

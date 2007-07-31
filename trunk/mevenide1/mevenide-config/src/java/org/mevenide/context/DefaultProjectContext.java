@@ -22,11 +22,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.maven.project.Project;
 import org.jdom.Element;
 import org.jdom.Text;
@@ -41,7 +40,7 @@ import org.mevenide.properties.IPropertyResolver;
  *
  */
 class DefaultProjectContext implements IProjectContext {
-    private static final Log logger = LogFactory.getLog(DefaultProjectContext.class);
+    private static final Logger LOGGER = Logger.getLogger(DefaultProjectContext.class.getName());
     
     private IQueryErrorCallback callback;
     private Project mergedProject;
@@ -164,7 +163,7 @@ class DefaultProjectContext implements IProjectContext {
     
     // shall be run in synchronized lock.
     private void readProject(File file, int level) {
-        logger.debug("readproject=" + file);
+        LOGGER.fine("readproject=" + file);
         if (file.exists()) {
             queryContext.initLevel(level, file.getParentFile());
             callback.discardError(IQueryErrorCallback.ERROR_CANNOT_FIND_POM);

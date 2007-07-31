@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.Action;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
 import org.mevenide.netbeans.api.project.MavenProject;
 import org.mevenide.netbeans.project.MavenSourcesImpl;
 
@@ -43,7 +43,7 @@ import org.openide.util.Utilities;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class ResourcesRootChildren extends Children.Keys {
-    private static Log logger = LogFactory.getLog(ResourcesRootChildren.class);
+    private static final Logger LOGGER = Logger.getLogger(ResourcesRootChildren.class.getName());
     
     private MavenProject project;
     private PropertyChangeListener changeListener;

@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.jdom.Element;
 
 /**
@@ -31,7 +30,7 @@ import org.jdom.Element;
  */
 public final class ElementContentProvider implements IContentProvider {
     
-    private static final Log log = LogFactory.getLog(ElementContentProvider.class);
+    private static final Logger LOGGER = Logger.getLogger(ElementContentProvider.class.getName());
     
     private Element element;
     
