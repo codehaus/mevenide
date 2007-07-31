@@ -87,6 +87,8 @@ public final class MavenProject implements Project {
     private Sources sources;
 
     private Info projectInfo;
+    private String pathToProjectFile;
+
     
     /** 
      * Creates a new instance of MavenProject, should never be called by user code.
@@ -99,6 +101,7 @@ public final class MavenProject implements Project {
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
+        pathToProjectFile = projectFile.getCanonicalPath();
         File projectDir = FileUtil.toFile(fileObject.getParent());
         queryContext = new DefaultQueryContext(projectDir, projectInfo);
         properties = queryContext.getResolver();
@@ -645,5 +648,24 @@ public final class MavenProject implements Project {
         }
         
     }
+    
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MavenProject other = (MavenProject) obj;
+        
+        if (this.pathToProjectFile != other.pathToProjectFile && (this.pathToProjectFile == null || !this.pathToProjectFile.equals(other.pathToProjectFile))) {
+            return false;
+        }
+        return true;
+    }
+
+    public int hashCode() {
+        return pathToProjectFile.hashCode();
+    }    
     
 }
