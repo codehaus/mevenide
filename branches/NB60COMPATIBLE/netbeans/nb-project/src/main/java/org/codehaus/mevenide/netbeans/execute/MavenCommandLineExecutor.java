@@ -157,7 +157,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         //Do we care?
         String mavenOpts = System.getenv("MAVEN_OPTS") == null ? "" : System.getenv("MAVEN_OPTS");//NOI18N
         List<String> toRet = new ArrayList<String>();
-        String ex = Utilities.isWindows() ? "mvn.exe" : "mvn"; //NOI18N
+        String ex = Utilities.isWindows() ? "mvn.bat" : "mvn"; //NOI18N
         File bin = new File(mavenHome, "bin" + File.separator + ex);//NOI18N
         toRet.add(bin.getAbsolutePath());
         
