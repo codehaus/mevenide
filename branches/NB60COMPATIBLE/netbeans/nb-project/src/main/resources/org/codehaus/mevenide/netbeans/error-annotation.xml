@@ -17,7 +17,7 @@ Microsystems, Inc. All Rights Reserved.
 <type name="org-codehaus-mevenide-netbeans-project-error"
       description_key="LBL_error_annotation"
       localizing_bundle="org.codehaus.mevenide.netbeans.project.Bundle"
-      visible="true"
+      visible="false"
       glyph="nbresloc:/org/codehaus/mevenide/netbeans/error-glyph.gif"
       highlight="#FF8080"
       type="line"
