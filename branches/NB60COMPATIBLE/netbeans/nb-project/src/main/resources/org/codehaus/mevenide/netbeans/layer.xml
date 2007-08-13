@@ -76,6 +76,14 @@
                 </file>
             </folder>
         </folder>
+        <folder name="Licenses">
+            <file name="license-apache20.txt" url="licenses/apache20-license.txt">
+                <attr name="template" boolvalue="true"/>
+                <!--attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.licenses.Bundle"/-->
+                <attr name="mavenLicenseURL" stringvalue="http://www.apache.org/licenses/LICENSE-2.0.txt"/>
+            </file>
+        </folder>
+        
     </folder>
     
     <folder name="Projects">
