@@ -57,7 +57,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
         }
     }
     
-    private File clazzfile;
+    File clazzfile; //for tests..
     private int lineNum;
     private String text;
     

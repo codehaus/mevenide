@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.output;
 
+import java.io.File;
 import junit.framework.*;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 
@@ -58,6 +59,13 @@ public class JavaOutputListenerProviderTest extends TestCase {
         visitor.resetVisitor();
         provider.processLine("C:\\lfo\\pers\\projects\\mojos\\maven-hello-plugin\\src\\main\\java\\org\\laurentforet\\mojos\\hello\\GreetingMojo.java:[14,8] cannot find symbol", visitor);
         assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
+        
+        //MEVENIDE-473
+        provider.processLine("Compilation failure\r\n\r\n/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java:[14,8] cannot find symbol", visitor);
+        assertNotNull(visitor.getOutputListener());
+        CompileAnnotation ann = (CompileAnnotation) visitor.getOutputListener();
+        assertEquals(ann.clazzfile.getAbsolutePath(), "/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java");
         visitor.resetVisitor();
         provider.sequenceFail("mojoexecute#compiler:testCompile", visitor);
     }
