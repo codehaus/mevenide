@@ -470,6 +470,7 @@ public final class NbMavenProject implements Project {
             new UserActionGoalProvider(this),
             watcher,
             new MavenFileEncodingQueryImpl(this),
+            new TemplateAttrProvider(this),
             
             //operations
             new OperationsImpl(this),
