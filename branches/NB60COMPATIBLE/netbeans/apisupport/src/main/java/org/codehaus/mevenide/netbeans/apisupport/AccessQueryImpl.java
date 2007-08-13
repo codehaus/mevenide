@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.apisupport;
 
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.spi.java.queries.AccessibilityQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -88,12 +90,17 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
         List<Pattern> toRet = new ArrayList<Pattern>();
         FileObject obj = project.getProjectDirectory().getFileObject(MANIFEST_PATH);
         if (obj != null) {
+            InputStream in = null;
             try {
-                Manifest man = new Manifest(obj.getInputStream());
+                in = obj.getInputStream();
+                Manifest man = new Manifest();
+                man.read(in);
                 String value = man.getMainAttributes().getValue(ATTR_PUBLIC_PACKAGE);
                 toRet = preparePublicPackagesPatterns(value);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
+            } finally {
+                IOUtil.close(in);
             }
         }
         ref = new WeakReference<List<Pattern>>(toRet);
