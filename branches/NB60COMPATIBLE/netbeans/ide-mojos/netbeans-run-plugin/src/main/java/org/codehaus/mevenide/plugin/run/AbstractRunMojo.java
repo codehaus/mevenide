@@ -23,7 +23,7 @@ import org.apache.maven.project.MavenProject;
 public abstract class AbstractRunMojo extends AbstractMojo {
     /**
      * the java executable to use for starting the process
-     * @parameter expression = "java"
+     * @parameter default-value="java" expression="${netbeans.jar.run.exec}"
      */
     protected String executable;
     
@@ -43,7 +43,7 @@ public abstract class AbstractRunMojo extends AbstractMojo {
     protected String debugJvmParameters;
 
     /**
-     * @parameter expression="${project.build.directory}/executable-netbeans"
+     * @parameter expression="${netbeans.jar.run.workdir}" default-value="${project.build.directory}/executable-netbeans"
      */
     protected File workDirectory;
     

@@ -38,9 +38,9 @@ public class RunJarNoWaitMojo extends AbstractRunMojo  {
     public void execute() throws MojoExecutionException, MojoFailureException {
         MavenRunJar runjar = (MavenRunJar)Lookup.getDefault().lookup(MavenRunJar.class);
         if (runjar == null) {
-            throw new MojoExecutionException("Not running within NetBeans, cannot lookup MavenRunJar instance");
+            throw new MojoExecutionException("Not running within NetBeans, cannot properly use this plugin. Please use exec-maven-plugin instead.");
         }
-        int retCode = runjar.runJarProject(project, getLog(), finalName, jarLocation,workDirectory, executable, parameters, jvmParameters, debugJvmParameters, false);
+        runjar.runJarProject(project, getLog(), finalName, jarLocation,workDirectory, executable, parameters, jvmParameters, debugJvmParameters, false);
         getLog().info("Exiting immediately from maven plugin, cannot determine exit code.");
     }
 
