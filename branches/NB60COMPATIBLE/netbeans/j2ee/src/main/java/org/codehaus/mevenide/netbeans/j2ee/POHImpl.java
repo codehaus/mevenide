@@ -75,13 +75,13 @@ public class POHImpl extends ProjectOpenedHook {
             }
             EjbModuleProviderImpl ejb = project.getLookup().lookup(EjbModuleProviderImpl.class);
             if (ejb != null) {
-                impl.setServerInstanceID(instanceFound);
-                impl.getConfigSupport().ensureConfigurationReady();
+                ejb.setServerInstanceID(instanceFound);
+                ejb.getConfigSupport().ensureConfigurationReady();
             }
             EarModuleProviderImpl ear = project.getLookup().lookup(EarModuleProviderImpl.class);
             if (ear != null) {
-                impl.setServerInstanceID(instanceFound);
-                impl.getConfigSupport().ensureConfigurationReady();
+                ear.setServerInstanceID(instanceFound);
+                ear.getConfigSupport().ensureConfigurationReady();
             }
         } else if (server != null) {
             ProblemReporter report = project.getLookup().lookup(ProblemReporter.class);
