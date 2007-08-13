@@ -142,7 +142,7 @@ public class MavenRunJarImpl implements MavenRunJar {
                 cmd.append(" ");//NOI18N
             }
             cmd.append("-jar ");//NOI18N
-            cmd.append(jarArtifact.getName());
+            cmd.append(jarArtifact.getAbsolutePath());
             cmd.append(" ");//NOI18N
             if (parameters != null) {
                 cmd.append(parameters);

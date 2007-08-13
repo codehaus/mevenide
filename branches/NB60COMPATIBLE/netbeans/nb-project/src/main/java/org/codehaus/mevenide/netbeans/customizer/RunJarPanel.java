@@ -74,6 +74,7 @@ public class RunJarPanel extends javax.swing.JPanel {
     private static final String GROUPID_PLUGINS = "org.apache.maven.plugins";//NOI18N
 
     private static final String RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
+    private static final String RUN_WORKDIR = "netbeans.jar.run.workdir"; //NOI18N
     private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams"; //NOI18N
     private ModelHandle handle;
     private NbMavenProject project;
@@ -171,6 +172,8 @@ public class RunJarPanel extends javax.swing.JPanel {
         }
         oldParams = isRunCompatible ? run.getProperties().getProperty(RUN_PARAMS) :
                                       debug.getProperties().getProperty(RUN_PARAMS);
+        oldWorkDir = isRunCompatible ? run.getProperties().getProperty(RUN_WORKDIR) :
+                                      debug.getProperties().getProperty(RUN_WORKDIR);
         oldVMParams = isRunCompatible ? run.getProperties().getProperty(RUN_JVM_PARAMS) :
                                         debug.getProperties().getProperty(RUN_JVM_PARAMS);
         if (oldParams != null) {
@@ -182,6 +185,11 @@ public class RunJarPanel extends javax.swing.JPanel {
             txtVMOptions.setText(oldVMParams);
         } else {
             oldVMParams = ""; //NOI18N
+        }
+        if (oldWorkDir != null) {
+            txtWorkDir.setText(oldWorkDir);
+        } else {
+            oldWorkDir = ""; //NOI18N
         }
         
     }
@@ -367,6 +375,19 @@ public class RunJarPanel extends javax.swing.JPanel {
             }
             if (isDebugCompatible) {
                 debug.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
+                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
+            }
+        }
+        String newWorkDir = txtWorkDir.getText().trim();
+        if (!newWorkDir.equals(oldWorkDir)) {
+            if (isRunCompatible) {
+                run.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
+                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
+            }
+            if (isDebugCompatible) {
+                debug.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
