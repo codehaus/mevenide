@@ -9,8 +9,9 @@
     <artifactId>archetypeng</artifactId>
     <packaging>nbm</packaging>
     <version>3.0.5-SNAPSHOT</version>
-    <name>Netbeans Module archetypeng</name>
-    
+    <name>NetBeans Maven2 ArchetypeNG</name>
+    <description>Custom project creation processor that delegates to the new ArchetypeNG Maven plugin.
+                 The plugin is able to process both old and new archetypes.</description>
     <dependencies>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
