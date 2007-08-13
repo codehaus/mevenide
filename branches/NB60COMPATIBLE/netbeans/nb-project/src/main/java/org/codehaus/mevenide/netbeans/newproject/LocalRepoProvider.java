@@ -26,7 +26,8 @@ import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
 
 /**
- *
+ * Lists archetypes found in local repository index. Will include both old archetypes
+ * and archetypeng ones.
  * @author mkleint
  */
 public class LocalRepoProvider implements ArchetypeProvider {
@@ -43,12 +44,14 @@ public class LocalRepoProvider implements ArchetypeProvider {
                 return lst;
             }
             for (StandardArtifactIndexRecord art : archs) {
-                Archetype arch = new Archetype();
+                Archetype arch = "maven-archetype".equalsIgnoreCase(art.getPackaging()) ? //NOI18N
+                                 new Archetype(true, true) : new Archetype();
                 arch.setArtifactId(art.getArtifactId());
                 arch.setGroupId(art.getGroupId());
                 arch.setVersion(art.getVersion());
                 arch.setName(art.getProjectName());
                 arch.setDescription(art.getProjectDescription());
+                
                 lst.add(arch);
             }
         } catch (RepositoryIndexSearchException ex) {

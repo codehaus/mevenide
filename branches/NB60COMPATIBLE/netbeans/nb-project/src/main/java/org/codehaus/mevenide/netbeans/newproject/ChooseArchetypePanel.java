@@ -32,6 +32,7 @@ import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -252,10 +253,15 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
     
     public void run() {
+        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
+        
         Lookup.Result<ArchetypeProvider> res = Lookup.getDefault().lookup(new Lookup.Template<ArchetypeProvider>(ArchetypeProvider.class));
         List<Archetype> archetypes = new ArrayList<Archetype>();
         for (ArchetypeProvider provider : res.allInstances()) {
             for (Archetype ar : provider.getArchetypes()) {
+                if (customCreator == null && ar.archetypeNg) {
+                    continue;
+                }
                 if (!archetypes.contains(ar)) {
                     archetypes.add(ar);
                 }

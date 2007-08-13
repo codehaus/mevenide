@@ -263,12 +263,12 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         }
         if (projLoc == null || !projLoc.canWrite()) {
             wizardDescriptor.putProperty(ERROR_MSG, //NOI18N
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_cannot_be_created"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_cannot_be_created"));
             return false;
         }
         
         if (FileUtil.toFileObject(projLoc) == null) {
-            String message = org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
+            String message = NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
             wizardDescriptor.putProperty(ERROR_MSG, message); //NOI18N
             return false;
         }
@@ -277,22 +277,22 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         if (destFolder.exists() && kids != null && kids.length > 0) {
             // Folder exists and is not empty
             wizardDescriptor.putProperty(ERROR_MSG,
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_exists"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_exists"));
             return false;
         }
         if (txtArtifactId.getText().trim().length() == 0) {
             wizardDescriptor.putProperty(ERROR_MSG, 
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Require_artifactId"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_Require_artifactId"));
             return false;
         }
         if (txtGroupId.getText().trim().length() == 0) {
             wizardDescriptor.putProperty(ERROR_MSG, 
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_groupId"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_groupId"));
             return false;
         }
         if (txtVersion.getText().trim().length() == 0) {
             wizardDescriptor.putProperty(ERROR_MSG, 
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_version"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_require_version"));
             return false;
         }
         wizardDescriptor.putProperty(ERROR_MSG, ""); //NOI18N

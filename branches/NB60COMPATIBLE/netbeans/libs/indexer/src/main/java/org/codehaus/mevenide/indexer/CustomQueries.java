@@ -104,14 +104,16 @@ public class CustomQueries {
      *  @returns Set of StandardArtifactIndexRecord instances
      */
     public static List<StandardArtifactIndexRecord> retrievePossibleArchetypes() throws RepositoryIndexSearchException {
-        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.TYPE, "maven-archetype"));
-        LuceneQuery q = new LuceneQuery(tq);
+        BooleanQuery bq = new BooleanQuery();
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-archetype")), BooleanClause.Occur.SHOULD));
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.PACKAGING, "maven-archetype")), BooleanClause.Occur.SHOULD));
+        LuceneQuery q = new LuceneQuery(bq);
         return LocalRepositoryIndexer.getInstance().searchIndex(
                 LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
     }
     
     public static List<StandardArtifactIndexRecord> getRecords(String groupId, String artifactId, String version) throws RepositoryIndexSearchException {
-        org.apache.lucene.search.BooleanQuery bq = new BooleanQuery();
+        BooleanQuery bq = new BooleanQuery();
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.GROUPID_EXACT, groupId)), BooleanClause.Occur.MUST));
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.ARTIFACTID_EXACT, artifactId)), BooleanClause.Occur.MUST));
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.VERSION_EXACT, version)), BooleanClause.Occur.MUST));
