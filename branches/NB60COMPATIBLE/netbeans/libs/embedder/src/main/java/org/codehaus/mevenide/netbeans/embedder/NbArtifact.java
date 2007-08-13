@@ -320,14 +320,17 @@ public class NbArtifact implements Artifact {
         return original.compareTo(o);
     }
     
+    @Override
     public String toString() {
         return original.toString();
     }
 
+    @Override
     public boolean equals(Object obj) {
         return original.equals(obj);
     }
 
+    @Override
     public int hashCode() {
         return original.hashCode();
     }

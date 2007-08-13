@@ -25,24 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.factory.ArtifactFactory;
-import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.artifact.metadata.ArtifactMetadataSource;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactCollector;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionResult;
-import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.artifact.resolver.DefaultArtifactResolver;
 import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.artifact.transform.ArtifactTransformationManager;
-import org.codehaus.plexus.context.Context;
-import org.codehaus.plexus.context.ContextException;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
-import org.codehaus.plexus.logging.Logger;
-import org.codehaus.plexus.personality.plexus.lifecycle.phase.Contextualizable;
 
 /**
  *
@@ -90,6 +80,8 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
             super.resolve(artifact, list, artifactRepository);
         }
     }
+    
+    @Override
     public void resolveAlways(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
         if (artifact.getScope() == null && "pom".equals(artifact.getType())) {
             //the condition is meant to mean.. "if we look for parent pom", not sure it's close enough..
@@ -113,6 +105,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
         }
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively(
             Set set, Artifact artifact, 
             List list, ArtifactRepository artifactRepository, ArtifactMetadataSource artifactMetadataSource) throws ArtifactResolutionException, ArtifactNotFoundException {
@@ -120,6 +113,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
         return resolveTransitively(set, artifact, list, artifactRepository, artifactMetadataSource, null);
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively(
             Set set, Artifact artifact, 
             List list, ArtifactRepository artifactRepository, 
@@ -128,6 +122,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
         return resolveTransitively(set, artifact, Collections.EMPTY_MAP, artifactRepository, list, artifactMetadataSource, null, list0);
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
                                                          ArtifactRepository localRepository, List remoteRepositories,
                                                          ArtifactMetadataSource source, ArtifactFilter filter )
@@ -138,6 +133,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
 
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
                                                          Map managedVersions, ArtifactRepository localRepository,
                                                          List remoteRepositories, ArtifactMetadataSource source )
@@ -147,6 +143,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
                                     remoteRepositories, source, null );
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively(
             Set set, Artifact artifact, 
             Map map, ArtifactRepository artifactRepository, 
@@ -156,6 +153,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
         return resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, null);
     }
 
+    @Override
     public ArtifactResolutionResult resolveTransitively(
                    Set set, Artifact artifact, 
                    Map map, ArtifactRepository artifactRepository, 
@@ -203,6 +201,5 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
             }
         }
     }
-
     
 }

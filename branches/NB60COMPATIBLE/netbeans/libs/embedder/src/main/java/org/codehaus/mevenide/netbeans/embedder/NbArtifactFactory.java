@@ -18,12 +18,10 @@
 package org.codehaus.mevenide.netbeans.embedder;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.factory.DefaultArtifactFactory;
 import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.artifact.versioning.VersionRange;
 import org.codehaus.plexus.context.Context;
 import org.codehaus.plexus.context.ContextException;
