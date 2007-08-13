@@ -105,7 +105,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N<
             dirF.getParentFile().mkdirs();
             
-            handle.progress(org.openide.util.NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
+            handle.progress(NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
             ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
             if (customCreator != null) {
                 customCreator.runArchetype(dirF.getParentFile(), wiz);
