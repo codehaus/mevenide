@@ -161,7 +161,7 @@ public class EmbedderFactory {
                         desc.addRequirement(requirement);
                     }
                     catch (ComponentRepositoryException ex) {
-                        ex.printStackTrace();
+                        ex.printStackTrace();      
                     }
                 }
             });

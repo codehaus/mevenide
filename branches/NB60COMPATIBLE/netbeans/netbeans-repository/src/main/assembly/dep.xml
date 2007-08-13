@@ -10,6 +10,7 @@
             <include>org.codehaus.mevenide:netbeans-run-plugin</include>
             <include>org.codehaus.mevenide:netbeans-debugger-plugin</include>
             <include>org.codehaus.mevenide:netbeans-deploy-plugin</include>
+            <include>org.codehaus.mevenide:netbeans-nbmreload-plugin</include>
         </includes>
         <excludes>
             <exclude>org.apache.maven:maven-plugin-api</exclude>

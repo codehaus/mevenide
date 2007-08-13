@@ -79,7 +79,9 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DELETE, 
         COMMAND_RENAME,
         COMMAND_MOVE,
-        COMMAND_COPY
+        COMMAND_COPY,
+        
+        "nbmreload" //TODO make actionproviders mergeble //NOI18N
     };
     
     

@@ -62,7 +62,9 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     public RunConfig createConfigForDefaultAction(String actionName,
             NbMavenProject project,
             Lookup lookup) {
-        if (!ActionProvider.COMMAND_RUN.equals(actionName) && !ActionProvider.COMMAND_DEBUG.equals(actionName)) {
+        if (!ActionProvider.COMMAND_RUN.equals(actionName) && 
+                !ActionProvider.COMMAND_DEBUG.equals(actionName) && 
+                !"nbmreload".equals(actionName)) {
             return null;
         }
         if (isPlatformApp(project)) {
@@ -76,7 +78,9 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     
     public NetbeansActionMapping getMappingForAction(String actionName,
             NbMavenProject project) {
-        if (!ActionProvider.COMMAND_RUN.equals(actionName) && !ActionProvider.COMMAND_DEBUG.equals(actionName)) {
+        if (!ActionProvider.COMMAND_RUN.equals(actionName) && 
+                !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
+                !"nbmreload".equals(actionName)) {
             return null;
         }
         if (isPlatformApp(project)) {

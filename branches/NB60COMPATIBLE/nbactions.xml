@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
     Document   : nbactions.xml
     Created on : April 10, 2006, 6:08 PM
     Author     : mkleint
     Description:
         Purpose of the document follows.
--->
-
-<actions>
+--><actions>
     <action>
         <actionName>build</actionName>
         <packagings>
@@ -18,6 +15,9 @@
             <goal>install</goal>
             <goal>nbm:cluster</goal>
         </goals>
+        <activatedProfiles>
+            <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
     </action>
     <action>
         <actionName>rebuild</actionName>
@@ -29,5 +29,47 @@
             <goal>install</goal>
             <goal>nbm:cluster</goal>
         </goals>
+        <activatedProfiles>
+            <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
     </action>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>nbm:cluster</goal>
+            <goal>org.codehaus.mojo:nbm-maven-plugin:2.5:run-ide</goal>
+        </goals>
+        <activatedProfiles>
+            <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
+        <properties>
+            <!--netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation-->
+            <netbeans.installation>/home/mkleint/netbeans-retouche</netbeans.installation>
+            <netbeans.userdir>/home/mkleint/testuserdir</netbeans.userdir>
+        </properties>
+    </action>
+    <action>
+            <actionName>debug</actionName>
+            <packagings>
+                <packaging>pom</packaging>
+                <packaging>nbm</packaging>
+            </packagings>
+            <goals>
+                <goal>nbm:cluster</goal>
+                <goal>org.codehaus.mojo:nbm-maven-plugin:2.5:run-ide</goal>
+            </goals>
+            <properties>
+                <jpda.listen>true</jpda.listen>
+                <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
+                <netbeans.run.params>-J-Xdebug -J-Xnoagent -J-Xrunjdwp:transport=dt_socket,suspend=n,server=n,address=${jpda.address}</netbeans.run.params>
+                <netbeans.installation>/home/mkleint/netbeans-retouche</netbeans.installation>
+                <netbeans.userdir>/home/mkleint/testuserdir</netbeans.userdir>
+            </properties>
+            <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+            </activatedProfiles>
+        </action>
 </actions>

@@ -158,6 +158,11 @@ public class MavenProjectNode extends AbstractNode {
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_RUN, NbBundle.getMessage(MavenProjectNode.class, "ACT_Run"), null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_DEBUG, NbBundle.getMessage(MavenProjectNode.class, "ACT_Debug"), null));
         lst.add(ProjectSensitiveActions.projectCommandAction(ActionProvider.COMMAND_TEST, NbBundle.getMessage(MavenProjectNode.class, "ACT_Test"), null));
+        //TODO move to apisupport somehow..
+        Action act = ProjectSensitiveActions.projectCommandAction("nbmreload", NbBundle.getMessage(MavenProjectNode.class, "ACT_NBM_Reload"), null);
+        if (act != null && act.isEnabled()) {
+            lst.add(act);
+        }
         lst.add(null);
 //        lst.add(new LifecycleMapTest());
         lst.add(provider.createCustomPopupAction()); 
