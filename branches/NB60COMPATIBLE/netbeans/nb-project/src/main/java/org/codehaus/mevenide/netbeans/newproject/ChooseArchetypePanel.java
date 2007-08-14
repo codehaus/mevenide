@@ -37,6 +37,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.WizardDescriptor;
+import org.openide.awt.Mnemonics;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.explorer.view.TreeView;
@@ -60,6 +61,10 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     /** Creates new form ChooseArchetypePanel */
     public ChooseArchetypePanel(ChooseWizardPanel wizPanel) {
         initComponents();
+        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
+        String custText = customCreator == null ? "" : NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep_NG");
+        Mnemonics.setLocalizedText(jLabel2, NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep", custText)); // NOI18N
+        
         this.wizardPanel = wizPanel;
         tv = new BeanTreeView();
         manager = new ExplorerManager();
@@ -137,7 +142,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         jLabel1.setLabelFor(taDescription);
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Description")); // NOI18N
 
-        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep")); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep", "")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -146,7 +151,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             .add(jLabel2)
             .add(lblHint)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 461, Short.MAX_VALUE)
+                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(btnCustom)
@@ -210,7 +215,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 
     private void btnCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCustomActionPerformed
         CustomArchetypePanel panel = new CustomArchetypePanel();
-        DialogDescriptor dd = new DialogDescriptor(panel, org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_Archetype_details"));
+        DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_Archetype_details"));
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             Childs childs = (Childs)manager.getRootContext().getChildren();
@@ -219,7 +224,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             arch.setGroupId(panel.getGroupId());
             arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N
             
-            arch.setName(org.openide.util.NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Custom", panel.getArtifactId()));
+            arch.setName(NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Custom", panel.getArtifactId()));
             if (panel.getRepository().length() != 0) {
                 arch.setRepository(panel.getRepository());
             }

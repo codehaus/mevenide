@@ -16,7 +16,7 @@
           <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
           <Component id="lblHint" min="-2" max="-2" attributes="0"/>
           <Group type="102" alignment="1" attributes="0">
-              <Component id="pnlView" pref="461" max="32767" attributes="2"/>
+              <Component id="pnlView" pref="468" max="32767" attributes="2"/>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
                   <Component id="btnCustom" linkSize="1" min="-2" max="-2" attributes="0"/>
@@ -120,7 +120,7 @@
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/newproject/Bundle.properties" key="TIT_CreateProjectStep" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+          <ResourceString bundle="org/codehaus/mevenide/netbeans/newproject/Bundle.properties" key="TIT_CreateProjectStep" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;, &quot;&quot;)"/>
         </Property>
       </Properties>
     </Component>
