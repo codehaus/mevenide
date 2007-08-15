@@ -230,7 +230,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                             // during archetype creation?
                             continue;
                         }
-                        FileObject fo = FileUtil.toFileObject(elem);
+                        FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(elem));
                         if (fo != null) {
                             //TODO have the firing based on open projects only..
                             ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
