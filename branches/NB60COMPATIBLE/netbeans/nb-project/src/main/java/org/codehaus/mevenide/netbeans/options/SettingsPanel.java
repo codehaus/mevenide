@@ -572,9 +572,12 @@ public class SettingsPanel extends javax.swing.JPanel {
         if (cl.length() == 0) {
             cl = null;
         }
-        File command = new File(cl);
-        if (command.exists()) {
+        //MEVENIDE-553
+        File command = cl != null ? new File(cl) : null;
+        if (command != null && command.exists()) {
             MavenExecutionSettings.getDefault().setCommandLinePath(command);
+        } else {
+            MavenExecutionSettings.getDefault().setCommandLinePath(null);
         }
         
         String checksums = null;

@@ -144,7 +144,11 @@ public class MavenExecutionSettings  {
     }
 
     public void setCommandLinePath(File path) {
-        putProperty(PROP_COMMANDLINE_PATH, FileUtil.normalizeFile(path).getAbsolutePath());
+        if (path == null) {
+            getPreferences().remove(PROP_COMMANDLINE_PATH);
+        } else {
+            putProperty(PROP_COMMANDLINE_PATH, FileUtil.normalizeFile(path).getAbsolutePath());
+        }
     }
     
     
