@@ -44,7 +44,6 @@ import org.netbeans.modules.j2ee.deployment.common.api.EjbChangeDescriptor;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
-import org.netbeans.modules.j2ee.metadata.ClassPathSupport;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarImplementation;
 import org.openide.ErrorManager;
@@ -85,6 +84,9 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     
     public String getJ2eePlatformVersion() {
         //TODO??
+        if (EjbJar.VERSION_3_0.equals(getModuleVersion())) {
+            return EjbProjectConstants.JAVA_EE_5_LEVEL;
+        }
         return EjbProjectConstants.J2EE_14_LEVEL;
     }
     
