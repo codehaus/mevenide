@@ -56,7 +56,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     private ExplorerManager manager;
 
     private ChooseWizardPanel wizardPanel;
-    private static final String PROP_ARCHETYPE = "archetype"; //NOI18N
+    static final String PROP_ARCHETYPE = "archetype"; //NOI18N
     TreeView tv;
     /** Creates new form ChooseArchetypePanel */
     public ChooseArchetypePanel(ChooseWizardPanel wizPanel) {
@@ -219,7 +219,12 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (ret == NotifyDescriptor.OK_OPTION) {
             Childs childs = (Childs)manager.getRootContext().getChildren();
-            Archetype arch = new Archetype();
+            Archetype arch;
+            if (panel.isArchetypeNG()) {
+                arch = new Archetype(true, true);
+            } else {
+                arch = new Archetype();
+            }
             arch.setArtifactId(panel.getArtifactId());
             arch.setGroupId(panel.getGroupId());
             arch.setVersion(panel.getVersion().length() == 0 ? "LATEST" : panel.getVersion()); //NOI18N

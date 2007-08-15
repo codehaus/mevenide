@@ -19,16 +19,39 @@ package org.codehaus.mevenide.netbeans.newproject;
 
 import java.io.File;
 import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.swing.JFileChooser;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import javax.swing.text.Document;
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.handler.ArtifactHandler;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.embedder.MavenEmbedder;
+import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
+import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
+import org.openide.awt.Mnemonics;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 public class BasicPanelVisual extends JPanel implements DocumentListener {
     
@@ -55,6 +78,9 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         txtGroupId.getDocument().addDocumentListener(this);
         txtVersion.getDocument().addDocumentListener(this);
         txtPackage.getDocument().addDocumentListener(this);
+        tblAdditionalProps.setVisible(false);
+        lblAdditionalProps.setVisible(false);
+        jScrollPane1.setVisible(false);
     }
     
     
@@ -86,6 +112,10 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         lblPackage = new javax.swing.JLabel();
         txtPackage = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        pnlAdditionals = new javax.swing.JPanel();
+        lblAdditionalProps = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblAdditionalProps = new javax.swing.JTable();
 
         projectNameLabel.setLabelFor(projectNameTextField);
         org.openide.awt.Mnemonics.setLocalizedText(projectNameLabel, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_ProjectName")); // NOI18N
@@ -126,6 +156,30 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "LBL_Optional")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(lblAdditionalProps, "jLabel2");
+
+        tblAdditionalProps.setModel(createPropModel());
+        tblAdditionalProps.setColumnSelectionAllowed(true);
+        jScrollPane1.setViewportView(tblAdditionalProps);
+        tblAdditionalProps.getColumnModel().getSelectionModel().setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+
+        org.jdesktop.layout.GroupLayout pnlAdditionalsLayout = new org.jdesktop.layout.GroupLayout(pnlAdditionals);
+        pnlAdditionals.setLayout(pnlAdditionalsLayout);
+        pnlAdditionalsLayout.setHorizontalGroup(
+            pnlAdditionalsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlAdditionalsLayout.createSequentialGroup()
+                .add(lblAdditionalProps)
+                .addContainerGap(402, Short.MAX_VALUE))
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 440, Short.MAX_VALUE)
+        );
+        pnlAdditionalsLayout.setVerticalGroup(
+            pnlAdditionalsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+            .add(pnlAdditionalsLayout.createSequentialGroup()
+                .add(lblAdditionalProps)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 109, Short.MAX_VALUE))
+        );
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -141,17 +195,18 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                     .add(lblArtifactId))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, projectNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, projectLocationTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, createdFolderTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(txtPackage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(txtVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(txtGroupId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .add(txtArtifactId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, projectNameTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, projectLocationTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, createdFolderTextField, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(txtPackage, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(txtVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(txtGroupId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE)
+                    .add(txtArtifactId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 246, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(browseButton)
                     .add(jLabel1)))
+            .add(pnlAdditionals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -188,7 +243,8 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                     .add(txtPackage, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(lblPackage)
                     .add(jLabel1))
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(pnlAdditionals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     
@@ -197,7 +253,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         if ("BROWSE".equals(command)) { //NOI18N
             JFileChooser chooser = new JFileChooser();
             FileUtil.preventFileChooserSymlinkTraversal(chooser, null);
-            chooser.setDialogTitle(org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "TIT_Select_Project_Location"));
+            chooser.setDialogTitle(NbBundle.getMessage(BasicPanelVisual.class, "TIT_Select_Project_Location"));
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             String path = this.projectLocationTextField.getText();
             if (path.length() > 0) {
@@ -221,14 +277,18 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private javax.swing.JLabel createdFolderLabel;
     private javax.swing.JTextField createdFolderTextField;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblAdditionalProps;
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
     private javax.swing.JLabel lblPackage;
     private javax.swing.JLabel lblVersion;
+    private javax.swing.JPanel pnlAdditionals;
     private javax.swing.JLabel projectLocationLabel;
     private javax.swing.JTextField projectLocationTextField;
     private javax.swing.JLabel projectNameLabel;
     private javax.swing.JTextField projectNameTextField;
+    private javax.swing.JTable tblAdditionalProps;
     private javax.swing.JTextField txtArtifactId;
     private javax.swing.JTextField txtGroupId;
     private javax.swing.JTextField txtPackage;
@@ -240,18 +300,21 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         super.addNotify();
         //same problem as in 31086, initial focus on Cancel button
         projectNameTextField.requestFocus();
+        tblAdditionalProps.setVisible(false);
+        lblAdditionalProps.setVisible(false);
+        jScrollPane1.setVisible(false);
     }
     
     boolean valid(WizardDescriptor wizardDescriptor) {
         
         if (projectNameTextField.getText().length() == 0) {
             wizardDescriptor.putProperty(ERROR_MSG,
-                    org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Name_is_not_valid"));
+                    NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Name_is_not_valid"));
             return false; // Display name not specified
         }
         File f = FileUtil.normalizeFile(new File(projectLocationTextField.getText()).getAbsoluteFile());
         if (!f.isDirectory()) {
-            String message = org.openide.util.NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
+            String message = NbBundle.getMessage(BasicPanelVisual.class, "ERR_Project_Folder_is_not_valid_path");
             wizardDescriptor.putProperty(ERROR_MSG, message); //NOI18N
             return false;
         }
@@ -309,6 +372,14 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         d.putProperty("groupId", txtGroupId.getText().trim()); //NOI18N
         d.putProperty("version", txtVersion.getText().trim()); //NOI18N
         d.putProperty("package", txtPackage.getText().trim()); //NOI18N
+        if (tblAdditionalProps.isVisible()) {
+            TableModel mdl = tblAdditionalProps.getModel();
+            HashMap<String, String> map = new HashMap<String, String>();
+            for (int i = 0; i < mdl.getRowCount(); i++) {
+                map.put((String)mdl.getValueAt(i, 0), (String)mdl.getValueAt(i, 1));
+            }
+            d.putProperty("additionalProps", map); //NOI18N
+        }
     }
     
     void read(WizardDescriptor settings) {
@@ -332,6 +403,111 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();
+        final Archetype arch = (Archetype)settings.getProperty(ChooseArchetypePanel.PROP_ARCHETYPE);
+        if (arch.archetypeNg) {
+            lblAdditionalProps.setText(NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking1"));
+            lblAdditionalProps.setVisible(true);
+            tblAdditionalProps.setVisible(false);
+            jScrollPane1.setVisible(false);
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    prepareAdditionalProperties(arch);
+                }
+            });
+        } else {
+            tblAdditionalProps.setVisible(false);
+            lblAdditionalProps.setVisible(false);
+            jScrollPane1.setVisible(false);
+        }
+    }
+    
+    private void prepareAdditionalProperties(Archetype arch) {
+        final DefaultTableModel dtm = new DefaultTableModel();
+        dtm.addColumn(NbBundle.getMessage(BasicPanelVisual.class, "COL_Key"));
+        dtm.addColumn(NbBundle.getMessage(BasicPanelVisual.class, "COL_Value"));
+        try {
+            Artifact art = downloadNGArchetype(arch);
+            File fil = art.getFile();
+            if (fil.exists()) {
+                ArchetypeNGProjectCreator cr = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
+                assert cr != null;
+                Map<String, String> props = cr.getAdditionalProperties(art);
+                for (String key : props.keySet()) {
+                    String defVal = props.get(key);
+                    dtm.addRow(new Object[] {key, defVal == null ? "" : defVal });
+                }
+            }
+        } catch (ArtifactResolutionException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ArtifactNotFoundException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                Mnemonics.setLocalizedText(lblAdditionalProps, NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking2"));
+                lblAdditionalProps.setVisible(true);
+                jScrollPane1.setVisible(true);
+                tblAdditionalProps.setModel(dtm);
+                tblAdditionalProps.setVisible(true);
+            }
+        });
+    }
+
+    private Artifact downloadNGArchetype(Archetype arch) throws ArtifactResolutionException, ArtifactNotFoundException {
+        MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+        Artifact art = online.createArtifact(
+                arch.getGroupId(), 
+                arch.getArtifactId(), 
+                arch.getVersion(), 
+                "jar", //NOI18N
+                "maven-archetype"); //NOI18N
+        //hack to get the right extension for the right packaging without the plugin.
+        art.setArtifactHandler(new ArtifactHandler() {
+            public String getExtension() {
+                return "jar"; //NOI18N
+            }
+            public String getDirectory() {
+                return null;
+            }
+            public String getClassifier() {
+                return null;
+            }
+            public String getPackaging() {
+                return "maven-archetype"; //NOI18N
+            }
+            public boolean isIncludesDependencies() {
+                return false;
+            }
+            public String getLanguage() {
+                return "java"; //NOI18N
+            }
+            public boolean isAddedToClasspath() {
+                return false;
+            }
+        });
+        List repos;
+        if (arch.getRepository() == null) {
+            repos = Collections.singletonList(online.createRepository("http://repo1.maven.org/maven2", "central"));//NOI18N
+        } else {
+            repos = Collections.singletonList(online.createRepository(arch.getRepository(), "custom-repo"));//NOI18N
+        }
+                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(NbBundle.getMessage(BasicPanelVisual.class, "Handle_Download"), 
+                            new ProgressContributor[] {
+                                AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
+                            null, null);
+        ProgressTransferListener.setAggregateHandle(hndl);
+        try {
+            hndl.start();
+            online.resolve(art, repos, online.getLocalRepository());
+        } finally {
+            hndl.finish();
+            ProgressTransferListener.clearAggregateHandle();
+        }
+        return art;
+    }
+    
+    private TableModel createPropModel() {
+        return new DefaultTableModel();
     }
     
     void validate(WizardDescriptor d) throws WizardValidationException {

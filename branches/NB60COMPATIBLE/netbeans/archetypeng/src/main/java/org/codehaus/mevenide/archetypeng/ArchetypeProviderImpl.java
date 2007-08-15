@@ -20,22 +20,37 @@ package org.codehaus.mevenide.archetypeng;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import org.apache.maven.archetype.metadata.ArchetypeDescriptor;
+import org.apache.maven.archetype.metadata.RequiredProperty;
+import org.apache.maven.archetype.metadata.io.xpp3.ArchetypeDescriptorXpp3Reader;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutorTask;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
  *
  * @author mkleint
  */
-public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator{
+public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
     private static final String USER_DIR_PROP = "user.dir"; //NOI18N
 
     public void runArchetype(File directory, WizardDescriptor wiz) throws IOException {
@@ -51,6 +66,12 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator{
         propFile.setProperty("archetype.artifactId", arch.getArtifactId()); //NOI18N
         propFile.setProperty("archetype.groupId", arch.getGroupId()); //NOI18N
         propFile.setProperty("archetype.version", arch.getVersion()); //NOI18N
+        HashMap<String, String> additional = (HashMap<String, String>)wiz.getProperty("additionalProps");
+        if (additional != null) {
+            for (String key : additional.keySet()) {
+                propFile.setProperty(key, additional.get(key));
+            }
+        }
         FileOutputStream out = null;
         try {
             out = new FileOutputStream(new File(directory, "archetype.properties"));
@@ -83,6 +104,43 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator{
                 System.setProperty(USER_DIR_PROP, oldUserdir); //NOI18N
             }
         }
+    }
+
+    public Map<String, String> getAdditionalProperties(Artifact art) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        File fil = art.getFile();
+        JarFile jf = null;
+        try {
+            jf = new JarFile(fil);
+            ZipEntry entry = jf.getJarEntry("META-INF/maven/archetype-metadata.xml");
+            if (entry != null) {
+                InputStream in = jf.getInputStream(entry);
+                Reader rd = new InputStreamReader(in);
+                ArchetypeDescriptorXpp3Reader reader = new ArchetypeDescriptorXpp3Reader();
+                ArchetypeDescriptor desc = reader.read(rd);
+                List lst = desc.getRequiredProperties();
+                if (lst != null && lst.size() > 0) {
+                    Iterator it = lst.iterator();
+                    while (it.hasNext()) {
+                        RequiredProperty prop = (RequiredProperty) it.next();
+                        map.put(prop.getKey(), prop.getDefaultValue());
+                    }
+                }
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (XmlPullParserException ex) {
+            Exceptions.printStackTrace(ex);
+        } finally {
+            if (jf != null) {
+                try {
+                    jf.close();
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+            }
+        }
+        return map;
     }
 
 }

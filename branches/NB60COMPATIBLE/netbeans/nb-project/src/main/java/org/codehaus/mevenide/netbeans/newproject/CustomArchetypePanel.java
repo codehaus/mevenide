@@ -19,6 +19,8 @@ package org.codehaus.mevenide.netbeans.newproject;
 
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
+import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
+import org.openide.util.Lookup;
 
 /**
  *
@@ -32,6 +34,9 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
         initComponents();
         completer = new TextValueCompleter(
                 MavenIndexSettings.getDefault().getCollectedRepositories(), txtRepo);
+        if (Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class) == null) {
+            cbArchetypeNg.setVisible(false);
+        }
     }
     
     /** This method is called from within the constructor to
@@ -51,6 +56,7 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
         lblRepo = new javax.swing.JLabel();
         txtRepo = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
+        cbArchetypeNg = new javax.swing.JCheckBox();
 
         lblGroupId.setLabelFor(txtGroupId);
         org.openide.awt.Mnemonics.setLocalizedText(lblGroupId, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_GroupId")); // NOI18N
@@ -65,6 +71,8 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(lblRepo, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_Repository")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "LBL_Optional")); // NOI18N
+
+        org.openide.awt.Mnemonics.setLocalizedText(cbArchetypeNg, org.openide.util.NbBundle.getMessage(CustomArchetypePanel.class, "CB_ArchetypeNG")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -83,7 +91,8 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
                     .add(txtVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                     .add(txtArtifactId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, txtGroupId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
-                    .add(txtRepo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
+                    .add(txtRepo, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                    .add(cbArchetypeNg, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -101,7 +110,9 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblVersion)
                     .add(txtVersion, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 20, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(cbArchetypeNg)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(lblRepo)
                     .add(txtRepo, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
@@ -112,6 +123,7 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox cbArchetypeNg;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel lblArtifactId;
     private javax.swing.JLabel lblGroupId;
@@ -136,6 +148,10 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
     
     public String getRepository() {
         return txtRepo.getText().trim();
+    }
+    
+    public boolean isArchetypeNG() {
+        return cbArchetypeNg.isSelected();
     }
     
 }
