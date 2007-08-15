@@ -1,4 +1,4 @@
-/* ==========================================================================
+ /* ==========================================================================
  * Copyright 2005 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -161,7 +161,8 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
             }
             return -1;
         }
-        if ("jar".equals(url.getProtocol())) { //NOI18N
+        if ("jar".equals(url.getProtocol()) //NOI18N
+                && !Boolean.getBoolean("mevenide.projectLinksDisable")) { //possible fix for MEVENIDE-535   //NOI18N
             URL binRoot = FileUtil.getArchiveFile(url);
             File file = new File(URI.create(binRoot.toString()));
             String filepath = file.getAbsolutePath().replace('\\', '/'); //NOI18N
