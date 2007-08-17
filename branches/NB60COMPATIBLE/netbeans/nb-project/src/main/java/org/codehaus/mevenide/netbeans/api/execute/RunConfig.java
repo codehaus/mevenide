@@ -35,7 +35,9 @@ public interface RunConfig {
     List<String> getGoals();
 
     String getExecutionName();
-
+    
+    String getTaskDisplayName();
+    
     Properties getProperties();
     
     boolean isShowDebug();

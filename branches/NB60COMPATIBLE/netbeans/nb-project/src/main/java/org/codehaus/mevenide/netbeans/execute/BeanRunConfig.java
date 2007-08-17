@@ -41,6 +41,7 @@ public class BeanRunConfig implements RunConfig {
     private List activate = new ArrayList();
     private boolean updateSnapshots = false;
     private boolean recursive = true;
+    private String taskName;
     
     /** Creates a new instance of BeanRunConfig */
     public BeanRunConfig() {
@@ -133,5 +134,13 @@ public class BeanRunConfig implements RunConfig {
     
     public void setUpdateSnapshots(boolean set) {
         updateSnapshots = set;
+    }
+
+    public String getTaskDisplayName() {
+        return taskName;
+    }
+    
+    public void setTaskDisplayName(String name) {
+        taskName = name;
     }
 }

@@ -66,6 +66,8 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
         propFile.setProperty("archetype.artifactId", arch.getArtifactId()); //NOI18N
         propFile.setProperty("archetype.groupId", arch.getGroupId()); //NOI18N
         propFile.setProperty("archetype.version", arch.getVersion()); //NOI18N
+        
+        @SuppressWarnings("unchecked")
         HashMap<String, String> additional = (HashMap<String, String>)wiz.getProperty("additionalProps");
         if (additional != null) {
             for (String key : additional.keySet()) {
@@ -90,12 +92,13 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
             props.setProperty("remoteRepositories", arch.getRepository()); //NOI18N
         }
         config.setProperties(props);
+        config.setTaskDisplayName(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Maven"));
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
         String oldUserdir = System.getProperty(USER_DIR_PROP); //NOI18N
         System.setProperty(USER_DIR_PROP, directory.getAbsolutePath()); //NOI18N
         try {
-            ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Maven"), config); //NOI18N
+            ExecutorTask task = RunUtils.executeMaven(config); //NOI18N
             task.result();
         } finally {
             if (oldUserdir == null) {

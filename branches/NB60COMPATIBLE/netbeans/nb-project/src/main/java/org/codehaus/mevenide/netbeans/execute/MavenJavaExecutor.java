@@ -81,9 +81,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     
     public MavenJavaExecutor(RunConfig conf) {
         super(conf);
-        String name = conf.getProject() != null ? NbBundle.getMessage(MavenJavaExecutor.class, "TXT_Build",conf.getProject().getOriginalMavenProject().getArtifactId()) :
-                                                  NbBundle.getMessage(MavenJavaExecutor.class, "TXT_Execute_maven");  
-        handle = AggregateProgressFactory.createHandle(name, new ProgressContributor[0], this, null);
+        handle = AggregateProgressFactory.createHandle(conf.getTaskDisplayName(), new ProgressContributor[0], this, null);
         ProgressContributor backupContrib = AggregateProgressFactory.createProgressContributor("backup"); //NOI18N
         handle.addContributor(backupContrib);
     }

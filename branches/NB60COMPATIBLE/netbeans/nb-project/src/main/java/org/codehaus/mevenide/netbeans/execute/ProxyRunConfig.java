@@ -83,5 +83,9 @@ public class ProxyRunConfig implements RunConfig {
     public void setOffline(Boolean off) {
         delegate.setOffline(off);
     }
+
+    public String getTaskDisplayName() {
+        return delegate.getTaskDisplayName();
+    }
     
 }

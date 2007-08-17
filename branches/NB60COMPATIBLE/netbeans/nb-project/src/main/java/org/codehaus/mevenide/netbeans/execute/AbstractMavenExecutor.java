@@ -205,13 +205,14 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
                     BeanRunConfig newConfig = new BeanRunConfig();
                     newConfig.setExecutionDirectory(config.getExecutionDirectory());
                     newConfig.setExecutionName(config.getExecutionName());
+                    newConfig.setTaskDisplayName(config.getTaskDisplayName());
                     newConfig.setProject(config.getProject());
                     pnl.applyValues(newConfig);
-                    RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "LBL_Maven"), newConfig);
+                    RunUtils.executeMaven(newConfig);
                 }
             } else {
                 RunConfig newConfig = config;
-                RunUtils.executeMaven(org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "LBL_Maven"), newConfig);
+                RunUtils.executeMaven(newConfig);
             }
             //TODO the waiting on tasks won't work..
         }

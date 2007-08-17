@@ -226,12 +226,13 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             props.setProperty("packageName", pack); //NOI18N
         }
         config.setProperties(props);
+        config.setTaskDisplayName(NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
         String oldUserdir = System.getProperty(USER_DIR_PROP); //NOI18N
         System.setProperty(USER_DIR_PROP, dirF.getAbsolutePath()); //NOI18N
         try {
-            ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(MavenWizardIterator.class, "RUN_Maven"), config); //NOI18N
+            ExecutorTask task = RunUtils.executeMaven(config); //NOI18N
             return task.result();
         } finally {
             if (oldUserdir == null) {

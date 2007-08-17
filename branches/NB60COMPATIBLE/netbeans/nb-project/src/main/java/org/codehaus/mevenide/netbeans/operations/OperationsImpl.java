@@ -86,7 +86,8 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
         config.setProject(project);
         config.setExecutionName(NbBundle.getMessage(OperationsImpl.class, "NotifyDeleting.execute"));
         config.setUpdateSnapshots(false);
-        ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(OperationsImpl.class, "NotifyDeleting.execute"), config);
+        config.setTaskDisplayName(NbBundle.getMessage(OperationsImpl.class, "NotifyDeleting.execute"));
+        ExecutorTask task = RunUtils.executeMaven(config);
         task.result();
         checkParentProject(project.getProjectDirectory(), true, null, null);
     }

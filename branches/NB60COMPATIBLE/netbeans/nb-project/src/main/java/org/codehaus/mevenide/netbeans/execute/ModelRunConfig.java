@@ -34,6 +34,7 @@ public final class ModelRunConfig extends BeanRunConfig {
         model = mod;
         setProject(proj);
         setExecutionName(proj.getName());
+        setTaskDisplayName(proj.getName());
         setProperties(model.getProperties());
         setGoals(model.getGoals());
         setExecutionDirectory(FileUtil.toFile(proj.getProjectDirectory()));

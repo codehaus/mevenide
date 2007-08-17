@@ -48,7 +48,7 @@ public final class RunUtils {
     /**
      *  execute maven build in netbeans execution engine.
      */
-    public static ExecutorTask executeMaven(String runtimeName, RunConfig config) {
+    public static ExecutorTask executeMaven(RunConfig config) {
         File home = MavenExecutionSettings.getDefault().getCommandLinePath();
         MavenExecutor exec;
         boolean useCommandLine = false;
@@ -98,7 +98,7 @@ public final class RunUtils {
                 exec.addInitialMessage("", null); //NOI18N
             }
         }
-        return executeMavenImpl(runtimeName, exec);
+        return executeMavenImpl(config.getTaskDisplayName(), exec);
     }
     
     private static ExecutorTask executeMavenImpl(String runtimeName, MavenExecutor exec) {

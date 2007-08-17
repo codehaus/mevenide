@@ -51,9 +51,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
     
     public MavenCommandLineExecutor(RunConfig conf) {
         super(conf);
-        String name = conf.getProject() != null ? NbBundle.getMessage(MavenCommandLineExecutor.class, "TXT_Build", conf.getProject().getOriginalMavenProject().getArtifactId()) :
-                                                  org.openide.util.NbBundle.getMessage(MavenCommandLineExecutor.class, "TXT_Execute_maven");  
-        handle = ProgressHandleFactory.createHandle(name, this);
+        handle = ProgressHandleFactory.createHandle(conf.getTaskDisplayName(), this);
     }
     
     /**

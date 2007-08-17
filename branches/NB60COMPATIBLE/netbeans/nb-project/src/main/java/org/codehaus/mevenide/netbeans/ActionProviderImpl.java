@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
+import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
@@ -48,6 +49,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.execution.ExecutorTask;
+import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
@@ -117,6 +119,7 @@ public class ActionProviderImpl implements ActionProvider {
         if (rc == null) {
             Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.FINE, "No handling for action:" + action + ". Ignoring."); //NOI18N
         } else {
+            setupTaskName(action, rc, lookup);
             runGoal(action, lookup, rc);
         }
     }
@@ -135,7 +138,7 @@ public class ActionProviderImpl implements ActionProvider {
         }
         
         // setup executor now..
-        ExecutorTask task = RunUtils.executeMaven(NbBundle.getMessage(ActionProviderImpl.class, "TIT_Maven_Runtime_title"), config);
+        ExecutorTask task = RunUtils.executeMaven(config);
         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
@@ -150,6 +153,29 @@ public class ActionProviderImpl implements ActionProvider {
                 }
             }
         });
+    }
+    
+    private void setupTaskName(String action, RunConfig config, Lookup lkp) {
+        assert config instanceof BeanRunConfig;
+        BeanRunConfig bc = (BeanRunConfig)config;
+        String title;
+        DataObject dobj = lkp.lookup(DataObject.class);
+        if (ActionProvider.COMMAND_RUN.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", bc.getProject().getOriginalMavenProject().getArtifactId());
+        } else if (ActionProvider.COMMAND_DEBUG.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug",  bc.getProject().getOriginalMavenProject().getArtifactId());
+        } else if (ActionProvider.COMMAND_TEST.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test",  bc.getProject().getOriginalMavenProject().getArtifactId());
+        } else if (ActionProvider.COMMAND_RUN_SINGLE.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", dobj.getName());
+        } else if (ActionProvider.COMMAND_DEBUG_SINGLE.equals(action) || ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug",  dobj.getName());
+        } else if (ActionProvider.COMMAND_TEST_SINGLE.equals(action)) {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test",  dobj.getName());
+        } else {
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build",  bc.getProject().getOriginalMavenProject().getArtifactId());
+        }
+        bc.setTaskDisplayName(title);
     }
     
     public boolean isActionEnabled(String action, Lookup lookup) {
@@ -234,6 +260,7 @@ public class ActionProviderImpl implements ActionProvider {
             if (!showUI) {
                 ModelRunConfig rc = new ModelRunConfig(project, mapping);
                 rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
+                rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
                 
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
                 return;
@@ -284,6 +311,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setShowDebug(pnl.isShowDebug());
                 rc.setRecursive(pnl.isRecursive());
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
+                rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
                 
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
             }
