@@ -3,14 +3,14 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans-libs</artifactId>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.0.6-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>nb-mvn-embedder</artifactId>
   <packaging>nbm</packaging>
   <name>Maven Embedder packaged as NetBeans library</name>
   <description>maven embedder library plus some additional hacks..</description>
-  <version>3.0.5-SNAPSHOT</version>
+  <version>3.0.6-SNAPSHOT</version>
   <dependencies>
          <dependency>
             <groupId>org.apache.maven</groupId>
@@ -37,6 +37,11 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-modules</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
         <dependency>
