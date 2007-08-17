@@ -20,7 +20,9 @@
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
 	     <module>graph</module>
-             <module>archetypeng</module>
+             <!-- move archetypeng to experimental once it's maven plugin is in some kind of 
+             remote repository-->
+             <!--module>archetypeng</module-->
           </modules>
        </profile>
       
