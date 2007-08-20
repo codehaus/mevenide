@@ -262,6 +262,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
                 
+                setupTaskName("custom", rc, Lookup.EMPTY);
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
                 return;
             }
@@ -312,7 +313,8 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setRecursive(pnl.isRecursive());
                 rc.setUpdateSnapshots(pnl.isUpdateSnapshots());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
-                
+
+                setupTaskName("custom", rc, Lookup.EMPTY);
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
             }
         }
