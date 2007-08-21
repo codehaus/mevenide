@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
+import java.net.URI;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
@@ -101,8 +102,11 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     private class ResourceListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent event) {
             if (NbMavenProject.PROP_RESOURCE.equals(event.getPropertyName())) {
-                if (  PersistenceLocationProviderImpl.DEF_PERSISTENCE.equals(event.getNewValue())
-                   || PersistenceLocationProviderImpl.ALT_PERSISTENCE.equals(event.getNewValue())) {
+                URI newval = (URI)event.getNewValue();
+                if (  newval.getPath().endsWith(PersistenceLocationProviderImpl.DEF_PERSISTENCE)
+                   || newval.getPath().endsWith(PersistenceLocationProviderImpl.ALT_PERSISTENCE)) {
+                   //TODO could be a bit too eager to fire. We might want to check if the URI is actually coming from the 
+                   // current project.
                    propChangeSupport.firePropertyChange(PROP_PERSISTENCE, null, null);
                     
                 }
