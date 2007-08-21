@@ -118,7 +118,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             }
             Repository repo = new Repository();
             repo.setId("m1-java.net"); //NOI18N
-            repo.setUrl("https://maven-repository.dev.java.net/nonav/repository"); //NOI18N
+            repo.setUrl("http://download.java.net/maven/1/"); //NOI18N
             repo.setLayout("legacy"); //NOI18N
             if (!containsRepository(repo, mp)) {
                 mdl.addRepository(repo);
