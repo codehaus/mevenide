@@ -38,6 +38,7 @@ import org.apache.maven.artifact.Artifact;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
+import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -86,7 +87,7 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
         config.setExecutionDirectory(directory);
         config.setExecutionName(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Project_Creation"));
         //TODO externalize somehow to allow advanced users to change the value..
-        config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetypeng-plugin:1.0-SNAPSHOT:generate-project")); //NOI18N
+        config.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_CREATE_ARCHETYPE))); //NOI18N
         Properties props = new Properties();
         if (arch.getRepository() != null) {
             props.setProperty("remoteRepositories", arch.getRepository()); //NOI18N

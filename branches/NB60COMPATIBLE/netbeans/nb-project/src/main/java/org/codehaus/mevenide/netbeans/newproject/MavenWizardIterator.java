@@ -41,6 +41,7 @@ import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
+import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.codehaus.mevenide.netbeans.spi.archetype.NewProjectWizardExtender;
 import org.netbeans.api.progress.ProgressHandle;
@@ -270,8 +271,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(dirF);
         config.setExecutionName(NbBundle.getMessage(MavenWizardIterator.class, "RUN_Project_Creation"));
-        //TODO externalize somehow to allow advanced users to change the value..
-        config.setGoals(Collections.singletonList("org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-4:create")); //NOI18N
+        config.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_CREATE_ARCHETYPE))); //NOI18N
         Properties props = new Properties();
         props.setProperty("archetypeArtifactId", arch.getArtifactId()); //NOI18N
         props.setProperty("archetypeGroupId", arch.getGroupId()); //NOI18N

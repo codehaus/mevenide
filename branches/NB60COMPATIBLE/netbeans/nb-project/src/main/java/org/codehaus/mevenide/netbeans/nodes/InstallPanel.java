@@ -30,6 +30,7 @@ import org.apache.maven.artifact.Artifact;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
+import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -177,7 +178,7 @@ public class InstallPanel extends javax.swing.JPanel {
         BeanRunConfig brc = new BeanRunConfig();
         brc.setExecutionDirectory(project.getPOMFile().getParentFile());
         brc.setProject(project);
-        brc.setGoals(Collections.singletonList("install:install-file")); //NOI18N
+        brc.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_INSTALL_FILE))); //NOI18N
         brc.setExecutionName("install-artifact"); //NOI18N
         Properties props = new Properties();
         props.put("artifactId", art.getArtifactId()); //NOI18N
