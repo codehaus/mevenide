@@ -12,6 +12,13 @@
   <description>NetBeans Support</description>
   <version>3.0.6-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <profiles>
       <profile>
           <id>experimental</id>
@@ -23,6 +30,7 @@
              <!-- move archetypeng to experimental once it's maven plugin is in some kind of 
              remote repository-->
              <!--module>archetypeng</module-->
+	     <module>webframeworks</module>
           </modules>
        </profile>
       

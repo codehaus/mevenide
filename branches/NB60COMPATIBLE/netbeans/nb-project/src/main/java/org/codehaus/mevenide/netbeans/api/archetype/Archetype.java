@@ -110,6 +110,9 @@ public final class Archetype {
     @Override
     public boolean equals(Object obj) {
         Archetype ar1 = (Archetype)obj;
+        if (ar1 == null) {
+            return false;
+        }
         boolean gr = ar1.getGroupId().trim().equals(getGroupId().trim());
         if (!gr) {
             return false;

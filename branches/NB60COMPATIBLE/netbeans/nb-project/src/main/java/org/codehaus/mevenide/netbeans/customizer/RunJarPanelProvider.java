@@ -57,7 +57,7 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
         category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
                 panel.applyExternalChanges();
-    }
+            }
         });
         return panel;
     }
