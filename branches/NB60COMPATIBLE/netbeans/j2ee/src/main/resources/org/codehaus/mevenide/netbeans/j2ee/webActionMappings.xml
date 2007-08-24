@@ -17,7 +17,7 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
         </goals>
     </action>
     <action>
@@ -27,7 +27,7 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
         </goals>
         <properties>
             <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
@@ -42,7 +42,7 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
         </goals>
         <properties>
             <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
@@ -55,7 +55,7 @@
         </packagings>
         <goals>
             <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:LATEST:deploy</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
         </goals>
         <properties>
             <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>

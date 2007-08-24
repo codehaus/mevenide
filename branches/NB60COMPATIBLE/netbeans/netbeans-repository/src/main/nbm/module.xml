@@ -18,6 +18,9 @@
            <includes>
                <include>m2-repository/**</include>
            </includes>
+           <excludes>
+               <exclude>m2-repository/**/maven-metadata-central*</exclude>
+           </excludes>
        </nbmResource>
    </nbmResources>
 </nbm>
