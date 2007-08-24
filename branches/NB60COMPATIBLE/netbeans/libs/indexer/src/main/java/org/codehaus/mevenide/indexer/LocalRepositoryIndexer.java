@@ -107,11 +107,11 @@ public class LocalRepositoryIndexer {
         embedder = new Embedder();
         ClassWorld world = new ClassWorld();
         embedder.start( world );
-        indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene");
-        discoverer = (ArtifactDiscoverer) embedder.lookup(ArtifactDiscoverer.ROLE, "default" );
+        indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene"); //NOI18N
+        discoverer = (ArtifactDiscoverer) embedder.lookup(ArtifactDiscoverer.ROLE, "default" ); //NOI18N
         repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
         defaultIndex = createIndex();
-        recordFactory = (RepositoryIndexRecordFactory)embedder.lookup(RepositoryIndexRecordFactory.ROLE, "standard");
+        recordFactory = (RepositoryIndexRecordFactory)embedder.lookup(RepositoryIndexRecordFactory.ROLE, "standard"); //NOI18N
         artifactFactory = (ArtifactFactory)embedder.lookup(ArtifactFactory.ROLE);
     }
     
@@ -150,7 +150,7 @@ public class LocalRepositoryIndexer {
         if (!basedir.exists()) {
             basedir.mkdirs();
         }
-        RepositoryArtifactIndex index = indexFactory.createStandardIndex(new File(basedir, ".index"));
+        RepositoryArtifactIndex index = indexFactory.createStandardIndex(new File(basedir, ".index")); //NOI18N
         return index;
     }
     
@@ -158,7 +158,7 @@ public class LocalRepositoryIndexer {
      * update the local repository index. Done under write access of the mutex.
      */
     public void updateIndex() throws RepositoryIndexException {
-        final ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository indexing", new Cancellable() {
+        final ProgressHandle handle = ProgressHandleFactory.createHandle(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_Handle"), new Cancellable() {
             public boolean cancel() {
                 doCancel = true;
                 return true;
@@ -166,7 +166,7 @@ public class LocalRepositoryIndexer {
         });
         try {
             handle.start();
-            handle.progress("Discovering artifacts...");
+            handle.progress(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_Discovering"));
             ArtifactFilter filter;
             if (MavenIndexSettings.getDefault().isIncludeSnapshots()) {
                 filter = new AcceptAllArtifactFilter();
@@ -204,7 +204,7 @@ public class LocalRepositoryIndexer {
         for ( Iterator i = artifacts.iterator(); i.hasNext(); ) {
             Artifact artifact = (Artifact) i.next();
             count++;
-            handle.progress("Recording " + count + " out of " + size, count);
+            handle.progress(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_Recording", count, size), count);
             try {
                 records.add(recordFactory.createRecord(artifact));
                 
@@ -213,7 +213,7 @@ public class LocalRepositoryIndexer {
                 e.printStackTrace();
             }
             if (count % 200 == 0) {
-                handle.progress("Indexing...");
+                handle.progress(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_Indexing"));
                 index.indexRecords(records);
                 records.clear();
             }
@@ -222,12 +222,12 @@ public class LocalRepositoryIndexer {
                 return;
             }
         }
-        handle.progress("Indexing...");
+        handle.progress(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_Indexing"));
         index.indexRecords(records);
     }
     
     public void updateIndexWithArtifacts(Collection artifacts) throws RepositoryIndexException {
-        ProgressHandle handle = ProgressHandleFactory.createHandle("Maven local repository index update");
+        ProgressHandle handle = ProgressHandleFactory.createHandle(org.openide.util.NbBundle.getMessage(LocalRepositoryIndexer.class, "LBL_repo_update"));
         try {
             handle.start();
 //TODO            doUpdate(defaultIndex, handle, artifacts);
@@ -259,14 +259,14 @@ public class LocalRepositoryIndexer {
     }
     
     public File getDefaultIndexLocation() {
-        return new File(repository.getBasedir(), ".index");
+        return new File(repository.getBasedir(), ".index"); //NOI18N
     }
     
     public static Query parseQuery(String parse) throws ParseException {
         //simpleanalyzer seems to wreak havoc in non-tokenized fields..
         Analyzer anal = new WhitespaceAnalyzer();
         // ?? contents??
-        QueryParser parser = new QueryParser("contents", anal);
+        QueryParser parser = new QueryParser("contents", anal); //NOI18N
         return parser.parse(parse);
     }
     
