@@ -23,6 +23,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.digest.DigesterException;
@@ -34,6 +36,8 @@ import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -102,16 +106,24 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private boolean addLibrary(Library library, Model model, String scope) throws IOException {
-        List<URL> urls = library.getContent("classpath"); //NOI18N
-        boolean added = urls.size() > 0;
-        assert model != null;
-        for (URL url : urls) {
-            FileObject fo = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
-            assert fo != null;
-            if (fo.isFolder()) {
-                throw new IOException("Cannot add folders to Maven projects as dependencies: " + fo.getURL()); //NOI18N
+        boolean added = false;
+        try {
+            added = checkLibraryForPoms(library, model, scope);
+        } catch (IllegalArgumentException x) {
+            //TODO ignore, remove the catch while maven-pom volume gets into j2se libraries..
+        }
+        if (!added) {
+            List<URL> urls = library.getContent("classpath"); //NOI18N
+            added = urls.size() > 0;
+            assert model != null;
+            for (URL url : urls) {
+                FileObject fo = URLMapper.findFileObject(FileUtil.getArchiveFile(url));
+                assert fo != null;
+                if (fo.isFolder()) {
+                    throw new IOException("Cannot add folders to Maven projects as dependencies: " + fo.getURL()); //NOI18N
+                }
+                added = added && addArchiveFile(fo, model, scope);
             }
-            added = added && addArchiveFile(fo, model, scope);
         }
         return added;
     }
@@ -121,23 +133,17 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             Md5Digester digest = new Md5Digester();
             //toLowercase() seems to be required, not sure why..
             String checksum = digest.calc(FileUtil.toFile(file)).toLowerCase();
-            Dependency dep = checkLayer(checksum);
+            String[] dep = checkLayer(checksum);
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
                 dep = checkLocalRepo(checksum);
             }
             if (dep != null) {
+                Dependency dependency = PluginPropertyUtils.checkModelDependency(mdl, dep[0], dep[1], true);
+                dependency.setVersion(dep[2]);
                 if (scope != null) {
-                    dep.setScope(scope);
+                    dependency.setScope(scope);
                 }
-                List<Dependency> deps = mdl.getDependencies();
-                for (Dependency exist : deps) {
-                    if (dep.getManagementKey().equals(exist.getManagementKey())) {
-                        return true;
-                    }
-                }
-                mdl.addDependency(dep);
-                //TODO not only check for the ids, but also copy the artifacts from netbeans to local repo
                 return true;
             }
         }
@@ -156,22 +162,22 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return false;
     }
     
-    private Dependency checkLocalRepo(String checksum) throws RepositoryIndexSearchException {
+    private String[] checkLocalRepo(String checksum) throws RepositoryIndexSearchException {
         LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
         TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, checksum));
         LuceneQuery q = new LuceneQuery(tq);
         List<StandardArtifactIndexRecord> lst = index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
         for (StandardArtifactIndexRecord elem : lst) {
-            Dependency dep = new Dependency();
-            dep.setArtifactId(elem.getArtifactId());
-            dep.setGroupId(elem.getGroupId());
-            dep.setVersion(elem.getVersion());
+            String[] dep = new String[3];
+            dep[0] = elem.getGroupId();
+            dep[1] = elem.getArtifactId();
+            dep[2] = elem.getVersion();
             return dep;
         }
         return null;
     }
     
-    private Dependency checkLayer(String checksum) {
+    private String[] checkLayer(String checksum) {
         FileObject root = Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-codehaus-mevenide-netbeans/LibraryPOMs"); //NOI18N
         assert root != null;
         Enumeration<? extends FileObject> objs = root.getData(true);
@@ -180,12 +186,85 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             String md5 = (String)fo.getAttribute(MD5_ATTR);
             if (checksum.equals(md5)) {
                 Model model = WriterUtils.loadModel(fo);
-                Dependency dep = new Dependency();
-                dep.setArtifactId(model.getArtifactId());
-                dep.setGroupId(model.getGroupId());
-                dep.setVersion(model.getVersion());
+                String[] dep = new String[3];
+                dep[0] = model.getGroupId();
+                dep[1] = model.getArtifactId();
+                dep[2] = model.getVersion();
                 return dep;
             }
+        }
+        return null;
+    }
+    
+    /**
+     */ 
+    private boolean checkLibraryForPoms(Library library, Model model, String scope) {
+        List<URL> poms = library.getContent("maven-pom"); //NOI18N
+        boolean added = false;
+        if (poms != null && poms.size() > 0) {
+            for (URL pom : poms) {
+                URL[] repos = MavenIndexSettings.getDefault().getCollectedReposAsURLs();
+                String[] result = checkLibrary(pom, repos);
+                if (result != null) {
+                    added = true;
+                    //set dependency
+                    Dependency dep = PluginPropertyUtils.checkModelDependency(model, result[2], result[3], true);
+                    dep.setVersion(result[4]);
+                    if (scope != null) {
+                        dep.setScope(scope);
+                    }
+                    //set repository
+                    org.apache.maven.model.Repository reposit = PluginPropertyUtils.checkModelRepository(
+                            project.getOriginalMavenProject(), model, result[1], true);
+                    if (reposit != null) {
+                        reposit.setId(library.getName());
+                        reposit.setLayout(result[0]);
+                        reposit.setName("Repository for library " + library);
+                    }
+                }
+            }
+        }
+        return added;
+    }
+    
+    static Pattern DEFAULT = Pattern.compile("(.+)[/]{1}(.+)[/]{1}(.+)[/]{1}(.+)\\.pom"); //NOI18N
+    static Pattern LEGACY = Pattern.compile("(.+)[/]{1}poms[/]{1}([a-zA-Z\\-_]+)[\\-]{1}([0-9]{1}.+)\\.pom"); //NOI18N
+    /**
+     * @returns [0] type - default/legacy
+     *          [1] repo root
+     *          [2] groupId
+     *          [3] artifactId
+     *          [4] version
+     */ 
+    
+    static String[] checkLibrary(URL pom, URL[] knownRepos) {
+        String path = pom.getPath();
+        Matcher match = LEGACY.matcher(path);
+        boolean def = false;
+        if (!match.matches()) {
+            match = DEFAULT.matcher(path);
+            def = true;
+        }
+        if (match.matches()) {
+            String[] toRet = new String[5];
+            toRet[0] = def ? "default" : "legacy"; //NOI18N
+            toRet[1] = pom.getProtocol() + "://" + pom.getHost() + (pom.getPort() != -1 ? (":" + pom.getPort()) : ""); //NOI18N
+            toRet[2] = match.group(1);
+            toRet[3] = match.group(2);
+            toRet[4] = match.group(3);
+            for (URL repo : knownRepos) {
+                String root = repo.getProtocol() + "://" + repo.getHost() + (repo.getPort() != -1 ? (":" + repo.getPort()) : ""); //NOI18N
+                if (root.equals(toRet[1]) && toRet[2].startsWith(repo.getPath())) {
+                    toRet[1] = toRet[1] + repo.getPath();
+                    toRet[2] = toRet[2].substring(repo.getPath().length());
+                    break;
+                }
+            }
+            if (toRet[2].startsWith("/")) { //NOI18N
+                toRet[2] = toRet[2].substring(1);
+            }
+            toRet[2] = toRet[2].replace('/', '.'); //NOI18N
+            return toRet;
         }
         return null;
     }

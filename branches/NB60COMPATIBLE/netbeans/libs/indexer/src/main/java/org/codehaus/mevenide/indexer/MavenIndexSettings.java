@@ -17,12 +17,15 @@
 
 package org.codehaus.mevenide.indexer;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.prefs.Preferences;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -112,6 +115,19 @@ public class MavenIndexSettings {
     public String[] getCollectedReposAsStrings() {
         List<String> str = getCollectedRepositories();
         return str.toArray(new String[str.size()]);
+    }
+    
+    public URL[] getCollectedReposAsURLs() {
+        List<String> str = getCollectedRepositories();
+        List<URL> urls = new ArrayList<URL>();
+        for (String s : str) {
+            try {
+                urls.add(new URL(s));
+            } catch (MalformedURLException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+        return urls.toArray(new URL[urls.size()]);
     }
     
     public List<String> getCollectedRepositories() {

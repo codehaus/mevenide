@@ -24,6 +24,7 @@ import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
+import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -34,6 +35,7 @@ import org.netbeans.api.project.Project;
  * @author mkleint
  */
 public class PluginPropertyUtils {
+
     
     /** Creates a new instance of PluginPropertyUtils */
     private PluginPropertyUtils() {
@@ -158,6 +160,69 @@ public class PluginPropertyUtils {
         // if managed dependency section is present, return that one for editing..
         return managed == null ? ret : managed;
     }
+    
+    public static boolean hasModelDependency(Model mdl, String groupid, String artifactid) {
+        return checkModelDependency(mdl, groupid, artifactid, false) != null;
+    }
+
+    /**
+     * 
+     * @param mdl 
+     * @param url of the repository 
+     * @param add true == add to model, will not add if the repo is in project but not in model (eg. central repo)
+     * @return 
+     */
+    public static Repository checkModelRepository(MavenProject project, Model mdl, String url, boolean add) {
+        if (url.contains("http://repo1.maven.org/maven2")) { //NOI18N
+            return null;
+        }
+        for (Object rr : mdl.getRepositories()) {
+            Repository r = (Repository)rr;
+            if (url.equals(r.getUrl())) {
+                //already in model..either in pom.xml or added in this session.
+                return null;
+            }
+        }
+        List reps = project.getRepositories();
+        Repository prjret = null;
+        Repository ret = null;
+        if (reps != null) {
+            Iterator it = reps.iterator();
+            while (it.hasNext()) {
+                Repository re = (Repository)it.next();
+                if (url.equals(re.getUrl())) {
+                    prjret = re;
+                    break;
+                }
+            }
+        }
+        //now find the correct instance in model
+        if (prjret != null) {
+            reps = mdl.getRepositories();
+            if (reps != null) {
+                Iterator it = reps.iterator();
+                while (it.hasNext()) {
+                    Repository re = (Repository)it.next();
+                    if (re.getId().equals(prjret.getId())) {
+                        ret = re;
+                        break;
+                    }
+                }
+            }
+        }
+        if (add && ret == null && prjret == null) {
+            ret = new Repository();
+            ret.setUrl(url);
+            ret.setId(url);
+            mdl.addRepository(ret);
+        }
+        return ret;
+    }
+
+    public static boolean hasModelRepository(MavenProject project, Model mdl, String url) {
+        return checkModelRepository(project, mdl, url, false) != null;
+    }
+    
 //    /**
 //     * 
 //     * @param mdl 

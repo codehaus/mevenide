@@ -109,25 +109,28 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             FileObject pom = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
             Model mdl = WriterUtils.loadModel(pom);
             MavenProject mp = project.getOriginalMavenProject();
-            Dependency dep = new Dependency();
-            dep.setGroupId("toplink.essentials"); //NOI18N
-            dep.setArtifactId("toplink-essentials"); //NOI18N
-            dep.setVersion("2.0-36"); //NOI18N
-            if (!containsDependency(dep, mp)) {
-                mdl.addDependency(dep);
-            }
-            Repository repo = new Repository();
-            repo.setId("m1-java.net"); //NOI18N
-            repo.setUrl("http://download.java.net/maven/1/"); //NOI18N
-            repo.setLayout("legacy"); //NOI18N
-            if (!containsRepository(repo, mp)) {
-                mdl.addRepository(repo);
-            }
+//not necessary any more. toplink will be handled by default library impl..            
+//            Dependency dep = new Dependency();
+//            dep.setGroupId("toplink.essentials"); //NOI18N
+//            dep.setArtifactId("toplink-essentials"); //NOI18N
+//            dep.setVersion("2.0-36"); //NOI18N
+//            if (!containsDependency(dep, mp)) {
+//                mdl.addDependency(dep);
+//            }
+//            Repository repo = new Repository();
+//            repo.setId("m1-java.net"); //NOI18N
+//            repo.setUrl("http://download.java.net/maven/1/"); //NOI18N
+//            repo.setLayout("legacy"); //NOI18N
+//            if (!containsRepository(repo, mp)) {
+//                mdl.addRepository(repo);
+//            }
             // checking source doesn't work anymore, the wizard requires the level to be 1.5 up front.
             checkSourceLevel(mdl);
             WriterUtils.writePomModel(pom, mdl);
             //TODO have some kind of trigger for download if not locally present?
-            return true;
+
+            //shall not return true, needs processing by the fallback impl as well.
+            return false;
         }
         return false;
     }

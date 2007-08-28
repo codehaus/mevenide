@@ -46,6 +46,10 @@ public class ModInstall extends ModuleInstall {
     @Override
     public void restored() {
         super.restored();
+        List<String> lst = MavenIndexSettings.getDefault().getCollectedRepositories();
+        if (addDefaultRepoSet(lst)) {
+            MavenIndexSettings.getDefault().setCollectedRepositories(lst);
+        }
         projectsListener = new OpenProjectsListener();
         OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
         int freq = MavenIndexSettings.getDefault().getIndexUpdateFrequency();
@@ -87,10 +91,28 @@ public class ModInstall extends ModuleInstall {
         }
     }
     
+    private static boolean addDefaultRepoSet(List<String> lst) {
+        //TODO externalize somehow..
+        boolean ret = false;
+        if (!lst.contains("http://repo1.maven.org/maven2/")) { //NOI18N
+            lst.add("http://repo1.maven.org/maven2/"); //NOI18N
+            ret = true;
+        }
+        if (!lst.contains("http://download.java.net/maven/1/")) { //NOI18N
+            lst.add("http://download.java.net/maven/1/"); //NOI18N
+            ret = true;
+        }
+        if (!lst.contains("http://download.java.net/maven/2/")) { //NOI18N
+            lst.add("http://download.java.net/maven/2/"); //NOI18N
+            ret = true;
+        }
+        return ret;
+    }
+    
     private static class OpenProjectsListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent evt) {
-            List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
-            boolean added = false;
+            List<String> lst = MavenIndexSettings.getDefault().getCollectedRepositories();
+            boolean added = addDefaultRepoSet(lst);
             Project[] prjs = OpenProjects.getDefault().getOpenProjects();
             for (int i = 0; i < prjs.length; i++) {
                 NbMavenProject mavProj = prjs[i].getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
@@ -113,6 +135,7 @@ public class ModInstall extends ModuleInstall {
                 MavenIndexSettings.getDefault().setCollectedRepositories(lst);
             }
         }
+
         
     }
     
