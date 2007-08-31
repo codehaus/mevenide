@@ -76,6 +76,7 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DEBUG,
         COMMAND_DEBUG_SINGLE,
         COMMAND_DEBUG_TEST_SINGLE,
+        "debug.fix", //NOI18N
         
         //operations
         COMMAND_DELETE, 
@@ -117,7 +118,7 @@ public class ActionProviderImpl implements ActionProvider {
         
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         if (rc == null) {
-            Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.FINE, "No handling for action:" + action + ". Ignoring."); //NOI18N
+            Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.INFO, "No handling for action:" + action + ". Ignoring."); //NOI18N
         } else {
             setupTaskName(action, rc, lookup);
             runGoal(action, lookup, rc);

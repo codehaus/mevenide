@@ -129,5 +129,19 @@
             <jpda.stopclass>${packageClassName}</jpda.stopclass>
         </properties>
     </action>
+
+    <action>
+        <actionName>debug.fix</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>compile</goal>
+            <goal>org.codehaus.mevenide:netbeans-debugger-plugin:RELEASE:reload</goal>
+        </goals>
+        <properties>
+            <netbeans.debug.class>${packageClassName}</netbeans.debug.class>
+        </properties>
+    </action>
     
 </actions>

@@ -17,9 +17,6 @@
 
 package org.codehaus.mevenide.plugin.debugger;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
