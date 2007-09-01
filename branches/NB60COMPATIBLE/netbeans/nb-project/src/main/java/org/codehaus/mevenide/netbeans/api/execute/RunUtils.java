@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.api.execute;
 
 import java.io.File;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.execute.MavenCommandLineExecutor;
 import org.codehaus.mevenide.netbeans.execute.MavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
@@ -35,11 +36,6 @@ import org.openide.windows.OutputListener;
  */
 public final class RunUtils {
     
-    /**
-     * maven property that when set forces netbeans to use external maven instance
-     * instead of the embedded Maven.
-     */ 
-    public static final String PROPERTY_USE_EXTERNAL="netbeans.hint.useExternalMaven"; //NOI18N
     
     /** Creates a new instance of RunUtils */
     private RunUtils() {
@@ -53,7 +49,7 @@ public final class RunUtils {
         MavenExecutor exec;
         boolean useCommandLine = false;
         if (config.getProject()!= null) {
-            String val = config.getProject().getOriginalMavenProject().getProperties().getProperty(PROPERTY_USE_EXTERNAL);
+            String val = config.getProject().getOriginalMavenProject().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL);
             if ("true".equalsIgnoreCase(val)) { //NOI18N
                 useCommandLine = true;
             }

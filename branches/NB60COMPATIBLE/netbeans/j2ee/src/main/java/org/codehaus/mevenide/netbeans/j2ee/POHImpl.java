@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.j2ee;
 
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
@@ -49,8 +50,8 @@ public class POHImpl extends ProjectOpenedHook {
     }
     
     protected void projectOpened() {
-        String val = project.getOriginalMavenProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(WebModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);

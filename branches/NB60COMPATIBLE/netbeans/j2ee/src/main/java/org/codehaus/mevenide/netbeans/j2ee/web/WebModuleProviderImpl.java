@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -54,8 +55,6 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private String serverInstanceID;
 
     static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
-    public static final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
-    public static final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
     
     
     public WebModuleProviderImpl(NbMavenProject proj) {
@@ -71,8 +70,8 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
-        String val = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(ATTRIBUTE_DEPLOYMENT_SERVER);
+        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);

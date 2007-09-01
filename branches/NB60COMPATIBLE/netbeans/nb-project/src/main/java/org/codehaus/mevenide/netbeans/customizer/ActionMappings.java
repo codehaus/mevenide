@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.customizer;
 import java.awt.Component;
 import java.awt.Cursor;
 import javax.swing.JList;
-import javax.swing.event.ChangeEvent;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -44,7 +43,7 @@ import javax.swing.event.DocumentListener;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
-import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -120,7 +119,7 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProfiles.addFocusListener(focus);
         txtProperties.addFocusListener(focus);
         
-        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " "); //NOI18N
+        goalcompleter = new TextValueCompleter(Collections.<String>emptyList(), txtGoals, " "); //NOI18N
         btnSetup.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnSetup.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -131,7 +130,7 @@ public class ActionMappings extends javax.swing.JPanel {
         });
         commandLineUpdater = new CheckBoxUpdater(cbCommandLine) {
             public Boolean getValue() {
-                String val = handle.getPOMModel().getProperties().getProperty(RunUtils.PROPERTY_USE_EXTERNAL);
+                String val = handle.getPOMModel().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL);
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
@@ -139,7 +138,7 @@ public class ActionMappings extends javax.swing.JPanel {
             }
 
             public Boolean getProjectValue() {
-                String val = project.getOriginalMavenProject().getProperties().getProperty(RunUtils.PROPERTY_USE_EXTERNAL); //NOI18N
+                String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL); //NOI18N
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
@@ -150,12 +149,12 @@ public class ActionMappings extends javax.swing.JPanel {
                 if (value == null || value.booleanValue() == false) {
                     Boolean proj = getProjectValue();
                     if (proj != null && proj.equals(Boolean.TRUE)) {
-                        handle.getPOMModel().addProperty(RunUtils.PROPERTY_USE_EXTERNAL, "false"); //NOI18N
+                        handle.getPOMModel().addProperty(Constants.PROPERTY_USE_EXTERNAL, "false"); //NOI18N
                     } else {
-                        handle.getPOMModel().getProperties().remove(RunUtils.PROPERTY_USE_EXTERNAL);
+                        handle.getPOMModel().getProperties().remove(Constants.PROPERTY_USE_EXTERNAL);
                     }
                 } else {
-                    handle.getPOMModel().addProperty(RunUtils.PROPERTY_USE_EXTERNAL, "true"); //NOI18N
+                    handle.getPOMModel().addProperty(Constants.PROPERTY_USE_EXTERNAL, "true"); //NOI18N
                 }
                 handle.markAsModified(handle.getPOMModel());
             }
@@ -174,6 +173,7 @@ public class ActionMappings extends javax.swing.JPanel {
         if (provider != null) {
             Set<String> strs = provider.getAvailableGoals();
             try {
+                @SuppressWarnings("unchecked")
                 List<String> phases = EmbedderFactory.getProjectEmbedder().getLifecyclePhases();
                 strs.addAll(phases);
             } catch (Exception e) {

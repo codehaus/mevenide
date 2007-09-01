@@ -54,6 +54,7 @@ import org.openide.filesystems.FileLock;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileSystem;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.Lookups;
 
@@ -155,20 +156,12 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 try {
                     project.getProjectDirectory().getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
                         public void run() throws IOException {
-                            if (handle.isModified(handle.getPOMModel())) {
-                                WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
-                            }
-                            if (handle.isModified(handle.getProfileModel())) {
-                                WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
-                            }
-                            if (handle.isModified(handle.getActionMappings())) {
-                                writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
-                            }
+                            writeAll(handle, project);
                         }
                     });
                 } catch (IOException ex) {
-                    ex.printStackTrace();
-                    //TODO
+                    Exceptions.printStackTrace(ex);
+                    //TODO error reporting on wrong model save
                 }
             }
         }
@@ -192,7 +185,18 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     static interface SubCategoryProvider {
         public void showSubCategory(String name);
     }
-    
+
+   public static void writeAll(ModelHandle handle, NbMavenProject project) throws IOException {
+        if (handle.isModified(handle.getPOMModel())) {
+            WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
+        }
+        if (handle.isModified(handle.getProfileModel())) {
+            WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
+        }
+        if (handle.isModified(handle.getActionMappings())) {
+            writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
+        }
+   }
     
    public static void writeNbActionsModel(final FileObject pomDir, final ActionToGoalMapping mapping) throws IOException {
         pomDir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.model.License;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
 import org.openide.loaders.CreateFromTemplateAttributesProvider;
@@ -33,17 +34,13 @@ import org.openide.loaders.DataObject;
  */
 public class TemplateAttrProvider implements CreateFromTemplateAttributesProvider {
     private NbMavenProject project;
-    /**
-     * pom.xml property that hints netbeans to use a given license template.
-     */ 
-    public static final String HINT_LICENSE = "netbeans.hint.license"; //NOI18N
     
     TemplateAttrProvider(NbMavenProject prj) {
         project = prj;
     }
     
     public Map<String, ?> attributesFor(DataObject template, DataFolder target, String name) {
-        String license = project.getOriginalMavenProject().getProperties().getProperty(HINT_LICENSE); //NOI18N
+        String license = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_LICENSE); //NOI18N
         if (license == null) {
             // try to match the project's license URL and the mavenLicenseURL attribute of license template
             List lst = project.getOriginalMavenProject().getLicenses();

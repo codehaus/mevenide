@@ -17,6 +17,11 @@
             <version>${mevenide.nb.release}</version>
         </dependency>
         <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+        <dependency>
             <!-- no direct dependency, but require it because it provides j2ee func to maven projects. -->
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>j2ee</artifactId>

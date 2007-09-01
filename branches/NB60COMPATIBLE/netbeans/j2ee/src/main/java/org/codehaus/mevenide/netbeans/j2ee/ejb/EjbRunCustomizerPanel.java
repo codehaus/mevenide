@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -62,12 +63,12 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
             public Wrapper getDefaultValue() {
                 Wrapper wr = null;
-                String id = handle.getProject().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getProject().getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -77,12 +78,12 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
             
             public Wrapper getValue() {
                 Wrapper wr = null;
-                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -97,11 +98,11 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
                if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
-                   handle.getNetbeansPublicProfile().getProperties().remove(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER);
-                   handle.getNetbeansPrivateProfile().getProperties().remove(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                   handle.getNetbeansPublicProfile().getProperties().remove(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
+                   handle.getNetbeansPrivateProfile().getProperties().remove(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
                } else {
-                   handle.getNetbeansPublicProfile().getProperties().put(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
-                   handle.getNetbeansPrivateProfile().getProperties().setProperty(EjbModuleProviderImpl.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+                   handle.getNetbeansPublicProfile().getProperties().put(Constants.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
+                   handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
                }
                handle.markAsModified(handle.getProfileModel());
                handle.markAsModified(handle.getPOMModel());
