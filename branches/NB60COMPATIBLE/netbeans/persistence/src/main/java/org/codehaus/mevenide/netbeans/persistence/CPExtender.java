@@ -29,6 +29,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -47,8 +48,6 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     private static final String EL_CONFIG = "configuration"; //NOI18N
     private static final String EL_SOURCE = "source"; //NOI18N
     private static final String EL_TARGET = "target"; //NOI18N
-    private static final String PLUGIN_AR = "maven-compiler-plugin"; //NOI18N
-    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
     private static final String SL_15 = "1.5"; //NOI18N
     private NbMavenProject project;
     /** Creates a new instance of CPExtender */
@@ -173,14 +172,14 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     
     private void checkSourceLevel(Model mdl) {
         String source = PluginPropertyUtils.getPluginProperty(project,
-                PLUGIN_GR,PLUGIN_AR, EL_SOURCE, 
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, EL_SOURCE, 
                 "compile"); //NOI18N
         if (source != null && source.contains(SL_15)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId(PLUGIN_GR);
-        plugin.setArtifactId(PLUGIN_AR);
+        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
         plugin.setVersion("RELEASE"); //NOI18N
         Plugin old = null;
         Build bld = mdl.getBuild();

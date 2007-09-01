@@ -28,6 +28,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.j2ee.ear.model.ApplicationMetadataModelImpl;
 import org.codehaus.plexus.util.StringInputStream;
@@ -65,9 +66,6 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     private EarModuleProviderImpl provider;
     private MetadataModel<ApplicationMetadata> metadataModel;
     
-    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
-    private static final String PLUGIN_ART = "maven-ear-plugin"; //NOI18N
-    
     /** Creates a new instance of EarImpl */
     EarImpl(NbMavenProject proj, EarModuleProviderImpl prov) {
         project = proj;
@@ -80,8 +78,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public String getJ2eePlatformVersion() {
         if (isApplicationXmlGenerated()) {
-            String version = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "version", "generate-application-xml"); //NOI18N
+            String version = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+                                              Constants.PLUGIN_EAR, "version", "generate-application-xml"); //NOI18N
             // the default version in maven plugin is also 1.3
             //TODO what if the default changes?
             if (version != null) {
@@ -108,8 +106,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     /** META-INF folder for the Ear.
      */
     public FileObject getMetaInf() {
-        String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "earSourceDirectory", "ear");//NOI18N
+        String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+                                              Constants.PLUGIN_EAR, "earSourceDirectory", "ear");//NOI18N
         if (appsrcloc == null) {
             appsrcloc = "main/src/application";//NOI18N
         }
@@ -124,8 +122,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      */
     public FileObject getDeploymentDescriptor() {
         if (isApplicationXmlGenerated()) {
-            String generatedLoc = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "generatedDescriptorLocation", "generate-application-xml");//NOI18N
+            String generatedLoc = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+                                              Constants.PLUGIN_EAR, "generatedDescriptorLocation", "generate-application-xml");//NOI18N
             if (generatedLoc == null) {
                 generatedLoc = project.getOriginalMavenProject().getBuild().getDirectory();
             }
@@ -137,8 +135,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
 //                System.out.println("we don't have the application.xmk generated yet at=" + generatedLoc);
             }
         }
-        String customLoc =  PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                              PLUGIN_ART, "applicationXml", "ear");//NOI18N
+        String customLoc =  PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+                                              Constants.PLUGIN_EAR, "applicationXml", "ear");//NOI18N
         if (customLoc != null) {
             FileObject fo = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), customLoc));
             if (fo != null) {
@@ -166,8 +164,8 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
     
     private boolean isApplicationXmlGenerated() {
-        String str = PluginPropertyUtils.getPluginProperty(project, PLUGIN_GR, 
-                                                                    PLUGIN_ART, 
+        String str = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+                                                                    Constants.PLUGIN_EAR, 
                                                                     "generateApplicationXml", //NOI18N
                                                                     "generate-application-xml");//NOI18N
             //either the default or explicitly set generation of application.xml file 

@@ -46,6 +46,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -364,8 +365,8 @@ public final class NbMavenProject implements Project {
     
     public URI getWebAppDirectory() {
         //TODO hack, should be supported somehow to read this..
-        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins", //NOI18N
-                "maven-war-plugin", //NOI18N
+        String prop = PluginPropertyUtils.getPluginProperty(this, Constants.GROUP_APACHE_PLUGINS,
+                Constants.PLUGIN_WAR, //NOI18N
                 "warSourceDirectory", //NOI18N
                 "war"); //NOI18N
         prop = prop == null ? "src/main/webapp" : prop; //NOI18N
@@ -376,8 +377,8 @@ public final class NbMavenProject implements Project {
     
     public URI getEarAppDirectory() {
         //TODO hack, should be supported somehow to read this..
-        String prop = PluginPropertyUtils.getPluginProperty(this, "org.apache.maven.plugins", //NOI18N
-                "maven-ear-plugin", //NOI18N
+        String prop = PluginPropertyUtils.getPluginProperty(this, Constants.GROUP_APACHE_PLUGINS,
+                Constants.PLUGIN_EAR, //NOI18N
                 "earSourceDirectory", //NOI18N
                 "ear"); //NOI18N
         prop = prop == null ? "src/main/application" : prop; //NOI18N

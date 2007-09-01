@@ -23,6 +23,7 @@ import java.nio.charset.Charset;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.netbeans.spi.queries.FileEncodingQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -38,9 +39,6 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
 
     private NbMavenProject project;
     private static final String ENCODING_PARAM = "encoding"; //NOI18N
-    private static final String PLUGIN_GROUP = "org.apache.maven.plugins"; //NOI18N
-    private static final String COMPILE_ART = "maven-compiler-plugin"; //NOI18N
-    private static final String RESOURCE_ART = "maven-resources-plugin"; //NOI18N
     
     public MavenFileEncodingQueryImpl(NbMavenProject proj) {
         project = proj;
@@ -48,7 +46,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
 
     public Charset getEncoding(FileObject file) {
         String defEnc = PluginPropertyUtils.getPluginProperty(project, 
-                    PLUGIN_GROUP, COMPILE_ART,ENCODING_PARAM, "compile"); //NOI18N
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER,ENCODING_PARAM, "compile"); //NOI18N
         MavenProject mp = project.getOriginalMavenProject();
         if (mp != null) {
             //TODO instead of SD
@@ -62,7 +60,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
             FileObject testsrc = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
             if (testsrc != null && FileUtil.isParentOf(testsrc, file)) {
                 String testcompileEnc = PluginPropertyUtils.getPluginProperty(project, 
-                        PLUGIN_GROUP, COMPILE_ART, ENCODING_PARAM, "testCompile"); //NOI18N
+                        Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING_PARAM, "testCompile"); //NOI18N
                 if (testcompileEnc != null) {
                     return Charset.forName(testcompileEnc);
                 }
@@ -74,7 +72,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
         try {
             if (isWithin(project.getResources(false), file)) {
                 String resourceEnc = PluginPropertyUtils.getPluginProperty(project,
-                        PLUGIN_GROUP, RESOURCE_ART, ENCODING_PARAM, "resources"); //NOI18N
+                        Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_RESOURCES, ENCODING_PARAM, "resources"); //NOI18N
                 if (resourceEnc != null) {
                     return Charset.forName(resourceEnc);
                 }
@@ -87,7 +85,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
         try {
             if (isWithin(project.getResources(true), file)) {
                 String testresourceEnc = PluginPropertyUtils.getPluginProperty(project, 
-                        PLUGIN_GROUP, RESOURCE_ART,ENCODING_PARAM, "testResources"); //NOI18N
+                        Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_RESOURCES, ENCODING_PARAM, "testResources"); //NOI18N
                 if (testresourceEnc != null) {
                     return Charset.forName(testresourceEnc);
                 }

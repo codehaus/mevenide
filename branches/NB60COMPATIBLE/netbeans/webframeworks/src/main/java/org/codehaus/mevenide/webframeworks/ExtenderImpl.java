@@ -65,8 +65,8 @@ public class ExtenderImpl implements NewProjectWizardExtender {
             NbMavenProject nbprj = project.getLookup().lookup(NbMavenProject.class);
             try {
                 ModelHandle handle = WizardExtenderUtils.createModelHandle(nbprj);
-                handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER, serverType);
-                handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID, serverInstance);
+                handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
+                handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, serverInstance);
                 handle.markAsModified(handle.getProfileModel());
                 handle.markAsModified(handle.getPOMModel());
                 WizardExtenderUtils.writeModelHandle(handle, nbprj);

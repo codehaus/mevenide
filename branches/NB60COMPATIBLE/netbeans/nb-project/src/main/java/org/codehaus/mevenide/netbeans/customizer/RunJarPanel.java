@@ -45,6 +45,7 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.IOUtil;
@@ -71,7 +72,6 @@ public class RunJarPanel extends javax.swing.JPanel {
     private static final String ARTFACTID_JAR = "maven-jar-plugin";//NOI18N
     private static final String ARITFACTID_ASSEMBLY = "maven-assembly-plugin";//NOI18N
     private static final String CONFIGURATION_EL = "configuration";//NOI18N
-    private static final String GROUPID_PLUGINS = "org.apache.maven.plugins";//NOI18N
 
     private static final String RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
     private static final String RUN_WORKDIR = "netbeans.jar.run.workdir"; //NOI18N
@@ -409,7 +409,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         if (jarPlugin == null) {
             jarPlugin = new Plugin();
             jarPlugin.setArtifactId(ARTFACTID_JAR); 
-            jarPlugin.setGroupId(GROUPID_PLUGINS); 
+            jarPlugin.setGroupId(Constants.GROUP_APACHE_PLUGINS); 
             handle.getNetbeansPublicProfile().getBuild().addPlugin(jarPlugin);
         }
         if (jarPlugin.getConfiguration() == null) {
@@ -427,7 +427,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         if (assPlugin == null) {
             assPlugin = new org.apache.maven.model.Plugin();
             assPlugin.setArtifactId(ARITFACTID_ASSEMBLY); 
-            assPlugin.setGroupId(GROUPID_PLUGINS); 
+            assPlugin.setGroupId(Constants.GROUP_APACHE_PLUGINS); 
 //not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }

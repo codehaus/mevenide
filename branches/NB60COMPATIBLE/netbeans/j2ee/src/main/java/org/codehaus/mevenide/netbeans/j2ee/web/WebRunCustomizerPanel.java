@@ -79,12 +79,12 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         listeners.add(new ComboBoxUpdater<Wrapper>(comServer, lblServer) {
             public Wrapper getDefaultValue() {
                 Wrapper wr = null;
-                String id = handle.getProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getProject().getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -94,12 +94,12 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             
             public Wrapper getValue() {
                 Wrapper wr = null;
-                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                String id = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
                 if (id != null) {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
+                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -114,11 +114,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                String sID = wr.getServerID();
                String iID = wr.getServerInstanceID();
                if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
-                   handle.getNetbeansPublicProfile().getProperties().remove(Constants.ATTRIBUTE_DEPLOYMENT_SERVER);
-                   handle.getNetbeansPrivateProfile().getProperties().remove(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID);
+                   handle.getNetbeansPublicProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                   handle.getNetbeansPrivateProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
                } else {
-                   handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER, sID);
-                   handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.ATTRIBUTE_DEPLOYMENT_SERVER_ID, iID);
+                   handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, sID);
+                   handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, iID);
                }
                handle.markAsModified(handle.getProfileModel());
                handle.markAsModified(handle.getPOMModel());

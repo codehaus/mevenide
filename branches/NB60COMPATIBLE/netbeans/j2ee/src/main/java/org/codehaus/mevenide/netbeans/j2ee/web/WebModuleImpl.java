@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
@@ -119,7 +120,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     
     File getDDFile(final String path) {
         String webxmlDefined = PluginPropertyUtils.getPluginProperty(project,
-                "org.apache.maven.plugins", "maven-war-plugin", //NOI18N
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_WAR, //NOI18N
                 "webXml", "war"); //NOI18N
         if (webxmlDefined != null) {
             //TODO custom location.. relative or absolute? what the *&#! is the default resolved to?

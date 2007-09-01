@@ -35,6 +35,7 @@ import org.apache.maven.model.Build;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
@@ -50,11 +51,8 @@ import org.openide.filesystems.FileUtil;
  */
 public class SourcesPanel extends JPanel {
     
-    private static final String COMPILER_ART = "maven-compiler-plugin"; //NOI18N
     private static final String CONFIGURATION_EL = "configuration";//NOI18N
     private static final String RELEASE_VERSION = "RELEASE";//NOI18N
-    private static final String RESOURCES_ART = "maven-resources-plugin"; //NOI18N
-    private static final String PLUGIN_GR = "org.apache.maven.plugins"; //NOI18N
     private static final String ENCODING = "encoding"; //NOI18N
     private static final String SOURCE_PARAM = "source";//NOI18N
     private static final String TARGET_PARAM = "target";//NOI18N
@@ -82,15 +80,15 @@ public class SourcesPanel extends JPanel {
         
         comSourceLevel.setSelectedItem(sourceLevel);
         String enc = PluginPropertyUtils.getPluginProperty(project, 
-                    PLUGIN_GR,COMPILER_ART, ENCODING, null);
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING, null);
         Charset chs = null;
         if (enc != null) {
             chs = Charset.forName(enc);
         }
         if (chs == null) {
             String resourceEnc = PluginPropertyUtils.getPluginProperty(project,
-                    PLUGIN_GR,
-                    RESOURCES_ART, ENCODING, null);
+                    Constants.GROUP_APACHE_PLUGINS,
+                    Constants.PLUGIN_RESOURCES, ENCODING, null);
             if (resourceEnc != null) {
                 chs = Charset.forName(resourceEnc);
             }
@@ -132,14 +130,14 @@ public class SourcesPanel extends JPanel {
     //TODO copied from persistence' CPExtender. have it at one place only..
     private void checkSourceLevel(Model mdl, String sl) {
         String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                PLUGIN_GR,COMPILER_ART,SOURCE_PARAM, 
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, SOURCE_PARAM, 
                 "compile"); //NOI18N
         if (source != null && source.contains(sl)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId(PLUGIN_GR);
-        plugin.setArtifactId(COMPILER_ART);
+        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
         plugin.setVersion(RELEASE_VERSION);
         Plugin old = null;
         Build bld = mdl.getBuild();
@@ -195,18 +193,18 @@ public class SourcesPanel extends JPanel {
     //TODO copied from persistence' CPExtender. have it at one place only..
     private void checkEncoding(Model mdl, String enc) {
         String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                PLUGIN_GR,COMPILER_ART, 
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, 
                 ENCODING, null);
         if (source != null && source.contains(enc)) {
             return;
         }
         Plugin plugin = new Plugin();
-        plugin.setGroupId(PLUGIN_GR);
-        plugin.setArtifactId(COMPILER_ART);
+        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
         plugin.setVersion(RELEASE_VERSION);
         Plugin plugin2 = new Plugin();
-        plugin2.setGroupId(PLUGIN_GR);
-        plugin2.setArtifactId(RESOURCES_ART);
+        plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
         plugin2.setVersion(RELEASE_VERSION);
         Plugin old = null;
         Plugin old2 = null;

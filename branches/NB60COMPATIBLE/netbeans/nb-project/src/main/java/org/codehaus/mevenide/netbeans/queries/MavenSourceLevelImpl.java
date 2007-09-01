@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.queries;
 
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.netbeans.spi.java.queries.SourceLevelQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -37,8 +38,8 @@ public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
     public String getSourceLevel(FileObject javaFile) {
         //TODO differenciate between test sources and main sources
         String goal = true ? "compile" : "test-compile"; //NOI18N
-        String toRet = PluginPropertyUtils.getPluginProperty(project, "org.apache.maven.plugins",  //NOI18N
-                                                              "maven-compiler-plugin",  //NOI18N
+        String toRet = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS,  //NOI18N
+                                                              Constants.PLUGIN_COMPILER,  //NOI18N
                                                               "source",  //NOI18N
                                                               goal);
         //null is allowed to be returned but junit tests module asserts not null

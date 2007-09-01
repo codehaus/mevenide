@@ -23,9 +23,9 @@ package org.codehaus.mevenide.netbeans.api;
  */
 public interface Constants {
     
-    public final String ATTRIBUTE_DEPLOYMENT_SERVER = "netbeans.deployment.server.type"; //NOI18N
+    public final String HINT_DEPLOY_J2EE_SERVER = "netbeans.deployment.server.type"; //NOI18N
     
-    public final String ATTRIBUTE_DEPLOYMENT_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
+    public final String HINT_DEPLOY_J2EE_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
     /**
      * pom.xml property that hints netbeans to use a given license template.
      */ 
@@ -35,5 +35,18 @@ public interface Constants {
      * maven property that when set forces netbeans to use external maven instance
      * instead of the embedded Maven.
      */ 
-    public static final String PROPERTY_USE_EXTERNAL="netbeans.hint.useExternalMaven"; //NOI18N
+    public static final String HINT_USE_EXTERNAL="netbeans.hint.useExternalMaven"; //NOI18N
+    
+    /**
+     * apache maven default groupid for maven plugins. 
+     */ 
+    public static final String GROUP_APACHE_PLUGINS = "org.apache.maven.plugins"; //NOI18N
+    
+    public static final String PLUGIN_COMPILER = "maven-compiler-plugin";//NOI18N
+    public static final String PLUGIN_WAR = "maven-war-plugin";//NOI18N
+    public static final String PLUGIN_RESOURCES = "maven-resources-plugin";//NOI18N
+    public static final String PLUGIN_EJB = "maven-ejb-plugin";//NOI18N
+    public static final String PLUGIN_EAR = "maven-ear-plugin";//NOI18N
+    public static final String PLUGIN_SUREFIRE = "maven-surefire-plugin";//NOI18N
+    
 }

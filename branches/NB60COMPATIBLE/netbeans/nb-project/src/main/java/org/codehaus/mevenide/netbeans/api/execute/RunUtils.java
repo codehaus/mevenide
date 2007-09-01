@@ -49,7 +49,7 @@ public final class RunUtils {
         MavenExecutor exec;
         boolean useCommandLine = false;
         if (config.getProject()!= null) {
-            String val = config.getProject().getOriginalMavenProject().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL);
+            String val = config.getProject().getOriginalMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
             if ("true".equalsIgnoreCase(val)) { //NOI18N
                 useCommandLine = true;
             }

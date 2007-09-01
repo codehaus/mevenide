@@ -27,6 +27,7 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -147,7 +148,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         } else {
             //look in pom's config.
             String version = PluginPropertyUtils.getPluginProperty(project,
-                    "org.apache.maven.plugins", "maven-ejb-plugin", //NOI18N
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_EJB,
                     "ejbVersion", "ejb"); //NOI18N
             if (version != null) {
                 return version.trim();
@@ -187,7 +188,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     public FileObject getArchive() throws IOException {
         //TODO get the correct values for the plugin properties..
         String jarfile = PluginPropertyUtils.getPluginProperty(project,
-                    "org.apache.maven.plugins", "maven-ejb-plugin", //NOI18N
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_EJB, 
                     "jarName", "ejb"); //NOI18N
         MavenProject proj = project.getOriginalMavenProject();
         if (jarfile == null) {

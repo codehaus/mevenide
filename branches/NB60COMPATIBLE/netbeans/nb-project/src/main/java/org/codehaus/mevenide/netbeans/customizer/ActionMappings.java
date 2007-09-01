@@ -130,7 +130,7 @@ public class ActionMappings extends javax.swing.JPanel {
         });
         commandLineUpdater = new CheckBoxUpdater(cbCommandLine) {
             public Boolean getValue() {
-                String val = handle.getPOMModel().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL);
+                String val = handle.getPOMModel().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
@@ -138,7 +138,7 @@ public class ActionMappings extends javax.swing.JPanel {
             }
 
             public Boolean getProjectValue() {
-                String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.PROPERTY_USE_EXTERNAL); //NOI18N
+                String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL); //NOI18N
                 if (val != null) {
                     return Boolean.valueOf(val);
                 }
@@ -149,12 +149,12 @@ public class ActionMappings extends javax.swing.JPanel {
                 if (value == null || value.booleanValue() == false) {
                     Boolean proj = getProjectValue();
                     if (proj != null && proj.equals(Boolean.TRUE)) {
-                        handle.getPOMModel().addProperty(Constants.PROPERTY_USE_EXTERNAL, "false"); //NOI18N
+                        handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, "false"); //NOI18N
                     } else {
-                        handle.getPOMModel().getProperties().remove(Constants.PROPERTY_USE_EXTERNAL);
+                        handle.getPOMModel().getProperties().remove(Constants.HINT_USE_EXTERNAL);
                     }
                 } else {
-                    handle.getPOMModel().addProperty(Constants.PROPERTY_USE_EXTERNAL, "true"); //NOI18N
+                    handle.getPOMModel().addProperty(Constants.HINT_USE_EXTERNAL, "true"); //NOI18N
                 }
                 handle.markAsModified(handle.getPOMModel());
             }
