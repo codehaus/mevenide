@@ -17,9 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.options;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -36,10 +39,12 @@ import org.openide.util.Lookup;
 class MavenOptionController extends OptionsPanelController {
     private SettingsPanel panel;
     private Settings setts;
+    private List<PropertyChangeListener> listeners;
     /**
      * Creates a new instance of MavenOptionController
      */
     MavenOptionController() {
+        listeners = new ArrayList<PropertyChangeListener>();
     }
     
     public void update() {
@@ -77,10 +82,21 @@ class MavenOptionController extends OptionsPanelController {
     public JComponent getComponent(Lookup lookup) {
         return getPanel();
     }
+
+    void firePropChange(String property, Object oldVal, Object newVal) {
+        ArrayList<PropertyChangeListener> lst;
+        synchronized (listeners) {
+            lst = new ArrayList<PropertyChangeListener>(listeners);
+        }
+        PropertyChangeEvent evnt = new PropertyChangeEvent(this, property, oldVal, newVal);
+        for (PropertyChangeListener prop : lst) {
+            prop.propertyChange(evnt);
+        }
+    }
     
     private SettingsPanel getPanel() {
         if (panel == null) {
-            panel = new SettingsPanel();
+            panel = new SettingsPanel(this);
         }
         return panel;
     }
@@ -90,9 +106,15 @@ class MavenOptionController extends OptionsPanelController {
     }
     
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        synchronized (listeners) {
+            listeners.add(propertyChangeListener);
+        }
     }
     
     public void removePropertyChangeListener(PropertyChangeListener propertyChangeListener) {
+        synchronized (listeners) {
+            listeners.remove(propertyChangeListener);
+        }
     }
     
 }

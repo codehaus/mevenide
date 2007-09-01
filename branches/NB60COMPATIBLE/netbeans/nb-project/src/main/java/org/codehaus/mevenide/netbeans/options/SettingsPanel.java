@@ -22,6 +22,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import org.apache.maven.archiva.indexer.RepositoryIndexException;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
@@ -38,11 +40,15 @@ import org.openide.util.RequestProcessor;
 public class SettingsPanel extends javax.swing.JPanel {
     private static final String CP_SELECTED = "wasSelected"; //NOI18N
     private boolean changed;
+    private boolean valid;
     private ActionListener listener;
+    private DocumentListener docList;
+    private MavenOptionController controller;
     
     /** Creates new form SettingsPanel */
-    public SettingsPanel() {
+    SettingsPanel(MavenOptionController controller) {
         initComponents();
+        this.controller = controller;
         //TODO just ignore for now, possibly remove altogether if it doens't make sense..
         cbSynchProxy.setVisible(false);
         cbDebug.addActionListener(new ActionListener() {
@@ -57,6 +63,17 @@ public class SettingsPanel extends javax.swing.JPanel {
                 }
             }
         });
+        docList = new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                documentChanged(e);
+            }
+            public void removeUpdate(DocumentEvent e) {
+                documentChanged(e);
+            }
+            public void changedUpdate(DocumentEvent e) {
+                documentChanged(e);
+            }
+        };
         initValues();
         listener = new ActionListenerImpl();
         cbDebug.addActionListener(listener);
@@ -76,6 +93,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         rbPluginUpdate.addActionListener(listener);
         comIndex.addActionListener(listener);
     }
+
     
     private void initValues() {
         cbSynchProxy.setSelected(true);
@@ -89,6 +107,24 @@ public class SettingsPanel extends javax.swing.JPanel {
         comIndex.setSelectedIndex(0);
         cbSnapshots.setSelected(true);
         cbUseCommandLine.setSelected(false);
+    }
+    
+    private void documentChanged(DocumentEvent e) {
+        changed = true;
+        boolean oldvalid = valid;
+        if (txtCommandLine.getText().trim().length() > 0) {
+            File fil = new File(txtCommandLine.getText());
+            if (fil.exists() && new File(fil, "bin" + File.separator + "mvn").exists()) {
+                valid = true;
+            } else {
+                valid = false;
+            }
+        } else {
+            valid = true;
+        }
+        if (oldvalid != valid) {
+            controller.firePropChange(MavenOptionController.PROP_VALID, Boolean.valueOf(oldvalid), Boolean.valueOf(valid));
+        }
     }
     
     /** This method is called from within the constructor to
@@ -525,8 +561,12 @@ public class SettingsPanel extends javax.swing.JPanel {
         cbErrors.putClientProperty(CP_SELECTED, Boolean.valueOf(cbErrors.isSelected()));
         cbDebug.setSelected(MavenExecutionSettings.getDefault().isShowDebug());
         cbUseCommandLine.setSelected(MavenExecutionSettings.getDefault().isUseCommandLine());
+        
+        txtCommandLine.getDocument().removeDocumentListener(docList);
         File command = MavenExecutionSettings.getDefault().getCommandLinePath();
         txtCommandLine.setText(command != null ? command.getAbsolutePath() : "");
+        txtCommandLine.getDocument().addDocumentListener(docList);
+        
         cbSnapshots.setSelected(MavenIndexSettings.getDefault().isIncludeSnapshots());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();
         if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(failureBehaviour)) {
@@ -600,7 +640,7 @@ public class SettingsPanel extends javax.swing.JPanel {
     }
     
     boolean hasValidValues() {
-        return true;
+        return valid;
     }
     
     boolean hasChangedValues() {
