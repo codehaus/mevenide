@@ -178,6 +178,9 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     
     public void warn(String string)    {
         if (string.startsWith("Unable to get resource from repository")) { //NOI18N
+            if (isDebugEnabled()) {
+                processMultiLine(string, stdOut, "DEBUG");//NOI18N
+            }
             return;
         }
         processMultiLine(string, stdOut, "WARN");//NOI18N
