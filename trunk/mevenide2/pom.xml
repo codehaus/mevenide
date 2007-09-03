@@ -7,20 +7,14 @@
    <version>1.5-SNAPSHOT</version>
     <name>Maven2 support at Mevenide</name>
     <description>Maven2 support at Mevenide</description>
-    <url>http://mevenide.codehaus.org</url>
+    <url>http://mevenide.codehaus.org/m2-site/</url>
     <issueManagement>
         <system>jira</system>
         <url>http://jira.codehaus.org/browse/MEVENIDE</url>
     </issueManagement>
     <ciManagement>
-        <system>continuum</system>
-        <notifiers>
-            <notifier>
-                <configuration>
-                    <address>mkleint@codehaus.org</address>
-                </configuration>
-            </notifier>
-        </notifiers>
+        <system>hudson</system>
+        <url>http://deadlock.netbeans.org/hudson/job/mevenide/</url>
     </ciManagement>
     <scm>
         <connection>scm:svn:http://svn.codehaus.org/mevenide/trunk/mevenide2</connection>
@@ -168,7 +162,6 @@
     
     <modules>
         <module>netbeans</module>
-        <module>idea</module>
     </modules>
     
 </project>
