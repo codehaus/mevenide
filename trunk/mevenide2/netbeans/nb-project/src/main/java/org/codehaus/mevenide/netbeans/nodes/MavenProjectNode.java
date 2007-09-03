@@ -317,11 +317,15 @@ public class MavenProjectNode extends AbstractNode {
         
         public void actionPerformed(ActionEvent arg0) {
             JButton butt = new JButton();
+            
             ProblemsPanel panel = new ProblemsPanel(reporter);
             panel.setActionButton(butt);
+            JButton close = new JButton();
+            panel.setCloseButton(close);
+            close.setText(NbBundle.getMessage(MavenProjectNode.class, "BTN_Close"));
             DialogDescriptor dd = new DialogDescriptor(panel, NbBundle.getMessage(MavenProjectNode.class, "TIT_Show_Problems"));
-            dd.setOptions(new Object[] { butt, NbBundle.getMessage(MavenProjectNode.class, "BTN_Close") });
-            dd.setClosingOptions(new Object[] {NbBundle.getMessage(MavenProjectNode.class, "BTN_Close")});
+            dd.setOptions(new Object[] { butt,  close});
+            dd.setClosingOptions(new Object[] { close });
             dd.setModal(false);
             DialogDisplayer.getDefault().notify(dd);
         }

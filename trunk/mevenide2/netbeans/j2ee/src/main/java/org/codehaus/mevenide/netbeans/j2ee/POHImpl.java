@@ -17,15 +17,24 @@
 
 package org.codehaus.mevenide.netbeans.j2ee;
 
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
+import org.codehaus.mevenide.netbeans.spi.archetype.WizardExtenderUtils;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
+import org.netbeans.modules.j2ee.deployment.devmodules.api.ServerManager;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
@@ -93,13 +102,46 @@ public class POHImpl extends ProjectOpenedHook {
             ProblemReport rep = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
                     NbBundle.getMessage(POHImpl.class, "MSG_AppServer", tit),
                     NbBundle.getMessage(POHImpl.class, "HINT_AppServer"),
-                    null);
+                    new AddServerAction(project));
             report.addReport(rep);
+            
         }
     }
 
     protected void projectClosed() {
     }
-
-
+    
+    private static class AddServerAction extends AbstractAction {
+        private NbMavenProject prj;
+        private AddServerAction(NbMavenProject project) {
+            prj = project;
+            putValue(Action.NAME, NbBundle.getMessage(POHImpl.class, "TXT_Add_Server"));
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+            String newOne = ServerManager.showAddServerInstanceWizard();
+            String serverType = null;
+            if (newOne != null) {
+                serverType = Deployment.getDefault().getServerID(newOne);
+            }
+            NbMavenProject nbprj = prj.getLookup().lookup(NbMavenProject.class);
+            try {
+                ModelHandle handle = WizardExtenderUtils.createModelHandle(nbprj);
+                if (newOne != null) {
+                    handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
+                    handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, newOne);
+                } else {
+                    handle.getNetbeansPublicProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                    handle.getNetbeansPrivateProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+                }
+                handle.markAsModified(handle.getProfileModel());
+                handle.markAsModified(handle.getPOMModel());
+                WizardExtenderUtils.writeModelHandle(handle, nbprj);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (XmlPullParserException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+        }
+    }
 }
