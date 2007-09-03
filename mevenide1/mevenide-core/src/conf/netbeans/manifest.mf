@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.mevenide.core/1
-OpenIDE-Module-Localizing-Bundle: org/mevenide/Bundle.properties
-OpenIDE-Module-Public-Packages: org.mevenide.**

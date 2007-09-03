@@ -1,9 +1,0 @@
-<?xml version="1.0"?><pmd>
-<file name="/home/cenda/mav_src/mevenide/goals-grabber/src/java/org/mevenide/genapp/TemplateInfo.java">
-<violation line="138" rule="EmptyCatchBlock" ruleset="Basic Rules">
-Avoid empty catch blocks
-</violation>
-<violation line="144" rule="EmptyCatchBlock" ruleset="Basic Rules">
-Avoid empty catch blocks
-</violation>
-</file></pmd>

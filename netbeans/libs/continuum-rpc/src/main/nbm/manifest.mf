@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/continuum/rpc/Bundle.properties
+OpenIDE-Module-Layer: org/codehaus/mevenide/continuum/rpc/layer.xml
