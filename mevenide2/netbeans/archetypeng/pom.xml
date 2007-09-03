@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.codehaus.mevenide</groupId>
+        <artifactId>netbeans</artifactId>
+        <version>3.0.6-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>archetypeng</artifactId>
+    <packaging>nbm</packaging>
+    <version>3.0.6-SNAPSHOT</version>
+    <name>NetBeans Maven2 ArchetypeNG</name>
+    <description>Custom project creation processor that delegates to the new ArchetypeNG Maven plugin.
+                 The plugin is able to process both old and new archetypes.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>  
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-project</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-util</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-execution</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-dialogs</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.modello</groupId>
+                <artifactId>modello-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>archetype-descriptor</id>
+                        <goals>
+                            <goal>java</goal>
+                            <goal>xpp3-reader</goal>
+                        </goals>
+                        <configuration>
+                            <version>1.0.0</version>
+                            <model>src/main/mdo/archetype-descriptor.mdo</model>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

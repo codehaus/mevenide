@@ -1,0 +1,7 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/embedder/Bundle.properties
+OpenIDE-Module-Requires: 
+  org.openide.execution.ExecutionEngine,
+  org.openide.windows.IOProvider
+OpenIDE-Public-Packages: **
+

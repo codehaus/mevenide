@@ -1,0 +1,78 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.codehaus.mevenide</groupId>
+        <artifactId>netbeans</artifactId>
+        <version>3.0.6-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>netbeans-repository</artifactId>
+    <packaging>nbm</packaging>
+    <version>3.0.6-SNAPSHOT</version>
+    <name>Maven2 NetBeans repository</name>
+    <description>Maven2 repository for NetBeans specific plugin artifacts, is used from the UI, plugin require running NetBeans.</description>
+
+    <dependencies>
+        <!-- mark as dependency to get it built before the nbm gets packaged-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-deploy-plugin</artifactId>
+            <version>1.2.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- mark as dependency to get it built before the nbm gets packaged-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-debugger-plugin</artifactId>
+            <version>1.3.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-run-plugin</artifactId>
+            <version>1.1.4</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- mark as dependency to get it built before the nbm gets packaged-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>netbeans-nbmreload-plugin</artifactId>
+            <version>1.0.1</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <!-- have this one as dependency because we want this project to load eagerly 
+                 when nb-project is loaded-->
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-project</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+    </dependencies>
+    <build>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>nbm-maven-plugin</artifactId>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>2.2-beta-1</version>
+                    <executions>
+                        <execution>
+                            <id>repo</id>
+                            <phase>process-classes</phase>
+                            <goals>
+                                <goal>directory-inline</goal>
+                            </goals>
+                            <configuration>
+                                <descriptor>src/main/assembly/dep.xml</descriptor>
+                                <finalName>nbrepo-assembly</finalName>
+                                <appendAssemblyId>false</appendAssemblyId>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+    </build>
+</project>

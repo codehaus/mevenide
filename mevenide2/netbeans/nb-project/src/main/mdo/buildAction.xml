@@ -1,0 +1,114 @@
+<model>
+    <id>netbeansbuildaction</id>
+    <name>NetbeansBuildAction</name>
+    <description>Description of what gets executed during a NetBeans project build related action.</description>
+    <defaults>
+        <default>
+            <key>package</key>
+            <value>org.codehaus.mevenide.netbeans.execute.model</value>
+        </default>
+    </defaults>
+
+    <classes>
+        <class rootElement="true" xml.tagName="actions">
+            <name>ActionToGoalMapping</name>
+            <version>1.0.0+</version>
+            <fields>
+                <field>
+                    <name>packaging</name>
+                    <version>1.0.0+</version>
+                    <description>Supported packaging type that this this project maps to. 
+                    Useful for custom non-standard packingings to get the same behaviour as the supported ones.
+                    Supported types: jar, war, ejb, ear</description>
+                    <type>String</type>
+                </field>
+                <field xml.listStyle="flat">
+                    <name>actions</name>
+                    <version>1.0.0+</version>
+                    <association>
+                        <type>NetbeansActionMapping</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+            </fields>
+        </class>
+        <class xml.tagName="action">
+            <name>NetbeansActionMapping</name>
+            <version>1.0.0+</version>
+            <fields>
+                <field>
+                    <name>actionName</name>
+                    <version>1.0.0+</version>
+                    <type>String</type>
+                    <required>true</required>
+                </field>
+                <field>
+                    <name>displayName</name>
+                    <version>1.0.0+</version>
+                    <type>String</type>
+                </field>
+                <field>
+                    <name>debug</name>
+                    <version>1.1.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>false</defaultValue>
+                </field>
+                <field>
+                    <name>delegateTo</name>
+                    <version>1.1.0+</version>
+                    <type>String</type>
+                    <description>Allow delegating the specific mapping to another project. 
+                                 The field contains relative path to the other project.
+                                 If defined, other fields in the action are not taken into account.</description>
+                </field>
+                <field>
+                    <name>online</name>
+                    <version>1.1.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>true</defaultValue>
+                </field>
+                <field>
+                    <name>recursive</name>
+                    <version>1.0.0+</version>
+                    <type>boolean</type>
+                    <defaultValue>true</defaultValue>
+                </field>
+                <field>
+                    <name>packagings</name>
+                    <version>1.0.0+</version>
+                    <description>Packaging types that this action mapping works for. * for any.</description>
+                    <association>
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+                <field>
+                    <name>goals</name>
+                    <version>1.0.0+</version>
+                    <description>List of goals and phases to execute, order is important</description>
+                    <association>
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+                <field>
+                    <name>properties</name>
+                    <version>1.0.0+</version>
+                    <type>Properties</type>
+                    <association xml.mapStyle="inline">
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+                <field>
+                    <name>activatedProfiles</name>
+                    <version>1.0.0+</version>
+                    <association>
+                        <type>String</type>
+                        <multiplicity>*</multiplicity>
+                    </association>
+                </field>
+            </fields>
+        </class>
+    </classes>
+</model>

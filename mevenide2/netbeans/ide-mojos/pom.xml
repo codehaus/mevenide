@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.codehaus.mevenide</groupId>
+    <artifactId>ide-mojos</artifactId>
+    <packaging>pom</packaging>
+    <description>Mojos for use only within the NetBeans IDE JVM</description>
+    <name>IDE embedded Mojos</name>
+    <version>1.4</version>
+    <inceptionYear>2005</inceptionYear>
+    <url>http://mevenide.codehaus.org</url>
+    <issueManagement>
+        <system>jira</system>
+        <url>http://jira.codehaus.org/browse/MEVENIDE</url>
+    </issueManagement>
+    <ciManagement>
+        <system>continuum</system>
+        <notifiers>
+            <notifier>
+                <configuration>
+                    <address>mkleint@codehaus.org</address>
+                </configuration>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+    <scm>
+        <connection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</connection>
+        <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2/netbeans/ide-mojos</developerConnection>
+        <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2/netbeans/ide-mojos</url>
+    </scm>
+    <mailingLists>
+        <mailingList>
+            <name>Development List</name>
+            <subscribe>dev-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>dev-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <post>dev@mevenide.codehaus.org</post>
+            <archive>http://archive.mevenide.codehaus.org/dev/</archive>
+        </mailingList>
+        <mailingList>
+            <name>User List</name>
+            <subscribe>user-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>user-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <post>user@mevenide.codehaus.org</post>
+            <archive>http://archive.mevenide.codehaus.org/user/</archive>
+        </mailingList>
+        <mailingList>
+            <name>Commits List</name>
+            <subscribe>scm-subscribe@mevenide.codehaus.org</subscribe>
+            <unsubscribe>scm-unsubscribe@mevenide.codehaus.org</unsubscribe>
+            <archive>http://archive.mevenide.codehaus.org/scm/</archive>
+        </mailingList>
+    </mailingLists>
+  
+    <developers>
+        <developer>
+            <id>mkleint</id>
+            <name>Milos Kleint</name>
+            <email>mkleint@codehaus.org</email>
+            <organization>Mevenide</organization>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+    <profiles>
+        <profile>
+            <id>jdk142</id>
+            <activation>
+                <jdk>1.4.2</jdk>
+            </activation>
+            <properties>
+                <java142.home>${java.home}/..</java142.home>
+            </properties>
+        </profile>
+    </profiles>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-1</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <executable>${java142.home}/bin/javac</executable>
+                    <showDeprecation>true</showDeprecation>
+                    <compilerVersion>1.4</compilerVersion>
+                    <source>1.4</source>
+                    <target>1.4</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <distributionManagement>
+        <repository>
+            <id>mevenide-upload</id>
+            <name>Mevenide Central Repository</name>
+            <url>dav:https://dav.codehaus.org/repository/mevenide/</url>
+        </repository>
+        <snapshotRepository>
+            <id>mevenide-snapshots-upload</id>
+            <name>Mevenide Central Development Repository</name>
+            <url>dav:https://dav.codehaus.org/snapshots.repository/mevenide/</url>
+        </snapshotRepository>
+        <site>
+            <id>mevenide-site-upload</id>
+            <name>Mevenide Website</name>
+            <url>dav:https://dav.codehaus.org/mevenide/m2-site/</url>
+        </site>
+    </distributionManagement>
+    
+    <repositories>
+        <repository>
+            <id>netbeans</id>
+            <name>repository hosting netbeans.org api artifacts</name>
+            <url>http://208.44.201.216:18080/maven</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>mevenide</id>
+            <name>Mevenide's M2 repo</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>mevenide plugins</id>
+            <name>Mevenide's M2 plugins</name>
+            <url>http://mevenide.codehaus.org/m2-repository</url>
+            <snapshots>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+    <modules>
+        <module>netbeans-debugger-plugin</module>
+        <module>netbeans-deploy-plugin</module>
+        <module>netbeans-run-plugin</module>
+        <module>netbeans-nbmreload-plugin</module>
+  </modules>
+  
+    <properties>
+        <!--a fallback to make it work everywhere -->
+        <java142.home>${java.home}/..</java142.home>
+        <mevenide.nb.release>3.0.6-SNAPSHOT</mevenide.nb.release>
+        
+    </properties>
+  
+</project>

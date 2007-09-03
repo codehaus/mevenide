@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>plugin-bridges</artifactId>
+        <groupId>org.codehaus.mevenide</groupId>
+        <version>3.0.6-SNAPSHOT</version>
+    </parent>
+    <artifactId>reload-nbm-bridge</artifactId>
+    <packaging>nbm</packaging>
+    <version>3.0.6-SNAPSHOT</version>
+    <name>NetBeans Reload NBM Maven Bridge</name>
+    
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

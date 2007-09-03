@@ -1,0 +1,28 @@
+<project>
+  <parent>
+    <groupId>org.codehaus.mevenide</groupId>
+    <artifactId>plugin-bridges</artifactId>
+    <version>3.0.6-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+    <artifactId>debugger-bridge</artifactId>
+    <packaging>nbm</packaging>
+    <version>3.0.6-SNAPSHOT</version>
+    <name>NetBeans Debugger Bridge</name>
+    <description>Bridging debugger functionality from NetBeans to Maven, allowing to start debugging from maven plugin.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-mvn-embedder</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>nbm-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+</project>

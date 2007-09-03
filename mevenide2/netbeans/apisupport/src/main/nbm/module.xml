@@ -1,0 +1,10 @@
+<nbm>
+   <moduleType>eager</moduleType>
+   <codeNameBase>org.codehaus.mevenide.netbeans.apisupport/3</codeNameBase>
+   <cluster>mevenide</cluster>
+   <manifest>src/main/nbm/manifest.mf</manifest>
+   <homepageUrl>http://mevenide.codehaus.org/m2-site</homepageUrl>
+   <distributionUrl>http://mevenide.codehaus.org/nbm_release2</distributionUrl>
+   <licenseName>Apache License, Version 2.0</licenseName>
+   <licenseFile>license.txt</licenseFile>
+</nbm>

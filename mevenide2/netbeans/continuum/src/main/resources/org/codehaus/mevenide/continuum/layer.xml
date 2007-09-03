@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="UI">
+        <folder name="Runtime">
+            <file name="org-codehaus-mevenide-continuum-nodes-RootNode.instance">
+                <attr name="instanceClass" stringvalue="org.codehaus.mevenide.continuum.nodes.RootNode"/>
+                <attr name="instanceCreate" methodvalue="org.codehaus.mevenide.continuum.nodes.RootNode.getInstance"/>
+                <attr name="position" intvalue="419"/>
+            </file>
+        </folder>
+    </folder>
+    <!--folder name="Services">
+        <file name="org-codehaus-mevenide-continuum-ContinuumSettings2.settings" url="ContinuumSettings2.xml">
+        </file>
+    </folder-->
+</filesystem>
