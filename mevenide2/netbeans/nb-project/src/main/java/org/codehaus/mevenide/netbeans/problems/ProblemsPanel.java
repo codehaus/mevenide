@@ -27,6 +27,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
@@ -41,6 +42,7 @@ public class ProblemsPanel extends javax.swing.JPanel {
     private ProblemReporter reporter;
     private ChangeListener change;
     private JButton button;
+    private JButton close;
     /** Creates new form ProblemsPanel */
     public ProblemsPanel(ProblemReporter report) {
         initComponents();
@@ -77,13 +79,21 @@ public class ProblemsPanel extends javax.swing.JPanel {
         });
         change = new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                populateUI();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        populateUI();
+                    }
+                });
             }
         };
     }
     
     public void setActionButton(JButton butt) {
         button = butt;
+    }
+    
+    public void setCloseButton(JButton close) {
+        this.close = close;
     }
     
     @Override
@@ -108,6 +118,8 @@ public class ProblemsPanel extends javax.swing.JPanel {
         lstProblems.setModel(model);
         if (lstProblems.getModel().getSize() > 0) {
             lstProblems.setSelectedIndex(0);
+        } else {
+            close.doClick();
         }
         
     }
