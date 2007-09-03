@@ -62,13 +62,21 @@ public class ProgressTransferListener implements TransferListener {
         File fil = transferEvent.getLocalFile();
         int lastSlash = res.getName().lastIndexOf("/");
         String resName = lastSlash > -1 ? res.getName().substring(lastSlash + 1) : res.getName();
-        String name = (transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? 
-                          "Downloading " : "Uploading ") 
-                          + resName;
-        contribRef.set(AggregateProgressFactory.createProgressContributor(name));
+        if (!resName.endsWith(".pom")) { //NOI18N
+            String name = (transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? 
+                              "Downloading " : "Uploading ")  
+                              + resName;
+            contribRef.set(AggregateProgressFactory.createProgressContributor(name));
+        }
     }
     
     public void transferStarted(TransferEvent transferEvent) {
+        String smer = transferEvent.getRequestType() == TransferEvent.REQUEST_GET ? 
+                              "Downloading: " : "Uploading: "; //NOI18N - ends up in the maven output. 
+        System.out.println(smer + transferEvent.getWagon().getRepository().getUrl() + "/" + transferEvent.getResource().getName()); //NOI18N
+        if (contribRef.get() == null) {
+            return;
+        }
         Resource res = transferEvent.getResource();
         int total = (int)Math.min((long)Integer.MAX_VALUE, res.getContentLength());
         handleRef.get().addContributor(contribRef.get());
@@ -79,19 +87,25 @@ public class ProgressTransferListener implements TransferListener {
         }
         lengthRef.set(total);
         countRef.set(0);
-        contribRef.get().progress("Transfer Started...");
+        contribRef.get().progress("Transfer Started..."); 
     }
     
     public void transferProgress(TransferEvent transferEvent, byte[] b, int i) {
+        if (contribRef.get() == null) {
+            return;
+        }
         countRef.set((int)Math.min((long)Integer.MAX_VALUE, (long)countRef.get() + i));
         if (lengthRef.get() < 0) {
-            contribRef.get().progress("Transferring..");
+            contribRef.get().progress("Transferring.."); 
         } else {
-            contribRef.get().progress("Transferred " + countRef.get(), countRef.get());
+            contribRef.get().progress("Transferred " + countRef.get(), countRef.get()); 
         }
     }
     
     public void transferCompleted(TransferEvent transferEvent) {
+        if (contribRef.get() == null) {
+            return;
+        }
         contribRef.get().finish();
         contribRef.remove();
     }
