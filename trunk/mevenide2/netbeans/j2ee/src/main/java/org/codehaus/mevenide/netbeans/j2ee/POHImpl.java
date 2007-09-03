@@ -86,8 +86,12 @@ public class POHImpl extends ProjectOpenedHook {
             }
         } else if (server != null) {
             ProblemReporter report = project.getLookup().lookup(ProblemReporter.class);
+            String tit = Deployment.getDefault().getServerDisplayName(server);
+            if (tit == null) {
+                tit = server;
+            }
             ProblemReport rep = new ProblemReport(ProblemReport.SEVERITY_HIGH, 
-                    NbBundle.getMessage(POHImpl.class, "MSG_AppServer", Deployment.getDefault().getServerDisplayName(server)),
+                    NbBundle.getMessage(POHImpl.class, "MSG_AppServer", tit),
                     NbBundle.getMessage(POHImpl.class, "HINT_AppServer"),
                     null);
             report.addReport(rep);
