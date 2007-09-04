@@ -58,12 +58,10 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
 
     private List defaultReports;
 
-    private Map phaseToLifecycleMap;
-    
     private static ThreadLocal<List<File>> fileList = new ThreadLocal<List<File>>();
     
     public static List<File> getAffectedProjects() {
-        return fileList.get() == null ? Collections.EMPTY_LIST : fileList.get();
+        return fileList.get() == null ? Collections.<File>emptyList() : fileList.get();
     }
     public List<File> readAffectedProjects(ReactorManager rm) {
         if (rm != null) {
@@ -76,7 +74,7 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
             }
             return toRet;
         }
-        return Collections.EMPTY_LIST; 
+        return Collections.<File>emptyList(); 
     }
     
     /**
@@ -96,11 +94,11 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
 
     private LifecycleExecutor createExecutor() {
         DefaultLifecycleExecutor exec = new DefaultLifecycleExecutor();
-        setVar(exec, pluginManager, "pluginManager");
-        setVar(exec, extensionManager, "extensionManager");
-        setVar(exec, lifecycles, "lifecycles");
-        setVar(exec, artifactHandlerManager, "artifactHandlerManager");
-        setVar(exec, defaultReports, "defaultReports");
+        setVar(exec, pluginManager, "pluginManager"); //NOI18N
+        setVar(exec, extensionManager, "extensionManager"); //NOI18N
+        setVar(exec, lifecycles, "lifecycles"); //NOI18N
+        setVar(exec, artifactHandlerManager, "artifactHandlerManager"); //NOI18N
+        setVar(exec, defaultReports, "defaultReports"); //NOI18N
 //        setVar(exec, phaseToLifecycleMap, "phaseToLifecycleMap");
         exec.enableLogging(getLogger());
         return exec;
