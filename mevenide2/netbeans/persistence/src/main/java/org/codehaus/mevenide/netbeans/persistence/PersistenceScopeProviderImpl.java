@@ -43,10 +43,10 @@ public class PersistenceScopeProviderImpl implements PersistenceScopeProvider
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeProviderImpl(PersistenceLocationProvider locProvider,
-            PersistenceClasspathProviderImpl cpProvider, NbMavenProject project)
+            NbMavenProject project)
     {
         ClassPathProviderImpl classpath = project.getLookup().lookup(ClassPathProviderImpl.class);
-        persistenceScopeImpl = new PersistenceScopeImpl(locProvider, cpProvider, classpath);
+        persistenceScopeImpl = new PersistenceScopeImpl(locProvider, classpath);
         persistenceScope = PersistenceScopeFactory.createPersistenceScope(persistenceScopeImpl);
     }
 

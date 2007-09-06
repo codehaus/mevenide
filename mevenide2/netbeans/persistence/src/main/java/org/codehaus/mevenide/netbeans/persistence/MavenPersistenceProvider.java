@@ -41,7 +41,6 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     public static final String PROP_PERSISTENCE = "MavenPersistence"; //NOI18N
     
     private PersistenceLocationProviderImpl  locProvider = null;
-    private PersistenceClasspathProviderImpl cpProvider = null;
     private PersistenceScopesProviderImpl    scopesProvider   = null;
     private PersistenceScopeProviderImpl     scopeProvider    = null;
    
@@ -54,8 +53,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     public MavenPersistenceProvider(NbMavenProject proj)
     {
         locProvider    = new PersistenceLocationProviderImpl(proj);
-        cpProvider     = new PersistenceClasspathProviderImpl(proj);
-        scopeProvider  = new PersistenceScopeProviderImpl(locProvider, cpProvider, proj);
+        scopeProvider  = new PersistenceScopeProviderImpl(locProvider, proj);
         scopesProvider = new PersistenceScopesProviderImpl(scopeProvider);
         
         propChangeSupport.addPropertyChangeListener(locProvider);

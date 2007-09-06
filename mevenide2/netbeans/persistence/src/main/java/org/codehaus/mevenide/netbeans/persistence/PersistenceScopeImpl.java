@@ -23,6 +23,7 @@ import org.netbeans.modules.j2ee.persistence.api.metadata.orm.EntityMappingsMeta
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeImplementation;
 import org.netbeans.modules.j2ee.persistence.spi.support.EntityMappingsMetadataModelHelper;
+import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -33,9 +34,9 @@ import org.openide.filesystems.FileObject;
 public class PersistenceScopeImpl implements PersistenceScopeImplementation
 {
     private PersistenceLocationProvider  locationProvider  = null;
-    private PersistenceClasspathProviderImpl classpathProvider = null;
     private final EntityMappingsMetadataModelHelper modelHelper;
     private ClassPathProviderImpl cpProvider;
+    private ClassPath projectSourcesClassPath;
     
     
     /**
@@ -44,10 +45,9 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeImpl(PersistenceLocationProvider locProvider,
-            PersistenceClasspathProviderImpl cpProv, ClassPathProviderImpl imp)
+            ClassPathProviderImpl imp)
     {
         this.locationProvider  = locProvider;
-        this.classpathProvider = cpProv;
         cpProvider = imp;
         modelHelper = createEntityMappingsHelper();
     }
@@ -73,8 +73,21 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
      */
     public ClassPath getClassPath()
     {
-        return classpathProvider.getClassPath();
+        return getProjectSourcesClassPath();
     }
+    
+    private ClassPath getProjectSourcesClassPath() {
+        synchronized (this) {
+            if (projectSourcesClassPath == null) {
+                projectSourcesClassPath = ClassPathSupport.createProxyClassPath(new ClassPath[] {
+                    cpProvider.getProjectSourcesClassPath(ClassPath.SOURCE),
+                    cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
+                });
+            }
+            return projectSourcesClassPath;
+        }
+    }
+    
 
     public MetadataModel<EntityMappingsMetadata> getEntityMappingsModel(String persistenceUnitName) {
         return modelHelper.getEntityMappingsModel(persistenceUnitName);
