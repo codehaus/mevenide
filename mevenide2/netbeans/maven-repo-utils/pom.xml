@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.codehaus.mevenide</groupId>
+  <artifactId>maven-repo-utils</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>maven-repo-utils</name>
+  <url>http://maven.apache.org</url>
+  <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>RELEASE</version>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+  <profiles>
+        <profile>
+            <id>index</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>RELEASE</version>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx1024m</argument>
+                                <argument>-classpath</argument>
+                                <!-- automatically creates the classpath using all project dependencies, 
+                 also adding the project build directory -->
+                                <classpath/>
+                                <argument>org.codehaus.mevenide.repoutils.IndexRepository</argument>
+                                <argument>${repoindex}</argument>
+                                <argument>${repodir}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>plugincheck</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>RELEASE</version>
+                        <configuration>
+                            <executable>java</executable>
+                            <arguments>
+                                <argument>-Xmx1024m</argument>
+                                <argument>-classpath</argument>
+                                <!-- automatically creates the classpath using all project dependencies, 
+                 also adding the project build directory -->
+                                <classpath/>
+                                <argument>org.codehaus.mevenide.repoutils.ExtractPluginInfo</argument>
+                                <argument>${repoindex}</argument>
+                                <argument>${repodir}</argument>
+                                <argument>${resultdir}</argument>
+                            </arguments>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        
+    </profiles>
+  <dependencies>
+    <dependency>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-indexer</artifactId>
+        <version>1.0-20060923.165121-1</version>
+    </dependency>
+    <dependency>
+		<!-- seems to be needed for proper resolution.. why? -->
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva</artifactId>
+        <version>1.0-20060923.165121-1</version>
+        <type>pom</type>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-discoverer</artifactId>
+        <version>1.0-20060923.165121-1</version>
+    </dependency>
+    <dependency>
+        <groupId>org.apache.maven.archiva</groupId>
+        <artifactId>archiva-utils</artifactId>
+        <version>1.0-20060923.165121-1</version>
+    </dependency>
+    
+         <!--dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-embedder</artifactId>
+            <version>2.1-20060902</version>
+            <classifier>mevenide</classifier>
+        </dependency-->
+    
+      
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
