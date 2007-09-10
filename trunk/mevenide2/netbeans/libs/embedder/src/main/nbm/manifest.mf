@@ -4,4 +4,5 @@ OpenIDE-Module-Requires:
   org.openide.execution.ExecutionEngine,
   org.openide.windows.IOProvider
 OpenIDE-Public-Packages: **
+AutoUpdate-Show-In-Client: false
 

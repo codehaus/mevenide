@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/bridges/debugger/Bundle.properties
 OpenIDE-Module-Public-Packages: org.codehaus.mevenide.bridges.debugger.*
+AutoUpdate-Show-In-Client: false
 
