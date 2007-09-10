@@ -23,7 +23,7 @@ import org.openide.util.Lookup;
 
 /**
  * goal for running the project's jar artifact through maven in netbeans.
- * runs java -jar <jar>, assuming the assembly's jar-with-dependencies to be run before this one.
+ * runs java -jar foo.jar, assuming the assembly's jar-with-dependencies to be run before this one.
  * also assuming a Main-Class: entry in the manifest.
  *
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
