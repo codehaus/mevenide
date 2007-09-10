@@ -3,5 +3,4 @@ OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/autoupdate/Bund
 OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/autoupdate/layer.xml
 OpenIDE-Module-Install: org/codehaus/mevenide/netbeans/autoupdate/Install.class
 OpenIDE-Module-Public-Packages: -
-
-
+AutoUpdate-Show-In-Client: false

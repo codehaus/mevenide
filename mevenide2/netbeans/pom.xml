@@ -145,6 +145,7 @@
      <module>j2ee</module>
      <module>persistence</module>
      <module>autoupdate</module>
+     <module>feature</module>
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
      <module>netbeans-repository</module>

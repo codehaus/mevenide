@@ -33,21 +33,6 @@
             <artifactId>grammar</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>persistence</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>j2ee</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.mevenide</groupId>
-            <artifactId>apisupport</artifactId>
-            <version>${mevenide.nb.release}</version>
-        </dependency>
     </dependencies>
     <build>
         <plugins>
