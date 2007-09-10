@@ -33,6 +33,7 @@ import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.CopyOperationImplementation;
 import org.netbeans.spi.project.DeleteOperationImplementation;
 import org.netbeans.spi.project.MoveOperationImplementation;
+import org.netbeans.spi.project.ProjectState;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -45,9 +46,11 @@ import org.openide.util.NbBundle;
  */
 public class OperationsImpl implements DeleteOperationImplementation, MoveOperationImplementation, CopyOperationImplementation {
     protected NbMavenProject project;
+    private ProjectState state;
     /** Creates a new instance of AbstractOperation */
-    public OperationsImpl(NbMavenProject proj) {
+    public OperationsImpl(NbMavenProject proj, ProjectState state) {
         project = proj;
+        this.state = state;
     }
     
     
@@ -57,7 +60,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
             result.add(file);
         }
     }
-    
+
     public List<FileObject> getMetadataFiles() {
         FileObject projectDirectory = project.getProjectDirectory();
         List<FileObject> files = new ArrayList<FileObject>();
@@ -95,6 +98,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
     
     
     public void notifyDeleted() throws IOException {
+        state.notifyDeleted();
     }
     
     public void notifyMoving() throws IOException {
@@ -104,6 +108,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
     public void notifyMoved(Project original, File originalLoc, String newName) throws IOException {
         if (original == null) {
             //old project call..
+            state.notifyDeleted();
             return;
         } else {
             checkParentProject(project.getProjectDirectory(), false, newName, originalLoc.getName());
