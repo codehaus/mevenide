@@ -28,7 +28,7 @@ import org.openide.util.Lookup;
 
 
 /**
- * Deploy a maven artifact..
+ * Deploy a maven artifact to a NetBeans based J2EE Server.
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal deploy
  * @requiresProject

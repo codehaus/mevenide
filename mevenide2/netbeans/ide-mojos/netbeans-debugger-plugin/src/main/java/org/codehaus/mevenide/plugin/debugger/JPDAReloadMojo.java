@@ -25,7 +25,8 @@ import org.codehaus.mevenide.bridges.debugger.MavenDebugger2;
 import org.openide.util.Lookup;
 
 /**
- * Reload classes
+ * Reload classes in the currently running Debugger session within NetBeans.
+ * Triggered by "Apply Code Changes" menu item in NetBeans.
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal reload
  * @requiresProject

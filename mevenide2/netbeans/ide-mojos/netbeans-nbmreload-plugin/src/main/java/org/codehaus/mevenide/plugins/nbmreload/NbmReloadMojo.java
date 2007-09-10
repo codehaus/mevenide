@@ -27,7 +27,7 @@ import org.openide.util.Lookup;
 
 
 /**
- * Reload the NetBeans module in the developer's IDE.
+ * Reload the NetBeans module in the developer's IDE. Requires a project with "nbm" packaging.
  * @author <a href="mailto:mkleint@codehaus.org">Milos Kleint</a>
  * @goal reload
  * @requiresProject
