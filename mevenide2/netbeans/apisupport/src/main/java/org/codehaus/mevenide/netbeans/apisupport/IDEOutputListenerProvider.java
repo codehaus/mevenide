@@ -17,8 +17,8 @@
 package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
@@ -49,10 +49,11 @@ public class IDEOutputListenerProvider implements OutputProcessor {
     /** Creates a new instance of TestOutputListenerProvider */
     public IDEOutputListenerProvider(NbMavenProject proj) {
         project = proj;
-        classpath = createCP(project);
+        classpath = createCP(project, new HashSet<Project>());
     }
     
-    private ClassPath createCP(Project prj) {
+    private ClassPath createCP(Project prj, HashSet<Project> parents) {
+        parents.add(prj);
         List<ClassPath> list = new ArrayList<ClassPath>();
         ClassPathProviderImpl cpp = prj.getLookup().lookup(ClassPathProviderImpl.class);
         ClassPath[] cp = cpp.getProjectClassPaths(ClassPath.EXECUTE);
@@ -62,7 +63,10 @@ public class IDEOutputListenerProvider implements OutputProcessor {
         SubprojectProvider spp = prj.getLookup().lookup(SubprojectProvider.class);
         if (spp != null) {
             for (Project sub : spp.getSubprojects()) {
-                ClassPath c = createCP(sub);
+                if (parents.contains(sub)) {
+                    continue;
+                }
+                ClassPath c = createCP(sub, parents);
                 if (c != null) {
                     list.add(c);
                 }
