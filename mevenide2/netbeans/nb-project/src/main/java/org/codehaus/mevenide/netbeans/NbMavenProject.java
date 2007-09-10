@@ -63,6 +63,7 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.queries.VisibilityQuery;
+import org.netbeans.spi.project.ProjectState;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.ErrorManager;
@@ -111,6 +112,7 @@ public final class NbMavenProject implements Project {
     private Info projectInfo;
     private MavenProject oldProject;
     private ProjectURLWatcher watcher;
+    private ProjectState state;
     
     
     public static WatcherAccessor ACCESSOR = null;
@@ -139,7 +141,7 @@ public final class NbMavenProject implements Project {
      * Creates a new instance of MavenProject, should never be called by user code.
      * but only by MavenProjectFactory!!!
      */
-    NbMavenProject(FileObject folder, FileObject projectFO, File projectFile) throws Exception {
+    NbMavenProject(FileObject folder, FileObject projectFO, File projectFile, ProjectState projectState) throws Exception {
         this.projectFile = projectFile;
         fileObject = projectFO;
         folderFileObject = folder;
@@ -147,6 +149,7 @@ public final class NbMavenProject implements Project {
         updater1 = new Updater(true);
         updater2 = new Updater(true, USER_DIR_FILES);
         updater3 = new Updater(false);
+        state = projectState;
         problemReporter = new ProblemReporter(this);
         watcher = ACCESSOR.createWatcher(this);
     }
@@ -474,7 +477,7 @@ public final class NbMavenProject implements Project {
             new TemplateAttrProvider(this),
             
             //operations
-            new OperationsImpl(this),
+            new OperationsImpl(this, state),
 
             // default mergers..        
             UILookupMergerSupport.createPrivilegedTemplatesMerger(),
