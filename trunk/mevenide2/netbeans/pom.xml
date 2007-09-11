@@ -116,6 +116,13 @@
                     <descriptor>src/main/nbm/module.xml</descriptor>
                     <keystorealias>mevenide2</keystorealias>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.netbeans.nbbuild</groupId>
+                        <artifactId>tasks</artifactId>
+                        <version>6.0-beta1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.modello</groupId>
