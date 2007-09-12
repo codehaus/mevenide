@@ -29,6 +29,7 @@ import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
@@ -131,8 +132,16 @@ public class MavenRunJarImpl implements MavenRunJar {
         
         public void run() {
             StringBuffer cmd = new StringBuffer();
-            cmd.append(executable);
-            cmd.append(" ");//NOI18N
+            cmd.append("'"); //NOI18N
+            if ("java".equals(executable)) { //NOI18N
+                FileObject jav = JavaPlatformManager.getDefault().getDefaultPlatform().findTool("java"); //NOI18N
+                File fil = FileUtil.toFile(jav);
+                cmd.append(fil.exists() ? fil.getAbsolutePath() : executable);
+            } else {
+                cmd.append(executable);
+            }
+            
+            cmd.append("' ");//NOI18N
             if (jvmParameters != null) {
                 cmd.append(jvmParameters);
                 cmd.append(" ");//NOI18N
@@ -141,9 +150,9 @@ public class MavenRunJarImpl implements MavenRunJar {
                 cmd.append(debugJvmParameters);
                 cmd.append(" ");//NOI18N
             }
-            cmd.append("-jar ");//NOI18N
+            cmd.append("-jar '");//NOI18N
             cmd.append(jarArtifact.getAbsolutePath());
-            cmd.append(" ");//NOI18N
+            cmd.append("' ");//NOI18N
             if (parameters != null) {
                 cmd.append(parameters);
                 cmd.append(" ");//NOI18N
