@@ -210,6 +210,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             finishing = true; //#103460
             shutdownOutput(ioput);
             handle.finish();
+            handle = null;
             ProgressTransferListener.clearAggregateHandle();
             //SUREFIRE-94/MEVENIDE-412 the surefire plugin sets basedir environment variable, which breaks ant integration
             // in netbeans.
