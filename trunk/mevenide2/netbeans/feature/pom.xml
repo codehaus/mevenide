@@ -9,7 +9,7 @@
     <artifactId>feature</artifactId>
     <packaging>nbm</packaging>
     <version>3.0.7-SNAPSHOT</version>
-    <name>NetBeans Maven2 Feature</name>
+    <name>NetBeans Maven2 Kit</name>
     <description>Maven2 related features</description>
 
     <dependencies>

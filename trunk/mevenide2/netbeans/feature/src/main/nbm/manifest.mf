@@ -1,4 +1,5 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/feature/Bundle.properties
 OpenIDE-Module-Public-Packages: -
+OpenIDE-Module-Provides: MavenKit
 
