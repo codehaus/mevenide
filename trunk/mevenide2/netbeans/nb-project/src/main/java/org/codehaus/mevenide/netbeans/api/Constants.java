@@ -23,9 +23,12 @@ package org.codehaus.mevenide.netbeans.api;
  */
 public interface Constants {
     
-    public final String HINT_DEPLOY_J2EE_SERVER = "netbeans.deployment.server.type"; //NOI18N
+    public final String HINT_DEPLOY_J2EE_SERVER_OLD = "netbeans.deployment.server.type"; //NOI18N
     
     public final String HINT_DEPLOY_J2EE_SERVER_ID = "netbeans.deployment.server.id"; //NOI18N
+    
+    public final String HINT_DEPLOY_J2EE_SERVER = "netbeans.hint.deploy.server"; //NOI18N
+    
     /**
      * pom.xml property that hints netbeans to use a given license template.
      */ 

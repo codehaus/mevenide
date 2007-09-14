@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
+import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
@@ -40,6 +41,7 @@ import org.netbeans.spi.project.ActionProvider;
  * @author  mkleint
  */
 public class WebRunCustomizerPanel extends javax.swing.JPanel {
+    private static final String PROP_CLIENT_URL_PART = "netbeans.deploy.clientUrlPart";
     private Project project;
     private ModelHandle handle;
     private WebModule module;
@@ -85,6 +87,9 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 }
                 if (wr == null) {
                     String str = handle.getProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+                    if (str == null) {
+                        str = handle.getProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+                    }
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -99,7 +104,13 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                     wr = findWrapperByInstance(id);
                 }
                 if (wr == null) {
-                    String str = handle.getNetbeansPublicProfile(false).getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+                    String str = handle.getPOMModel().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+                    if (str == null) {
+                        org.apache.maven.model.Profile prof = handle.getNetbeansPublicProfile(false);
+                        if (prof != null) {
+                            str = prof.getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+                        }
+                    }
                     if (str != null) {
                         wr = findWrapperByType(str);
                     }
@@ -111,17 +122,41 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 if (wr == null) {
                     return;
                 }
-               String sID = wr.getServerID();
-               String iID = wr.getServerInstanceID();
-               if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
-                   handle.getNetbeansPublicProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
-                   handle.getNetbeansPrivateProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-               } else {
-                   handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, sID);
-                   handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, iID);
-               }
-               handle.markAsModified(handle.getProfileModel());
-               handle.markAsModified(handle.getPOMModel());
+                String sID = wr.getServerID();
+                String iID = wr.getServerInstanceID();
+                Profile privateProf = handle.getNetbeansPrivateProfile(false);
+                //remove old deprecated data.
+                org.apache.maven.model.Profile pub = handle.getNetbeansPublicProfile(false);
+                if (pub != null) {
+                    pub.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+                }
+
+                if (MavenDeploymentImpl.DEV_NULL.equals(iID)) {
+                    //check if someone moved the property to netbeans-private profile, remove from there then.
+                    if (privateProf != null) {
+                        if (privateProf.getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER) != null) {
+                            privateProf.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                        } else {
+                            handle.getPOMModel().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                            handle.markAsModified(handle.getPOMModel());
+                        }
+                        privateProf.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+                        handle.markAsModified(handle.getProfileModel());
+                    } else {
+                        handle.getPOMModel().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                        handle.markAsModified(handle.getPOMModel());
+                    }
+                } else {
+                    //check if someone moved the property to netbeans-private profile, remove from there then.
+                    if (privateProf != null && privateProf.getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER) != null) {
+                        privateProf.getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, sID);
+                    } else {
+                        handle.getPOMModel().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, sID);
+                        handle.markAsModified(handle.getPOMModel());
+                    }
+                    handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, iID);
+                    handle.markAsModified(handle.getProfileModel());
+                }
             }
         });
         //TODO remove the NbMavenProject dependency
@@ -129,8 +164,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
-        oldUrl = isRunCompatible ? run.getProperties().getProperty("netbeans.deploy.clientUrlPart") : //NOI18N
-                                      debug.getProperties().getProperty("netbeans.deploy.clientUrlPart"); //NOI18N
+        oldUrl = isRunCompatible ? run.getProperties().getProperty(PROP_CLIENT_URL_PART) : //NOI18N
+                                      debug.getProperties().getProperty(PROP_CLIENT_URL_PART); //NOI18N
         if (oldUrl != null) {
             txtRelativeUrl.setText(oldUrl);
         } else {
@@ -294,11 +329,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         String newUrl = txtRelativeUrl.getText().trim();
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {
-                run.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl); //NOI18N
+                run.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
             }
             if (isDebugCompatible) {
-                debug.getProperties().setProperty("netbeans.deploy.clientUrlPart", newUrl); //NOI18N
+                debug.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
             }
         }

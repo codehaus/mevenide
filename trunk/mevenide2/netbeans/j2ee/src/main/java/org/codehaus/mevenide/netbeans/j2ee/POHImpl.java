@@ -21,6 +21,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
@@ -61,6 +62,10 @@ public class POHImpl extends ProjectOpenedHook {
     protected void projectOpened() {
         String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        if (server == null) {
+            //try checking for old values..
+            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+        }
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
@@ -127,14 +132,23 @@ public class POHImpl extends ProjectOpenedHook {
             NbMavenProject nbprj = prj.getLookup().lookup(NbMavenProject.class);
             try {
                 ModelHandle handle = WizardExtenderUtils.createModelHandle(nbprj);
-                if (newOne != null) {
-                    handle.getNetbeansPublicProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
-                    handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, newOne);
-                } else {
-                    handle.getNetbeansPublicProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
-                    handle.getNetbeansPrivateProfile().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+                //get rid of old settings.
+                Profile prof = handle.getNetbeansPublicProfile(false);
+                if (prof != null) {
+                    prof.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
                 }
-                handle.markAsModified(handle.getProfileModel());
+                if (newOne != null) {
+                    handle.getPOMModel().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
+                    handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, newOne);
+                    handle.markAsModified(handle.getProfileModel());
+                } else {
+                    handle.getPOMModel().getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER);
+                    org.apache.maven.profiles.Profile privprof = handle.getNetbeansPrivateProfile(false);
+                    if (privprof != null) {
+                        privprof.getProperties().remove(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+                        handle.markAsModified(handle.getProfileModel());
+                    }
+                }
                 handle.markAsModified(handle.getPOMModel());
                 WizardExtenderUtils.writeModelHandle(handle, nbprj);
             } catch (IOException ex) {

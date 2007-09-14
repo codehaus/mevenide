@@ -72,6 +72,10 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
         String oldSer = getServerID();
         String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        if (server == null) {
+            //try checking for old values..
+            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+        }
         String instanceFound = null;
         if (server != null) {
             String[] instances = Deployment.getDefault().getInstancesOfServer(server);
