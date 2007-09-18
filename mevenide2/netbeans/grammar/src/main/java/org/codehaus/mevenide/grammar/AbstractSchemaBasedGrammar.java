@@ -44,6 +44,7 @@ import org.openide.ErrorManager;
 import org.openide.util.Enumerations;
 import org.openide.nodes.Node.Property;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.Text;
@@ -256,10 +257,15 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
         String start = virtualElementCtx.getCurrentPrefix();
         
         Node parentNode = virtualElementCtx.getParentNode();
+        boolean hasSchema = false;
         if (parentNode != null && schemaDoc != null) {
             List<String> parentNames = new ArrayList<String>();
             while (parentNode != null & parentNode.getNodeName() != null) {
                 parentNames.add(0, parentNode.getNodeName());
+                if (parentNode.getParentNode() == null || parentNode.getParentNode().getNodeName() == null) {
+                    NamedNodeMap nnm = parentNode.getAttributes();
+                    hasSchema  = nnm.getNamedItemNS("xsi","schemaLocation") != null;
+                }
                 parentNode = parentNode.getParentNode();
             }
             org.jdom.Element schemaParent = schemaDoc.getRootElement();
@@ -287,7 +293,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
                     System.err.println("cannot find element=" + str); //NOI18N
                 }
             }
-            if (schemaParent != null) {
+            if (schemaParent != null && !hasSchema) {
                 processSequence(start, schemaParent, toReturn);
             }
             return toReturn.elements();
