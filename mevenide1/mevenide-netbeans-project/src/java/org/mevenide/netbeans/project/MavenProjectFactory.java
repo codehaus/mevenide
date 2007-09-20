@@ -73,7 +73,6 @@ public class MavenProjectFactory implements ProjectFactory
         }
         try {
             MavenProject proj =  new MavenProject(projectFile, projectDiskFile);
-            //LOGGER.log(Level.SEVERE, ">>>>>>" + projectDiskFile.getAbsolutePath() + " ? " + FileUtil.toFile(fileObject).getAbsolutePath(), new Exception());
             return proj;
         } catch (Exception exc) {
             LOGGER.log(Level.SEVERE, "Cannot load project=" + projectDiskFile, exc);

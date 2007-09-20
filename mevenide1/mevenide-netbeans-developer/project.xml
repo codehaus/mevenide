@@ -13,7 +13,7 @@
         <dependency>
             <groupId>netbeans</groupId>
             <artifactId>org-openide-util</artifactId>
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>
@@ -21,7 +21,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-loaders</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
             <type>jar</type>
             <properties>
@@ -32,7 +32,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-dialogs</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
             <type>jar</type>
         </dependency>		
@@ -40,7 +40,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
             <type>jar</type>
         </dependency>		

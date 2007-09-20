@@ -149,15 +149,19 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     public Project getOwner(URI uri) {
-        //logger.fine("getOwner of uri=" + uri);
-        File file = new File(uri);
-        return getOwner(file);
+        //logger.debug("getOwner of uri=" + uri);
+        if (uri.getScheme() != null && "file".equals(uri.getScheme())) { //NOI18N
+            File file = new File(uri);
+            return getOwner(file);
+        }
+        // for some reason nbinst:// protocol can be used as well?? WTF.
+        return null;
     }
     
     public Project getOwner(FileObject fileObject) {
         File file = FileUtil.toFile(fileObject);
         if (file != null) {
-            //logger.severe("getOwner of fileobject=" + fileObject.getNameExt());
+            //logger.fatal("getOwner of fileobject=" + fileObject.getNameExt());
             return getOwner(file);
         }
         return null;

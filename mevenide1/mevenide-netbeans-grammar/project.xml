@@ -13,7 +13,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-netbeans-modules-xml-core</artifactId>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <properties>
@@ -25,7 +25,7 @@
             <artifactId>org-openide-util</artifactId>
             <type>jar</type>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
@@ -33,7 +33,7 @@
             <artifactId>org-openide-modules</artifactId>
             <type>jar</type>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
@@ -41,7 +41,7 @@
             <artifactId>org-openide-nodes</artifactId>
             <type>jar</type>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
         </dependency>
         <dependency>
@@ -49,8 +49,19 @@
             <artifactId>org-openide-filesystems</artifactId>
             <type>jar</type>
             <!-- include nb specification version.. that's important for compiling -->
-            <version>RELEASE-M10</version>
+            <version>RELEASE60-BETA1</version>
             <url>http://www.netbeans.org</url>
+        </dependency>
+        <dependency>
+            <groupId>netbeans</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <!-- include nb specification version.. that's important for compiling -->
+            <version>RELEASE60-BETA1</version>
+            <type>jar</type>
+            <url>http://www.netbeans.org</url>
+            <properties>
+                <netbeans.module.dep>spec</netbeans.module.dep>
+            </properties>
         </dependency>
         <dependency>
             <groupId>mevenide</groupId>
