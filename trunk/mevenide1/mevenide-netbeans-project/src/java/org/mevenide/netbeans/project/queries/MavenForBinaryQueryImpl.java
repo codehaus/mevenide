@@ -241,12 +241,16 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         logger.fine("getjavadocRoot");
         String destDir = project.getPropertyResolver().getResolvedValue("maven.javadoc.destdir");
         if (destDir != null) {
-            File fil = new File(destDir);
-            fil = FileUtil.normalizeFile(fil);
+            File file = new File(destDir);
+            file = FileUtil.normalizeFile(file);
             try {
-                return new URL[] {fil.toURI().toURL()};
+				URL url = file.toURI().toURL();
+				if  (!url.toExternalForm().endsWith("/")) { //NOI18N
+					url = new URL(url.toExternalForm() + "/"); //NOI18N
+				}
+                return new URL[] {url};
             } catch (MalformedURLException exc) {
-                logger.warning("malforrmed file uri=" + fil.toURI());
+                logger.warning("malforrmed file uri=" + file.toURI());
             }
         } else {
             logger.severe("Cannot resolve maven.javadoc.destdir. How come?");
