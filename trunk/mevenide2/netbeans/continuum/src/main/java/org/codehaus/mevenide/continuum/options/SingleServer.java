@@ -117,8 +117,18 @@ public class SingleServer extends javax.swing.JPanel {
     public ServerInfo getServerInfo() {
         ServerInfo serverInfo = new ServerInfo();
         serverInfo.setHostname(txtServer.getText().trim());
-        serverInfo.setRpcPort(Integer.parseInt(txtPort.getText()));
-        serverInfo.setWebAppPort(Integer.parseInt(txtPort2.getText()));
+        try {
+            serverInfo.setRpcPort(Integer.parseInt(txtPort.getText()));
+        }
+        catch (NumberFormatException numberFormatException) {
+            serverInfo.setRpcPort(8000);
+        }
+        try {
+            serverInfo.setWebAppPort(Integer.parseInt(txtPort2.getText()));
+        }
+        catch (NumberFormatException numberFormatException) {
+            serverInfo.setWebAppPort(8080);
+        }
         return serverInfo;
     }
     
