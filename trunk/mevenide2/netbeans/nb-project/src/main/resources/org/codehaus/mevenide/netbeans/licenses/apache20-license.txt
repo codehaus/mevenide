@@ -1,4 +1,6 @@
+<#if licenseFirst??>
 ${licenseFirst}
+</#if>
 ${licensePrefix} Copyright ${date?date?string("yyyy")} ${user}.
 ${licensePrefix}
 ${licensePrefix} Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,4 +15,6 @@ ${licensePrefix} WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
 ${licensePrefix} See the License for the specific language governing permissions and
 ${licensePrefix} limitations under the License.
 ${licensePrefix} under the License.
+<#if licenseLast??>
 ${licenseLast}
+</#if>
