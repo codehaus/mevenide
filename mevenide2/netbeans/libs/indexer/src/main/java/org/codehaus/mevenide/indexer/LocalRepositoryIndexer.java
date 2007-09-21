@@ -24,6 +24,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.lucene.analysis.Analyzer;
@@ -120,8 +122,7 @@ public class LocalRepositoryIndexer {
             try {
                 instance = new LocalRepositoryIndexer();
             } catch (Exception ex) {
-                //TODO exception handling..
-                ex.printStackTrace();
+                Logger.getLogger(LocalRepositoryIndexer.class.getName()).log(Level.INFO, "Cannot instantiate LocalRepositoryIndexer.", ex);
             }
         }
         return instance;
