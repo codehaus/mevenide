@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.output.NotifyFinishOutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
@@ -38,12 +39,14 @@ abstract class AbstractOutputHandler {
     
     protected HashMap<String, Set> processors;
     protected Set currentProcessors;
+    protected Set<NotifyFinishOutputProcessor> toFinishProcessors;
     protected OutputVisitor visitor;
 
     protected AbstractOutputHandler() {
         processors = new HashMap<String, Set>();
         currentProcessors = new HashSet();
         visitor = new OutputVisitor();
+        toFinishProcessors = new HashSet<NotifyFinishOutputProcessor>();
     }
 
     protected final String getEventId(String eventName, String target) {
@@ -107,6 +110,9 @@ abstract class AbstractOutputHandler {
         while (it.hasNext()) {
             OutputProcessor proc = (OutputProcessor)it.next();
             proc.sequenceEnd(id, visitor);
+            if (proc instanceof NotifyFinishOutputProcessor) {
+                toFinishProcessors.add((NotifyFinishOutputProcessor)proc);
+            }
         }
         if (visitor.getLine() != null) {
             if (visitor.getOutputListener() != null) {
@@ -133,6 +139,9 @@ abstract class AbstractOutputHandler {
         Iterator it = currentProcessors.iterator();
         while (it.hasNext()) {
             OutputProcessor proc = (OutputProcessor)it.next();
+            if (proc instanceof NotifyFinishOutputProcessor) {
+                toFinishProcessors.add((NotifyFinishOutputProcessor)proc);
+            }
             proc.sequenceFail(id, visitor);
         }
         if (visitor.getLine() != null) {
@@ -157,6 +166,12 @@ abstract class AbstractOutputHandler {
             currentProcessors.removeAll(remove);
         }
         
+    }
+    
+    protected final void buildFinished() {
+        for (NotifyFinishOutputProcessor proc : toFinishProcessors) {
+            proc.buildFinished();
+        }
     }
     
     protected final void processMultiLine(String input, OutputWriter writer, String levelText) {
