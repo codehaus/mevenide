@@ -3,4 +3,5 @@ OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/persistence/Bun
 OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/persistence/layer.xml
 OpenIDE-Module-Public-Packages: -
 OpenIDE-Module-Install: org/codehaus/mevenide/netbeans/persistence/ModInstall.class
+AutoUpdate-Show-In-Client: false
 
