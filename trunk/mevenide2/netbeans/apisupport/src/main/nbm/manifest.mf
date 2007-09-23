@@ -3,4 +3,5 @@ OpenIDE-Module-Install: org/codehaus/mevenide/netbeans/apisupport/Installer.clas
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/netbeans/apisupport/Bundle.properties
 OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/apisupport/layer.xml
 OpenIDE-Module-Public-Packages: -
+AutoUpdate-Show-In-Client: false
 
