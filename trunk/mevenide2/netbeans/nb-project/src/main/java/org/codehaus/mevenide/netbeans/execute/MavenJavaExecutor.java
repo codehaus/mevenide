@@ -208,6 +208,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             throw death;
         } finally {
             finishing = true; //#103460
+            out.buildFinished();
             shutdownOutput(ioput);
             handle.finish();
             handle = null;

@@ -105,6 +105,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             }
             throw death;
         } finally {
+            out.buildFinished();
             handle.finish();
             ioput.getOut().close();
             ioput.getErr().close();
