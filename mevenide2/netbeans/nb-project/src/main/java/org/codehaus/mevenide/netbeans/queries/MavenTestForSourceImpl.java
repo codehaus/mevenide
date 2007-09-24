@@ -45,7 +45,12 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
         try {
             String str = project.getOriginalMavenProject().getBuild().getTestSourceDirectory();
             if (str != null) {
-                URI uri = FileUtil.normalizeFile(new File(str)).toURI();
+                File fl = FileUtil.normalizeFile(new File(str));
+                File param = FileUtil.toFile(fileObject);
+                if (fl.equals(param)) {
+                    return null;
+                }
+                URI uri = fl.toURI();
                 URL entry = uri.toURL();
                 if  (!entry.toExternalForm().endsWith("/")) { //NOI18N
                     entry = new URL(entry.toExternalForm() + "/"); //NOI18N
@@ -62,7 +67,12 @@ public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQue
         try {
             String str = project.getOriginalMavenProject().getBuild().getSourceDirectory();
             if (str != null) {
-                URI uri = FileUtil.normalizeFile(new File(str)).toURI();
+                File fl = FileUtil.normalizeFile(new File(str));
+                File param = FileUtil.toFile(fileObject);
+                if (fl.equals(param)) {
+                    return null;
+                }
+                URI uri = fl.toURI();
                 URL entry = uri.toURL();
                 if  (!entry.toExternalForm().endsWith("/")) { //NOI18N
                     entry = new URL(entry.toExternalForm() + "/"); //NOI18N
