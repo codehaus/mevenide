@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
@@ -130,6 +131,10 @@ public class ActionMappings extends javax.swing.JPanel {
         });
         commandLineUpdater = new CheckBoxUpdater(cbCommandLine) {
             public Boolean getValue() {
+                Profile prof = handle.getNetbeansPrivateProfile(false);
+                if (prof != null && prof.getProperties().getProperty(Constants.HINT_USE_EXTERNAL) != null) {
+                    return Boolean.valueOf(prof.getProperties().getProperty(Constants.HINT_USE_EXTERNAL));
+                }
                 String val = handle.getPOMModel().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
                 if (val != null) {
                     return Boolean.valueOf(val);
@@ -146,6 +151,13 @@ public class ActionMappings extends javax.swing.JPanel {
             }
 
             public void setValue(Boolean value) {
+                Profile prof = handle.getNetbeansPrivateProfile(false);
+                if (prof != null && prof.getProperties().getProperty(Constants.HINT_USE_EXTERNAL) != null) {
+                    prof.getProperties().setProperty(Constants.HINT_USE_EXTERNAL, value == null ? "false" : value.toString());
+                    handle.markAsModified(handle.getProfileModel());
+                    return;
+                }
+                
                 if (value == null || value.booleanValue() == false) {
                     Boolean proj = getProjectValue();
                     if (proj != null && proj.equals(Boolean.TRUE)) {
