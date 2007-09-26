@@ -33,5 +33,5 @@ public interface OutputProcessorFactory {
      * returns a Set of <code>OutputProcessor</code> instances or empty set, never null.
      *
      */
-    public Set createProcessorsSet(NbMavenProject project);
+    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project);
 }

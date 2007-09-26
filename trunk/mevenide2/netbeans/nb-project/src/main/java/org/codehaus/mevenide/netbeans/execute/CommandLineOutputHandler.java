@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.netbeans.api.progress.ProgressHandle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
@@ -56,11 +57,11 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     CommandLineOutputHandler() {
     }
     
-    public CommandLineOutputHandler(InputOutput io, NbMavenProject proj, ProgressHandle hand)    {
+    public CommandLineOutputHandler(InputOutput io, NbMavenProject proj, ProgressHandle hand, RunConfig config)    {
         this();
         inputOutput = io;
         stdOut = inputOutput.getOut();
-        initProcessorList(proj);
+        initProcessorList(proj, config);
     }
     
     void setStdOut(InputStream inStr) {
