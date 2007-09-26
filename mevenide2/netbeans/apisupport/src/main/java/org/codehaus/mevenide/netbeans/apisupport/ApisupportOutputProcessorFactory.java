@@ -33,7 +33,7 @@ public class ApisupportOutputProcessorFactory implements OutputProcessorFactory 
     public ApisupportOutputProcessorFactory() {
     }
 
-    public Set createProcessorsSet(NbMavenProject project) {
+    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project) {
         Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
         if (project != null) {
             toReturn.add(new IDEOutputListenerProvider(project));

@@ -63,7 +63,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         handle.start();
         processInitialMessage();
         try {
-            out = new CommandLineOutputHandler(ioput, config.getProject(), handle);
+            out = new CommandLineOutputHandler(ioput, config.getProject(), handle, config);
 //            if (config.getProject() != null) {
 //                try {
 //                    checkDebuggerListening(config, out);

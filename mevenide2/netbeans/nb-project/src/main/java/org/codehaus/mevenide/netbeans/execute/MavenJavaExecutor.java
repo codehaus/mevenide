@@ -100,7 +100,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
-            out = new OutputHandler(ioput, config.getProject(), handle);
+            out = new OutputHandler(ioput, config.getProject(), handle, config);
             IOBridge.pushSystemInOutErr(out);
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             if (config.getProject() != null) {

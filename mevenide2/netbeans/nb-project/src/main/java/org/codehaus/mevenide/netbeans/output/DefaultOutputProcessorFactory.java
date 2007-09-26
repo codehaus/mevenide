@@ -33,7 +33,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
     public DefaultOutputProcessorFactory() {
     }
 
-    public Set createProcessorsSet(NbMavenProject project) {
+    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project) {
         Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
         toReturn.add(new GlobalOutputProcessor());
         if (project != null) {

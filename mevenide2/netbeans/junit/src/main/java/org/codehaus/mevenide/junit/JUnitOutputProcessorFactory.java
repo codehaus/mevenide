@@ -17,28 +17,37 @@
 
 package org.codehaus.mevenide.junit;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.api.output.ContextOutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
-import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 
 /**
  *
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class JUnitOutputProcessorFactory implements OutputProcessorFactory {
+public class JUnitOutputProcessorFactory implements ContextOutputProcessorFactory {
     
     /** Creates a new instance of DefaultOutputProcessor */
     public JUnitOutputProcessorFactory() {
     }
 
     public Set createProcessorsSet(NbMavenProject project) {
-        Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
-        if (project != null) {
-            toReturn.add(new JUnitOutputListenerProvider(project));
+        return Collections.<OutputProcessor>emptySet();
+    }
+
+    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project, RunConfig config) {
+        if (config.getGoals().contains("test") || config.getGoals().contains("surefire:test")) { //NOI18N
+            Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
+            if (project != null) {
+                toReturn.add(new JUnitOutputListenerProvider(project));
+            }
+            return toReturn;
         }
-        return toReturn;
+        return Collections.<OutputProcessor>emptySet();
     }
     
 }
