@@ -17,7 +17,12 @@
 package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.MalformedURLException;
+import java.util.logging.Logger;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.manager.WagonManager;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
@@ -30,6 +35,7 @@ import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.lifecycle.LifecycleExecutor;
 import org.apache.maven.plugin.registry.MavenPluginRegistryBuilder;
+import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
 import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.classworlds.ClassRealm;
 import org.codehaus.classworlds.ClassWorld;
@@ -42,27 +48,65 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
  *
+ *  Factory for creating MavenEmbedder instances for various purposes.
+ * 
  * @author mkleint
  */
-public class EmbedderFactory {
+public final class EmbedderFactory {
     
     private static MavenEmbedder project;
     private static MavenEmbedder online;
     
+    private static long userSettingTimeStamp = 0L;
+    private static boolean settingsCheckPassed = false;
+    
     private static SettingsFileListener fileListener = new SettingsFileListener();
     
+    private static Logger LOG = Logger.getLogger(EmbedderFactory.class.getName());
+
+    //#96919
+    private static void checkUserSettingsTimeStamp(File userSettingsPath) {
+        long userFileStamp = userSettingsPath.lastModified();
+        if (userFileStamp != userSettingTimeStamp) {
+            userSettingTimeStamp = userFileStamp;
+            if (!userSettingsPath.exists()) {
+                settingsCheckPassed = true;
+            } else {
+                Reader rr = null;
+                try {
+                    //check if settings.xml can be read.
+                    SettingsXpp3Reader reader = new SettingsXpp3Reader();
+                    rr = new InputStreamReader(new FileInputStream(userSettingsPath));
+                    reader.read(rr);
+                    settingsCheckPassed = true;
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(Exceptions.attachMessage(ex, "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
+                    settingsCheckPassed = false;
+                } catch (XmlPullParserException ex) {
+                    Exceptions.printStackTrace(Exceptions.attachMessage(ex, "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
+                    settingsCheckPassed = false;
+                } finally {
+                    IOUtil.close(rr);
+                }
+            }
+        }
+    }
+    
     /** Creates a new instance of EmbedderFactory */
-    public EmbedderFactory() {
+    private EmbedderFactory() {
     }
     
     /**
@@ -84,17 +128,25 @@ public class EmbedderFactory {
             
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
             //TODO remove explicit activation
-            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
-            req.setUserSettingsFile(userSettingsPath);
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
+            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
+            File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
+            checkUserSettingsTimeStamp(userSettingsPath);
+            
+            if (settingsCheckPassed) {
+                req.setUserSettingsFile(userSettingsPath);
+            } else {
+                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919" ); //NOI18N
+                req.setUserSettingsFile(globalSettingsPath);
+            }
+            
             req.setGlobalSettingsFile(globalSettingsPath);
             req.setConfigurationCustomizer(new ContainerCustomizer() {
                 public void customize(PlexusContainer plexusContainer) {
                     try {
                         ComponentDescriptor desc = plexusContainer.getComponentDescriptor(ArtifactFactory.ROLE);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactFactory");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactFactory"); //NOI18N
                         
                         desc = plexusContainer.getComponentDescriptor(ResolutionListener.ROLE);
                         if (desc == null) {
@@ -102,16 +154,16 @@ public class EmbedderFactory {
                             desc.setRole(ResolutionListener.ROLE);
                             plexusContainer.addComponentDescriptor(desc);
                         }
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.MyResolutionListener");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.MyResolutionListener"); //NOI18N
                         
                         desc = plexusContainer.getComponentDescriptor(ArtifactResolver.ROLE);
                         ComponentRequirement requirement = new ComponentRequirement();
                         requirement.setRole(ResolutionListener.ROLE);
                         desc.addRequirement(requirement);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactResolver");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactResolver"); //NOI18N
                         
                         desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbWagonManager");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbWagonManager"); //NOI18N
                         
                     } catch (ComponentRepositoryException ex) {
                         ex.printStackTrace();
@@ -141,11 +193,17 @@ public class EmbedderFactory {
             
             MavenEmbedRequest req = new DefaultMavenEmbedRequest();
             //TODO remove explicit activation
-            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
-            File userSettingsPath = new File(userLoc, "settings.xml");
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
-            req.setUserSettingsFile(userSettingsPath);
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
+            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
+            File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
+            checkUserSettingsTimeStamp(userSettingsPath);
+            if (settingsCheckPassed) {
+                req.setUserSettingsFile(userSettingsPath);
+            } else {
+                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919" ); //NOI18N
+                req.setUserSettingsFile(globalSettingsPath);
+            }
             req.setGlobalSettingsFile(globalSettingsPath);
             req.setConfigurationCustomizer(new ContainerCustomizer() {
 
@@ -154,7 +212,7 @@ public class EmbedderFactory {
                         ComponentDescriptor desc = new ComponentDescriptor();
                         desc.setRole(TransferListener.class.getName());
                         plexusContainer.addComponentDescriptor(desc);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
                         desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                         ComponentRequirement requirement = new ComponentRequirement();
                         requirement.setRole(TransferListener.class.getName());
@@ -184,12 +242,12 @@ public class EmbedderFactory {
         ClassLoader loader = (ClassLoader) Lookup.getDefault().lookup(ClassLoader.class);
         
         // need to have some location for the global plugin registry because otherwise we get NPE
-        File globalPluginRegistry = InstalledFileLocator.getDefault().locate("maven2/plugin-registry.xml", null, false);
+        File globalPluginRegistry = InstalledFileLocator.getDefault().locate("maven2/plugin-registry.xml", null, false); //NOI18N
         System.setProperty(MavenPluginRegistryBuilder.ALT_GLOBAL_PLUGIN_REG_LOCATION, globalPluginRegistry.getAbsolutePath());
         
         MavenEmbedder embedder = new MavenEmbedder();
         ClassWorld world = new ClassWorld();
-        File rootPackageFolder = FileUtil.normalizeFile(InstalledFileLocator.getDefault().locate("maven2/rootpackage", null, false));
+        File rootPackageFolder = FileUtil.normalizeFile(InstalledFileLocator.getDefault().locate("maven2/rootpackage", null, false)); //NOI18N
         // kind of separation layer between the netbeans classloading world and maven classworld.
         try {
             ClassRealm nbRealm = world.newRealm("netbeans", loader);
@@ -206,7 +264,7 @@ public class EmbedderFactory {
             plexusRealm.importFrom(nbRealm.getId(), "org.openide.util");
             plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.bridges");
             //have custom lifecycle executor to collect all projects in reactor..
-            plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.netbeans.embedder.exec");
+            plexusRealm.importFrom(nbRealm.getId(), "org.codehaus.mevenide.netbeans.embedder.exec"); //NOI18N
             //hack to enable reports, default package is EVIL!
             plexusRealm.addConstituent(rootPackageFolder.toURI().toURL());
         } catch (NoSuchRealmException ex) {
@@ -222,18 +280,25 @@ public class EmbedderFactory {
         
         MavenEmbedRequest req = new DefaultMavenEmbedRequest();
         //TODO remove explicit activation
-        req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private");
-        File userLoc = new File(System.getProperty("user.home"), ".m2");
-        File userSettingsPath = new File(userLoc, "settings.xml");
-        File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);
-        req.setUserSettingsFile(userSettingsPath);
+        req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
+        File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
+        File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
+        File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
+        checkUserSettingsTimeStamp(userSettingsPath);
+        if (settingsCheckPassed) {
+            req.setUserSettingsFile(userSettingsPath);
+        } else {
+            LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919" ); //NOI18N
+            req.setUserSettingsFile(globalSettingsPath);
+        }
+        
         req.setGlobalSettingsFile(globalSettingsPath);
         
         req.setConfigurationCustomizer(new ContainerCustomizer() {
             public void customize(PlexusContainer plexusContainer) {
                 //have custom lifecycle executor to collect all projects in reactor..
                 ComponentDescriptor desc = plexusContainer.getComponentDescriptor(LifecycleExecutor.ROLE);
-                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor");
+                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor"); //NOI18N
                 try {
                     PlexusConfiguration oldConf = desc.getConfiguration();
                     XmlPlexusConfiguration conf = new XmlPlexusConfiguration(oldConf.getName());
@@ -246,7 +311,7 @@ public class EmbedderFactory {
                     desc = new ComponentDescriptor();
                     desc.setRole(TransferListener.class.getName());
                     plexusContainer.addComponentDescriptor(desc);
-                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener");
+                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
                     desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
                     ComponentRequirement requirement = new ComponentRequirement();
                     requirement.setRole(TransferListener.class.getName());
@@ -278,8 +343,8 @@ public class EmbedderFactory {
                 conf.setAttribute(attrNames[i], old.getAttribute(attrNames[i]));
             }
         }
-        if ("lifecycle".equals(conf.getName())) {
-            conf.setAttribute("implementation", "org.apache.maven.lifecycle.Lifecycle");
+        if ("lifecycle".equals(conf.getName())) { //NOI18N
+            conf.setAttribute("implementation", "org.apache.maven.lifecycle.Lifecycle"); //NOI18N
         }
         for (int i = 0; i < old.getChildCount(); i++) {
             PlexusConfiguration oldChild = old.getChild(i);
@@ -308,6 +373,7 @@ public class EmbedderFactory {
         }
         
         
+        @Override
         public void fileDeleted(FileEvent fe) {
             if ("settings.xml".equals(fe.getFile().getNameExt())) {
                 fe.getFile().removeFileChangeListener(this);
@@ -318,6 +384,7 @@ public class EmbedderFactory {
             }
         }
         
+        @Override
         public void fileDataCreated(FileEvent fe) {
             if ("settings.xml".equals(fe.getFile().getNameExt())) {
                 fe.getFile().addFileChangeListener(this);
@@ -328,6 +395,7 @@ public class EmbedderFactory {
             }
         }
         
+        @Override
         public void fileChanged(FileEvent fe) {
             if ("settings.xml".equals(fe.getFile().getNameExt())) {
                 synchronized (EmbedderFactory.class) {
