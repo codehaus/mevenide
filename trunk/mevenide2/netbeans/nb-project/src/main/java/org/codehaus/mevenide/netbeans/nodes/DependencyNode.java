@@ -1,5 +1,5 @@
 /* ==========================================================================
- * Copyright 2003-2004 Mevenide Team
+ * Copyright 2003-2007 Mevenide Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,8 +25,10 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,6 +36,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
@@ -54,23 +57,35 @@ import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.codehaus.plexus.util.FileUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.java.queries.JavadocForBinaryQuery;
+import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.SourceGroup;
+import org.netbeans.spi.java.project.support.ui.PackageView;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
+import org.openide.actions.EditAction;
+import org.openide.actions.FindAction;
+import org.openide.actions.OpenAction;
 import org.openide.actions.PropertiesAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.awt.StatusDisplayer;
+import org.openide.cookies.EditCookie;
+import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataObject;
+import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.nodes.PropertySupport;
 import org.openide.nodes.Sheet;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -82,13 +97,13 @@ import org.openide.util.WeakListeners;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class DependencyNode extends AbstractNode {
-    
+
     private Artifact art;
     private NbMavenProject project;
     private boolean longLiving;
     private PropertyChangeListener listener;
     private ChangeListener listener2;
-    
+
     public static Children createChildren(Lookup look, boolean longLiving) {
         if (!longLiving) {
             return Children.LEAF;
@@ -96,15 +111,11 @@ public class DependencyNode extends AbstractNode {
         Artifact art = look.lookup(Artifact.class);
         FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(art.getFile()));
         if (fo != null) {
-            try {
-                DataObject dobj = DataObject.find(fo);
-                return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
-            } catch (Exception e) {
-            }
+            return new JarContentFilterChildren(PackageView.createPackageView(new ArtifactSourceGroup(art)));
         }
         return Children.LEAF;
     }
-    
+
     /**
      *@param lookup - expects instance of NbMavenProject, Artifact
      */
@@ -136,15 +147,15 @@ public class DependencyNode extends AbstractNode {
         setDisplayName(createName());
         setIconBase();
     }
-    
+
     /**
      * public because of the property sheet
      */
     public boolean isTransitive() {
         List trail = art.getDependencyTrail();
-        return (trail != null && trail.size() > 2);
+        return trail != null && trail.size() > 2;
     }
-    
+
     private void setIconBase() {
         if (longLiving && isDependencyProjectOpen() && isTransitive()) {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/TransitiveMaven2Icon.gif"); //NOI18N
@@ -158,11 +169,11 @@ public class DependencyNode extends AbstractNode {
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
         }
     }
-    
+
     private boolean isJarDependency() {
         return "jar".equalsIgnoreCase(art.getType()); //NOI18N
     }
-    
+
     boolean isDependencyProjectOpen() {
         if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false;
@@ -173,7 +184,7 @@ public class DependencyNode extends AbstractNode {
         Project depPrj = MavenFileOwnerQueryImpl.getInstance().getOwner(uri);
         return depPrj != null;
     }
-    
+
     
     public void refreshNode() {
         setDisplayName(createName());
@@ -184,16 +195,16 @@ public class DependencyNode extends AbstractNode {
 //            ((DependencyChildren)getChildren()).doRefresh();
 //        }
     }
-    
+
     @Override
     public String getHtmlDisplayName() {
         String version = ""; //NOI18N
         if (ArtifactUtils.isSnapshot(art.getVersion()) && art.getVersion().indexOf("SNAPSHOT") < 0) { //NOI18N
             version = " <b>[" + art.getVersion() + "]</b>"; //NOI18N
         }
-        return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ?  "" : "  <i>[" + art.getScope() + "]</i>") + "</html>"; // - not sure if shall ne translated..
+        return "<html>" + getDisplayName() + version + ("compile".equalsIgnoreCase(art.getScope()) ? "" : "  <i>[" + art.getScope() + "]</i>") + "</html>"; // - not sure if shall ne translated..
     }
-    
+
     private String createName() {
         if (art instanceof NbArtifact) {
             NbArtifact nb = (NbArtifact)art;
@@ -203,9 +214,9 @@ public class DependencyNode extends AbstractNode {
         }
         return art.getFile().getName();
     }
-    
+
     @Override
-    public Action[] getActions( boolean context ) {
+    public Action[] getActions(boolean context) {
         Collection<Action> acts = new ArrayList<Action>();
         acts.add(new ViewJavadocAction());
         InstallLocalArtifactAction act = new InstallLocalArtifactAction();
@@ -213,7 +224,7 @@ public class DependencyNode extends AbstractNode {
         if (!isLocal()) {
             act.setEnabled(true);
         }
-        
+
 //        acts.add(new EditAction());
 //        acts.add(RemoveDepAction.get(RemoveDepAction.class));
 //        acts.add(new DownloadJavadocAndSourcesAction());
@@ -232,68 +243,74 @@ public class DependencyNode extends AbstractNode {
         acts.add(PropertiesAction.get(PropertiesAction.class));
         return acts.toArray(new Action[acts.size()]);
     }
-    
+
     @Override
     public boolean canDestroy() {
         return true;
     }
-    
+
     @Override
     public boolean canRename() {
         return false;
     }
-    
+
     
     @Override
     public boolean canCut() {
         return false;
     }
-    
+
     @Override
     public boolean canCopy() {
         return false;
     }
-    
+
     @Override
     public boolean hasCustomizer() {
         return false;
     }
-    
+
     public boolean isLocal() {
         if (art instanceof NbArtifact) {
-            NbArtifact nb = (NbArtifact)art;
+            NbArtifact nb = (NbArtifact) art;
             if (nb.isFakedSystemDependency()) {
                 return false;
             }
         }
         return art.getFile().exists();
     }
-    
+
     public boolean hasJavadocInRepository() {
-        return (! Artifact.SCOPE_SYSTEM.equals(art.getScope())) &&  getJavadocFile().exists();
+        return (!Artifact.SCOPE_SYSTEM.equals(art.getScope())) && getJavadocFile().exists();
     }
-    
+
     public File getJavadocFile() {
-        File artifact = art.getFile();
+        return getJavadocFile(art.getFile());
+    }
+
+    private static File getJavadocFile(File artifact) {
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
-        return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar");  //NOI18N
+        return new File(artifact.getParentFile(), artifactId + "-" + version + "-javadoc.jar"); //NOI18N
     }
-    
+
     public File getSourceFile() {
-        File artifact = art.getFile();
+        return getSourceFile(art.getFile());
+    }
+
+    private static File getSourceFile(File artifact) {
         String version = artifact.getParentFile().getName();
         String artifactId = artifact.getParentFile().getParentFile().getName();
-        return  new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar"); //NOI18N
+        return new File(artifact.getParentFile(), artifactId + "-" + version + "-sources.jar"); //NOI18N
     }
-    
+
     public boolean hasSourceInRepository() {
         if (Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
             return false;
         }
         return getSourceFile().exists();
     }
-    
+
     void downloadJavadocSources(MavenEmbedder online, ProgressContributor progress, boolean isjavadoc) {
         progress.start(2);
         if ( Artifact.SCOPE_SYSTEM.equals(art.getScope())) {
@@ -329,7 +346,7 @@ public class DependencyNode extends AbstractNode {
         }
         refreshNode();
     }
-    
+
     public void downloadMainArtifact(MavenEmbedder online) {
         Artifact art2 = project.getEmbedder().createArtifactWithClassifier(
                 art.getGroupId(),
@@ -349,7 +366,7 @@ public class DependencyNode extends AbstractNode {
         }
         refreshNode();
     }
-    
+
     
     @Override
     public Image getIcon(int param) {
@@ -373,7 +390,7 @@ public class DependencyNode extends AbstractNode {
                     0, 0);
         }
     }
-    
+
     @Override
     public Image getOpenedIcon(int type) {
         Image retValue;
@@ -396,12 +413,12 @@ public class DependencyNode extends AbstractNode {
                     0,0);
         }
     }
-    
+
     @Override
     public Component getCustomizer() {
         return null;
     }
-    
+
     @Override
     protected Sheet createSheet() {
         Sheet sheet = Sheet.createDefault();
@@ -410,7 +427,7 @@ public class DependencyNode extends AbstractNode {
             PropertySupport.Reflection artifactId = new PropertySupport.Reflection<String>(art, String.class, "getArtifactId", null); //NOI18N
             artifactId.setName("artifactId"); //NOI18N
             artifactId.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Artifact"));
-            artifactId.setShortDescription("");//NOI18N
+            artifactId.setShortDescription(""); //NOI18N
             PropertySupport.Reflection groupId = new PropertySupport.Reflection<String>(art, String.class, "getGroupId", null); //NOI18N
             groupId.setName("groupId"); //NOI18N
             groupId.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Group"));
@@ -437,7 +454,7 @@ public class DependencyNode extends AbstractNode {
             PropertySupport.Reflection transitive = new PropertySupport.Reflection<Boolean>(this, Boolean.TYPE, "isTransitive", null); //NOI18N
             transitive.setName("transitive"); //NOI18N
             transitive.setDisplayName(org.openide.util.NbBundle.getMessage(DependencyNode.class, "PROP_Transitive"));
-            
+
             basicProps.put(new Node.Property[] {
                 artifactId, groupId, version, type, scope, classifier, transitive, hasJavadoc, hasSources
             });
@@ -446,17 +463,15 @@ public class DependencyNode extends AbstractNode {
         }
         return sheet;
     }
-    
-    
 //    private class DownloadJavadocAndSourcesAction extends AbstractAction implements Runnable {
 //        public DownloadJavadocAndSourcesAction() {
 //            putValue(Action.NAME, "Download Javadoc & Source");
 //        }
-//        
+//
 //        public void actionPerformed(ActionEvent event) {
 //            RequestProcessor.getDefault().post(this);
 //        }
-//        
+//
 //        public void run() {
 //            ProgressContributor contrib = AggregateProgressFactory.createProgressContributor("single"); //NOI18N
 //            AggregateProgressHandle handle = AggregateProgressFactory.createHandle("Download Javadoc and Sources", new ProgressContributor[] {contrib}, null, null);
@@ -465,12 +480,13 @@ public class DependencyNode extends AbstractNode {
 //            handle.finish();
 //        }
 //    }
-    
+
     private class RemoveDependencyAction extends AbstractAction {
+
         public RemoveDependencyAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Remove_Dependency"));
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             NotifyDescriptor nd = new NotifyDescriptor.Confirmation(
                     NbBundle.getMessage(DependencyNode.class, "MSG_Remove_Dependency", art.getGroupId() + ":" + art.getArtifactId()), NbBundle.getMessage(DependencyNode.class, "TIT_Remove_Dependency")); //NOI18N
@@ -479,7 +495,7 @@ public class DependencyNode extends AbstractNode {
             if (ret != NotifyDescriptor.YES_OPTION) {
                 return;
             }
-            
+
             MavenProject mproject = project.getOriginalMavenProject();
             boolean found = false;
             while (mproject != null) {
@@ -487,8 +503,8 @@ public class DependencyNode extends AbstractNode {
                     Iterator it = mproject.getDependencies().iterator();
                     while (it.hasNext()) {
                         Dependency dep = (Dependency) it.next();
-                        if (   art.getArtifactId().equals(dep.getArtifactId())
-                        && art.getGroupId().equals(dep.getGroupId())) {
+                        if (art.getArtifactId().equals(dep.getArtifactId())
+                                && art.getGroupId().equals(dep.getGroupId())) {
                             found = true;
                             break;
                         }
@@ -519,8 +535,7 @@ public class DependencyNode extends AbstractNode {
                 Iterator it = model.getDependencies().iterator();
                 while (it.hasNext()) {
                     Dependency dep = (Dependency) it.next();
-                    if (   art.getArtifactId().equals(dep.getArtifactId())
-                    && art.getGroupId().equals(dep.getGroupId())) {
+                    if (art.getArtifactId().equals(dep.getArtifactId()) && art.getGroupId().equals(dep.getGroupId())) {
                         model.removeDependency(dep);
                         break;
                     }
@@ -536,16 +551,17 @@ public class DependencyNode extends AbstractNode {
             }
         }
     }
-    
-    private class ExcludeTransitiveAction extends AbstractAction  {
+
+    private class ExcludeTransitiveAction extends AbstractAction {
+
         public ExcludeTransitiveAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Exclude_Dependency"));
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             try {
                 List trail = art.getDependencyTrail();
-                String str = (String)trail.get(1);
+                String str = (String) trail.get(1);
                 StringTokenizer tok = new StringTokenizer(str, ":"); //NOI18N
                 String groupId = tok.nextToken();
                 String artifactId = tok.nextToken();
@@ -587,7 +603,6 @@ public class DependencyNode extends AbstractNode {
                             }
                         }
                     }
-                    
                 }
                 if (dep == null) {
                     dep = new Dependency();
@@ -611,14 +626,14 @@ public class DependencyNode extends AbstractNode {
                 ex.printStackTrace();
             }
         }
-        
     }
-    
+
     private class InstallLocalArtifactAction extends AbstractAction {
+
         public InstallLocalArtifactAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Manually_install"));
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             File fil = InstallPanel.showInstallDialog(art);
             if (fil != null) {
@@ -626,20 +641,22 @@ public class DependencyNode extends AbstractNode {
             }
         }
     }
-    
+
     private class InstallLocalJavadocAction extends AbstractAction implements Runnable {
+
         private File source;
+
         public InstallLocalJavadocAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Add_javadoc"));
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             source = InstallDocSourcePanel.showInstallDialog(true);
             if (source != null) {
                 RequestProcessor.getDefault().post(this);
             }
         }
-        
+
         public void run() {
             File target = getJavadocFile();
             try {
@@ -650,23 +667,23 @@ public class DependencyNode extends AbstractNode {
             }
             refreshNode();
         }
-        
     }
-    
+
     private class InstallLocalSourcesAction extends AbstractAction implements Runnable {
-        
+
         private File source;
+
         public InstallLocalSourcesAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_Add_sources"));
         }
-        
+
         public void actionPerformed(ActionEvent event) {
             source = InstallDocSourcePanel.showInstallDialog(false);
             if (source != null) {
                 RequestProcessor.getDefault().post(this);
             }
         }
-        
+
         public void run() {
             File target = getSourceFile();
             try {
@@ -677,9 +694,8 @@ public class DependencyNode extends AbstractNode {
             }
             refreshNode();
         }
-        
     }
-    
+
 //    private class EditAction extends AbstractAction {
 //        public EditAction() {
 //            putValue(Action.NAME, "Edit...");
@@ -706,10 +722,12 @@ public class DependencyNode extends AbstractNode {
 //    }
 //
     private class ViewJavadocAction extends AbstractAction {
+
         public ViewJavadocAction() {
-            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(DependencyNode.class, "BTN_View_Javadoc"));
+            putValue(Action.NAME, NbBundle.getMessage(DependencyNode.class, "BTN_View_Javadoc"));
             setEnabled(hasJavadocInRepository());
         }
+
         public void actionPerformed(ActionEvent event) {
             File javadoc = getJavadocFile();
             FileObject fo = FileUtil.toFileObject(javadoc);
@@ -725,7 +743,7 @@ public class DependencyNode extends AbstractNode {
                             if (chil.isFolder()) {
                                 index = chil.getFileObject("index.html"); //NOI18N
                             }
-                            if (index != null)  {
+                            if (index != null) {
                                 break;
                             }
                         }
@@ -740,5 +758,190 @@ public class DependencyNode extends AbstractNode {
             }
         }
     }
-}
 
+    private static class ArtifactSourceGroup implements SourceGroup {
+
+        private Artifact art;
+
+        public ArtifactSourceGroup(Artifact art) {
+            this.art = art;
+        }
+
+        public FileObject getRootFolder() {
+            FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(art.getFile()));
+            if (fo != null) {
+                return FileUtil.getArchiveRoot(fo);
+            }
+            return null;
+        }
+
+        public String getName() {
+            return art.getId();
+        }
+
+        public String getDisplayName() {
+            return art.getId();
+        }
+
+        public Icon getIcon(boolean opened) {
+            return null;
+        }
+
+        public boolean contains(FileObject file) throws IllegalArgumentException {
+            return true;
+        }
+
+        public void addPropertyChangeListener(PropertyChangeListener listener) {
+        }
+
+        public void removePropertyChangeListener(PropertyChangeListener listener) {
+        }
+    }
+
+    private static class JarContentFilterChildren extends FilterNode.Children {
+
+        JarContentFilterChildren(Node orig) {
+            super(orig);
+        }
+
+        @Override
+        protected Node copyNode(Node node) {
+            return new JarFilterNode(node);
+        }
+    }
+
+    private static class JarFilterNode extends FilterNode {
+
+        JarFilterNode(Node original) {
+            super(original, new JarContentFilterChildren(original));
+        }
+
+        @Override
+        public Action[] getActions(boolean context) {
+            DataObject dobj = getOriginal().getLookup().lookup(DataObject.class);
+            List<Action> result = new ArrayList<Action>();
+            Action[] superActions = super.getActions(false);
+            boolean hasOpen = false;
+            for (int i = 0; i < superActions.length; i++) {
+                if (superActions[i] instanceof OpenAction || superActions[i] instanceof EditAction) {
+                    result.add(superActions[i]);
+                    hasOpen = true;
+                }
+                if (dobj != null && dobj.getPrimaryFile().isFolder() && superActions[i] instanceof FindAction) {
+                    result.add(superActions[i]);
+                }
+            }
+            result.add(new OpenSrcAction(true));
+            if (!hasOpen) { //necessary? maybe just keep around for all..
+                result.add(new OpenSrcAction(false));
+            }
+
+            return result.toArray(new Action[result.size()]);
+        }
+
+        @Override
+        public Action getPreferredAction() {
+            return new OpenSrcAction(false);
+        }
+
+        private class OpenSrcAction extends AbstractAction {
+
+            private boolean javadoc;
+
+            private OpenSrcAction(boolean javadoc) {
+                this.javadoc = javadoc;
+                if (javadoc) {
+                    putValue(Action.NAME, NbBundle.getMessage(DependencyNode.class, "BTN_View_Javadoc"));
+                } else {
+                    putValue(NAME, NbBundle.getMessage(DependencyNode.class, "BTN_View_Source"));
+                }
+            }
+
+            public void actionPerformed(ActionEvent e) {
+                DataObject dobj = getOriginal().getLookup().lookup(DataObject.class);
+                if (dobj != null && (javadoc || !dobj.getPrimaryFile().isFolder())) {
+                    try {
+                        FileObject fil = dobj.getPrimaryFile();
+                        FileObject jar = FileUtil.getArchiveFile(fil);
+                        FileObject root = FileUtil.getArchiveRoot(jar);
+                        String rel = FileUtil.getRelativePath(root, fil);
+                        if (rel.endsWith(".class")) { //NOI18N
+                            rel = rel.replaceAll("class$", javadoc ? "html" : "java"); //NOI18N
+                        }
+                        if (javadoc) {
+                            JavadocForBinaryQuery.Result res = JavadocForBinaryQuery.findJavadoc(root.getURL());
+                            if (fil.isFolder()) {
+                                rel = rel + "/package-summary.html"; //NOI18N
+                            }
+                            URL javadocUrl = findJavadoc(rel, res.getRoots());
+                            if (javadocUrl != null) {
+                                HtmlBrowser.URLDisplayer.getDefault().showURL(javadocUrl);
+                            } else {
+                                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependencyNode.class, "ERR_No_Javadoc_Found", fil.getPath()));
+                            }
+                            return;
+                        } else {
+                            SourceForBinaryQuery.Result res = SourceForBinaryQuery.findSourceRoots(root.getURL());
+                            for (FileObject srcRoot : res.getRoots()) {
+                                FileObject src = srcRoot.getFileObject(rel);
+                                if (src != null) {
+                                    DataObject dobj2 = DataObject.find(src);
+                                    if (tryOpen(dobj2)) {
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    } catch (FileStateInvalidException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } catch (DataObjectNotFoundException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                    //applies to  show source only..
+                    tryOpen(dobj);
+                }
+            }
+
+            /**
+             * Locates a javadoc page by a relative name and an array of javadoc roots
+             * @param resource the relative name of javadoc page
+             * @param urls the array of javadoc roots
+             * @return the URL of found javadoc page or null if there is no such a page.
+             */
+            URL findJavadoc(String resource, URL[] urls) {
+                for (int i = 0; i < urls.length; i++) {
+                    String base = urls[i].toExternalForm();
+                    if (!base.endsWith("/")) { // NOI18N
+                        base = base + "/"; // NOI18N
+                    }
+                    try {
+                        URL u = new URL(base + resource);
+                        FileObject fo = URLMapper.findFileObject(u);
+                        if (fo != null) {
+                            return u;
+                        }
+                    } catch (MalformedURLException ex) {
+//                            ErrorManager.getDefault().log(ErrorManager.ERROR, "Cannot create URL for "+base+resource+". "+ex.toString());   //NOI18N
+                        continue;
+                    }
+                }
+                return null;
+            }
+
+            private boolean tryOpen(DataObject dobj2) {
+                EditCookie ec = dobj2.getLookup().lookup(EditCookie.class);
+                if (ec != null) {
+                    ec.edit();
+                    return true;
+                } else {
+                    OpenCookie oc = dobj2.getLookup().lookup(OpenCookie.class);
+                    if (oc != null) {
+                        oc.open();
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+}
