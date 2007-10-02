@@ -41,6 +41,14 @@ public interface Constants {
     public static final String HINT_USE_EXTERNAL="netbeans.hint.useExternalMaven"; //NOI18N
     
     /**
+     * Maven property that designates the jdk platform to use in the IDE on classpath for project.
+     * Equivalent to the "platform.active" property in Ant based projects.
+     * Workaround for issue http://www.netbeans.org/issues/show_bug.cgi?id=104974
+     * Will only influence the classpath in the IDE, not the maven build itself.
+     */
+    public static final String HINT_JDK_PLATFORM="netbeans.hint.jdkPlatform"; //NOI18N
+    
+    /**
      * apache maven default groupid for maven plugins. 
      */ 
     public static final String GROUP_APACHE_PLUGINS = "org.apache.maven.plugins"; //NOI18N

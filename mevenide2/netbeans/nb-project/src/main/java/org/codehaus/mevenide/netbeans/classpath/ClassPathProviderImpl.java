@@ -219,7 +219,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private ClassPath getBootClassPath() {
         ClassPath cp = cache[6];
         if (cp == null) {
-            cp = ClassPathFactory.createClassPath(new BootClassPathImpl());
+            cp = ClassPathFactory.createClassPath(new BootClassPathImpl(project));
             cache[6] = cp;
         }
         return cp;

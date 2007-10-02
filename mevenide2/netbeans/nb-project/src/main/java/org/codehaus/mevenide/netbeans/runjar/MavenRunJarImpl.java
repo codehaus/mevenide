@@ -25,10 +25,13 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.bridges.runjar.MavenRunJar;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
+import org.codehaus.mevenide.netbeans.classpath.BootClassPathImpl;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.platform.JavaPlatform;
 import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -134,7 +137,11 @@ public class MavenRunJarImpl implements MavenRunJar {
             StringBuffer cmd = new StringBuffer();
             cmd.append("'"); //NOI18N
             if ("java".equals(executable)) { //NOI18N
-                FileObject jav = JavaPlatformManager.getDefault().getDefaultPlatform().findTool("java"); //NOI18N
+                JavaPlatform plat = BootClassPathImpl.getActivePlatform(project.getProperties().getProperty(Constants.HINT_JDK_PLATFORM));
+                if (plat == null) {
+                    plat = JavaPlatformManager.getDefault().getDefaultPlatform();
+                }
+                FileObject jav = plat.findTool("java"); //NOI18N
                 File fil = FileUtil.toFile(jav);
                 cmd.append(fil.exists() ? fil.getAbsolutePath() : executable);
             } else {
