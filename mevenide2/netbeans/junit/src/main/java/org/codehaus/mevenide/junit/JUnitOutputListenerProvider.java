@@ -67,7 +67,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
 
     public String[] getRegisteredOutputSequences() {
         return new String[] {
-            "mojo-execute#surefire:test"
+            "mojo-execute#surefire:test" //NOI18N
         };
     }
 
@@ -91,7 +91,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
             if (runningTestClass != null && outputDir != null) {
                 FileObject outDir = FileUtil.toFileObject(new File(outputDir));
                 outDir.refresh();
-                FileObject report = outDir.getFileObject("TEST-" + runningTestClass + ".xml"); //NOI18N
+                FileObject report = outDir.getFileObject("TEST-" + runningTestClass + ".xml"); //NOI18N 
                 generateAntLogSequent(report);
             }
             runningTestClass = match.group(1);
@@ -104,7 +104,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
             session = LoggerTrampoline.ANT_SESSION_CREATOR.makeAntSession(new FakeAntSession());
             Collection<? extends AntLogger> all = Lookup.getDefault().lookupAll(AntLogger.class);
             for (AntLogger logger : all) {
-                if (logger.getClass().getName().equals("org.netbeans.modules.junit.output.JUnitAntLogger")) {
+                if (logger.getClass().getName().equals("org.netbeans.modules.junit.output.JUnitAntLogger")) { //NOI18N
                     unitLogger = logger;
                     break;
                 }
@@ -113,7 +113,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
         FakeAntEvent evnt = new FakeAntEvent(session, prj);
         AntEvent event = LoggerTrampoline.ANT_EVENT_CREATOR.makeAntEvent(evnt);
         //TODO debugging seems to be handled differently "java" + runners as classname.
-        evnt.setTaskName("junit");
+        evnt.setTaskName("junit"); //NOI18N
         //now setup children taskStructures to get the count of tests to be executed.
         FakeAntEvent.FakeTaskStructure tsImpl = new FakeAntEvent.FakeTaskStructure("XXX");
         TaskStructure str = LoggerTrampoline.TASK_STRUCTURE_CREATOR.makeTaskStructure(tsImpl);
@@ -137,7 +137,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
         
         FakeAntEvent evnt = new FakeAntEvent(session, prj);
         AntEvent event = LoggerTrampoline.ANT_EVENT_CREATOR.makeAntEvent(evnt);
-        evnt.setTaskName("junit");
+        evnt.setTaskName("junit"); //NOI18N
         unitLogger.taskFinished(event);
     }
 
@@ -147,89 +147,92 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
 
     
     private void generateAntLogSequent(FileObject report) {
+        if (report == null) {
+            return;
+        }
         try {
             SAXBuilder builder = new SAXBuilder();
             InputStream stream = report.getInputStream();
             Document document = builder.build(stream);
             Element testSuite = document.getRootElement();
-            assert "testsuite".equals(testSuite.getName()) : "Root name " + testSuite.getName();
+            assert "testsuite".equals(testSuite.getName()) : "Root name " + testSuite.getName(); //NOI18N
             
-            String executing ="Executing '/home/mkleint/javatools/jdk1.5.0_09/jre/bin/java' with arguments:\n" + 
-"'-classpath'\n" + 
-"'" + prj.getOriginalMavenProject().getBuild().getTestOutputDirectory() + "'\n" +
-"'org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner'\n" + 
-"'" + testSuite.getAttributeValue("name") + "'\n" +                     
+            String executing ="Executing '/home/mkleint/javatools/jdk1.5.0_09/jre/bin/java' with arguments:\n" +  //NOI18N
+"'-classpath'\n" +  //NOI18N
+"'" + prj.getOriginalMavenProject().getBuild().getTestOutputDirectory() + "'\n" + //NOI18N
+"'org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner'\n" +  //NOI18N
+"'" + testSuite.getAttributeValue("name") + "'\n" +                      //NOI18N
 //'filtertrace=true'
 //'haltOnError=false'
 //'haltOnFailure=false'
 //'showoutput=true'
 //'outputtoformatters=true'
 //'logtestlistenerevents=true'
-"'formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter'\n" + 
-"'formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter," + FileUtil.toFile(report).getAbsolutePath() + "'\n\n" + 
+"'formatter=org.apache.tools.ant.taskdefs.optional.junit.BriefJUnitResultFormatter'\n" +  //NOI18N
+"'formatter=org.apache.tools.ant.taskdefs.optional.junit.XMLJUnitResultFormatter," + FileUtil.toFile(report).getAbsolutePath() + "'\n\n" +  //NOI18N
 //'crashfile=/home/mkleint/NetBeansProjects/MarsRoverViewer/junitvmwatcher415696509.properties'
 //'propsfile=/home/mkleint/NetBeansProjects/MarsRoverViewer/junit1756164759.properties'
 
-"The ' characters around the executable and arguments are\n" + 
-"not part of the command.";
+"The ' characters around the executable and arguments are\n" +  //NOI18N
+"not part of the command."; //NOI18N
             logText(executing, AntEvent.LOG_VERBOSE);
             
-            logText("Testsuite: " + testSuite.getAttributeValue("name"), AntEvent.LOG_INFO);
+            logText("Testsuite: " + testSuite.getAttributeValue("name"), AntEvent.LOG_INFO); //NOI18N
             
             
-            List<Element> testcases = testSuite.getChildren("testcase");
+            List<Element> testcases = testSuite.getChildren("testcase"); //NOI18N
             
-            logText("junit.framework.TestListener: tests to run: " + testcases.size(), AntEvent.LOG_VERBOSE);
+            logText("junit.framework.TestListener: tests to run: " + testcases.size(), AntEvent.LOG_VERBOSE); //NOI18N
             String stdoutAll = "";
             for (Element testcase : testcases) {
-                String name = testcase.getAttributeValue("name");
-                logText("junit.framework.TestListener: startTest(" + name + ")", AntEvent.LOG_VERBOSE);
+                String name = testcase.getAttributeValue("name"); //NOI18N
+                logText("junit.framework.TestListener: startTest(" + name + ")", AntEvent.LOG_VERBOSE); //NOI18N
                 
-                Element stdout = testcase.getChild("system-out");
+                Element stdout = testcase.getChild("system-out"); //NOI18N
                 if (stdout != null) {
                     logText(stdout.getText(), AntEvent.LOG_INFO);
-                    stdoutAll = stdoutAll + "\n" + stdout.getText();
+                    stdoutAll = stdoutAll + "\n" + stdout.getText(); //NOI18N
                 }
-                Element failure = testcase.getChild("failure");
+                Element failure = testcase.getChild("failure"); //NOI18N
                 if (failure != null) {
-                    logText("junit.framework.TestListener: addFailure(" + name + ", " + failure.getAttributeValue("message") + ")", AntEvent.LOG_VERBOSE);
+                    logText("junit.framework.TestListener: addFailure(" + name + ", " + failure.getAttributeValue("message") + ")", AntEvent.LOG_VERBOSE); //NOI18N
                 }
-                Element error = testcase.getChild("error");
+                Element error = testcase.getChild("error"); //NOI18N
                 if (error != null) {
-                    logText("junit.framework.TestListener: addError(" + name + ", " + error.getAttributeValue("message") + ")", AntEvent.LOG_VERBOSE);
+                    logText("junit.framework.TestListener: addError(" + name + ", " + error.getAttributeValue("message") + ")", AntEvent.LOG_VERBOSE); //NOI18N
                 }
                 logText("junit.framework.TestListener: endTest(" + name + ")", AntEvent.LOG_VERBOSE);
             }
-            logText("Tests run: " + testSuite.getAttributeValue("tests") +
-                    ", Failures: " + testSuite.getAttributeValue("failures") + 
-                    ", Errors: " + testSuite.getAttributeValue("errors") + 
-                    ", Time elapsed: " + testSuite.getAttributeValue("time") + " sec",
+            logText("Tests run: " + testSuite.getAttributeValue("tests") + //NOI18N
+                    ", Failures: " + testSuite.getAttributeValue("failures") +  //NOI18N
+                    ", Errors: " + testSuite.getAttributeValue("errors") +  //NOI18N
+                    ", Time elapsed: " + testSuite.getAttributeValue("time") + " sec", //NOI18N
                     AntEvent.LOG_INFO);
             logText("", AntEvent.LOG_INFO);
-            logText("------------- Standard Output ---------------", AntEvent.LOG_INFO);
+            logText("------------- Standard Output ---------------", AntEvent.LOG_INFO); //NOI18N
             logText(stdoutAll, AntEvent.LOG_INFO);
-            logText("------------- ---------------- ---------------", AntEvent.LOG_INFO);
+            logText("------------- ---------------- ---------------", AntEvent.LOG_INFO); //NOI18N
             for (Element testcase : testcases) {
-                String name = testcase.getAttributeValue("name");
-                Element failure = testcase.getChild("failure");
+                String name = testcase.getAttributeValue("name"); //NOI18N
+                Element failure = testcase.getChild("failure"); //NOI18N
                 if (failure != null) {
-                    String failureText = failure.getAttributeValue("message") + "\n" + failure.getText() + "\n";
-                    logText("Testcase: " + name +
-                            "(" + testSuite.getAttributeValue("name") + 
-                            "):\tFAILED", AntEvent.LOG_INFO);
+                    String failureText = failure.getAttributeValue("message") + "\n" + failure.getText() + "\n"; //NOI18N
+                    logText("Testcase: " + name + //NOI18N
+                            "(" + testSuite.getAttributeValue("name") +  //NOI18N
+                            "):\tFAILED", AntEvent.LOG_INFO); //NOI18N
                     logText(failureText, AntEvent.LOG_INFO);
                     logText("", AntEvent.LOG_INFO);
                     logText("", AntEvent.LOG_INFO);
                 }
-                Element error = testcase.getChild("error");
+                Element error = testcase.getChild("error"); //NOI18N
                 if (error != null) {
-                    String errorText = error.getAttributeValue("message") + "\n" + error.getText() + "\n";
-                    logText("Testcase: " + name +
-                            "(" + testSuite.getAttributeValue("name") + 
-                            "):\tCaused an ERROR", AntEvent.LOG_INFO);
+                    String errorText = error.getAttributeValue("message") + "\n" + error.getText() + "\n"; //NOI18N
+                    logText("Testcase: " + name + //NOI18N
+                            "(" + testSuite.getAttributeValue("name") +  //NOI18N
+                            "):\tCaused an ERROR", AntEvent.LOG_INFO); //NOI18N
                     logText(errorText, AntEvent.LOG_INFO);
-                    logText("", AntEvent.LOG_INFO);
-                    logText("", AntEvent.LOG_INFO);
+                    logText("", AntEvent.LOG_INFO); //NOI18N
+                    logText("", AntEvent.LOG_INFO); //NOI18N
                 }
                 
             }
@@ -254,17 +257,17 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
         if (failureText.length() == 0) {
             FakeAntEvent evnt = new FakeAntEvent(session, prj);
             AntEvent event = LoggerTrampoline.ANT_EVENT_CREATOR.makeAntEvent(evnt);
-            evnt.setTaskName("junit");
+            evnt.setTaskName("junit"); //NOI18N
             evnt.setLogLevel(level);
             evnt.setMessage("");
             unitLogger.messageLogged(event);
             return;
         }
-        StringTokenizer tokens = new StringTokenizer(failureText, "\n");
+        StringTokenizer tokens = new StringTokenizer(failureText, "\n"); //NOI18N
         while (tokens.hasMoreTokens()) {
             FakeAntEvent evnt = new FakeAntEvent(session, prj);
             AntEvent event = LoggerTrampoline.ANT_EVENT_CREATOR.makeAntEvent(evnt);
-            evnt.setTaskName("junit");
+            evnt.setTaskName("junit"); //NOI18N
             evnt.setLogLevel(level);
             evnt.setMessage(tokens.nextToken());
             unitLogger.messageLogged(event);
@@ -275,10 +278,10 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
         if (unitLogger == null) {
             return;
         }
-        LOG.info("build finished!!!!");
+        LOG.info("build finished!!!!"); //NOI18N
         FakeAntEvent evnt = new FakeAntEvent(session, prj);
         AntEvent event = LoggerTrampoline.ANT_EVENT_CREATOR.makeAntEvent(evnt);
-        evnt.setTaskName("junit");
+        evnt.setTaskName("junit"); //NOI18N
         unitLogger.buildFinished(event);
         unitLogger = null;
         session = null;
