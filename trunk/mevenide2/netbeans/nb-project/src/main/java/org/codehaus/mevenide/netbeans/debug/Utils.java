@@ -30,11 +30,14 @@ import java.util.List;
 import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.classpath.BootClassPathImpl;
 import org.netbeans.api.debugger.DebuggerManager;
 import org.netbeans.api.debugger.jpda.MethodBreakpoint;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.JavaPlatform;
+import org.netbeans.api.java.platform.JavaPlatformManager;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
@@ -134,13 +137,13 @@ public class Utils {
     }
     
     static ClassPath createJDKSourcePath(Project nbproject) {
-        //TODO for now just assume the default platform...
-        JavaPlatform jp = JavaPlatform.getDefault();
-        if (jp != null) {
-            return jp.getSourceFolders();
-        } else {
-            return ClassPathSupport.createClassPath(Collections.EMPTY_LIST);
+        ProjectURLWatcher w = nbproject.getLookup().lookup(ProjectURLWatcher.class);
+        String val = w.getMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
+        JavaPlatform jp = BootClassPathImpl.getActivePlatform(val);
+        if (jp == null) {
+            jp = JavaPlatformManager.getDefault().getDefaultPlatform();
         }
+        return jp.getSourceFolders();
     }
     
     private static ClassPath convertToClassPath(File[] roots) {
