@@ -4,11 +4,11 @@
     <parent>
         <artifactId>plugin-bridges</artifactId>
         <groupId>org.codehaus.mevenide</groupId>
-        <version>3.0.7-SNAPSHOT</version>
+        <version>3.0.8-SNAPSHOT</version>
     </parent>
     <artifactId>reload-nbm-bridge</artifactId>
     <packaging>nbm</packaging>
-    <version>3.0.7-SNAPSHOT</version>
+    <version>3.0.8-SNAPSHOT</version>
     <name>NetBeans Reload NBM Maven Bridge</name>
     
     <dependencies>
