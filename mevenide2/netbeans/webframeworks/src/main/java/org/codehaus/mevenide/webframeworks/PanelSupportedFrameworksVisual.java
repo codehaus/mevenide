@@ -18,15 +18,18 @@
 package org.codehaus.mevenide.webframeworks;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -42,15 +45,17 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eePlatform;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ServerManager;
+import org.netbeans.modules.web.api.webmodule.ExtenderController;
+import org.netbeans.modules.web.api.webmodule.ExtenderController.Properties;
+import org.netbeans.modules.web.api.webmodule.WebFrameworks;
 import org.openide.WizardDescriptor;
 import org.openide.WizardValidationException;
 import org.openide.util.Exceptions;
 import org.openide.util.HelpCtx;
 import org.openide.util.NbBundle;
-import org.netbeans.modules.web.api.webmodule.WebFrameworkSupport;
 import org.netbeans.modules.web.api.webmodule.WebModule;
-import org.netbeans.modules.web.spi.webmodule.FrameworkConfigurationPanel;
 import org.netbeans.modules.web.spi.webmodule.WebFrameworkProvider;
+import org.netbeans.modules.web.spi.webmodule.WebModuleExtender;
 import org.openide.util.Lookup;
 
 /**
@@ -69,11 +74,13 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
     public static final int UNUSED_FRAMEWORKS = 2;
     
     private List ignoredFrameworks;
-    private HashMap configPanels = new HashMap();
+    private Map extenders = new IdentityHashMap();
+
     private FrameworksTableModel model;
     private PanelSupportedFrameworks panel;
     private WizardDescriptor wizardDescriptor;
     private final DefaultComboBoxModel serversModel = new DefaultComboBoxModel();
+    private final ExtenderController controller = ExtenderController.create();
     
     /** Creates new form PanelInitProject
      * @param project the web project; if it is null, all available web extensions will be shown
@@ -204,40 +211,30 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
     }
 
     private void createFrameworksList(Project project, int filter) {
-        List frameworks = WebFrameworkSupport.getFrameworkProviders();
-        configPanels.clear();
+        List<WebFrameworkProvider> frameworks = WebFrameworks.getFrameworks();
         
         if (project == null || filter == ALL_FRAMEWORKS) {
             for (int i = 0; i < frameworks.size(); i++) {
-                addFrameworkToModel((WebFrameworkProvider) frameworks.get(i));
-                configPanels.put((WebFrameworkProvider) frameworks.get(i), ((WebFrameworkProvider) frameworks.get(i)).getConfigurationPanel(null));
+                addFrameworkToModel(frameworks.get(i));
             }
         } else if (filter == USED_FRAMEWORKS) {
             WebModule apiWebModule = WebModule.getWebModule(project.getProjectDirectory());
             for (int i = 0; i < frameworks.size(); i++) {
-                WebFrameworkProvider framework = (WebFrameworkProvider) frameworks.get(i);
+                WebFrameworkProvider framework = frameworks.get(i);
                 if (framework.isInWebModule(apiWebModule)) {
                     addFrameworkToModel(framework);
-                    configPanels.put(framework, framework.getConfigurationPanel(null));
                 }
             }
         } else if (filter == UNUSED_FRAMEWORKS) {
             WebModule apiWebModule = WebModule.getWebModule(project.getProjectDirectory());
             for (int i = 0; i < frameworks.size(); i++) {
-                WebFrameworkProvider framework = (WebFrameworkProvider) frameworks.get(i);
+                WebFrameworkProvider framework = frameworks.get(i);
                 if (!framework.isInWebModule(apiWebModule)) {
                     addFrameworkToModel(framework);
-                    configPanels.put(framework, framework.getConfigurationPanel(null));
                 }
             }
         }
         
-        for (int i = 0; i < model.getRowCount(); i++) {
-            FrameworkModelItem item = model.getItem(i);
-            FrameworkConfigurationPanel configPanel = (FrameworkConfigurationPanel) configPanels.get(item.getFramework());
-            if (configPanel != null)
-                configPanel.addChangeListener(this);
-        }
     }
     
     private void addFrameworkToModel(WebFrameworkProvider framework) {
@@ -416,30 +413,41 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
     // End of variables declaration//GEN-END:variables
 
     boolean valid(WizardDescriptor wizardDescriptor) {
-        wizardDescriptor.putProperty("WizardPanel_errorMessage","");//NOI18N
+        setErrorMessage(wizardDescriptor, null);
+        wizardDescriptor.putProperty("serverInstanceID", getSelectedServer());
+        //TODO how to configure?
+        wizardDescriptor.putProperty("j2eeLevel", "1.5"); //NOI18N
+        if (getSelectedServer() == null) {
+            jTableFrameworks.setEnabled(false);
+            String errMsg = NbBundle.getMessage(PanelSupportedFrameworksVisual.class, "MSG_NoServer");
+            setErrorMessage(wizardDescriptor, errMsg);
+            return false;
+        } else {
+            jTableFrameworks.setEnabled(true);
+            //hack to update extenders..
+            read(wizardDescriptor);
+        }
         for (int i = 0; i < model.getRowCount(); i++) {
             if (model.getItem(i).isSelected().booleanValue()) {
                 FrameworkModelItem item = model.getItem(i);
-                FrameworkConfigurationPanel configPanel = (FrameworkConfigurationPanel) configPanels.get(item.getFramework());
-                if (configPanel != null && !configPanel.isValid()) {
+                WebModuleExtender extender = (WebModuleExtender) extenders.get(item.getFramework());
+                if (extender != null && !extender.isValid()) {
+                    setErrorMessage(wizardDescriptor, controller.getErrorMessage());
                     return false;
                 }
             }
         }
-        wizardDescriptor.putProperty("serverInstanceID", getSelectedServer());
-        //TODO how to configure?
-        wizardDescriptor.putProperty("j2eeLevel", "1.5");
-        if (getSelectedServer() == null) {
-            jTableFrameworks.setEnabled(false);
-            String errMsg = NbBundle.getMessage(PanelSupportedFrameworksVisual.class, "MSG_NoServer");
-            wizardDescriptor.putProperty( "WizardPanel_errorMessage", errMsg); // NOI18N
-            return false;
-        } else {
-            jTableFrameworks.setEnabled(true);
-        }
         return true;
 
     }
+    
+       private void setErrorMessage(WizardDescriptor wizardDescriptor, String errorMessage) {
+        if (errorMessage == null || errorMessage.length() == 0) {
+            errorMessage = " "; // NOI18N
+        }
+        wizardDescriptor.putProperty("WizardPanel_errorMessage", errorMessage); // NOI18N
+    }
+ 
 
     void validate (WizardDescriptor settings) throws WizardValidationException {
 //        projectLocationPanel.validate (d);
@@ -451,6 +459,34 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
 //            bottomPanel.readSettings( settings );
 //        }        
         wizardDescriptor=settings;
+        String serverInstanceID = (String) settings.getProperty("serverInstanceID");
+        Properties properties = controller.getProperties();
+        properties.setProperty("name", (String) settings.getProperty("name")); // NOI18N
+        properties.setProperty("j2eeLevel", (String) settings.getProperty("j2eeLevel")); // NOI18N
+        properties.setProperty("serverInstanceID", serverInstanceID); // NOI18N
+        properties.setProperty("setSourceLevel", (String) settings.getProperty("setSourceLevel")); // NOI18N
+        if (extenders.size() == 0) {
+            // Initializing the config panels lazily; should not be done in getComponent(),
+            // as that is called too early, even before the wizard properties have been set,
+            // thus breaking impls of getComponent() relying on those properties
+            createExtenders();
+        }
+        
+        // In the ideal case this should be called before createExtenders();
+        // calling it afterwards causes ConfigurationPanel.getComponent() to be called
+        // before ConfigurationPanel.update(), which does not make sense (it effectively
+        // obtains an empty component first and updates it with data afterwards.
+        // Unfortunately existing panels expect to be called that way, so we are stuck with this for now
+        if (serverInstanceID != null) {
+            for (int i = 0; i < model.getRowCount(); i++) {
+                FrameworkModelItem item = model.getItem(i);
+                WebModuleExtender extender = (WebModuleExtender) extenders.get(item.getFramework());
+                if (extender != null) {
+                    extender.update();
+                }
+            }
+        }
+        
     }
 
     void store(WizardDescriptor settings) {
@@ -458,20 +494,37 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
 //            bottomPanel.storeSettings( settings );
 //        }
         
-        settings.putProperty(WizardProperties.FRAMEWORKS, getSelectedFrameworks());    //NOI18N
+        settings.putProperty(WizardProperties.EXTENDERS, getSelectedExtenders());    //NOI18N
     }
 
-    public List getSelectedFrameworks() {
-        List selectedFrameworks = new ArrayList();
-        FrameworksTableModel mdl = (FrameworksTableModel) jTableFrameworks.getModel();
-        for (int i = 0; i < mdl.getRowCount(); i++) {
-            FrameworkModelItem item = mdl.getItem(i);
-            if (item.isSelected())
-                selectedFrameworks.add(item.getFramework());
+    public List getSelectedExtenders() {
+        List selectedExtenders = new LinkedList();
+        FrameworksTableModel model = (FrameworksTableModel) jTableFrameworks.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            FrameworkModelItem item = model.getItem(i);
+            if (item.isSelected()) {
+                WebModuleExtender extender = (WebModuleExtender) extenders.get(item.getFramework());
+                if (extender != null) {
+                    selectedExtenders.add(extender);
+                }
+            }
         }
         
-        return selectedFrameworks;
+        return selectedExtenders;
     }
+    
+    private void createExtenders() {
+        for (int i = 0; i < model.getRowCount(); i++) {
+            FrameworkModelItem item = model.getItem(i);
+            WebFrameworkProvider framework = item.getFramework();
+            WebModuleExtender extender = framework.createWebModuleExtender(null, controller);
+            if (extender != null) {
+                extender.addChangeListener(this);
+                extenders.put(framework, extender);
+            }
+        }
+    }
+    
     
     public Component[] getConfigComponents() {
         return new Component[] {jSeparator1, jLabelConfig, jPanelConfig};
@@ -504,7 +557,7 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
     }
     
     private void setConfigPanel(WebFrameworkProvider framework, FrameworkModelItem item) {
-        if (configPanels.get(framework) != null) {
+        if (extenders.get(framework) != null) {
             String message = MessageFormat.format(NbBundle.getMessage(PanelSupportedFrameworksVisual.class, "LBL_NWP2_ConfigureFramework"), new Object[] {framework.getName()}); //NOI18N
             jLabelConfig.setText(message);
 //            jLabelConfig.setEnabled(item.isSelected().booleanValue());
@@ -518,11 +571,12 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
             gridBagConstraints.weightx = 1.0;
             gridBagConstraints.weighty = 1.0;
 
-            jPanelConfig.add(((FrameworkConfigurationPanel) configPanels.get(framework)).getComponent(), gridBagConstraints);
+            JComponent panelComponent = ((WebModuleExtender) extenders.get(framework)).getComponent();
+            jPanelConfig.add(panelComponent, gridBagConstraints);
             
             jLabelConfig.setEnabled(item.isSelected().booleanValue());
-            ((FrameworkConfigurationPanel) configPanels.get(framework)).enableComponents(item.isSelected().booleanValue());
-            ((FrameworkConfigurationPanel) configPanels.get(framework)).readSettings(wizardDescriptor);
+            enableComponents(panelComponent, item.isSelected().booleanValue());
+            ((WebModuleExtender) extenders.get(framework)).update();
             jPanelConfig.revalidate();
             jPanelConfig.repaint();
         } else {
@@ -536,6 +590,17 @@ public class PanelSupportedFrameworksVisual extends JPanel implements HelpCtx.Pr
             panel.fireChangeEvent();
     }
 
+    private void enableComponents(Container root, boolean enabled) {
+        root.setEnabled(enabled);
+        for (int i = 0; i < root.getComponentCount(); i++) {
+            Component child = root.getComponent(i);
+            if (child instanceof Container) {
+                enableComponents((Container)child, enabled);
+            } else {
+                child.setEnabled(enabled);
+            }
+        }
+    }
     
     
     public void stateChanged(javax.swing.event.ChangeEvent e) {

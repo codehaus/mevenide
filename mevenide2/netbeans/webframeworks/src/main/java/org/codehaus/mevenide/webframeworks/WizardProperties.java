@@ -20,5 +20,5 @@
 package org.codehaus.mevenide.webframeworks;
 
 public class WizardProperties {
-    public static final String FRAMEWORKS = "frameworks"; // NOI18N
+    public static final String EXTENDERS = "extenders"; // NOI18N
 }
