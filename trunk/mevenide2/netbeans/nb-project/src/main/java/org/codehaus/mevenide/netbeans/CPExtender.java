@@ -52,6 +52,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.Repository;
 import org.openide.filesystems.URLMapper;
+import org.openide.util.Exceptions;
 
 /**
  * an implementation of ProjectClassPathModifierImplementation that tried to match 
@@ -78,6 +79,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             try {
                 WriterUtils.writePomModel(pom, model);
                 ProjectURLWatcher.fireMavenProjectReload(project);
+                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -98,6 +100,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             try {
                 WriterUtils.writePomModel(fo, model);
                 ProjectURLWatcher.fireMavenProjectReload(project);
+                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -111,6 +114,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             added = checkLibraryForPoms(library, model, scope);
         } catch (IllegalArgumentException x) {
             //TODO ignore, remove the catch while maven-pom volume gets into j2se libraries..
+            Exceptions.printStackTrace(x);
         }
         if (!added) {
             List<URL> urls = library.getContent("classpath"); //NOI18N

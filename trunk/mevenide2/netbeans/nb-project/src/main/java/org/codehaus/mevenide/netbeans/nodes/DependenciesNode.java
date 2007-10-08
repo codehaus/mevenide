@@ -278,37 +278,7 @@ public class DependenciesNode extends AbstractNode {
             setEnabled(false);
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
-                    MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
-                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "Progress_Download"), 
-                            new ProgressContributor[] {
-                                AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
-                            null, null);
-                    
-                    boolean ok = true; 
-                    try {
-                        ProgressTransferListener.setAggregateHandle(hndl);
-                        hndl.start();
-                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml"))); //NOI18N
-                    } catch (ArtifactNotFoundException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
-                    } catch (ArtifactResolutionException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
-                    } catch (ProjectBuildingException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(DependenciesNode.class, "MSG_Failed", ex.getLocalizedMessage()));
-                    } finally {
-                        hndl.finish();
-                        ProgressTransferListener.clearAggregateHandle();
-                    }
-                    if (ok) {
-                        StatusDisplayer.getDefault().setStatusText(org.openide.util.NbBundle.getMessage(DependenciesNode.class, "MSG_Done"));
-                    }
-                    ProjectURLWatcher.fireMavenProjectReload(project);
+                    project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
                 }
             });
         }
