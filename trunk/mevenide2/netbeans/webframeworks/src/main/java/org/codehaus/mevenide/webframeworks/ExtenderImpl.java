@@ -33,6 +33,7 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.modules.web.spi.webmodule.WebFrameworkProvider;
+import org.netbeans.modules.web.spi.webmodule.WebModuleExtender;
 import org.openide.WizardDescriptor;
 import org.openide.WizardDescriptor.FinishablePanel;
 import org.openide.util.Exceptions;
@@ -53,13 +54,9 @@ public class ExtenderImpl implements NewProjectWizardExtender {
     }
 
     public Set instantiate(Project project, WizardDescriptor descriptor) {
-        List lst = (List) descriptor.getProperty(WizardProperties.FRAMEWORKS);
+        List lst = (List) descriptor.getProperty(WizardProperties.EXTENDERS);
         Set files = new HashSet();
-        for (Object wfp : lst) {
-            WebFrameworkProvider prov = (WebFrameworkProvider) wfp;
-            files.addAll(prov.extend(WebModule.getWebModule(project.getProjectDirectory())));
-        }
-        String serverInstance = (String) descriptor.getProperty("serverInstanceID");
+        String serverInstance = (String) descriptor.getProperty("serverInstanceID"); //NOI18N
         if (serverInstance != null) {
             String serverType = Deployment.getDefault().getServerID(serverInstance);
             NbMavenProject nbprj = project.getLookup().lookup(NbMavenProject.class);
@@ -75,6 +72,14 @@ public class ExtenderImpl implements NewProjectWizardExtender {
             } catch (XmlPullParserException ex) {
                 Exceptions.printStackTrace(ex);
             }
+        }
+        try {
+            for (Object wfp : lst) {
+                WebModuleExtender prov = (WebModuleExtender) wfp;
+                files.addAll(prov.extend(WebModule.getWebModule(project.getProjectDirectory())));
+            }
+        } catch (Throwable t) {
+            Exceptions.printStackTrace(t);
         }
         return files;
     }
