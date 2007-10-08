@@ -188,7 +188,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
     void applyChanges() {
         //#109507 workaround
         POHImpl poh = project.getLookup().lookup(POHImpl.class);
-        poh.hackEjbModuleServerChange();
+        poh.hackModuleServerChange();
         EjbModuleProviderImpl moduleProvider = project.getLookup().lookup(EjbModuleProviderImpl.class);
 
         moduleProvider.loadPersistedServerId();
