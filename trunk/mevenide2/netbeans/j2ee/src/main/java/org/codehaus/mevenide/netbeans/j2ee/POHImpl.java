@@ -51,15 +51,12 @@ public class POHImpl extends ProjectOpenedHook {
         provider = prov;
     }
     
-    public void hackWebModuleServerChange() {
-        provider.hackWebModuleServerChange();
-    }
-
-    public void hackEjbModuleServerChange() {
-        provider.hackEjbModuleServerChange();
+    public void hackModuleServerChange() {
+        provider.hackModuleServerChange();
     }
     
     protected void projectOpened() {
+        provider.hackModuleServerChange();
         String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
         String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {

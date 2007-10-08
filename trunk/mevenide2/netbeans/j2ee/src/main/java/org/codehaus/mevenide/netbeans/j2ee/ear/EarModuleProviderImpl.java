@@ -99,7 +99,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     public Ear findEar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner(file);
         if (proj != null) {
-            proj = (Project)proj.getLookup().lookup(NbMavenProject.class);
+            proj = proj.getLookup().lookup(Project.class);
         }
         if (proj != null && project == proj) {
             if (earimpl != null && earimpl.isValid()) {

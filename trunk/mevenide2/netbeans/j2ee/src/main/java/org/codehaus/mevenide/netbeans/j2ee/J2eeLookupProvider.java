@@ -80,13 +80,7 @@ public class J2eeLookupProvider implements LookupProvider {
             doCheckJ2ee(packaging);
         }
         
-        public void hackWebModuleServerChange() {
-            //#109507 use reflection on J2eeModuleProvider.resetConfigSupport()
-            doCheckJ2ee(null);
-            checkJ2ee();
-        }
-        
-        public void hackEjbModuleServerChange() {
+        public void hackModuleServerChange() {
             //#109507 use reflection on J2eeModuleProvider.resetConfigSupport()
             doCheckJ2ee(null);
             checkJ2ee();

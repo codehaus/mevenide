@@ -339,7 +339,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         //#109507 workaround
         POHImpl poh = project.getLookup().lookup(POHImpl.class);
-        poh.hackWebModuleServerChange();
+        poh.hackModuleServerChange();
         moduleProvider = project.getLookup().lookup(WebModuleProviderImpl.class);
         //---
         moduleProvider.loadPersistedServerId();
