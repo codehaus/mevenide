@@ -23,14 +23,27 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
+import org.apache.maven.artifact.resolver.ArtifactResolutionException;
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
 import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
+import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  * an instance resides in project lookup, allows to get notified on project and 
@@ -49,6 +62,7 @@ public final class ProjectURLWatcher {
         AccessorImpl impl = new AccessorImpl();
         impl.assign();
     }
+    private RequestProcessor.Task task;
     
     
     static class AccessorImpl extends NbMavenProject.WatcherAccessor {
@@ -92,6 +106,41 @@ public final class ProjectURLWatcher {
         project = proj;
         //TODO oh well, the sources is the actual project instance not the watcher.. a problem?
         support = new PropertyChangeSupport(proj);
+        task = RequestProcessor.getDefault().create(new Runnable() {
+            public void run() {
+                    MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
+                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(NbBundle.getMessage(ProjectURLWatcher.class, "Progress_Download"), 
+                            new ProgressContributor[] {
+                                AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
+                            null, null);
+                    
+                    boolean ok = true; 
+                    try {
+                        ProgressTransferListener.setAggregateHandle(hndl);
+                        hndl.start();
+                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml"))); //NOI18N
+                    } catch (ArtifactNotFoundException ex) {
+                        ex.printStackTrace();
+                        ok = false;
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                    } catch (ArtifactResolutionException ex) {
+                        ex.printStackTrace();
+                        ok = false;
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                    } catch (ProjectBuildingException ex) {
+                        ex.printStackTrace();
+                        ok = false;
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                    } finally {
+                        hndl.finish();
+                        ProgressTransferListener.clearAggregateHandle();
+                    }
+                    if (ok) {
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Done"));
+                    }
+                    ProjectURLWatcher.fireMavenProjectReload(project);
+            }
+        });
     }
     
     public void addPropertyChangeListener(PropertyChangeListener propertyChangeListener) {
@@ -147,6 +196,10 @@ public final class ProjectURLWatcher {
             FileChangeSupport.DEFAULT.addListener(listener, fil);
         }
     } 
+    
+    public synchronized void triggerDependencyDownload() {
+        task.schedule(1000);
+    }
     
     public synchronized void removeWatchedPath(String relPath) {
         removeWatchedPath(FileUtilities.getDirURI(project.getProjectDirectory(), relPath));

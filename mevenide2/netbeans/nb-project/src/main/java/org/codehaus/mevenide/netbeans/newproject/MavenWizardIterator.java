@@ -182,6 +182,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
                         resultSet.addAll(ext.instantiate(prj, wiz));
                     }
                 }
+                prj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
             }
             return resultSet;
         } finally {
