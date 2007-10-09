@@ -29,7 +29,6 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.filesystems.FileSystem;
 import org.openide.loaders.DataFolder;
-import org.openide.nodes.AbstractNode;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 
@@ -37,7 +36,7 @@ import org.openide.util.lookup.Lookups;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-class OthersRootNode extends AbstractNode {
+class OthersRootNode extends AnnotatedAbstractNode {
     private FileObject file;
     
     OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
@@ -66,19 +65,19 @@ class OthersRootNode extends AbstractNode {
     }
 
     @Override
-    public Image getIcon(int type) {
+    protected Image getIconImpl(int param) {
         return getIcon(false);
     }
 
     @Override
-    public Image getOpenedIcon(int type) {
+    protected Image getOpenedIconImpl(int param) {
         return getIcon(true);
     }
+    
     
     @Override
     public String getDisplayName () {
         String s = super.getDisplayName ();
-
         try {            
             s = file.getFileSystem ().getStatus ().annotateName (s, Collections.singleton(file));
         } catch (FileStateInvalidException e) {
@@ -107,7 +106,7 @@ class OthersRootNode extends AbstractNode {
              ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
          }
          return super.getHtmlDisplayName();
-    }    
-    
+    }
+
 }
 

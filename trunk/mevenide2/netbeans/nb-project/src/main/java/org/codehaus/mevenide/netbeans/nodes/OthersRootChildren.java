@@ -20,13 +20,16 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.VisibilityQueryDataFilter;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
+import org.openide.filesystems.FileObject;
 import org.openide.loaders.DataFolder;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
@@ -77,10 +80,14 @@ class OthersRootChildren extends Children.Keys {
         }
         SourceGroup[] resgroup = srcs.getSourceGroups(test ? MavenSourcesImpl.TYPE_TEST_OTHER  
                                                            : MavenSourcesImpl.TYPE_OTHER);
+        Set<FileObject> files = new HashSet<FileObject>();
         for (int i = 0; i < resgroup.length; i++) {
             list.add(resgroup[i]);
+            files.add(resgroup[i].getRootFolder());
+            //TODO all direct subfolders that are contained in the SG?
         }
         setKeys(list);
+        ((OthersRootNode)getNode()).setFiles(files);
     }
     
     
