@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -40,7 +42,6 @@ import org.openide.filesystems.Repository;
 import org.openide.loaders.DataFolder;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
-import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
@@ -52,7 +53,7 @@ import org.openide.util.lookup.Lookups;
  * maven project related aggregator node..
  * @author Milos Kleint
  */
-public class ProjectFilesNode extends AbstractNode {
+public class ProjectFilesNode extends AnnotatedAbstractNode {
     
     private NbMavenProject project;
     /** Creates a new instance of ProjectFilesNode */
@@ -61,6 +62,7 @@ public class ProjectFilesNode extends AbstractNode {
         setName("projectfiles"); //NOI18N
         setDisplayName(org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "LBL_Project_Files"));
         this.project = project;
+        setMyFiles();
     }
     
     @Override
@@ -77,19 +79,31 @@ public class ProjectFilesNode extends AbstractNode {
     
     private Image getIcon(boolean opened) {
         Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/projectfiles-badge.png", true); //NOI18N
-        return Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
+        Image img = Utilities.mergeImages(NodeUtils.getTreeFolderIcon(opened), badge, 8, 8);
+        return img;
     }
-
+    
     @Override
-    public Image getIcon(int type) {
+    protected Image getIconImpl(int param) {
         return getIcon(false);
     }
 
     @Override
-    public Image getOpenedIcon(int type) {
+    protected Image getOpenedIconImpl(int param) {
         return getIcon(true);
     }
     
+    private void setMyFiles() {
+        Set<FileObject> fobs = new HashSet<FileObject>();
+        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+        fobs.add(fo);
+        FileObject fo2 = project.getProjectDirectory().getFileObject("profiles.xml"); //NOI18N
+        if (fo2 != null) {
+            fobs.add(fo2);
+        }
+        setFiles(fobs);
+        fireIconChange();
+    }
     
     private static class ProjectFilesChildren extends Children.Keys<File> implements PropertyChangeListener {
         private NbMavenProject project;
@@ -165,9 +179,10 @@ public class ProjectFilesNode extends AbstractNode {
             keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")); //NOI18N
             keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")); //NOI18N
             setKeys(keys);
+            ((ProjectFilesNode)getNode()).setMyFiles();
         }
     }
-    
+
     private class AddProfileXmlAction extends AbstractAction {
         AddProfileXmlAction() {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "BTN_Create_profile_xml"));
@@ -226,6 +241,5 @@ public class ProjectFilesNode extends AbstractNode {
         }
         
     }
-    
-    
+
 }
