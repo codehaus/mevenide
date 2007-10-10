@@ -53,6 +53,7 @@ import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -109,11 +110,26 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         String appsrcloc =  PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
                                               Constants.PLUGIN_EAR, "earSourceDirectory", "ear");//NOI18N
         if (appsrcloc == null) {
-            appsrcloc = "main/src/application";//NOI18N
+            appsrcloc = "src/main/application";//NOI18N
         }
-        FileObject root = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), appsrcloc));
+        URI dir = FileUtilities.getDirURI(project.getProjectDirectory(), appsrcloc);
+        FileObject root = FileUtilities.convertURItoFileObject(dir);
+        if (root == null) {
+            File fil = new File(dir);
+            fil.mkdirs();
+            project.getProjectDirectory().refresh();
+            root = FileUtil.toFileObject(fil);
+        }
         if (root != null) {
-            return root.getFileObject("META-INF");//NOI18N
+            FileObject metainf = root.getFileObject("META-INF");//NOI18N
+            if (metainf == null) {
+                try {
+                    metainf = root.createFolder("META-INF");
+                } catch (IOException iOException) {
+                    Exceptions.printStackTrace(iOException);
+                }
+            }
+            return metainf;
         }
         return null;
     }
