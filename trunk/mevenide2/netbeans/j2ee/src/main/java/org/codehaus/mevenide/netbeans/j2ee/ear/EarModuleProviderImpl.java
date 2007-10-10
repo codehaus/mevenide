@@ -34,6 +34,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleChangeReporter;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationProvider;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
+import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
 import org.openide.filesystems.FileObject;
@@ -56,6 +57,10 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     public EarModuleProviderImpl(NbMavenProject proj) {
         project = proj;
         earimpl = new EarImpl(project, this);
+    }
+    
+    public EarImplementation getEarImplementation() {
+        return earimpl;
     }
     
     public void loadPersistedServerId() {

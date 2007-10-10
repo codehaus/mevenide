@@ -99,9 +99,7 @@ public class J2eeLookupProvider implements LookupProvider {
                 copyOnSave = null;
             }
             if (ProjectURLWatcher.TYPE_WAR.equals(packaging) && !lastType.equals(packaging)) {
-                if (lastInstance != null) {
-                    content.remove(lastInstance);
-                }
+                removeLastInstance();
                 WebModuleProviderImpl prov = new WebModuleProviderImpl(project);
                 lastInstance = prov;
                 content.add(lastInstance);
@@ -112,15 +110,12 @@ public class J2eeLookupProvider implements LookupProvider {
                     ex.printStackTrace();
                 }
             } else if (ProjectURLWatcher.TYPE_EAR.equals(packaging) && !lastType.equals(packaging)) {
-                if (lastInstance != null) {
-                    content.remove(lastInstance);
-                }
+                removeLastInstance();
                 lastInstance = new EarModuleProviderImpl(project);
                 content.add(lastInstance);
+                content.add(((EarModuleProviderImpl)lastInstance).getEarImplementation());
             } else if (ProjectURLWatcher.TYPE_EJB.equals(packaging) && !lastType.equals(packaging)) {
-                if (lastInstance != null) {
-                    content.remove(lastInstance);
-                }
+                removeLastInstance();
                 lastInstance = new EjbModuleProviderImpl(project);
                 content.add(lastInstance);
             } else if (lastInstance != null && !(
@@ -128,12 +123,19 @@ public class J2eeLookupProvider implements LookupProvider {
                     ProjectURLWatcher.TYPE_EJB.equals(packaging) || 
                     ProjectURLWatcher.TYPE_EAR.equals(packaging)))
             {
-                content.remove(lastInstance);
+                removeLastInstance();
                 lastInstance = null;
             }
             lastType = packaging;
         }
         
+        private void removeLastInstance() {
+            if (lastInstance != null) {
+                if (lastInstance instanceof EarModuleProviderImpl) {
+                    content.remove(((EarModuleProviderImpl)lastInstance).getEarImplementation());
+                }
+                content.remove(lastInstance);
+            }
+        }
     }
-
 }
