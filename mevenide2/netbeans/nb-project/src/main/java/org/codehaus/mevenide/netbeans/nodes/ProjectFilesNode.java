@@ -115,13 +115,11 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
             fileChangeListener = new FileChangeAdapter() {
                 @Override
                 public void fileDataCreated(FileEvent fe) {
-                    regenerateKeys();
-                    refresh();
+                    regenerateKeys(true);
                 }
                 @Override
                 public void fileDeleted(FileEvent fe) {
-                    regenerateKeys();
-                    refresh();
+                    regenerateKeys(true);
                 }
             };
         }
@@ -143,8 +141,7 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         
         public void propertyChange(PropertyChangeEvent evt) {
             if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
-                regenerateKeys();
-                refresh();
+                regenerateKeys(true);
             }
         }
         
@@ -162,7 +159,7 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
             super.addNotify();
             ProjectURLWatcher.addPropertyChangeListener(project, this);
             project.getProjectDirectory().addFileChangeListener(fileChangeListener);
-            regenerateKeys();
+            regenerateKeys(false);
         }
         
         @Override
@@ -173,13 +170,18 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
             super.removeNotify();
         }
         
-        private void regenerateKeys() {
+        private void regenerateKeys(boolean refresh) {
             Collection<File> keys = new ArrayList<File>();
             keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "pom.xml")); //NOI18N
             keys.add(new File(FileUtil.toFile(project.getProjectDirectory()), "profiles.xml")); //NOI18N
             keys.add(new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml")); //NOI18N
             setKeys(keys);
             ((ProjectFilesNode)getNode()).setMyFiles();
+            if (refresh) {
+                for (File key : keys) {
+                    refreshKey(key);
+                }
+            }
         }
     }
 
