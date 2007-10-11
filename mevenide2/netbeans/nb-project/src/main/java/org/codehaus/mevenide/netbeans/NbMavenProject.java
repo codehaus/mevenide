@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -78,6 +79,7 @@ import org.codehaus.mevenide.netbeans.queries.MavenBinaryForSourceQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
 import org.netbeans.spi.project.ui.support.UILookupMergerSupport;
+import org.openide.util.ContextAwareAction;
 import org.openide.util.NbBundle;
 
 
@@ -290,8 +292,12 @@ public final class NbMavenProject implements Project {
     /**
      * TODO move elsewhere?
      */
-    public Action createRefreshAction() {
-        return new RefreshAction();
+    private static Action refreshAction;
+    public static Action createRefreshAction() {
+        if (refreshAction == null) {
+            refreshAction = new RefreshAction(Lookup.EMPTY);
+        }
+        return refreshAction;
     }
     
     /**
@@ -749,14 +755,27 @@ public final class NbMavenProject implements Project {
         
     }
     
-    private class RefreshAction extends AbstractAction {
-        public RefreshAction() {
-            putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
+    private static class RefreshAction extends AbstractAction implements ContextAwareAction {
+        private Lookup context;
+        public RefreshAction(Lookup lkp) {
+            context = lkp;
+            Collection col = context.lookupAll(NbMavenProject.class);
+            if (col.size() > 1) {
+                putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Projects", col.size()));
+            } else {
+                putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
+            }
         }
         
         public void actionPerformed(java.awt.event.ActionEvent event) {
             EmbedderFactory.resetProjectEmbedder();
-            ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
+            for (NbMavenProject prj : context.lookupAll(NbMavenProject.class)) {
+                ProjectURLWatcher.fireMavenProjectReload(prj);
+            }
+        }
+
+        public Action createContextAwareInstance(Lookup actionContext) {
+            return new RefreshAction(actionContext);
         }
         
     }
