@@ -88,6 +88,8 @@ public abstract class AnnotatedAbstractNode extends AbstractNode implements File
                 }
             }
         }
+        fireIconChange();
+        fireOpenedIconChange();
     }
 
     public void run() {

@@ -102,7 +102,6 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
             fobs.add(fo2);
         }
         setFiles(fobs);
-        fireIconChange();
     }
     
     private static class ProjectFilesChildren extends Children.Keys<File> implements PropertyChangeListener {
