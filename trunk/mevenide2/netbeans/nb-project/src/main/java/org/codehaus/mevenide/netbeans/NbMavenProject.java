@@ -645,8 +645,6 @@ public final class NbMavenProject implements Project {
             "java-beans",           // NOI18N
             "oasis-XML-catalogs",   // NOI18N
             "XML",                  // NOI18N
-            "ant-script",           // NOI18N
-            "ant-task",             // NOI18N
 //            "web-service-clients",  // NOI18N
             "wsdl",                 // NOI18N
             // "servlet-types",     // NOI18N
@@ -698,6 +696,35 @@ public final class NbMavenProject implements Project {
             "ear-types",            // NOI18N
         };
         
+    private static final String[] GENERIC_WEB_TYPES = new String[] {
+                "java-classes",         // NOI18N
+                "java-main-class",      // NOI18N
+                "java-beans",           // NOI18N
+                "oasis-XML-catalogs",   // NOI18N
+                "XML",                  // NOI18N
+                "wsdl",                 // NOI18N
+                "junit",                // NOI18N
+                "simple-files"          // NOI18N
+    };
+        
+    private static final String[] GENERIC_EJB_TYPES = new String[] {
+                "java-classes",         // NOI18N
+                "wsdl",                 // NOI18N
+                "java-beans",           // NOI18N
+                "java-main-class",      // NOI18N
+                "oasis-XML-catalogs",   // NOI18N
+                "XML",                  // NOI18N
+                "junit",                // NOI18N
+                "simple-files"          // NOI18N
+    };
+    
+    private static final String[] GENERIC_EAR_TYPES = new String[] {
+                "XML",            //NOPMD      // NOI18N
+                "wsdl",          //NOPMD       // NOI18N
+                "simple-files"   //NOPMD       // NOI18N
+    };
+    
+        
         private List<String> prohibited;
         private NbMavenProject project;
         
@@ -726,6 +753,16 @@ public final class NbMavenProject implements Project {
             //NBM also fall under this I guess..
             if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
                 return JAR_APPLICATION_TYPES;
+            }
+            
+            if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
+                return GENERIC_WEB_TYPES;
+            }
+            if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+                return GENERIC_EJB_TYPES;
+            }
+            if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
+                return GENERIC_EAR_TYPES;
             }
             
             if (prohibited.contains(packaging)) {
