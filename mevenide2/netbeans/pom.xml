@@ -31,7 +31,6 @@
              remote repository-->
              <!--module>archetypeng</module-->
 	     <module>webframeworks</module>
-	     <module>junit</module>
           </modules>
        </profile>
       
@@ -140,7 +139,8 @@
      <module>plugin-bridges</module>
      <module>ide-mojos</module>
      <module>netbeans-repository</module>
-    <module>apisupport</module>
+     <module>apisupport</module>
+     <module>junit</module>
      <!--module>nb-repo-browser</module-->
      <!--module>graph</module-->
   </modules>
