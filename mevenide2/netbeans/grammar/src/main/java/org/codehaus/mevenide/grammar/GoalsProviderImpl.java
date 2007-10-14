@@ -52,7 +52,10 @@ public class GoalsProviderImpl implements GoalsProvider {
         if (cached == null) {
             File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
             assert expandedPath != null : "Shall have path expanded.."; //NOI18N
+            //TODO we should have a "resolved instance here with defaults injected correctly
             List<String> groups = MavenSettingsSingleton.getInstance().getSettings().getPluginGroups();
+            groups.add("org.apache.maven.plugins"); //NOI18N
+            groups.add("org.codehaus.mojo"); //NOI18N
             cached = new TreeSet<String>();
             for (String group : groups) {
                 File folder = new File(expandedPath, group.replace('.', File.separatorChar));
