@@ -82,10 +82,7 @@ public final class ActionToGoalUtils {
                     }
                 }
             }
-            Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
-            Iterator it = res.allInstances().iterator();
-            while (it.hasNext()) {
-                AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+            for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
                 rc = add.createConfigForDefaultAction(action, project, lookup);
                 if (rc != null) {
                     break;
@@ -107,9 +104,26 @@ public final class ActionToGoalUtils {
     
     public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
         UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
+        List<NetbeansActionMapping> toRet = new ArrayList<NetbeansActionMapping>();
+        List<String> names = new ArrayList<String>();
+        // first add all project specific custom actions.
+        for (NetbeansActionMapping map : user.getCustomMappings()) {
+            toRet.add(map);
+            names.add(map.getActionName());
+        }
+        for (AdditionalM2ActionsProvider prov : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+            if (prov instanceof NbGlobalActionGoalProvider) {
+                // check the global actions defined, include only if not the same name as project-specific one.
+                for (NetbeansActionMapping map : ((NbGlobalActionGoalProvider)prov).getCustomMappings()) {
+                    if (!names.contains(map.getActionName())) {
+                        toRet.add(map);
+                    }
+                }
+            }
+        }
         // no active custom mappings shall be in the default providers... just the nbactions.xml file counts
         //TODO possible usecase for custom mappings are update-site creation for nbm typed projects or their parents..
-        return user.getCustomMappings();
+        return toRet.toArray(new NetbeansActionMapping[toRet.size()]);
     }
     
     

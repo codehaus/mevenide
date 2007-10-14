@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.4" maxVersion="1.4" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
     <Component class="javax.swing.ButtonGroup" name="bgChecksums">
     </Component>
@@ -11,6 +11,7 @@
   </NonVisualComponents>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
@@ -23,53 +24,55 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="pnlFail" max="32767" attributes="2"/>
+                          <Component id="cbErrors" alignment="1" pref="280" max="32767" attributes="1"/>
+                          <Component id="btnGoals" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="cbOffline" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="pnlFail" max="32767" attributes="1"/>
-                          <Component id="cbSynchProxy" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="cbErrors" alignment="0" pref="255" max="32767" attributes="1"/>
                           <Component id="cbDebug" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="cbPluginRegistry" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="pnlPlugins" max="32767" attributes="0"/>
                           <Component id="pnlChecksums" alignment="0" max="32767" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="cbPluginRegistry" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="lblLocalRepository" min="-2" max="-2" attributes="0"/>
-                          <Component id="lblCommandLine" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Component id="lblIndex" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtLocalRepository" alignment="1" pref="227" max="32767" attributes="0"/>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="lblIndex" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="cbSnapshots" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="comIndex" alignment="0" pref="174" max="32767" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Component id="txtCommandLine" alignment="0" pref="227" max="32767" attributes="0"/>
+                          <Component id="txtLocalRepository" alignment="1" pref="261" max="32767" attributes="0"/>
+                          <Component id="comIndex" pref="261" max="32767" attributes="0"/>
+                          <Component id="cbSnapshots" alignment="0" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="btnLocalRepository" linkSize="1" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnIndex" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="lblCommandLine" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbUseCommandLine" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="btnCommandLine" linkSize="1" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" alignment="0" groupAlignment="1" attributes="0">
-                              <Component id="btnLocalRepository" linkSize="1" min="-2" max="-2" attributes="0"/>
-                              <Component id="btnIndex" linkSize="1" alignment="1" min="-2" max="-2" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="txtCommandLine" pref="282" max="32767" attributes="0"/>
+                              <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
+                              <Component id="btnCommandLine" linkSize="1" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -77,15 +80,25 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" attributes="1">
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="lblCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="txtCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cbUseCommandLine" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="btnGoals" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
                       <Component id="cbOffline" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="cbSynchProxy" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
                       <Component id="cbDebug" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cbErrors" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cbPluginRegistry" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <Component id="pnlChecksums" min="-2" max="-2" attributes="1"/>
               </Group>
@@ -94,9 +107,7 @@
                   <Component id="pnlPlugins" max="32767" attributes="1"/>
                   <Component id="pnlFail" alignment="0" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="cbPluginRegistry" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblLocalRepository" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnLocalRepository" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -104,21 +115,13 @@
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnIndex" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="lblIndex" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="comIndex" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnIndex" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="cbSnapshots" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="txtCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="btnCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblCommandLine" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="cbUseCommandLine" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -194,7 +197,7 @@
                       <Component id="rbChecksumStrict" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="rbChecksumLax" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="53" max="32767" attributes="0"/>
+                  <EmptySpace pref="52" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -206,7 +209,7 @@
                   <Component id="rbChecksumStrict" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="rbChecksumLax" min="-2" pref="23" max="-2" attributes="0"/>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -305,7 +308,7 @@
                   <Component id="rbPluginUpdate" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="rbNoPluginUpdate" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="13" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -388,11 +391,11 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="rbFailFast" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="rbFailEnd" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="rbFailNever" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="rbFailFast" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="98" max="32767" attributes="0"/>
+                  <EmptySpace pref="142" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -404,7 +407,7 @@
                   <Component id="rbFailEnd" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="rbFailNever" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="13" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -548,24 +551,6 @@
         </Property>
       </Properties>
     </Component>
-    <Component class="javax.swing.JCheckBox" name="cbSynchProxy">
-      <Properties>
-        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/options/Bundle.properties" key="SettingsPanel.cbSynchProxy.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-        <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-          <ResourceString bundle="org/codehaus/mevenide/netbeans/options/Bundle.properties" key="SettingsPanel.cbSynchProxy.toolTipText" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
-        </Property>
-        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.EmptyBorderInfo">
-            <EmptyBorder bottom="0" left="0" right="0" top="0"/>
-          </Border>
-        </Property>
-        <Property name="margin" type="java.awt.Insets" editor="org.netbeans.beaninfo.editors.InsetsEditor">
-          <Insets value="[0, 0, 0, 0]"/>
-        </Property>
-      </Properties>
-    </Component>
     <Component class="javax.swing.JLabel" name="lblCommandLine">
       <Properties>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -604,6 +589,16 @@
           <Insets value="[0, 0, 0, 0]"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnGoals">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="org/codehaus/mevenide/netbeans/options/Bundle.properties" key="SettingsPanel.btnGoals.text" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
+        </Property>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGoalsActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>
