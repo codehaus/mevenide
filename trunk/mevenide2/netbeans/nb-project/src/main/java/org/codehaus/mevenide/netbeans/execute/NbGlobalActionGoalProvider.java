@@ -26,29 +26,28 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.Repository;
 
 /**
- * user defined definitions, to be found in the project directory in the nbactions.xml file.
+ * user defined global definitions, to be found in the layers.
  * @author mkleint
  */
-public class UserActionGoalProvider extends AbstractActionGoalProvider {
+public class NbGlobalActionGoalProvider extends AbstractActionGoalProvider {
     
-    public static final String FILENAME = "nbactions.xml"; //NOI18N
+    public static final String FILENAME = "Projects/org-codehaus-mevenide-netbeans/nbactions.xml"; //NOI18N
     
-    private NbMavenProject project;
     private Date lastModified = new Date();
-    /** Creates a new instance of UserActionGoalProvider */
-    public UserActionGoalProvider(NbMavenProject project) {
-        this.project = project;
+    
+    /** Creates a new instance of NbGlobalActionGoalProvider */
+    public NbGlobalActionGoalProvider() {
     }
     
     public InputStream getActionDefinitionStream() {
-        FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
+        FileObject fo = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject(FILENAME);
         if (fo != null) {
             try {
                 lastModified = fo.lastModified();
@@ -66,7 +65,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
      * get custom action maven mapping configuration
      * No replacements happen.
      * The instances returned is always a new copy, can be modified or reused.
-     * Same method in NbGlobalActionGolaProvider 
+     * Same method in UserActionGoalProvider
      */
     public NetbeansActionMapping[] getCustomMappings() {
         NetbeansActionMapping[] fallbackActions = new NetbeansActionMapping[0];
@@ -98,7 +97,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
     
     @Override
     protected boolean reloadStream() {
-        FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
+        FileObject fo = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject(FILENAME);
         return (fo == null || fo.lastModified().after(lastModified));
         
     }
