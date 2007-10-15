@@ -163,7 +163,7 @@
       <!--a fallback to make it work everywhere -->
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE60-BETA1</netbeans.release>
+       <netbeans.release>RELEASE60-BETA2</netbeans.release>
        <mevenide.nb.release>3.0.8-SNAPSHOT</mevenide.nb.release>
   </properties>
   <reporting>
