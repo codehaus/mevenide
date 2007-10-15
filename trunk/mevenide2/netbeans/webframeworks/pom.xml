@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-api-web-webmodule</artifactId>
-            <version>RELEASE60-BETA2-SNAPSHOT</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
