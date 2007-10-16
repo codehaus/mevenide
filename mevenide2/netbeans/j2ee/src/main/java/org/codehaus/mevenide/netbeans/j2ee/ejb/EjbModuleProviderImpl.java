@@ -113,7 +113,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     public EjbJar findEjbJar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner (file);
         if (proj != null) {
-            proj = (Project)proj.getLookup().lookup(NbMavenProject.class);
+            proj = proj.getLookup().lookup(NbMavenProject.class);
         }
         if (proj != null && project == proj) {
             if (ejbimpl != null && ejbimpl.isValid()) {

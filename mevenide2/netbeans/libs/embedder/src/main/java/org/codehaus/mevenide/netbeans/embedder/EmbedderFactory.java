@@ -239,7 +239,7 @@ public final class EmbedderFactory {
     }
     
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) /*throws MavenEmbedderException*/ {
-        ClassLoader loader = (ClassLoader) Lookup.getDefault().lookup(ClassLoader.class);
+        ClassLoader loader = Lookup.getDefault().lookup(ClassLoader.class);
         
         // need to have some location for the global plugin registry because otherwise we get NPE
         File globalPluginRegistry = InstalledFileLocator.getDefault().locate("maven2/plugin-registry.xml", null, false); //NOI18N

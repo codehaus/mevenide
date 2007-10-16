@@ -69,7 +69,7 @@ public class MavenSourcesImpl implements Sources {
     private Map<String, SourceGroup> javaGroup;
     private SourceGroup genSrcGroup;
     
-    private Object lock = new Object();
+    private final Object lock = new Object();
     
     
     /** Creates a new instance of MavenSourcesImpl */

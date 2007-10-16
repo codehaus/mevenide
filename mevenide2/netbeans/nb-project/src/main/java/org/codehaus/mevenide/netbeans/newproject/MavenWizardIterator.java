@@ -72,7 +72,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     private transient WizardDescriptor.Panel[] additionalPanels;
     private transient HashMap<WizardDescriptor.Panel, NewProjectWizardExtender> mapping;
     private transient WizardDescriptor wiz;
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
     private Archetype selectedArchetype = null;
     
     public MavenWizardIterator() {

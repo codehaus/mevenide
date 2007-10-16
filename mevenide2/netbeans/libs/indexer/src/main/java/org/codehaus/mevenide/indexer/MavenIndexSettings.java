@@ -48,11 +48,11 @@ public class MavenIndexSettings {
     private MavenIndexSettings() {
     }
     
-    private final Preferences getPreferences() {
+    private Preferences getPreferences() {
         return NbPreferences.forModule(MavenIndexSettings.class);
     }
     
-    private final List<String> getStringList(String key) {
+    private List<String> getStringList(String key) {
         Preferences pref = getPreferences();
         int count = 0;
         String val = pref.get(key + "." + count, null);
@@ -65,7 +65,7 @@ public class MavenIndexSettings {
         return toRet;
     }
     
-    private final void setStringList(String basekey, List<String> list) {
+    private void setStringList(String basekey, List<String> list) {
         assert list != null;
         Preferences pref = getPreferences();
         int count = 0;

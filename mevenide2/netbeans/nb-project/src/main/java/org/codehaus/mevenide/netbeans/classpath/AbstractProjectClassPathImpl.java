@@ -38,7 +38,7 @@ import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 
 abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
-    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private List resources;
     private NbMavenProject project;
     

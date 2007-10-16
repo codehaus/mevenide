@@ -196,7 +196,7 @@ public class CustomQueries {
         }
         catch (MutexException ex) {
             throw (IOException)ex.getException();
-        };
+        }
         List<String> sortedArtifactIds = new ArrayList<String>(artifactIds);
         Collections.sort(sortedArtifactIds);
         return sortedArtifactIds;
@@ -231,7 +231,7 @@ public class CustomQueries {
         }
         catch (MutexException ex) {
             throw (IOException)ex.getException();
-        };
+        }
         //TODO
 //        // DefaultArtifactVersion is used for correct ordering
         List<StandardArtifactIndexRecord> sortedVersions = new ArrayList<StandardArtifactIndexRecord>();

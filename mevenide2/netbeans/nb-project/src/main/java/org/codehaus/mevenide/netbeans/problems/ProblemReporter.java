@@ -53,7 +53,7 @@ import org.openide.loaders.DataObjectNotFoundException;
  */
 public final class ProblemReporter implements Comparator<ProblemReport> {
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-    private Set<ProblemReport> reports;
+    private final Set<ProblemReport> reports;
     private NbMavenProject nbproject;
     
     /** Creates a new instance of ProblemReporter */

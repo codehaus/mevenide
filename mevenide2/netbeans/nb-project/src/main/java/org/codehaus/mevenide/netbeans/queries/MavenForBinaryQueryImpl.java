@@ -52,7 +52,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
         JavadocForBinaryQueryImplementation {
     
     private NbMavenProject project;
-    private HashMap<String, BinResult> map;
+    private final HashMap<String, BinResult> map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
     public MavenForBinaryQueryImpl(NbMavenProject proj) {
         project = proj;
@@ -230,7 +230,7 @@ public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementati
     
     private class BinResult implements SourceForBinaryQuery.Result  {
         private URL url;
-        private List<ChangeListener> listeners;
+        private final List<ChangeListener> listeners;
         private FileObject[] results;
         private FileObject[] cached = null;
         

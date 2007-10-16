@@ -45,11 +45,11 @@ public class J2eeMavenSourcesImpl implements Sources {
     public static final String TYPE_WEB_INF="web_inf"; //NOI18N
     
     private NbMavenProject project;
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
     
     private SourceGroup webDocSrcGroup;
     
-    private Object lock = new Object();
+    private final Object lock = new Object();
     
     
     /** Creates a new instance of MavenSourcesImpl */

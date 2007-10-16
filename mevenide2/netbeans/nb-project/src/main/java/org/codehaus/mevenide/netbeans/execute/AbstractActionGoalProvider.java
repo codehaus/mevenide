@@ -72,7 +72,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         List<FileObject> files = new ArrayList<FileObject>();
         Iterator<? extends DataObject> it = lookup.lookup(new Lookup.Template<DataObject>(DataObject.class)).allInstances().iterator();
         while (it.hasNext()) {
-            DataObject d = (DataObject)it.next();
+            DataObject d = it.next();
             FileObject f = d.getPrimaryFile();
             files.add(f);
         }
