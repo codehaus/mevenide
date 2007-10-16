@@ -80,7 +80,7 @@ public class RepositorySourceForBinaryQueryImpl implements SourceForBinaryQueryI
     
     private class SrcResult implements SourceForBinaryQuery.Result  {
         private File file;
-        private List<ChangeListener> listeners;
+        private final List<ChangeListener> listeners;
         
         public SrcResult(File src) {
             file = src;

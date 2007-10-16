@@ -48,9 +48,9 @@ import org.openide.util.Lookup;
 public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     private Set<NbMavenProject> set;
-    private Object lock = new Object();
-    private Object cacheLock = new Object();
-    private List<ChangeListener> listeners;
+    private final Object lock = new Object();
+    private final Object cacheLock = new Object();
+    private final List<ChangeListener> listeners;
     private Set cachedProjects;
     private PropertyChangeListener projectListener;
     

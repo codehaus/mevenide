@@ -70,10 +70,10 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         Collection<Action> col = new ArrayList<Action>();
         if (project.getProjectDirectory().getFileObject("profiles.xml") == null) { //NOI18N
             col.add(new AddProfileXmlAction());
-        };
+        }
         if (! new File(MavenSettingsSingleton.getInstance().getM2UserDir(), "settings.xml").exists()) { //NOI18N
             col.add(new AddSettingsXmlAction());
-        };
+        }
         return col.toArray(new Action[col.size()]);
     }
     

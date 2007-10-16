@@ -90,7 +90,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
     
     private class DocResult implements JavadocForBinaryQuery.Result  {
         private File file;
-        private List<ChangeListener> listeners;
+        private final List<ChangeListener> listeners;
 
         public DocResult(File javadoc) {
             file = javadoc;

@@ -282,5 +282,5 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
             dd.setModal(false);
             DialogDisplayer.getDefault().notify(dd);
         }
-    };
+    }
 }

@@ -39,7 +39,7 @@ import org.openide.util.Lookup;
 class MavenOptionController extends OptionsPanelController {
     private SettingsPanel panel;
     private Settings setts;
-    private List<PropertyChangeListener> listeners;
+    private final List<PropertyChangeListener> listeners;
     /**
      * Creates a new instance of MavenOptionController
      */

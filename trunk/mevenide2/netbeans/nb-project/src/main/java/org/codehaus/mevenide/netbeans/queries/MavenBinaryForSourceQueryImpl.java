@@ -111,12 +111,13 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
     }
     
     private static class Res implements BinaryForSourceQuery.Result {
-        private List<ChangeListener> listeners;
+        private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
         private NbMavenProject project;
         private boolean isTest;
         Res(boolean test, NbMavenProject prj) {
             isTest = test;
             project = prj;
+
         }
         
          /**
