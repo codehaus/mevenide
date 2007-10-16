@@ -203,6 +203,10 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     /**
      */ 
     private boolean checkLibraryForPoms(Library library, Model model, String scope) {
+        if (!"j2se".equals(library.getType())) {
+            //only j2se library supported for now..
+            return false;
+        }
         List<URL> poms = library.getContent("maven-pom"); //NOI18N
         boolean added = false;
         if (poms != null && poms.size() > 0) {
