@@ -96,7 +96,11 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
     private void setMyFiles() {
         Set<FileObject> fobs = new HashSet<FileObject>();
         FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-        fobs.add(fo);
+        if (fo != null) {
+            //#119134 for some unknown reason, the pom.xml might be missing from the project directory in some cases.
+            // prevent passing null to the list that causes problems down the stream.
+            fobs.add(fo);
+        }
         FileObject fo2 = project.getProjectDirectory().getFileObject("profiles.xml"); //NOI18N
         if (fo2 != null) {
             fobs.add(fo2);
