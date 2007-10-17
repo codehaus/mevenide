@@ -46,24 +46,18 @@ import org.openide.windows.OutputListener;
  * common code for MAvenExecutors, sharing tabs and actions..
  * @author mkleint
  */
-public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellable {
+public abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
     protected RunConfig config;
-    protected InputOutput io;
     protected ReRunAction rerun;
     protected ReRunAction rerunDebug;
     protected StopAction stop;
     private List<String> messages = new ArrayList<String>();
     private List<OutputListener> listeners = new ArrayList<OutputListener>();
 
-    /**
-     * All tabs which were used for some process which has now ended.
-     * These are closed when you start a fresh process.
-     * Map from tab to tab display name.
-     */
-    protected static final Map freeTabs = new WeakHashMap();
     protected  ExecutorTask task;
     
     public AbstractMavenExecutor(RunConfig conf) {
+        super(conf.getExecutionName());
         config = conf;
         
     }
@@ -72,12 +66,6 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
         this.task = task;
     }
 
-    public final InputOutput getInputOutput() {
-        if (io == null) {
-            io = createInputOutput();
-        }
-        return io;
-    }
     
     public final void addInitialMessage(String line, OutputListener listener) {
         messages.add(line);
@@ -116,64 +104,39 @@ public abstract class AbstractMavenExecutor implements MavenExecutor, Cancellabl
         stop.setEnabled(false);
     }
     
-    protected final void markFreeTab(InputOutput ioput) {
-            synchronized (freeTabs) {
-                Collection col = new ArrayList();
-                col.add(config.getExecutionName());
-                col.add(rerun);
-                col.add(rerunDebug);
-                col.add(stop);
-                freeTabs.put(ioput, col);
-            }
-        
+    @Override
+    protected void reassignAdditionalContext(Iterator vals) {
+        rerun = (ReRunAction)vals.next();
+        rerunDebug = (ReRunAction)vals.next();
+        stop = (StopAction)vals.next();
+        rerun.setConfig(config);
+        rerunDebug.setConfig(config);
+        stop.setExecutor(this);
     }
     
-    private InputOutput createInputOutput() {
-        synchronized (freeTabs) {
-            Iterator it = freeTabs.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry entry = (Map.Entry)it.next();
-                InputOutput free = (InputOutput)entry.getKey();
-                Iterator vals = ((Collection)entry.getValue()).iterator();
-                String freeName = (String)vals.next();
-                if (io == null && freeName.equals(config.getExecutionName())) {
-                    // Reuse it.
-                    io = free;
-                    rerun = (ReRunAction)vals.next();
-                    rerunDebug = (ReRunAction)vals.next();
-                    stop = (StopAction)vals.next();
-                    rerun.setConfig(config);
-                    rerunDebug.setConfig(config);
-                    stop.setExecutor(this);
-                    try {
-                        io.getOut().reset();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    // useless: io.flushReader();
-                } else {
-                    // Discard it.
-                    free.closeInputOutput();
-                }
-            }
-            freeTabs.clear();
-        }
-        //                }
-        if (io == null) {
-            rerun = new ReRunAction(false);
-            rerunDebug = new ReRunAction(true);
-            stop = new StopAction();
-            Action[] actions = new Action[] {
-                rerun, 
-                rerunDebug,
-                stop
-            };
-            io = IOProvider.getDefault().getIO(config.getExecutionName(), actions);
-            rerun.setConfig(config);
-            rerunDebug.setConfig(config);
-            stop.setExecutor(this);
-        }
-        return io;
+    @Override
+    protected final Collection createContext() {
+        Collection col = super.createContext();
+        col.add(rerun);
+        col.add(rerunDebug);
+        col.add(stop);
+        return col;
+    }
+    
+    @Override
+    protected Action[] createNewTabActions() {
+        rerun = new ReRunAction(false);
+        rerunDebug = new ReRunAction(true);
+        stop = new StopAction();
+        rerun.setConfig(config);
+        rerunDebug.setConfig(config);
+        stop.setExecutor(this);
+        Action[] actions = new Action[] {
+            rerun, 
+            rerunDebug,
+            stop
+        };
+        return actions;
     }
     
     static class ReRunAction extends AbstractAction {

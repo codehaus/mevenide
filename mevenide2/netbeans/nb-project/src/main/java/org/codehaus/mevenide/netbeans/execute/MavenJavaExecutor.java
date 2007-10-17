@@ -248,7 +248,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         }
         ioput.getOut().close();
         ioput.getErr().close();
-        markFreeTab(ioput);
+        markFreeTab();
         IOBridge.restoreSystemInOutErr();
     }
     

@@ -110,7 +110,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             ioput.getOut().close();
             ioput.getErr().close();
             actionStatesAtFinish();
-            markFreeTab(ioput);
+            markFreeTab();
         }
     }
     
