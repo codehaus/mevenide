@@ -29,6 +29,7 @@ import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.classpath.BootClassPathImpl;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.execute.OutputTabMaintainer;
 import org.codehaus.plexus.util.cli.Commandline;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.JavaPlatform;
@@ -40,10 +41,9 @@ import org.openide.execution.ExecutionEngine;
 import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
-import org.openide.windows.IOProvider;
-import org.openide.windows.InputOutput;
 import org.openide.windows.OutputListener;
 import org.openide.windows.OutputWriter;
 
@@ -76,16 +76,14 @@ public class MavenRunJarImpl implements MavenRunJar {
         if (jarArtifact == null || !jarArtifact.exists()) {
             throw new MojoExecutionException("Badly configured, need existing jar at " + jarArtifact);//NOI18N
         }
-        InputOutput io = IOProvider.getDefault().getIO(org.openide.util.NbBundle.getMessage(MavenRunJarImpl.class, "TAB_Run", jarArtifact.getName()), true);
-        io.select();
-        Wrapper wrapper = new Wrapper(io, jarArtifact, executable, parameters, jvmParameters, debugJvmParameters, 
+        Wrapper wrapper = new Wrapper(jarArtifact, executable, parameters, jvmParameters, debugJvmParameters, 
                                       workDirectory, jarLocation, finalName, project, log);
 //        System.out.println("class=" + io.getClass());
 //        System.out.println("classloader=" + io.getClass().getClassLoader().getClass());
 //        System.out.println("executor engine=" + ExecutionEngine.getDefault().getClass());
         ExecutorTask task = null;
         try {
-            task =  ExecutionEngine.getDefault().execute(org.openide.util.NbBundle.getMessage(MavenRunJarImpl.class, "TIT_Run", jarArtifact.getName()), wrapper, io);
+            task =  ExecutionEngine.getDefault().execute(NbBundle.getMessage(MavenRunJarImpl.class, "TIT_Run", jarArtifact.getName()), wrapper, wrapper.getInputOutput());
             try {
                 synchronized (wrapper.semaphor) {
                     wrapper.semaphor.wait();
@@ -106,8 +104,7 @@ public class MavenRunJarImpl implements MavenRunJar {
         return 0;
     }
     
-    private class Wrapper implements Runnable {
-        private InputOutput io;
+    private class Wrapper extends OutputTabMaintainer implements Runnable {
         private File jarArtifact;
         private String executable;
         private String parameters;
@@ -119,9 +116,9 @@ public class MavenRunJarImpl implements MavenRunJar {
         private Log log;
         Object semaphor = new Object();
         
-        public Wrapper(InputOutput io, File jarArtifact, String executable, String parameters, String jvmParameters, String debugJvmParameters,
+        public Wrapper(File jarArtifact, String executable, String parameters, String jvmParameters, String debugJvmParameters,
                 File workDirectory, File jarLocation, String finalName, MavenProject project, Log log) {
-            this.io = io;
+            super(NbBundle.getMessage(MavenRunJarImpl.class, "TAB_Run", jarArtifact.getName()));
             this.jarArtifact = jarArtifact;
             this.executable = executable;
             this.parameters = parameters;
@@ -215,7 +212,7 @@ public class MavenRunJarImpl implements MavenRunJar {
                 if (err != null) { 
                     err.closeWriter();
                 }
-                
+                markFreeTab();
             }
         }
     }
