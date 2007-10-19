@@ -84,13 +84,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/maven-4.0.0.xsd"); //NOI18N
     }
     
+    @Override
     protected List getDynamicCompletion(String path, HintContext hintCtx, org.jdom.Element parent) {
-        if ("/project/build/plugins/plugin/configuration".equals(path) || //NOI18N
-            "/project/build/pluginManagement/plugins/plugin/configuration".equals(path) || //NOI18N
-            "/project/build/plugins/plugin/executions/execution/configuration".equals(path) || //NOI18N
-             "/project/build/pluginManagement/plugins/plugin/executions/execution/configuration".equals(path) || //NOI18N
-             "/project/reporting/plugins/plugin/configuration".equals(path) //NOI18N
-             ) {
+        if (path.endsWith("plugins/plugin/configuration") || //NOI18N
+            path.endsWith("plugins/plugin/executions/execution/configuration")) { //NOI18N
             // assuming we have the configuration node as parent..
             // does not need to be true for complex stuff
             Node previous = path.indexOf("execution") > 0 //NOI18N
@@ -134,7 +131,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         if (holder.getGroupId() == null) {
             holder.setGroupId("org.apache.maven.plugins"); //NOI18N
         }
-        if (checkLocalRepo && (holder.getVersion() == null || "LATEST".equals(holder.getVersion())) && holder.getArtifactId() != null && holder.getGroupId() != null) { //NOI18N
+        if (checkLocalRepo && (holder.getVersion() == null || "LATEST".equals(holder.getVersion()) || "RELEASE".equals(holder.getVersion()))  //NOI18N
+                && holder.getArtifactId() != null && holder.getGroupId() != null) { //NOI18N
             File lev1 = new File(embedder.getLocalRepository().getBasedir(), holder.getGroupId().replace('.', File.separatorChar));
             File dir = new File(lev1, holder.getArtifactId());
             File fil = new File(dir, "maven-metadata-local.xml"); //NOI18N
@@ -147,7 +145,12 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                     } else {
                         Versioning vers = data.getVersioning();
                         if (vers != null) {
-                            holder.setVersion(vers.getLatest());
+                            if ("LATEST".equals(holder.getVersion())) { //NOI18N
+                                holder.setVersion(vers.getLatest());
+                            }
+                            if ("RELEASE".equals(holder.getVersion())) { //NOI18N
+                                holder.setVersion(vers.getRelease());
+                            }
                         }
                     }
                 } catch (FileNotFoundException ex) {
@@ -158,6 +161,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                     ex.printStackTrace();
                 }
             }
+        }
+        if (holder.getVersion() == null) {
+            holder.setVersion("RELEASE"); //NOI18N
         }
         
         return holder;
@@ -193,6 +199,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return toReturn;
     }
 
+    @Override
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
         if (path.endsWith("executions/execution/goals/goal")) { //NOI18N
             Node previous;
@@ -370,7 +377,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             return super.createTextValueList(strs, virtualTextCtx);
         }
         
-        if ("/project/modules/module".equals(path)) { //NOI18N
+        if (path.endsWith("modules/module")) { //NOI18N
             FileObject fo = getEnvironment().getFileObject();
             if (fo != null) {
                 File dir = FileUtil.toFile(fo).getParentFile();  
