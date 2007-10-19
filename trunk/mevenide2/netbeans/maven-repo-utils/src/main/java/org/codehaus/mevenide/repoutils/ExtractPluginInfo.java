@@ -63,7 +63,7 @@ public class ExtractPluginInfo
             
             File results = new File(args[2]);
             if (results.exists()) {
-                throw new IllegalArgumentException(args[2] + " folder exists already");
+                org.codehaus.plexus.util.FileUtils.deleteDirectory(results);
             }
             results.mkdirs();
             
@@ -104,17 +104,20 @@ public class ExtractPluginInfo
         if (rel != null) {
             return rel.equals(version);
         }
+        if (!file.exists()) {
+            return false;
+        }
         InputStream in = new FileInputStream(file);
         try {
             String str = IOUtil.toString(in);
-            Pattern patt = Pattern.compile("\\<release\\>(.*)\\</release\\>");
+            Pattern patt = Pattern.compile(".*<release>(.*)</release>.*", Pattern.DOTALL);
             Matcher match = patt.matcher(str);
             if (match.matches()) {
                 rel = match.group(1);
                 release.put(file, rel);
                 return rel.equals(version);
             } else {
-                System.out.println("release version doesn't match at " + file);
+                System.out.println("    release version doesn't match at " + file);
                 return false;
             }
         } finally {
