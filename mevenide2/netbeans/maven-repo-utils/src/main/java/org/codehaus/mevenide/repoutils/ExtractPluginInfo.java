@@ -1,11 +1,17 @@
 package org.codehaus.mevenide.repoutils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
@@ -61,7 +67,7 @@ public class ExtractPluginInfo
             }
             results.mkdirs();
             
-            
+            HashMap<File, String> release = new HashMap<File, String>();
             LuceneQuery q = new LuceneQuery(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin")));
             List<StandardArtifactIndexRecord> lst = defaultIndex.search(q);
             for (StandardArtifactIndexRecord rec : lst)  {
@@ -73,15 +79,13 @@ public class ExtractPluginInfo
                     JarFile jar = new JarFile(path);
                     ZipEntry entry = jar.getEntry("META-INF/maven/plugin.xml");
                     if (entry != null) {
-                        InputStream str = jar.getInputStream(entry);
-                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + 
-                                                rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
-                        newFile.getParentFile().mkdirs();
-                        newFile.createNewFile();
-                        OutputStream out = new FileOutputStream(newFile);
-                        IOUtil.copy(str, out);
-                        IOUtil.close(str);
-                        IOUtil.close(out);
+                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
+                        writePluginXml(jar.getInputStream(entry), newFile);
+                        if (isRelease(release, rec.getVersion(), new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
+                                              rec.getArtifactId() + "/maven-metadata.xml"))) {
+                            newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-RELEASE.xml");
+                            writePluginXml(jar.getInputStream(entry), newFile);
+                        }
                     } else {
                         System.out.println("  entry not found");
                     }
@@ -93,5 +97,37 @@ public class ExtractPluginInfo
         } catch (Exception e) {
             e.printStackTrace();
         }        
+    }
+
+    private static boolean isRelease(HashMap<File, String> release, String version, File file) throws FileNotFoundException, IOException {
+        String rel = release.get(file);
+        if (rel != null) {
+            return rel.equals(version);
+        }
+        InputStream in = new FileInputStream(file);
+        try {
+            String str = IOUtil.toString(in);
+            Pattern patt = Pattern.compile("\\<release\\>(.*)\\</release\\>");
+            Matcher match = patt.matcher(str);
+            if (match.matches()) {
+                rel = match.group(1);
+                release.put(file, rel);
+                return rel.equals(version);
+            } else {
+                System.out.println("release version doesn't match at " + file);
+                return false;
+            }
+        } finally {
+            IOUtil.close(in);
+        }
+    }
+
+    private static void writePluginXml(InputStream str, File newFile) throws IOException, FileNotFoundException, IOException {
+            newFile.getParentFile().mkdirs();
+            newFile.createNewFile();
+            OutputStream out = new FileOutputStream(newFile);
+            IOUtil.copy(str, out);
+            IOUtil.close(str);
+            IOUtil.close(out);
     }
 }
