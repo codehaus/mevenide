@@ -4,12 +4,12 @@ Introduction
 
 * News:
 
-    2008/04/10 - There's an updated, polished version of Mevenide for NetBeans 6.0 Milestone 8. To get it, simply download
+    2007/09/18 - Mevenide2 directly available in {{{http://www.netbeans.org/community/releases/60/index.html}Netbeans 6.0 beta}}.
+
+    2007/04/10 - There's an updated, polished version of Mevenide for NetBeans 6.0 Milestone 8. To get it, simply download
     the milestone build and check it's Devevelopment Update Center under Tools/Update Center dialog.
 
-* Version 2.3 released - 23 Oct 2006
-
-    It is the second stable release of Mevenide2 for Netbeans. 
+    2006/10/23 Version 2.3 released. It is the second stable release of Mevenide2 for Netbeans. 
 
     * Features that were added :
 
@@ -34,14 +34,6 @@ Introduction
       [[5]] Can stop, re-run build, failed tests hyperlinked from output window.
 
     * Bugs fixed for previous version, implemented features : {{{http://jira.codehaus.org/secure/IssueNavigator.jspa?reset=true&&pid=10480&fixfor=12780&sorter/field=priority&sorter/order=ASC}List of issues}}
-
-* Download
-
-    * Download the {{{http://mevenide.codehaus.org/download/mevenide2-netbeans-2.3.zip}latest version}} in zip format.
-
-    * Folow the {{{mevenide2-netbeans/installation.html}Installation}} instructions.
-    
-    * Note: If you installed any of the previous versions, just upgrade through the Netbeans AutoUpdate Center.
 
 * Contribute
     
