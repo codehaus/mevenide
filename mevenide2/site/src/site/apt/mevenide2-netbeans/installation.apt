@@ -14,7 +14,8 @@ Installation
 
   * Use the "maven" keyword for search :
 
-  * Check at least the "Maven" plugin install. Others are optionnal but can be very usefull for maven java entreprise support.
+  * Check at least the "Maven" plugin install. Others are optional but can be very useful for maven java entreprise support. 
+In NetBeans 6.0 beta2 and later builds, the Maven Enterprise support gets automatically installed for you if both Maven and J2ee modules are installed.
 
 [../images/mevenide2-netbeans/install-3.0-plugin.jpg]
 
