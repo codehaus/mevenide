@@ -30,12 +30,12 @@ public interface Constants {
     public final String HINT_DEPLOY_J2EE_SERVER = "netbeans.hint.deploy.server"; //NOI18N
     
     /**
-     * pom.xml property that hints netbeans to use a given license template.
+     * Maven property that hints netbeans to use a given license template.
      */ 
     public static final String HINT_LICENSE = "netbeans.hint.license"; //NOI18N
 
     /**
-     * maven property that when set forces netbeans to use external maven instance
+     * Maven property that when set forces netbeans to use external maven instance
      * instead of the embedded Maven.
      */ 
     public static final String HINT_USE_EXTERNAL="netbeans.hint.useExternalMaven"; //NOI18N
@@ -47,6 +47,15 @@ public interface Constants {
      * Will only influence the classpath in the IDE, not the maven build itself.
      */
     public static final String HINT_JDK_PLATFORM="netbeans.hint.jdkPlatform"; //NOI18N
+
+    
+    /**
+     * Maven property that hints netbeans to handle the project as if it were of given packaging..
+     * Influences the available default action mappings, panels in customizers and other UI functionality in the IDE.
+     * Useful for cases when you define a custom packaging eg "jar2" but want the ide to handle it as j2se/jar project.
+     * Meaningful values include: jar,war,ejb,ear,nbm
+     */ 
+    public static final String HINT_PACKAGING = "netbeans.hint.packaging"; //NOI18N
     
     /**
      * apache maven default groupid for maven plugins. 

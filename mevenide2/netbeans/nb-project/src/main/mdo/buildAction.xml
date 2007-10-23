@@ -19,7 +19,8 @@
                     <version>1.0.0+</version>
                     <description>Supported packaging type that this this project maps to. 
                     Useful for custom non-standard packingings to get the same behaviour as the supported ones.
-                    Supported types: jar, war, ejb, ear</description>
+                    Supported types: jar, war, ejb, ear
+                    @deprecated is ethe netbeans.hint.packaging POM property instead</description>
                     <type>String</type>
                 </field>
                 <field xml.listStyle="flat">
