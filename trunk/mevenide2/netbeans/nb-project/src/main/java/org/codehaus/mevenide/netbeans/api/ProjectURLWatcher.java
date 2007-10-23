@@ -173,7 +173,11 @@ public final class ProjectURLWatcher {
      *  of user's custom lifecycles.
      */ 
     public String getPackagingType() {
-        String custom = project.getLookup().lookup(UserActionGoalProvider.class).getRawMappings().getPackaging();
+        String custom = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_PACKAGING);
+        if (custom == null) {
+            // fallback to previous old solution. 
+            custom = project.getLookup().lookup(UserActionGoalProvider.class).getRawMappings().getPackaging();
+        }
         return custom != null ? custom : project.getOriginalMavenProject().getPackaging();
     }
     
