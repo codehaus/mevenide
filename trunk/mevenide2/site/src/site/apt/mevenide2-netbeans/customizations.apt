@@ -5,6 +5,8 @@ set by the UI in the IDE as well.
 
  Generally you want to set the property directly in your pom.xml file. See below for an example.
 If the property is settable by UI in the IDE, it will by default place the property at the same place.
+In case of multimodule projects you can also consider putting the properties into the parent POM file
+to configure multiple/all projects at once.
 
 +-------------------------------+
 <project>
