@@ -23,6 +23,7 @@
             <item name="Features" href="mevenide2-netbeans/features.html"/>
             <item name="Installation" href="mevenide2-netbeans/installation.html"/>
             <item name="Tutorials" href="mevenide2-netbeans/tutorials/index.html"/>
+            <item name="Customizations" href="mevenide2-netbeans/customizations.html"/>
             <item name="Testimonials" href="mevenide2-netbeans/testimonials.html"/>
             <item name="IDE Maven Plugins" href="mevenide2-netbeans/ide-plugins.html"/>  
         </menu>
