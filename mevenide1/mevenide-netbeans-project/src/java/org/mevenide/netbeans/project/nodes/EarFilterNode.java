@@ -93,7 +93,7 @@ class EarFilterNode extends FilterNode {
             project = proj;
         }
         
-        protected Node[] createNodes(Object obj) {
+        protected Node[] createNodes(Node obj) {
             DataObject dobj = (DataObject)((Node)obj).getLookup().lookup(DataObject.class);
         
             if (dobj != null) {

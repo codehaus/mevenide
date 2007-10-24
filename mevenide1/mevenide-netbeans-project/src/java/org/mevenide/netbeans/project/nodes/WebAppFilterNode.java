@@ -92,8 +92,8 @@ class WebAppFilterNode extends FilterNode {
             project = proj;
         }
         
-        protected Node[] createNodes(Object obj) {
-            DataObject dobj = (DataObject)((Node)obj).getLookup().lookup(DataObject.class);
+        protected Node[] createNodes(Node obj) {
+            DataObject dobj = (DataObject)obj.getLookup().lookup(DataObject.class);
         
             if (dobj != null) {
                 File file = FileUtil.toFile(dobj.getPrimaryFile());

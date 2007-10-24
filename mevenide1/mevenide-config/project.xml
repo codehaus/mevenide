@@ -21,7 +21,7 @@
   <pomVersion>3</pomVersion>
   <artifactId>mevenide-config</artifactId>
   <name>Mevenide Config</name>
-  <currentVersion>0.2</currentVersion>
+  <currentVersion>0.20</currentVersion>
   <package>org.mevenide.config</package>
   <description>The Mevenide Config module provides mechanisms for manipulating Maven configuration files. For example, system environment variables, projectconfiguration (project.properties), and user-defined configuration (build.properties).</description>
   <versions>

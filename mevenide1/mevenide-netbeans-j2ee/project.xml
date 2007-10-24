@@ -14,7 +14,7 @@
          <groupId>netbeans</groupId>
          <artifactId>org-openide-execution</artifactId>
          <!-- include nb specification version.. that's important for compiling -->
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
          <properties>
@@ -24,7 +24,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-io</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
          <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
@@ -37,35 +37,35 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-filesystems</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
       </dependency>
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-util</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
       </dependency>	 
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-awt</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
       </dependency>	  
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-openide-dialogs</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
       </dependency>	  
       <!--    <dependency>     
         <groupId>netbeans</groupId>
         <artifactId>org-netbeans-api-java</artifactId>
-        <version>RELEASE60-BETA1</version>
+        <version>RELEASE60-BETA2</version>
         <type>jar</type>
         <url>http://www.netbeans.org</url>
         <properties>
@@ -85,7 +85,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-j2ee-common</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -94,13 +94,13 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-j2ee-metadata</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
       </dependency>	  
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-websvc-websvcapi</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -109,7 +109,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-j2ee-api-ejbmodule</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -118,7 +118,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-projectapi</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -136,7 +136,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-api-web-webmodule</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -145,7 +145,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-java-project</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -193,7 +193,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-j2ee-dd</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
@@ -202,7 +202,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-j2eeserver</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <properties>
             <netbeans.module.dep>spec=org.netbeans.modules.j2eeserver/3-4 &gt; 1.6.1</netbeans.module.dep>
@@ -211,7 +211,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-modules-schema2beans</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <properties>
             <netbeans.module.dep>spec</netbeans.module.dep>
          </properties>
@@ -219,7 +219,7 @@
       <dependency>
          <groupId>netbeans</groupId>
          <artifactId>org-netbeans-api-debugger-jpda</artifactId>
-         <version>RELEASE60-BETA1</version>
+         <version>RELEASE60-BETA2</version>
          <type>jar</type>
          <url>http://www.netbeans.org</url>
          <properties>
