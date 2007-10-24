@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.output.ContextOutputProcessorFactory;
@@ -50,6 +51,8 @@ abstract class AbstractOutputHandler {
         visitor = new OutputVisitor();
         toFinishProcessors = new HashSet<NotifyFinishOutputProcessor>();
     }
+    
+    abstract MavenEmbedderLogger getLogger();
 
     protected final String getEventId(String eventName, String target) {
         if (PRJ_EXECUTE.equals(eventName)) {

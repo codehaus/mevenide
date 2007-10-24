@@ -26,7 +26,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import org.apache.maven.SettingsConfigurationException;
@@ -44,7 +43,6 @@ import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
@@ -57,7 +55,6 @@ import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.windows.InputOutput;
@@ -274,32 +271,6 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     }
     
     
-    private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
-        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
-            JPDAStart start = new JPDAStart();
-            start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
-            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
-            start.setLog(handler);
-            String val = start.execute(config.getProject());
-            Enumeration en = config.getProperties().propertyNames();
-            while (en.hasMoreElements()) {
-                String key = (String)en.nextElement();
-                String value = config.getProperties().getProperty(key);
-                StringBuffer buf = new StringBuffer(value);
-                String replaceItem = "${jpda.address}";//NOI18N
-                int index = buf.indexOf(replaceItem);
-                while (index > -1) {
-                    String newItem = val;
-                    newItem = newItem == null ? "" : newItem;//NOI18N
-                    buf.replace(index, index + replaceItem.length(), newItem);
-                    index = buf.indexOf(replaceItem);
-                }
-                //                System.out.println("setting property=" + key + "=" + buf.toString());
-                config.getProperties().setProperty(key, buf.toString());
-            }
-            config.getProperties().put("jpda.address", val);//NOI18N
-        }
-    }
 
 
     /**
