@@ -22,6 +22,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -63,14 +64,30 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
     }
     
     public int getSharability(File file) {
+        //#119541 for the project's root, return MIXED right away.
+        FileObject fo = FileUtil.toFileObject(file);
+        if (fo != null && fo.equals(project.getProjectDirectory())) {
+            return SharabilityQuery.MIXED;
+        }
         Boolean check = checkShare(file);
         if (check == null) {
             return SharabilityQuery.UNKNOWN;
         }
         if (Boolean.TRUE.equals(check)) {
+            if (file.isDirectory()) {
+                //#119541 let's play safe  here and always return MIXED for directories.
+                //consider this setup:
+                // project root
+                //     -- modules
+                //            -- subproject1
+                //            -- subproject2
+                // The "modules" folder itself doesn't contain a project, therefore belongs to root project
+                // however it cannot be marked as SHARABLE because the subproject1+2 folder would be added automatically then.
+                
+                return SharabilityQuery.MIXED;
+            }
             return SharabilityQuery.SHARABLE;
         }
-        //TODO
         return SharabilityQuery.NOT_SHARABLE;
     }
     
