@@ -21,15 +21,17 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import org.apache.maven.plugin.MojoExecutionException;
+import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -38,7 +40,6 @@ import org.openide.util.Cancellable;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
-import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputListener;
 
@@ -61,6 +62,34 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         config = conf;
         
     }
+    
+    protected final void checkDebuggerListening(RunConfig config, AbstractOutputHandler handler) throws MojoExecutionException, MojoFailureException {
+        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
+            JPDAStart start = new JPDAStart();
+            start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
+            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
+            start.setLog(handler.getLogger());
+            String val = start.execute(config.getProject());
+            Enumeration en = config.getProperties().propertyNames();
+            while (en.hasMoreElements()) {
+                String key = (String)en.nextElement();
+                String value = config.getProperties().getProperty(key);
+                StringBuffer buf = new StringBuffer(value);
+                String replaceItem = "${jpda.address}";//NOI18N
+                int index = buf.indexOf(replaceItem);
+                while (index > -1) {
+                    String newItem = val;
+                    newItem = newItem == null ? "" : newItem;//NOI18N
+                    buf.replace(index, index + replaceItem.length(), newItem);
+                    index = buf.indexOf(replaceItem);
+                }
+                //                System.out.println("setting property=" + key + "=" + buf.toString());
+                config.getProperties().setProperty(key, buf.toString());
+            }
+            config.getProperties().put("jpda.address", val);//NOI18N
+        }
+    }
+    
 
     public final void setTask(ExecutorTask task) {
         this.task = task;

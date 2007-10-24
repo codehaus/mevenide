@@ -22,17 +22,14 @@ import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
-import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
 
@@ -64,15 +61,15 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         processInitialMessage();
         try {
             out = new CommandLineOutputHandler(ioput, config.getProject(), handle, config);
-//            if (config.getProject() != null) {
-//                try {
-//                    checkDebuggerListening(config, out);
-//                } catch (MojoExecutionException ex) {
-//                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-//                } catch (MojoFailureException ex) {
-//                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
-//                }
-//            }
+            if (config.getProject() != null) {
+                try {
+                    checkDebuggerListening(config, out);
+                } catch (MojoExecutionException ex) {
+                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
+                } catch (MojoFailureException ex) {
+                    LOGGER.log(Level.FINE, ex.getMessage(), ex);
+                }
+            }
             //TODO we might need to copy and update settings file..
             File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
             File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
@@ -121,34 +118,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         }
         return true;
     }
-    
-    private void checkDebuggerListening(RunConfig config, OutputHandler handler) throws MojoExecutionException, MojoFailureException {
-        if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N 
-            JPDAStart start = new JPDAStart();
-            start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
-            start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
-            start.setLog(handler);
-            String val = start.execute(config.getProject());
-            Enumeration en = config.getProperties().propertyNames();
-            while (en.hasMoreElements()) {
-                String key = (String)en.nextElement();
-                String value = config.getProperties().getProperty(key);
-                StringBuffer buf = new StringBuffer(value);
-                String replaceItem = "${jpda.address}";//NOI18N
-                int index = buf.indexOf(replaceItem);
-                while (index > -1) {
-                    String newItem = val;
-                    newItem = newItem == null ? "" : newItem;//NOI18N
-                    buf.replace(index, index + replaceItem.length(), newItem);
-                    index = buf.indexOf(replaceItem);
-                }
-                //                System.out.println("setting property=" + key + "=" + buf.toString());
-                config.getProperties().setProperty(key, buf.toString());
-            }
-            config.getProperties().put("jpda.address", val);//NOI18N
-        }
-    }
-    
+        
     private static List<String> createMavenExecutionCommand(RunConfig config) {
         File mavenHome = MavenExecutionSettings.getDefault().getCommandLinePath();
         assert mavenHome != null;
