@@ -4,7 +4,7 @@
     <pomVersion>3</pomVersion>
     <artifactId>mevenide-core</artifactId>
     <name>Mevenide Core</name>
-    <currentVersion>0.2</currentVersion>
+    <currentVersion>0.20</currentVersion>
     <package>org.mevenide</package>
     <description>Mevenide Core provides various utility classes for manipulating POMs, running Maven, synchronizing POMs and IDEs, etc... It is intended to used by concrete IDE plugin.</description>
     <versions>

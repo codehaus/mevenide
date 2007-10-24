@@ -19,6 +19,8 @@ package org.mevenide.environment.sysenv;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -34,7 +36,7 @@ public class DefaultSysEnvProvider implements SysEnvProvider
 {
     private static Logger LOGGER = Logger.getLogger(DefaultSysEnvProvider.class.getName());
     
-    private Properties envProperties;
+    private Map<String, String> envMap;
     
     private boolean loaded;
     private Object LOCK = new Object();
@@ -47,10 +49,10 @@ public class DefaultSysEnvProvider implements SysEnvProvider
     private void loadEnvironment()
     {
         try {
-            envProperties = getEnvVars();
+            envMap = System.getenv();
         } catch (Exception exc) {
             LOGGER.log(Level.SEVERE,"Problem while looking for env. variables.", exc);
-            envProperties = new Properties();
+            envMap = new HashMap<String, String>();
         }
     }
     
@@ -67,46 +69,6 @@ public class DefaultSysEnvProvider implements SysEnvProvider
                 }
             }
         }
-        return envProperties.getProperty(name);
-    }
-    
-    private static Properties getEnvVars() throws IOException
-    {
-        Process p = null;
-        Properties envVars = new Properties();
-        Runtime r = Runtime.getRuntime();
-        String os = System.getProperty("os.name").toLowerCase();
-        // System.out.println(OS);
-        if (os.indexOf("windows")  > -1) {
-            if (os.indexOf("windows 9") > -1)
-            {
-                // old Win9X stuff..
-                p = r.exec( "command.com /c set" );
-            }
-            else 
-            {
-                // for everything else (XP, 2000, NT
-                p = r.exec( "cmd.exe /c set" );
-            }
-        } else 
-        {
-            // let's assume what is not windows is unix..
-            p = r.exec( "sh -c env" );
-        }
-        BufferedReader br = new BufferedReader
-                                    ( new InputStreamReader( p.getInputStream() ) );
-        String line;
-        while( (line = br.readLine()) != null )
-        {
-            int idx = line.indexOf( '=' );
-            if (idx > 0) {
-                String key = line.substring( 0, idx );
-                String value = line.substring( idx+1 );
-                envVars.setProperty( key, value );
-            } else {
-                //what now? wrong line format?
-            }
-        }
-        return envVars;
+        return envMap.get(name);
     }
 }

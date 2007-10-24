@@ -220,11 +220,12 @@ public class DependencyChildren extends Children.Keys {
             super(original);
         }
 
-        protected Node[] createNodes(Object key) {
-            if (key instanceof Node) {
-                return new Node[] { new OneVersionNode((Node)key) };
-            }
-            return super.createNodes(key);
+        protected Node[] createNodes(Node key) {
+                return new Node[] { new OneVersionNode(key) };
+//            if (key instanceof Node) {
+//                return new Node[] { new OneVersionNode((Node)key) };
+//            }
+//            return new Node[] { }; //super.createNodes(key);
         }
         
         

@@ -15,7 +15,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-util</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>
@@ -23,7 +23,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-nodes</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>	
@@ -31,7 +31,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-modules</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>			
@@ -39,7 +39,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-actions</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>		
@@ -47,7 +47,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-awt</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>	
@@ -55,7 +55,7 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-dialogs</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>		
@@ -63,14 +63,14 @@
             <groupId>netbeans</groupId>
             <artifactId>org-openide-filesystems</artifactId>
             <!-- include nb module specification version..-->
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
         </dependency>			
         <dependency>
             <groupId>netbeans</groupId>
             <artifactId>org-openide-io</artifactId>
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <url>http://www.netbeans.org</url>
             <!-- dependencies other than the openide jar need to specify the netbeans.module.dep
@@ -108,7 +108,7 @@
         <!--dependency>
             <groupId>netbeans</groupId>
             <artifactId>org-openide-execution</artifactId>
-            <version>RELEASE60-BETA1</version>
+            <version>RELEASE60-BETA2</version>
             <type>jar</type>
             <properties>
                 <netbeans.module.dep>spec</netbeans.module.dep>

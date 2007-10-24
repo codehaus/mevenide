@@ -12,14 +12,14 @@
     <dependency>
       <groupId>netbeans</groupId>
       <artifactId>org-openide-util</artifactId>
-      <version>RELEASE60-BETA1</version>
+      <version>RELEASE60-BETA2</version>
       <type>jar</type>
       <url>http://www.netbeans.org</url>
     </dependency>
 <!--    <dependency>
       <groupId>netbeans</groupId>
       <artifactId>org-netbeans-modules-autoupdate</artifactId>
-      <version>RELEASE60-BETA1</version>
+      <version>RELEASE60-BETA2</version>
       <type>jar</type>
       <url>http://www.netbeans.org</url>
       <properties>

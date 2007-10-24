@@ -71,6 +71,10 @@ public class DefaultSysEnvProviderTest extends TestCase {
         assertEquals(propertyValue, finder.getProperty(propertyKey));
     }
 
+    public void testMavenHome() {
+        assertNotNull(finder.getProperty("MAVEN_HOME"));
+    }
+    
     /**
      * modified version of org.apache.tools.ant.taskdefs.condition.Os#isOs
      */
