@@ -94,7 +94,7 @@
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
             <version>${netbeans.release}</version>
-        </dependency>
+        </dependency>               
     </dependencies>
     
     <build>
