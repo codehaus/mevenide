@@ -46,4 +46,11 @@
             </folder-->
         </folder>
     </folder>
+    <folder name="Services">
+        <folder name="MIMEResolver">
+            <file name="POMResolver.xml" url="POMResolver.xml">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+            </file>
+        </folder>
+    </folder>
 </filesystem>
