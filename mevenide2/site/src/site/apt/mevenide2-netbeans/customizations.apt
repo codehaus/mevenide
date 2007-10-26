@@ -53,3 +53,6 @@ shall respect that and update th value there, rather than editing your pom.xml.
 
   * <<netbeans.hint.deploy.server>> - Denotes which j2ee server to deploy to. Only affects ear/ejb/war packaged projects. For ejb and war, it can be set from the UI.
 
+  * <<netbeans.hint.packaging>> - Added in post-beta2 builds. A lot of IDE functionality is tied to packaging. Default IDE action mappings, file templates, customizer panels etc.
+The property if defined, instructs the IDE to handle the project as if it were of the specified packaging. Useful when your project defines custom packaging but in most respects is same as the default packagings. The possible values for the property include <<jar>>, <<war>>, <<ejb>>, <<ear>>, <<nbm>>.
+ 
