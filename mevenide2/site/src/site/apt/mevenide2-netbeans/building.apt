@@ -2,7 +2,7 @@ Building Mevenide 2 for Netbeans
 
   These are instructions to build Mevenide2, the support for Maven 2.
 
- You can get daily build binaries at {{{http://deadlock.netbeans.org/hudson/mevenide}deadlock.netbeans.org}}.
+ You can get daily build binaries at {{{http://deadlock.netbeans.org/hudson/job/mevenide/}deadlock.netbeans.org}}.
 
 * Prerequisites
 
