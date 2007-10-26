@@ -21,11 +21,14 @@
         <menu name="Mevenide2-Netbeans">  
             <item name="Introduction" href="index.html"/>
             <item name="Features" href="mevenide2-netbeans/features.html"/>
+            <item name="Testimonials" href="mevenide2-netbeans/testimonials.html"/>
+        </menu>
+        <menu name="Users">
             <item name="Installation" href="mevenide2-netbeans/installation.html"/>
             <item name="Tutorials" href="mevenide2-netbeans/tutorials/index.html"/>
             <item name="Customizations" href="mevenide2-netbeans/customizations.html"/>
-            <item name="Testimonials" href="mevenide2-netbeans/testimonials.html"/>
             <item name="IDE Maven Plugins" href="mevenide2-netbeans/ide-plugins.html"/>  
+            <item name="FAQ" href="faq.html"/>
         </menu>
             
         <menu name="Developers">
