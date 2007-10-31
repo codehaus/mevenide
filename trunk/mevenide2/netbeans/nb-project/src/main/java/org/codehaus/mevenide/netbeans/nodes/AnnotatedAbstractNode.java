@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.nodes;
 import java.awt.Image;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import org.openide.ErrorManager;
@@ -137,25 +138,26 @@ public abstract class AnnotatedAbstractNode extends AbstractNode implements File
     @Override
     public final Image getIcon(int param) {
         Image img = getIconImpl(param);
-        synchronized (privateLock) {
-            if (files != null && files.size() > 0) {
-                try {
-                    img = files.iterator().next().getFileSystem().getStatus().annotateIcon(img, param, files);
-                } catch (FileStateInvalidException e) {
-                    ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
-                }
-            }
-        }
-        return img;
+        return annotateImpl(img, param);
     }
 
     @Override
     public final Image getOpenedIcon(int param) {
         Image img = getOpenedIconImpl(param);
+        return annotateImpl(img, param);
+    }
+    
+    private Image annotateImpl(Image img, int param) {
         synchronized (privateLock) {
             if (files != null && files.size() > 0) {
                 try {
-                    img = files.iterator().next().getFileSystem().getStatus().annotateIcon(img, param, files);
+                    Iterator<FileObject> it = files.iterator();
+                    assert it.hasNext();
+                    FileObject fo = it.next();
+                    assert fo != null;
+                    FileSystem fs = fo.getFileSystem();
+                    assert fs != null;
+                    return fs.getStatus().annotateIcon(img, param, files);
                 } catch (FileStateInvalidException e) {
                     ErrorManager.getDefault().notify(ErrorManager.INFORMATIONAL, e);
                 }
