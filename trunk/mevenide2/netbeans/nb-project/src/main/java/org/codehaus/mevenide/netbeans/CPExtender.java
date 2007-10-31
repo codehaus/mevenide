@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -107,7 +108,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         return added;
     }
-    
+
     private boolean addLibrary(Library library, Model model, String scope) throws IOException {
         boolean added = false;
         try {
@@ -132,7 +133,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return added;
     }
     
-    private boolean addArchiveFile(FileObject file, Model mdl, String scope) {
+    private boolean addArchiveFile(FileObject file, Model mdl, String scope) throws IOException {
         try {
             Md5Digester digest = new Md5Digester();
             //toLowercase() seems to be required, not sure why..
@@ -141,6 +142,15 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
                 dep = checkLocalRepo(checksum);
+            }
+            //if not found anywhere, add to a custom file:// based repository structure within the project's directory.
+            if (dep == null || "unknown.binary".equals(dep[0])) {  //NOI18N
+                //also go this route when the artifact was found in local repo but is of unknown.binary groupId.
+                dep = new String[3];
+                dep[0] = "unknown.binary"; //NOI18N
+                dep[1] = file.getName();
+                dep[2] = "SNAPSHOT"; //NOI18N
+                addJarToPrivateRepo(file, mdl, dep);
             }
             if (dep != null) {
                 Dependency dependency = PluginPropertyUtils.checkModelDependency(mdl, dep[0], dep[1], true);
@@ -354,5 +364,41 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                                          SourceGroup arg2, String arg3) throws IOException {
         return false;
     }
+    
+    private void addJarToPrivateRepo(FileObject file, Model mdl, String[] dep) throws IOException {
+        //first add the local repo to
+        Iterator repos = mdl.getRepositories().iterator();
+        boolean found = false;
+        String path = null;
+        while (repos.hasNext()) {
+            org.apache.maven.model.Repository repo = (org.apache.maven.model.Repository)repos.next();
+            if ("unknown-jars-temp-repo".equals(repo.getId())) { //NOI18N
+                found = true;
+                String url = repo.getUrl();
+                if (url.startsWith("file:${project.basedir}/")) { //NOI18N
+                    path = url.substring("file:${project.basedir}/".length()); //NOI18N
+                } else {
+                    path = "lib"; //NOI18N
+                }
+                break;
+            }
+        }
+        if (!found) {
+            org.apache.maven.model.Repository repo = new org.apache.maven.model.Repository();
+            repo.setId("unknown-jars-temp-repo"); //NOI18N
+            repo.setName("A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository."); //NOI18N
+            repo.setUrl("file:${project.basedir}/lib"); //NOI18N
+            mdl.addRepository(repo);
+            path = "lib"; //NOI18N
+        }
+        assert path != null;
+        FileObject root = FileUtil.createFolder(project.getProjectDirectory(), path);
+        FileObject grp = FileUtil.createFolder(root, dep[0].replace('.', '/')); //NOI18N
+        FileObject art = FileUtil.createFolder(grp, dep[1]);
+        FileObject ver = FileUtil.createFolder(art, dep[2]);
+        FileUtil.copyFile(file, ver, dep[1] + "-" + dep[2], "jar"); //NOI18N
+    }
+    
+    
     
 }
