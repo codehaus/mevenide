@@ -200,7 +200,9 @@ public final class NbMavenProject implements Project {
             } finally {
                 if (project == null) {
                     try {
-                        project = new MavenProject(getEmbedder().readModel(projectFile));
+                        if (projectFile.exists()) { //#120860
+                            project = new MavenProject(getEmbedder().readModel(projectFile));
+                        }
                     } catch (FileNotFoundException ex2) {
                         ex2.printStackTrace();
                     } catch (IOException ex2) {
