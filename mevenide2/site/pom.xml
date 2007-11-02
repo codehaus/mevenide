@@ -60,6 +60,17 @@
                           <replaceContent>${basedir}/src/resources/paypal.snippet</replaceContent>
                       </configuration>
                   </execution>
+                  <execution>
+                      <id>ohloh</id>
+                      <phase>site</phase>
+                      <goals>
+                          <goal>postprocess</goal>
+                      </goals>
+                      <configuration>
+                          <token>&lt;h5&gt;OHLOH&lt;/h5&gt;</token>
+                          <replaceContent>${basedir}/src/resources/ohloh.snippet</replaceContent>
+                      </configuration>
+                  </execution>
               </executions>
           </plugin>
       </plugins>
