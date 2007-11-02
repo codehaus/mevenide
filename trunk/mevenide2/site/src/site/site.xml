@@ -40,6 +40,8 @@
         <!--menu name="Mevenide2IntelliJ">  
         </menu-->
         ${reports}
+        
+        <menu name="OHLOH"/>
 
     </body>
 </project>
