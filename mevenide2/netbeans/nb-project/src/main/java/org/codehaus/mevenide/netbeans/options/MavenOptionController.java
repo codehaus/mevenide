@@ -61,6 +61,10 @@ class MavenOptionController extends OptionsPanelController {
         getPanel().applyValues(setts);
         try {
             File userDir = MavenSettingsSingleton.getInstance().getM2UserDir();
+            //#121100 make sure the user dir exists.
+            if (!userDir.exists()) {
+                userDir.mkdirs();
+            }
             WriterUtils.writeSettingsModel(FileUtil.toFileObject(userDir), setts);
         } catch (IOException ex) {
             ex.printStackTrace();
