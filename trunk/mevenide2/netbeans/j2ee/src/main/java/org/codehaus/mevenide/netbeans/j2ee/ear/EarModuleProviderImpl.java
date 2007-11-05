@@ -223,12 +223,16 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         //TODO??
         Sources sources = ProjectUtils.getSources(project);
         SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
-        FileObject[] roots = new FileObject[groups.length+1];
-        roots[0] = EjbJar.getEjbJars(project)[0].getMetaInf();
-        for (int i=0; i < groups.length; i++) {
-            roots[i+1] = groups[i].getRootFolder();
+        //#116215, 121147 just workaround the AIOOBE
+        EjbJar[] jars = EjbJar.getEjbJars(project);
+        int offset = (jars == null || jars.length == 0) ? 0 : 1;
+        FileObject[] roots = new FileObject[groups.length + offset];
+        if (jars != null && jars.length > 0) {
+            roots[0] = jars[0].getMetaInf();
         }
-        
+        for (int i=0; i < groups.length; i++) {
+            roots[i + offset] = groups[i].getRootFolder();
+        }
         return roots;
     }
     
