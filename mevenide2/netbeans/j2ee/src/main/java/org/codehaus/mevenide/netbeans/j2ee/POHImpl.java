@@ -18,6 +18,8 @@
 package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -25,6 +27,7 @@ import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
@@ -45,10 +48,12 @@ import org.openide.util.NbBundle;
 public class POHImpl extends ProjectOpenedHook {
     private NbMavenProject project;
     private J2eeLookupProvider.Provider provider;
+    private PropertyChangeListener refreshListener;
 
     public POHImpl(NbMavenProject prj, J2eeLookupProvider.Provider prov) {
         project = prj;
         provider = prov;
+        
     }
     
     public void hackModuleServerChange() {
@@ -108,9 +113,27 @@ public class POHImpl extends ProjectOpenedHook {
             report.addReport(rep);
             
         }
+        if (refreshListener == null) {
+            //#121148 when the user edits the file we need to reset the server instance
+            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            refreshListener = new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent evt) {
+                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                        projectOpened();
+                    }
+                }
+            };
+            watcher.addPropertyChangeListener(refreshListener);
+        }
     }
 
     protected void projectClosed() {
+        //is null check necessary?
+        if (refreshListener != null) {
+            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            watcher.removePropertyChangeListener(refreshListener);
+            refreshListener = null;
+        }
     }
     
     private static class AddServerAction extends AbstractAction {
