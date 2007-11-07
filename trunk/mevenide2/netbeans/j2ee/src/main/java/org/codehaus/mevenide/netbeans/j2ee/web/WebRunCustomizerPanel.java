@@ -17,12 +17,15 @@
 
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
+import java.io.IOException;
+import javax.swing.event.DocumentEvent;
 import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
@@ -35,13 +38,15 @@ import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.netbeans.spi.project.ActionProvider;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author  mkleint
  */
 public class WebRunCustomizerPanel extends javax.swing.JPanel {
-    private static final String PROP_CLIENT_URL_PART = "netbeans.deploy.clientUrlPart";
+    private static final String PROP_CLIENT_URL_PART = "netbeans.deploy.clientUrlPart"; //NOI18N
+    public static final String PROP_SHOW_IN_BROWSER = "netbeans.deploy.showBrowser"; //NOI18N
     private Project project;
     private ModelHandle handle;
     private WebModule module;
@@ -159,6 +164,7 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
                 }
             }
         });
+        
         //TODO remove the NbMavenProject dependency
         run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class));
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
@@ -171,7 +177,24 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         } else {
             oldUrl = ""; //NOI18N
         }
+        txtRelativeUrl.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent arg0) {
+                applyRelUrl();
+            }
+
+            public void removeUpdate(DocumentEvent arg0) {
+                applyRelUrl();
+            }
+
+            public void changedUpdate(DocumentEvent arg0) {
+                applyRelUrl();
+            }
+        });
+
         
+        String browser = (String)project.getProjectDirectory().getAttribute(PROP_SHOW_IN_BROWSER);
+        boolean bool = browser != null ? Boolean.parseBoolean(browser) : true;
+        cbBrowser.setSelected(bool);
     }
     
     private Wrapper findWrapperByInstance(String instanceId) {
@@ -324,19 +347,27 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         }
         return false;
     }
-
-    void applyChanges() {
+    
+    private void applyRelUrl() {
         String newUrl = txtRelativeUrl.getText().trim();
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {
+                System.out.println("setting run props.");
                 run.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
             if (isDebugCompatible) {
+                System.out.println("setting debug props.");
                 debug.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
             }
         }
+    }
+
+    //this megod is called after the model was saved.
+    void applyChanges() {
         //#109507 workaround
         POHImpl poh = project.getLookup().lookup(POHImpl.class);
         poh.hackModuleServerChange();
@@ -344,7 +375,13 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         //---
         moduleProvider.loadPersistedServerId();
         moduleProvider.getWebModuleImplementation().setContextPath(txtContextPath.getText().trim());
-        handle.markAsModified(handle.getActionMappings());
+        boolean bool = cbBrowser.isSelected();
+        try {
+            project.getProjectDirectory().setAttribute(PROP_SHOW_IN_BROWSER, bool ? null : Boolean.FALSE.toString());
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        
     }
     
     

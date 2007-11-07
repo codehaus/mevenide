@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
-<Form version="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
@@ -27,7 +27,7 @@
                               <Component id="lblHint2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace pref="140" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="txtRelativeUrl" pref="280" max="32767" attributes="0"/>
+                          <Component id="txtRelativeUrl" pref="283" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
@@ -40,10 +40,10 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="comServer" pref="277" max="32767" attributes="0"/>
+                              <Component id="comServer" pref="279" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="txtJ2EEVersion" alignment="1" pref="277" max="32767" attributes="0"/>
-                          <Component id="txtContextPath" alignment="0" pref="277" max="32767" attributes="0"/>
+                          <Component id="txtJ2EEVersion" alignment="1" pref="279" max="32767" attributes="0"/>
+                          <Component id="txtContextPath" alignment="0" pref="279" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>

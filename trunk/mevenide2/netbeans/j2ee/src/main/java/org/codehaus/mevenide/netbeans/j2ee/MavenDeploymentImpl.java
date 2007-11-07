@@ -24,6 +24,7 @@ import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.bridges.debugger.MavenDebugger;
 import org.codehaus.mevenide.bridges.deployment.MavenDeployment;
+import org.codehaus.mevenide.netbeans.j2ee.web.WebRunCustomizerPanel;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
@@ -82,8 +83,16 @@ public class MavenDeploymentImpl implements MavenDeployment {
                 
                 String clientUrl = Deployment.getDefault().deploy(jmp, debugmode, clientModuleUri, clientUrlPart, forceRedeploy, new DLogger(log));
                 if (clientUrl != null) {
-                    log.info("Executing browser to show " + clientUrl);//NOI18N - no localization in maven build now.
-                    HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(clientUrl));
+                    FileObject fo = FileUtil.toFileObject(project.getBasedir());
+                    boolean show = true;
+                    if (fo != null) {
+                        String browser = (String)fo.getAttribute(WebRunCustomizerPanel.PROP_SHOW_IN_BROWSER);
+                        show = browser != null ? Boolean.parseBoolean(browser) : true;
+                    }
+                    if (show) {
+                        log.info("Executing browser to show " + clientUrl);//NOI18N - no localization in maven build now.
+                        HtmlBrowser.URLDisplayer.getDefault().showURL(new URL(clientUrl));
+                    }
                 }
                 if (debugmode) {
                     ServerDebugInfo sdi = jmp.getServerDebugInfo();
