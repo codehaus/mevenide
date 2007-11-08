@@ -77,5 +77,19 @@ The current solution is to include everything that under target/generated-source
 Most plugins currently generate sources into these directories by default.
      </answer>
    </faq>
+   <faq id="question8">
+     <question>How do I deploy my EARs to the application servers in the IDE?</question>
+     <answer>
+See instructions how to setup the <a href="mevenide2-netbeans/customizations.html">netbeans.hint.deploy.server</a> property.
+     </answer>
+   </faq>
+   <faq id="question9">
+     <question>Can I define custom goal definitions for all projects?</question>
+     <answer>
+Yes, since the 3.0.8 version shipped in NetBeans 6.0 beta2 you can go to Tools/Options and in the Miscellaneous/Maven2 panel edit your custom mappings. 
+These will appear in the Custom Goals> submenu on project's popup menu.
+     </answer>
+   </faq>
+
  </part>
 </faqs>
