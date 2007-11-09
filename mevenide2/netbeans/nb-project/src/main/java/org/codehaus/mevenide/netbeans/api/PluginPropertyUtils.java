@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.api;
 
 import java.util.Iterator;
 import java.util.List;
+import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
 import org.apache.maven.model.Model;
@@ -27,6 +28,7 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.project.Project;
 
@@ -222,6 +224,127 @@ public class PluginPropertyUtils {
     public static boolean hasModelRepository(MavenProject project, Model mdl, String url) {
         return checkModelRepository(project, mdl, url, false) != null;
     }
+
+    
+    private static final String CONFIGURATION_EL = "configuration";//NOI18N
+    private static final String RELEASE_VERSION = "RELEASE";//NOI18N
+    
+    /**
+     * update the source level of project to given value.
+     * 
+     * @param handle handle which models are to be updated
+     * @param sourceLevel the sourcelevel to set
+     */
+    public static void checkSourceLevel(ModelHandle handle, String sourceLevel) {
+        String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, Constants.SOURCE_PARAM, 
+                "compile"); //NOI18N
+        if (source != null && source.contains(sourceLevel)) {
+            return;
+        }
+        Plugin plugin = new Plugin();
+        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
+        plugin.setVersion(RELEASE_VERSION);
+        Plugin old = null;
+        Build bld = handle.getPOMModel().getBuild();
+        if (bld != null) {
+            old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
+        } else {
+            handle.getPOMModel().setBuild(new Build());
+        }
+        if (old != null) {
+            plugin = old;
+        } else {
+            handle.getPOMModel().getBuild().addPlugin(plugin);
+        }
+        Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
+        if (dom == null) {
+            dom = new Xpp3Dom(CONFIGURATION_EL);
+            plugin.setConfiguration(dom);
+        }
+        Xpp3Dom dom2 = dom.getChild(Constants.SOURCE_PARAM);
+        if (dom2 == null) {
+            dom2 = new Xpp3Dom(Constants.SOURCE_PARAM);
+            dom.addChild(dom2);
+        }
+        dom2.setValue(sourceLevel);
+        
+        dom2 = dom.getChild(Constants.TARGET_PARAM);
+        if (dom2 == null) {
+            dom2 = new Xpp3Dom(Constants.TARGET_PARAM);
+            dom.addChild(dom2);
+        }
+        dom2.setValue(sourceLevel);
+        handle.markAsModified(handle.getPOMModel());
+    }
+    
+    /**
+     * update the encoding of project to given value.
+     * 
+     * @param handle handle which models are to be updated
+     * @param enc encoding to use
+     */
+    public static void checkEncoding(ModelHandle handle, String enc) {
+        String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, 
+                Constants.ENCODING_PARAM, null);
+        if (source != null && source.contains(enc)) {
+            return;
+        }
+        Plugin plugin = new Plugin();
+        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
+        plugin.setVersion(RELEASE_VERSION);
+        Plugin plugin2 = new Plugin();
+        plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+        plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
+        plugin2.setVersion(RELEASE_VERSION);
+        Plugin old = null;
+        Plugin old2 = null;
+        Build bld = handle.getPOMModel().getBuild();
+        if (bld != null) {
+            old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
+            old2 = (Plugin) bld.getPluginsAsMap().get(plugin2.getKey());
+        } else {
+            handle.getPOMModel().setBuild(new Build());
+        }
+        if (old != null) {
+            plugin = old;
+        } else {
+            handle.getPOMModel().getBuild().addPlugin(plugin);
+        }
+        if (old2 != null) {
+            plugin2 = old2;
+        } else {
+            handle.getPOMModel().getBuild().addPlugin(plugin2);
+        }
+        Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
+        if (dom == null) {
+            dom = new Xpp3Dom(CONFIGURATION_EL);
+            plugin.setConfiguration(dom);
+        }
+        Xpp3Dom dom2 = dom.getChild(Constants.ENCODING_PARAM);
+        if (dom2 == null) {
+            dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
+            dom.addChild(dom2);
+        }
+        dom2.setValue(enc);
+        
+        dom = (Xpp3Dom) plugin2.getConfiguration();
+        if (dom == null) {
+            dom = new Xpp3Dom(CONFIGURATION_EL);
+            plugin2.setConfiguration(dom);
+        }
+        dom2 = dom.getChild(Constants.ENCODING_PARAM);
+        if (dom2 == null) {
+            dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
+            dom.addChild(dom2);
+        }
+        dom2.setValue(enc);
+        handle.markAsModified(handle.getPOMModel());
+    }
+    
     
 //    /**
 //     * 
