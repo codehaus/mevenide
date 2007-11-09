@@ -43,11 +43,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 /**
- *
- * @author mkleint
- */
-/** inner class does the matching of the JTextField's
+ * inner class does the matching of the JTextField's
  * document to completion strings kept in an ArrayList
+ * @author mkleint
  */
 
 public class TextValueCompleter implements DocumentListener {
@@ -91,6 +89,7 @@ public class TextValueCompleter implements DocumentListener {
         completionList = new JList(completionListModel);
         completionList.setPrototypeCellValue("lets have it at least this wide and add some more just in case"); //NOI18N
         completionList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() > 1) {
                     field.getDocument().removeDocumentListener(TextValueCompleter.this);
@@ -234,18 +233,18 @@ public class TextValueCompleter implements DocumentListener {
                     if (separators.indexOf(token.charAt(0)) != -1) {
                         return ""; //NOI18N
                     }
-                    return token.substring(0, pos - count);
+                    return Pattern.quote(token.substring(0, pos - count));
                 } else {
                     count = count + token.length();
                     lastToken = token;
                 }
             }
             if (lastToken.length() > 0 && separators.indexOf(lastToken.charAt(0)) == -1) {
-                return lastToken;
+                return Pattern.quote(lastToken);
             }
             return ""; //NOI18N
         } else {
-            return field.getText().trim();
+            return Pattern.quote(field.getText().trim());
         }
     }
     
