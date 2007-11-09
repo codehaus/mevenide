@@ -51,11 +51,6 @@ import org.openide.filesystems.FileUtil;
  */
 public class SourcesPanel extends JPanel {
     
-    private static final String CONFIGURATION_EL = "configuration";//NOI18N
-    private static final String RELEASE_VERSION = "RELEASE";//NOI18N
-    private static final String ENCODING = "encoding"; //NOI18N
-    private static final String SOURCE_PARAM = "source";//NOI18N
-    private static final String TARGET_PARAM = "target";//NOI18N
     
     private String encoding;
     private String defaultEncoding;
@@ -80,7 +75,7 @@ public class SourcesPanel extends JPanel {
         
         comSourceLevel.setSelectedItem(sourceLevel);
         String enc = PluginPropertyUtils.getPluginProperty(project, 
-                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING, null);
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, Constants.ENCODING_PARAM, null);
         Charset chs = null;
         if (enc != null) {
             chs = Charset.forName(enc);
@@ -88,7 +83,7 @@ public class SourcesPanel extends JPanel {
         if (chs == null) {
             String resourceEnc = PluginPropertyUtils.getPluginProperty(project,
                     Constants.GROUP_APACHE_PLUGINS,
-                    Constants.PLUGIN_RESOURCES, ENCODING, null);
+                    Constants.PLUGIN_RESOURCES, Constants.ENCODING_PARAM, null);
             if (resourceEnc != null) {
                 chs = Charset.forName(resourceEnc);
             }
@@ -119,7 +114,7 @@ public class SourcesPanel extends JPanel {
     
     private void handleSourceLevelChange() {
         sourceLevel = (String)comSourceLevel.getSelectedItem();
-        checkSourceLevel(handle.getPOMModel(), sourceLevel);
+        PluginPropertyUtils.checkSourceLevel(handle, sourceLevel);
         if (defaultSourceLevel.equals(sourceLevel)) {
             lblSourceLevel.setFont(lblSourceLevel.getFont().deriveFont(Font.PLAIN));
         } else {
@@ -127,50 +122,6 @@ public class SourcesPanel extends JPanel {
         }
     }
 
-    //TODO copied from persistence' CPExtender. have it at one place only..
-    private void checkSourceLevel(Model mdl, String sl) {
-        String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, SOURCE_PARAM, 
-                "compile"); //NOI18N
-        if (source != null && source.contains(sl)) {
-            return;
-        }
-        Plugin plugin = new Plugin();
-        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
-        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
-        plugin.setVersion(RELEASE_VERSION);
-        Plugin old = null;
-        Build bld = mdl.getBuild();
-        if (bld != null) {
-            old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
-        } else {
-            mdl.setBuild(new Build());
-        }
-        if (old != null) {
-            plugin = old;
-        } else {
-            mdl.getBuild().addPlugin(plugin);
-        }
-        Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
-        if (dom == null) {
-            dom = new Xpp3Dom(CONFIGURATION_EL);
-            plugin.setConfiguration(dom);
-        }
-        Xpp3Dom dom2 = dom.getChild(SOURCE_PARAM);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(SOURCE_PARAM);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(sl);
-        
-        dom2 = dom.getChild(TARGET_PARAM);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(TARGET_PARAM);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(sl);
-        handle.markAsModified(mdl);
-    }
     
     
     private void handleEncodingChange () {
@@ -182,7 +133,7 @@ public class SourcesPanel extends JPanel {
         else {
             encName = encoding;
         }
-        checkEncoding(handle.getPOMModel(), encName);
+        PluginPropertyUtils.checkEncoding(handle, encName);
         if (defaultEncoding.equals(encName)) {
             lblEncoding.setFont(lblEncoding.getFont().deriveFont(Font.PLAIN));
         } else {
@@ -190,66 +141,6 @@ public class SourcesPanel extends JPanel {
         }
     }
     
-    //TODO copied from persistence' CPExtender. have it at one place only..
-    private void checkEncoding(Model mdl, String enc) {
-        String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, 
-                ENCODING, null);
-        if (source != null && source.contains(enc)) {
-            return;
-        }
-        Plugin plugin = new Plugin();
-        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
-        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
-        plugin.setVersion(RELEASE_VERSION);
-        Plugin plugin2 = new Plugin();
-        plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
-        plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
-        plugin2.setVersion(RELEASE_VERSION);
-        Plugin old = null;
-        Plugin old2 = null;
-        Build bld = mdl.getBuild();
-        if (bld != null) {
-            old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
-            old2 = (Plugin) bld.getPluginsAsMap().get(plugin2.getKey());
-        } else {
-            mdl.setBuild(new Build());
-        }
-        if (old != null) {
-            plugin = old;
-        } else {
-            mdl.getBuild().addPlugin(plugin);
-        }
-        if (old2 != null) {
-            plugin2 = old2;
-        } else {
-            mdl.getBuild().addPlugin(plugin2);
-        }
-        Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
-        if (dom == null) {
-            dom = new Xpp3Dom(CONFIGURATION_EL);
-            plugin.setConfiguration(dom);
-        }
-        Xpp3Dom dom2 = dom.getChild(ENCODING);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(ENCODING);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(enc);
-        
-        dom = (Xpp3Dom) plugin2.getConfiguration();
-        if (dom == null) {
-            dom = new Xpp3Dom(CONFIGURATION_EL);
-            plugin2.setConfiguration(dom);
-        }
-        dom2 = dom.getChild(ENCODING);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(ENCODING);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(enc);
-        handle.markAsModified(mdl);
-    }
     
 
     private static class EncodingRenderer extends DefaultListCellRenderer {
