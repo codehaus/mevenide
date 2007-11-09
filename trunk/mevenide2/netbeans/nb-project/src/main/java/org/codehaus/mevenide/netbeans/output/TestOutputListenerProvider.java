@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -30,10 +31,10 @@ import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.openide.ErrorManager;
-import org.openide.cookies.EditorCookie;
+import org.openide.awt.StatusDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.text.Line;
+import org.openide.util.NbBundle;
 import org.openide.windows.IOProvider;
 import org.openide.windows.InputOutput;
 import org.openide.windows.OutputEvent;
@@ -56,6 +57,9 @@ public class TestOutputListenerProvider implements OutputProcessor {
     private Pattern outDirPattern;
     private Pattern outDirPattern2;
     private Pattern runningPattern;
+    
+    private static Logger LOG = Logger.getLogger(TestOutputListenerProvider.class.getName());
+
     
     String outputDir;
     String runningTestClass;
@@ -147,11 +151,13 @@ public class TestOutputListenerProvider implements OutputProcessor {
          * @param ev the event describing the line
          */
         public void outputLineAction(OutputEvent ev) {
-            FileObject outDir;
+            FileObject outDir = null;
             if (outputDir != null) {
                 outDir = FileUtil.toFileObject(new File(outputDir));
-            } else {
-                //TODO how to report..
+            } 
+            if (outDir == null) {
+                LOG.info("Cannot find path " + outputDir + " to follow link in Output Window."); //NOI18N
+                StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(TestOutputListenerProvider.class, "MSG_CannotFollowLink1"));
                 return;
             }
             outDir.refresh();
@@ -167,7 +173,8 @@ public class TestOutputListenerProvider implements OutputProcessor {
                             : testname;
                     openLog(report, nm, testDir);
                 } else {
-                    //TODO how to report..
+                    LOG.info("Cannot find report path " + outputDir + testname + ".txt to follow link in Output Window."); //NOI18N
+                    StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(TestOutputListenerProvider.class, "MSG_CannotFollowLink2"));
                 }
             }
         }
