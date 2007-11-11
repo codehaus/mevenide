@@ -48,6 +48,9 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public Element getConfigurationFragment(final String elementName, final String namespace, boolean shared) {
         if (shared) {
+            if (namespace.equals("http://www.sun.com/creator/ns")) {
+                return getMockCreatorElement();
+            }
             ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
             return null;
         }
@@ -71,6 +74,9 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public void putConfigurationFragment(final Element fragment, boolean shared) throws IllegalArgumentException {
         if (shared) {
+            if (fragment.getNamespaceURI().equals("http://www.sun.com/creator/ns")) {
+                return;
+            }
             ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + fragment.getNodeName()); //NOI18N
             return;
         }
@@ -113,6 +119,9 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     
     public boolean removeConfigurationFragment(final String elementName, final String namespace, boolean shared) throws IllegalArgumentException {
         if (shared) {
+            if (namespace.equals("http://www.sun.com/creator/ns")) {
+                return true;
+            }
             ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
             return false;
         }
@@ -167,5 +176,17 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
             }
         }
         return result;
+    }
+
+    //TODO major hack!
+    private Element getMockCreatorElement() {
+        Document doc = XMLUtil.createDocument("creator-data", "http://www.sun.com/creator/ns", null, null);
+        Element el = doc.getDocumentElement();
+        el.setAttribute("jsf.current.theme", "woodstock-theme-default");
+        el.setAttribute("jsf.pagebean.package", project.getOriginalMavenProject().getGroupId());
+        el.setAttribute("jsf.project.libraries.dir", "lib");
+        el.setAttribute("jsf.project.version", "4.0");
+        el.setAttribute("jsf.startPage", "Page1.jsp");
+        return el;
     }
 }
