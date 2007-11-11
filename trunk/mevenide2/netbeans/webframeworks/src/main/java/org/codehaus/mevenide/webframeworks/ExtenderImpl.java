@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.spi.archetype.NewProjectWizardExtender;
@@ -64,6 +65,16 @@ public class ExtenderImpl implements NewProjectWizardExtender {
                 ModelHandle handle = WizardExtenderUtils.createModelHandle(nbprj);
                 handle.getPOMModel().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
                 handle.getNetbeansPrivateProfile().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID, serverInstance);
+                String level = (String) descriptor.getProperty("j2eeLevel"); //NOI18N
+                if (level != null) {
+                    handle.getPOMModel().getProperties().setProperty(Constants.HINT_J2EE_VERSION, level);
+                }
+                String sourceLevel = (String) descriptor.getProperty("setSourceLevel"); //NOI18N
+                if (sourceLevel != null) {
+                    PluginPropertyUtils.checkSourceLevel(handle, sourceLevel);
+                }
+                handle.getPOMModel().getProperties().setProperty(Constants.HINT_DEPLOY_J2EE_SERVER, serverType);
+                
                 handle.markAsModified(handle.getProfileModel());
                 handle.markAsModified(handle.getPOMModel());
                 WizardExtenderUtils.writeModelHandle(handle, nbprj);
