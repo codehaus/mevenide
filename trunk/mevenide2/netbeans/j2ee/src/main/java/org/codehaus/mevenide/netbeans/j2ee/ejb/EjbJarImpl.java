@@ -84,6 +84,11 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      */
     
     public String getJ2eePlatformVersion() {
+        //try to apply the hint if it exists.
+        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        if (version != null) {
+            return version;
+        }
         //TODO??
         if (EjbJar.VERSION_3_0.equals(getModuleVersion())) {
             return EjbProjectConstants.JAVA_EE_5_LEVEL;

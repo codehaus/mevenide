@@ -87,6 +87,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     }
     
     public String getJ2eePlatformVersion() {
+        //try to apply the hint if it exists.
+        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        if (version != null) {
+            return version;
+        }
         DDProvider prov = DDProvider.getDefault();
         FileObject dd = getDeploymentDescriptor();
         if (dd != null) {
