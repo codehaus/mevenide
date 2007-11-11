@@ -78,12 +78,21 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
      * @return J2EE platform version
      */
     public String getJ2eePlatformVersion() {
+        //try to apply the hint if it exists.
+        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        if (version != null) {
+            return version;
+        }
         if (isApplicationXmlGenerated()) {
-            String version = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
+            version = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
                                               Constants.PLUGIN_EAR, "version", "generate-application-xml"); //NOI18N
             // the default version in maven plugin is also 1.3
             //TODO what if the default changes?
             if (version != null) {
+                // 5 is not valid value in netbeans, it's 1.5
+                if ("5".equals(version)) {
+                    return EjbProjectConstants.JAVA_EE_5_LEVEL;
+                }
                 return version.trim();
             }
         } else {
