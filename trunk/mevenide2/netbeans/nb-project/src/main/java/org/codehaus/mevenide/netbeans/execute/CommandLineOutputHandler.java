@@ -91,7 +91,8 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
             try {
                 String line = str.readLine();
                 while (line != null) {
-                    if (line.startsWith("[INFO] ---------------------------------")) { //NOI18N
+                    if (line.startsWith("[INFO] Final Memory:")) { //NOI18N
+                        // previous value [INFO] --------------- is too early, the compilation errors don't get processed in this case.
                         //heuristics..
                         if (currentTag != null) {
                             CommandLineOutputHandler.this.processEnd(getEventId(SEC_MOJO_EXEC, currentTag), stdOut);
