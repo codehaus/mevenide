@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/junit/Bundle.properties
+OpenIDE-Module-Layer: org/codehaus/mevenide/junit/layer.xml
+OpenIDE-Module-Public-Packages: -
+AutoUpdate-Show-In-Client: false

@@ -1,0 +1,95 @@
+<?xml version="1.0"?>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements.  See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership.  The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License.  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<faqs id="FAQ" title="Frequently Asked Questions">
+ <part id="General">
+   <faq id="question1">
+     <question>How do I setup the project to use JDK other than the default?</question>
+     <answer>
+The current Maven solution to the problem is to run the Maven build with a different JDK. That's not suitable for IDE use. 
+<a href="http://docs.codehaus.org/display/MAVEN/Toolchains">Toolchains proposal</a> shall make the use of JDK configurable. In the mean time
+you can only have the project compiled with different JDK by running with external command-line Maven
+instance that used the desired JDK. To get the correct code completion and hints in the IDE's editor,
+check the <a href="mevenide2-netbeans/customizations.html">netbeans.hint.jdkPlatform</a> property.
+     </answer>
+   </faq>
+   <faq id="question2">
+     <question>Why cannot I run/debug my project?</question>
+     <answer>
+A possible reason is that the IDE doesn't know how to handle your project's packaging and doesn't include
+default IDE action mappings. To check, go to project's Properties dialog and examine the Actions tab and it's
+mappings to default actions. You can define the missing entries there. Alternatively you can set the <a href="mevenide2-netbeans/customizations.html">netbeans.hint.packaging</a> property
+to let the IDE handle the project as being of a default packaging (if a custom packaging is the cause of the problem).
+     </answer>
+   </faq>
+   <faq id="question3">
+     <question>Why cannot I debug my test?</question>
+     <answer>
+Check previous entry for possible problems with mappings. When the build starts, but the breakpoint is not reached,
+you probably encountered issue <a href="http://jira.codehaus.org/browse/MEVENIDE-435">MEVENIDE-435</a>. Check it's description for a workaround.
+     </answer>
+   </faq>
+   <faq id="question4">
+     <question>Why cannot I build my project with the embedded version of Maven?</question>
+     <answer>
+By default the IDE builds Maven projects with the embedded version of Maven. That one comes from Sep 2006 and is close/equal to 2.0.4 version of Maven.
+Any plugin or project requiring a later version will fail the build. In this situation you need to install the
+<a href="http://maven.apache.org/download.html">latest Maven binaries</a>. Then go to Tools/Options dialog and in the Miscellaneous/Maven2 tab
+set it's location. You can either mark individual projects or everything to build externally.
+     </answer>
+   </faq>
+   <faq id="question5">
+     <question>What does "Unable to build project foobar; it requires Maven version 2.0.5" mean?</question>
+     <answer>
+By default the IDE builds Maven projects with the embedded version of Maven. That one comes from Sep 2006 and is close/equal to 2.0.4 version of Maven.
+Any plugin or project requiring a later version will fail the build. In this situation you need to install the
+<a href="http://maven.apache.org/download.html">latest Maven binaries</a>. Then go to Tools/Options dialog and in the Miscellaneous/Maven2 tab
+set it's location. You can either mark individual projects or everything to build externally.
+     </answer>
+   </faq>
+   <faq id="question6">
+     <question>I don't want to get the default license header in newly created files!</question>
+     <answer>
+See instructions how to setup the <a href="mevenide2-netbeans/customizations.html">netbeans.hint.license</a> property.
+     </answer>
+   </faq>
+   <faq id="question7">
+     <question>My generated sources are marked as errors in the editor.</question>
+     <answer>
+The IDE source code has currently no way to recognize plugins that generate sources and where do they generate them. 
+The current solution is to include everything that under target/generated-sources/foobar folders where foobar is usually the name of the plugin. 
+Most plugins currently generate sources into these directories by default.
+     </answer>
+   </faq>
+   <faq id="question8">
+     <question>How do I deploy my EARs to the application servers in the IDE?</question>
+     <answer>
+See instructions how to setup the <a href="mevenide2-netbeans/customizations.html">netbeans.hint.deploy.server</a> property.
+     </answer>
+   </faq>
+   <faq id="question9">
+     <question>Can I define custom goal definitions for all projects?</question>
+     <answer>
+Yes, since the 3.0.8 version shipped in NetBeans 6.0 beta2 you can go to Tools/Options and in the Miscellaneous/Maven2 panel edit your custom mappings. 
+These will appear in the Custom Goals> submenu on project's popup menu.
+     </answer>
+   </faq>
+
+ </part>
+</faqs>

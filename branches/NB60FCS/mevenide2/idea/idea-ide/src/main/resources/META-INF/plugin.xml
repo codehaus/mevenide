@@ -1,0 +1,65 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin url="http://mevenide.codehaus.org/mevenide-idea/">
+    <name>Mevenide2 IDEA IDE Plugin</name>
+    <description>This plugin integrates Maven 2 into IntelliJ IDEA</description>
+    <version>${plugin.version}</version>
+    <vendor url="http://mevenide.codehaus.org/">Mevenide Team</vendor>
+    <change-notes>
+        <![CDATA[]]>
+    </change-notes>
+    <idea-version since-build="5700"/>
+<!--
+    <application-components>
+        <component>
+            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildApplicationComponent
+            </implementation-class>
+        </component>
+    </application-components>
+-->
+    <project-components>
+        <component>
+            <implementation-class>org.codehaus.mevenide.idea.MavenReloadedPlugin</implementation-class>
+            <option name="workspace" value="true"/>
+        </component>
+    </project-components>
+    <depends>Mevenide2 IDEA Core Plugin</depends>    
+    <actions>
+        <group id="MavenPopupGroup" class="org.codehaus.mevenide.idea.action.MavenPopupGroup" popup="true" text="Maven"
+               description="Maven 2 Actions">
+
+            <separator/>
+
+            <add-to-group anchor="last" group-id="ProjectViewPopupMenu"/>
+        </group>
+
+        <group id="MavenContextGroup" popup="false">
+
+<!--
+            <action class="org.codehaus.mevenide.idea.action.ExecuteAction" id="MavenContextGroup.execute"
+                    text="Execute Goal" description="Executes a Maven 2 goal using the selected POM."/>
+-->
+
+            <action class="org.codehaus.mevenide.idea.action.UpdateAction" id="MavenContextGroup.update"
+                    text="Update Project" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <action class="org.codehaus.mevenide.idea.action.OnOffAction" id="MavenContextGroup.onOff"
+                    text="Disable" description="Enables/Disables the parsing of this Maven 2 POM."/>
+
+            <add-to-group anchor="last" group-id="MavenPopupGroup"/>
+        </group>
+
+        <group id="MavenBuildGroup" popup="false">
+
+            <separator/>
+
+            <action class="org.codehaus.mevenide.idea.action.UpdateAllAction" id="MavenBuildGroup.updateAll"
+                    text="Process Maven POMs" description="Updates the project by re-processing the Maven 2 POMs."/>
+
+            <separator/>
+
+            <add-to-group relative-to-action="AntBuildGroup" anchor="after" group-id="BuildMenu"/>
+        </group>
+    </actions>
+</idea-plugin>

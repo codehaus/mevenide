@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : deployWebAction.xml
+    Created on : January 17, 2006, 7:26 AM
+    Author     : mkleint
+    Description:
+        
+-->
+<actions>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>war</packaging>
+            <packaging>ear</packaging>
+            <packaging>ejb</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
+        </goals>
+    </action>
+    <action>
+        <actionName>run.single</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
+        </goals>
+        <properties>
+            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+        </properties>
+    </action>
+    <action>
+        <actionName>debug</actionName>
+        <packagings>
+            <packaging>war</packaging>
+            <packaging>ear</packaging>
+            <packaging>ejb</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
+        </goals>
+        <properties>
+            <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+        </properties>
+    </action>
+    <action>
+        <actionName>debug.single</actionName>
+        <packagings>
+            <packaging>war</packaging>
+        </packagings>
+        <goals>
+            <goal>package</goal>
+            <goal>org.codehaus.mevenide:netbeans-deploy-plugin:RELEASE:deploy</goal>
+        </goals>
+        <properties>
+            <netbeans.clientUrlPart>${webpagePath}</netbeans.clientUrlPart>
+            <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+        </properties>
+    </action>
+    
+</actions>

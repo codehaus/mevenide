@@ -1,0 +1,26 @@
+<assembly>
+    <id>dist</id>
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>false</includeBaseDirectory>
+    <dependencySets>
+        <dependencySet>
+            <outputDirectory>/mevenide2-idea-build/lib</outputDirectory>
+            <unpack>false</unpack>
+            <scope>runtime</scope>
+            <includes>
+                <include>org.codehaus.mevenide:idea-build</include>
+            </includes>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <fileSet>
+            <directory>target/lib</directory>
+            <outputDirectory>/mevenide2-idea-build/lib</outputDirectory>
+            <includes>
+                <include>**/*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

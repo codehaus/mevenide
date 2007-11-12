@@ -1,0 +1,41 @@
+Building Selena EAP Maven Integration
+
+  These are instructions to build Selena EAP Maven Integration, the support for Maven2.
+
+* Prerequisites
+
+  * Make sure you've installed at least Maven 2.0.4
+
+* Checkout
+
+  * Checkout modules required for Selena EAP Maven Integration:
+
++-------------------------------------------------------------------------------+
+svn checkout http://svn.jetbrains.org/idea/Trunk/maven idea-maven-integration
++-------------------------------------------------------------------------------+
+
+* Building
+
+  * Go to the created <<idea-maven-integration>> directory and run
+
++-------------------------------------------------------------------------------+
+mvn install assembly:assembly
++-------------------------------------------------------------------------------+
+
+  That one should build the whole Selena EAP Maven Integration plugin distribution.
+  Make sure you are online when building
+  for the first time, it will download multiple IDEA API artifacts.
+
+  In the <<target>> directory you will find a ZIP archive of the distribution
+  <<maven-integration-VERSION.zip>>.
+
+  Now unzip the archive into your Selena EAP plugin folder and restart IDEA.
+
+  Make sure to delete or move the existing Selena EAP Maven Integration plugin located
+  at <<$SELENA_EAP_HOME/plugins/maven>>. Otherwise this can interfere with the new
+  one you just created.
+
+
+
+
+
