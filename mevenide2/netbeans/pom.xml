@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>mevenide2-parent</artifactId>
@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0.8-SNAPSHOT</version>
+  <version>3.1-SNAPSHOT</version>
   <inceptionYear>2005</inceptionYear>
   <licenses>
     <license>
@@ -164,7 +164,7 @@
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
        <netbeans.release>RELEASE60-BETA2</netbeans.release>
-       <mevenide.nb.release>3.0.8-SNAPSHOT</mevenide.nb.release>
+       <mevenide.nb.release>3.1-SNAPSHOT</mevenide.nb.release>
   </properties>
   <reporting>
       <plugins>
