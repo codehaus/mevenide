@@ -17,11 +17,14 @@
 
 package org.codehaus.mevenide.netbeans.queries;
 
+import java.net.URI;
+import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.netbeans.spi.java.queries.SourceLevelQueryImplementation;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 
 /**
  * maven implementation of SourceLevelQueryImplementation.
@@ -30,19 +33,31 @@ import org.openide.filesystems.FileObject;
  */
 public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
     private NbMavenProject project;
+    private static Logger LOG = Logger.getLogger(MavenSourceLevelImpl.class.getName());
     /** Creates a new instance of MavenSourceLevelImpl */
     public MavenSourceLevelImpl(NbMavenProject proj) {
         project = proj;
     }
     
     public String getSourceLevel(FileObject javaFile) {
-        //TODO differenciate between test sources and main sources
-        String goal = true ? "compile" : "test-compile"; //NOI18N
+//        LOG.info("SLQ for " + javaFile);
+        //TODO generated source are now assumed to be the same level as sources.
+        // that's the most common scenario, not sure if sources are generated for tests that often..
+        URI[] tests = project.getSourceRoots(true);
+        URI uri = FileUtil.toFile(javaFile).toURI();
+        assert "file".equals(uri.getScheme());
+        String goal = "compile"; //NOI18N
+        for (URI testuri : tests) {
+            if (uri.getPath().startsWith(testuri.getPath())) {
+                goal = "testCompile"; //NOI18N
+            } 
+        }
         String toRet = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS,  //NOI18N
                                                               Constants.PLUGIN_COMPILER,  //NOI18N
                                                               "source",  //NOI18N
                                                               goal);
         //null is allowed to be returned but junit tests module asserts not null
+//        LOG.info("  returning " + toRet);
         return toRet == null ? "1.4" : toRet; //NOI18N
     }
     
