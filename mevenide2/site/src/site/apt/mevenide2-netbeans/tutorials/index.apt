@@ -5,3 +5,14 @@ Tutorials
   [[2]] One minute and half tutorial : {{{./helloWorldWebApp.html}Hello World sample web application}}
 
   [[3]] 30 seconds tutorial : {{{./continuumTutorial.html} a very short continuum client tutorial}}
+
+Additional related content from external sources
+
+  [[1]] {{{http://www.netbeans.org/kb/60/javaee/ejb-glassfish-maven.html}Building an EJB 3.0 application using GlassFish v2, Apache Maven 2 and NetBeans IDE 6.0}} by Jacek Laskowski
+
+  [[2]] {{{http://technology.amis.nl/blog/?p=2489}Building Enterprise Applications for GlassFish using Netbeans 6.0 (Beta 2) and Maven2}} by Wouter van Reeven
+
+  [[3]] {{{http://technology.amis.nl/blog/?p=2610}Combining Hibernate and Facelets with Maven, Netbeans and GlassFish}} by Wouter van Reeven
+
+  [[4]] {{{http://emilian-bold.blogspot.com/2007/07/maven-projects-with-netbeans-ide-part-1.html}Maven projects with NetBeans IDE (Part 1)}} by Emilian Bold
+
