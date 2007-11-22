@@ -93,6 +93,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
         ExecutorTask task = RunUtils.executeMaven(config);
         task.result();
         checkParentProject(project.getProjectDirectory(), true, null, null);
+        config.setProject(null);
     }
     
     
