@@ -229,6 +229,9 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                     }
                 }
             }
+            if (dep.getVersion() == null) {
+                dep.setVersion("SNAPSHOT"); //NOI18N
+            }
         }
         
         FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
