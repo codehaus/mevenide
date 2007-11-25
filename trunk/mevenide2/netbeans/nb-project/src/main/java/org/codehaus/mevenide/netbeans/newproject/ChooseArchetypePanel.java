@@ -200,7 +200,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             for (StandardArtifactIndexRecord record : rec) {
                 LocalRepositoryIndexer.getInstance().getDefaultIndex().deleteRecords(rec);
             }
-            File path = new File(EmbedderFactory.getProjectEmbedder().getLocalRepositoryDirectory(),
+            File path = new File(EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),
                     arch.getGroupId().replace('.', File.separatorChar) + File.separatorChar + arch.getArtifactId() 
                   + File.separatorChar + arch.getVersion());
             if (path.exists()) {

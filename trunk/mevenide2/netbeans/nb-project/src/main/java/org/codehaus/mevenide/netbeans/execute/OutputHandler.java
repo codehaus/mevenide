@@ -384,5 +384,8 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     MavenEmbedderLogger getLogger() {
         return this;
     }
+
+    public void close() {
+    }
     
 }

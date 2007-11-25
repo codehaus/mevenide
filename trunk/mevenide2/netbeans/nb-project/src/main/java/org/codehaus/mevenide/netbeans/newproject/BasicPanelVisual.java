@@ -60,7 +60,6 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private static final String ERROR_MSG = "WizardPanel_errorMessage"; //NOI18N
     
     private BasicWizardPanel panel;
-    private int type;
 
     private String lastProjectName = ""; //NOI18N
 
@@ -70,7 +69,6 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     public BasicPanelVisual(BasicWizardPanel panel) {
         initComponents();
         this.panel = panel;
-        this.type = type;
         // Register listener on the textFields to make the automatic updates
         projectNameTextField.getDocument().addDocumentListener(this);
         projectLocationTextField.getDocument().addDocumentListener(this);
@@ -487,9 +485,10 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         });
         List repos;
         if (arch.getRepository() == null) {
-            repos = Collections.singletonList(online.createRepository("http://repo1.maven.org/maven2", "central"));//NOI18N
+            repos = Collections.singletonList(EmbedderFactory.createRemoteRepository(online, "http://repo1.maven.org/maven2", "central"));//NOI18N
         } else {
-            repos = Collections.singletonList(online.createRepository(arch.getRepository(), "custom-repo"));//NOI18N
+            
+            repos = Collections.singletonList(EmbedderFactory.createRemoteRepository(online, arch.getRepository(), "custom-repo"));//NOI18N
         }
                     AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(NbBundle.getMessage(BasicPanelVisual.class, "Handle_Download"), 
                             new ProgressContributor[] {

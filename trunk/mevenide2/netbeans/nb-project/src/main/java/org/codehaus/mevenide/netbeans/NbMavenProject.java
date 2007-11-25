@@ -42,6 +42,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.model.Profile;
 import org.apache.maven.model.Resource;
 import org.apache.maven.project.InvalidProjectModelException;
@@ -54,7 +57,6 @@ import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
-import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.codehaus.mevenide.netbeans.queries.MavenForBinaryQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenSharabilityQueryImpl;
@@ -75,6 +77,7 @@ import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.operations.OperationsImpl;
+import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.queries.MavenBinaryForSourceQueryImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileEncodingQueryImpl;
 import org.netbeans.spi.project.support.LookupProviderSupport;
@@ -171,32 +174,33 @@ public final class NbMavenProject implements Project {
     public synchronized MavenProject getOriginalMavenProject() {
         if (project == null) {
             try {
-                try {
-                    project = getEmbedder().readProjectWithDependencies(projectFile);
-                } catch (ArtifactResolutionException ex) {
-                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
-                            ex.getMessage(), null);
-                    problemReporter.addReport(report);
-                    //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
-                    project = getEmbedder().readProject(projectFile);
-                } catch (ArtifactNotFoundException ex) {
-                    ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
-                            ex.getMessage(), null);
-                    problemReporter.addReport(report);
-                    //                    ErrorManager.getDefault().notify(ErrorManager.ERROR, ex);
-                    project = getEmbedder().readProject(projectFile);
+                MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+                req.setPomFile(projectFile.getAbsolutePath());
+                MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
+                project = res.getProject();
+                if (res.hasExceptions()) {
+                    for (Object e : res.getExceptions()) {
+                        if (e instanceof ArtifactResolutionException) {
+                            ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                                    NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
+                                    ((Exception)e).getMessage(), null);
+                            problemReporter.addReport(report);
+                        } else if (e instanceof ArtifactNotFoundException) {
+                            ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                                    NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
+                                    ((Exception)e).getMessage(), null);
+                            problemReporter.addReport(report);
+                        } else if (e instanceof InvalidProjectModelException) {
+                            //validation failure..
+                            problemReporter.addValidatorReports((InvalidProjectModelException)e);
+                        } else if (e instanceof ProjectBuildingException) {
+                            //igonre if the problem is in the project validation codebase, we handle that later..
+                            problemReporter.addReport(new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                                    "Cannot load project properly",
+                                    ((Exception)e).getMessage(), null));
+                        }
+                    }
                 }
-            } catch (InvalidProjectModelException exc) {
-                //validation failure..
-                problemReporter.addValidatorReports(exc);
-            } catch (ProjectBuildingException ex) {
-                //igonre if the problem is in the project validation codebase, we handle that later..
-                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                            NbBundle.getMessage(NbMavenProject.class, "TXT_Cannot_load_project_properly"),
-                        ex.getMessage(), null);
-                problemReporter.addReport(report);
             } finally {
                 if (project == null) {
                     try {

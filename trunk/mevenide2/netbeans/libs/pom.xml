@@ -15,5 +15,6 @@
      <module>embedder</module>
      <!--module>continuum-rpc</module-->
      <module>indexer</module>
+     <module>indexer-libs</module>
   </modules>
 </project>

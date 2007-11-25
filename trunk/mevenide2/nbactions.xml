@@ -5,9 +5,7 @@
     Author     : mkleint
     Description:
         Purpose of the document follows.
--->
-
-<actions>
+--><actions>
     <action>
         <actionName>build</actionName>
         <packagings>
@@ -15,7 +13,7 @@
         </packagings>
         <goals>
             <goal>install</goal>
-            <goal>nbm:cluster</goal>
+            
         </goals>
         <activatedProfiles>
                 <activatedProfile>experimental</activatedProfile>
@@ -29,7 +27,7 @@
         <goals>
             <goal>clean</goal>
             <goal>install</goal>
-            <goal>nbm:cluster</goal>
+            
         </goals>
         <activatedProfiles>
                 <activatedProfile>experimental</activatedProfile>
@@ -41,12 +39,16 @@
             <packaging>*</packaging>
         </packagings>
         <goals>
+            <goal>nbm:directory</goal>
             <goal>nbm:cluster</goal>
-            <goal>org.codehaus.mojo:nbm-maven-plugin:2.5:run-ide</goal>
+            <goal>nbm:run-ide</goal>
         </goals>
         <activatedProfiles>
                 <activatedProfile>experimental</activatedProfile>
         </activatedProfiles>
+        <properties>
+            <netbeans.installation>/home/mkleint/netbeans-6.0rc1</netbeans.installation>
+        </properties>
     </action>
     <action>
         <actionName>debug</actionName>
@@ -58,12 +60,14 @@
                 <activatedProfile>experimental</activatedProfile>
         </activatedProfiles>
         <goals>
+            <goal>nbm:directory</goal>
             <goal>nbm:cluster</goal>
-            <goal>org.codehaus.mojo:nbm-maven-plugin:2.5:run-ide</goal>
+            <goal>nbm:run-ide</goal>
         </goals>
         <properties>
             <jpda.listen>true</jpda.listen>
             <netbeans.run.params>-J-Xdebug -J-Xnoagent -J-Xrunjdwp:transport=dt_socket,suspend=n,server=n,address=${jpda.address}</netbeans.run.params>
+            <netbeans.installation>/home/mkleint/netbeans-6.0rc1</netbeans.installation>
         </properties>
     </action>
 </actions>

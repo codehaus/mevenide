@@ -19,44 +19,23 @@
 package org.codehaus.mevenide.netbeans.embedder.exec;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import org.apache.maven.BuildFailureException;
-import org.apache.maven.artifact.handler.manager.ArtifactHandlerManager;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.execution.ReactorManager;
-import org.apache.maven.extension.ExtensionManager;
 import org.apache.maven.lifecycle.DefaultLifecycleExecutor;
 import org.apache.maven.lifecycle.LifecycleExecutionException;
-import org.apache.maven.lifecycle.LifecycleExecutor;
 import org.apache.maven.monitor.event.EventDispatcher;
-import org.apache.maven.plugin.PluginManager;
-import org.apache.maven.plugin.PluginNotFoundException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.logging.AbstractLogEnabled;
 
 /**
  *
  * @author mkleint
  */
-public class MyLifecycleExecutor extends AbstractLogEnabled implements LifecycleExecutor {
-    // ----------------------------------------------------------------------
-    // Components
-    // ----------------------------------------------------------------------
-
-    private PluginManager pluginManager;
-
-    private ExtensionManager extensionManager;
-
-    private List lifecycles;
-
-    private ArtifactHandlerManager artifactHandlerManager;
-
-    private List defaultReports;
+public class MyLifecycleExecutor extends DefaultLifecycleExecutor {
 
     private static ThreadLocal<List<File>> fileList = new ThreadLocal<List<File>>();
     
@@ -85,43 +64,11 @@ public class MyLifecycleExecutor extends AbstractLogEnabled implements Lifecycle
      * @param rm
      * @param dispatcher
      */
+    @Override
     public void execute( MavenSession session, ReactorManager rm, EventDispatcher dispatcher )
         throws BuildFailureException, LifecycleExecutionException
     {
         fileList.set(readAffectedProjects(rm));
-        createExecutor().execute( session, rm, dispatcher);
+        super.execute( session, rm, dispatcher);
     }
-
-    private LifecycleExecutor createExecutor() {
-        DefaultLifecycleExecutor exec = new DefaultLifecycleExecutor();
-        setVar(exec, pluginManager, "pluginManager"); //NOI18N
-        setVar(exec, extensionManager, "extensionManager"); //NOI18N
-        setVar(exec, lifecycles, "lifecycles"); //NOI18N
-        setVar(exec, artifactHandlerManager, "artifactHandlerManager"); //NOI18N
-        setVar(exec, defaultReports, "defaultReports"); //NOI18N
-//        setVar(exec, phaseToLifecycleMap, "phaseToLifecycleMap");
-        exec.enableLogging(getLogger());
-        return exec;
-    }
-
-    private void setVar(Object exec, Object value, String name) {
-        try {
-            Field fld = exec.getClass().getDeclaredField(name);
-            fld.setAccessible(true);
-            fld.set(exec, value);
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
-        } catch (IllegalArgumentException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
-            ex.printStackTrace();
-        } catch (NoSuchFieldException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public Map getLifecycleMappings(MavenSession mavenSession, String string, String string0, MavenProject mavenProject) throws LifecycleExecutionException, BuildFailureException, PluginNotFoundException {
-        return createExecutor().getLifecycleMappings(mavenSession, string, string0, mavenProject);
-    }
-    
 }
