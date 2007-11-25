@@ -28,10 +28,14 @@ import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ResolutionListener;
 import org.apache.maven.artifact.versioning.VersionRange;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MyResolutionListener;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -51,16 +55,14 @@ public class GraphDocumentFactory {
         GraphResolutionListener listener = new GraphResolutionListener(scene);
         try {
             MyResolutionListener.setDelegateResolutionListener(listener);
-            EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(project.getPOMFile());
-        } catch (ArtifactNotFoundException ex) {
-            ex.printStackTrace();
-        } catch (ArtifactResolutionException ex) {
-            ex.printStackTrace();
-        } catch (ProjectBuildingException ex) {
-            ex.printStackTrace();
-        } catch (Throwable ex) {
-            System.out.println("throwable=" + ex.getClass());
-            ex.printStackTrace();
+                MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+                req.setPomFile(project.getPOMFile().getAbsolutePath());
+                MavenExecutionResult res = EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(req);
+                if (res.hasExceptions()) {
+                    for (Object e : res.getExceptions()) {
+                        Exceptions.printStackTrace((Exception)e);
+                    }
+                }
         } finally {
             MyResolutionListener.clearDelegateResolutionListener();
             return scene;

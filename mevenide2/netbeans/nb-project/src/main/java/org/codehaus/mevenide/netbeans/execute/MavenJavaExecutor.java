@@ -28,11 +28,14 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import org.apache.maven.SettingsConfigurationException;
+import org.apache.maven.cli.CLIReportingUtils;
+import org.apache.maven.embedder.ConfigurationValidationResult;
+import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.reactor.MavenExecutionException;
@@ -42,6 +45,7 @@ import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
 import org.apache.maven.settings.Settings;
+import org.apache.maven.settings.SettingsConfigurationException;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -94,11 +98,39 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         String basedir = System.getProperty(BASEDIR);//NOI18N
         handle.start();
         processInitialMessage();
+        MavenExecutionRequest req = new DefaultMavenExecutionRequest();
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
             out = new OutputHandler(ioput, config.getProject(), handle, config);
             IOBridge.pushSystemInOutErr(out);
+            boolean debug = config.isShowDebug();
+            req.setShowErrors(debug || config.isShowError());
+            if (debug) {
+                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
+                out.setThreshold(MavenEmbedderLogger.LEVEL_DEBUG);
+            } else {
+                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_INFO);
+                out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
+            }
+            
+            File userLoc = new File(System.getProperty("user.home"), ".m2");//NOI18N
+            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);//NOI18N
+            DefaultConfiguration settConfig = new DefaultConfiguration();
+            settConfig.setGlobalSettingsFile(globalSettingsPath);
+            settConfig.setUserSettingsFile(userSettingsPath);
+            ConfigurationValidationResult setres = MavenEmbedder.validateConfiguration(settConfig);
+            if (!setres.isValid()) {
+                if (setres.getUserSettingsException() != null) {
+                    CLIReportingUtils.showError("Error reading user settings: ", setres.getUserSettingsException(), req.isShowErrors(), out);//NOI18N - part of maven output
+                }
+                if (setres.getUserSettingsException() != null) {
+                    CLIReportingUtils.showError("Error reading global settings: ", setres.getGlobalSettingsException(), req.isShowErrors(), out);//NOI18N - part of maven output
+                }
+                return;
+            }
+            
             embedder = EmbedderFactory.createExecuteEmbedder(out);
             if (config.getProject() != null) {
                 try {
@@ -130,36 +162,29 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 act.setProperty(prop);
                 myProfile.setActivation(act);
             }
+            //TODO we need to reenact the custom dynamic profile.
             
-            File userLoc = new File(System.getProperty("user.home"), ".m2");//NOI18N
-            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);//NOI18N
-            
-            Settings settings = embedder.buildSettings( userSettingsPath,
-                    globalSettingsPath,
-                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
-            if (repoRoot != null) {
-                settings.addProfile(myProfile);
-            }
-            settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
-            //MEVENIDE-407
-            if (settings.getLocalRepository() == null) {
-                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());//NOI18N
-            }
-            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
-                //TODO
-            }
-            MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+//            Settings settings = embedder.buildSettings( userSettingsPath,
+//                    globalSettingsPath,
+//                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
+//            if (repoRoot != null) {
+//                settings.addProfile(myProfile);
+//            }
+//            settings.setUsePluginRegistry(MavenExecutionSettings.getDefault().isUsePluginRegistry());
+//            //MEVENIDE-407
+//            if (settings.getLocalRepository() == null) {
+//                settings.setLocalRepository(new File(userLoc, "repository").getAbsolutePath());//NOI18N
+//            }
+//            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
+//            }
             req.addActiveProfiles(config.getActivatedProfiles());
-			// TODO remove explicit activation
+            // TODO remove explicit activation
             req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();
             if (config.isOffline() != null) {
-                settings.setOffline(config.isOffline().booleanValue());
-            } else {
-                config.setOffline(Boolean.valueOf(settings.isOffline()));
+                req.setOffline(config.isOffline().booleanValue());
             }
-            req.setSettings(settings);
+//TODO            req.setSettings(settings);
             req.setGoals(config.getGoals());
             //mavenCLI adds all System.getProperties() in there as well..
             Properties props = new Properties();
@@ -168,38 +193,37 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             props.setProperty("netbeans.execution", "true");//NOI18N
             
             req.setProperties(props);
-            req.setBasedir(config.getExecutionDirectory());
+            req.setBaseDirectory(config.getExecutionDirectory());
             File pom = new File(config.getExecutionDirectory(), "pom.xml");//NOI18N
             if (pom.exists()) {
                 req.setPomFile(pom.getAbsolutePath());
             }
-            req.setLocalRepositoryPath(embedder.getLocalRepositoryPath(settings));
+//TODO??            req.setLocalRepositoryPath(embedder.getSettings().getLocalRepository());
             req.addEventMonitor(out);
             req.setTransferListener(new ProgressTransferListener());
             //            req.setReactorActive(true);
             
-            req.setFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
+            req.setReactorFailureBehavior(MavenExecutionSettings.getDefault().getFailureBehaviour());
             req.setStartTime(new Date());
             req.setGlobalChecksumPolicy(MavenExecutionSettings.getDefault().getChecksumPolicy());
             
-            boolean debug = config.isShowDebug();
-            req.setShowErrors(debug || config.isShowError());
-            if (debug) {
-                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_DEBUG);
-                out.setThreshold(MavenEmbedderLogger.LEVEL_DEBUG);
-            } else {
-                req.setLoggingLevel(MavenExecutionRequest.LOGGING_LEVEL_INFO);
-                out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
-            }
             req.setUpdateSnapshots(config.isUpdateSnapshots());
             req.setRecursive(config.isRecursive());
-            embedder.execute(req);
-        } catch (MavenExecutionException ex) {
-            LOGGER.log(Level.FINE, ex.getMessage(), ex);
-        } catch (SettingsConfigurationException ex) {
-            LOGGER.log(Level.FINE, ex.getMessage(), ex);
+            MavenExecutionResult res = embedder.execute(req);
+            CLIReportingUtils.logResult(req, res, out);
+            if (res.hasExceptions()) {
+                //TODO something?
+            }
+//        } catch (MavenExecutionException ex) {
+//            LOGGER.log(Level.FINE, ex.getMessage(), ex);
+//        } catch (SettingsConfigurationException ex) {
+//            LOGGER.log(Level.FINE, ex.getMessage(), ex);
+        } catch (RuntimeException re) {
+            CLIReportingUtils.showError("Runtime Exception thrown during execution", re, req.isShowErrors(), out);//NOI18N - part of maven output
+            LOGGER.log(Level.FINE, re.getMessage(), re);
         } catch (ThreadDeath death) {
 //            cancel();
+            CLIReportingUtils.showError("Killed.", new Exception(""), false, out); //NOI18N - part of maven output
             shutdownOutput(ioput);
             ioput = null;
             throw death;

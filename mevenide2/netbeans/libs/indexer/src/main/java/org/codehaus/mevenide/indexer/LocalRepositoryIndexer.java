@@ -22,6 +22,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,12 +53,13 @@ import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
 import org.apache.maven.embedder.MavenEmbedderException;
-import org.codehaus.classworlds.ClassWorld;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.plexus.ContainerConfiguration;
+import org.codehaus.plexus.DefaultContainerConfiguration;
+import org.codehaus.plexus.DefaultPlexusContainer;
+import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.embed.Embedder;
-import org.codehaus.plexus.embed.EmbedderException;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.Cancellable;
@@ -81,7 +83,7 @@ public class LocalRepositoryIndexer {
     
     private static LocalRepositoryIndexer instance;
     
-    private Embedder embedder;
+    private PlexusContainer embedder;
     private RepositoryArtifactIndexFactory indexFactory;
     private ArtifactDiscoverer discoverer;
     private RepositoryArtifactIndex defaultIndex;
@@ -105,10 +107,9 @@ public class LocalRepositoryIndexer {
     };
     
     /** Creates a new instance of LocalRepositoryIndexer */
-    private LocalRepositoryIndexer() throws  EmbedderException, ComponentLookupException, PlexusContainerException, MavenEmbedderException, RepositoryIndexException {
-        embedder = new Embedder();
-        ClassWorld world = new ClassWorld();
-        embedder.start( world );
+    private LocalRepositoryIndexer() throws MavenEmbedderException, RepositoryIndexException, PlexusContainerException, ComponentLookupException {
+        ContainerConfiguration config = new DefaultContainerConfiguration();
+        embedder = new DefaultPlexusContainer(config);
         indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene"); //NOI18N
         discoverer = (ArtifactDiscoverer) embedder.lookup(ArtifactDiscoverer.ROLE, "default" ); //NOI18N
         repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();

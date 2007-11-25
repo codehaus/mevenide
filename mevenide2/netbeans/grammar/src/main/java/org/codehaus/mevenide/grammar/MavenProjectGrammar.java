@@ -219,12 +219,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("executions/execution/phase")) { //NOI18N
             MavenEmbedder embedder = EmbedderFactory.getOnlineEmbedder();
-            try {
-                List phases = embedder.getLifecyclePhases();
-                return super.createTextValueList((String[])phases.toArray(new String[phases.size()]), virtualTextCtx);
-            } catch (MavenEmbedderException ex) {
-                ex.printStackTrace();
-            }
+            List phases = embedder.getLifecyclePhases();
+            return super.createTextValueList((String[])phases.toArray(new String[phases.size()]), virtualTextCtx);
         }
         if (path.endsWith("dependencies/dependency/version") || //NOI18N
             path.endsWith("plugins/plugin/version") || //NOI18N

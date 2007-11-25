@@ -208,5 +208,8 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
         public int getThreshold() {
             return MavenEmbedderLogger.LEVEL_DEBUG;
         }
+
+        public void close() {
+        }
     }
 }

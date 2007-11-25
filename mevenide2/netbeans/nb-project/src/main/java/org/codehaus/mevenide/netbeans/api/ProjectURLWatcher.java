@@ -26,6 +26,9 @@ import java.util.List;
 import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
@@ -118,19 +121,14 @@ public final class ProjectURLWatcher {
                     try {
                         ProgressTransferListener.setAggregateHandle(hndl);
                         hndl.start();
-                        online.readProjectWithDependencies(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml"))); //NOI18N
-                    } catch (ArtifactNotFoundException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
-                    } catch (ArtifactResolutionException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
-                    } catch (ProjectBuildingException ex) {
-                        ex.printStackTrace();
-                        ok = false;
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                        MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+                        req.setPom(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")));
+                        MavenExecutionResult res = online.readProjectWithDependencies(req); //NOI18N
+                        if (res.hasExceptions()) {
+                            ok = false;
+                            Exception ex = (Exception)res.getExceptions().get(0);
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                        }
                     } finally {
                         hndl.finish();
                         ProgressTransferListener.clearAggregateHandle();
