@@ -43,6 +43,12 @@ public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
 //        LOG.info("SLQ for " + javaFile);
         //TODO generated source are now assumed to be the same level as sources.
         // that's the most common scenario, not sure if sources are generated for tests that often..
+        
+        //MEVENIDE-573
+        assert javaFile != null;
+        if (javaFile == null) {
+            return null;
+        }
         URI[] tests = project.getSourceRoots(true);
         URI uri = FileUtil.toFile(javaFile).toURI();
         assert "file".equals(uri.getScheme());
