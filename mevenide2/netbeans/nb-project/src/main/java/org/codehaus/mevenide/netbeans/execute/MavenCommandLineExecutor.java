@@ -138,6 +138,10 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         if (config.isOffline() != null && config.isOffline().booleanValue()) {
             toRet.add("--offline");//NOI18N
         }
+        if (!config.isInteractive()) {
+            toRet.add("--batch-mode"); //NOI18N
+        }
+        
         if (!config.isRecursive()) {
             toRet.add("--non-recursive");//NOI18N
         }

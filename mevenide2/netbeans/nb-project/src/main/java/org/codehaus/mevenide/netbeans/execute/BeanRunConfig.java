@@ -42,6 +42,7 @@ public class BeanRunConfig implements RunConfig {
     private boolean updateSnapshots = false;
     private boolean recursive = true;
     private String taskName;
+    private boolean interactive = true;
     
     /** Creates a new instance of BeanRunConfig */
     public BeanRunConfig() {
@@ -143,4 +144,14 @@ public class BeanRunConfig implements RunConfig {
     public void setTaskDisplayName(String name) {
         taskName = name;
     }
+
+    public boolean isInteractive() {
+        return interactive;
+    }
+    
+    public void setInteractive(boolean ia) {
+        interactive = ia;
+    }
+    
+    
 }

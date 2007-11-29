@@ -87,5 +87,9 @@ public class ProxyRunConfig implements RunConfig {
     public String getTaskDisplayName() {
         return delegate.getTaskDisplayName();
     }
+
+    public boolean isInteractive() {
+        return delegate.isInteractive();
+    }
     
 }

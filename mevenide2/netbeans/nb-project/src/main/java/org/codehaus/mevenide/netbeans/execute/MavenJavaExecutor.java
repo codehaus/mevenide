@@ -184,6 +184,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             if (config.isOffline() != null) {
                 req.setOffline(config.isOffline().booleanValue());
             }
+            req.setInteractiveMode(config.isInteractive());
 //TODO            req.setSettings(settings);
             req.setGoals(config.getGoals());
             //mavenCLI adds all System.getProperties() in there as well..
