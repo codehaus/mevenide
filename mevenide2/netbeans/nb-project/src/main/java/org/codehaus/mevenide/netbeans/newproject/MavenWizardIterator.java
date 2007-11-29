@@ -145,10 +145,6 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             }
             
             Set resultSet = new LinkedHashSet();
-            final String art = (String)wiz.getProperty("artifactId"); //NOI18N
-            final String ver = (String)wiz.getProperty("version"); //NOI18N
-            final String gr = (String)wiz.getProperty("groupId"); //NOI18N
-            final String pack = (String)wiz.getProperty("package"); //NOI18N
             final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N<
             dirF.getParentFile().mkdirs();
             
@@ -157,6 +153,10 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             if (customCreator != null) {
                 customCreator.runArchetype(dirF.getParentFile(), wiz);
             } else {
+                final String art = (String)wiz.getProperty("artifactId"); //NOI18N
+                final String ver = (String)wiz.getProperty("version"); //NOI18N
+                final String gr = (String)wiz.getProperty("groupId"); //NOI18N
+                final String pack = (String)wiz.getProperty("package"); //NOI18N
                 runArchetype(dirF.getParentFile(), gr, art, ver, pack, archetype);
             }
             handle.progress(3);

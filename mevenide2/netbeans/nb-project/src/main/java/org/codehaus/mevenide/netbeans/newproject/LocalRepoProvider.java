@@ -44,7 +44,8 @@ public class LocalRepoProvider implements ArchetypeProvider {
                 return lst;
             }
             for (StandardArtifactIndexRecord art : archs) {
-                Archetype arch = "maven-archetype".equalsIgnoreCase(art.getPackaging()) ? //NOI18N
+                boolean ng = art.getFiles().contains("META-INF/maven/archetype-metadata.xml");
+                Archetype arch = (ng || "maven-archetype".equalsIgnoreCase(art.getPackaging())) ? //NOI18N
                                  new Archetype(true, true) : new Archetype();
                 arch.setArtifactId(art.getArtifactId());
                 arch.setGroupId(art.getGroupId());

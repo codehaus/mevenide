@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.archetypeng;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,7 +39,6 @@ import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
-import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutorTask;
@@ -55,44 +53,38 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
     private static final String USER_DIR_PROP = "user.dir"; //NOI18N
 
     public void runArchetype(File directory, WizardDescriptor wiz) throws IOException {
-        Properties propFile = new Properties();
-        propFile.setProperty("artifactId", (String)wiz.getProperty("artifactId")); //NOI18N
-        propFile.setProperty("version", (String)wiz.getProperty("version")); //NOI18N
-        propFile.setProperty("groupId", (String)wiz.getProperty("groupId")); //NOI18N
+        Properties props = new Properties();
+        props.setProperty("artifactId", (String)wiz.getProperty("artifactId")); //NOI18N
+        props.setProperty("version", (String)wiz.getProperty("version")); //NOI18N
+        props.setProperty("groupId", (String)wiz.getProperty("groupId")); //NOI18N
         final String pack = (String)wiz.getProperty("package"); //NOI18N
         if (pack != null && pack.trim().length() > 0) {
-            propFile.setProperty("package", pack); //NOI18N
+            props.setProperty("package", pack); //NOI18N
         }
         final Archetype arch = (Archetype)wiz.getProperty("archetype"); //NOI18N
-        propFile.setProperty("archetype.artifactId", arch.getArtifactId()); //NOI18N
-        propFile.setProperty("archetype.groupId", arch.getGroupId()); //NOI18N
-        propFile.setProperty("archetype.version", arch.getVersion()); //NOI18N
+        props.setProperty("archetypeArtifactId", arch.getArtifactId()); //NOI18N
+        props.setProperty("archetypeGroupId", arch.getGroupId()); //NOI18N
+        props.setProperty("archetypeVersion", arch.getVersion()); //NOI18N
+        props.setProperty("basedir", directory.getAbsolutePath());
         
         @SuppressWarnings("unchecked")
         HashMap<String, String> additional = (HashMap<String, String>)wiz.getProperty("additionalProps");
         if (additional != null) {
             for (String key : additional.keySet()) {
-                propFile.setProperty(key, additional.get(key));
+                props.setProperty(key, additional.get(key));
             }
-        }
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(new File(directory, "archetype.properties"));
-            propFile.store(out, "Properties for creating new project from archetype");
-        } finally {
-            IOUtil.close(out);
         }
         BeanRunConfig config = new BeanRunConfig();
         config.setActivatedProfiles(Collections.EMPTY_LIST);
         config.setExecutionDirectory(directory);
         config.setExecutionName(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Project_Creation"));
         //TODO externalize somehow to allow advanced users to change the value..
-        config.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_CREATE_ARCHETYPE))); //NOI18N
-        Properties props = new Properties();
+        config.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_CREATE_ARCHETYPENG))); //NOI18N
         if (arch.getRepository() != null) {
-            props.setProperty("remoteRepositories", arch.getRepository()); //NOI18N
+            props.setProperty("archetype.repository", arch.getRepository()); //NOI18N
         }
         config.setProperties(props);
+        config.setInteractive(false);
         config.setTaskDisplayName(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Maven"));
         // setup executor now..
         //hack - we need to setup the user.dir sys property..
