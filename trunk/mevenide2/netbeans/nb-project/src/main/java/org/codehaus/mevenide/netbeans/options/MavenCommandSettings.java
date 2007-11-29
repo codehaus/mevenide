@@ -67,7 +67,7 @@ public class MavenCommandSettings {
                 toRet = "install:install-file";//NOI18N
             }
             else if (COMMAND_CREATE_ARCHETYPENG.equals(command)) {
-                toRet = "org.apache.maven.plugins:maven-archetypeng-plugin:1.0-SNAPSHOT:generate-project";//NOI18N
+                toRet = "org.apache.maven.plugins:maven-archetypeng-plugin:2.0-SNAPSHOT:create";//NOI18N
             }
         }
         assert toRet != null : "Command " + command + " needs implementation."; //NOI18N
