@@ -29,7 +29,7 @@
 	     <module>graph</module>
              <!-- move archetypeng to experimental once it's maven plugin is in some kind of 
              remote repository-->
-             <!--module>archetypeng</module-->
+             <module>archetypeng</module>
 	     <module>webframeworks</module>
           </modules>
        </profile>
