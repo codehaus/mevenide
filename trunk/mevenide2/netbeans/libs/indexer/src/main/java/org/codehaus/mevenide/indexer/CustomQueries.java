@@ -107,6 +107,7 @@ public class CustomQueries {
         BooleanQuery bq = new BooleanQuery();
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-archetype")), BooleanClause.Occur.SHOULD));
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.PACKAGING, "maven-archetype")), BooleanClause.Occur.SHOULD));
+        bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.FILES, "archetype-metadata.xml")), BooleanClause.Occur.SHOULD));
         LuceneQuery q = new LuceneQuery(bq);
         return LocalRepositoryIndexer.getInstance().searchIndex(
                 LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
