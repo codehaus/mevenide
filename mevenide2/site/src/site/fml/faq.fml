@@ -90,6 +90,20 @@ Yes, since the 3.0.8 version shipped in NetBeans 6.0 beta2 you can go to Tools/O
 These will appear in the Custom Goals> submenu on project's popup menu.
      </answer>
    </faq>
-
+   <faq id="question10">
+     <question>How do I create Maven projects with different version of maven-archetype-plugin?</question>
+     <answer>
+The New project wizard in NetBeans is by default using the 1.0-aplha-4 version of maven-archetype-plugin.
+It's not possible to change from the UI, but there is a way to change it if you need to.
+<ul>
+<li> go to your netbeans user directory and create the following path if it doesn't exist yet:
+<b>~/.netbeans/6.0/config/Preferences/org/codehaus/mevenide</b></li>
+<li> in that folder create a file named <b>commands.properties</b> </li>
+<li> open the file in editor and put the following line in there:
+<b>createArchetype=org.apache.maven.plugins:maven-archetype-plugin:1.0-alpha-7:create</b></li>
+<li> start netbeans and run the new project wizard. It shall run your version of the archetype plugin.</li>
+</ul>
+     </answer>
+   </faq>
  </part>
 </faqs>
