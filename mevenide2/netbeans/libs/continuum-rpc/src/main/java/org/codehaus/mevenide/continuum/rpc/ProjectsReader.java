@@ -14,17 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.continuum.rpc;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import org.apache.maven.continuum.model.project.BuildDefinition;
 import org.apache.maven.continuum.model.project.BuildResult;
@@ -32,11 +29,11 @@ import org.apache.maven.continuum.model.project.Profile;
 import org.apache.maven.continuum.model.project.Project;
 import org.apache.maven.continuum.model.project.ProjectDependency;
 import org.apache.maven.continuum.model.project.ProjectDeveloper;
-import org.apache.maven.continuum.model.project.ProjectNotifier;
 import org.apache.maven.continuum.model.project.Schedule;
 import org.apache.maven.continuum.model.scm.ScmResult;
-import org.apache.xmlrpc.XmlRpcClient;
+import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.apache.xmlrpc.client.XmlRpcClientConfigImpl;
 
 /**
  *
@@ -45,47 +42,53 @@ import org.apache.xmlrpc.XmlRpcException;
 public class ProjectsReader {
 
     private URL server;
-    
+   
     /** Creates a new instance of ProjectsReader */
     public ProjectsReader(URL serverUrl) {
         server = serverUrl;
     }
-    
+
     public URL getURL() {
         return server;
     }
-    
+
     public Project[] readProjects() throws XmlRpcException, IOException {
-        XmlRpcClient client = new XmlRpcClient(server);
-        Object obj = client.execute("continuum.getProjects", new Vector());
-        Collection set = new ArrayList();
-        if (obj instanceof Hashtable) {
-            Hashtable table = (Hashtable)obj;
-            Vector projects =  (Vector)table.get("projects");
+        XmlRpcClient client = getClient();
+        Object resultObj = client.execute("continuum.getProjects", new Vector());
+        Collection projectList = new ArrayList();
+        
+        
+        if (resultObj instanceof Map) {
+            Map map = (Map) resultObj;
+            Object[] projects = (Object[])map.get("projects");
+           for (Object projectObj : projects) {
+                projectList.add(populateProject((Map)projectObj, new Project()));
+            }
+            
+            /*Vector projects = (Vector) map.get("projects");
             Iterator it = projects.iterator();
             while (it.hasNext()) {
-                Hashtable proj = (Hashtable)it.next();
+                Hashtable proj = (Hashtable) it.next();
                 set.add(populateProject(proj, new Project()));
-                System.out.println("table=" +  proj);
-            }
+                System.out.println("table=" + proj);
+            }*/
         }
-        return (Project[])set.toArray(new Project[set.size()]);
+        return (Project[]) projectList.toArray(new Project[projectList.size()]);
     }
-    
+
     public void updateProject(Project proj) throws XmlRpcException, IOException {
-        XmlRpcClient client = new XmlRpcClient(server);
+        XmlRpcClient client = getClient();
         Vector vect = new Vector();
         vect.add(new Integer(proj.getId()));
         Object obj = client.execute("continuum.getProject", vect);
-        System.out.println("object = " + obj);
-        if (obj instanceof Hashtable) {
-            Hashtable table = (Hashtable)obj;
-            populateProject((Hashtable)table.get("project"), proj);
+        if (obj instanceof Map) {
+            Map table = (Map) obj;
+            populateProject((Map) table.get("project"), proj);
         }
     }
-    
+
     public void buildProject(Project proj) throws XmlRpcException, IOException {
-        XmlRpcClient client = new XmlRpcClient(server);
+        XmlRpcClient client = getClient();
         Vector vect = new Vector();
         vect.add(new Integer(proj.getId()));
         //trigger
@@ -93,142 +96,134 @@ public class ProjectsReader {
         Object obj = client.execute("continuum.buildProject", vect);
     }
 
-    private Project populateProject(Hashtable hashtable, Project instance) {
-        instance.setArtifactId((String)hashtable.get("artifactId"));
-        instance.setGroupId((String)hashtable.get("groupId"));
-        instance.setName((String)hashtable.get("name"));
-        instance.setDescription((String)hashtable.get("description"));
-        instance.setVersion((String)hashtable.get("version"));
-        instance.setUrl((String)hashtable.get("url"));
-        instance.setExecutorId((String)hashtable.get("executorId"));
-        instance.setWorkingDirectory((String)hashtable.get("workingDirectory"));
-        instance.setScmUsername((String)hashtable.get("scmUsername"));
-        instance.setScmPassword((String)hashtable.get("scmPassword"));
-        instance.setScmTag((String)hashtable.get("scmTag"));
-        instance.setScmUrl((String)hashtable.get("scmUrl"));
-        instance.setId(Integer.parseInt((String)hashtable.get("id")));
-        instance.setLatestBuildId(Integer.parseInt((String)hashtable.get("latestBuildId")));
-        instance.setState(Integer.parseInt((String)hashtable.get("state")));
-        instance.setOldState(Integer.parseInt((String)hashtable.get("oldState")));
-        instance.setBuildNumber(Integer.parseInt((String)hashtable.get("buildNumber")));
-        Vector buildDefinitions = (Vector)hashtable.get("buildDefinitions");
-        if (buildDefinitions != null) {
-            Iterator it = buildDefinitions.iterator();
-            List defs = new ArrayList();
-            while (it.hasNext()) {
-                Hashtable table = (Hashtable)it.next();
-                BuildDefinition def = new BuildDefinition();
-                def.setId(Integer.parseInt((String)table.get("id")));
-                def.setArguments((String)table.get("arguments"));
-                def.setBuildFile((String)table.get("buildFile"));
-                def.setDefaultForProject(Boolean.getBoolean((String)table.get("defaultForProject")));
-                def.setGoals((String)table.get("goals"));
-                Vector prof = (Vector)table.get("profile");
-                if (prof != null) {
-                    Profile profile = new Profile();
-                    //TODO
-                    def.setProfile(profile);
-                }
-                Object obj = table.get("schedule");
-                Hashtable sched = (Hashtable)obj;
-                if (sched != null) {
-                    Schedule schedule = new Schedule();
-                    schedule.setActive(Boolean.getBoolean((String)sched.get("active")));
-                    schedule.setCronExpression((String)sched.get("cronExpression"));
-                    schedule.setDelay(Integer.parseInt((String)sched.get("delay")));
-                    schedule.setDescription((String)sched.get("description"));
-                    schedule.setId(Integer.parseInt((String)sched.get("id")));
-                    schedule.setName((String)sched.get("name"));
-                    def.setSchedule(schedule);
-                }
-                defs.add(def);
+    private Project populateProject(Map map, Project instance) {
+        instance.setArtifactId((String) map.get("artifactId"));
+        instance.setGroupId((String) map.get("groupId"));
+        instance.setName((String) map.get("name"));
+        instance.setDescription((String) map.get("description"));
+        instance.setVersion((String) map.get("version"));
+        instance.setUrl((String) map.get("url"));
+        instance.setExecutorId((String) map.get("executorId"));
+        instance.setWorkingDirectory((String) map.get("workingDirectory"));
+        instance.setScmUsername((String) map.get("scmUsername"));
+        instance.setScmPassword((String) map.get("scmPassword"));
+        instance.setScmTag((String) map.get("scmTag"));
+        instance.setScmUrl((String) map.get("scmUrl"));
+        instance.setId(Integer.parseInt((String) map.get("id")));
+        instance.setLatestBuildId(Integer.parseInt((String) map.get("latestBuildId")));
+        instance.setState(Integer.parseInt((String) map.get("state")));
+        instance.setOldState(Integer.parseInt((String) map.get("oldState")));
+        instance.setBuildNumber(Integer.parseInt((String) map.get("buildNumber")));
+        List buildDefinitionList = new ArrayList();
+        Object[] buildDefinitionObjs = (Object[])map.get("buildDefinitions");
+        for (Object buildDefinitionObj : buildDefinitionObjs) {
+            Map buildDefinitionMap = ((Map) buildDefinitionObj);
+            BuildDefinition def = new BuildDefinition();
+            def.setId(Integer.parseInt((String)buildDefinitionMap.get("id")));
+            def.setArguments((String)buildDefinitionMap.get("arguments"));
+            def.setBuildFile((String)buildDefinitionMap.get("buildFile"));
+            def.setDefaultForProject(Boolean.getBoolean((String)buildDefinitionMap.get("defaultForProject")));
+            def.setGoals((String)buildDefinitionMap.get("goals"));
+            
+            Object[] profileObjs = (Object[]) buildDefinitionMap.get("profile");
+            if (profileObjs != null) {
+                Profile profile = new Profile();
+                //TODO
+                def.setProfile(profile);
             }
-            instance.setBuildDefinitions(defs);
+            Map scheduleMap = (Map) map.get("schedule");
+            if (scheduleMap != null) {
+                Schedule schedule = new Schedule();
+                schedule.setActive(Boolean.getBoolean((String) scheduleMap.get("active")));
+                schedule.setCronExpression((String) scheduleMap.get("cronExpression"));
+                schedule.setDelay(Integer.parseInt((String) scheduleMap.get("delay")));
+                schedule.setDescription((String) scheduleMap.get("description"));
+                schedule.setId(Integer.parseInt((String) scheduleMap.get("id")));
+                schedule.setName((String) scheduleMap.get("name"));
+                def.setSchedule(schedule);
+            }
+            buildDefinitionList.add(def);
+        
+            instance.setBuildDefinitions(buildDefinitionList);
         }
-        Vector buildRes = (Vector)hashtable.get("buildResults");
-        if (buildRes != null) {
-            Iterator it = buildRes.iterator();
-            List results = new ArrayList();
-            while (it.hasNext()) {
-                Hashtable res = (Hashtable)it.next();
+        Object[] buildResultObjs = (Object[]) map.get("buildResults");
+        if (buildResultObjs != null) {
+            List resultList = new ArrayList();
+            for (Object buildResultObj : buildResultObjs) {
+                Map buildResultMap = (Map) buildResultObj;
                 BuildResult result = new BuildResult();
-                result.setBuildNumber(Integer.parseInt((String)res.get("buildNumber")));
-                result.setEndTime(Long.parseLong((String)res.get("endTime")));
-                result.setError((String)res.get("error"));
-                result.setExitCode(Integer.parseInt((String)res.get("exitCode")));
-                result.setId(Integer.parseInt((String)res.get("id")));
-//TODO                result.setScmResult();
-                result.setStartTime(Long.parseLong((String)res.get("startTime")));
-                result.setState(Integer.parseInt((String)res.get("state")));
-                result.setSuccess(Boolean.getBoolean((String)res.get("success")));
-                result.setTrigger(Integer.parseInt((String)res.get("trigger")));
-                results.add(result);        
+                result.setBuildNumber(Integer.parseInt((String) buildResultMap.get("buildNumber")));
+                result.setEndTime(Long.parseLong((String) buildResultMap.get("endTime")));
+                result.setError((String) buildResultMap.get("error"));
+                result.setExitCode(Integer.parseInt((String) buildResultMap.get("exitCode")));
+                result.setId(Integer.parseInt((String) buildResultMap.get("id")));
+                //TODO                result.setScmResult();
+                result.setStartTime(Long.parseLong((String) buildResultMap.get("startTime")));
+                result.setState(Integer.parseInt((String) buildResultMap.get("state")));
+                result.setSuccess(Boolean.getBoolean((String) buildResultMap.get("success")));
+                result.setTrigger(Integer.parseInt((String) buildResultMap.get("trigger")));
+                resultList.add(result);
             }
-            instance.setBuildResults(results);
+            instance.setBuildResults(resultList);
         }
-        Vector deps = (Vector)hashtable.get("dependencies");
-        if (deps != null) {
-            Iterator it = deps.iterator();
-            List vals = new ArrayList();
-            while (it.hasNext()) {
-                Hashtable dep = (Hashtable)it.next();
+        Object[] dependencyObjs = (Object[]) map.get("dependencies");
+        if (dependencyObjs != null) {
+            List dependencyList = new ArrayList();
+            for (Object dependencyObj : dependencyObjs) {
+                Map dependencyMap = (Map) dependencyObj;
                 ProjectDependency dependency = new ProjectDependency();
-                dependency.setArtifactId((String)dep.get("artifactId"));
-                dependency.setGroupId((String)dep.get("groupId"));
-                dependency.setVersion((String)dep.get("version"));
-                vals.add(dependency);
+                dependency.setArtifactId((String) dependencyMap.get("artifactId"));
+                dependency.setGroupId((String) dependencyMap.get("groupId"));
+                dependency.setVersion((String) dependencyMap.get("version"));
+                dependencyList.add(dependency);
             }
-            instance.setDependencies(vals);
+            instance.setDependencies(dependencyList);
         }
-        Hashtable par = (Hashtable)hashtable.get("parent");
-        if (par != null) {
+        Map parentMap = (Map) map.get("parent");
+        if (parentMap != null) {
             ProjectDependency parent = new ProjectDependency();
-            parent.setArtifactId((String)par.get("artifactId"));
-            parent.setGroupId((String)par.get("groupId"));
-            parent.setVersion((String)par.get("version"));
+            parent.setArtifactId((String) parentMap.get("artifactId"));
+            parent.setGroupId((String) parentMap.get("groupId"));
+            parent.setVersion((String) parentMap.get("version"));
             instance.setParent(parent);
         }
-        Vector devs = (Vector)hashtable.get("developers");
-        if (devs != null) {
-            Iterator it = devs.iterator();
-            List vals = new ArrayList();
-            while (it.hasNext()) {
-                Hashtable dep = (Hashtable)it.next();
+        Object[] developerObjs = (Object[]) map.get("developers");
+        if (developerObjs != null) {
+            List developerList = new ArrayList();
+            for (Object developerObj : developerObjs) {
+                Map developerMap = (Map) developerObj;
                 ProjectDeveloper developer = new ProjectDeveloper();
-                developer.setContinuumId(Integer.parseInt((String)dep.get("continuumId")));
-                developer.setName((String)dep.get("name"));
-                developer.setEmail((String)dep.get("email"));
-                developer.setScmId((String)dep.get("scmId"));
-                vals.add(developer);
+                developer.setContinuumId(Integer.parseInt((String) developerMap.get("continuumId")));
+                developer.setName((String) developerMap.get("name"));
+                developer.setEmail((String) developerMap.get("email"));
+                developer.setScmId((String) developerMap.get("scmId"));
+                developerList.add(developer);
             }
-            instance.setDevelopers(vals);
+            instance.setDevelopers(developerList);
         }
-//        Vector nots = (Vector)hashtable.get("notifiers");
-//        if (nots != null) {
-//            Iterator it = nots.iterator();
-//            List vals = new ArrayList();
-//            while (it.hasNext()) {
-//                Hashtable not = (Hashtable)it.next();
-//                ProjectNotifier notifier = new ProjectNotifier();
-//                //TODO...
-////                notifier.setConfiguration();
-//                notifier.setType((String)not.get("type"));
-//                vals.add(notifier);
-//            }
-//            instance.setNotifiers(vals);
-//        }
-        Hashtable checkout = (Hashtable)hashtable.get("checkoutResult");
+       
+        Map checkout = (Map) map.get("checkoutResult");
         if (checkout != null) {
-            ScmResult res = new ScmResult();
-            res.setSuccess(Boolean.getBoolean((String)checkout.get("success")));
-            res.setCommandLine((String)checkout.get("commandLine"));
-//TODO            res.setChanges();
-            res.setCommandOutput((String)checkout.get("commandOutput"));
-            res.setException((String)checkout.get("exception"));
-            res.setProviderMessage((String)checkout.get("providerMessage"));
-            instance.setCheckoutResult(res);
-            
+            ScmResult scmResult = new ScmResult();
+            scmResult.setSuccess(Boolean.getBoolean((String) checkout.get("success")));
+            scmResult.setCommandLine((String) checkout.get("commandLine"));
+            //TODO            res.setChanges();
+            scmResult.setCommandOutput((String) checkout.get("commandOutput"));
+            scmResult.setException((String) checkout.get("exception"));
+            scmResult.setProviderMessage((String) checkout.get("providerMessage"));
+            instance.setCheckoutResult(scmResult);
+
         }
         return instance;
     }
+
+    private XmlRpcClient getClient() {
+        //if (client == null) {
+            XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
+            config.setServerURL(server);
+            XmlRpcClient client = new XmlRpcClient();
+            client.setConfig(config);
+        //}
+        return client;
+    }   
 }
