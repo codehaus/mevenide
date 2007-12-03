@@ -7,7 +7,9 @@
    <licenseName>Apache License, Version 2.0</licenseName>
    <licenseFile>license.txt</licenseFile>
    <libraries>
-       <library>xmlrpc:xmlrpc</library>
+       <library>org.apache.ws.commons:ws-commons-util</library>
+       <library>org.apache.xmlrpc:xmlrpc</library>
+       <library>org.apache.xmlrpc:xmlrpc-common</library>
        <library>commons-httpclient:commons-httpclient</library>
        <library>commons-codec:commons-codec</library>
        <library>org.apache.maven.continuum:continuum-model</library>
