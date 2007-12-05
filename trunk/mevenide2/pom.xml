@@ -187,7 +187,7 @@
                 <plugin>
                     <artifactId>maven-shade-plugin</artifactId>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <version>1.0-alpha-13-SNAPSHOT</version>
+                    <version>1.0-alpha-13</version>
                     <executions>
                         <execution>
                             <id>shading</id>                                
@@ -221,6 +221,6 @@
     
     <modules>
         <module>netbeans</module>
-    </modules>
+  </modules>
     
 </project>
