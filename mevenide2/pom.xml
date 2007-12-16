@@ -144,7 +144,7 @@
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
-                <updatePolicy>daily</updatePolicy>
+                <updatePolicy>never</updatePolicy>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>
@@ -170,6 +170,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>nbm-maven-plugin</artifactId>
+                    <!-- when updating version, remove the codehaus.snapshot repository -->
                     <version>2.7-SNAPSHOT</version>
                     <extensions>true</extensions>
                     <configuration>
