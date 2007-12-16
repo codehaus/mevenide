@@ -139,7 +139,7 @@
         <pluginRepository>
             <id>codehaus-snapshots</id>
             <name>codehaus snapshot repository</name>
-            <url>http://repository.snapshots.codehaus.org</url>
+            <url>http://snapshots.repository.codehaus.org</url>
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
