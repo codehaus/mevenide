@@ -33,6 +33,7 @@ import org.apache.maven.embedder.ConfigurationValidationResult;
 import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderLogger;
+import org.apache.maven.errors.DefaultCoreErrorReporter;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
@@ -123,10 +124,10 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             ConfigurationValidationResult setres = MavenEmbedder.validateConfiguration(settConfig);
             if (!setres.isValid()) {
                 if (setres.getUserSettingsException() != null) {
-                    CLIReportingUtils.showError("Error reading user settings: ", setres.getUserSettingsException(), req.isShowErrors(), out);//NOI18N - part of maven output
+                    CLIReportingUtils.showError("Error reading user settings: ", setres.getUserSettingsException(), req.isShowErrors(), new DefaultCoreErrorReporter(), out);//NOI18N - part of maven output
                 }
                 if (setres.getUserSettingsException() != null) {
-                    CLIReportingUtils.showError("Error reading global settings: ", setres.getGlobalSettingsException(), req.isShowErrors(), out);//NOI18N - part of maven output
+                    CLIReportingUtils.showError("Error reading global settings: ", setres.getGlobalSettingsException(), req.isShowErrors(), new DefaultCoreErrorReporter(), out);//NOI18N - part of maven output
                 }
                 return;
             }
@@ -220,11 +221,11 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
 //        } catch (SettingsConfigurationException ex) {
 //            LOGGER.log(Level.FINE, ex.getMessage(), ex);
         } catch (RuntimeException re) {
-            CLIReportingUtils.showError("Runtime Exception thrown during execution", re, req.isShowErrors(), out);//NOI18N - part of maven output
+            CLIReportingUtils.showError("Runtime Exception thrown during execution", re, req.isShowErrors(), req.getErrorReporter(), out);//NOI18N - part of maven output
             LOGGER.log(Level.FINE, re.getMessage(), re);
         } catch (ThreadDeath death) {
 //            cancel();
-            CLIReportingUtils.showError("Killed.", new Exception(""), false, out); //NOI18N - part of maven output
+            CLIReportingUtils.showError("Killed.", new Exception(""), false, req.getErrorReporter(), out); //NOI18N - part of maven output
             shutdownOutput(ioput);
             ioput = null;
             throw death;
