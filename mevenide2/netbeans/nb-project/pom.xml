@@ -188,14 +188,6 @@
             <version>${netbeans.release}</version>
         </dependency>
     </dependencies>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>codehaus.snapshots</id>
-            <name>repository to get a modello plugin snapshop</name>
-            <url>http://snapshots.repository.codehaus.org</url>
-        </pluginRepository>
-    </pluginRepositories>
-    
     <profiles>
         <profile>
             <id>nonmac</id>
