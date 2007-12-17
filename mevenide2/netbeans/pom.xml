@@ -111,7 +111,7 @@
                 <groupId>org.codehaus.modello</groupId>
                 <artifactId>modello-maven-plugin</artifactId>
                 <version>1.0-alpha-17</version>
-                </plugin>
+            </plugin>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
@@ -163,7 +163,7 @@
       <!--a fallback to make it work everywhere -->
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
-       <netbeans.release>RELEASE60-BETA2</netbeans.release>
+       <netbeans.release>RELEASE60</netbeans.release>
        <mevenide.nb.release>3.1-SNAPSHOT</mevenide.nb.release>
   </properties>
   <reporting>
@@ -171,7 +171,7 @@
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-javadoc-plugin</artifactId>
-              <version>RELEASE</version>
+              <version>2.3</version>
               <configuration>
                   <aggregate>true</aggregate>
               </configuration>
