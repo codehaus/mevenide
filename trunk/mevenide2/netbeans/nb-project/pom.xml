@@ -187,6 +187,19 @@
             <artifactId>org-openide-explorer</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        
+        
+        <!-- needed because archiva pulls wrong version of plexus-utils here.
+        this version corresponds to the version used by maven 2.1-SNAPSHOT
+        -->
+        <dependency>
+           
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>1.4.5</version>
+            <scope>provided</scope>
+        </dependency>
+        
     </dependencies>
     <profiles>
         <profile>
