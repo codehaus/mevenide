@@ -16,7 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans.graph;
-import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.netbeans.api.visual.widget.Widget;
 
 /**
@@ -24,7 +24,7 @@ import org.netbeans.api.visual.widget.Widget;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class ArtifactGraphNode {
-    private Artifact artifact;
+    private ResolutionNode artifact;
     //for the layout
     double locX;
     double locY;
@@ -35,16 +35,16 @@ public class ArtifactGraphNode {
     
     private boolean root;
     /** Creates a new instance of ArtifactGraphNode */
-    public ArtifactGraphNode(Artifact art) {
+    public ArtifactGraphNode(ResolutionNode art) {
         artifact = art;
     }
     
     
-    Artifact getArtifact() {
+    ResolutionNode getArtifact() {
         return artifact;
     }
     
-    void setArtifact(Artifact ar) {
+    void setArtifact(ResolutionNode ar) {
         artifact = ar;
     }
     
