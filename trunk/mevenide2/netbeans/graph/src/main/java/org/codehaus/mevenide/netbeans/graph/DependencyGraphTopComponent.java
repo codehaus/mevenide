@@ -84,16 +84,19 @@ public class DependencyGraphTopComponent extends TopComponent {
         }
     }
     
+    @Override
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_NEVER;
     }
     
+    @Override
     protected void componentOpened() {
         super.componentOpened();
         final JScrollPane pane = new JScrollPane();
         add(pane, BorderLayout.CENTER);
         JLabel lbl = new JLabel("Loading...");
         lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+        lbl.setAlignmentY(JLabel.CENTER_ALIGNMENT);
         pane.setViewportView(lbl);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {

@@ -130,7 +130,7 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         clearFind();
         List<ArtifactGraphNode> found = new ArrayList<ArtifactGraphNode>();
         for (ArtifactGraphNode node : getNodes()) {
-            Artifact art = node.getArtifact();
+            Artifact art = node.getArtifact().getArtifact();
             if (art.getId().contains(text)) {
                 found.add(node);
             }
@@ -229,7 +229,7 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         
         private ArtifactWidget(DependencyGraphScene scene, ArtifactGraphNode node) {
             super(scene);
-            Artifact artifact = node.getArtifact();
+            Artifact artifact = node.getArtifact().getArtifact();
             setLayout (LayoutFactory.createVerticalFlowLayout());
             setOpaque (true);
             setBackground (Color.WHITE);
