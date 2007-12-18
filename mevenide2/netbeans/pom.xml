@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>mevenide2-parent</artifactId>
-    <version>1.5-SNAPSHOT</version>
+    <version>1.6-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>netbeans</artifactId>
@@ -166,7 +166,7 @@
        <netbeans.release>RELEASE60</netbeans.release>
        <mevenide.nb.release>3.1-SNAPSHOT</mevenide.nb.release>
   </properties>
-  <reporting>
+  <!--reporting>
       <plugins>
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
@@ -177,6 +177,6 @@
               </configuration>
           </plugin>
       </plugins>
-  </reporting>
+  </reporting-->
 
 </project>
