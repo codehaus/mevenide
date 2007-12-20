@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.output;
 import java.io.File;
 import junit.framework.*;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -65,7 +66,8 @@ public class JavaOutputListenerProviderTest extends TestCase {
         provider.processLine("Compilation failure\r\n\r\n/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java:[14,8] cannot find symbol", visitor);
         assertNotNull(visitor.getOutputListener());
         CompileAnnotation ann = (CompileAnnotation) visitor.getOutputListener();
-        assertEquals(ann.clazzfile.getAbsolutePath(), "/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java");
+        assertEquals(ann.clazzfile.getAbsolutePath(), 
+                FileUtil.normalizeFile(new File("/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java")).getAbsolutePath());
         visitor.resetVisitor();
         provider.sequenceFail("mojoexecute#compiler:testCompile", visitor);
     }
