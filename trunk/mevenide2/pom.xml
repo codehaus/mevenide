@@ -121,18 +121,23 @@
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
         </repository>
     </repositories>
     
     <pluginRepositories>
         <pluginRepository>
-            <id>codehaus-plugins</id>
+            <id>codehaus</id>
             <name>codehaus repository</name>
             <url>http://repository.codehaus.org</url>
             <releases>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
+                <enabled>false</enabled>
                 <updatePolicy>never</updatePolicy>
             </snapshots>
         </pluginRepository>
@@ -141,6 +146,7 @@
             <name>codehaus snapshot repository</name>
             <url>http://snapshots.repository.codehaus.org</url>
             <releases>
+                <enabled>false</enabled>
                 <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
