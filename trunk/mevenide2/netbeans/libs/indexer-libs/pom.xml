@@ -33,6 +33,13 @@
             <artifactId>archiva-utils</artifactId>
             <version>1.0-20060923.165121-1</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-container-default</artifactId>
+            <!-- use the version used by the embedder-->
+            <version>1.0-alpha-40</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
