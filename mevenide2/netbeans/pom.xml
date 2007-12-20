@@ -158,6 +158,21 @@
             </snapshots>
         </repository>
     </repositories>
+    <pluginRepositories>
+        <!-- needed because of the org.netbeans.nbbuild:tasks:jar:6.0-beta1 artifact-->
+        <pluginRepository>
+            <id>netbeans</id>
+            <name>repository hosting netbeans.org api artifacts</name>
+            <url>http://deadlock.netbeans.org/maven2</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
   
   <properties>
       <!--a fallback to make it work everywhere -->
