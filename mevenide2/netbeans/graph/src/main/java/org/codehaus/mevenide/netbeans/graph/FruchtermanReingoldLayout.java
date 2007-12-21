@@ -17,12 +17,14 @@
 
 package org.codehaus.mevenide.netbeans.graph;
 
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.Iterator;
+import javax.swing.JScrollPane;
 import org.netbeans.api.visual.layout.SceneLayout;
 import org.netbeans.api.visual.widget.Widget;
 
@@ -46,16 +48,25 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     private static final double MIN = 0.000001D;
     private static final double ALPHA = 0.1;
     private DependencyGraphScene scene;
+    private JScrollPane panel;
     
-    public FruchtermanReingoldLayout(DependencyGraphScene scene) {
+    public FruchtermanReingoldLayout(DependencyGraphScene scene, JScrollPane panel) {
         super(scene);
         iterations = 700;
         this.scene = scene;
         init();
+        this.panel = panel;
     }
     
     public void performLayout() {
         performLayout(true);
+        Rectangle rectangle = new Rectangle (0, 0, 1, 1);
+        for (Widget widget : scene.getChildren()) {
+             rectangle = rectangle.union (widget.convertLocalToScene (widget.getBounds ()));
+        }
+        Dimension dim = rectangle.getSize ();
+        Dimension viewDim = panel.getViewportBorderBounds ().getSize ();
+        scene.setZoomFactor (Math.min ((float) viewDim.width / dim.width, (float) viewDim.height / dim.height));
     }
     
     private void performLayout(boolean finish) {

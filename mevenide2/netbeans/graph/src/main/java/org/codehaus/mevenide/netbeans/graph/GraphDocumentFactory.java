@@ -73,7 +73,7 @@ public class GraphDocumentFactory {
         rootNode.setRoot(true);
         for (ResolutionNode nd : nodes) {
             ArtifactGraphNode gr = getNode(nd, cache, scene);
-            if (nd.getDepth() == 1) {
+            if (nd.isChildOfRootNode()) {
                 String edge = nd1.getArtifact().getId() + "--" + nd.getArtifact().getId();
                 ArtifactGraphEdge ed = new ArtifactGraphEdge(edge);
                 ed.setLevel(0);
