@@ -25,6 +25,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
 import org.apache.maven.artifact.Artifact;
 import org.netbeans.api.visual.action.ActionFactory;
 import org.netbeans.api.visual.action.PopupMenuProvider;
@@ -71,16 +72,17 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
         addChild(mainLayer);
         addChild(connectionLayer);
         hoverAction = createObjectHoverAction();
+        getActions ().addAction (ActionFactory.createMouseCenteredZoomAction (1.1));
         
         getActions().addAction(hoverAction);
         getActions().addAction(selectAction);
-        getActions().addAction(zoomAction);
+//        getActions().addAction(zoomAction);
         getActions().addAction(panAction);
         addObjectSceneListener(new SceneListener(), ObjectSceneEventType.OBJECT_HOVER_CHANGED, ObjectSceneEventType.OBJECT_SELECTION_CHANGED);
     }
 
-    void cleanLayout() {
-        layout =  new FruchtermanReingoldLayout(this);
+    void cleanLayout(JScrollPane panel) {
+        layout =  new FruchtermanReingoldLayout(this, panel);
         layout.invokeLayout();
     }
     
@@ -235,10 +237,10 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
             setBackground (Color.WHITE);
             setBorder (BorderFactory.createLineBorder (10));
             setToolTipText("<html><i>GroupId:</i><b> " + artifact.getGroupId() + 
-                         "</b><br/><i>ArtifactId:</i><b> "+ artifact.getArtifactId() + 
-                         "</b><br/><i>Version:</i><b> " + artifact.getVersion() + 
-                         "</b><br/><i>Scope:</i><b> " + artifact.getScope() + 
-                         "</b><br/><i>Type:</i><b> " + artifact.getType() + 
+                         "</b><br><i>ArtifactId:</i><b> "+ artifact.getArtifactId() + 
+                         "</b><br><i>Version:</i><b> " + artifact.getVersion() + 
+                         "</b><br><i>Scope:</i><b> " + artifact.getScope() + 
+                         "</b><br><i>Type:</i><b> " + artifact.getType() + 
                     "</b></html>");
             
             Widget root = new LevelOfDetailsWidget(scene, 0.05, 0.1, Double.MAX_VALUE, Double.MAX_VALUE);
