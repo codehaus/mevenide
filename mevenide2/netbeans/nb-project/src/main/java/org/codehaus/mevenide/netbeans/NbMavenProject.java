@@ -334,9 +334,7 @@ public final class NbMavenProject implements Project {
     public String getArtifactRelativeRepositoryPath(Artifact artifact) {
         //        embedder.setLocalRepositoryDirectory(FileUtil.toFile(getRepositoryRoot()));
         String toRet = getEmbedder().getLocalRepository().pathOf(artifact);
-        //TODO this is more or less a hack..
-        // if packaging is nbm, the path suggests the extension to be nbm.. override that to be jar
-        return toRet.substring(0 , toRet.length() - artifact.getType().length()) + "jar"; //NOI18N
+        return toRet;
     }
     
     public MavenEmbedder getEmbedder() {
