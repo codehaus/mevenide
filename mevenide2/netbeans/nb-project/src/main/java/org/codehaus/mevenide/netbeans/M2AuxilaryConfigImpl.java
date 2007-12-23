@@ -19,6 +19,8 @@ package org.codehaus.mevenide.netbeans;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.List;
+import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.StringOutputStream;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
@@ -49,6 +51,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     public Element getConfigurationFragment(final String elementName, final String namespace, boolean shared) {
         if (shared) {
             if (namespace.equals("http://www.sun.com/creator/ns")) {
+                
                 return getMockCreatorElement();
             }
             ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
@@ -180,6 +183,23 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
 
     //TODO major hack!
     private Element getMockCreatorElement() {
+        List<Artifact> artifacts = project.getOriginalMavenProject().getCompileArtifacts();
+        boolean create = false;
+        //TODO a hack to return the element only conditionally when the web extension was used.
+        //#123599
+        for (Artifact art : artifacts) {
+            String artId = art.getArtifactId();
+            String grId = art.getGroupId();
+            if (artId.contains("woodstock")) { //NOI18N
+                create = true;
+            }
+            if ("webui".equals(artId)) {
+                create = true;
+            }
+        }
+        if (!create) {
+            return null;
+        }
         Document doc = XMLUtil.createDocument("creator-data", "http://www.sun.com/creator/ns", null, null);
         Element el = doc.getDocumentElement();
         el.setAttribute("jsf.current.theme", "woodstock-theme-default");
