@@ -59,18 +59,25 @@
                 <role>Developer</role>
             </roles>
         </developer>
-    </developers>
-    <contributors>
-        <contributor>
+        <developer>
+            <id>lforet</id>
             <name>Laurent Foret</name>
             <roles>
-                <role>Mevenide2 Site creator</role>
+                <role>Developer</role>
             </roles>
-        </contributor>
+        </developer>
+    </developers>
+    <contributors>
         <contributor>
             <name>Daniel Mohni</name>
             <roles>
                 <role>Persistance support contribution</role>
+            </roles>
+        </contributor>
+        <contributor>
+            <name>Anuradha Gunasekara</name>
+            <roles>
+                <role>Additions to Repository browser</role>
             </roles>
         </contributor>
     </contributors>
