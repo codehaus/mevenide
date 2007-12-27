@@ -57,7 +57,7 @@
         <dependency>
             <groupId>net.java.dev.swing-layout</groupId>
             <artifactId>swing-layout</artifactId>
-            <version>1.0.1</version>
+            <version>1.0.2</version>
             <scope>provided</scope>
         </dependency>        
         <dependency>
@@ -77,6 +77,22 @@
             <artifactId>org-openide-windows</artifactId>
             <version>${netbeans.release}</version>
         </dependency>        
+        <!--this one for new add as dependency to project function-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-project</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectapi</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     
     <build>
