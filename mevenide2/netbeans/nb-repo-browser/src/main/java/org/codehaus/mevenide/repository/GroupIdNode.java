@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.repository;
 
+import java.awt.Image;
 import java.io.IOException;
 import java.util.Collections;
 import org.codehaus.mevenide.indexer.CustomQueries;
@@ -69,11 +70,22 @@ public class GroupIdNode extends AbstractNode {
             });
         }
         
+        @Override
         protected void removeNotify() {
             super.removeNotify();
             setKeys(Collections.EMPTY_LIST);
         }
         
+    }
+    
+    @Override
+    public Image getIcon(int arg0) {
+        return NodeUtils.getTreeFolderIcon(false);
+}
+
+    @Override
+    public Image getOpenedIcon(int arg0) {
+        return NodeUtils.getTreeFolderIcon(true);
     }
     
 }
