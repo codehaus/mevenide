@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.repository.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
@@ -54,7 +55,19 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
             }
         };
 
-        AbstractNode openProjectsNode = new AbstractNode(children);
+        AbstractNode openProjectsNode = new AbstractNode(children){
+
+            @Override
+            public Image getIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(false);
+            }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(true);
+            }
+        
+        };
         openProjectsNode.setDisplayName(NbBundle.getMessage(AddDependencyUI.class, "LBL_OpenProjects"));//NOI18N
         explorerManager.setRootContext(openProjectsNode);
         BeanTreeView beanTreeView = (BeanTreeView) jScrollPane1;

@@ -17,8 +17,10 @@
 
 package org.codehaus.mevenide.repository;
 
+import java.awt.Image;
 import org.codehaus.mevenide.repository.search.SearchResultChildren;
 import org.openide.nodes.AbstractNode;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -33,5 +35,16 @@ public class ArtifactIdNode extends AbstractNode {
         setDisplayName(art);
     }
     
+    
+    @Override
+    public Image getIcon(int arg0) {
+        Image badge = Utilities.loadImage("org/codehaus/mevenide/repository/ArtifactBadge.png", true); //NOI18N
+        return Utilities.mergeImages(super.getIcon(arg0), badge, 0, 0);
+}
+
+    @Override
+    public Image getOpenedIcon(int arg0) {
+        return getIcon(arg0);
+    }
     
 }
