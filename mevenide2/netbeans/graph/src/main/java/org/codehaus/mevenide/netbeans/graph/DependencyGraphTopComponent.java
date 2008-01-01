@@ -45,7 +45,6 @@ public class DependencyGraphTopComponent extends TopComponent {
     private NbMavenProject project;
     private DependencyGraphScene scene;
     final JScrollPane pane = new JScrollPane();
-    final JLayeredPane layer = new JLayeredPane();
     private BirdViewController birdView;
     private JComponent satelliteView;
     
@@ -97,10 +96,7 @@ public class DependencyGraphTopComponent extends TopComponent {
     protected void componentOpened() {
         super.componentOpened();
         pane.setWheelScrollingEnabled(true);
-        add(layer, BorderLayout.CENTER);
-        layer.add(pane);
-        layer.setLayout(new BorderLayout());
-        layer.setLayer(pane, JLayeredPane.DEFAULT_LAYER);
+        add(pane, BorderLayout.CENTER);
         JLabel lbl = new JLabel("Loading...");
         lbl.setAlignmentX(JLabel.CENTER_ALIGNMENT);
         lbl.setAlignmentY(JLabel.CENTER_ALIGNMENT);
@@ -189,11 +185,10 @@ public class DependencyGraphTopComponent extends TopComponent {
     
     private void btnSmallerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSmallerActionPerformed
         scene.setZoomFactor(scene.getZoomFactor() * 0.8);
-        scene.revalidate();
+        scene.validate();
         scene.repaint();
         if (!pane.getHorizontalScrollBar().isVisible() && 
             !pane.getVerticalScrollBar().isVisible()) {
-            layer.remove(satelliteView);
             revalidate();
             repaint();
         }
@@ -205,12 +200,10 @@ public class DependencyGraphTopComponent extends TopComponent {
             birdView.hide();
         }
         scene.setZoomFactor(scene.getZoomFactor() * 1.2);
-        scene.revalidate();
+        scene.validate();
         scene.repaint();
         if (pane.getHorizontalScrollBar().isVisible() || 
             pane.getVerticalScrollBar().isVisible()) {
-            layer.add(satelliteView);
-            layer.setLayer(satelliteView, JLayeredPane.POPUP_LAYER);
             satelliteView.setLocation(0,0);
             revalidate();
             repaint();
