@@ -68,8 +68,8 @@ public class DependencyGraphScene extends GraphScene<ArtifactGraphNode, Artifact
     /** Creates a new instance ofla DependencyGraphScene */
     public DependencyGraphScene() {
         mainLayer = new LayerWidget(this);
-        connectionLayer = new LayerWidget(this);
         addChild(mainLayer);
+        connectionLayer = new LayerWidget(this);
         addChild(connectionLayer);
         hoverAction = createObjectHoverAction();
         getActions ().addAction (ActionFactory.createMouseCenteredZoomAction (1.1));
