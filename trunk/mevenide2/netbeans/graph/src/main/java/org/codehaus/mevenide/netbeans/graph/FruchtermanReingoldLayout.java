@@ -60,6 +60,7 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     
     public void performLayout() {
         performLayout(true);
+        scene.validate();
         Rectangle rectangle = new Rectangle (0, 0, 1, 1);
         for (Widget widget : scene.getChildren()) {
              rectangle = rectangle.union (widget.convertLocalToScene (widget.getBounds ()));
@@ -68,7 +69,6 @@ public class FruchtermanReingoldLayout extends SceneLayout {
         Dimension viewDim = panel.getViewportBorderBounds ().getSize ();
         scene.setZoomFactor (Math.min ((float) viewDim.width / dim.width, (float) viewDim.height / dim.height));
         scene.validate();
-        scene.repaint();
     }
     
     private void performLayout(boolean finish) {
@@ -270,10 +270,10 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     }
     
     private boolean isThereFreeSpace(Point pnt, ArtifactGraphNode node) {
-        Rectangle bnds = scene.findWidget(node).getPreferredBounds();
+        Rectangle bnds = scene.findWidget(node).getBounds();
         bnds = new Rectangle(pnt.x, pnt.y, bnds.width, bnds.height);
         for (ArtifactGraphNode nd : scene.getNodes()) {
-            Rectangle bounds = scene.findWidget(nd).getPreferredBounds();
+            Rectangle bounds = scene.findWidget(nd).getBounds();
             Point point = new Point();
             point.setLocation(nd.locX, nd.locY);
             bounds = new Rectangle(point, bounds.getSize());
@@ -301,12 +301,12 @@ public class FruchtermanReingoldLayout extends SceneLayout {
     }
     
     private boolean isThereFreeSpaceNonFixedSpace(ArtifactGraphNode node) {
-        Rectangle bnds = scene.findWidget(node).getPreferredBounds();
+        Rectangle bnds = scene.findWidget(node).getBounds();
         Point pnt = new Point();
         pnt.setLocation(node.locX, node.locY);
         bnds = new Rectangle(pnt, bnds.getSize());
         for (ArtifactGraphNode nd : scene.getNodes()) {
-            Rectangle bounds = scene.findWidget(nd).getPreferredBounds();
+            Rectangle bounds = scene.findWidget(nd).getBounds();
             Point point = new Point();
             point.setLocation(nd.locX, nd.locY);
             bounds = new Rectangle(point, bounds.getSize());

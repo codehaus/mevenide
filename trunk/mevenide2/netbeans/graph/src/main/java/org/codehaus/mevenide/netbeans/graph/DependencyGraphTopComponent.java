@@ -112,18 +112,14 @@ public class DependencyGraphTopComponent extends TopComponent {
                                 sceneView = scene.createView ();
                             }
                             pane.setViewportView(sceneView);
+                            scene.cleanLayout(pane);
+                            birdView = scene.createBirdView();
+                            satelliteView = scene.createSatelliteView();
                         }
                     });
                 } catch (Exception e) {
                     
                 }
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        scene.cleanLayout(pane);
-                        birdView = scene.createBirdView();
-                        satelliteView = scene.createSatelliteView();
-                    }
-                });
             }
         });
     }
