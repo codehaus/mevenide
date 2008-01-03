@@ -23,9 +23,9 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
+import org.codehaus.mevenide.repository.scm.CheckoutAction;
 import org.openide.awt.HtmlBrowser;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -88,7 +88,8 @@ public class VersionNode extends AbstractNode {
             new ViewJavadocAction(),
             new ShowRecordAction(),
             null,
-            new AddAsDependencyAction(record)
+            new AddAsDependencyAction(record),
+            new CheckoutAction(record)
             
         };
         return retValue;
