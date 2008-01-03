@@ -19,7 +19,7 @@
     <scm>
         <connection>scm:svn:http://svn.codehaus.org/mevenide/trunk/mevenide2</connection>
         <developerConnection>scm:svn:https://svn.codehaus.org/mevenide/trunk/mevenide2</developerConnection>
-        <url>http://fisheye.codehaus.org/viewrep/mevenide/mevenide2</url>
+        <url>http://fisheye.codehaus.org/browse/mevenide/trunk/mevenide2</url>
     </scm>
     <mailingLists>
         <mailingList>
