@@ -218,10 +218,6 @@ public class DependencyNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         Collection<Action> acts = new ArrayList<Action>();
-        acts.add(CommonArtifactActions.createViewProjectHomeAction(art));
-        acts.add(CommonArtifactActions.createViewBugTrackerAction(art));
-        acts.add(CommonArtifactActions.createSCMActions(art));
-        acts.add(CommonArtifactActions.createViewJavadocAction(art));
         InstallLocalArtifactAction act = new InstallLocalArtifactAction();
         acts.add(act);
         if (!isLocal()) {
@@ -242,6 +238,11 @@ public class DependencyNode extends AbstractNode {
         } else {
             acts.add(new RemoveDependencyAction());
         }
+        acts.add(null);
+        acts.add(CommonArtifactActions.createViewJavadocAction(art));
+        acts.add(CommonArtifactActions.createViewProjectHomeAction(art));
+        acts.add(CommonArtifactActions.createViewBugTrackerAction(art));
+        acts.add(CommonArtifactActions.createSCMActions(art));
         acts.add(null);
         acts.add(PropertiesAction.get(PropertiesAction.class));
         return acts.toArray(new Action[acts.size()]);
