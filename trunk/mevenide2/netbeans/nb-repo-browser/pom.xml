@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-openide-awt</artifactId>
-            <version>${netbeans.release}</version>
+            <version>RELEASE60</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
