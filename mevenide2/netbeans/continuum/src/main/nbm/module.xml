@@ -11,7 +11,7 @@
             <id>org.netbeans.api:org-jdesktop-layout</id>
         </dependency>        
         <dependency>
-            <id>org.codehaus.mevenide:continuum-rpc</id>
+            <id>org.apache.maven.continuum:continuum-xmlrpc-client</id>
         </dependency>
         <dependency>
             <id>org.netbeans.api:org-openide-util</id>

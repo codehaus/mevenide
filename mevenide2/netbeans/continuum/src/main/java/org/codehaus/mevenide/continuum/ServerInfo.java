@@ -17,70 +17,90 @@
 package org.codehaus.mevenide.continuum;
 
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.StringTokenizer;
+import org.apache.commons.lang.StringUtils;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author laurent.foret@codehaus.org
  */
+@SuppressWarnings("serial")
 public class ServerInfo implements Serializable {
     
-    private String hostname;
-    private int rpcPort;
-    private int webAppPort;
+    private URL xmlRpcUrl;
+    private URL webUrl;
+    private String user;
+    private String password;
     
     public ServerInfo() {
     }
     
     public ServerInfo(String rawInfos) {
+        try {
         StringTokenizer tokenizer = new StringTokenizer(rawInfos, ",");
-        setHostname(tokenizer.nextToken());
-        setRpcPort(Integer.parseInt(tokenizer.nextToken()));
-        setWebAppPort(Integer.parseInt(tokenizer.nextToken()));
+            setXmlRpcUrl(new URL(tokenizer.nextToken()));
+            setWebUrl(new URL(tokenizer.nextToken()));
+            if (tokenizer.hasMoreTokens()){
+                setUser(tokenizer.nextToken());
+                setPassword(tokenizer.nextToken());
+    }
+            else {
+                setUser(null);
+                setPassword(null);                
+            }
+        } catch (MalformedURLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }
     
-    public ServerInfo(String name, int rpcPort, int webAppPort) {
-        setHostname(name);
-        setRpcPort(rpcPort);
-        setWebAppPort(webAppPort);
+    public ServerInfo(URL xmlRpcUrl, URL webUrl, String user, String password) {
+        setXmlRpcUrl(xmlRpcUrl);
+        setWebUrl(webUrl);
+        setUser(user);
+        setPassword(password);
     }
     
-    public String getHostname() {
-        return hostname;
+    public URL getXmlRpcUrl() {
+        return xmlRpcUrl;
     }
     
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
+    public void setXmlRpcUrl(URL url) {
+        this.xmlRpcUrl = url;
     }
     
-    public int getRpcPort() {
-        return rpcPort;
+    public URL getWebUrl() {
+        return webUrl;
     }
     
-    public void setRpcPort(int rpcPort) {
-        this.rpcPort = rpcPort;
+    public void setWebUrl(URL url) {
+        this.webUrl = url;
     }
     
-    public int getWebAppPort() {
-        return webAppPort;
+    public String getUser() {
+        return user;
     }
     
-    public void setWebAppPort(int webAppPort) {
-        this.webAppPort = webAppPort;
+    public void setUser(String user) {
+        this.user = user;
     }
     
-    public String getRpcURL() {
-        return "http://" + getHostname().trim() +":"+ getRpcPort();
+    public String getPassword() {
+        return password;
     }
     
-    public  String getWebAppURL() {
-        return "http://" + getHostname().trim() +":"+ getWebAppPort() + "/continuum/servlet/browse";
+    public void setPassword(String password) {
+        this.password = password;
     }
     
+    @Override
     public String toString() {
-        return getHostname()+","+getRpcPort()+","+getWebAppPort();
+        return xmlRpcUrl+","+webUrl+","+(user==null?"":user)+","+(password==null?"":password);
     }
     
+    @Override
     public boolean equals(Object object) {
         return this.toString().equalsIgnoreCase(object.toString());
     }

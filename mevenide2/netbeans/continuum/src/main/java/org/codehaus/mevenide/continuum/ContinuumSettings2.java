@@ -118,6 +118,10 @@ public class ContinuumSettings2  {
         setServers(servers);
     }
     
+    public void removeServers() {
+        setServers(new ArrayList<ServerInfo>());
+    }
+    
     public Preferences getPreferences() {
         if (preferences == null) preferences = NbPreferences.forModule(ContinuumSettings2.class);
         return preferences;
