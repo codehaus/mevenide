@@ -18,15 +18,19 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
 import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.model.IssueManagement;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
-import org.codehaus.mevenide.repository.scm.CheckoutAction;
+import org.codehaus.mevenide.repository.scm.SCMActions;
 import org.openide.awt.HtmlBrowser;
+import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
@@ -35,6 +39,7 @@ import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -80,16 +85,19 @@ public class VersionNode extends AbstractNode {
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
     }
     
+    @Override
     public Action[] getActions(boolean context) {
         Action[] retValue;
         
         retValue = new Action[] {
-            
+            new ViewProjectHomeAction(),
             new ViewJavadocAction(),
             new ShowRecordAction(),
+            new ViewBugTrackerAction(),
             null,
             new AddAsDependencyAction(record),
-            new CheckoutAction(record)
+            null,
+            new SCMActions(record)
             
         };
         return retValue;
@@ -179,6 +187,46 @@ public class VersionNode extends AbstractNode {
         
     }
     
-    
+     private class ViewBugTrackerAction extends AbstractAction {
+        public ViewBugTrackerAction() {
+            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_BugTracker"));
+           MavenProject mp = RepositoryUtils.readMavenProject(record);
+           //enable only if url persent
+            setEnabled(mp!=null && mp.getIssueManagement()
+                    != null&& mp.getIssueManagement().getUrl()!=null);
+        }
+        public void actionPerformed(ActionEvent event) {
+          IssueManagement im= RepositoryUtils.readMavenProject(record).getIssueManagement();
+          try {
+
+            URLDisplayer.getDefault().showURL(new URL(im.getUrl()));
+        } catch (MalformedURLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        }
+
+       
+        
+    }
+      private class ViewProjectHomeAction extends AbstractAction {
+        public ViewProjectHomeAction() {
+            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_ProjectHome"));
+           MavenProject mp = RepositoryUtils.readMavenProject(record);
+           //enable only if url persent
+            setEnabled(mp!=null && mp.getUrl()!=null);
+        }
+        public void actionPerformed(ActionEvent event) {
+           MavenProject mp = RepositoryUtils.readMavenProject(record);
+          try {
+
+            URLDisplayer.getDefault().showURL(new URL(mp.getUrl()));
+        } catch (MalformedURLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        }
+
+       
+        
+    }
     
 }

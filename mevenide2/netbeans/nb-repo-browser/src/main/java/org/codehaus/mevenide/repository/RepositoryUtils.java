@@ -14,36 +14,39 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
 import java.io.File;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.extension.ExtensionScanningException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.openide.util.Exceptions;
 
 /**
  *
  * @author mkleint
  */
 public class RepositoryUtils {
-    
+
     /** Creates a new instance of RepositoryUtils */
     private RepositoryUtils() {
     }
-    
+
     public static Artifact createArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo) {
         return createArtifact(record, repo, null);
     }
-    
+
     public static Artifact createJavadocArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo) {
         return createArtifact(record, repo, "javadoc"); //NOI18N
     }
-    
+
     private static Artifact createArtifact(StandardArtifactIndexRecord record, ArtifactRepository repo, String classifier) {
         Artifact art;
-        
+
         if (record.getClassifier() != null || classifier != null) {
             art = EmbedderFactory.getOnlineEmbedder().createArtifactWithClassifier(record.getGroupId(),
                     record.getArtifactId(),
@@ -57,9 +60,37 @@ public class RepositoryUtils {
                     null,
                     record.getType());
         }
-        String localPath = repo.pathOf( art );
-        art.setFile( new File( repo.getBasedir(), localPath ) );
-        
+        String localPath = repo.pathOf(art);
+        art.setFile(new File(repo.getBasedir(), localPath));
+
         return art;
+    }
+
+    public static MavenProject readMavenProject(StandardArtifactIndexRecord record) {
+        MavenProject mavenProject = null;
+        Artifact artifact = createArtifact(record,
+                EmbedderFactory.getProjectEmbedder().getLocalRepository());
+
+        String absolutePath = artifact.getFile().getAbsolutePath();
+        String extension = artifact.getArtifactHandler().getExtension();
+
+        String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
+        pomPath += "pom";//NOI18N
+        File file = new File(pomPath);
+        if (file.exists()) {
+            try {
+
+                mavenProject = EmbedderFactory.getProjectEmbedder().
+                        readProject(file);
+
+            } catch (ProjectBuildingException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (ExtensionScanningException ex) {
+                Exceptions.printStackTrace(ex);
+            }
+
+        }
+
+        return mavenProject;
     }
 }
