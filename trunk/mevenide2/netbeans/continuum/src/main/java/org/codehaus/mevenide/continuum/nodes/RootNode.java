@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.continuum.nodes;
 
 import java.awt.event.ActionEvent;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.prefs.PreferenceChangeEvent;
 import java.util.prefs.PreferenceChangeListener;
@@ -31,6 +32,7 @@ import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -53,7 +55,7 @@ public class RootNode extends AbstractNode {
     }
     
     public Action[] getActions(boolean b) {
-        Action[] retValue = { new AddAction()};
+        Action[] retValue = { new AddAction(), new DeleteAllServersAction()};
         return  retValue;
     }
     
@@ -105,11 +107,24 @@ public class RootNode extends AbstractNode {
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (ret == NotifyDescriptor.OK_OPTION) {
+                try {
                 ContinuumSettings2.getDefault().addServer(ss.getServerInfo());
+                } catch (MalformedURLException ex) {
+                    Exceptions.printStackTrace(ex);
             }
         }
     }
+    }
     
+    private class DeleteAllServersAction extends AbstractAction {
     
+        public DeleteAllServersAction() {
+            this.putValue(Action.NAME, "Delete all servers");
+        }
+    
+        public void actionPerformed(ActionEvent e) {
+            ContinuumSettings2.getDefault().removeServers();
+}
+    }
     
 }

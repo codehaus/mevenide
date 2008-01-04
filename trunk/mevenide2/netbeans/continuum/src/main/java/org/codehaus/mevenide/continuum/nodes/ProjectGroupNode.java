@@ -17,58 +17,70 @@
 package org.codehaus.mevenide.continuum.nodes;
 
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
+import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroup;
-import org.codehaus.mevenide.continuum.ContinuumSettings2;
+import org.apache.maven.continuum.xmlrpc.project.ProjectSummary;
 import org.codehaus.mevenide.continuum.ServerInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.RequestProcessor;
-import org.openide.windows.IOProvider;
 
-/**
- *
- * @author mkleint
- */
-public class ServerNode extends AbstractNode {
+public class ProjectGroupNode extends AbstractNode {
 
-    /** Creates a new instance of ContinuumServerNode */
-    public ServerNode(String serverRawInfo) {
-        super(new ServerChildren(serverRawInfo));
-        ServerInfo serverInfo = new ServerInfo(serverRawInfo);
-        setName(serverRawInfo);
-        setDisplayName(serverInfo.getXmlRpcUrl().toString());
+    // private ServerInfo serverInfo;
+    // private ProjectGroup projectGroup;
+    // private ContinuumXmlRpcClient reader;
+    // private RequestProcessor queue;
+    public ProjectGroupNode(ProjectGroup projectGroup,
+            ContinuumXmlRpcClient reader, ServerInfo serverInfo,
+            RequestProcessor queue) {
+        super(new ProjectGroupChildren(projectGroup, reader, serverInfo, queue));
+        setName(Integer.toString(projectGroup.getId()));
+        setDisplayName(projectGroup.getName());
         setIconBaseWithExtension("org/codehaus/mevenide/continuum/threeBrands.gif");
+    // this.projectGroup = projectGroup;
+    // this.serverInfo= serverInfo;
+    // this.reader = reader;
+    // this.queue = queue;
     }
 
     public Action[] getActions(boolean b) {
-        Action[] retValue = {new RemoveAction(), new RefreshAction()};
+        Action[] retValue = {new RefreshAction()};
         return retValue;
     }
 
-    protected static class ServerChildren extends Children.Keys {
+    @SuppressWarnings("unchecked")
+    private static class ProjectGroupChildren extends Children.Keys {
 
         private ServerInfo serverInfo;
+        private ProjectGroup projectGroup;
         private ContinuumXmlRpcClient reader;
         private RequestProcessor queue;
 
-        public ServerChildren(String serverRawInfo) {
-            this.serverInfo = new ServerInfo(serverRawInfo);
-            this.queue = new RequestProcessor("Continuum server processor", 1);
-            reader = new ContinuumXmlRpcClient(serverInfo.getXmlRpcUrl(), serverInfo.getUser(), serverInfo.getPassword());
-
+        public ProjectGroupChildren(ProjectGroup projectGroup,
+                ContinuumXmlRpcClient reader, ServerInfo serverInfo,
+                RequestProcessor queue) {
+            this.projectGroup = projectGroup;
+            this.serverInfo = serverInfo;
+            this.reader = reader;
+            this.queue = queue;
         }
 
         protected Node[] createNodes(Object object) {
-            if (object instanceof ProjectGroup) {
-                ProjectGroup projectGroup = (ProjectGroup) object;
-                return new Node[]{new ProjectGroupNode(projectGroup, reader, serverInfo, queue)};
+            if (object instanceof Project) {
+                Project project = (Project) object;
+                return new Node[]{new ProjectNode(project, reader,
+                    serverInfo, queue)
+                };
             }
             if (object instanceof String) {
                 AbstractNode nd = new AbstractNode(Children.LEAF);
@@ -86,13 +98,17 @@ public class ServerNode extends AbstractNode {
         protected void addNotify() {
             super.addNotify();
             if (reader != null) {
-                setKeys(Collections.singleton("Connecting to "+serverInfo.getXmlRpcUrl()+" ..."));
+                setKeys(Collections.singleton("Fetching projects ..."));
                 queue.post(new Runnable() {
 
                     @SuppressWarnings("unchecked")
                     public void run() {
                         try {
-                            setKeys(reader.getAllProjectGroupsWithAllDetails());
+                            Collection<Project> projects = new ArrayList<Project>();
+                            for (ProjectSummary summary : reader.getProjects(projectGroup.getId())) {
+                                projects.add(reader.getProjectWithAllDetails(summary.getId()));
+                            }
+                            setKeys(projects);
                         } catch (Exception ex) {
                             setKeys(Collections.singletonList(getDisplayableMessageFrom(ex)));
                             throw new RuntimeException(ex);
@@ -108,18 +124,6 @@ public class ServerNode extends AbstractNode {
     }
 
     @SuppressWarnings("serial")
-    private class RemoveAction extends AbstractAction {
-
-        public RemoveAction() {
-            this.putValue(Action.NAME, "Remove");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            ContinuumSettings2.getDefault().removeServer(getName());
-        }
-    }
-
-    @SuppressWarnings("serial")
     private class RefreshAction extends AbstractAction {
 
         public RefreshAction() {
@@ -127,7 +131,11 @@ public class ServerNode extends AbstractNode {
         }
 
         public void actionPerformed(ActionEvent e) {
-            setChildren(new ServerChildren(getName()));
+            setChildren(new ProjectGroupChildren(
+                    ((ProjectGroupChildren) getChildren()).projectGroup,
+                    ((ProjectGroupChildren) getChildren()).reader,
+                    ((ProjectGroupChildren) getChildren()).serverInfo,
+                    ((ProjectGroupChildren) getChildren()).queue));
         }
     }
 }
