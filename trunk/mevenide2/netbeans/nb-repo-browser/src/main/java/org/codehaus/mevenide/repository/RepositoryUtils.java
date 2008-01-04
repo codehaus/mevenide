@@ -20,11 +20,7 @@ import java.io.File;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.extension.ExtensionScanningException;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.openide.util.Exceptions;
 
 /**
  *
@@ -66,31 +62,5 @@ public class RepositoryUtils {
         return art;
     }
 
-    public static MavenProject readMavenProject(StandardArtifactIndexRecord record) {
-        MavenProject mavenProject = null;
-        Artifact artifact = createArtifact(record,
-                EmbedderFactory.getProjectEmbedder().getLocalRepository());
-
-        String absolutePath = artifact.getFile().getAbsolutePath();
-        String extension = artifact.getArtifactHandler().getExtension();
-
-        String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
-        pomPath += "pom";//NOI18N
-        File file = new File(pomPath);
-        if (file.exists()) {
-            try {
-
-                mavenProject = EmbedderFactory.getProjectEmbedder().
-                        readProject(file);
-
-            } catch (ProjectBuildingException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (ExtensionScanningException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-
-        }
-
-        return mavenProject;
-    }
+  
 }

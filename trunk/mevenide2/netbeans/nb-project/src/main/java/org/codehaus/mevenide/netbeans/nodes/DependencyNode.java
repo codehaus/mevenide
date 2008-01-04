@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -50,6 +49,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
@@ -218,7 +218,10 @@ public class DependencyNode extends AbstractNode {
     @Override
     public Action[] getActions(boolean context) {
         Collection<Action> acts = new ArrayList<Action>();
-        acts.add(new ViewJavadocAction());
+        acts.add(CommonArtifactActions.createViewProjectHomeAction(art));
+        acts.add(CommonArtifactActions.createViewBugTrackerAction(art));
+        acts.add(CommonArtifactActions.createSCMActions(art));
+        acts.add(CommonArtifactActions.createViewJavadocAction(art));
         InstallLocalArtifactAction act = new InstallLocalArtifactAction();
         acts.add(act);
         if (!isLocal()) {
@@ -721,43 +724,7 @@ public class DependencyNode extends AbstractNode {
 //        }
 //    }
 //
-    private class ViewJavadocAction extends AbstractAction {
-
-        public ViewJavadocAction() {
-            putValue(Action.NAME, NbBundle.getMessage(DependencyNode.class, "BTN_View_Javadoc"));
-            setEnabled(hasJavadocInRepository());
-        }
-
-        public void actionPerformed(ActionEvent event) {
-            File javadoc = getJavadocFile();
-            FileObject fo = FileUtil.toFileObject(javadoc);
-            if (fo != null) {
-                FileObject jarfo = FileUtil.getArchiveRoot(fo);
-                if (jarfo != null) {
-                    FileObject index = jarfo.getFileObject("apidocs/index.html"); //NOI18N
-                    if (index == null) {
-                        index = jarfo.getFileObject("index.html"); //NOI18N
-                    }
-                    if (index == null) {
-                        for (FileObject chil : jarfo.getChildren()) {
-                            if (chil.isFolder()) {
-                                index = chil.getFileObject("index.html"); //NOI18N
-                            }
-                            if (index != null) {
-                                break;
-                            }
-                        }
-                        if (index == null) {
-                            //oh well, does it contain javadoc in the first place?
-                            index = jarfo;
-                        }
-                    }
-                    URL link = URLMapper.findURL(index, URLMapper.EXTERNAL);
-                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
-                }
-            }
-        }
-    }
+    
 
     private static class ArtifactSourceGroup implements SourceGroup {
 

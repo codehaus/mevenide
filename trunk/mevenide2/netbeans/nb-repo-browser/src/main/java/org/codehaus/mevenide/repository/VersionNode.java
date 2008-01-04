@@ -14,32 +14,21 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
-import java.awt.event.ActionEvent;
-import java.net.MalformedURLException;
-import java.net.URL;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.IssueManagement;
-import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
-import org.codehaus.mevenide.repository.scm.SCMActions;
-import org.openide.awt.HtmlBrowser;
-import org.openide.awt.HtmlBrowser.URLDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.filesystems.URLMapper;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.FilterNode;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -48,18 +37,18 @@ import org.openide.util.Utilities;
  * @author mkleint
  */
 public class VersionNode extends AbstractNode {
-    
+
     private StandardArtifactIndexRecord record;
     private boolean hasJavadoc;
     private boolean hasSources;
-    
+
     public static Children createChildren(StandardArtifactIndexRecord record) {
         if (!"pom".equals(record.getType())) { //NOI18N
             try {
                 Artifact art = RepositoryUtils.createArtifact(record,
                         EmbedderFactory.getProjectEmbedder().getLocalRepository());
                 FileObject fo = FileUtil.toFileObject(art.getFile());
-            
+
                 if (fo != null) {
                     DataObject dobj = DataObject.find(fo);
                     return new FilterNode.Children(dobj.getNodeDelegate().cloneNode());
@@ -69,7 +58,7 @@ public class VersionNode extends AbstractNode {
         }
         return Children.LEAF;
     }
-    
+
     /** Creates a new instance of VersionNode */
     public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source, boolean dispNameShort) {
         super(createChildren(record));
@@ -84,24 +73,27 @@ public class VersionNode extends AbstractNode {
         }
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
     }
-    
+
     @Override
     public Action[] getActions(boolean context) {
+        Artifact artifact = RepositoryUtils.createArtifact(record,
+                EmbedderFactory.getProjectEmbedder().getLocalRepository());
         Action[] retValue;
-        
-        retValue = new Action[] {
-            new ViewProjectHomeAction(),
-            new ViewJavadocAction(),
-            new ViewBugTrackerAction(),
+
+        retValue = new Action[]{
+            CommonArtifactActions.createViewProjectHomeAction(artifact),
+            CommonArtifactActions.createViewBugTrackerAction(artifact),
+          
+            CommonArtifactActions.createViewJavadocAction(artifact),
             null,
             new AddAsDependencyAction(record),
             null,
-            new SCMActions(record)
-            
+            CommonArtifactActions.createSCMActions(artifact)
         };
         return retValue;
     }
-    
+
+    @Override
     public java.awt.Image getIcon(int param) {
         java.awt.Image retValue = super.getIcon(param);
         if (hasJavadoc) {
@@ -115,9 +107,10 @@ public class VersionNode extends AbstractNode {
                     12, 8);
         }
         return retValue;
-        
+
     }
-    
+
+    @Override
     public String getShortDescription() {
         StringBuffer buffer = new StringBuffer();
         if (record != null) {
@@ -132,79 +125,6 @@ public class VersionNode extends AbstractNode {
         }
         return buffer.toString();
     }
-    
-    private FileObject getJavadocFile() {
-        Artifact art = RepositoryUtils.createJavadocArtifact(record,
-                EmbedderFactory.getProjectEmbedder().getLocalRepository());
-        return FileUtil.toFileObject(art.getFile());
-    }
-    
-    
-    private class ViewJavadocAction extends AbstractAction {
-        public ViewJavadocAction() {
-            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_Javadoc"));
-            setEnabled(hasJavadoc);
-        }
-        public void actionPerformed(ActionEvent event) {
-            FileObject fo = getJavadocFile();
-            if (fo != null) {
-                FileObject jarfo = FileUtil.getArchiveRoot(fo);
-                if (jarfo != null) {
-                    FileObject index = jarfo.getFileObject("apidocs/index.html"); //NOI18N
-                    if (index == null) {
-                        index = jarfo.getFileObject("index.html"); //NOI18N
-                    }
-                    if (index == null) {
-                        index = jarfo;
-                    }
-                    URL link = URLMapper.findURL(index, URLMapper.EXTERNAL);
-                    HtmlBrowser.URLDisplayer.getDefault().showURL(link);
-                }
-            }
-        }
-        
-    }
-    
-     private class ViewBugTrackerAction extends AbstractAction {
-        public ViewBugTrackerAction() {
-            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_BugTracker"));
-           MavenProject mp = RepositoryUtils.readMavenProject(record);
-           //enable only if url persent
-            setEnabled(mp!=null && mp.getIssueManagement()
-                    != null&& mp.getIssueManagement().getUrl()!=null);
-        }
-        public void actionPerformed(ActionEvent event) {
-          IssueManagement im= RepositoryUtils.readMavenProject(record).getIssueManagement();
-          try {
 
-            URLDisplayer.getDefault().showURL(new URL(im.getUrl()));
-        } catch (MalformedURLException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        }
-
-       
-        
-    }
-      private class ViewProjectHomeAction extends AbstractAction {
-        public ViewProjectHomeAction() {
-            putValue(Action.NAME, NbBundle.getMessage(VersionNode.class, "LBL_View_ProjectHome"));
-           MavenProject mp = RepositoryUtils.readMavenProject(record);
-           //enable only if url persent
-            setEnabled(mp!=null && mp.getUrl()!=null);
-        }
-        public void actionPerformed(ActionEvent event) {
-           MavenProject mp = RepositoryUtils.readMavenProject(record);
-          try {
-
-            URLDisplayer.getDefault().showURL(new URL(mp.getUrl()));
-        } catch (MalformedURLException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        }
-
-       
-        
-    }
-    
+   
 }
