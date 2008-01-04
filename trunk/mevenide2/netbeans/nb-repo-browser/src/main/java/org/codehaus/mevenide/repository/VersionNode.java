@@ -92,7 +92,6 @@ public class VersionNode extends AbstractNode {
         retValue = new Action[] {
             new ViewProjectHomeAction(),
             new ViewJavadocAction(),
-            new ShowRecordAction(),
             new ViewBugTrackerAction(),
             null,
             new AddAsDependencyAction(record),
@@ -139,28 +138,7 @@ public class VersionNode extends AbstractNode {
                 EmbedderFactory.getProjectEmbedder().getLocalRepository());
         return FileUtil.toFileObject(art.getFile());
     }
-
     
-    private class ShowRecordAction extends AbstractAction {
-        ShowRecordAction() {
-            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(VersionNode.class, "LBL_Show_record"));
-        }
-        
-        public void actionPerformed(ActionEvent e) {
-            if (record != null) {
-                System.out.println("-----------------------------------------------------------------------");
-                System.out.println("groupId:" + record.getGroupId());
-                System.out.println("artifactId:" + record.getArtifactId());
-                System.out.println("version:" + record.getVersion());
-                System.out.println("packaging:" + record.getPackaging());
-                System.out.println("type:" + record.getType());
-                System.out.println("name:" + record.getProjectName());
-                System.out.println("description:" + record.getProjectDescription());
-                System.out.println("md5:" + record.getMd5Checksum());
-                System.out.println("sha1:" + record.getSha1Checksum());
-            }
-        }
-    }
     
     private class ViewJavadocAction extends AbstractAction {
         public ViewJavadocAction() {
