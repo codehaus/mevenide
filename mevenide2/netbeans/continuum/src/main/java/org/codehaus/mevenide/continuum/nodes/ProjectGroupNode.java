@@ -27,6 +27,7 @@ import javax.swing.Action;
 import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
 import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroup;
+import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
 import org.apache.maven.continuum.xmlrpc.project.ProjectSummary;
 import org.codehaus.mevenide.continuum.ServerInfo;
 import org.openide.nodes.AbstractNode;
@@ -40,7 +41,7 @@ public class ProjectGroupNode extends AbstractNode {
     // private ProjectGroup projectGroup;
     // private ContinuumXmlRpcClient reader;
     // private RequestProcessor queue;
-    public ProjectGroupNode(ProjectGroup projectGroup,
+    public ProjectGroupNode(ProjectGroupSummary projectGroup,
             ContinuumXmlRpcClient reader, ServerInfo serverInfo,
             RequestProcessor queue) {
         super(new ProjectGroupChildren(projectGroup, reader, serverInfo, queue));
@@ -62,11 +63,11 @@ public class ProjectGroupNode extends AbstractNode {
     private static class ProjectGroupChildren extends Children.Keys {
 
         private ServerInfo serverInfo;
-        private ProjectGroup projectGroup;
+        private ProjectGroupSummary projectGroup;
         private ContinuumXmlRpcClient reader;
         private RequestProcessor queue;
 
-        public ProjectGroupChildren(ProjectGroup projectGroup,
+        public ProjectGroupChildren(ProjectGroupSummary projectGroup,
                 ContinuumXmlRpcClient reader, ServerInfo serverInfo,
                 RequestProcessor queue) {
             this.projectGroup = projectGroup;
