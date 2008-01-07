@@ -243,5 +243,8 @@ public class CustomQueries {
 //        Collections.sort( sortedVersions );
         return sortedVersions;
     }
-    
+
+     public static List<StandardArtifactIndexRecord> findDependencyUsage(String groupId,String artifactId,String version) throws RepositoryIndexSearchException {
+        return null; 
+     }
 }
