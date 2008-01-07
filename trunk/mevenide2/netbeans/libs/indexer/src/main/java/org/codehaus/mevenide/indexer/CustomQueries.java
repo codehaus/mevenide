@@ -30,6 +30,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
@@ -248,8 +249,13 @@ public class CustomQueries {
         return sortedVersions;
     }
 
-     public static List<StandardArtifactIndexRecord> findDependencyUsage(String groupId,String artifactId,String version) throws RepositoryIndexSearchException {
-        return null; 
+     public static List<StandardArtifactIndexRecord> findDependencyUsage(String groupId, String artifactId, String version) throws RepositoryIndexSearchException {
+        LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
+        // no escaping seems to be necessary.. oh well..
+        String term = /*QueryParser.escape(*/groupId + ":" + artifactId + ":" + version; //); //NOI18N
+        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.DEPENDENCIES, term));
+        LuceneQuery q = new LuceneQuery(tq);
+        return index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
      }
      
      public static List<StandardArtifactIndexRecord> findByMD5(File file) throws NoSuchAlgorithmException, DigesterException, RepositoryIndexSearchException {
