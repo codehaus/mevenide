@@ -22,6 +22,7 @@ import org.codehaus.mevenide.netbeans.actions.ViewBugTrackerAction;
 import org.codehaus.mevenide.netbeans.actions.ViewJavadocAction;
 import org.codehaus.mevenide.netbeans.actions.ViewProjectHomeAction;
 import org.codehaus.mevenide.netbeans.actions.scm.SCMActions;
+import org.codehaus.mevenide.netbeans.actions.usages.FindArtifactUsages;
 
 /**
  *
@@ -47,6 +48,10 @@ public class CommonArtifactActions {
     public static Action createSCMActions(Artifact artifact) {
         
         return new SCMActions(artifact);
+    }
+    public static Action createFindUsages(Artifact artifact) {
+        
+        return new FindArtifactUsages(artifact);
     }
     
 }
