@@ -291,18 +291,19 @@ public class ProjectNode extends AbstractNode {
                             "Continuum-" + project.getName(), true);
                     io.select();
                     OutputWriter out = io.getOut();
-                    out.println("Connecting to " + pathRoot + " ...");
                     try {
                         BufferedReader read;
-                        if (pathRoot != null) {
-//							if (!pathRoot.endsWith("/")) {
-//								pathRoot = pathRoot + "/";
-//							}
+                        if (pathRoot != null) {	
+                            String loginPath = pathRoot + "/security/login.action?username="+ serverInfo.getUser()+"&password="+serverInfo.getPassword()+"&method:login=login";
                             String path = pathRoot + "/buildOutputText.action?buildId=" + project.getLatestBuildId() + "&projectId=" + project.getId() + "&projectGroupId=" + project.getProjectGroup().getId();
                             HttpClient client = new HttpClient();
-                            out.println("Connect to " + path);
-                            HttpMethod method = new GetMethod(path);
+                            out.println("Connect to " + loginPath.substring(0, loginPath.indexOf("&password")));
+                            HttpMethod method = new GetMethod(loginPath);
                             int ret = client.executeMethod(method);
+                            
+                            out.println("Connect to " + path);
+                            method = new GetMethod(path);
+                            client.executeMethod(method);
                             if (ret == HttpStatus.SC_OK) {
                                 read = new BufferedReader(
                                         new InputStreamReader(method.getResponseBodyAsStream()));
