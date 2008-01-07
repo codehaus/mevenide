@@ -17,7 +17,9 @@
 
 package org.codehaus.mevenide.indexer;
 
+import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,6 +33,8 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
+import org.apache.maven.archiva.digest.DigesterException;
+import org.apache.maven.archiva.digest.Md5Digester;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
 import org.apache.maven.archiva.indexer.lucene.LuceneStandardIndexRecordConverter;
@@ -246,5 +250,18 @@ public class CustomQueries {
 
      public static List<StandardArtifactIndexRecord> findDependencyUsage(String groupId,String artifactId,String version) throws RepositoryIndexSearchException {
         return null; 
+     }
+     
+     public static List<StandardArtifactIndexRecord> findByMD5(File file) throws NoSuchAlgorithmException, DigesterException, RepositoryIndexSearchException {
+        Md5Digester digest = new Md5Digester();
+        String md5 = digest.calc(file);
+        return findByMD5(md5.toLowerCase());
+     }
+     
+     public static List<StandardArtifactIndexRecord> findByMD5(String md5) throws RepositoryIndexSearchException {
+        LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
+        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, md5));
+        LuceneQuery q = new LuceneQuery(tq);
+        return index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
      }
 }

@@ -26,17 +26,13 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.TermQuery;
 import org.apache.maven.archiva.digest.DigesterException;
 import org.apache.maven.archiva.digest.Md5Digester;
 import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -177,10 +173,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private String[] checkLocalRepo(String checksum) throws RepositoryIndexSearchException {
-        LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
-        TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, checksum));
-        LuceneQuery q = new LuceneQuery(tq);
-        List<StandardArtifactIndexRecord> lst = index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+        List<StandardArtifactIndexRecord> lst = CustomQueries.findByMD5(checksum);
         for (StandardArtifactIndexRecord elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();

@@ -26,17 +26,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.lucene.index.Term;
-import org.apache.lucene.search.TermQuery;
-import org.apache.maven.archiva.digest.Md5Digester;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
 import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -192,12 +188,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         File platformFile = lookForModuleInPlatform(artifactId);
         if (platformFile != null) {
             try {
-                Md5Digester digest = new Md5Digester();
-                String md5 = digest.calc(platformFile);
-                LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
-                TermQuery tq  = new TermQuery( new Term(StandardIndexRecordFields.MD5, md5));
-                LuceneQuery q = new LuceneQuery(tq);
-                List<StandardArtifactIndexRecord> lst = index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
+                List<StandardArtifactIndexRecord> lst = CustomQueries.findByMD5(platformFile);
                 for (StandardArtifactIndexRecord elem : lst) {
                     dep = new Dependency();
                     dep.setArtifactId(elem.getArtifactId());
