@@ -23,14 +23,13 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
-import org.apache.maven.continuum.xmlrpc.project.ProjectGroup;
+import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
 import org.codehaus.mevenide.continuum.ContinuumSettings2;
 import org.codehaus.mevenide.continuum.ServerInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.RequestProcessor;
-import org.openide.windows.IOProvider;
 
 /**
  *
@@ -66,8 +65,8 @@ public class ServerNode extends AbstractNode {
         }
 
         protected Node[] createNodes(Object object) {
-            if (object instanceof ProjectGroup) {
-                ProjectGroup projectGroup = (ProjectGroup) object;
+            if (object instanceof ProjectGroupSummary) {
+                ProjectGroupSummary projectGroup = (ProjectGroupSummary) object;
                 return new Node[]{new ProjectGroupNode(projectGroup, reader, serverInfo, queue)};
             }
             if (object instanceof String) {
@@ -92,7 +91,7 @@ public class ServerNode extends AbstractNode {
                     @SuppressWarnings("unchecked")
                     public void run() {
                         try {
-                            setKeys(reader.getAllProjectGroupsWithAllDetails());
+                            setKeys(reader.getAllProjectGroups());
                         } catch (Exception ex) {
                             setKeys(Collections.singletonList(getDisplayableMessageFrom(ex)));
                             throw new RuntimeException(ex);
