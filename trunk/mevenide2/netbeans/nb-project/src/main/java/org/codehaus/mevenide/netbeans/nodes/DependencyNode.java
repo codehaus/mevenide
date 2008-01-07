@@ -239,6 +239,8 @@ public class DependencyNode extends AbstractNode {
             acts.add(new RemoveDependencyAction());
         }
         acts.add(null);
+        acts.add(CommonArtifactActions.createFindUsages(art));
+        acts.add(null);
         acts.add(CommonArtifactActions.createViewJavadocAction(art));
         acts.add(CommonArtifactActions.createViewProjectHomeAction(art));
         acts.add(CommonArtifactActions.createViewBugTrackerAction(art));

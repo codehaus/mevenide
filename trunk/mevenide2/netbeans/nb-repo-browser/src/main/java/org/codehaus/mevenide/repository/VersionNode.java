@@ -83,6 +83,8 @@ public class VersionNode extends AbstractNode {
         retValue = new Action[]{
             new AddAsDependencyAction(record),
             null,
+            CommonArtifactActions.createFindUsages(artifact),
+            null,
             CommonArtifactActions.createViewJavadocAction(artifact),   
             CommonArtifactActions.createViewProjectHomeAction(artifact),
             CommonArtifactActions.createViewBugTrackerAction(artifact),
