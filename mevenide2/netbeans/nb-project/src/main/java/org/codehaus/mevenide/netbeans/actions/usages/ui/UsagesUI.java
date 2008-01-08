@@ -6,12 +6,17 @@
 package org.codehaus.mevenide.netbeans.actions.usages.ui;
 
 import java.awt.Image;
+import java.beans.PropertyVetoException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.actions.usages.FindUsagesUtil;
+import org.codehaus.mevenide.netbeans.actions.usages.UsedArtifact;
+import org.codehaus.mevenide.netbeans.actions.usages.UsedGroup;
+import org.codehaus.mevenide.netbeans.actions.usages.UsedVersion;
 import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -22,6 +27,7 @@ import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -39,12 +45,14 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
     private ExplorerManager explorerManager = new ExplorerManager();
 
     /** Creates new form UsagesUI */
-    public UsagesUI(String libDef, final Artifact artifact) {
+    public UsagesUI(final String libDef, final Artifact artifact) {
         initComponents();
-        lblDescription.setText(NbBundle.getMessage(UsagesUI.class, "LBL_Description", libDef));//NOI18N
+        initNodes(libDef, artifact);
 
+    }
 
-        Children children = new Children.Keys<Integer>() {
+     void initNodes(final String libDef, final Artifact artifact) {
+        Children openProjectsChildren = new Children.Keys<Integer>() {
 
             @Override
             protected Node[] createNodes(Integer type) {
@@ -68,7 +76,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                     public String getHtmlDisplayName() {
                         return getDisplayName();
                     }
-                    
+
                     @Override
                     public Image getIcon(int arg0) {
                         return NodeUtils.getTreeFolderIcon(false);
@@ -107,21 +115,86 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
             @Override
             protected void addNotify() {
                 super.addNotify();
-                setKeys(new Integer[]{TYPE_DEPENDENCY,TYPE_COMPILE, TYPE_TEST, TYPE_RUNTIME});
+                setKeys(new Integer[]{TYPE_DEPENDENCY, TYPE_COMPILE, TYPE_TEST, TYPE_RUNTIME});
             }
         };
 
-        AbstractNode openProjectsNode = new AbstractNode(children);
-        explorerManager.setRootContext(openProjectsNode);
+        final AbstractNode openProjectsNode = new AbstractNode(openProjectsChildren) {
+
+            @Override
+            public String getHtmlDisplayName() {
+                return NbBundle.getMessage(UsagesUI.class, "LBL_Description", libDef);
+            }
+
+            @Override
+            public Image getIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(false);
+            }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(true);
+            }
+        };
+        final List<UsedGroup> list = FindUsagesUtil.findUsages(artifact);
+        Children repoChildren = new Children.Keys<UsedGroup>() {
+
+            @Override
+            protected Node[] createNodes(UsedGroup ug) {
+                return new Node[]{new GroupNode(ug)};
+            }
+
+            @Override
+            protected void addNotify() {
+                super.addNotify();
+                setKeys(list);
+            }
+        };
+        AbstractNode repoNode = new AbstractNode(repoChildren) {
+
+            @Override
+            public String getHtmlDisplayName() {
+
+                return NbBundle.getMessage(UsagesUI.class, "LBL_Repo", libDef);
+            }
+
+            @Override
+            public Image getIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(false);
+            }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return NodeUtils.getTreeFolderIcon(true);
+            }
+        };
+
+        Children.Array array = new Children.Array();
+        array.add(new Node[]{openProjectsNode, repoNode});
+        explorerManager.setRootContext(new AbstractNode(array));
         final BeanTreeView beanTreeView = (BeanTreeView) jScrollPane1;
         beanTreeView.setPopupAllowed(false);
         beanTreeView.setRootVisible(false);
+
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
                 beanTreeView.expandAll();
+
             }
-        }, 300);
+        }, 100);
+         RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+
+                try {
+                    explorerManager.setSelectedNodes(new Node[]{openProjectsNode});
+                } catch (PropertyVetoException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
+
+            }
+        }, 600);
     }
 
     /** This method is called from within the constructor to
@@ -134,35 +207,27 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
     private void initComponents() {
 
         jScrollPane1 = new BeanTreeView();
-        lblDescription = new javax.swing.JLabel();
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("CheckBoxMenuItem.selectionBackground")));
-
-        lblDescription.setText("null");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+            .add(layout.createSequentialGroup()
                 .addContainerGap()
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
-                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .add(lblDescription)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 369, Short.MAX_VALUE))
+                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblDescription;
     // End of variables declaration//GEN-END:variables
     public ExplorerManager getExplorerManager() {
         return explorerManager;
@@ -171,13 +236,14 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
     public List<NbMavenProject> getOpenProjects(Artifact artifact, int type) {
         List<NbMavenProject> mavenProjects = new ArrayList<NbMavenProject>();
         //get all open projects
+
         Project[] prjs = OpenProjects.getDefault().getOpenProjects();
 
         for (Project project : prjs) {
             //varify is this a maven project 
             NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
             if (mavProj != null) {
-              
+
                 MavenProject mp = mavProj.getOriginalMavenProject();
                 List artifacts = new ArrayList();
                 switch (type) {
@@ -213,17 +279,110 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                         break;
                     }
                 }
-              }
+            }
 
 
-            
+
         }
 
         return mavenProjects;
 
     }
 
-    public static class OpenProjectNode extends AbstractNode {
+    private static class GroupNode extends AbstractNode {
+
+        UsedGroup group;
+
+        public GroupNode(final UsedGroup group) {
+            super(new Children.Keys<UsedArtifact>() {
+
+                @Override
+                protected Node[] createNodes(UsedArtifact arg0) {
+                    return new Node[]{new ArtifactNode(arg0)};
+                }
+
+                @Override
+                protected void addNotify() {
+                    super.addNotify();
+                    setKeys(group.getUsedArtifacts());
+                }
+            });
+            this.group = group;
+
+        }
+
+        @Override
+        public Image getIcon(int arg0) {
+            return NodeUtils.getTreeFolderIcon(false);
+        }
+
+        @Override
+        public Image getOpenedIcon(int arg0) {
+            return NodeUtils.getTreeFolderIcon(true);
+        }
+
+        @Override
+        public String getDisplayName() {
+            return group.getName();
+        }
+    }
+
+    private static class ArtifactNode extends AbstractNode {
+
+        UsedArtifact artifact;
+
+        public ArtifactNode(final UsedArtifact artifact) {
+            super(new Children.Keys<UsedVersion>() {
+
+                @Override
+                protected Node[] createNodes(UsedVersion arg0) {
+                    return new Node[]{new VertionNode(arg0)};
+                }
+
+                @Override
+                protected void addNotify() {
+                    super.addNotify();
+                    setKeys(artifact.getUsedVersions());
+                }
+            });
+            this.artifact = artifact;
+
+        }
+
+        @Override
+        public Image getIcon(int arg0) {
+            Image badge = Utilities.loadImage("org/codehaus/mevenide/netbeans/actions/usages/ArtifactBadge.png", true); //NOI18N
+            return Utilities.mergeImages(super.getIcon(arg0), badge, 0, 0);
+        }
+
+        @Override
+        public Image getOpenedIcon(int arg0) {
+            return getIcon(arg0);
+        }
+
+        @Override
+        public String getDisplayName() {
+            return artifact.getName();
+        }
+    }
+
+    private static class VertionNode extends AbstractNode {
+
+        UsedVersion version;
+
+        public VertionNode(UsedVersion version) {
+            super(Children.LEAF);
+            this.version = version;
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
+        }
+
+        @Override
+        public String getDisplayName() {
+            return version.getVersion();
+        }
+    }
+
+    private static class OpenProjectNode extends AbstractNode {
 
         private NbMavenProject project;
         private ProjectInformation pi;
