@@ -14,46 +14,33 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository.search;
 
-import java.util.StringTokenizer;
-import javax.swing.JTextField;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.Query;
-
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.FindQuery;
 
 /**
  *
  * @author  mkleint
  */
 public class SearchPanel extends javax.swing.JPanel {
-    
+
     /** Creates new form SearchPanel */
     public SearchPanel() {
         initComponents();
     }
-    
-//    LuceneQuery createLuceneQuery() throws ParseException {
-//        StringBuffer buff = new StringBuffer();
-//        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, txtGroupId, false);
-//        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, txtArtifactId, false);
-//        appendField(buff, StandardIndexRecordFields.PROJECT_NAME, txtName, false);
-//        appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, txtDescription, false);
-//        appendField(buff, StandardIndexRecordFields.PACKAGING, txtPackaging, false);
-//        appendField(buff, StandardIndexRecordFields.CLASSES, txtClasses, false);
-//        
-//        if (txtAny.getText().trim().length() > 0) {
-//            Query multi = LocalRepositoryIndexer.parseMultiFieldQuery(txtAny.getText());
-//            buff.append(" ").append(multi.toString());
-//        }
-//        System.out.println("search query=" + buff.toString());
-//        
-//        return new LuceneQuery(LocalRepositoryIndexer.parseQuery(buff.toString()));
-//    }
-    
+
+    FindQuery getFindQuery() {
+        FindQuery fq = new FindQuery();
+        fq.setAny(txtAny.getText());
+        fq.setArtifactId(txtArtifactId.getText());
+        fq.setClasses(txtClasses.getText());
+        fq.setDescription(txtDescription.getText());
+        fq.setGroupId(txtGroupId.getText());
+        fq.setName(txtName.getText());
+        fq.setPackaging(txtPackaging.getText());
+        return fq;
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -163,15 +150,6 @@ public class SearchPanel extends javax.swing.JPanel {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void appendField(StringBuffer buff, String field, JTextField txtField, boolean escape) {
-        StringTokenizer tokenizer = new StringTokenizer(txtField.getText().trim());
-        while (tokenizer.hasMoreTokens()) {
-            buff.append(" +").append(field).append(":\"").append(escape ? QueryParser.escape(tokenizer.nextToken()) : tokenizer.nextToken()).append("\"");
-        }
-    }
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblAny;
@@ -189,5 +167,4 @@ public class SearchPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtName;
     private javax.swing.JTextField txtPackaging;
     // End of variables declaration//GEN-END:variables
-    
 }

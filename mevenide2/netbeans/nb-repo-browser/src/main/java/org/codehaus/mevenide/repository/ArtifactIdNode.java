@@ -18,8 +18,12 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.Image;
+import org.codehaus.mevenide.indexer.ArtifactInfo;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.repository.search.SearchResultChildren;
 import org.openide.nodes.AbstractNode;
+import org.openide.nodes.Children;
+import org.openide.nodes.Node;
 import org.openide.util.Utilities;
 
 /**
@@ -33,6 +37,28 @@ public class ArtifactIdNode extends AbstractNode {
         super(new SearchResultChildren(id, art));
         setName(art);
         setDisplayName(art);
+    }
+
+    public ArtifactIdNode(final ArtifactInfo artifactInfo) {
+        super(new Children.Keys<VersionInfo>() {
+
+                @Override
+                protected Node[] createNodes(VersionInfo arg0) {
+                   
+        
+                    return new Node[]{new VersionNode(arg0, 
+                            "javadoc".equals(arg0.getClassifier()), 
+                            "sources".equals(arg0.getClassifier()), arg0.getGroupId() != null)};
+                }
+
+                @Override
+                protected void addNotify() {
+                    super.addNotify();
+                    setKeys(artifactInfo.getVersionInfos());
+                }
+            });
+        setName(artifactInfo.getName());
+        setDisplayName(artifactInfo.getName());
     }
     
     

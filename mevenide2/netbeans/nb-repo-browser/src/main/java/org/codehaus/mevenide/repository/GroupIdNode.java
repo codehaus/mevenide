@@ -14,13 +14,14 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
 import java.awt.Image;
 import java.io.IOException;
 import java.util.Collections;
+import org.codehaus.mevenide.indexer.ArtifactInfo;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.GroupInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -31,61 +32,79 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 public class GroupIdNode extends AbstractNode {
-    
+
     /** Creates a new instance of GroupIdNode */
     public GroupIdNode(String id) {
         super(new GroupChildren(id));
         setName(id);
         setDisplayName(id);
     }
-    
-    
+
+    public GroupIdNode(final GroupInfo groupInfo) {
+        super(new Children.Keys<ArtifactInfo>() {
+
+            @Override
+            protected Node[] createNodes(ArtifactInfo arg0) {
+                return new Node[]{new ArtifactIdNode(arg0)};
+            }
+
+            @Override
+            protected void addNotify() {
+                super.addNotify();
+                setKeys(groupInfo.getArtifactInfos());
+            }
+        });
+        setName(groupInfo.getName());
+        setDisplayName(groupInfo.getName());
+    }
+
     static class GroupChildren extends Children.Keys {
+
         private String id;
+
         /** Creates a new instance of GroupIdListChildren */
         public GroupChildren(String group) {
             id = group;
         }
-        
+
         protected Node[] createNodes(Object key) {
             if (GroupIdListChildren.LOADING == key) {
-                return new Node[] { GroupIdListChildren.createLoadingNode() };
+                return new Node[]{GroupIdListChildren.createLoadingNode()};
             }
-            String artifactId = (String)key;
-            return new Node[] { new ArtifactIdNode(id, artifactId) };
+            String artifactId = (String) key;
+            return new Node[]{new ArtifactIdNode(id, artifactId)};
         }
-        
+
         protected void addNotify() {
             super.addNotify();
             setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
             RequestProcessor.getDefault().post(new Runnable() {
+
                 public void run() {
-                try {
-                    setKeys(CustomQueries.getArtifacts(id));
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    setKeys(Collections.EMPTY_LIST);
-                }
+                    try {
+                        setKeys(CustomQueries.getArtifacts(id));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        setKeys(Collections.EMPTY_LIST);
+                    }
                 }
             });
         }
-        
+
         @Override
         protected void removeNotify() {
             super.removeNotify();
             setKeys(Collections.EMPTY_LIST);
         }
-        
     }
-    
+
     @Override
     public Image getIcon(int arg0) {
         return NodeUtils.getTreeFolderIcon(false);
-}
+    }
 
     @Override
     public Image getOpenedIcon(int arg0) {
         return NodeUtils.getTreeFolderIcon(true);
     }
-    
 }
