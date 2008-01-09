@@ -21,14 +21,17 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
@@ -77,7 +80,7 @@ public class CustomQueries {
         return elems;
     }
 
-    public static Set<String> retrievePluginGroupIds(String prefix)  {
+    public static Set<String> retrievePluginGroupIds(String prefix) {
         try {
             TermQuery tq = new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin"));
             LuceneQuery q = new LuceneQuery(tq);
@@ -95,7 +98,7 @@ public class CustomQueries {
         return Collections.emptySet();
     }
 
-    public static Set<String> retrievePluginArtifactIds(String groupId, String prefix)  {
+    public static Set<String> retrievePluginArtifactIds(String groupId, String prefix) {
         try {
             TermQuery tq = new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin"));
             LuceneQuery q = new LuceneQuery(tq);
@@ -129,10 +132,10 @@ public class CustomQueries {
         } catch (RepositoryIndexSearchException ex) {
             Exceptions.printStackTrace(ex);
         }
-         return IndexerUtil.convertToVersionInfos(indexRecords);
+        return convertToVersionInfos(indexRecords);
     }
 
-    public static List<VersionInfo> getRecords(String groupId, String artifactId, String version)  {
+    public static List<VersionInfo> getRecords(String groupId, String artifactId, String version) {
         List<StandardArtifactIndexRecord> indexRecords = new ArrayList<StandardArtifactIndexRecord>();
         BooleanQuery bq = new BooleanQuery();
         bq.add(new BooleanClause(new TermQuery(new Term(StandardIndexRecordFields.GROUPID_EXACT, groupId)), BooleanClause.Occur.MUST));
@@ -144,8 +147,8 @@ public class CustomQueries {
         } catch (RepositoryIndexSearchException ex) {
             Exceptions.printStackTrace(ex);
         }
-        
-        return IndexerUtil.convertToVersionInfos(indexRecords);
+
+        return convertToVersionInfos(indexRecords);
     }
 
     public static List<String> enumerateGroupIds() throws IOException {
@@ -262,7 +265,7 @@ public class CustomQueries {
 //            sortedVersions.add(new DefaultArtifactVersion(elem));
 //        }
 //        Collections.sort( sortedVersions );
-        return IndexerUtil.convertToVersionInfos(sortedVersions);
+        return convertToVersionInfos(sortedVersions);
     }
 
     public static List<GroupInfo> findDependencyUsage(String groupId, String artifactId, String version) {
@@ -279,12 +282,12 @@ public class CustomQueries {
             Exceptions.printStackTrace(ex);
         }
 
-        return IndexerUtil.convertToGroupInfos(artifactIndexRecords);
+        return convertToGroupInfos(artifactIndexRecords);
     }
 
     public static List<VersionInfo> findByMD5(File file) {
         try {
-            
+
             Md5Digester digest = new Md5Digester();
             String md5 = digest.calc(file);
 
@@ -309,6 +312,77 @@ public class CustomQueries {
         } catch (RepositoryIndexSearchException ex) {
             Exceptions.printStackTrace(ex);
         }
-        return IndexerUtil.convertToVersionInfos(indexRecords);
+        return convertToVersionInfos(indexRecords);
+    }
+
+    static List<GroupInfo> convertToGroupInfos(List<StandardArtifactIndexRecord> indexRecords) {
+        List<GroupInfo> groupInfos = new ArrayList<GroupInfo>();
+
+        //tempmaps
+        Map<String, GroupInfo> groupMap = new HashMap<String, GroupInfo>();
+        Map<String, ArtifactInfo> artifactMap = new HashMap<String, ArtifactInfo>();
+        for (StandardArtifactIndexRecord sair : indexRecords) {
+            String groupId = sair.getGroupId();
+            String artId = sair.getArtifactId();
+            String version = sair.getVersion();
+            String type = sair.getType();
+
+            GroupInfo ug = groupMap.get(groupId);
+            if (ug == null) {
+                ug = new GroupInfo(groupId);
+                groupInfos.add(ug);
+                groupMap.put(groupId, ug);
+            }
+            ArtifactInfo ua = artifactMap.get(artId);
+            if (ua == null) {
+                ua = new ArtifactInfo(artId);
+                ug.addArtifactInfo(ua);
+                artifactMap.put(artId, ua);
+            }
+            ua.addVersionInfo(new VersionInfo(groupId, artId, version,
+                    type, sair.getPackaging(), sair.getProjectName(), sair.getProjectDescription(), sair.getClassifier()));
+        }
+        return groupInfos;
+
+    }
+
+    static List<VersionInfo> convertToVersionInfos(List<StandardArtifactIndexRecord> indexRecords) {
+        List<VersionInfo> versionInfos = new ArrayList<VersionInfo>();
+        for (StandardArtifactIndexRecord sair : indexRecords) {
+
+            versionInfos.add(new VersionInfo(sair.getGroupId(), sair.getArtifactId(),
+                    sair.getVersion(), sair.getType(), sair.getPackaging(),
+                    sair.getProjectName(), sair.getProjectDescription(), sair.getClassifier()));
+        }
+        return versionInfos;
+
+
+
+    }
+
+    public static List<VersionInfo> getVersionInfo(FindQuery findQuery) {
+        try {
+
+            List<StandardArtifactIndexRecord> searchIndex = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), findQuery.createLuceneQuery());
+            return convertToVersionInfos(searchIndex);
+        } catch (ParseException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (RepositoryIndexSearchException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return Collections.emptyList();
+    }
+
+    public static List<GroupInfo> getGroupInfo(FindQuery findQuery) {
+        try {
+
+            List<StandardArtifactIndexRecord> searchIndex = LocalRepositoryIndexer.getInstance().searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), findQuery.createLuceneQuery());
+            return convertToGroupInfos(searchIndex);
+        } catch (ParseException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (RepositoryIndexSearchException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return Collections.emptyList();
     }
 }

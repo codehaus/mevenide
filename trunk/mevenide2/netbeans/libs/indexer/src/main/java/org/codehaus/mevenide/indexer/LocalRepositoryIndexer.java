@@ -22,7 +22,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -118,7 +117,7 @@ public class LocalRepositoryIndexer {
         artifactFactory = (ArtifactFactory)embedder.lookup(ArtifactFactory.ROLE);
     }
     
-    public static synchronized LocalRepositoryIndexer getInstance() {
+     static synchronized LocalRepositoryIndexer getInstance() {
         if (instance == null) {
             try {
                 instance = new LocalRepositoryIndexer();

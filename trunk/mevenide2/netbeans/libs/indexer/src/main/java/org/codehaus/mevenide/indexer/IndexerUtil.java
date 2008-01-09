@@ -20,9 +20,7 @@ import java.io.File;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.event.ChangeListener;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
@@ -45,51 +43,6 @@ import org.openide.util.Exceptions;
  * @author Anuradha G (anuradha@codehaus.org)
  */
 public class IndexerUtil {
-
-    static List<GroupInfo> convertToGroupInfos(List<StandardArtifactIndexRecord> indexRecords) {
-        List<GroupInfo> groupInfos = new ArrayList<GroupInfo>();
-
-        //tempmaps
-        Map<String, GroupInfo> groupMap = new HashMap<String, GroupInfo>();
-        Map<String, ArtifactInfo> artifactMap = new HashMap<String, ArtifactInfo>();
-        for (StandardArtifactIndexRecord sair : indexRecords) {
-            String groupId = sair.getGroupId();
-            String artId = sair.getArtifactId();
-            String version = sair.getVersion();
-            String type = sair.getType();
-
-            GroupInfo ug = groupMap.get(groupId);
-            if (ug == null) {
-                ug = new GroupInfo(groupId);
-                groupInfos.add(ug);
-                groupMap.put(groupId, ug);
-            }
-            ArtifactInfo ua = artifactMap.get(artId);
-            if (ua == null) {
-                ua = new ArtifactInfo(artId);
-                ug.addArtifactInfo(ua);
-                artifactMap.put(artId, ua);
-            }
-            ua.addVersionInfo(new VersionInfo(groupId, artId, version,
-                    type, sair.getPackaging(), sair.getProjectName(),sair.getProjectDescription(), sair.getClassifier()));
-        }
-        return groupInfos;
-
-    }
-
-    static List<VersionInfo> convertToVersionInfos(List<StandardArtifactIndexRecord> indexRecords) {
-        List<VersionInfo> versionInfos = new ArrayList<VersionInfo>();
-        for (StandardArtifactIndexRecord sair : indexRecords) {
-
-            versionInfos.add(new VersionInfo(sair.getGroupId(), sair.getArtifactId(),
-                    sair.getVersion(), sair.getType(), sair.getPackaging(),
-                    sair.getProjectName(),sair.getProjectDescription(), sair.getClassifier()));
-        }
-        return versionInfos;
-
-
-
-    }
 
     public static Artifact createArtifact(VersionInfo info, ArtifactRepository repo) {
         return createArtifact(info, repo, null);
@@ -177,4 +130,6 @@ public class IndexerUtil {
       LocalRepositoryIndexer.getInstance().addChangeListener(cl);
     
     }
+    
+    
 }
