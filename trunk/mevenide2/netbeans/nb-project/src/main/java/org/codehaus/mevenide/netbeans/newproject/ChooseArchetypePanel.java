@@ -31,7 +31,6 @@ import javax.swing.tree.TreeSelectionModel;
 
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.IndexerUtil;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
