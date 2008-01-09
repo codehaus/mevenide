@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.netbeans.actions.usages;
+package org.codehaus.mevenide.indexer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,27 +25,27 @@ import java.util.List;
  *
  * @author Anuradha
  */
-public class UsedGroup {
+public class GroupInfo {
   private String name;
-  private List<UsedArtifact> usedArtifacts=new  ArrayList<UsedArtifact>();
-    public UsedGroup(String name) {
+  private List<ArtifactInfo> artifactInfos=new  ArrayList<ArtifactInfo>();
+    public GroupInfo(String name) {
         this.name = name;
     }
 
-    public void removeUsedArtifact(Object o) {
-         usedArtifacts.remove(o);
+    public void removeArtifactInfo(Object o) {
+         artifactInfos.remove(o);
     }
 
-    public boolean addAllUsedArtifacts(Collection<? extends UsedArtifact> c) {
-        return usedArtifacts.addAll(c);
+    public boolean addAllArtifactsInfos(Collection<? extends ArtifactInfo> c) {
+        return artifactInfos.addAll(c);
     }
 
-    public boolean addUsedArtifact(UsedArtifact e) {
-        return usedArtifacts.add(e);
+    public boolean addArtifactInfo(ArtifactInfo e) {
+        return artifactInfos.add(e);
     }
 
-    public List<UsedArtifact> getUsedArtifacts() {
-        return new  ArrayList<UsedArtifact>(usedArtifacts);
+    public List<ArtifactInfo> getArtifactInfos() {
+        return new  ArrayList<ArtifactInfo>(artifactInfos);
     }
 
     public String getName() {

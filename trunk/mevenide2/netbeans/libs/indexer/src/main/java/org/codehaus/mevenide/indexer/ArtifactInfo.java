@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.netbeans.actions.usages;
+package org.codehaus.mevenide.indexer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,27 +25,27 @@ import java.util.List;
  *
  * @author Anuradha
  */
-public class UsedArtifact {
+public class ArtifactInfo {
  private String name;
- private List<UsedVersion> usedVersions=new  ArrayList<UsedVersion>();
-    public UsedArtifact(String name) {
+ private List<VersionInfo> versionInfos=new  ArrayList<VersionInfo>();
+    public ArtifactInfo(String name) {
         this.name = name;
     }
 
-    public boolean removeUsedVersion(Object o) {
-        return usedVersions.remove(o);
+    public boolean removeVersionInfo(Object o) {
+        return versionInfos.remove(o);
     }
 
-    public boolean addAllUsedVersions(Collection<? extends UsedVersion> c) {
-        return usedVersions.addAll(c);
+    public boolean addAlVersionInfos(Collection<? extends VersionInfo> c) {
+        return versionInfos.addAll(c);
     }
 
-    public boolean addUsedVersion(UsedVersion e) {
-        return usedVersions.add(e);
+    public boolean addVersionInfo(VersionInfo e) {
+        return versionInfos.add(e);
     }
 
-    public List<UsedVersion> getUsedVersions() {
-        return new  ArrayList<UsedVersion>(usedVersions);
+    public List<VersionInfo> getVersionInfos() {
+        return new  ArrayList<VersionInfo>(versionInfos);
     }
 
     public String getName() {

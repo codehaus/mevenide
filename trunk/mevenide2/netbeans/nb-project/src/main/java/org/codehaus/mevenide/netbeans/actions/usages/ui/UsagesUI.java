@@ -14,9 +14,9 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.actions.usages.FindUsagesUtil;
-import org.codehaus.mevenide.netbeans.actions.usages.UsedArtifact;
-import org.codehaus.mevenide.netbeans.actions.usages.UsedGroup;
-import org.codehaus.mevenide.netbeans.actions.usages.UsedVersion;
+import org.codehaus.mevenide.indexer.ArtifactInfo;
+import org.codehaus.mevenide.indexer.GroupInfo;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -136,11 +136,11 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                 return NodeUtils.getTreeFolderIcon(true);
             }
         };
-        final List<UsedGroup> list = FindUsagesUtil.findUsages(artifact);
-        Children repoChildren = new Children.Keys<UsedGroup>() {
+        final List<GroupInfo> list = FindUsagesUtil.findUsages(artifact);
+        Children repoChildren = new Children.Keys<GroupInfo>() {
 
             @Override
-            protected Node[] createNodes(UsedGroup ug) {
+            protected Node[] createNodes(GroupInfo ug) {
                 return new Node[]{new GroupNode(ug)};
             }
 
@@ -291,20 +291,20 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class GroupNode extends AbstractNode {
 
-        UsedGroup group;
+        GroupInfo group;
 
-        public GroupNode(final UsedGroup group) {
-            super(new Children.Keys<UsedArtifact>() {
+        public GroupNode(final GroupInfo group) {
+            super(new Children.Keys<ArtifactInfo>() {
 
                 @Override
-                protected Node[] createNodes(UsedArtifact arg0) {
+                protected Node[] createNodes(ArtifactInfo arg0) {
                     return new Node[]{new ArtifactNode(arg0)};
                 }
 
                 @Override
                 protected void addNotify() {
                     super.addNotify();
-                    setKeys(group.getUsedArtifacts());
+                    setKeys(group.getArtifactInfos());
                 }
             });
             this.group = group;
@@ -329,20 +329,20 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class ArtifactNode extends AbstractNode {
 
-        UsedArtifact artifact;
+        ArtifactInfo artifact;
 
-        public ArtifactNode(final UsedArtifact artifact) {
-            super(new Children.Keys<UsedVersion>() {
+        public ArtifactNode(final ArtifactInfo artifact) {
+            super(new Children.Keys<VersionInfo>() {
 
                 @Override
-                protected Node[] createNodes(UsedVersion arg0) {
+                protected Node[] createNodes(VersionInfo arg0) {
                     return new Node[]{new VertionNode(arg0)};
                 }
 
                 @Override
                 protected void addNotify() {
                     super.addNotify();
-                    setKeys(artifact.getUsedVersions());
+                    setKeys(artifact.getVersionInfos());
                 }
             });
             this.artifact = artifact;
@@ -368,9 +368,9 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class VertionNode extends AbstractNode {
 
-        UsedVersion version;
+        VersionInfo version;
 
-        public VertionNode(UsedVersion version) {
+        public VertionNode(VersionInfo version) {
             super(Children.LEAF);
             this.version = version;
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N
@@ -378,7 +378,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
         @Override
         public String getDisplayName() {
-            return version.getVersion();
+            return version.getVersion()+" [ "+version.getType()+" ]";
         }
     }
 

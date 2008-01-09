@@ -270,4 +270,7 @@ public class CustomQueries {
         LuceneQuery q = new LuceneQuery(tq);
         return index.searchIndex(LocalRepositoryIndexer.getInstance().getDefaultIndex(), q);
      }
+     
+    
+     
 }

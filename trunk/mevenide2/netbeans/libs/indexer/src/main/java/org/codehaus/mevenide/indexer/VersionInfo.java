@@ -14,23 +14,27 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.netbeans.actions.usages;
+package org.codehaus.mevenide.indexer;
 
 /**
  *
  * @author Anuradha G
  */
-public class UsedVersion {
+public class VersionInfo {
 
     private String groupId;
     private String artifactId;
     private String version;
+    private String type;
 
-    public UsedVersion(String groupId, String artifactId, String version) {
+    public VersionInfo(String groupId, String artifactId, String version, String type) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
+        this.type = type;
     }
+
+    
 
     public String getGroupId() {
         return groupId;
@@ -42,6 +46,10 @@ public class UsedVersion {
 
     public String getVersion() {
         return version;
+    }
+
+    public String getType() {
+        return type;
     }
 
     
