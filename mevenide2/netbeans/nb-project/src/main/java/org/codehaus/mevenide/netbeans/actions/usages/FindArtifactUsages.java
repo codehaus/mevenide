@@ -51,7 +51,7 @@ public class FindArtifactUsages extends AbstractAction {
 
         UsagesUI uI = new UsagesUI(buffer.toString(), artifact);
         DialogDescriptor dd = new DialogDescriptor(uI, NbBundle.getMessage(
-                FindArtifactUsages.class, "LBL_FindartifactUsages"));
+                FindArtifactUsages.class, "TIT_FindartifactUsages"));
         dd.setClosingOptions(new Object[]{
             DialogDescriptor.CLOSED_OPTION
         });
