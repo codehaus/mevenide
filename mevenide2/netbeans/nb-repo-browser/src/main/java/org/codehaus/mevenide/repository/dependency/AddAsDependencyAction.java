@@ -20,13 +20,12 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.util.List;
 import javax.swing.AbstractAction;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
-import org.codehaus.mevenide.repository.VersionNode;
 import org.codehaus.mevenide.repository.dependency.ui.AddDependencyUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -39,9 +38,9 @@ import org.openide.util.NbBundle;
  */
 public class AddAsDependencyAction extends AbstractAction {
 
-    private StandardArtifactIndexRecord record;
+    private Artifact record;
 
-    public AddAsDependencyAction(StandardArtifactIndexRecord record) {
+    public AddAsDependencyAction(Artifact record) {
         putValue(NAME, NbBundle.getMessage(AddAsDependencyAction.class, "LBL_Add_As_Dependency"));
         this.record = record;
     }
