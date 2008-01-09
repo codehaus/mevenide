@@ -13,8 +13,8 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.actions.usages.FindUsagesUtil;
 import org.codehaus.mevenide.indexer.ArtifactInfo;
+import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.GroupInfo;
 import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
@@ -136,7 +136,8 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                 return NodeUtils.getTreeFolderIcon(true);
             }
         };
-        final List<GroupInfo> list = FindUsagesUtil.findUsages(artifact);
+        final List<GroupInfo> list = CustomQueries.findDependencyUsage(artifact.getGroupId(),
+                    artifact.getArtifactId(), artifact.getVersion());
         Children repoChildren = new Children.Keys<GroupInfo>() {
 
             @Override

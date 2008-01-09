@@ -17,8 +17,9 @@
 package org.codehaus.mevenide.repository;
 
 import javax.swing.Action;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.mevenide.indexer.IndexerUtil;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
@@ -38,14 +39,14 @@ import org.openide.util.Utilities;
  */
 public class VersionNode extends AbstractNode {
 
-    private StandardArtifactIndexRecord record;
+    private VersionInfo record;
     private boolean hasJavadoc;
     private boolean hasSources;
 
-    public static Children createChildren(StandardArtifactIndexRecord record) {
+    public static Children createChildren(VersionInfo record) {
         if (!"pom".equals(record.getType())) { //NOI18N
             try {
-                Artifact art = RepositoryUtils.createArtifact(record,
+                Artifact art = IndexerUtil.createArtifact(record,
                         EmbedderFactory.getProjectEmbedder().getLocalRepository());
                 FileObject fo = FileUtil.toFileObject(art.getFile());
 
@@ -60,23 +61,23 @@ public class VersionNode extends AbstractNode {
     }
 
     /** Creates a new instance of VersionNode */
-    public VersionNode(StandardArtifactIndexRecord record, boolean javadoc, boolean source, boolean dispNameShort) {
-        super(createChildren(record));
+    public VersionNode(VersionInfo versionInfo, boolean javadoc, boolean source, boolean dispNameShort) {
+        super(createChildren(versionInfo));
         hasJavadoc = javadoc;
         hasSources = source;
-        this.record = record;
+        this.record = versionInfo;
         if (dispNameShort) {
-            setName(record.getVersion());
-            setDisplayName(record.getVersion()+" [ "+record.getType()+" ]");
+            setName(versionInfo.getVersion());
+            setDisplayName(versionInfo.getVersion()+" [ "+versionInfo.getType()+" ]");
         } else {
-            setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion()); //NOI18N
+            setName(versionInfo.getGroupId() + ":" + versionInfo.getArtifactId() + ":" + versionInfo.getVersion()); //NOI18N
         }
         setIconBaseWithExtension("org/codehaus/mevenide/repository/DependencyJar.gif"); //NOI18N
     }
 
     @Override
     public Action[] getActions(boolean context) {
-        Artifact artifact = RepositoryUtils.createArtifact(record,
+        Artifact artifact = IndexerUtil.createArtifact(record,
                 EmbedderFactory.getProjectEmbedder().getLocalRepository());
         Action[] retValue;
 

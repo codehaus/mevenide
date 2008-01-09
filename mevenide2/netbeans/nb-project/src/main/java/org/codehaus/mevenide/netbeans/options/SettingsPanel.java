@@ -26,17 +26,16 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Properties;
 import java.util.jar.JarFile;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.maven.archiva.indexer.RepositoryIndexException;
+
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
@@ -560,18 +559,12 @@ public class SettingsPanel extends javax.swing.JPanel {
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
-                try {
-                    ind.updateIndex();
-                } catch (RepositoryIndexException ex) {
-                    ex.printStackTrace();
-                } finally {
-                    SwingUtilities.invokeLater(new Runnable() {
+                IndexerUtil.updateIndex();
+               SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             btnIndex.setEnabled(true);
                         }
                     });
-                }
             }
         });
     }//GEN-LAST:event_btnIndexActionPerformed

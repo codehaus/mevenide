@@ -26,14 +26,24 @@ public class VersionInfo {
     private String artifactId;
     private String version;
     private String type;
+    private String packaging;
+    private String projectName;
+    private String classifier;
+    private String ProjectDescription;
 
-    public VersionInfo(String groupId, String artifactId, String version, String type) {
+     VersionInfo(String groupId, String artifactId, String version,
+            String type, String packaging, String projectName,String ProjectDescription,String classifier) {
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
         this.type = type;
+        this.packaging = packaging;
+        this.projectName = projectName;
+        this.ProjectDescription = ProjectDescription;
+        this.classifier = classifier;
     }
-
+    
+  
     
 
     public String getGroupId() {
@@ -52,5 +62,21 @@ public class VersionInfo {
         return type;
     }
 
+    public String getPackaging() {
+        return packaging;
+    }
+
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public String getProjectDescription() {
+        return ProjectDescription;
+    }
+
+    public String getClassifier() {
+        return classifier;
+    }
+ 
     
 }

@@ -25,8 +25,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import org.apache.maven.archiva.indexer.RepositoryIndexException;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
@@ -145,13 +144,7 @@ public class ActionProviderImpl implements ActionProvider {
         task.addTaskListener(new TaskListener() {
             public void taskFinished(Task task2) {
                 ProjectURLWatcher.fireMavenProjectReload(project);
-                LocalRepositoryIndexer index = LocalRepositoryIndexer.getInstance();
-                try {
-                    index.updateIndexWithArtifacts(project.getOriginalMavenProject().getDependencyArtifacts());
-                    //TODO add project's own artifact??
-                } catch (RepositoryIndexException ex) {
-                    ex.printStackTrace();
-                }
+                IndexerUtil.updateIndexWithArtifacts(project.getOriginalMavenProject().getDependencyArtifacts());
             }
         });
     }
@@ -237,6 +230,7 @@ public class ActionProviderImpl implements ActionProvider {
             }
         }
 
+        @Override
         public boolean isEnabled() {
             if (provider != null) {
                 return provider.isActionEnabled(actionid, provider.project.getLookup());

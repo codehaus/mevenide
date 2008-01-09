@@ -22,8 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.repository.GroupIdListChildren;
 import org.codehaus.mevenide.repository.VersionNode;
 import org.openide.nodes.Children;
@@ -36,11 +36,11 @@ import org.openide.util.RequestProcessor;
  */
 public class SearchResultChildren extends Children.Keys {
     
-    private List<StandardArtifactIndexRecord> keys;
+    private List<VersionInfo> keys;
     
-    private ArrayList<StandardArtifactIndexRecord> mainkeys;
+    private ArrayList<VersionInfo> mainkeys;
     
-    private ArrayList<StandardArtifactIndexRecord> attachedkeys;
+    private ArrayList<VersionInfo> attachedkeys;
     
     private String artifactId;
     private String groupId;
@@ -48,7 +48,7 @@ public class SearchResultChildren extends Children.Keys {
     /**
      * Creates a new instance of SearchResultChildren from search results.
      */
-    public SearchResultChildren(List<StandardArtifactIndexRecord> results) {
+    public SearchResultChildren(List<VersionInfo> results) {
         keys = results;
     }
     
@@ -64,12 +64,12 @@ public class SearchResultChildren extends Children.Keys {
         if (GroupIdListChildren.LOADING == key) {
                 return new Node[] { GroupIdListChildren.createLoadingNode() };
         }
-        StandardArtifactIndexRecord record = (StandardArtifactIndexRecord)key;
-        Iterator<StandardArtifactIndexRecord> it = attachedkeys.iterator();
+        VersionInfo record = (VersionInfo)key;
+        Iterator<VersionInfo> it = attachedkeys.iterator();
         boolean hasSources = false;
         boolean hasJavadoc = false;
         while (it.hasNext() && (!hasJavadoc || !hasSources)) {
-            StandardArtifactIndexRecord elem = it.next();
+            VersionInfo elem = it.next();
             if (elem.getGroupId().equals(record.getGroupId()) &&
                     elem.getArtifactId().equals(record.getArtifactId()) &&
                     elem.getVersion().equals(record.getVersion())) {
@@ -81,6 +81,7 @@ public class SearchResultChildren extends Children.Keys {
     }
     
     
+    @Override
     protected void addNotify() {
         super.addNotify();
         if (keys == null) {
@@ -99,10 +100,10 @@ public class SearchResultChildren extends Children.Keys {
             sortOutKeys(keys);
         }
     }
-    private void sortOutKeys(List<StandardArtifactIndexRecord> keys) {
-        mainkeys = new ArrayList<StandardArtifactIndexRecord>(keys.size());
-        attachedkeys = new ArrayList<StandardArtifactIndexRecord>(keys.size());
-        for (StandardArtifactIndexRecord record : keys) {
+    private void sortOutKeys(List<VersionInfo> keys) {
+        mainkeys = new ArrayList<VersionInfo>(keys.size());
+        attachedkeys = new ArrayList<VersionInfo>(keys.size());
+        for (VersionInfo record : keys) {
             if (record.getClassifier() != null && (record.getClassifier().equals("javadoc")
                     || record.getClassifier().equals("sources"))) {
                 attachedkeys.add(record);
@@ -113,6 +114,7 @@ public class SearchResultChildren extends Children.Keys {
         setKeys(mainkeys);
     }
     
+    @Override
     protected void removeNotify() {
         super.removeNotify();
         setKeys(Collections.EMPTY_LIST);
