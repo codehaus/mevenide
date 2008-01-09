@@ -67,7 +67,7 @@ public class VersionNode extends AbstractNode {
         this.record = record;
         if (dispNameShort) {
             setName(record.getVersion());
-            setDisplayName(record.getVersion());
+            setDisplayName(record.getVersion()+" [ "+record.getType()+" ]");
         } else {
             setName(record.getGroupId() + ":" + record.getArtifactId() + ":" + record.getVersion()); //NOI18N
         }
@@ -81,7 +81,7 @@ public class VersionNode extends AbstractNode {
         Action[] retValue;
 
         retValue = new Action[]{
-            new AddAsDependencyAction(record),
+            new AddAsDependencyAction(artifact),
             null,
             CommonArtifactActions.createFindUsages(artifact),
             null,
