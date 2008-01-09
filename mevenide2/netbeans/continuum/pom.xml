@@ -14,7 +14,7 @@
     <description>Support for Apache Continuum continuous integration servers.</description>
 
     <properties>
-        <continuum.release>1.2-SNAPSHOT</continuum.release>
+        <continuum.release>1.1</continuum.release>
     </properties>
     <dependencies>
         <!--dependency>
