@@ -28,9 +28,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.tree.TreeSelectionModel;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.openide.DialogDescriptor;
@@ -196,9 +198,9 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             return;
         }
         try {
-            List<StandardArtifactIndexRecord> rec = CustomQueries.getRecords(arch.getGroupId(), arch.getArtifactId(), arch.getVersion());
-            for (StandardArtifactIndexRecord record : rec) {
-                LocalRepositoryIndexer.getInstance().getDefaultIndex().deleteRecords(rec);
+            List<VersionInfo> rec = CustomQueries.getRecords(arch.getGroupId(), arch.getArtifactId(), arch.getVersion());
+            for (VersionInfo record : rec) {
+               IndexerUtil.removeVertion(record);
             }
             File path = new File(EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),
                     arch.getGroupId().replace('.', File.separatorChar) + File.separatorChar + arch.getArtifactId() 

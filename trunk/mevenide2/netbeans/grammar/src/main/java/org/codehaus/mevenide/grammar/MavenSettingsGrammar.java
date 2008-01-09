@@ -24,7 +24,6 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
@@ -98,7 +97,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         }
         
         if (path.endsWith("pluginGroups/pluginGroup")) { //NOI18N
-            try {
+         
                 Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
                 ArrayList texts = new ArrayList();
@@ -107,9 +106,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
-            } catch (RepositoryIndexSearchException ex) {
-                ex.printStackTrace();
-            }
+           
         }
         
         return null;

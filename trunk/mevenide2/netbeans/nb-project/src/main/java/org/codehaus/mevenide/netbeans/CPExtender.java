@@ -26,14 +26,13 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.maven.archiva.digest.DigesterException;
-import org.apache.maven.archiva.digest.Md5Digester;
-import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -131,9 +130,10 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     
     private boolean addArchiveFile(FileObject file, Model mdl, String scope) throws IOException {
         try {
-            Md5Digester digest = new Md5Digester();
+            
             //toLowercase() seems to be required, not sure why..
-            String checksum = digest.calc(FileUtil.toFile(file)).toLowerCase();
+
+            String checksum = IndexerUtil.calculateChecksum(FileUtil.toFile(file)).toLowerCase();
             String[] dep = checkLayer(checksum);
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
@@ -157,24 +157,18 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                 return true;
             }
         }
-        catch (RepositoryIndexSearchException ex) {
-            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
-                                                             ex.getMessage(), ex);
-        }
+ 
         catch (NoSuchAlgorithmException ex) {
             Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
                                                              ex.getMessage(), ex);
         }
-        catch (DigesterException ex) {
-            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
-                                                             ex.getMessage(), ex);
-        }
+
         return false;
     }
     
-    private String[] checkLocalRepo(String checksum) throws RepositoryIndexSearchException {
-        List<StandardArtifactIndexRecord> lst = CustomQueries.findByMD5(checksum);
-        for (StandardArtifactIndexRecord elem : lst) {
+    private String[] checkLocalRepo(String checksum) {
+        List<VersionInfo> lst = CustomQueries.findByMD5(checksum);
+        for (VersionInfo elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();
             dep[1] = elem.getArtifactId();

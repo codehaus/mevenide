@@ -26,13 +26,12 @@ import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -188,8 +187,8 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         File platformFile = lookForModuleInPlatform(artifactId);
         if (platformFile != null) {
             try {
-                List<StandardArtifactIndexRecord> lst = CustomQueries.findByMD5(platformFile);
-                for (StandardArtifactIndexRecord elem : lst) {
+                List<VersionInfo> lst = CustomQueries.findByMD5(platformFile);
+                for (VersionInfo elem : lst) {
                     dep = new Dependency();
                     dep.setArtifactId(elem.getArtifactId());
                     dep.setGroupId(elem.getGroupId());

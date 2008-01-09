@@ -21,9 +21,9 @@ import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.VersionInfo;
 
 /**
  * Lists archetypes found in local repository index. Will include both old archetypes
@@ -38,14 +38,15 @@ public class LocalRepoProvider implements ArchetypeProvider {
 
     public List<Archetype> getArchetypes() {
         List<Archetype> lst = new ArrayList<Archetype>();
-        try {
-            List<StandardArtifactIndexRecord> archs = CustomQueries.retrievePossibleArchetypes();
+        
+            List<VersionInfo> archs = CustomQueries.retrievePossibleArchetypes();
             if (archs == null) {
                 return lst;
             }
-            for (StandardArtifactIndexRecord art : archs) {
-                boolean ng = art.getFiles().contains("META-INF/maven/archetype-metadata.xml");
-                Archetype arch = (ng || "maven-archetype".equalsIgnoreCase(art.getPackaging())) ? //NOI18N
+            for (VersionInfo art : archs) {
+               //TODO FINDout  how to get contain matadata 
+               // boolean ng = artifact.getFiles().contains("META-INF/maven/archetype-metadata.xml");
+                Archetype arch = ( "maven-archetype".equalsIgnoreCase(art.getPackaging())) ? //NOI18N
                                  new Archetype(true, true) : new Archetype();
                 arch.setArtifactId(art.getArtifactId());
                 arch.setGroupId(art.getGroupId());
@@ -55,9 +56,7 @@ public class LocalRepoProvider implements ArchetypeProvider {
                 
                 lst.add(arch);
             }
-        } catch (RepositoryIndexSearchException ex) {
-            ex.printStackTrace();
-        }
+       
         return lst;
     }
     

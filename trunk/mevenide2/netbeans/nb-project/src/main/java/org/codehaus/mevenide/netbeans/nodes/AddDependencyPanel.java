@@ -26,8 +26,9 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
+
 import org.codehaus.mevenide.indexer.CustomQueries;
+import org.codehaus.mevenide.indexer.VersionInfo;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.openide.util.NbBundle;
 
@@ -228,9 +229,9 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     
     private void populateVersion() {
         try {
-            List<StandardArtifactIndexRecord> lst = CustomQueries.getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
+            List<VersionInfo> lst = CustomQueries.getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
             List<String> vers = new ArrayList<String>();
-            for (StandardArtifactIndexRecord rec : lst) {
+            for (VersionInfo rec : lst) {
                 if (!vers.contains(rec.getVersion())) {
                     vers.add(rec.getVersion());
                 }

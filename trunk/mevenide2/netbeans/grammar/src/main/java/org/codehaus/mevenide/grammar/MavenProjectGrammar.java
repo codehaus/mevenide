@@ -37,13 +37,11 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.maven.archiva.indexer.RepositoryIndexSearchException;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
 import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -283,7 +281,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
         }
         if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
-            try {
+            
                 Set<String> elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
                 elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
                 ArrayList texts = new ArrayList();
@@ -291,9 +289,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
-            } catch (RepositoryIndexSearchException ex) {
-                ex.printStackTrace();
-            }
+           
         }
         if (path.endsWith("dependencies/dependency/artifactId")) { //NOI18N
             //poor mans solution, just check local repository for possible versions..
@@ -331,7 +327,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
-                try {
+                
                     Set<String> elems = CustomQueries.retrievePluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
                     elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginArtifactIds(hold.getGroupId())));
                     ArrayList texts = new ArrayList();
@@ -339,9 +335,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                         texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                     }
                     return Collections.enumeration(texts);
-                } catch (RepositoryIndexSearchException ex) {
-                    ex.printStackTrace();
-                }
+               
             }
         }
         

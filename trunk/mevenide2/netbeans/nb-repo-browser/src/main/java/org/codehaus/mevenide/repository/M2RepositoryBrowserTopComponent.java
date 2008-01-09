@@ -26,8 +26,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
-import org.apache.maven.archiva.indexer.RepositoryIndexException;
-import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
+
+import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
 import org.openide.DialogDescriptor;
@@ -90,7 +90,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnBack.setMargin(new Insets(1,1,1,1));
         btnSearch.setMargin(new Insets(1,1,1,1));
         btnIndex.setMargin(new Insets(1,1,1,1));
-        LocalRepositoryIndexer.getInstance().addChangeListener(new ChangeListener() {
+        IndexerUtil.addIndexChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 checkMode();
             }
@@ -159,18 +159,12 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                LocalRepositoryIndexer ind = LocalRepositoryIndexer.getInstance();
-                try {
-                    ind.updateIndex();
-                } catch (RepositoryIndexException ex) {
-                    ex.printStackTrace();
-                } finally {
-                    SwingUtilities.invokeLater(new Runnable() {
+                IndexerUtil.updateIndex();
+                SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             btnIndex.setEnabled(true);
                         }
                     });
-                }
             }
         });
 

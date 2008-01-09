@@ -22,8 +22,7 @@ import javax.swing.JTextField;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.Query;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
+
 import org.codehaus.mevenide.indexer.LocalRepositoryIndexer;
 
 /**
@@ -37,23 +36,23 @@ public class SearchPanel extends javax.swing.JPanel {
         initComponents();
     }
     
-    LuceneQuery createLuceneQuery() throws ParseException {
-        StringBuffer buff = new StringBuffer();
-        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, txtGroupId, false);
-        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, txtArtifactId, false);
-        appendField(buff, StandardIndexRecordFields.PROJECT_NAME, txtName, false);
-        appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, txtDescription, false);
-        appendField(buff, StandardIndexRecordFields.PACKAGING, txtPackaging, false);
-        appendField(buff, StandardIndexRecordFields.CLASSES, txtClasses, false);
-        
-        if (txtAny.getText().trim().length() > 0) {
-            Query multi = LocalRepositoryIndexer.parseMultiFieldQuery(txtAny.getText());
-            buff.append(" ").append(multi.toString());
-        }
-        System.out.println("search query=" + buff.toString());
-        
-        return new LuceneQuery(LocalRepositoryIndexer.parseQuery(buff.toString()));
-    }
+//    LuceneQuery createLuceneQuery() throws ParseException {
+//        StringBuffer buff = new StringBuffer();
+//        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, txtGroupId, false);
+//        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, txtArtifactId, false);
+//        appendField(buff, StandardIndexRecordFields.PROJECT_NAME, txtName, false);
+//        appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, txtDescription, false);
+//        appendField(buff, StandardIndexRecordFields.PACKAGING, txtPackaging, false);
+//        appendField(buff, StandardIndexRecordFields.CLASSES, txtClasses, false);
+//        
+//        if (txtAny.getText().trim().length() > 0) {
+//            Query multi = LocalRepositoryIndexer.parseMultiFieldQuery(txtAny.getText());
+//            buff.append(" ").append(multi.toString());
+//        }
+//        System.out.println("search query=" + buff.toString());
+//        
+//        return new LuceneQuery(LocalRepositoryIndexer.parseQuery(buff.toString()));
+//    }
     
     /** This method is called from within the constructor to
      * initialize the form.

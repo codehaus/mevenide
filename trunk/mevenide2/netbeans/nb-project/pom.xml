@@ -17,6 +17,12 @@
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>indexer</artifactId>
             <version>${mevenide.nb.release}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>indexer-libs</artifactId>
+                    <groupId>org.codehaus.mevenide</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
