@@ -26,6 +26,7 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.InstalledFileLocator;
 import org.openide.modules.ModuleInstall;
+import org.openide.util.Exceptions;
 
 /**
  * Module install that unzips the xml descriptors of known maven plugins.
@@ -45,9 +46,14 @@ public class ModInstall extends ModuleInstall {
             assert zipFile != null : "Wrong installation, maven2/maven-plugins-xml.zip missing"; //NOI18N
             //TODO place somewhere else to make sure it's writable by user?
             expandedPath = new File(zipFile.getParentFile(), "maven-plugins-xml"); //NOI18N
-            expandedPath.mkdirs();
-            FileObject fo = FileUtil.toFileObject(expandedPath);
+            
+            FileObject fo=null;
             InputStream in = null;
+            try {
+                fo = FileUtil.createFolder(expandedPath);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
+            }
             try {
                 in = new FileInputStream(zipFile);
                 FileUtil.extractJar(fo, in);

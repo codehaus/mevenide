@@ -72,6 +72,7 @@ import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.ErrorManager;
 import org.openide.filesystems.*;
 import org.openide.modules.InstalledFileLocator;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 import org.openide.util.Utilities;
 import org.openide.util.lookup.Lookups;
@@ -315,10 +316,13 @@ public final class NbMavenProject implements Project {
     
     public FileObject getHomeDirectory() {
         File homeFile = MavenSettingsSingleton.getInstance().getM2UserDir();
-        if (!homeFile.exists()) {
-            homeFile.mkdirs();
+        
+        FileObject home=null;
+        try {
+            home = FileUtil.createFolder(homeFile);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         }
-        FileObject home = FileUtil.toFileObject(homeFile);
         if (home == null) {
             //TODO this is a problem, probably UNC path on windows - MEVENIDE-380
             // some functionality won't work
