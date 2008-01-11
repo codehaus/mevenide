@@ -221,14 +221,8 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         public void actionPerformed(ActionEvent e) {
             try {
                 File fil = MavenSettingsSingleton.getInstance().getM2UserDir();
-                if (!fil.exists()) {
-                    fil.mkdirs();
-                    FileObject fo = FileUtil.toFileObject(fil.getParentFile());
-                    if (fo != null) {
-                        fo.refresh();
-                    }
-                }
-                DataFolder folder = DataFolder.findFolder(FileUtil.toFileObject(fil));
+                
+                DataFolder folder = DataFolder.findFolder(FileUtil.createFolder(fil));
                 // path to template...
                 FileObject temp = Repository.getDefault().getDefaultFileSystem().findResource("Maven2Templates/settings.xml"); //NOI18N
                 DataObject dobj = DataObject.find(temp);
