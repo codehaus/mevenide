@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.actions;
 import java.io.File;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.extension.ExtensionScanningException;
+import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -47,6 +48,8 @@ public class ActionsUtil {
                 mavenProject = EmbedderFactory.getProjectEmbedder().
                         readProject(file);
 
+            } catch (InvalidProjectModelException ex) {
+                //ignore nexus is falling ???
             } catch (ProjectBuildingException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (ExtensionScanningException ex) {
