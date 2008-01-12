@@ -84,13 +84,15 @@ public class ExtenderImpl implements NewProjectWizardExtender {
                 Exceptions.printStackTrace(ex);
             }
         }
-        try {
-            for (Object wfp : lst) {
-                WebModuleExtender prov = (WebModuleExtender) wfp;
-                files.addAll(prov.extend(WebModule.getWebModule(project.getProjectDirectory())));
+        if (lst != null) {
+            try {
+                for (Object wfp : lst) {
+                    WebModuleExtender prov = (WebModuleExtender) wfp;
+                    files.addAll(prov.extend(WebModule.getWebModule(project.getProjectDirectory())));
+                }
+            } catch (Throwable t) {
+                Exceptions.printStackTrace(t);
             }
-        } catch (Throwable t) {
-            Exceptions.printStackTrace(t);
         }
         return files;
     }
