@@ -141,6 +141,17 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         }
     }
     
+    public Set<FileObject> getOpenedProjectRoots() {
+        Set<FileObject> toRet = new HashSet<FileObject>();
+        synchronized (lock) {
+            for (NbMavenProject prj : set) {
+                //TODO have generic and other source roots included to cater for projects with external source roots
+                toRet.add(prj.getProjectDirectory());
+            }
+        }
+        return toRet;
+    }
+    
     public Project getOwner(URI uri) {
         //logger.debug("getOwner of uri=" + uri);
         if (uri.getScheme() != null && "file".equals(uri.getScheme())) { //NOI18N
