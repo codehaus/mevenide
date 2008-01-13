@@ -71,6 +71,8 @@ import org.openide.util.Lookup;
  */
 public final class EmbedderFactory {
     
+    private static ThreadLocal<MavenEmbedder> projectTL = new ThreadLocal<MavenEmbedder>();
+    private static boolean wasReset = false;
     private static MavenEmbedder project;
     private static MavenEmbedder online;
     
@@ -118,10 +120,22 @@ public final class EmbedderFactory {
      */ 
     public synchronized static void resetProjectEmbedder() {
         project = null;
+        wasReset = true;
     }
     
     public synchronized static MavenEmbedder getProjectEmbedder() /*throws MavenEmbedderException*/ {
-        if (project == null) {
+        MavenEmbedder projectEmbedder;
+        //since yarda's introduction of lazy project loading, mutliple threads use the embedder at startup at once.
+        // that breaks embedder/plexus in many ways..
+        // introducing ThreadLocal project embedder instance to workaround the problem
+        // 
+        if (!wasReset) {
+            projectEmbedder = projectTL.get();
+        } else {
+            projectEmbedder = project;
+            projectTL.remove();
+        }
+        if (projectEmbedder == null) {
             Configuration req = new DefaultConfiguration();
             req.setClassLoader(EmbedderFactory.class.getClassLoader());
             //TODO remove explicit activation
@@ -175,9 +189,14 @@ public final class EmbedderFactory {
             } catch (MavenEmbedderException e) {
                 ErrorManager.getDefault().notify(e);
             }
-            project = embedder;
+            if (!wasReset) {
+                projectTL.set(embedder);
+            } else {
+                project = embedder;
+            }
+            projectEmbedder = embedder;
         }
-        return project;
+        return projectEmbedder;
     }
     
     public synchronized static MavenEmbedder getOnlineEmbedder() {
