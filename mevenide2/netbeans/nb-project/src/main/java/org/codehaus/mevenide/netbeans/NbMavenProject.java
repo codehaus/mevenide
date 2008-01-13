@@ -349,6 +349,10 @@ public final class NbMavenProject implements Project {
     public URI[] getSourceRoots(boolean test) {
         List srcs = test ? getOriginalMavenProject().getTestCompileSourceRoots() : 
                            getOriginalMavenProject().getCompileSourceRoots();
+        if (!test && getProjectDirectory().getFileObject("src/main/aspect") != null) {
+            srcs = new ArrayList(srcs);
+            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath());
+        }
         URI[] uris = new URI[srcs.size()];
         Iterator it = srcs.iterator();
         int count = 0;
