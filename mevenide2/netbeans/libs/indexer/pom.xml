@@ -14,7 +14,7 @@
         <dependency>
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-container-default</artifactId>
-            <version>1.0-alpha-40</version>
+            <version>1.0-alpha-42</version> <!-- real version is actually 43-SNAPSHOT-->
             <scope>provided</scope>
         </dependency>
         <dependency>
