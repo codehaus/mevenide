@@ -37,7 +37,7 @@
             <groupId>org.codehaus.plexus</groupId>
             <artifactId>plexus-container-default</artifactId>
             <!-- use the version used by the embedder-->
-            <version>1.0-alpha-40</version>
+            <version>1.0-alpha-42</version> <!-- real version is actually 43-SNAPSHOT-->
             <scope>provided</scope>
         </dependency>
     </dependencies>
@@ -56,7 +56,7 @@
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <keepDependenciesWithProvidedScope>true</keepDependenciesWithProvidedScope>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ComponentsXmlResourceTransformer" />
                             </transformers>
                             <artifactSet>
                                 <includes>
