@@ -381,9 +381,7 @@ public final class NbMavenProject implements Project {
                 "warSourceDirectory", //NOI18N
                 "war"); //NOI18N
         prop = prop == null ? "src/main/webapp" : prop; //NOI18N
-        URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
-        File fil = new File(uri);
-        return fil.toURI();
+        return FileUtilities.getDirURI(getProjectDirectory(), prop);
     }
     
     public URI getEarAppDirectory() {
@@ -393,9 +391,7 @@ public final class NbMavenProject implements Project {
                 "earSourceDirectory", //NOI18N
                 "ear"); //NOI18N
         prop = prop == null ? "src/main/application" : prop; //NOI18N
-        URI uri = FileUtilities.getDirURI(getProjectDirectory(), prop);
-        File fil = new File(uri);
-        return fil.toURI();
+        return FileUtilities.getDirURI(getProjectDirectory(), prop);
     }
     
     public URI[] getResources(boolean test) {

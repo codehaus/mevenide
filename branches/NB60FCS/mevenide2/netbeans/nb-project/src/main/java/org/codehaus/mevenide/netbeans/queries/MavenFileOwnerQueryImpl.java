@@ -31,11 +31,13 @@ import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.FileOwnerQueryImplementation;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.util.Mutex.Action;
 
 
 /**
@@ -161,6 +163,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     }
     
     private Project getOwner(File file) {
+        //TODO check if the file is from local repo ??
         Set currentProjects = getAllKnownProjects();
         
         Iterator it = currentProjects.iterator();
@@ -178,33 +181,36 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
      
     private Set getAllKnownProjects() {
-        Set currentProjects;
-        List iterating;
-        synchronized (cacheLock) {
-            if (cachedProjects != null) {
-                return new HashSet(cachedProjects);
-            }
-            synchronized (lock) {
-                currentProjects = new HashSet<NbMavenProject>(set);
-                iterating = new ArrayList(set);
-            }
-            int index = 0;
-            // iterate all opened projects and figure their subprojects.. consider these as well. do so recursively.
-            //TODO performance.. this could be expensive, maybe cache somehow
-            while (index < iterating.size()) {
-                NbMavenProject prj = (NbMavenProject)iterating.get(index);
-                SubprojectProvider sub = prj.getLookup().lookup(SubprojectProvider.class);
-                if (sub != null) {
-                    Set subs = sub.getSubprojects();
-                    subs.removeAll(currentProjects);
-                    currentProjects.addAll(subs);
-                    iterating.addAll(subs);
+        return ProjectManager.mutex().readAccess(new Action<Set>() {
+            public Set run() {
+                synchronized (cacheLock) {
+                    Set currentProjects;
+                    List iterating;
+                    if (cachedProjects != null) {
+                        return new HashSet(cachedProjects);
+                    }
+                    synchronized (lock) {
+                        currentProjects = new HashSet<NbMavenProject>(set);
+                        iterating = new ArrayList(set);
+                    }
+                    int index = 0;
+                    // iterate all opened projects and figure their subprojects.. consider these as well. do so recursively.
+                    //TODO performance.. this could be expensive, maybe cache somehow
+                    while (index < iterating.size()) {
+                        NbMavenProject prj = (NbMavenProject) iterating.get(index);
+                        SubprojectProvider sub = prj.getLookup().lookup(SubprojectProvider.class);
+                        if (sub != null) {
+                            Set subs = sub.getSubprojects();
+                            subs.removeAll(currentProjects);
+                            currentProjects.addAll(subs);
+                            iterating.addAll(subs);
+                        }
+                        index = index + 1;
+                    }
+                    cachedProjects = currentProjects;
+                    return new HashSet(cachedProjects);
                 }
-                index = index + 1;
             }
-            cachedProjects = currentProjects;
-            return new HashSet(cachedProjects);
-        }
-        
+        });
     }
 }
