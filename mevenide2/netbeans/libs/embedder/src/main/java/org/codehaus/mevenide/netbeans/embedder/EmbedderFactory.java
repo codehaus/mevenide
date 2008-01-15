@@ -359,10 +359,12 @@ public final class EmbedderFactory {
         
         public SettingsFileListener() {
             File userLoc = new File(System.getProperty("user.home"), ".m2");
-            if (!userLoc.exists()) {
-                userLoc.mkdirs();
+            try {
+
+                dir = FileUtil.createFolder(userLoc);
+            } catch (IOException ex) {
+                Exceptions.printStackTrace(ex);
             }
-            dir = FileUtil.toFileObject(userLoc);
             if (dir != null) {
                 dir.addFileChangeListener(this);
                 FileObject settings = dir.getFileObject("settings.xml");

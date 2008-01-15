@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import org.netbeans.spi.project.support.GenericSources;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.filesystems.URLMapper;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -206,10 +208,13 @@ public class MavenSourcesImpl implements Sources {
             URI[] uris = project.getResources(false);
             if (uris.length > 0) {
                 File root = new File(uris[0]);
-                if (!root.exists()) {
-                    root.mkdirs();
+                
+                FileObject fo=null;
+                try {
+                    fo = FileUtil.createFolder(root);
+                } catch (IOException ex) {
+                    Exceptions.printStackTrace(ex);
                 }
-                FileObject fo = FileUtil.toFileObject(root);
                 return new SourceGroup[] { GenericSources.group(project, fo, "resources",  //NOI18N
                         NbBundle.getMessage(MavenSourcesImpl.class, "SG_Project_Resources"), null, null) };
             }
