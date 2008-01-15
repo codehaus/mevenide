@@ -8,22 +8,34 @@ Installation
 
 * Netbeans 6.0 Installation 
 
-  * Go to the Netbeans menu and select the Tools/Plugins menu item
+** Install using the Netbeans Update Center
 
-  * In the Plugins panel select the "Available plugins" tab.
+  [[1]] Go to the Netbeans menu and select the Tools/Plugins menu item
 
-  * Use the "maven" keyword for search :
+  [[2]] In the Plugins panel select the "Available plugins" tab.
 
-  * Check at least the "Maven" plugin install. Others are optional but can be very useful for maven java entreprise support. 
-In NetBeans 6.0 beta2 and later builds, the Maven Enterprise support gets automatically installed for you if both Maven and J2ee modules are installed.
+  [[3]] Use the "maven" keyword for search :
+
+  [[4]] Check at least the "Maven" plugin install. Others are optional but can be very useful for maven java entreprise support. 
+In NetBeans 6.0, the Maven Enterprise support gets automatically installed for you if both Maven and J2ee modules are installed.
 
 [../images/mevenide2-netbeans/install-3.0-plugin.jpg]
 
-  * Follow the instructions given by the wizard.
+  [[5]] Follow the instructions given by the wizard.
 
-  * Test the installation by selecting "File/New project" in the Netbeans menu. In the "New Project" panel you should have a new category :
+  [[6]] Test the installation by selecting "File/New project" in the Netbeans menu. In the "New Project" panel you should have a new category :
 
 [../images/mevenide2-netbeans/install-3.0-test.jpg] 
+
+** Install using the zip file
+    
+    [[1]] download the last release from {{{http://mevenide.codehaus.org/release/}http://mevenide.codehaus.org/release/}}mevenide2-netbeans-3.0.x.zip . It contains multiple NBM files (netbeans module file).
+
+    [[2]] Go to the Netbeans menu and select the Tools/Plugins menu item
+
+    [[3]] In the Plugins panel select the "Downloaded" tab, click on the "Add plugins ..." button
+
+    [[4]] Select all the unziped nbm files and follow the instructions given by the wizard.
 
 * Netbeans 5.X Installation 
 
