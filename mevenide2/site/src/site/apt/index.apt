@@ -4,7 +4,13 @@ Introduction
 
 * News:
 
-    2007/09/18 - Mevenide2 directly available in {{{http://www.netbeans.org/community/releases/60/index.html}Netbeans 6.0 beta}}.
+    2008/01/03 - Version 3.0.9 released for {{{http://www.netbeans.org/community/releases/60/index.html}Netbeans 6.0}}.
+        
+        * available from netbeans plugins wizard. 
+
+        * available by direct download {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.0.9.zip}here}}
+
+    2007/09/18 - Mevenide2 directly available in Netbeans 6.0 beta.
 
     2007/04/10 - There's an updated, polished version of Mevenide for NetBeans 6.0 Milestone 8. To get it, simply download
     the milestone build and check it's Devevelopment Update Center under Tools/Update Center dialog.
