@@ -38,6 +38,7 @@ public class ModInstall extends ModuleInstall {
     public ModInstall() {
     }
     
+    @Override
     public void restored() {
         super.restored();
         File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
