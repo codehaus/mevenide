@@ -237,6 +237,9 @@ public final class ProjectURLWatcher {
     }
     
     private void doFireReload() {
+        //TODO is root folder refresh enough?
+        // replace with FileUtil.refresh(File) once it gets into the netbeans.org codebase.
+        project.getProjectDirectory().refresh();
         support.firePropertyChange(NbMavenProject.PROP_PROJECT, null, null);
     }
     

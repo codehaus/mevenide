@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
@@ -111,6 +112,14 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
             state.notifyDeleted();
             return;
         } else {
+            if (original.getProjectDirectory().equals(project.getProjectDirectory())) {
+                // oh well, just change the name in the pom when rename is invoked.
+                FileObject pomFO = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+                Model mdl = WriterUtils.loadModel(pomFO);
+                mdl.setName(newName);
+                WriterUtils.writePomModel(pomFO, mdl);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+            }
             checkParentProject(project.getProjectDirectory(), false, newName, originalLoc.getName());
         }
     }
