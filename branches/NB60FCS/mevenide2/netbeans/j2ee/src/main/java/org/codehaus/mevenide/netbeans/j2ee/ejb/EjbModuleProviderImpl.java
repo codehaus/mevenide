@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.j2ee.ejb;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
-import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
@@ -34,6 +33,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarProvider;
+import org.netbeans.modules.j2ee.spi.ejbjar.EjbJarsInProject;
 import org.openide.filesystems.FileObject;
 
 /**
@@ -41,12 +41,13 @@ import org.openide.filesystems.FileObject;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 
-public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarProvider  {
+public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarProvider, EjbJarsInProject  {
     
     private EjbJarImpl ejbimpl;
     private NbMavenProject project;
     private String serverInstanceID;
     private J2eeModule j2eemodule;    
+    private EjbJar apiEjbJar;
     
     /** Creates a new instance of EjbModuleProviderImpl */
     public EjbModuleProviderImpl(NbMavenProject proj) {
@@ -116,9 +117,11 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
             proj = proj.getLookup().lookup(NbMavenProject.class);
         }
         if (proj != null && project == proj) {
-            if (ejbimpl != null && ejbimpl.isValid()) {
-//                System.out.println("EjbMP: findEjbJar");
-                return EjbJarFactory.createEjbJar(ejbimpl);
+            if (ejbimpl.isValid()) {
+                if (apiEjbJar == null) {
+                    apiEjbJar =  EjbJarFactory.createEjbJar(ejbimpl);
+                }
+                return apiEjbJar;
             }
         }
         return null;
@@ -196,6 +199,16 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
             roots[i + offset] = groups[i].getRootFolder();
         }
         return roots;
+    }
+
+    public EjbJar[] getEjbJars() {
+        if (ejbimpl.isValid()) {
+            if (apiEjbJar == null) {
+                apiEjbJar =  EjbJarFactory.createEjbJar(ejbimpl);
+            }
+            return new EjbJar[] {apiEjbJar};
+        }
+        return new EjbJar[0];
     }
     
 }
