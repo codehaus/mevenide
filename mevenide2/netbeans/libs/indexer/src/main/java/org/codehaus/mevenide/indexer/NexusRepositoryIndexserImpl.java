@@ -28,6 +28,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
@@ -117,6 +119,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 indexers);
                     }
                     indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+                    fireChangeIndex();
                     return null;
                 }
             });
@@ -168,7 +171,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         File pom = new File(pomPath);
 
                         indexer.addArtifactToIndex(pom, indexingContext);
-
+                        fireChangeIndex();
                     }
                     return null;
                 }
@@ -216,7 +219,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     File pom = new File(pomPath);
 
                     indexer.deleteArtifactFromIndex(pom, indexingContext);
-
+                    fireChangeIndex();
                     return null;
                 }
             });
@@ -550,6 +553,28 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             Exceptions.printStackTrace(ex);
         }
         return artifacts;
+    }
+
+    public void addIndexChangeListener(ChangeListener cl) {
+        synchronized (changeListeners) {
+            changeListeners.add(cl);
+        }
+    }
+
+    public void removeIndexChangeListener(ChangeListener cl) {
+        synchronized (changeListeners) {
+            changeListeners.remove(cl);
+        }
+    }
+    private List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
+
+    private void fireChangeIndex() {
+        synchronized (changeListeners) {
+            for (ChangeListener changeListener : changeListeners) {
+                changeListener.stateChanged(new ChangeEvent(this));
+            }
+        }
+
     }
 
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {

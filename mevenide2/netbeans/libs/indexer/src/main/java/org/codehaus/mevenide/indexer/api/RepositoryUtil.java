@@ -21,6 +21,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.event.ChangeListener;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.Artifact;
@@ -83,9 +85,7 @@ public final class RepositoryUtil {
             
             return md5sum;
     }
-    public static void addIndexChangeListener(ChangeListener cl){
-      
-    }
+  
      static byte[] readFile(File file) throws IOException {
 
         InputStream is = new FileInputStream(file);
