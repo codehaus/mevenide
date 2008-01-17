@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
 
 /**
@@ -29,7 +30,6 @@ import org.apache.maven.artifact.Artifact;
 public interface RepositoryIndexer {
 
     void indexRepo(String repoId);//default repo id for local repo is "local"
-    
     void updateIndexWithArtifacts(String repoId, Collection<Artifact> artifacts);
 
     void deleteArtifactFromIndex(String repoId, Artifact artifact);
@@ -46,9 +46,9 @@ public interface RepositoryIndexer {
 
     List<NBGroupInfo> findDependencyUsage(String repoId, String groupId, String artifactId, String version);
 
-    List<NBVersionInfo> findByMD5(String repoId,File file);
+    List<NBVersionInfo> findByMD5(String repoId, File file);
 
-    List<NBVersionInfo> findByMD5(String repoId,String md5);
+    List<NBVersionInfo> findByMD5(String repoId, String md5);
 
     List<NBVersionInfo> retrievePossibleArchetypes(String repoId);
 
@@ -56,5 +56,9 @@ public interface RepositoryIndexer {
 
     Set<String> filterPluginGroupIds(String repoId, String prefix);
 
-    Set<String> filterArtifactIdForGroupId(String repoId,String groupId, String prefix);
+    Set<String> filterArtifactIdForGroupId(String repoId, String groupId, String prefix);
+
+    void addIndexChangeListener(ChangeListener cl);
+
+    void removeIndexChangeListener(ChangeListener cl);
 }

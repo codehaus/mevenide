@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
 import java.awt.BorderLayout;
@@ -49,23 +48,17 @@ import org.openide.windows.WindowManager;
  * @author mkleint
  */
 public final class M2RepositoryBrowserTopComponent extends TopComponent implements ExplorerManager.Provider {
-    
+
     private static M2RepositoryBrowserTopComponent instance;
     /** path to the icon used by the component and its open action */
     static final String ICON_PATH = "org/codehaus/mevenide/repository/MavenRepoBrowser.png"; //NOI18N
-    
     private static final String PREFERRED_ID = "M2RepositoryBrowserTopComponent"; //NOI18N
-
     private BeanTreeView btv;
-
     private ExplorerManager manager;
-    
     private boolean searchMode = false;
-
     private SearchPanel searchPanel;
-
     private DialogDescriptor searchDD;
-    
+
     private M2RepositoryBrowserTopComponent() {
         initComponents();
         setName(NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "CTL_M2RepositoryBrowserTopComponent")); //NOI18N
@@ -87,20 +80,21 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnSearch.setText(null);
         btnBack.setText(null);
         btnIndex.setText(null);
-        btnBack.setMargin(new Insets(1,1,1,1));
-        btnSearch.setMargin(new Insets(1,1,1,1));
-        btnIndex.setMargin(new Insets(1,1,1,1));
-        RepositoryUtil.addIndexChangeListener(new ChangeListener() {
+        btnBack.setMargin(new Insets(1, 1, 1, 1));
+        btnSearch.setMargin(new Insets(1, 1, 1, 1));
+        btnIndex.setMargin(new Insets(1, 1, 1, 1));
+        RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
+
             public void stateChanged(ChangeEvent e) {
                 checkMode();
             }
         });
     }
-    
+
     public ExplorerManager getExplorerManager() {
         return manager;
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -154,39 +148,38 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 
         add(jToolBar1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
-
     private void btnIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndexActionPerformed
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
+
             public void run() {
                 RepositoryUtil.getDefaultRepositoryIndexer().indexRepo("local");
                 SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            btnIndex.setEnabled(true);
-                        }
-                    });
+
+                    public void run() {
+                        btnIndex.setEnabled(true);
+                    }
+                });
             }
         });
 
     }//GEN-LAST:event_btnIndexActionPerformed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-            searchMode = false;
-            checkMode();
-            searchPanel = null;
-            searchDD = null;
+        searchMode = false;
+        checkMode();
+        searchPanel = null;
+        searchDD = null;
     }//GEN-LAST:event_btnBackActionPerformed
 
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         if (searchPanel != null && searchDD != null) {
-            ((SearchAction)SearchAction.get(SearchAction.class)).performAction(searchDD, searchPanel);
+            ((SearchAction) SearchAction.get(SearchAction.class)).performAction(searchDD, searchPanel);
         } else {
             SearchAction.get(SearchAction.class).actionPerformed(null);
         }
         
     }//GEN-LAST:event_btnSearchActionPerformed
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnIndex;
@@ -195,7 +188,6 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnlExplorer;
     // End of variables declaration//GEN-END:variables
-    
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,
      * i.e. deserialization routines; otherwise you could get a non-deserialized instance.
@@ -207,7 +199,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         }
         return instance;
     }
-    
+
     /**
      * Obtain the M2RepositoryBrowserTopComponent instance. Never call {@link #getDefault} directly!
      */
@@ -219,34 +211,34 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
             return getDefault();
         }
         if (win instanceof M2RepositoryBrowserTopComponent) {
-            return (M2RepositoryBrowserTopComponent)win;
+            return (M2RepositoryBrowserTopComponent) win;
         }
         ErrorManager.getDefault().log(ErrorManager.WARNING,
                 "There seem to be multiple components with the '" + PREFERRED_ID + //NOI18N
                 "' ID. That is a potential source of errors and unexpected behavior."); //NOI18N
         return getDefault();
     }
-    
+
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
-    
+
     public void componentOpened() {
         checkMode();
     }
-    
+
     public void componentClosed() {
         manager.setRootContext(new AbstractNode(Children.LEAF));
     }
-    
+
     protected void componentActivated() {
         ExplorerUtils.activateActions(manager, true);
     }
-    
+
     protected void componentDeactivated() {
         ExplorerUtils.activateActions(manager, false);
     }
-    
+
     private void checkMode() {
         btnBack.setVisible(searchMode);
         if (!searchMode) {
@@ -255,9 +247,9 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         } else {
 //            btnSearch.setText("Back to browse");
         }
-                
+
     }
-    
+
     public boolean requestFocusInWindow() {
         super.requestFocusInWindow();
         return btv.requestFocusInWindow();
@@ -267,12 +259,12 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         super.requestFocus();
         btv.requestFocus();
     }
-    
+
     /** replaces this in object stream */
     public Object writeReplace() {
         return new ResolvableHelper();
     }
-    
+
     protected String preferredID() {
         return PREFERRED_ID;
     }
@@ -291,12 +283,13 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         searchDD = dd;
         searchPanel = panel;
     }
-    
+
     final static class ResolvableHelper implements Serializable {
+
         private static final long serialVersionUID = 1L;
+
         public Object readResolve() {
             return M2RepositoryBrowserTopComponent.getDefault();
         }
     }
-    
 }
