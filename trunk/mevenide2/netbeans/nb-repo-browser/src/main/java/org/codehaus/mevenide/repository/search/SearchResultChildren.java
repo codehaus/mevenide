@@ -14,16 +14,15 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository.search;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.VersionInfo;
+
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.GroupIdListChildren;
 import org.codehaus.mevenide.repository.VersionNode;
 import org.openide.nodes.Children;
@@ -35,23 +34,20 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 public class SearchResultChildren extends Children.Keys {
-    
-    private List<VersionInfo> keys;
-    
-    private ArrayList<VersionInfo> mainkeys;
-    
-    private ArrayList<VersionInfo> attachedkeys;
-    
+
+    private List<NBVersionInfo> keys;
+    private ArrayList<NBVersionInfo> mainkeys;
+    private ArrayList<NBVersionInfo> attachedkeys;
     private String artifactId;
     private String groupId;
-    
+
     /**
      * Creates a new instance of SearchResultChildren from search results.
      */
-    public SearchResultChildren(List<VersionInfo> results) {
+    public SearchResultChildren(List<NBVersionInfo> results) {
         keys = results;
     }
-    
+
     /**
      * creates a new instance of SearchResultChildren from browsing interface
      */
@@ -59,17 +55,17 @@ public class SearchResultChildren extends Children.Keys {
         this.groupId = groupId;
         this.artifactId = artifactId;
     }
-    
+
     protected Node[] createNodes(Object key) {
         if (GroupIdListChildren.LOADING == key) {
-                return new Node[] { GroupIdListChildren.createLoadingNode() };
+            return new Node[]{GroupIdListChildren.createLoadingNode()};
         }
-        VersionInfo record = (VersionInfo)key;
-        Iterator<VersionInfo> it = attachedkeys.iterator();
+        NBVersionInfo record = (NBVersionInfo) key;
+        Iterator<NBVersionInfo> it = attachedkeys.iterator();
         boolean hasSources = false;
         boolean hasJavadoc = false;
         while (it.hasNext() && (!hasJavadoc || !hasSources)) {
-            VersionInfo elem = it.next();
+            NBVersionInfo elem = it.next();
             if (elem.getGroupId().equals(record.getGroupId()) &&
                     elem.getArtifactId().equals(record.getArtifactId()) &&
                     elem.getVersion().equals(record.getVersion())) {
@@ -77,35 +73,32 @@ public class SearchResultChildren extends Children.Keys {
                 hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
             }
         }
-        return new Node[] { new VersionNode(record, hasJavadoc, hasSources, groupId != null) };
+        return new Node[]{new VersionNode(record, hasJavadoc, hasSources, groupId != null)};
     }
-    
-    
+
     @Override
     protected void addNotify() {
         super.addNotify();
         if (keys == null) {
             setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
             RequestProcessor.getDefault().post(new Runnable() {
+
                 public void run() {
-                    try {
-                        sortOutKeys(CustomQueries.getVersions(groupId, artifactId));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        setKeys(Collections.EMPTY_LIST);
-                    }
+
+                    sortOutKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions("local", groupId, artifactId));
+
                 }
             });
         } else {
             sortOutKeys(keys);
         }
     }
-    private void sortOutKeys(List<VersionInfo> keys) {
-        mainkeys = new ArrayList<VersionInfo>(keys.size());
-        attachedkeys = new ArrayList<VersionInfo>(keys.size());
-        for (VersionInfo record : keys) {
-            if (record.getClassifier() != null && (record.getClassifier().equals("javadoc")
-                    || record.getClassifier().equals("sources"))) {
+
+    private void sortOutKeys(List<NBVersionInfo> keys) {
+        mainkeys = new ArrayList<NBVersionInfo>(keys.size());
+        attachedkeys = new ArrayList<NBVersionInfo>(keys.size());
+        for (NBVersionInfo record : keys) {
+            if (record.getClassifier() != null && (record.getClassifier().equals("javadoc") || record.getClassifier().equals("sources"))) {
                 attachedkeys.add(record);
             } else {
                 mainkeys.add(record);
@@ -113,11 +106,10 @@ public class SearchResultChildren extends Children.Keys {
         }
         setKeys(mainkeys);
     }
-    
+
     @Override
     protected void removeNotify() {
         super.removeNotify();
         setKeys(Collections.EMPTY_LIST);
     }
-    
 }

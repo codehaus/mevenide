@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
-import org.codehaus.mevenide.indexer.VersionInfo;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -133,7 +131,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             
             //toLowercase() seems to be required, not sure why..
 
-            String checksum = IndexerUtil.calculateChecksum(FileUtil.toFile(file)).toLowerCase();
+            String checksum = RepositoryUtil.calculateChecksum(FileUtil.toFile(file)).toLowerCase();
             String[] dep = checkLayer(checksum);
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
@@ -167,8 +165,9 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private String[] checkLocalRepo(String checksum) {
-        List<VersionInfo> lst = CustomQueries.findByMD5(checksum);
-        for (VersionInfo elem : lst) {
+        List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().
+                findByMD5("local",checksum);
+        for (NBVersionInfo elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();
             dep[1] = elem.getArtifactId();

@@ -27,7 +27,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
 
-import org.codehaus.mevenide.indexer.IndexerUtil;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
 import org.openide.DialogDescriptor;
@@ -90,7 +90,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnBack.setMargin(new Insets(1,1,1,1));
         btnSearch.setMargin(new Insets(1,1,1,1));
         btnIndex.setMargin(new Insets(1,1,1,1));
-        IndexerUtil.addIndexChangeListener(new ChangeListener() {
+        RepositoryUtil.addIndexChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 checkMode();
             }
@@ -159,7 +159,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                IndexerUtil.updateIndex();
+                RepositoryUtil.getDefaultRepositoryIndexer().indexRepo("local");
                 SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             btnIndex.setEnabled(true);

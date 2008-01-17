@@ -20,8 +20,7 @@ package org.codehaus.mevenide.indexer;
 import java.util.StringTokenizer;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.Query;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
+
 
 /**
  *
@@ -95,23 +94,23 @@ public class FindQuery {
     public void setPackaging(String packaging) {
         this.packaging = packaging;
     }
-    LuceneQuery createLuceneQuery() throws ParseException {
-        StringBuffer buff = new StringBuffer();
-        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, groupId);
-        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, artifactId);
-        appendField(buff, StandardIndexRecordFields.PROJECT_NAME, name);
-        appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, description);
-        appendField(buff, StandardIndexRecordFields.PACKAGING, packaging);
-        appendField(buff, StandardIndexRecordFields.CLASSES, classes);
-        
-        if (any.trim().length() > 0) {
-            Query multi = LocalRepositoryIndexer.parseMultiFieldQuery(any);
-            buff.append(" ").append(multi.toString());
-        }
-        System.out.println("search query=" + buff.toString());
-        
-        return new LuceneQuery(LocalRepositoryIndexer.parseQuery(buff.toString()));
-    }
+//    LuceneQuery createLuceneQuery() throws ParseException {
+//        StringBuffer buff = new StringBuffer();
+//        appendField(buff, StandardIndexRecordFields.GROUPID_EXACT, groupId);
+//        appendField(buff, StandardIndexRecordFields.ARTIFACTID_EXACT, artifactId);
+//        appendField(buff, StandardIndexRecordFields.PROJECT_NAME, name);
+//        appendField(buff, StandardIndexRecordFields.PROJECT_DESCRIPTION, description);
+//        appendField(buff, StandardIndexRecordFields.PACKAGING, packaging);
+//        appendField(buff, StandardIndexRecordFields.CLASSES, classes);
+//        
+//        if (any.trim().length() > 0) {
+//            Query multi = LocalRepositoryIndexer.parseMultiFieldQuery(any);
+//            buff.append(" ").append(multi.toString());
+//        }
+//        System.out.println("search query=" + buff.toString());
+//        
+//        return new LuceneQuery(LocalRepositoryIndexer.parseQuery(buff.toString()));
+//    }
       private void appendField(StringBuffer buff, String field, String text) {
         StringTokenizer tokenizer = new StringTokenizer(text.trim());
         while (tokenizer.hasMoreTokens()) {

@@ -14,12 +14,12 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
 import java.awt.Image;
-import org.codehaus.mevenide.indexer.ArtifactInfo;
-import org.codehaus.mevenide.indexer.VersionInfo;
+
+import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.repository.search.SearchResultChildren;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -31,7 +31,7 @@ import org.openide.util.Utilities;
  * @author mkleint
  */
 public class ArtifactIdNode extends AbstractNode {
-    
+
     /** Creates a new instance of ArtifactIdNode */
     public ArtifactIdNode(String id, String art) {
         super(new SearchResultChildren(id, art));
@@ -39,38 +39,37 @@ public class ArtifactIdNode extends AbstractNode {
         setDisplayName(art);
     }
 
-    public ArtifactIdNode(final ArtifactInfo artifactInfo) {
-        super(new Children.Keys<VersionInfo>() {
+    public ArtifactIdNode(final NBArtifactInfo artifactInfo) {
+        super(new Children.Keys<NBVersionInfo>() {
 
-                @Override
-                protected Node[] createNodes(VersionInfo arg0) {
-                   
-        
-                    return new Node[]{new VersionNode(arg0, 
-                            "javadoc".equals(arg0.getClassifier()), 
-                            "sources".equals(arg0.getClassifier()), arg0.getGroupId() != null)};
-                }
+            @Override
+            protected Node[] createNodes(NBVersionInfo arg0) {
 
-                @Override
-                protected void addNotify() {
-                    super.addNotify();
-                    setKeys(artifactInfo.getVersionInfos());
-                }
+
+                return new Node[]{new VersionNode(arg0,
+                    "javadoc".equals(arg0.getClassifier()),
+                    "sources".equals(arg0.getClassifier()), arg0.getGroupId() != null)
+                };
+            }
+
+            @Override
+            protected void addNotify() {
+                super.addNotify();
+                setKeys(artifactInfo.getVersionInfos());
+            }
             });
         setName(artifactInfo.getName());
         setDisplayName(artifactInfo.getName());
     }
-    
-    
+
     @Override
     public Image getIcon(int arg0) {
         Image badge = Utilities.loadImage("org/codehaus/mevenide/repository/ArtifactBadge.png", true); //NOI18N
         return Utilities.mergeImages(super.getIcon(arg0), badge, 0, 0);
-}
+    }
 
     @Override
     public Image getOpenedIcon(int arg0) {
         return getIcon(arg0);
     }
-    
 }

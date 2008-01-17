@@ -1,8 +1,7 @@
 package org.codehaus.mevenide.repository.search;
 
 import java.util.List;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.GroupInfo;
+
 import org.codehaus.mevenide.repository.GroupIdNode;
 import org.codehaus.mevenide.repository.M2RepositoryBrowserTopComponent;
 import org.openide.DialogDescriptor;
@@ -24,30 +23,30 @@ public final class SearchAction extends CallableSystemAction {
     }
     
     public void performAction(DialogDescriptor dd, SearchPanel panel) {
-        Object ret = DialogDisplayer.getDefault().notify(dd);
-        if (ret == DialogDescriptor.OK_OPTION) {
-
-                M2RepositoryBrowserTopComponent m2comp = M2RepositoryBrowserTopComponent.findInstance();
-                m2comp.setSearchDialogCache(dd, panel);
-            final List<GroupInfo> groupInfo = CustomQueries.getGroupInfo(panel.getFindQuery());
-               Children repoChildren = new Children.Keys<GroupInfo>() {
-
-            @Override
-            protected Node[] createNodes(GroupInfo ug) {
-                return new Node[]{new GroupIdNode(ug)};
-            }
-
-            @Override
-            protected void addNotify() {
-                super.addNotify();
-                setKeys(groupInfo);
-            }
-        };
-                m2comp.showSearchResults(new AbstractNode(repoChildren));
-                m2comp.open();
-                m2comp.requestActive();
-
-        }
+//        Object ret = DialogDisplayer.getDefault().notify(dd);
+//        if (ret == DialogDescriptor.OK_OPTION) {
+//
+//                M2RepositoryBrowserTopComponent m2comp = M2RepositoryBrowserTopComponent.findInstance();
+//                m2comp.setSearchDialogCache(dd, panel);
+//            final List<GroupInfo> groupInfo = CustomQueries.getGroupInfo(panel.getFindQuery());
+//               Children repoChildren = new Children.Keys<GroupInfo>() {
+//
+//            @Override
+//            protected Node[] createNodes(GroupInfo ug) {
+//                return new Node[]{new GroupIdNode(ug)};
+//            }
+//
+//            @Override
+//            protected void addNotify() {
+//                super.addNotify();
+//                setKeys(groupInfo);
+//            }
+//        };
+//                m2comp.showSearchResults(new AbstractNode(repoChildren));
+//                m2comp.open();
+//                m2comp.requestActive();
+//
+//        }
         
     }
     

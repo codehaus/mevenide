@@ -24,6 +24,8 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.codehaus.mevenide.indexer.*;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.modules.ModuleInstall;
@@ -45,6 +47,7 @@ public class ModInstall extends ModuleInstall {
     @Override
     public void restored() {
         super.restored();
+         
         List<String> lst = MavenIndexSettings.getDefault().getCollectedRepositories();
         if (addDefaultRepoSet(lst)) {
             MavenIndexSettings.getDefault().setCollectedRepositories(lst);
@@ -64,9 +67,9 @@ public class ModInstall extends ModuleInstall {
             if (run) {
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
-                        IndexerUtil.updateIndex();
+                        RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
                     }
-                }, MILIS_IN_MIN * 2);
+                });
             }
         }
     }

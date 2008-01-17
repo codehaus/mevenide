@@ -17,11 +17,11 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.Image;
-import java.io.IOException;
 import java.util.Collections;
-import org.codehaus.mevenide.indexer.ArtifactInfo;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.GroupInfo;
+
+import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
+import org.codehaus.mevenide.indexer.api.NBGroupInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -40,11 +40,11 @@ public class GroupIdNode extends AbstractNode {
         setDisplayName(id);
     }
 
-    public GroupIdNode(final GroupInfo groupInfo) {
-        super(new Children.Keys<ArtifactInfo>() {
+    public GroupIdNode(final NBGroupInfo groupInfo) {
+        super(new Children.Keys<NBArtifactInfo>() {
 
             @Override
-            protected Node[] createNodes(ArtifactInfo arg0) {
+            protected Node[] createNodes(NBArtifactInfo arg0) {
                 return new Node[]{new ArtifactIdNode(arg0)};
             }
 
@@ -75,18 +75,16 @@ public class GroupIdNode extends AbstractNode {
             return new Node[]{new ArtifactIdNode(id, artifactId)};
         }
 
+        @Override
         protected void addNotify() {
             super.addNotify();
             setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    try {
-                        setKeys(CustomQueries.getArtifacts(id));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                        setKeys(Collections.EMPTY_LIST);
-                    }
+
+                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts("local", id));
+
                 }
             });
         }

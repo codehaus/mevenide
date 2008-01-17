@@ -30,8 +30,8 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.VersionInfo;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -187,8 +187,8 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         File platformFile = lookForModuleInPlatform(artifactId);
         if (platformFile != null) {
             try {
-                List<VersionInfo> lst = CustomQueries.findByMD5(platformFile);
-                for (VersionInfo elem : lst) {
+                List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().findByMD5("local",platformFile);
+                for (NBVersionInfo elem : lst) {
                     dep = new Dependency();
                     dep.setArtifactId(elem.getArtifactId());
                     dep.setGroupId(elem.getGroupId());
