@@ -25,8 +25,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
-import org.codehaus.mevenide.indexer.CustomQueries;
+
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
@@ -98,7 +100,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         
         if (path.endsWith("pluginGroups/pluginGroup")) { //NOI18N
          
-                Set elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                Set elems = RepositoryUtil.getDefaultRepositoryIndexer().filterPluginGroupIds(RepositoryPreferences.LOCAL_REPO_ID,virtualTextCtx.getCurrentPrefix());
                 Iterator it = elems.iterator();
                 ArrayList texts = new ArrayList();
                 while (it.hasNext()) {

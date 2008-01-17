@@ -35,8 +35,9 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
-import org.codehaus.mevenide.indexer.IndexerUtil;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -559,7 +560,8 @@ public class SettingsPanel extends javax.swing.JPanel {
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                IndexerUtil.updateIndex();
+                RepositoryUtil.getDefaultRepositoryIndexer().
+                        indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
                SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             btnIndex.setEnabled(true);

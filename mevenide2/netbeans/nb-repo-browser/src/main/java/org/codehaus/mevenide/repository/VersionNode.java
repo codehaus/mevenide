@@ -18,10 +18,10 @@ package org.codehaus.mevenide.repository;
 
 import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
-import org.codehaus.mevenide.indexer.IndexerUtil;
-import org.codehaus.mevenide.indexer.VersionInfo;
+
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -39,15 +39,14 @@ import org.openide.util.Utilities;
  */
 public class VersionNode extends AbstractNode {
 
-    private VersionInfo record;
+    private NBVersionInfo record;
     private boolean hasJavadoc;
     private boolean hasSources;
 
-    public static Children createChildren(VersionInfo record) {
+    public static Children createChildren(NBVersionInfo record) {
         if (!"pom".equals(record.getType())) { //NOI18N
             try {
-                Artifact art = IndexerUtil.createArtifact(record,
-                        EmbedderFactory.getProjectEmbedder().getLocalRepository());
+                Artifact art = RepositoryUtil.createArtifact(record);
                 FileObject fo = FileUtil.toFileObject(art.getFile());
 
                 if (fo != null) {
@@ -61,14 +60,14 @@ public class VersionNode extends AbstractNode {
     }
 
     /** Creates a new instance of VersionNode */
-    public VersionNode(VersionInfo versionInfo, boolean javadoc, boolean source, boolean dispNameShort) {
+    public VersionNode(NBVersionInfo versionInfo, boolean javadoc, boolean source, boolean dispNameShort) {
         super(createChildren(versionInfo));
         hasJavadoc = javadoc;
         hasSources = source;
         this.record = versionInfo;
         if (dispNameShort) {
             setName(versionInfo.getVersion());
-            setDisplayName(versionInfo.getVersion()+" [ "+versionInfo.getType()+" ]");
+            setDisplayName(versionInfo.getVersion() + " [ " + versionInfo.getType() + " ]");
         } else {
             setName(versionInfo.getGroupId() + ":" + versionInfo.getArtifactId() + ":" + versionInfo.getVersion()); //NOI18N
         }
@@ -77,8 +76,7 @@ public class VersionNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        Artifact artifact = IndexerUtil.createArtifact(record,
-                EmbedderFactory.getProjectEmbedder().getLocalRepository());
+        Artifact artifact = RepositoryUtil.createArtifact(record);
         Action[] retValue;
 
         retValue = new Action[]{
@@ -86,7 +84,7 @@ public class VersionNode extends AbstractNode {
             null,
             CommonArtifactActions.createFindUsages(artifact),
             null,
-            CommonArtifactActions.createViewJavadocAction(artifact),   
+            CommonArtifactActions.createViewJavadocAction(artifact),
             CommonArtifactActions.createViewProjectHomeAction(artifact),
             CommonArtifactActions.createViewBugTrackerAction(artifact),
             CommonArtifactActions.createSCMActions(artifact)
@@ -126,6 +124,4 @@ public class VersionNode extends AbstractNode {
         }
         return buffer.toString();
     }
-
-   
 }

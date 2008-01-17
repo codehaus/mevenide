@@ -21,9 +21,9 @@ import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.VersionInfo;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 
 /**
  * Lists archetypes found in local repository index. Will include both old archetypes
@@ -39,11 +39,12 @@ public class LocalRepoProvider implements ArchetypeProvider {
     public List<Archetype> getArchetypes() {
         List<Archetype> lst = new ArrayList<Archetype>();
         
-            List<VersionInfo> archs = CustomQueries.retrievePossibleArchetypes();
+            List<NBVersionInfo> archs = RepositoryUtil.getDefaultRepositoryIndexer().
+                    retrievePossibleArchetypes(RepositoryPreferences.LOCAL_REPO_ID);
             if (archs == null) {
                 return lst;
             }
-            for (VersionInfo art : archs) {
+            for (NBVersionInfo art : archs) {
                //TODO FINDout  how to get contain matadata 
                // boolean ng = artifact.getFiles().contains("META-INF/maven/archetype-metadata.xml");
                 Archetype arch = ( "maven-archetype".equalsIgnoreCase(art.getPackaging())) ? //NOI18N

@@ -14,14 +14,13 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.codehaus.mevenide.indexer.CustomQueries;
+
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -33,9 +32,9 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 public class GroupIdListChildren extends Children.Keys {
-    
+
     public static final Object LOADING = new Object();
-    
+
     public static Node createLoadingNode() {
         AbstractNode nd = new AbstractNode(Children.LEAF);
         nd.setName("Loading"); //NOI18N
@@ -43,41 +42,38 @@ public class GroupIdListChildren extends Children.Keys {
         return nd;
     }
     private List keys;
-    
+
     /** Creates a new instance of GroupIdListChildren */
     public GroupIdListChildren() {
     }
-    
-    
+
     protected Node[] createNodes(Object key) {
         if (LOADING == key) {
-            return new Node[] { createLoadingNode() };
+            return new Node[]{createLoadingNode()};
         }
-        String groupId = (String)key;
-        return new Node[] { new GroupIdNode(groupId) };
+        String groupId = (String) key;
+        return new Node[]{new GroupIdNode(groupId)};
     }
-    
+
+    @Override
     protected void addNotify() {
         super.addNotify();
         setKeys(Collections.singletonList(LOADING));
         RequestProcessor.getDefault().post(new Runnable() {
+
             public void run() {
-                try {
-                    keys = new ArrayList(CustomQueries.enumerateGroupIds());
-                    setKeys(keys);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                    keys = new ArrayList();
-                    setKeys(Collections.EMPTY_LIST);
-                }
+
+                keys = new ArrayList(RepositoryUtil.getDefaultRepositoryIndexer().getGroups("local"));
+                setKeys(keys);
+
             }
         });
     }
-    
+
+    @Override
     protected void removeNotify() {
         super.removeNotify();
         keys = Collections.EMPTY_LIST;
         setKeys(Collections.EMPTY_LIST);
     }
-    
 }

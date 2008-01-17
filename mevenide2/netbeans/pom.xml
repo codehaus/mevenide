@@ -141,7 +141,7 @@
      <module>netbeans-repository</module>
      <module>apisupport</module>
      <module>junit</module>
-     <!--module>nb-repo-browser</module-->
+     <module>nb-repo-browser</module>
      <!--module>graph</module-->
   </modules>
     <repositories>

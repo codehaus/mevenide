@@ -14,13 +14,13 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.indexer;
+package org.codehaus.mevenide.indexer.api;
 
 /**
  *
  * @author Anuradha G
  */
-public class VersionInfo {
+public class NBVersionInfo {
 
     private String groupId;
     private String artifactId;
@@ -30,9 +30,11 @@ public class VersionInfo {
     private String projectName;
     private String classifier;
     private String ProjectDescription;
+    private String repoId;
 
-     VersionInfo(String groupId, String artifactId, String version,
+  public   NBVersionInfo(String repoId,String groupId, String artifactId, String version,
             String type, String packaging, String projectName,String ProjectDescription,String classifier) {
+        this.repoId = repoId;
         this.groupId = groupId;
         this.artifactId = artifactId;
         this.version = version;
@@ -41,6 +43,10 @@ public class VersionInfo {
         this.projectName = projectName;
         this.ProjectDescription = ProjectDescription;
         this.classifier = classifier;
+    }
+
+    public String getRepoId() {
+        return repoId;
     }
     
   

@@ -13,10 +13,11 @@ import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.indexer.ArtifactInfo;
-import org.codehaus.mevenide.indexer.CustomQueries;
-import org.codehaus.mevenide.indexer.GroupInfo;
-import org.codehaus.mevenide.indexer.VersionInfo;
+import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
+import org.codehaus.mevenide.indexer.api.NBGroupInfo;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -136,12 +137,14 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                 return NodeUtils.getTreeFolderIcon(true);
             }
         };
-        final List<GroupInfo> list = CustomQueries.findDependencyUsage(artifact.getGroupId(),
+        final List<NBGroupInfo> list = RepositoryUtil.getDefaultRepositoryIndexer().
+                findDependencyUsage(RepositoryPreferences.LOCAL_REPO_ID,
+                artifact.getGroupId(),
                     artifact.getArtifactId(), artifact.getVersion());
-        Children repoChildren = new Children.Keys<GroupInfo>() {
+        Children repoChildren = new Children.Keys<NBGroupInfo>() {
 
             @Override
-            protected Node[] createNodes(GroupInfo ug) {
+            protected Node[] createNodes(NBGroupInfo ug) {
                 return new Node[]{new GroupNode(ug)};
             }
 
@@ -292,13 +295,13 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class GroupNode extends AbstractNode {
 
-        GroupInfo group;
+        NBGroupInfo group;
 
-        public GroupNode(final GroupInfo group) {
-            super(new Children.Keys<ArtifactInfo>() {
+        public GroupNode(final NBGroupInfo group) {
+            super(new Children.Keys<NBArtifactInfo>() {
 
                 @Override
-                protected Node[] createNodes(ArtifactInfo arg0) {
+                protected Node[] createNodes(NBArtifactInfo arg0) {
                     return new Node[]{new ArtifactNode(arg0)};
                 }
 
@@ -330,13 +333,13 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class ArtifactNode extends AbstractNode {
 
-        ArtifactInfo artifact;
+        NBArtifactInfo artifact;
 
-        public ArtifactNode(final ArtifactInfo artifact) {
-            super(new Children.Keys<VersionInfo>() {
+        public ArtifactNode(final NBArtifactInfo artifact) {
+            super(new Children.Keys<NBVersionInfo>() {
 
                 @Override
-                protected Node[] createNodes(VersionInfo arg0) {
+                protected Node[] createNodes(NBVersionInfo arg0) {
                     return new Node[]{new VertionNode(arg0)};
                 }
 
@@ -369,9 +372,9 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class VertionNode extends AbstractNode {
 
-        VersionInfo version;
+        NBVersionInfo version;
 
-        public VertionNode(VersionInfo version) {
+        public VertionNode(NBVersionInfo version) {
             super(Children.LEAF);
             this.version = version;
             setIconBaseWithExtension("org/codehaus/mevenide/netbeans/DependencyIcon.png"); //NOI18N

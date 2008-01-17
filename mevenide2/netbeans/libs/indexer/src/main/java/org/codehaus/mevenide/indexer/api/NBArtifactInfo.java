@@ -15,7 +15,7 @@
  *  under the License.
  */
 
-package org.codehaus.mevenide.indexer;
+package org.codehaus.mevenide.indexer.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,27 +25,27 @@ import java.util.List;
  *
  * @author Anuradha
  */
-public class GroupInfo {
-  private String name;
-  private List<ArtifactInfo> artifactInfos=new  ArrayList<ArtifactInfo>();
-    public GroupInfo(String name) {
+public class NBArtifactInfo {
+ private String name;
+ private List<NBVersionInfo> versionInfos=new  ArrayList<NBVersionInfo>();
+    public NBArtifactInfo(String name) {
         this.name = name;
     }
 
-    public void removeArtifactInfo(Object o) {
-         artifactInfos.remove(o);
+    public boolean removeVersionInfo(Object o) {
+        return versionInfos.remove(o);
     }
 
-    public boolean addAllArtifactsInfos(Collection<? extends ArtifactInfo> c) {
-        return artifactInfos.addAll(c);
+    public boolean addAlVersionInfos(Collection<? extends NBVersionInfo> c) {
+        return versionInfos.addAll(c);
     }
 
-    public boolean addArtifactInfo(ArtifactInfo e) {
-        return artifactInfos.add(e);
+    public boolean addVersionInfo(NBVersionInfo e) {
+        return versionInfos.add(e);
     }
 
-    public List<ArtifactInfo> getArtifactInfos() {
-        return new  ArrayList<ArtifactInfo>(artifactInfos);
+    public List<NBVersionInfo> getVersionInfos() {
+        return new  ArrayList<NBVersionInfo>(versionInfos);
     }
 
     public String getName() {

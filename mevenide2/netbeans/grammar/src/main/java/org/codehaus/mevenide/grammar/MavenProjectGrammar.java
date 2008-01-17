@@ -42,8 +42,9 @@ import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.codehaus.mevenide.indexer.CustomQueries;
 import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -269,20 +270,20 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
         }
         if (path.endsWith("dependencies/dependency/groupId")) { //NOI18N
-            try {
-                Set<String> elems = CustomQueries.retrieveGroupIds(virtualTextCtx.getCurrentPrefix());
+           
+                Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().
+                        filterPluginGroupIds(RepositoryPreferences.LOCAL_REPO_ID,virtualTextCtx.getCurrentPrefix());
                 ArrayList texts = new ArrayList();
                 for (String elem : elems) {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                 }
                 return Collections.enumeration(texts);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
+            
         }
         if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
             
-                Set<String> elems = CustomQueries.retrievePluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().
+                        filterPluginGroupIds(RepositoryPreferences.LOCAL_REPO_ID,virtualTextCtx.getCurrentPrefix());
                 elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
                 ArrayList texts = new ArrayList();
                 for (String elem : elems) {
@@ -302,8 +303,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
-                try {
-                    Set elems = CustomQueries.retrieveArtifactIdForGroupId(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+              
+                    Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().filterArtifactIdForGroupId(RepositoryPreferences.LOCAL_REPO_ID,hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
                     Iterator it = elems.iterator();
                     ArrayList texts = new ArrayList();
                     while (it.hasNext()) {
@@ -311,9 +312,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                         texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
                     }
                     return Collections.enumeration(texts);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                }
+               
             }
         }
         if (path.endsWith("plugins/plugin/artifactId")) { //NOI18N
@@ -328,7 +327,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
                 
-                    Set<String> elems = CustomQueries.retrievePluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().filterPluginArtifactIds(RepositoryPreferences.LOCAL_REPO_ID,hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
                     elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginArtifactIds(hold.getGroupId())));
                     ArrayList texts = new ArrayList();
                     for (String elem : elems) {
