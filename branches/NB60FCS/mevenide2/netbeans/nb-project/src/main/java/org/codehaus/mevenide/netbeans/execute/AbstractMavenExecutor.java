@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
@@ -56,6 +59,36 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
     private List<OutputListener> listeners = new ArrayList<OutputListener>();
 
     protected  ExecutorTask task;
+    private static final Set forbidden = new HashSet(); 
+
+    static {
+        forbidden.add("netbeans.logger.console"); //NOI18N
+        forbidden.add("java.util.logging.config.class"); //NOI18N
+        forbidden.add("netbeans.autoupdate.language"); //NOI18N
+        forbidden.add("netbeans.dirs"); //NOI18N
+        forbidden.add("netbeans.home"); //NOI18N
+        forbidden.add("sun.awt.exception.handler"); //NOI18N
+        forbidden.add("org.openide.TopManager.GUI"); //NOI18N
+        forbidden.add("org.openide.major.version"); //NOI18N
+        forbidden.add("netbeans.autoupdate.variant"); //NOI18N
+        forbidden.add("netbeans.dynamic.classpath"); //NOI18N
+        forbidden.add("netbeans.autoupdate.country"); //NOI18N
+        forbidden.add("netbeans.hash.code"); //NOI18N
+        forbidden.add("org.openide.TopManager"); //NOI18N
+        forbidden.add("org.openide.version"); //NOI18N
+        forbidden.add("netbeans.buildnumber"); //NOI18N
+        forbidden.add("javax.xml.parsers.DocumentBuilderFactory"); //NOI18N
+        forbidden.add("javax.xml.parsers.SAXParserFactory"); //NOI18N
+        forbidden.add("rave.build"); //NOI18N
+        forbidden.add("netbeans.accept_license_class"); //NOI18N
+        forbidden.add("rave.version"); //NOI18N
+        forbidden.add("netbeans.autoupdate.version"); //NOI18N
+        forbidden.add("netbeans.importclass"); //NOI18N
+        forbidden.add("netbeans.user"); //NOI18N
+//        forbidden.add("java.class.path");
+//        forbidden.add("https.nonProxyHosts");
+        
+    }
     
     public AbstractMavenExecutor(RunConfig conf) {
         super(conf.getExecutionName());
@@ -141,6 +174,19 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         rerun.setConfig(config);
         rerunDebug.setConfig(config);
         stop.setExecutor(this);
+    }
+    
+    protected final Properties excludeNetBeansProperties(Properties props) {
+        Properties toRet = new Properties();
+        Enumeration<String> en = (Enumeration<String>) props.propertyNames();
+        while (en.hasMoreElements()) {
+            String key = en.nextElement();
+            if (!forbidden.contains(key)) {
+                toRet.put(key, props.getProperty(key));
+            }
+            
+        }
+        return toRet;
     }
     
     @Override
