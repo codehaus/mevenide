@@ -219,22 +219,27 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         return getDefault();
     }
 
+    @Override
     public int getPersistenceType() {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
 
+    @Override
     public void componentOpened() {
         checkMode();
     }
 
+    @Override
     public void componentClosed() {
         manager.setRootContext(new AbstractNode(Children.LEAF));
     }
 
+    @Override
     protected void componentActivated() {
         ExplorerUtils.activateActions(manager, true);
     }
 
+    @Override
     protected void componentDeactivated() {
         ExplorerUtils.activateActions(manager, false);
     }
@@ -250,13 +255,15 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 
     }
 
+    @Override
     public boolean requestFocusInWindow() {
-        super.requestFocusInWindow();
+
         return btv.requestFocusInWindow();
     }
 
+    @Override
     public void requestFocus() {
-        super.requestFocus();
+
         btv.requestFocus();
     }
 
@@ -265,6 +272,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         return new ResolvableHelper();
     }
 
+    @Override
     protected String preferredID() {
         return PREFERRED_ID;
     }
