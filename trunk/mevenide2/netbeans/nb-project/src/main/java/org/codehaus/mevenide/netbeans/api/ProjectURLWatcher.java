@@ -34,6 +34,7 @@ import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
 import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
@@ -41,6 +42,7 @@ import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
 import org.openide.awt.StatusDisplayer;
+import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -235,6 +237,10 @@ public final class ProjectURLWatcher {
         //TODO is root folder refresh enough?
         // replace with FileUtil.refresh(File) once it gets into the netbeans.org codebase.
         project.getProjectDirectory().refresh();
+        FileObject fo = FileUtil.toFileObject(MavenSettingsSingleton.getInstance().getM2UserDir());
+        if (fo != null) {
+            fo.refresh();
+        }
         support.firePropertyChange(NbMavenProject.PROP_PROJECT, null, null);
     }
     

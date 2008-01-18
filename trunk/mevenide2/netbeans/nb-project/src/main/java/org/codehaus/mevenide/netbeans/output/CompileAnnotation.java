@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.openide.ErrorManager;
 import org.openide.cookies.EditorCookie;
 import org.openide.filesystems.FileObject;
@@ -85,7 +86,7 @@ public final class CompileAnnotation extends Annotation implements PropertyChang
      * @param ev the event describing the line
      */
     public void outputLineAction(OutputEvent ev) {
-        FileObject file = FileUtil.toFileObject(clazzfile);
+        FileObject file = FileUtilities.toFileObject(clazzfile);
         if (file == null) {
             Toolkit.getDefaultToolkit().beep();
             return;
