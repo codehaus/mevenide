@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
@@ -71,8 +72,8 @@ public class TestOutputListenerProvider implements OutputProcessor {
         failWindowsPattern1 = Pattern.compile("(?:\\[surefire\\] )?Tests run.*", Pattern.DOTALL); //NOI18N
         failWindowsPattern2 = Pattern.compile(".*[<]* FAILURE [!]*.*", Pattern.DOTALL); //NOI18N
         runningPattern = Pattern.compile("(?:\\[surefire\\] )?Running (.*)", Pattern.DOTALL); //NOI18N
-        outDirPattern = Pattern.compile("Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
-        outDirPattern2 = Pattern.compile("Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N
+        outDirPattern = Pattern.compile(".*Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
+        outDirPattern2 = Pattern.compile(".*Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N
     }
     
     public String[] getWatchedGoals() {
@@ -153,7 +154,9 @@ public class TestOutputListenerProvider implements OutputProcessor {
         public void outputLineAction(OutputEvent ev) {
             FileObject outDir = null;
             if (outputDir != null) {
-                outDir = FileUtil.toFileObject(new File(outputDir));
+                //TODO replace with FileUtil.refreshFile(File) in 6.1
+                File fl = FileUtil.normalizeFile(new File(outputDir));
+                outDir = FileUtilities.toFileObject(fl);
             } 
             if (outDir == null) {
                 LOG.info("Cannot find path " + outputDir + " to follow link in Output Window."); //NOI18N

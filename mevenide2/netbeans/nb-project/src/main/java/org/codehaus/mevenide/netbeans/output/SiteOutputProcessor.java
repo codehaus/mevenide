@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.output;
 
 import java.io.File;
 import java.net.URL;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.netbeans.api.project.Project;
@@ -75,7 +76,7 @@ public class SiteOutputProcessor implements OutputProcessor {
         
         public void outputLineAction(OutputEvent arg0) {
             File site = FileUtil.normalizeFile(root);
-            FileObject fo = FileUtil.toFileObject(site);
+            FileObject fo = FileUtilities.toFileObject(site);
             if (fo != null) {
                 FileObject index = fo.getFileObject("index.html"); //NOI18N
                 if (index != null) {

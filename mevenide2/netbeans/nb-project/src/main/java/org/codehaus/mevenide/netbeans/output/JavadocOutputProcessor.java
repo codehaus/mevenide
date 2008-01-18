@@ -21,6 +21,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.openide.awt.HtmlBrowser;
@@ -83,7 +84,7 @@ public class JavadocOutputProcessor implements OutputProcessor {
         
         public void outputLineAction(OutputEvent arg0) {
             File javadoc = FileUtil.normalizeFile(new File(root));
-            FileObject fo = FileUtil.toFileObject(javadoc);
+            FileObject fo = FileUtilities.toFileObject(javadoc);
             if (fo != null) {
                 FileObject index = fo.getFileObject("index.html"); //NOI18N
                 if (index != null) {

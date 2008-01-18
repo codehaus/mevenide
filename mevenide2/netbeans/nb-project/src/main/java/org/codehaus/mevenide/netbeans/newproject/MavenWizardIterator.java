@@ -150,7 +150,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             
             handle.progress(NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
             ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-            if (customCreator != null) {
+            if (customCreator != null && archetype.archetypeNg) {
                 customCreator.runArchetype(dirF.getParentFile(), wiz);
             } else {
                 final String art = (String)wiz.getProperty("artifactId"); //NOI18N

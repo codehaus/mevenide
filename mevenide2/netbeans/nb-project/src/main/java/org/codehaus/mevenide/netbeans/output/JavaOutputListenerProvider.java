@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.output;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.codehaus.mevenide.netbeans.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -60,7 +61,7 @@ public class JavaOutputListenerProvider implements OutputProcessor {
                 visitor.setOutputListener(new CompileAnnotation(clazz, lineNum, 
                         text), text.indexOf("[deprecation]") < 0); //NOI18N
                 File clazzfile = new File(clazz + ".java"); //NOI18N
-                FileObject file = FileUtil.toFileObject(FileUtil.normalizeFile(clazzfile));
+                FileObject file = FileUtilities.toFileObject(FileUtil.normalizeFile(clazzfile));
                 String newclazz = clazz;
                 if (file != null) {
                     Project prj = FileOwnerQuery.getOwner(file);
