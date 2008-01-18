@@ -286,7 +286,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                             },
                             bq);
                     for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        infos.addAll(convertToNBVersionInfo(aig.getArtifactInfos()));
+                        infos.addAll(convertToNBVersionInfo(artifactId,aig.getArtifactInfos()));
                     }
 
 
@@ -340,10 +340,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             MUTEX.readAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
+                    
                     BooleanQuery bq = new BooleanQuery();
-                    //    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.ARTIFACT_ID, (artifactId))), BooleanClause.Occur.MUST));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
 
@@ -352,8 +352,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 }
                             },
                             bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        infos.addAll(convertToNBVersionInfo(aig.getArtifactInfos()));
+                   for (ArtifactInfoGroup aig : searchGrouped.values()) {
+                        
+                        infos.addAll(convertToNBVersionInfo(artifactId,aig.getArtifactInfos()));
                     }
                     return null;
                 }
@@ -580,7 +581,15 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
 
     }
-
+ private List<NBVersionInfo> convertToNBVersionInfo(String filter,Collection<ArtifactInfo> artifactInfos) {
+        List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
+        for (ArtifactInfo ai : artifactInfos) {
+            if(filter.equals(ai.artifactId))
+            bVersionInfos.add(new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
+        }
+        return bVersionInfos;
+    }
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
         for (ArtifactInfo ai : artifactInfos) {
