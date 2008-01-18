@@ -1,12 +1,12 @@
 /*
  *  Copyright 2008 Anuradha.
- * 
+ *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
  *  You may obtain a copy of the License at
- * 
+ *
  *       http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -244,8 +244,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, prefix + "*")), BooleanClause.Occur.MUST));
+
+                    //bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.GROUP_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
                             new Comparator<String>() {
@@ -272,10 +273,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.ARTIFACT_ID, artifactId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.VERSION, version)), BooleanClause.Occur.MUST));
+                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.ARTIFACT_ID, (artifactId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.VERSION, (version))), BooleanClause.Occur.MUST));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
 
@@ -305,8 +306,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
+                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAGrouping(),
                             new Comparator<String>() {
 
@@ -332,6 +333,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return artifacts;
     }
 
+
     public List<NBVersionInfo> getVersions(final String repoId, final String groupId, final String artifactId) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         try {
@@ -339,9 +341,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.ARTIFACT_ID, artifactId)), BooleanClause.Occur.MUST));
+                    //    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.ARTIFACT_ID, (artifactId))), BooleanClause.Occur.MUST));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
 
@@ -388,8 +390,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.MD5, md5)), BooleanClause.Occur.SHOULD));
+                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.MD5, (md5))), BooleanClause.Occur.SHOULD));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
 
@@ -417,9 +419,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype")), BooleanClause.Occur.SHOULD));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.FNAME, "archetype-metadata.xml")), BooleanClause.Occur.SHOULD));
+                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-archetype"))), BooleanClause.Occur.SHOULD));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.FNAME, ("archetype-metadata.xml"))), BooleanClause.Occur.SHOULD));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
 
@@ -449,10 +451,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, prefix + "*")), BooleanClause.Occur.MUST));
+                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
                             new Comparator<String>() {
@@ -488,9 +491,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, prefix + "*")), BooleanClause.Occur.MUST));
+                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
                             new Comparator<String>() {
 
@@ -526,9 +530,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, prefix + "*")), BooleanClause.Occur.MUST));
+                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
                             new Comparator<String>() {
