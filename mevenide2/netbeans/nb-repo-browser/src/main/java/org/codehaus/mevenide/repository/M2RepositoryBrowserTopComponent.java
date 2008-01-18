@@ -267,6 +267,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btv.requestFocus();
     }
 
+    @Override
     /** replaces this in object stream */
     public Object writeReplace() {
         return new ResolvableHelper();
