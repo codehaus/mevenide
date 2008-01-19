@@ -21,6 +21,7 @@ import java.util.Collections;
 
 import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -83,7 +84,7 @@ public class GroupIdNode extends AbstractNode {
 
                 public void run() {
 
-                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts("local", id));
+                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(RepositoryPreferences.LOCAL_REPO_ID, id));
 
                 }
             });

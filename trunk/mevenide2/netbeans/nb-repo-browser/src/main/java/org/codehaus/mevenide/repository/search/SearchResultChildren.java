@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.GroupIdListChildren;
 import org.codehaus.mevenide.repository.VersionNode;
@@ -85,7 +86,7 @@ public class SearchResultChildren extends Children.Keys {
 
                 public void run() {
 
-                    sortOutKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions("local", groupId, artifactId));
+                    sortOutKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(RepositoryPreferences.LOCAL_REPO_ID, groupId, artifactId));
 
                 }
             });
