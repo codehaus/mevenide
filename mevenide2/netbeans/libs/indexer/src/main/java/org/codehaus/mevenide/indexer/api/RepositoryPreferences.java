@@ -25,7 +25,10 @@ import java.util.List;
  */
 public class RepositoryPreferences {
    public static final List<RepositoryInfo> DEFAULT=new  ArrayList<RepositoryPreferences.RepositoryInfo>(3);
-   public static final String LOCAL_REPO_ID="local";
+   /**
+    * index of local repository
+    */
+   public static final String LOCAL_REPO_ID = "local"; //NOI18N
    static {
     DEFAULT.add(new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null, true));
    

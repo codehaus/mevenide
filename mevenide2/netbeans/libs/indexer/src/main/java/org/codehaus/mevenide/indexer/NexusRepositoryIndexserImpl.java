@@ -18,11 +18,13 @@ package org.codehaus.mevenide.indexer;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
+import org.apache.lucene.document.Document;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -30,7 +32,9 @@ import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
@@ -58,8 +62,12 @@ import org.sonatype.nexus.index.GAGrouping;
 import org.sonatype.nexus.index.GAVGrouping;
 import org.sonatype.nexus.index.GGrouping;
 import org.sonatype.nexus.index.NexusIndexer;
+import org.sonatype.nexus.index.context.ArtifactIndexingContext;
 import org.sonatype.nexus.index.context.IndexingContext;
+import org.sonatype.nexus.index.creator.AbstractIndexCreator;
 import org.sonatype.nexus.index.creator.IndexCreator;
+import org.sonatype.nexus.index.creator.JarFileContentsIndexCreator;
+import org.sonatype.nexus.index.creator.MinimalArtifactInfoIndexCreator;
 
 /**
  *
@@ -69,6 +77,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
+    private static final String NB_ARTIFACT = "nba"; //NOI18N
+    
+    public static final List<? extends IndexCreator> NB_INDEX = Arrays.asList(
+        new MinimalArtifactInfoIndexCreator(),
+        new JarFileContentsIndexCreator(),
+        new NbIndexCreator());
+    
     /**
      * any reads, writes from/to index shal be done under mutex access.
      */
@@ -108,7 +123,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
 
                         RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
-                        List<? extends IndexCreator> indexers = NexusIndexer.FULL_INDEX;
                         indexingContext = indexer.addIndexingContext( //
                                 repoId, // context id
                                 repoId, // repository id
@@ -116,7 +130,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 indexDirectory, // index folder
                                 ri.getRepositoryUrl(), // repositoryUrl
                                 ri.getIndexUpdateUrl(), // index update url
-                                indexers);
+                                NB_INDEX);
                     }
                     indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
                     fireChangeIndex();
@@ -149,8 +163,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         //Deleting exsisting index
                         FileUtils.deleteDirectory(indexDirectory);
 
-
-                        List<? extends IndexCreator> indexers = NexusIndexer.FULL_INDEX;
                         RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
                         indexingContext = indexer.addIndexingContext( //
                                 repoId, // context id
@@ -159,7 +171,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 indexDirectory, // index folder
                                 ri.getRepositoryUrl(), // repositoryUrl
                                 ri.getIndexUpdateUrl(), // index update url
-                                indexers);
+                                NB_INDEX);
                     }
 
                     for (Artifact artifact : artifacts) {
@@ -198,8 +210,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         //Deleting exsisting index
                         FileUtils.deleteDirectory(indexDirectory);
 
-
-                        List<? extends IndexCreator> indexers = NexusIndexer.FULL_INDEX;
                         RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
                         indexingContext = indexer.addIndexingContext( //
                                 repoId, // context id
@@ -208,7 +218,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 indexDirectory, // index folder
                                 ri.getRepositoryUrl(), // repositoryUrl
                                 ri.getIndexUpdateUrl(), // index update url
-                                indexers);
+                                NB_INDEX);
                     }
 
                     String absolutePath = artifact.getFile().getAbsolutePath();
@@ -244,9 +254,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-
-                    //bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.GROUP_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
+                    //bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
                             new Comparator<String>() {
@@ -273,23 +282,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.ARTIFACT_ID, (artifactId))), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.VERSION, (version))), BooleanClause.Occur.MUST));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
+                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.ARTIFACT_ID, QueryParser.escape(artifactId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.VERSION, QueryParser.escape(version))), BooleanClause.Occur.MUST));
+                    Collection<ArtifactInfo> searchGrouped = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR,
                             bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        infos.addAll(convertToNBVersionInfo(artifactId,aig.getArtifactInfos()));
-                    }
-
-
+                    infos.addAll(convertToNBVersionInfo(searchGrouped));
                     return null;
                 }
             });
@@ -306,23 +305,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-
-                        Set<ArtifactInfo> artifactInfos = aig.getArtifactInfos();
-                        for (ArtifactInfo artifactInfo : artifactInfos) {
-                            artifacts.add(artifactInfo.artifactId);
-                        }
-
+                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    for (ArtifactInfo artifactInfo : search) {
+                        artifacts.add(artifactInfo.artifactId);
                     }
                     return null;
                 }
@@ -342,20 +329,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                   for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        
-                        infos.addAll(convertToNBVersionInfo(artifactId,aig.getArtifactInfos()));
-                    }
+                    //    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(NB_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
+                    Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    infos.addAll(convertToNBVersionInfo(searchResult));
                     return null;
                 }
             });
@@ -393,17 +371,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     BooleanQuery bq = new BooleanQuery();
                     // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.MD5, (md5))), BooleanClause.Occur.SHOULD));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        infos.addAll(convertToNBVersionInfo(aig.getArtifactInfos()));
-                    }
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    infos.addAll(convertToNBVersionInfo(search));
                     return null;
                 }
             });
@@ -421,19 +390,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
                     // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-archetype"))), BooleanClause.Occur.SHOULD));
-                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.FNAME, ("archetype-metadata.xml"))), BooleanClause.Occur.SHOULD));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-                        infos.addAll(convertToNBVersionInfo(aig.getArtifactInfos()));
-                    }
+                    bq.add(new BooleanClause((new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype"))), BooleanClause.Occur.MUST));
+//doesn't list files in index                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.FNAME, ("archetype-metadata.xml"))), BooleanClause.Occur.SHOULD));
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    infos.addAll(convertToNBVersionInfo(search));
                     return null;
                 }
             });
@@ -452,27 +412,14 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
+                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(NB_ARTIFACT, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GAVGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-
-                        Set<ArtifactInfo> artifactInfos = aig.getArtifactInfos();
-                        for (ArtifactInfo artifactInfo : artifactInfos) {
-                            artifacts.add(artifactInfo.artifactId);
-                        }
-
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    for (ArtifactInfo artifactInfo : search) {
+                        artifacts.add(artifactInfo.artifactId);
                     }
                     return null;
                 }
@@ -492,25 +439,12 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    //  bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
+                    //  bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-
-                        Set<ArtifactInfo> artifactInfos = aig.getArtifactInfos();
-                        for (ArtifactInfo artifactInfo : artifactInfos) {
-                            artifacts.add(artifactInfo.artifactId);
-                        }
-
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    for (ArtifactInfo artifactInfo : search) {
+                        artifacts.add(artifactInfo.artifactId);
                     }
 
                     return null;
@@ -531,25 +465,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                    // bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, (groupId))), BooleanClause.Occur.MUST));
-                    bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.ARTIFACT_ID, (prefix) + "*")), BooleanClause.Occur.MUST));
+                    // bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new WildcardQuery(new Term(NB_ARTIFACT, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
-                    Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
-                            new Comparator<String>() {
-
-                                public int compare(String o1, String o2) {
-                                    return o1.compareTo(o2);
-                                }
-                            },
-                            bq);
-                    for (ArtifactInfoGroup aig : searchGrouped.values()) {
-
-                        Set<ArtifactInfo> artifactInfos = aig.getArtifactInfos();
-                        for (ArtifactInfo artifactInfo : artifactInfos) {
-                            artifacts.add(artifactInfo.artifactId);
-                        }
-
+                    Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    for (ArtifactInfo artifactInfo : search) {
+                        artifacts.add(artifactInfo.artifactId);
                     }
                     return null;
                 }
@@ -597,5 +519,19 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
         }
         return bVersionInfos;
+    }
+    
+    private static class NbIndexCreator extends AbstractIndexCreator {
+
+        public boolean updateArtifactInfo(IndexingContext ctx, Document d, ArtifactInfo artifactInfo) {
+            return false;
+        }
+
+        public void updateDocument(ArtifactIndexingContext context, Document doc) throws IOException {
+            ArtifactInfo ai = context.getArtifactContext().getArtifactInfo();
+            doc.add( new Field( NB_ARTIFACT, ai.artifactId, Field.Store.NO, Field.Index.UN_TOKENIZED ) );
+            //TODO add dependencies?
+        }
+        
     }
 }
