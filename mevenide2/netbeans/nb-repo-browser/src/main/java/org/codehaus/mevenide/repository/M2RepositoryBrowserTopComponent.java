@@ -26,6 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
 
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
@@ -153,7 +154,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-                RepositoryUtil.getDefaultRepositoryIndexer().indexRepo("local");
+                RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {

@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -60,12 +61,9 @@ public class GroupIdListChildren extends Children.Keys {
         super.addNotify();
         setKeys(Collections.singletonList(LOADING));
         RequestProcessor.getDefault().post(new Runnable() {
-
             public void run() {
-
-                keys = new ArrayList(RepositoryUtil.getDefaultRepositoryIndexer().getGroups("local"));
+                keys = new ArrayList(RepositoryUtil.getDefaultRepositoryIndexer().getGroups(RepositoryPreferences.LOCAL_REPO_ID));
                 setKeys(keys);
-
             }
         });
     }
