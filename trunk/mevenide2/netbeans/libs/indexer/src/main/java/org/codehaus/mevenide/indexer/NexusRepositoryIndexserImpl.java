@@ -52,18 +52,16 @@ import org.codehaus.plexus.DefaultPlexusContainer;
 import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
-import org.codehaus.plexus.util.FileUtils;
 import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
 import org.sonatype.nexus.index.ArtifactInfo;
 import org.sonatype.nexus.index.ArtifactInfoGroup;
-import org.sonatype.nexus.index.GAGrouping;
-import org.sonatype.nexus.index.GAVGrouping;
 import org.sonatype.nexus.index.GGrouping;
 import org.sonatype.nexus.index.NexusIndexer;
 import org.sonatype.nexus.index.context.ArtifactIndexingContext;
 import org.sonatype.nexus.index.context.IndexingContext;
+import org.sonatype.nexus.index.context.UnsupportedExistingLuceneIndexException;
 import org.sonatype.nexus.index.creator.AbstractIndexCreator;
 import org.sonatype.nexus.index.creator.IndexCreator;
 import org.sonatype.nexus.index.creator.JarFileContentsIndexCreator;
@@ -78,12 +76,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     private ArtifactRepository repository;
     private NexusIndexer indexer;
     private static final String NB_ARTIFACT = "nba"; //NOI18N
-    
     public static final List<? extends IndexCreator> NB_INDEX = Arrays.asList(
-        new MinimalArtifactInfoIndexCreator(),
-        new JarFileContentsIndexCreator(),
-        new NbIndexCreator());
-    
+            new MinimalArtifactInfoIndexCreator(),
+            new JarFileContentsIndexCreator(),
+            new NbIndexCreator());
     /**
      * any reads, writes from/to index shal be done under mutex access.
      */
@@ -97,6 +93,37 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
             indexer = (NexusIndexer) embedder.lookup(NexusIndexer.class);
+            //local repo Context
+            final File repoDirectory = new File(repository.getBasedir());
+            final File indexDirectory = new File(getDefaultIndexLocation(),
+                    RepositoryPreferences.LOCAL_REPO_ID);
+            RepositoryInfo ri = RepositoryPreferences.LOCAL;
+            indexer.addIndexingContext( //
+                    RepositoryPreferences.LOCAL_REPO_ID, // context id
+                    RepositoryPreferences.LOCAL_REPO_ID, // repository id
+                    repoDirectory, // repository folder
+                    indexDirectory, // index folder
+                    ri.getRepositoryUrl(), // repositoryUrl
+                    ri.getIndexUpdateUrl(), // index update url
+                    NB_INDEX);
+
+
+            //other repos 
+            List<RepositoryInfo> infos = RepositoryPreferences.getRepositoryInfos();
+            for (RepositoryInfo info : infos) {
+                indexer.addIndexingContext( //
+                        info.getId(), // context id
+                        info.getId(), // repository id
+                        null, // repository folder
+                        new File(getDefaultIndexLocation(), info.getId()), // index folder
+                        info.getRepositoryUrl(), // repositoryUrl
+                        info.getIndexUpdateUrl(), // index update url
+                        NB_INDEX);
+            }
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (UnsupportedExistingLuceneIndexException ex) {
+            Exceptions.printStackTrace(ex);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
         } catch (PlexusContainerException ex) {
@@ -112,26 +139,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
-
-                        final File repoDirectory = new File(repository.getBasedir());
-                        final File indexDirectory = new File(getDefaultIndexLocation(), repoId);
-
-
-                        //Deleting exsisting index
-                        FileUtils.deleteDirectory(indexDirectory);
-
-
-
-                        RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
-                        indexingContext = indexer.addIndexingContext( //
-                                repoId, // context id
-                                repoId, // repository id
-                                repoDirectory, // repository folder
-                                indexDirectory, // index folder
-                                ri.getRepositoryUrl(), // repositoryUrl
-                                ri.getIndexUpdateUrl(), // index update url
-                                NB_INDEX);
+                        //do nothing
+                        return null;
                     }
+
                     indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
                     fireChangeIndex();
                     return null;
@@ -155,24 +166,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
-
-                        final File repoDirectory = new File(repository.getBasedir());
-                        final File indexDirectory = new File(getDefaultIndexLocation(), repoId);
-
-
-                        //Deleting exsisting index
-                        FileUtils.deleteDirectory(indexDirectory);
-
-                        RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
-                        indexingContext = indexer.addIndexingContext( //
-                                repoId, // context id
-                                repoId, // repository id
-                                repoDirectory, // repository folder
-                                indexDirectory, // index folder
-                                ri.getRepositoryUrl(), // repositoryUrl
-                                ri.getIndexUpdateUrl(), // index update url
-                                NB_INDEX);
+                        //do nothing
+                        return null;
                     }
+
 
                     for (Artifact artifact : artifacts) {
                         String absolutePath = artifact.getFile().getAbsolutePath();
@@ -202,24 +199,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
-
-                        final File repoDirectory = new File(repository.getBasedir());
-                        final File indexDirectory = new File(getDefaultIndexLocation(), repoId);
-
-
-                        //Deleting exsisting index
-                        FileUtils.deleteDirectory(indexDirectory);
-
-                        RepositoryInfo ri = RepositoryPreferences.getRepositoryInfoById(repoId);
-                        indexingContext = indexer.addIndexingContext( //
-                                repoId, // context id
-                                repoId, // repository id
-                                repoDirectory, // repository folder
-                                indexDirectory, // index folder
-                                ri.getRepositoryUrl(), // repositoryUrl
-                                ri.getIndexUpdateUrl(), // index update url
-                                NB_INDEX);
+                        //do nothing
+                        return null;
                     }
+
 
                     String absolutePath = artifact.getFile().getAbsolutePath();
                     String extension = artifact.getArtifactHandler().getExtension();
@@ -320,14 +303,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return artifacts;
     }
 
-
     public List<NBVersionInfo> getVersions(final String repoId, final String groupId, final String artifactId) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         try {
             MUTEX.readAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
-                    
+
                     BooleanQuery bq = new BooleanQuery();
                     //    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
@@ -503,15 +485,18 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
 
     }
- private List<NBVersionInfo> convertToNBVersionInfo(String filter,Collection<ArtifactInfo> artifactInfos) {
+
+    private List<NBVersionInfo> convertToNBVersionInfo(String filter, Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
         for (ArtifactInfo ai : artifactInfos) {
-            if(filter.equals(ai.artifactId))
-            bVersionInfos.add(new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
-                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
+            if (filter.equals(ai.artifactId)) {
+                bVersionInfos.add(new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+                        ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
+            }
         }
         return bVersionInfos;
     }
+
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
         for (ArtifactInfo ai : artifactInfos) {
@@ -520,7 +505,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
         return bVersionInfos;
     }
-    
+
     private static class NbIndexCreator extends AbstractIndexCreator {
 
         public boolean updateArtifactInfo(IndexingContext ctx, Document d, ArtifactInfo artifactInfo) {
@@ -529,9 +514,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
         public void updateDocument(ArtifactIndexingContext context, Document doc) throws IOException {
             ArtifactInfo ai = context.getArtifactContext().getArtifactInfo();
-            doc.add( new Field( NB_ARTIFACT, ai.artifactId, Field.Store.NO, Field.Index.UN_TOKENIZED ) );
-            //TODO add dependencies?
+            doc.add(new Field(NB_ARTIFACT, ai.artifactId, Field.Store.NO, Field.Index.UN_TOKENIZED));
+        //TODO add dependencies?
         }
-        
     }
 }
