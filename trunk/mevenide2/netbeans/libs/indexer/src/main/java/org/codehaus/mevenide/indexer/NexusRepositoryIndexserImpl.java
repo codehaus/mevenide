@@ -55,6 +55,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
+import org.sonatype.nexus.index.ArtifactAvailablility;
 import org.sonatype.nexus.index.ArtifactInfo;
 import org.sonatype.nexus.index.ArtifactInfoGroup;
 import org.sonatype.nexus.index.GGrouping;
@@ -500,8 +501,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
         for (ArtifactInfo ai : artifactInfos) {
-            bVersionInfos.add(new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
-                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
+            NBVersionInfo nbvi=new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
+            /*Javadoc & Sources*/
+            nbvi.setJavadocExists(ai.javadocExists==ArtifactAvailablility.PRESENT);
+            nbvi.setSourcesExists(ai.sourcesExists==ArtifactAvailablility.PRESENT);
+            nbvi.setSignatureExists(ai.signatureExists==ArtifactAvailablility.PRESENT);
+            bVersionInfos.add(nbvi);
         }
         return bVersionInfos;
     }
