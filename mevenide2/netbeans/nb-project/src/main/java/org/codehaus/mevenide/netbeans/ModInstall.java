@@ -69,7 +69,7 @@ public class ModInstall extends ModuleInstall {
                     public void run() {
                         RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
                     }
-                });
+                },MILIS_IN_MIN*2);
             }
         }
     }
