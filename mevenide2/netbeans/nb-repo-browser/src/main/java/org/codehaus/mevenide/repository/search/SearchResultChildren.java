@@ -16,10 +16,7 @@
  */
 package org.codehaus.mevenide.repository.search;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
@@ -36,18 +33,8 @@ import org.openide.util.RequestProcessor;
  */
 public class SearchResultChildren extends Children.Keys {
 
-    private List<NBVersionInfo> keys;
-    private ArrayList<NBVersionInfo> mainkeys;
-    private ArrayList<NBVersionInfo> attachedkeys;
     private String artifactId;
     private String groupId;
-
-    /**
-     * Creates a new instance of SearchResultChildren from search results.
-     */
-    public SearchResultChildren(List<NBVersionInfo> results) {
-        keys = results;
-    }
 
     /**
      * creates a new instance of SearchResultChildren from browsing interface
@@ -62,50 +49,27 @@ public class SearchResultChildren extends Children.Keys {
             return new Node[]{GroupIdListChildren.createLoadingNode()};
         }
         NBVersionInfo record = (NBVersionInfo) key;
-        Iterator<NBVersionInfo> it = attachedkeys.iterator();
-        boolean hasSources = false;
-        boolean hasJavadoc = false;
-        while (it.hasNext() && (!hasJavadoc || !hasSources)) {
-            NBVersionInfo elem = it.next();
-            if (elem.getGroupId().equals(record.getGroupId()) &&
-                    elem.getArtifactId().equals(record.getArtifactId()) &&
-                    elem.getVersion().equals(record.getVersion())) {
-                hasSources = hasSources || "sources".equals(elem.getClassifier());
-                hasJavadoc = hasJavadoc || "javadoc".equals(elem.getClassifier());
-            }
-        }
+
+        boolean hasSources = record.isSourcesExists();
+        boolean hasJavadoc = record.isJavadocExists();
+
         return new Node[]{new VersionNode(record, hasJavadoc, hasSources, groupId != null)};
     }
 
     @Override
     protected void addNotify() {
         super.addNotify();
-        if (keys == null) {
-            setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
-            RequestProcessor.getDefault().post(new Runnable() {
 
-                public void run() {
+        setKeys(Collections.singletonList(GroupIdListChildren.LOADING));
+        RequestProcessor.getDefault().post(new Runnable() {
 
-                    sortOutKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(RepositoryPreferences.LOCAL_REPO_ID, groupId, artifactId));
+            public void run() {
 
-                }
-            });
-        } else {
-            sortOutKeys(keys);
-        }
-    }
+                setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(RepositoryPreferences.LOCAL_REPO_ID, groupId, artifactId));
 
-    private void sortOutKeys(List<NBVersionInfo> keys) {
-        mainkeys = new ArrayList<NBVersionInfo>(keys.size());
-        attachedkeys = new ArrayList<NBVersionInfo>(keys.size());
-        for (NBVersionInfo record : keys) {
-            if (record.getClassifier() != null && (record.getClassifier().equals("javadoc") || record.getClassifier().equals("sources"))) {
-                attachedkeys.add(record);
-            } else {
-                mainkeys.add(record);
             }
-        }
-        setKeys(mainkeys);
+        });
+
     }
 
     @Override

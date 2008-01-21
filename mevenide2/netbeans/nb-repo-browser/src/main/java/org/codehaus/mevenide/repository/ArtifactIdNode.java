@@ -46,9 +46,8 @@ public class ArtifactIdNode extends AbstractNode {
             protected Node[] createNodes(NBVersionInfo arg0) {
 
 
-                return new Node[]{new VersionNode(arg0,
-                    "javadoc".equals(arg0.getClassifier()),
-                    "sources".equals(arg0.getClassifier()), arg0.getGroupId() != null)
+                return new Node[]{new VersionNode(arg0,arg0.isJavadocExists(),
+                    arg0.isSourcesExists(), arg0.getGroupId() != null)
                 };
             }
 
