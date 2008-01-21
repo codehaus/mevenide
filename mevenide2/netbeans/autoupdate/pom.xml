@@ -3,12 +3,12 @@
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
-        <version>3.0.9</version>
+        <version>3.0.10</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>autoupdate</artifactId>
     <packaging>nbm</packaging>
-    <version>3.0.9</version>
+    <version>3.0.10</version>
     <name>NetBeans Maven2 autoupdate site</name>
     <description>Autoupdate server for Mevenide 2.0, the support for Maven2.</description>
     <dependencies>
