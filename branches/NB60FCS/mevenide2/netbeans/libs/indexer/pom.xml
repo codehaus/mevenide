@@ -3,14 +3,14 @@
   <parent>
     <artifactId>netbeans-libs</artifactId>
     <groupId>org.codehaus.mevenide</groupId>
-    <version>3.0.9</version>
+    <version>3.0.10</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.codehaus.mevenide</groupId>
   <artifactId>indexer</artifactId>
   <packaging>nbm</packaging>
   <name>Maven NetBeans Module indexer</name>
-  <version>3.0.9</version>
+  <version>3.0.10</version>
   <repositories>
       <repository>
           <!-- needed to get plexus container snapshot-->
