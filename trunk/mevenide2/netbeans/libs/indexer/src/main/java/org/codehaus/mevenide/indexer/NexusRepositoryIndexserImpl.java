@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -41,6 +42,9 @@ import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
@@ -76,7 +80,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
+    //
     private static final String NB_ARTIFACT = "nba"; //NOI18N
+    private static final String NB_DEPENDENCY_GROUP = "nbdg"; //NOI18N
+    private static final String NB_DEPENDENCY_ARTIFACT = "nbda"; //NOI18N
+    private static final String NB_DEPENDENCY_VERTION = "nbdv"; //NOI18N
     public static final List<? extends IndexCreator> NB_INDEX = Arrays.asList(
             new MinimalArtifactInfoIndexCreator(),
             new JarFileContentsIndexCreator(),
@@ -326,9 +334,27 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public List<NBGroupInfo> findDependencyUsage(String repoId, String groupId, String artifactId, String version) {
-        //need to find methode to do this in nexus
-        return new ArrayList<NBGroupInfo>(0);
+    public List<NBGroupInfo> findDependencyUsage(String repoId, final String groupId, final String artifactId, final String version) {
+        final List<NBGroupInfo> infos = new ArrayList<NBGroupInfo>();
+        try {
+            MUTEX.readAccess(new Mutex.ExceptionAction() {
+
+                public Object run() throws Exception {
+
+                    BooleanQuery bq = new BooleanQuery();
+                    //    bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.REPOSITORY, repoId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_GROUP, groupId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
+                    bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERTION, version)), BooleanClause.Occur.MUST));
+                    Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                    infos.addAll(convertToNBGroupInfo(searchResult));
+                    return null;
+                }
+            });
+        } catch (MutexException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return infos;
     }
 
     public List<NBVersionInfo> findByMD5(String repoId, File file) {
@@ -487,16 +513,49 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     }
 
+    private List<NBGroupInfo> convertToNBGroupInfo(Collection<ArtifactInfo> artifactInfos) {
+        List<NBGroupInfo> groupInfos = new ArrayList<NBGroupInfo>();
+
+        //tempmaps
+        Map<String, NBGroupInfo> groupMap = new HashMap<String, NBGroupInfo>();
+        Map<String, NBArtifactInfo> artifactMap = new HashMap<String, NBArtifactInfo>();
+        for (ArtifactInfo ai : artifactInfos) {
+            String groupId = ai.groupId;
+            String artId = ai.artifactId;
+
+
+            NBGroupInfo ug = groupMap.get(groupId);
+            if (ug == null) {
+                ug = new NBGroupInfo(groupId);
+                groupInfos.add(ug);
+                groupMap.put(groupId, ug);
+            }
+            NBArtifactInfo ua = artifactMap.get(artId);
+            if (ua == null) {
+                ua = new NBArtifactInfo(artId);
+                ug.addArtifactInfo(ua);
+                artifactMap.put(artId, ua);
+            }
+            NBVersionInfo nbvi = new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
+            /*Javadoc & Sources*/
+            nbvi.setJavadocExists(ai.javadocExists == ArtifactAvailablility.PRESENT);
+            nbvi.setSourcesExists(ai.sourcesExists == ArtifactAvailablility.PRESENT);
+            nbvi.setSignatureExists(ai.signatureExists == ArtifactAvailablility.PRESENT);
+        }
+        return groupInfos;
+
+    }
 
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
         for (ArtifactInfo ai : artifactInfos) {
-            NBVersionInfo nbvi=new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+            NBVersionInfo nbvi = new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
                     ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
             /*Javadoc & Sources*/
-            nbvi.setJavadocExists(ai.javadocExists==ArtifactAvailablility.PRESENT);
-            nbvi.setSourcesExists(ai.sourcesExists==ArtifactAvailablility.PRESENT);
-            nbvi.setSignatureExists(ai.signatureExists==ArtifactAvailablility.PRESENT);
+            nbvi.setJavadocExists(ai.javadocExists == ArtifactAvailablility.PRESENT);
+            nbvi.setSourcesExists(ai.sourcesExists == ArtifactAvailablility.PRESENT);
+            nbvi.setSignatureExists(ai.signatureExists == ArtifactAvailablility.PRESENT);
             bVersionInfos.add(nbvi);
         }
         return bVersionInfos;
@@ -511,7 +570,22 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         public void updateDocument(ArtifactIndexingContext context, Document doc) throws IOException {
             ArtifactInfo ai = context.getArtifactContext().getArtifactInfo();
             doc.add(new Field(NB_ARTIFACT, ai.artifactId, Field.Store.NO, Field.Index.UN_TOKENIZED));
-        //TODO add dependencies?
+            NBVersionInfo nbvi = new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
+                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
+            Artifact artifact = RepositoryUtil.createArtifact(nbvi);
+            if (artifact != null) {
+                MavenProject mp = RepositoryUtil.readMavenProject(artifact);
+                if (mp != null) {
+                    List<Dependency> dependencies = mp.getDependencies();
+                    for (Dependency d : dependencies) {
+                        doc.add(new Field(NB_DEPENDENCY_GROUP, d.getGroupId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                        doc.add(new Field(NB_DEPENDENCY_ARTIFACT, d.getArtifactId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                        doc.add(new Field(NB_DEPENDENCY_VERTION, d.getVersion(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+
+                    }
+
+                }
+            }
         }
     }
 }
