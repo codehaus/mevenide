@@ -14,10 +14,18 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.codehaus.mevenide.indexer;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 import org.sonatype.nexus.index.ArtifactContext;
 import org.sonatype.nexus.index.ArtifactInfo;
 import org.sonatype.nexus.index.ArtifactScanningListener;
@@ -29,110 +37,97 @@ import org.sonatype.nexus.index.scan.ScanningResult;
  *
  * @author Anuradha G
  */
-public class RepositoryIndexerListener implements ArtifactScanningListener
-    {
-        private final IndexingContext indexingContext;
+public class RepositoryIndexerListener implements ArtifactScanningListener {
 
-        private final NexusIndexer nexusIndexer;
+    private final IndexingContext indexingContext;
+    private final NexusIndexer nexusIndexer;
+    private long tstart;
 
+    private int count;
+    private InputOutput io;
+    OutputWriter writer;
+    RepositoryInfo repositoryInfoById;
+    ProgressHandle handle;
+    public RepositoryIndexerListener(NexusIndexer nexusIndexer, IndexingContext indexingContext) {
+        this.indexingContext = indexingContext;
+        this.nexusIndexer = nexusIndexer;
+        repositoryInfoById = RepositoryPreferences.getRepositoryInfoById(indexingContext.getId());
+        io = IOProvider.getDefault().getIO("Indexing" +repositoryInfoById.getName(), true);
+        writer = io.getOut();
+        
+    }
 
+    public void scanningStarted(IndexingContext ctx) {
+         handle = ProgressHandleFactory.createHandle("Indexing Repo   : " + repositoryInfoById.getName());
+        writer.println("Indexing Repo   : " + repositoryInfoById.getName());
+        writer.println("Index Directory : " + ctx.getIndexDirectory().toString());
+        writer.println("--------------------------------------------------------");
+        writer.println("Scanning started at " + SimpleDateFormat.getInstance().format(new Date()));
+        handle.start();
+        handle.switchToIndeterminate();
+        tstart = System.currentTimeMillis();
+    }
 
+    public void artifactDiscovered(ArtifactContext ac) {
+        count++;
 
-        private long tstart;
+        long t = System.currentTimeMillis();
 
-        private long ts = System.currentTimeMillis();
+        ArtifactInfo ai = ac.getArtifactInfo();
 
-        private int count;
-
-       public  RepositoryIndexerListener( NexusIndexer nexusIndexer, IndexingContext indexingContext)
-        {
-            this.indexingContext = indexingContext;
-            this.nexusIndexer = nexusIndexer;
-          
-         
-        }
-
-        public void scanningStarted( IndexingContext ctx )
-        {
-            System.err.println( "Scanning started" );
-            tstart = System.currentTimeMillis();
-        }
-
-      
-        public void artifactDiscovered( ArtifactContext ac )
-        {
-            count++;
-
-            long t = System.currentTimeMillis();
-
-            ArtifactInfo ai = ac.getArtifactInfo();
-
-            if ( "maven-plugin".equals( ai.packaging ) )
-            {
-                System.err.printf( "Plugin: %s:%s:%s - %s %s\n", //
+        if ("maven-plugin".equals(ai.packaging)) {
+            writer.printf("Plugin: %s:%s:%s - %s %s\n", //
                     ai.groupId,
                     ai.artifactId,
                     ai.version,
                     ai.prefix,
-                    "" + ai.goals );
-            }
-
-            if ( ( t - ts ) > 500L )
-            {
-                // ArtifactInfo ai = ac.getArtifactInfo();
-                System.err.printf( "  %6d %s\n", count, formatFile( ac.getPom() ) );
-                ts = t;
-            }
+                    "" + ai.goals);
         }
 
         
-        public void artifactError( ArtifactContext ac, Exception e )
-        {
-            System.err.printf( "! %6d %s - %s\n", count, formatFile( ac.getPom() ), e.getMessage() );
+            // ArtifactInfo ai = ac.getArtifactInfo();
+            writer.printf("  %6d %s\n", count, formatFile(ac.getPom()));
+            handle.progress(ac.getArtifactInfo().toString());
+        
+    }
 
-            System.err.printf( "         %s\n", formatFile( ac.getArtifact() ) );
+    public void artifactError(ArtifactContext ac, Exception e) {
+        writer.printf("! %6d %s - %s\n", count, formatFile(ac.getPom()), e.getMessage());
 
-//            if ( debug )
-//            {
-//                e.printStackTrace();
-//            }
+        writer.printf("         %s\n", formatFile(ac.getArtifact()));
+        e.printStackTrace(writer);
 
-            ts = System.currentTimeMillis();
+       
+    }
+
+    private String formatFile(File file) {
+        return file.getAbsolutePath().substring(indexingContext.getRepository().getAbsolutePath().length() + 1);
+    }
+
+    public void scanningFinished(IndexingContext ctx, ScanningResult result) {
+        writer.println("Scanning ended at " + SimpleDateFormat.getInstance().format(new Date()));
+       
+        if (result.hasExceptions()) {
+            writer.printf("Total scanning errors: %s\n", result.getExceptions().size());
         }
 
-        private String formatFile( File file )
-        {
-            return file.getAbsolutePath().substring( indexingContext.getRepository().getAbsolutePath().length() + 1 );
+        writer.printf("Total files scanned: %s\n", result.getTotalFiles());
+
+        long t = System.currentTimeMillis() - tstart;
+
+        long s = t / 1000L;
+
+        if (t > 60 * 1000) {
+            long m = t / 1000L / 60L;
+
+            writer.printf("Total time: %d min %d sec\n", m, s - (m * 60));
+        } else {
+            writer.printf("Total time: %d sec\n", s);
+
         }
+        handle.finish();
 
-   
-        public void scanningFinished( IndexingContext ctx, ScanningResult result )
-        {
-            if ( result.hasExceptions() )
-            {
-                System.err.printf( "Total scanning errors: %s\n", result.getExceptions().size() );
-            }
-
-            System.err.printf( "Total files scanned: %s\n", result.getTotalFiles() );
-
-            long t = System.currentTimeMillis() - tstart;
-
-            long s = t / 1000L;
-
-            if ( t > 60 * 1000 )
-            {
-                long m = t / 1000L / 60L;
-
-                System.err.printf( "Total time: %d min %d sec\n", m, s - ( m * 60 ) );
-            }
-            else
-            {
-                System.err.printf( "Total time: %d sec\n", s );
-
-            }
-
-           
-        }
+    }
 }
 
        
