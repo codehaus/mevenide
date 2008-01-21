@@ -21,15 +21,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.event.ChangeListener;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.apache.maven.extension.ExtensionScanningException;
+import org.apache.maven.project.InvalidProjectModelException;
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
@@ -48,11 +50,11 @@ public final class RepositoryUtil {
     }
 
     public static Artifact createArtifact(NBVersionInfo info) {
-        return createArtifact(info,  null);
+        return createArtifact(info, null);
     }
 
     public static Artifact createJavadocArtifact(NBVersionInfo info) {
-        return createArtifact(info,  "javadoc"); //NOI18N
+        return createArtifact(info, "javadoc"); //NOI18N
     }
 
     private static Artifact createArtifact(NBVersionInfo info, String classifier) {
@@ -81,22 +83,22 @@ public final class RepositoryUtil {
     public static String calculateChecksum(File file) throws NoSuchAlgorithmException, IOException {
         byte[] buffer = readFile(file);
 
-            String md5sum = DigestUtils.md5Hex(buffer);
-            
-            return md5sum;
+        String md5sum = DigestUtils.md5Hex(buffer);
+
+        return md5sum;
     }
-  
-     static byte[] readFile(File file) throws IOException {
+
+    static byte[] readFile(File file) throws IOException {
 
         InputStream is = new FileInputStream(file);
 
-        byte[] bytes = new byte[(int)file.length()];
+        byte[] bytes = new byte[(int) file.length()];
 
         int offset = 0;
         int numRead = 0;
 
         while (offset < bytes.length &&
-            (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
+                (numRead = is.read(bytes, offset, bytes.length - offset)) >= 0) {
 
             offset += numRead;
         }
@@ -104,5 +106,35 @@ public final class RepositoryUtil {
         is.close();
 
         return bytes;
+    }
+
+    public static MavenProject readMavenProject(Artifact artifact) {
+        MavenProject mavenProject = null;
+
+        String absolutePath = artifact.getFile().getAbsolutePath();
+        String extension = artifact.getArtifactHandler().getExtension();
+
+        String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
+        pomPath += "pom";//NOI18N
+        File file = new File(pomPath);
+        if (file.exists()) {
+            try {
+
+                mavenProject = EmbedderFactory.getProjectEmbedder().
+                        readProject(file);
+
+            } catch (InvalidProjectModelException ex) {
+                //ignore nexus is falling ???
+            } catch (ProjectBuildingException ex) {
+               // Exceptions.printStackTrace(ex);
+            } catch (ExtensionScanningException ex) {
+                //Exceptions.printStackTrace(ex);
+            }catch (Exception exception) {
+                //Exceptions.printStackTrace(exception);
+            }
+
+        }
+
+        return mavenProject;
     }
 }
