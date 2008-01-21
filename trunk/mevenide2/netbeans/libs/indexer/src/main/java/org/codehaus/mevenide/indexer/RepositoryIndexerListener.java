@@ -42,27 +42,32 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     private final IndexingContext indexingContext;
     private final NexusIndexer nexusIndexer;
     private long tstart;
-
+    private boolean debug;
     private int count;
     private InputOutput io;
-    OutputWriter writer;
-    RepositoryInfo repositoryInfoById;
-    ProgressHandle handle;
+    private OutputWriter writer;
+    private RepositoryInfo repositoryInfoById;
+    private ProgressHandle handle;
+
     public RepositoryIndexerListener(NexusIndexer nexusIndexer, IndexingContext indexingContext) {
         this.indexingContext = indexingContext;
         this.nexusIndexer = nexusIndexer;
-        repositoryInfoById = RepositoryPreferences.getRepositoryInfoById(indexingContext.getId());
-        io = IOProvider.getDefault().getIO("Indexing " +repositoryInfoById.getName(), true);
-        writer = io.getOut();
-        
+        if (debug) {
+            repositoryInfoById = RepositoryPreferences.getRepositoryInfoById(indexingContext.getId());
+
+            io = IOProvider.getDefault().getIO("Indexing " + repositoryInfoById.getName(), true);
+            writer = io.getOut();
+        }
     }
 
     public void scanningStarted(IndexingContext ctx) {
-         handle = ProgressHandleFactory.createHandle("Indexing Repo   : " + repositoryInfoById.getName());
-        writer.println("Indexing Repo   : " + repositoryInfoById.getName());
-        writer.println("Index Directory : " + ctx.getIndexDirectory().toString());
-        writer.println("--------------------------------------------------------");
-        writer.println("Scanning started at " + SimpleDateFormat.getInstance().format(new Date()));
+        handle = ProgressHandleFactory.createHandle("Indexing Repo   : " + repositoryInfoById.getName());
+        if (debug) {
+            writer.println("Indexing Repo   : " + repositoryInfoById.getName());
+            writer.println("Index Directory : " + ctx.getIndexDirectory().toString());
+            writer.println("--------------------------------------------------------");
+            writer.println("Scanning started at " + SimpleDateFormat.getInstance().format(new Date()));
+        }
         handle.start();
         handle.switchToIndeterminate();
         tstart = System.currentTimeMillis();
@@ -71,33 +76,35 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     public void artifactDiscovered(ArtifactContext ac) {
         count++;
 
-        long t = System.currentTimeMillis();
 
         ArtifactInfo ai = ac.getArtifactInfo();
 
-        if ("maven-plugin".equals(ai.packaging)) {
-            writer.printf("Plugin: %s:%s:%s - %s %s\n", //
-                    ai.groupId,
-                    ai.artifactId,
-                    ai.version,
-                    ai.prefix,
-                    "" + ai.goals);
-        }
+        if (debug) {
+            if ("maven-plugin".equals(ai.packaging)) {
+                writer.printf("Plugin: %s:%s:%s - %s %s\n", //
+                        ai.groupId,
+                        ai.artifactId,
+                        ai.version,
+                        ai.prefix,
+                        "" + ai.goals);
+            }
 
-        
+
             // ArtifactInfo ai = ac.getArtifactInfo();
             writer.printf("  %6d %s\n", count, formatFile(ac.getPom()));
-            handle.progress(ac.getArtifactInfo().toString());
-        
+        }
+        handle.progress(ac.getArtifactInfo().toString());
+
     }
 
     public void artifactError(ArtifactContext ac, Exception e) {
-        writer.printf("! %6d %s - %s\n", count, formatFile(ac.getPom()), e.getMessage());
+        if (debug) {
+            writer.printf("! %6d %s - %s\n", count, formatFile(ac.getPom()), e.getMessage());
 
-        writer.printf("         %s\n", formatFile(ac.getArtifact()));
-        e.printStackTrace(writer);
+            writer.printf("         %s\n", formatFile(ac.getArtifact()));
+            e.printStackTrace(writer);
+        }
 
-       
     }
 
     private String formatFile(File file) {
@@ -105,25 +112,27 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     }
 
     public void scanningFinished(IndexingContext ctx, ScanningResult result) {
-        writer.println("Scanning ended at " + SimpleDateFormat.getInstance().format(new Date()));
-       
-        if (result.hasExceptions()) {
-            writer.printf("Total scanning errors: %s\n", result.getExceptions().size());
-        }
+        if (debug) {
+            writer.println("Scanning ended at " + SimpleDateFormat.getInstance().format(new Date()));
 
-        writer.printf("Total files scanned: %s\n", result.getTotalFiles());
+            if (result.hasExceptions()) {
+                writer.printf("Total scanning errors: %s\n", result.getExceptions().size());
+            }
 
-        long t = System.currentTimeMillis() - tstart;
+            writer.printf("Total files scanned: %s\n", result.getTotalFiles());
 
-        long s = t / 1000L;
+            long t = System.currentTimeMillis() - tstart;
 
-        if (t > 60 * 1000) {
-            long m = t / 1000L / 60L;
+            long s = t / 1000L;
 
-            writer.printf("Total time: %d min %d sec\n", m, s - (m * 60));
-        } else {
-            writer.printf("Total time: %d sec\n", s);
+            if (t > 60 * 1000) {
+                long m = t / 1000L / 60L;
 
+                writer.printf("Total time: %d min %d sec\n", m, s - (m * 60));
+            } else {
+                writer.printf("Total time: %d sec\n", s);
+
+            }
         }
         handle.finish();
 
