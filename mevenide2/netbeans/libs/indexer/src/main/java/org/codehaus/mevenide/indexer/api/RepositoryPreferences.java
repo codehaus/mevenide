@@ -24,24 +24,32 @@ import java.util.List;
  * @author Anuradha G
  */
 public class RepositoryPreferences {
-   public static final List<RepositoryInfo> DEFAULT=new  ArrayList<RepositoryPreferences.RepositoryInfo>(3);
-   /**
-    * index of local repository
-    */
-   public static final String LOCAL_REPO_ID = "local"; //NOI18N
-   static {
-    DEFAULT.add(new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null, true));
-   
-   }
+
+    public static final RepositoryInfo LOCAL;
+    /**
+     * index of local repository
+     */
+    public static final String LOCAL_REPO_ID = "local";
     
-    
+
+    static {
+        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null, true);
+    }
+
     public static RepositoryInfo getRepositoryInfoById(String id) {
         //first check on default
-        for (RepositoryInfo info : DEFAULT) {
-            if(info.id.equals(id))return info;
+
+        if (LOCAL.id.equals(id)) {
+            return LOCAL;
         }
 
+
         return null;
+    }
+
+    public static List<RepositoryInfo> getRepositoryInfos() {
+        //currunly empty but to be added 
+        return new ArrayList<RepositoryPreferences.RepositoryInfo>();
     }
 
     public static class RepositoryInfo {
@@ -61,7 +69,7 @@ public class RepositoryPreferences {
 
         }
 
-        private  RepositoryInfo(String id, String name, String repositoryUrl,
+        private RepositoryInfo(String id, String name, String repositoryUrl,
                 String indexUpdateUrl, boolean system) {
             this.id = id;
             this.name = name;
@@ -69,12 +77,11 @@ public class RepositoryPreferences {
             this.indexUpdateUrl = indexUpdateUrl;
             this.system = system;
         }
-        
+
         public String getId() {
             return id;
         }
 
-      
         public String getIndexUpdateUrl() {
             return indexUpdateUrl;
         }
@@ -83,11 +90,8 @@ public class RepositoryPreferences {
             return name;
         }
 
-     
         public String getRepositoryUrl() {
             return repositoryUrl;
         }
-
-       
     }
 }
