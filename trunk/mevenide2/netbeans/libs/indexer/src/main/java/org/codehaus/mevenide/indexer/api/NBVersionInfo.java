@@ -31,6 +31,11 @@ public class NBVersionInfo {
     private String classifier;
     private String ProjectDescription;
     private String repoId;
+    
+    //-----
+    private boolean sourcesExists;
+    private boolean javadocExists;
+    private boolean signatureExists;
 
   public   NBVersionInfo(String repoId,String groupId, String artifactId, String version,
             String type, String packaging, String projectName,String ProjectDescription,String classifier) {
@@ -47,6 +52,30 @@ public class NBVersionInfo {
 
     public String getRepoId() {
         return repoId;
+    }
+
+    public boolean isJavadocExists() {
+        return javadocExists;
+    }
+
+    public void setJavadocExists(boolean javadocExists) {
+        this.javadocExists = javadocExists;
+    }
+
+    public boolean isSignatureExists() {
+        return signatureExists;
+    }
+
+    public void setSignatureExists(boolean signatureExists) {
+        this.signatureExists = signatureExists;
+    }
+
+    public boolean isSourcesExists() {
+        return sourcesExists;
+    }
+
+    public void setSourcesExists(boolean sourcesExists) {
+        this.sourcesExists = sourcesExists;
     }
     
   
