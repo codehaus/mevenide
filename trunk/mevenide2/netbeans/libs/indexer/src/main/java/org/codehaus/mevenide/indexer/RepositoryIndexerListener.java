@@ -52,7 +52,7 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
         this.indexingContext = indexingContext;
         this.nexusIndexer = nexusIndexer;
         repositoryInfoById = RepositoryPreferences.getRepositoryInfoById(indexingContext.getId());
-        io = IOProvider.getDefault().getIO("Indexing" +repositoryInfoById.getName(), true);
+        io = IOProvider.getDefault().getIO("Indexing " +repositoryInfoById.getName(), true);
         writer = io.getOut();
         
     }
