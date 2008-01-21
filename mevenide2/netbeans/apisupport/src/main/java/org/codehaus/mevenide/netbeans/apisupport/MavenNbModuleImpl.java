@@ -124,7 +124,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         }
         MavenProject prj = project.getLookup().lookup(ProjectURLWatcher.class).getMavenProject();
         //same fallback is in nbm-maven-plugin
-        return prj.getGroupId() + "." + prj.getArtifact(); //NOI18N
+        return prj.getGroupId() + "." + prj.getArtifactId(); //NOI18N
     }
 
     public String getSourceDirectoryPath() {
@@ -230,6 +230,9 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                 }
             }
         }
+        if (dep.getVersion() == null) {
+            dep.setVersion("RELEASE60"); //NOI18N
+        }
         
         FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
         Model model = WriterUtils.loadModel(fo); //NOI18N
@@ -238,6 +241,8 @@ public class MavenNbModuleImpl implements NbModuleProvider {
             mdlDep.setVersion(dep.getVersion());
             try {
                 WriterUtils.writePomModel(fo, model);
+                ProjectURLWatcher.fireMavenProjectReload(project);
+                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
