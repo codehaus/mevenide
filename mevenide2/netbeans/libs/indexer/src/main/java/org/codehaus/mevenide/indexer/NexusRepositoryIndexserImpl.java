@@ -487,16 +487,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     }
 
-    private List<NBVersionInfo> convertToNBVersionInfo(String filter, Collection<ArtifactInfo> artifactInfos) {
-        List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
-        for (ArtifactInfo ai : artifactInfos) {
-            if (filter.equals(ai.artifactId)) {
-                bVersionInfos.add(new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
-                        ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier));
-            }
-        }
-        return bVersionInfos;
-    }
 
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
