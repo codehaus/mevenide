@@ -294,6 +294,8 @@ public final class EmbedderFactory {
         }
         Configuration req = new DefaultConfiguration();
         req.setClassWorld(world);
+        req.setMavenEmbedderLogger(logger);
+        
         //TODO remove explicit activation
         req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
         File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
@@ -341,7 +343,6 @@ public final class EmbedderFactory {
         MavenEmbedder embedder = null;
         try {
             embedder = new MavenEmbedder(req);
-            embedder.setLogger(logger);
         } catch (MavenEmbedderException e) {
             ErrorManager.getDefault().notify(e);
         }
