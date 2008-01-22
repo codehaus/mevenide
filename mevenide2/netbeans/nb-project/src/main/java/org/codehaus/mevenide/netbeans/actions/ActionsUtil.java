@@ -22,6 +22,7 @@ import org.apache.maven.extension.ExtensionScanningException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.reactor.MavenExecutionException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.util.Exceptions;
 
@@ -53,6 +54,8 @@ public class ActionsUtil {
             } catch (ProjectBuildingException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (ExtensionScanningException ex) {
+                Exceptions.printStackTrace(ex);
+            } catch (MavenExecutionException ex) {
                 Exceptions.printStackTrace(ex);
             }
 
