@@ -18,6 +18,19 @@
             <version>2.1-20080122</version>
             <classifier>mevenide</classifier>
         </dependency>
+	<dependency> <!-- WTF this needs to be added to pull the right version
+        of plexus for compilation - MEVENIDE-594  obviously the price to pay for using the latest and greatest of maven embedders..-->
+	    <groupId>org.codehaus.plexus</groupId>
+	    <artifactId>plexus-container-default</artifactId>
+	    <version>1.0-alpha-43</version>
+	    <scope>provided</scope>
+	</dependency> 
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>1.4.5</version>
+	    <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>jdom</groupId>
             <artifactId>jdom</artifactId>
