@@ -65,7 +65,7 @@ public class GraphDocumentFactory {
     }
     
     private static void generate(ArtifactResolutionResult res, DependencyGraphScene scene) {
-        Map<ResolutionNode, ArtifactGraphNode> cache = new HashMap<ResolutionNode, ArtifactGraphNode>();
+        Map<Artifact, ArtifactGraphNode> cache = new HashMap<Artifact, ArtifactGraphNode>();
         Set<ResolutionNode> nodes = res.getArtifactResolutionNodes();
         Artifact root = res.getOriginatingArtifact();
         ResolutionNode nd1 = new ResolutionNode(root, new ArrayList());
@@ -97,11 +97,11 @@ public class GraphDocumentFactory {
         }
     }
     
-        private static ArtifactGraphNode getNode(ResolutionNode art, Map<ResolutionNode, ArtifactGraphNode> cache, DependencyGraphScene scene) {
-            ArtifactGraphNode nd = cache.get(art);
+        private static ArtifactGraphNode getNode(ResolutionNode art, Map<Artifact, ArtifactGraphNode> cache, DependencyGraphScene scene) {
+            ArtifactGraphNode nd = cache.get(art.getArtifact());
             if (nd == null) {
                 nd = new ArtifactGraphNode(art);
-                cache.put(art, nd);
+                cache.put(art.getArtifact(), nd);
                 scene.addNode(nd);
             }
             return nd;
