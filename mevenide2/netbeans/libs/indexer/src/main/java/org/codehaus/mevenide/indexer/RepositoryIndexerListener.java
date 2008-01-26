@@ -16,7 +16,11 @@
  */
 package org.codehaus.mevenide.indexer;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
@@ -134,9 +138,51 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
 
             }
         }
+        createIndexArchive();
         handle.finish();
 
     }
+    
+    
+    private void createIndexArchive()
+        {
+            //File indexArchive = new File( indexingContext.getId() + ".zip" );
+            File indexArchive = new File( indexingContext.getIndexDirectoryFile(),"nexus-maven-repository-index.zip" );
+
+            OutputStream os = null;
+
+            try
+            {
+                os = new BufferedOutputStream( new FileOutputStream( indexArchive ), 4096 );
+
+                nexusIndexer.packIndex( indexingContext.getIndexDirectory(), os );
+            }
+            catch ( IOException e )
+            {
+                System.err.println( "Unable to create index archive; " + e.getMessage() );
+
+                if ( debug )
+                {
+                    e.printStackTrace();
+                }
+            }
+            finally
+            {
+                if ( os != null )
+                {
+                    try
+                    {
+                        os.close();
+                    }
+                    catch ( IOException e )
+                    {
+                        System.err.println( "Unable to close zip output stream; " + e.getMessage() );
+                    }
+                }
+            }
+
+            System.err.printf( "Index archive size: %.2f Mb\n", ( indexArchive.length() / 1024f / 1024f ) );
+        }
 }
 
        
