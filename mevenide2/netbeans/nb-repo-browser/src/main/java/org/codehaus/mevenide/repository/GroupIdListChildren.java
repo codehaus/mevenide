@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.repository;
 
+import java.awt.Image;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -37,7 +39,14 @@ public class GroupIdListChildren extends Children.Keys {
     public static final Object LOADING = new Object();
 
     public static Node createLoadingNode() {
-        AbstractNode nd = new AbstractNode(Children.LEAF);
+        AbstractNode nd = new AbstractNode(Children.LEAF){
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/codehaus/mevenide/repository/wait.gif");
+            }
+         
+        };
         nd.setName("Loading"); //NOI18N
         nd.setDisplayName(NbBundle.getMessage(GroupIdListChildren.class, "Node_Loading"));
         return nd;
