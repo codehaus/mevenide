@@ -26,30 +26,50 @@ import java.util.List;
 public class RepositoryPreferences {
 
     public static final RepositoryInfo LOCAL;
+    private static  RepositoryPreferences instance;
+    
     /**
      * index of local repository
      */
     public static final String LOCAL_REPO_ID = "local";
+    private List<RepositoryPreferences.RepositoryInfo> repositoryInfos=
+            new  ArrayList<RepositoryPreferences.RepositoryInfo>();
     
-
     static {
-        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null, true);
+        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null);
     }
 
-    public static RepositoryInfo getRepositoryInfoById(String id) {
+    private  RepositoryPreferences() {
+        //todo add central
+        //repositoryInfos.add(new RepositoryInfo("Central", "Central", "http://repo1.maven.org/maven2/", "http://repo1.maven.org/maven2/"));
+    }
+
+    public synchronized static RepositoryPreferences getInstance() {
+        if(instance==null)
+        {
+         instance=new RepositoryPreferences();
+        }
+        return instance;
+    }
+
+    
+    public  RepositoryInfo getRepositoryInfoById(String id) {
         //first check on default
 
         if (LOCAL.id.equals(id)) {
             return LOCAL;
         }
+        for (RepositoryInfo ri : repositoryInfos) {
+          if(ri.getId().equals(id))return ri;
+        }
+
 
 
         return null;
     }
 
-    public static List<RepositoryInfo> getRepositoryInfos() {
-        //currunly empty but to be added 
-        return new ArrayList<RepositoryPreferences.RepositoryInfo>();
+    public  List<RepositoryInfo> getRepositoryInfos() {
+               return repositoryInfos;
     }
 
     public static class RepositoryInfo {
@@ -58,7 +78,7 @@ public class RepositoryPreferences {
         private String name;
         private String repositoryUrl;
         private String indexUpdateUrl;
-        private boolean system;
+        private boolean remote;
 
         public RepositoryInfo(String id, String name, String repositoryUrl,
                 String indexUpdateUrl) {
@@ -70,12 +90,12 @@ public class RepositoryPreferences {
         }
 
         private RepositoryInfo(String id, String name, String repositoryUrl,
-                String indexUpdateUrl, boolean system) {
+                String indexUpdateUrl, boolean remote) {
             this.id = id;
             this.name = name;
             this.repositoryUrl = repositoryUrl;
             this.indexUpdateUrl = indexUpdateUrl;
-            this.system = system;
+            this.remote = remote;
         }
 
         public String getId() {
@@ -93,5 +113,10 @@ public class RepositoryPreferences {
         public String getRepositoryUrl() {
             return repositoryUrl;
         }
+
+        public boolean isRemote() {
+            return remote;
+        }
+        
     }
 }
