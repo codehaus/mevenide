@@ -118,7 +118,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
 
             //other repos 
-            List<RepositoryInfo> infos = RepositoryPreferences.getRepositoryInfos();
+            List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
             for (RepositoryInfo info : infos) {
                 indexer.addIndexingContext( //
                         info.getId(), // context id
