@@ -158,7 +158,15 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         return null;
                     }
                     if (info.isRemote()) {
-                        remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, new RemoteIndexTransferListener(info));
+                        RemoteIndexTransferListener listener=new RemoteIndexTransferListener(info);
+                        try {
+                            remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, listener);
+
+                        } catch (IOException iOException) {
+                            //handle index not found
+                            listener.transferCompleted(null);
+                        }
+
                     } else {
                         indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
                         unloadIndexingContext(repoId);
