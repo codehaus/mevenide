@@ -20,6 +20,7 @@ import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
 
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;
@@ -36,15 +37,16 @@ import org.openide.util.Utilities;
 /**
  *
  * @author mkleint
+ * @author Anuradha
  */
 public class VersionNode extends AbstractNode {
 
     private NBVersionInfo record;
     private boolean hasJavadoc;
     private boolean hasSources;
-
-    public static Children createChildren(NBVersionInfo record) {
-        if (!"pom".equals(record.getType())) { //NOI18N
+    private RepositoryInfo info;
+    public static Children createChildren(RepositoryInfo info,NBVersionInfo record) {
+        if (!info.isRemote() && !"pom".equals(record.getType())) { //NOI18N
             try {
                 Artifact art = RepositoryUtil.createArtifact(record);
                 FileObject fo = FileUtil.toFileObject(art.getFile());
@@ -60,8 +62,9 @@ public class VersionNode extends AbstractNode {
     }
 
     /** Creates a new instance of VersionNode */
-    public VersionNode(NBVersionInfo versionInfo, boolean javadoc, boolean source, boolean dispNameShort) {
-        super(createChildren(versionInfo));
+    public VersionNode(RepositoryInfo info,NBVersionInfo versionInfo, boolean javadoc, boolean source, boolean dispNameShort) {
+        super(createChildren(info,versionInfo));
+        this.info = info;
         hasJavadoc = javadoc;
         hasSources = source;
         this.record = versionInfo;
@@ -76,6 +79,7 @@ public class VersionNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
+        if(info.isRemote())super.getActions(context);
         Artifact artifact = RepositoryUtil.createArtifact(record);
         Action[] retValue;
 
