@@ -40,8 +40,12 @@ public class RepositoryPreferences {
     }
 
     private  RepositoryPreferences() {
-        //todo add central
-        //repositoryInfos.add(new RepositoryInfo("Central", "Central", "http://repo1.maven.org/maven2/", "http://repo1.maven.org/maven2/"));
+        //add local 
+        repositoryInfos.add(LOCAL);
+        // add central
+        repositoryInfos.add(new RepositoryInfo("central", "Central ",
+                "http://repo1.maven.org/maven2/",
+                "file:///D:/_temp/central/"/*Change this to real index url*/,true));
     }
 
     public synchronized static RepositoryPreferences getInstance() {

@@ -19,6 +19,7 @@ package org.codehaus.mevenide.repository;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.io.Serializable;
+import java.util.List;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
@@ -27,6 +28,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
 
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
@@ -154,7 +156,12 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-                RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
+                List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
+                for (RepositoryInfo ri : infos) {
+                    RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(ri.getId());
+                }
+
+
                 SwingUtilities.invokeLater(new Runnable() {
 
                     public void run() {
@@ -280,7 +287,13 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     }
 
     private Node createRootNode() {
-        return new AbstractNode(new GroupIdListChildren());
+        Children.Array array = new Children.Array();
+        List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
+        for (RepositoryInfo ri : infos) {
+            array.add(new Node[]{new RepositoryNode(ri)});
+        }
+
+        return new AbstractNode(array);
     }
 
     public void showSearchResults(Node root) {

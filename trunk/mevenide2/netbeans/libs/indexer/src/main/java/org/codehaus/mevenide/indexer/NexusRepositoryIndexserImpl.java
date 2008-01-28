@@ -66,11 +66,11 @@ import org.sonatype.nexus.index.GGrouping;
 import org.sonatype.nexus.index.NexusIndexer;
 import org.sonatype.nexus.index.context.ArtifactIndexingContext;
 import org.sonatype.nexus.index.context.IndexingContext;
-import org.sonatype.nexus.index.context.UnsupportedExistingLuceneIndexException;
 import org.sonatype.nexus.index.creator.AbstractIndexCreator;
 import org.sonatype.nexus.index.creator.IndexCreator;
 import org.sonatype.nexus.index.creator.JarFileContentsIndexCreator;
 import org.sonatype.nexus.index.creator.MinimalArtifactInfoIndexCreator;
+import org.sonatype.nexus.index.updater.IndexUpdater;
 
 /**
  *
@@ -80,6 +80,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
+    private IndexUpdater remoteIndexUpdater;
     //
     private static final String NB_ARTIFACT = "nba"; //NOI18N
     private static final String NB_DEPENDENCY_GROUP = "nbdg"; //NOI18N
@@ -102,7 +103,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
             indexer = (NexusIndexer) embedder.lookup(NexusIndexer.class);
-            
+            remoteIndexUpdater=(IndexUpdater) embedder.lookup(IndexUpdater.class);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
         } catch (PlexusContainerException ex) {
@@ -149,17 +150,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
+                    RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoId);
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
-                    if (indexingContext == null) {
+                    if (info == null || indexingContext == null) {
                         //do nothing
                         return null;
                     }
-
-                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
-                    unloadIndexingContext(repoId);
+                    if (info.isRemote()) {
+                        remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, new RemoteIndexTransferListener(info));
+                    } else {
+                        indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+                        unloadIndexingContext(repoId);
+                    }
                     fireChangeIndex();
-                    
+
                     return null;
                 }
             });
@@ -195,7 +200,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         File pom = new File(pomPath);
 
                         indexer.addArtifactToIndex(pom, indexingContext);
-                        
+
                     }
                     unloadIndexingContext(repoId);
                     fireChangeIndex();
@@ -257,7 +262,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
                     BooleanQuery bq = new BooleanQuery();
-                    
+
                     bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
@@ -332,7 +337,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
-                   
+
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
@@ -357,8 +362,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
 
                     BooleanQuery bq = new BooleanQuery();
-                   loadIndexingContext(repoId);
-                   bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_GROUP, groupId)), BooleanClause.Occur.MUST));
+                    loadIndexingContext(repoId);
+                    bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_GROUP, groupId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERTION, version)), BooleanClause.Occur.MUST));
                     Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
@@ -415,8 +420,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
-                   loadIndexingContext(repoId);
-                   bq.add(new BooleanClause((new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype"))), BooleanClause.Occur.MUST));
+                    loadIndexingContext(repoId);
+                    bq.add(new BooleanClause((new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype"))), BooleanClause.Occur.MUST));
 //doesn't list files in index                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.FNAME, ("archetype-metadata.xml"))), BooleanClause.Occur.SHOULD));
                     Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                     infos.addAll(convertToNBVersionInfo(search));

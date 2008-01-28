@@ -2,7 +2,7 @@ package org.codehaus.mevenide.repository.search;
 
 import java.util.List;
 
-import org.codehaus.mevenide.repository.GroupIdNode;
+import org.codehaus.mevenide.repository.GroupNode;
 import org.codehaus.mevenide.repository.M2RepositoryBrowserTopComponent;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -33,7 +33,7 @@ public final class SearchAction extends CallableSystemAction {
 //
 //            @Override
 //            protected Node[] createNodes(GroupInfo ug) {
-//                return new Node[]{new GroupIdNode(ug)};
+//                return new Node[]{new GroupNode(ug)};
 //            }
 //
 //            @Override
