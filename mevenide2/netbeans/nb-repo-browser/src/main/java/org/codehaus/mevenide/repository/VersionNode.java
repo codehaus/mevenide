@@ -79,9 +79,19 @@ public class VersionNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean context) {
-        if(info.isRemote())super.getActions(context);
-        Artifact artifact = RepositoryUtil.createArtifact(record);
+       Artifact artifact = RepositoryUtil.createArtifact(record);
         Action[] retValue;
+        if(info.isRemote()){
+             retValue = new Action[]{
+            new AddAsDependencyAction(artifact),
+            null,
+            CommonArtifactActions.createViewProjectHomeAction(artifact),
+            CommonArtifactActions.createViewBugTrackerAction(artifact),
+            CommonArtifactActions.createSCMActions(artifact)
+        };
+        
+        }else{
+        
 
         retValue = new Action[]{
             new AddAsDependencyAction(artifact),
@@ -93,6 +103,7 @@ public class VersionNode extends AbstractNode {
             CommonArtifactActions.createViewBugTrackerAction(artifact),
             CommonArtifactActions.createSCMActions(artifact)
         };
+        }
         return retValue;
     }
 
