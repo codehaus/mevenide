@@ -29,9 +29,7 @@ import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
-import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.openide.util.Exceptions;
 import org.openide.util.Lookup;
 
 /**
