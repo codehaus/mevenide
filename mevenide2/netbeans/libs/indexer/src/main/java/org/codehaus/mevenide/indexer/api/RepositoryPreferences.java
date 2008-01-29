@@ -43,7 +43,7 @@ public class RepositoryPreferences {
         //add local 
         repositoryInfos.add(LOCAL);
         // add central
-        repositoryInfos.add(new RepositoryInfo("central", "Central ",
+        repositoryInfos.add(new RepositoryInfo("central", "Central Repository ",
                 "http://repo1.maven.org/maven2/",
                 "file:///D:/_temp/central/"/*Change this to real index url*/,true));
     }
