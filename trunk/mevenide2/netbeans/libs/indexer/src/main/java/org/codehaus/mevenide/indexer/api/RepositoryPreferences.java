@@ -58,11 +58,6 @@ public class RepositoryPreferences {
 
     
     public  RepositoryInfo getRepositoryInfoById(String id) {
-        //first check on default
-
-        if (LOCAL.id.equals(id)) {
-            return LOCAL;
-        }
         for (RepositoryInfo ri : repositoryInfos) {
           if(ri.getId().equals(id))return ri;
         }
