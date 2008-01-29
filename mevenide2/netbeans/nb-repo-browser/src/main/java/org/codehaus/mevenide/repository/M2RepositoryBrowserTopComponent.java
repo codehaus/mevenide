@@ -30,9 +30,11 @@ import javax.swing.text.DefaultEditorKit;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.repository.local.CreateCustomIndexUI;
 import org.codehaus.mevenide.repository.search.SearchAction;
 import org.codehaus.mevenide.repository.search.SearchPanel;
 import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.ExplorerUtils;
@@ -80,12 +82,15 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/FindInRepo.png"))); //NOI18N
         btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.png"))); //NOI18N
         btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refreshRepo.png"))); //NOI18N
+        btnCreateCustom.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/newIndex.png"))); //NOI18N
         btnSearch.setText(null);
         btnBack.setText(null);
         btnIndex.setText(null);
+        btnCreateCustom.setText(null);
         btnBack.setMargin(new Insets(1, 1, 1, 1));
         btnSearch.setMargin(new Insets(1, 1, 1, 1));
         btnIndex.setMargin(new Insets(1, 1, 1, 1));
+        btnCreateCustom.setMargin(new Insets(1, 1, 1, 1));
         RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
@@ -112,6 +117,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnBack = new javax.swing.JButton();
         btnSearch = new javax.swing.JButton();
         btnIndex = new javax.swing.JButton();
+        btnCreateCustom = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
@@ -148,6 +154,18 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
             }
         });
         jToolBar1.add(btnIndex);
+
+        btnCreateCustom.setText("Cretate CustomIndex");
+        btnCreateCustom.setToolTipText(org.openide.util.NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "LBL_Custom_Index", new Object[] {})); // NOI18N
+        btnCreateCustom.setFocusable(false);
+        btnCreateCustom.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnCreateCustom.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnCreateCustom.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCreateCustomActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnCreateCustom);
 
         add(jToolBar1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
@@ -188,8 +206,38 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         }
         
     }//GEN-LAST:event_btnSearchActionPerformed
+
+private void btnCreateCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateCustomActionPerformed
+final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
+    DialogDescriptor dd = new DialogDescriptor(cciui, NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "LBL_Custom_Index"));
+        dd.setClosingOptions(new Object[]{
+            cciui.getIndexButton(),
+            DialogDescriptor.CANCEL_OPTION
+        });
+        dd.setOptions(new Object[]{
+             cciui.getIndexButton(),
+            DialogDescriptor.CANCEL_OPTION
+        });
+        Object ret = DialogDisplayer.getDefault().notify(dd);
+        if ( cciui.getIndexButton() == ret) {
+           btnCreateCustom.setEnabled(false);
+            RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+               cciui.doIndex();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        btnCreateCustom.setEnabled(true);
+                    }
+                });
+            }
+        });
+        }
+}//GEN-LAST:event_btnCreateCustomActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBack;
+    private javax.swing.JButton btnCreateCustom;
     private javax.swing.JButton btnIndex;
     private javax.swing.JButton btnSearch;
     private javax.swing.JSeparator jSeparator1;

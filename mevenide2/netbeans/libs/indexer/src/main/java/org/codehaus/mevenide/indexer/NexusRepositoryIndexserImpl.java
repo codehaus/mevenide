@@ -103,7 +103,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
             indexer = (NexusIndexer) embedder.lookup(NexusIndexer.class);
-            remoteIndexUpdater=(IndexUpdater) embedder.lookup(IndexUpdater.class);
+            remoteIndexUpdater = (IndexUpdater) embedder.lookup(IndexUpdater.class);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
         } catch (PlexusContainerException ex) {
@@ -158,7 +158,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         return null;
                     }
                     if (info.isRemote()) {
-                        RemoteIndexTransferListener listener=new RemoteIndexTransferListener(info);
+                        RemoteIndexTransferListener listener = new RemoteIndexTransferListener(info);
                         try {
                             remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, listener);
 
@@ -173,6 +173,37 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     }
                     fireChangeIndex();
 
+                    return null;
+                }
+            });
+        } catch (MutexException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+
+    }
+
+    public void indexRepo(final String repoId, final File repoDir, final File indexDir) {
+        try {
+            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+
+                public Object run() throws Exception {
+                    IndexingContext indexingContext = indexer.addIndexingContext( //
+                            repoId, // context id
+                            repoId, // repository id
+                            repoDir, // repository folder
+                            new File(indexDir, repoId), // index folder
+                            null, // repositoryUrl
+                            null, // index update url
+                            NB_INDEX);
+
+
+                    if (indexingContext == null) {
+                        //do nothing
+                        return null;
+                    }
+
+                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+                    indexer.removeIndexingContext(indexingContext, false);
                     return null;
                 }
             });
