@@ -50,24 +50,24 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     private int count;
     private InputOutput io;
     private OutputWriter writer;
-    private RepositoryInfo repositoryInfoById;
+    private RepositoryInfo ri;
     private ProgressHandle handle;
 
     public RepositoryIndexerListener(NexusIndexer nexusIndexer, IndexingContext indexingContext) {
         this.indexingContext = indexingContext;
         this.nexusIndexer = nexusIndexer;
-         repositoryInfoById = RepositoryPreferences.getInstance().getRepositoryInfoById(indexingContext.getId());
+         ri = RepositoryPreferences.getInstance().getRepositoryInfoById(indexingContext.getId());
 
         if (debug) {
-            io = IOProvider.getDefault().getIO("Indexing " + repositoryInfoById.getName(), true);
+            io = IOProvider.getDefault().getIO("Indexing " +(ri!=null? ri.getName():indexingContext.getId()), true);
             writer = io.getOut();
         }
     }
 
     public void scanningStarted(IndexingContext ctx) {
-        handle = ProgressHandleFactory.createHandle("Indexing Repo   : " + repositoryInfoById.getName());
+        handle = ProgressHandleFactory.createHandle("Indexing Repo   : " + (ri!=null? ri.getName() : indexingContext.getId()));
         if (debug) {
-            writer.println("Indexing Repo   : " + repositoryInfoById.getName());
+            writer.println("Indexing Repo   : " + (ri!=null? ri.getName():ctx.getId()));
             writer.println("Index Directory : " + ctx.getIndexDirectory().toString());
             writer.println("--------------------------------------------------------");
             writer.println("Scanning started at " + SimpleDateFormat.getInstance().format(new Date()));
