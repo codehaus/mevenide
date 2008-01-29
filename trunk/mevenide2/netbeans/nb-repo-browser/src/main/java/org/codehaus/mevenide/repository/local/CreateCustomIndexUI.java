@@ -42,77 +42,82 @@ public class CreateCustomIndexUI extends javax.swing.JPanel {
         btnIndexDirBrowse = new javax.swing.JButton();
         txtIndeDir = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
-        btnDoIndex.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.btnDoIndex.text", new Object[] {})); // NOI18N
+        btnDoIndex.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_EXPORT", new Object[] {})); // NOI18N
 
-        jLabel2.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.jLabel2.text", new Object[] {})); // NOI18N
+        jLabel2.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_REPO_ID", new Object[] {})); // NOI18N
 
-        jLabel3.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.jLabel3.text", new Object[] {})); // NOI18N
+        jLabel3.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_REPO_FOLDER", new Object[] {})); // NOI18N
 
-        btnRepoDirBrowse.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.btnRepoDirBrowse.text", new Object[] {})); // NOI18N
+        btnRepoDirBrowse.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_BROWSE", new Object[] {})); // NOI18N
         btnRepoDirBrowse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRepoDirBrowseActionPerformed(evt);
             }
         });
 
-        btnIndexDirBrowse.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.btnIndexDirBrowse.text", new Object[] {})); // NOI18N
+        btnIndexDirBrowse.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_BROWSE", new Object[] {})); // NOI18N
         btnIndexDirBrowse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIndexDirBrowseActionPerformed(evt);
             }
         });
 
-        jLabel4.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "CreateCustomIndexUI.jLabel4.text", new Object[] {})); // NOI18N
+        jLabel4.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_INDEX_OUTPUT", new Object[] {})); // NOI18N
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 51, 153));
+        jLabel1.setText(org.openide.util.NbBundle.getMessage(CreateCustomIndexUI.class, "LBL_Header", new Object[] {})); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
-                        .add(jLabel4)
-                        .add(66, 66, 66)
-                        .add(txtIndeDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 260, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(btnIndexDirBrowse))
-                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(jLabel3)
-                            .add(jLabel2))
-                        .add(42, 42, 42)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                            .add(txtRepoId)
-                            .add(txtRepoDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(btnRepoDirBrowse)))
+                            .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 100, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                            .add(jLabel4))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtIndeDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                            .add(txtRepoDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                            .add(txtRepoId, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, btnRepoDirBrowse)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, btnIndexDirBrowse)))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 465, Short.MAX_VALUE))
+                    .add(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .add(jLabel3)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
-                .addContainerGap()
+                .add(11, 11, 11)
+                .add(jLabel1)
+                .add(11, 11, 11)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(jLabel2)
-                    .add(txtRepoId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(txtRepoId, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(jLabel2))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                        .add(jLabel3)
-                        .add(txtRepoDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel3)
+                    .add(txtRepoDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(btnRepoDirBrowse))
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                        .add(jLabel4))
-                    .add(layout.createSequentialGroup()
-                        .add(7, 7, 7)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtIndeDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                            .add(btnIndexDirBrowse))))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .add(8, 8, 8)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(jLabel4)
+                    .add(btnIndexDirBrowse)
+                    .add(txtIndeDir, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(14, 14, 14))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -164,6 +169,7 @@ RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(txtRepoId.getText().trim(
     private javax.swing.JButton btnDoIndex;
     private javax.swing.JButton btnIndexDirBrowse;
     private javax.swing.JButton btnRepoDirBrowse;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
