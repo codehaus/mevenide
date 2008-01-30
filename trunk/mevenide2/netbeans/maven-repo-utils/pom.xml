@@ -11,7 +11,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>RELEASE</version>
+                <version>2.0.2</version>
                 <configuration>
                     <source>1.5</source>
                     <target>1.5</target>
@@ -27,7 +27,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>RELEASE</version>
+                        <version>1.0.2</version>
                         <configuration>
                             <executable>java</executable>
                             <arguments>
@@ -35,7 +35,7 @@
                                 <argument>-classpath</argument>
                                 <!-- automatically creates the classpath using all project dependencies, 
                  also adding the project build directory -->
-                                <classpath/>
+                                <classpath />
                                 <argument>org.codehaus.mevenide.repoutils.IndexRepository</argument>
                                 <argument>${repoindex}</argument>
                                 <argument>${repodir}</argument>
@@ -52,7 +52,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>RELEASE</version>
+                        <version>1.0.2</version>
                         <configuration>
                             <executable>java</executable>
                             <arguments>
@@ -60,7 +60,7 @@
                                 <argument>-classpath</argument>
                                 <!-- automatically creates the classpath using all project dependencies, 
                  also adding the project build directory -->
-                                <classpath/>
+                                <classpath />
                                 <argument>org.codehaus.mevenide.repoutils.ExtractPluginInfo</argument>
                                 <argument>${repoindex}</argument>
                                 <argument>${repodir}</argument>
@@ -74,36 +74,6 @@
         
     </profiles>
   <dependencies>
-    <dependency>
-        <groupId>org.apache.maven.archiva</groupId>
-        <artifactId>archiva-indexer</artifactId>
-        <version>1.0-20060923.165121-1</version>
-    </dependency>
-    <dependency>
-		<!-- seems to be needed for proper resolution.. why? -->
-        <groupId>org.apache.maven.archiva</groupId>
-        <artifactId>archiva</artifactId>
-        <version>1.0-20060923.165121-1</version>
-        <type>pom</type>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.maven.archiva</groupId>
-        <artifactId>archiva-discoverer</artifactId>
-        <version>1.0-20060923.165121-1</version>
-    </dependency>
-    <dependency>
-        <groupId>org.apache.maven.archiva</groupId>
-        <artifactId>archiva-utils</artifactId>
-        <version>1.0-20060923.165121-1</version>
-    </dependency>
-    
-         <!--dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-embedder</artifactId>
-            <version>2.1-20060902</version>
-            <classifier>mevenide</classifier>
-        </dependency-->
-    
       
     <dependency>
       <groupId>junit</groupId>
@@ -111,5 +81,12 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+    <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>indexer</artifactId>
+            <version>3.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
   </dependencies>
 </project>
