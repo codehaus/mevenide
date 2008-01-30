@@ -7,6 +7,12 @@
   <version>1.0-SNAPSHOT</version>
   <name>maven-repo-utils</name>
   <url>http://maven.apache.org</url>
+  <repositories>
+      <repository>
+          <id>nb</id>
+          <url>http://deadlock.netbeans.org/maven2</url>
+      </repository>
+  </repositories>
   <build>
         <plugins>
             <plugin>
@@ -27,18 +33,19 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>exec-maven-plugin</artifactId>
-                        <version>1.0.2</version>
+                        <version>1.1-beta-1</version>
                         <configuration>
-                            <executable>java</executable>
+                            <executable>/usr/bin/java</executable>
                             <arguments>
                                 <argument>-Xmx1024m</argument>
                                 <argument>-classpath</argument>
                                 <!-- automatically creates the classpath using all project dependencies, 
                  also adding the project build directory -->
-                                <classpath />
+                                <classpath></classpath>
                                 <argument>org.codehaus.mevenide.repoutils.IndexRepository</argument>
                                 <argument>${repoindex}</argument>
                                 <argument>${repodir}</argument>
+                                <argument>${repoid}</argument>
                             </arguments>
                         </configuration>
                     </plugin>
@@ -60,7 +67,7 @@
                                 <argument>-classpath</argument>
                                 <!-- automatically creates the classpath using all project dependencies, 
                  also adding the project build directory -->
-                                <classpath />
+                                <classpath></classpath>
                                 <argument>org.codehaus.mevenide.repoutils.ExtractPluginInfo</argument>
                                 <argument>${repoindex}</argument>
                                 <argument>${repodir}</argument>
@@ -81,12 +88,45 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-embedder</artifactId>
+        <version>2.1-20080125</version>
+        <classifier>mevenide</classifier>
+        <exclusions>
+                <exclusion>
+                    <artifactId>plexus-container-default</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>plexus-classworlds</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                </exclusion>
+            </exclusions>
+    </dependency>
     
     <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>indexer</artifactId>
             <version>3.1-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>plexus-component-api</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+    <dependency>
+        <groupId>org.netbeans.modules</groupId>
+        <artifactId>org-netbeans-modules-masterfs</artifactId>
+        <version>RELEASE60</version>
+    </dependency>
+    <dependency>
+        <groupId>org.netbeans.api</groupId>
+        <artifactId>org-netbeans-modules-settings</artifactId>
+        <version>RELEASE60</version>
+    </dependency>
+    
   </dependencies>
 </project>
