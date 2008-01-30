@@ -29,7 +29,7 @@ import org.apache.maven.artifact.Artifact;
  */
 public interface RepositoryIndexer {
 
-    void indexRepo(String repoId);//default repo id for local repo is "local"
+    void indexRepo(String repoId);//default repo id for local repo is RepositoryPreferences.LOCAL_REPO_ID
     void indexRepo(String repoId, File repoDir, File indexDir);
     void updateIndexWithArtifacts(String repoId, Collection<Artifact> artifacts);
 
