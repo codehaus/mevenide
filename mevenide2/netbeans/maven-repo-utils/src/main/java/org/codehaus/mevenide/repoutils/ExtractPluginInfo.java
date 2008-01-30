@@ -15,14 +15,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.TermQuery;
-import org.apache.maven.archiva.indexer.RepositoryArtifactIndex;
-import org.apache.maven.archiva.indexer.RepositoryArtifactIndexFactory;
-import org.apache.maven.archiva.indexer.lucene.LuceneQuery;
-import org.apache.maven.archiva.indexer.record.RepositoryIndexRecordFactory;
-import org.apache.maven.archiva.indexer.record.StandardArtifactIndexRecord;
-import org.apache.maven.archiva.indexer.record.StandardIndexRecordFields;
-import org.codehaus.classworlds.ClassWorld;
-import org.codehaus.plexus.embed.Embedder;
+import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
 import org.codehaus.plexus.util.IOUtil;
 
 /**
@@ -39,61 +32,55 @@ public class ExtractPluginInfo
      */ 
     public static void main( String[] args )
     {
-        
         try {
-            Embedder embedder;
-            RepositoryArtifactIndexFactory indexFactory;
-            RepositoryArtifactIndex defaultIndex;
-            RepositoryIndexRecordFactory recordFactory;
-            embedder = new Embedder();
-            embedder.start();
-            indexFactory = (RepositoryArtifactIndexFactory) embedder.lookup(RepositoryArtifactIndexFactory.ROLE, "lucene");
-            File basedir = new File(args[0]);
-            if (!basedir.exists()) {
-                throw new IllegalArgumentException(args[0] + " folder doesn't exist");
+            if (args.length < 2) {
+                throw new IllegalArgumentException("Must have 2 parameters [repo index directory] [repo root directory] [repo id]");
             }
-
-            defaultIndex = indexFactory.createStandardIndex(basedir);
-            recordFactory = (RepositoryIndexRecordFactory)embedder.lookup(RepositoryIndexRecordFactory.ROLE, "standard");
-            
+            File basedir = new File(args[0]);
+            if (basedir.exists()) {
+                throw new IllegalArgumentException(args[0] + " folder already exist");
+            }
+            basedir.mkdirs();
             File repodir = new File(args[1]);
             if (!repodir.exists()) {
                 throw new IllegalArgumentException(args[1] + " folder doesn't exist");
             }
-            
+            NexusRepositoryIndexserImpl index = new NexusRepositoryIndexserImpl();
+        
             File results = new File(args[2]);
             if (results.exists()) {
                 org.codehaus.plexus.util.FileUtils.deleteDirectory(results);
             }
             results.mkdirs();
             
-            HashMap<File, String> release = new HashMap<File, String>();
-            LuceneQuery q = new LuceneQuery(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin")));
-            List<StandardArtifactIndexRecord> lst = defaultIndex.search(q);
-            for (StandardArtifactIndexRecord rec : lst)  {
-                File path = new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
-                                              rec.getArtifactId() + "/" +
-                                              rec.getVersion() + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".jar");
-                System.out.println("" + path.getAbsolutePath());
-                if (path.exists()) {
-                    JarFile jar = new JarFile(path);
-                    ZipEntry entry = jar.getEntry("META-INF/maven/plugin.xml");
-                    if (entry != null) {
-                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
-                        writePluginXml(jar.getInputStream(entry), newFile);
-                        if (isRelease(release, rec.getVersion(), new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
-                                              rec.getArtifactId() + "/maven-metadata.xml"))) {
-                            newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-RELEASE.xml");
-                            writePluginXml(jar.getInputStream(entry), newFile);
-                        }
-                    } else {
-                        System.out.println("  entry not found");
-                    }
-                } else {
-                    System.out.println("  not found");
-                }
-            }
-                    
+//TODO ned to convert to nexus as well.
+//            HashMap<File, String> release = new HashMap<File, String>();
+//            LuceneQuery q = new LuceneQuery(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin")));
+//            List<StandardArtifactIndexRecord> lst = defaultIndex.search(q);
+//            for (StandardArtifactIndexRecord rec : lst)  {
+//                File path = new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
+//                                              rec.getArtifactId() + "/" +
+//                                              rec.getVersion() + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".jar");
+//                System.out.println("" + path.getAbsolutePath());
+//                if (path.exists()) {
+//                    JarFile jar = new JarFile(path);
+//                    ZipEntry entry = jar.getEntry("META-INF/maven/plugin.xml");
+//                    if (entry != null) {
+//                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
+//                        writePluginXml(jar.getInputStream(entry), newFile);
+//                        if (isRelease(release, rec.getVersion(), new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
+//                                              rec.getArtifactId() + "/maven-metadata.xml"))) {
+//                            newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-RELEASE.xml");
+//                            writePluginXml(jar.getInputStream(entry), newFile);
+//                        }
+//                    } else {
+//                        System.out.println("  entry not found");
+//                    }
+//                } else {
+//                    System.out.println("  not found");
+//                }
+//            }
+//                    
         } catch (Exception e) {
             e.printStackTrace();
         }        
