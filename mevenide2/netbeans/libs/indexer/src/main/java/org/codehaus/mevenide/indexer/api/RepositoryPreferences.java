@@ -18,6 +18,9 @@ package org.codehaus.mevenide.indexer.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
+import org.openide.util.NbPreferences;
+
 
 /**
  *
@@ -32,46 +35,56 @@ public class RepositoryPreferences {
      * index of local repository
      */
     public static final String LOCAL_REPO_ID = "local";
-    private List<RepositoryPreferences.RepositoryInfo> repositoryInfos=
-            new  ArrayList<RepositoryPreferences.RepositoryInfo>();
     
     static {
         LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null);
     }
+    private String KEY_ID = "repository.id";
+    private String KEY_NAME = "repository.name";
+    private String KEY_INDEX_URL = "repository.index.url";
+    private String KEY_REPO_URL = "repository.repo.url";
+    
 
     private  RepositoryPreferences() {
-       
-        // add central
-        repositoryInfos.add(new RepositoryInfo("central", "Central Repository ",
-                "http://repo1.maven.org/maven2/",
-                "file:///D:/_temp/central/"/*Change this to real index url*/,true));
-       //add local 
-         repositoryInfos.add(LOCAL);
+    }
+    
+    private Preferences getPreferences() {
+        return NbPreferences.root().node("org/codehaus/mevenide/nexus/indexing"); //NOI18N
     }
 
     public synchronized static RepositoryPreferences getInstance() {
-        if(instance==null)
-        {
-         instance=new RepositoryPreferences();
+        if(instance == null) {
+            instance = new RepositoryPreferences();
         }
         return instance;
     }
 
     
     public  RepositoryInfo getRepositoryInfoById(String id) {
-        for (RepositoryInfo ri : repositoryInfos) {
-          if(ri.getId().equals(id))return ri;
+        for (RepositoryInfo ri : getRepositoryInfos()) {
+          if (ri.getId().equals(id)) return ri;
         }
-
-
-
         return null;
     }
 
     public  List<RepositoryInfo> getRepositoryInfos() {
-               return repositoryInfos;
+        List<RepositoryInfo> toRet = new ArrayList<RepositoryInfo>();
+        toRet.add(LOCAL);
+        Preferences pref = getPreferences();
+        int count = 0;
+        String id = pref.get(KEY_ID + "." + count, null);
+        while (id != null) {
+            String name = pref.get(KEY_NAME + "." + count, null);
+            String repourl = pref.get(KEY_REPO_URL + "." + count, null);
+            String indexurl = pref.get(KEY_INDEX_URL + "." + count, null);
+            RepositoryInfo info = new RepositoryInfo(id, name, repourl, indexurl, true);
+            toRet.add(info);
+            count = count + 1;
+            id = pref.get(KEY_ID + "." + count, null);
+        }
+        return toRet;
     }
-
+    
     public static class RepositoryInfo {
 
         private String id;
