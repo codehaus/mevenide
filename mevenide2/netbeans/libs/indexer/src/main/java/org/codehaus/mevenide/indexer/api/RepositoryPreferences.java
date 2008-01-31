@@ -29,6 +29,7 @@ import org.openide.util.NbPreferences;
 public class RepositoryPreferences {
 
     public static final RepositoryInfo LOCAL;
+    public static final RepositoryInfo NETBEANS;
     private static  RepositoryPreferences instance;
     
     /**
@@ -38,6 +39,7 @@ public class RepositoryPreferences {
     
     static {
         LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null);
+        NETBEANS = new RepositoryInfo("netbeans", "Netbeans Repository", "http://deadlock.netbeans.org/maven2/", "http://deadlock.netbeans.org/maven2/.index/netbeans/",true);
     }
     private String KEY_ID = "repository.id";
     private String KEY_NAME = "repository.name";
@@ -70,6 +72,7 @@ public class RepositoryPreferences {
     public  List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> toRet = new ArrayList<RepositoryInfo>();
         toRet.add(LOCAL);
+        toRet.add(NETBEANS);
         Preferences pref = getPreferences();
         int count = 0;
         String id = pref.get(KEY_ID + "." + count, null);
@@ -84,6 +87,7 @@ public class RepositoryPreferences {
         }
         return toRet;
     }
+ 
     
     public static class RepositoryInfo {
 
