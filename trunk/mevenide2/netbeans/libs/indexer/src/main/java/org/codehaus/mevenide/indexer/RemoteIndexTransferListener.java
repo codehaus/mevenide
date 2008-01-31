@@ -22,6 +22,7 @@ import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
+import org.openide.util.NbBundle;
 
 
 
@@ -35,22 +36,23 @@ public class RemoteIndexTransferListener implements TransferListener{
    private RepositoryInfo info;
 
     public RemoteIndexTransferListener( RepositoryInfo info) {
-        this.handle =   ProgressHandleFactory.createHandle("Transfer Repo Index : " + info.getName());
+        this.handle =   ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG", new Object[] {})+ info.getName());
         this.info = info;
     }
    
    
     public void transferInitiated(TransferEvent arg0) {
-     handle.start();
+    
       
     }
 
     public void transferStarted(TransferEvent arg0) {
-        handle.switchToIndeterminate();
+        long contentLength = arg0.getResource().getContentLength();
+        handle.start(0, contentLength);
     }
 
     public void transferProgress(TransferEvent arg0, byte[] arg1, int arg2) {
-        //todo add Progress to handler
+        handle.progress(arg2);
     }
 
     public void transferCompleted(TransferEvent arg0) {
