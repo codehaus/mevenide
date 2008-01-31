@@ -118,7 +118,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             public Object run() throws Exception {
                 RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoid);
-                IndexingContext ic = indexer.addIndexingContext( //
+                indexer.addIndexingContext( //
                         info.getId(), // context id
                         info.getId(), // repository id
                         info.isRemote() ? null : new File(repository.getBasedir()), // repository folder
@@ -137,7 +137,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             public Object run() throws Exception {
                 File file = new File(getDefaultIndexLocation(), id);
-                if (file == null || file.listFiles().length <= 0) {
+                if (!file.exists() ||file.listFiles().length <= 0) {
                     indexRepo(id);
                 }
                 return null;
