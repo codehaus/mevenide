@@ -42,17 +42,17 @@ public class RemoteIndexTransferListener implements TransferListener{
    
    
     public void transferInitiated(TransferEvent arg0) {
-    
+    handle.switchToIndeterminate();
       
     }
 
     public void transferStarted(TransferEvent arg0) {
-        long contentLength = arg0.getResource().getContentLength();
-        handle.start(0, contentLength);
+        //long contentLength = arg0.getResource().getContentLength();
+        //handle.start( (int) contentLength);
     }
 
     public void transferProgress(TransferEvent arg0, byte[] arg1, int arg2) {
-        handle.progress(arg2);
+        //handle.progress(arg2);
     }
 
     public void transferCompleted(TransferEvent arg0) {
