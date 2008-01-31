@@ -118,7 +118,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
             public Object run() throws Exception {
                 RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoid);
-                indexer.addIndexingContext( //
+                IndexingContext ic = indexer.addIndexingContext( //
                         info.getId(), // context id
                         info.getId(), // repository id
                         info.isRemote() ? null : new File(repository.getBasedir()), // repository folder
@@ -130,6 +130,19 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             }
         });
 
+    }
+
+    private void checkIndexAvailability(final String  id) throws MutexException {
+        MUTEX.writeAccess(new Mutex.ExceptionAction() {
+
+            public Object run() throws Exception {
+                File file = new File(getDefaultIndexLocation(), id);
+                if (file == null || file.listFiles().length <= 0) {
+                    indexRepo(id);
+                }
+                return null;
+            }
+        });
     }
 
     private void unloadIndexingContext(final String contextId) throws MutexException {
@@ -224,6 +237,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
 
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
@@ -260,6 +274,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
@@ -302,6 +317,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     BooleanQuery bq = new BooleanQuery();
                     bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
@@ -332,6 +348,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.ARTIFACT_ID, QueryParser.escape(artifactId))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.VERSION, QueryParser.escape(version))), BooleanClause.Occur.MUST));
@@ -356,6 +373,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
                     Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                     for (ArtifactInfo artifactInfo : search) {
@@ -380,6 +398,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, groupId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
                     Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
@@ -403,6 +422,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_GROUP, groupId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERTION, version)), BooleanClause.Occur.MUST));
@@ -440,6 +460,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.MD5, (md5))), BooleanClause.Occur.SHOULD));
                     Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                     infos.addAll(convertToNBVersionInfo(search));
@@ -461,6 +482,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause((new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype"))), BooleanClause.Occur.MUST));
 //doesn't list files in index                    bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.FNAME, ("archetype-metadata.xml"))), BooleanClause.Occur.SHOULD));
                     Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
@@ -485,6 +507,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new WildcardQuery(new Term(NB_ARTIFACT, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
@@ -513,6 +536,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
                     Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
@@ -539,6 +563,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                     BooleanQuery bq = new BooleanQuery();
                     loadIndexingContext(repoId);
+                    checkIndexAvailability(repoId);
                     bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(groupId))), BooleanClause.Occur.MUST));
                     bq.add(new BooleanClause(new WildcardQuery(new Term(NB_ARTIFACT, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
