@@ -96,6 +96,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     public static final Mutex MUTEX = new Mutex();
 
     public NexusRepositoryIndexserImpl() {
+        //to prevent MaxClauseCount exception (will investigate better way)
+        BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
         try {
             PlexusContainer embedder;
             ContainerConfiguration config = new DefaultContainerConfiguration();
@@ -301,7 +303,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
                     BooleanQuery bq = new BooleanQuery();
-
                     bq.add(new BooleanClause(new WildcardQuery(new Term(ArtifactInfo.GROUP_ID, QueryParser.escape(prefix) + "*")), BooleanClause.Occur.MUST));
 
                     Map<String, ArtifactInfoGroup> searchGrouped = indexer.searchGrouped(new GGrouping(),
