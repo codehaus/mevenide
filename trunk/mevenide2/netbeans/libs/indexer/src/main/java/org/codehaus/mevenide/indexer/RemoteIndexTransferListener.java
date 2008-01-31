@@ -34,7 +34,7 @@ public class RemoteIndexTransferListener implements TransferListener{
 
    private ProgressHandle handle;
    private RepositoryInfo info;
-
+   private int lastunit;
     public RemoteIndexTransferListener( RepositoryInfo info) {
         this.handle =   ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG", new Object[] {})+ info.getName());
         this.info = info;
@@ -42,17 +42,20 @@ public class RemoteIndexTransferListener implements TransferListener{
    
    
     public void transferInitiated(TransferEvent arg0) {
-    handle.switchToIndeterminate();
+    
       
     }
 
     public void transferStarted(TransferEvent arg0) {
-        //long contentLength = arg0.getResource().getContentLength();
-        //handle.start( (int) contentLength);
+        long contentLength = arg0.getResource().getContentLength();
+        handle.start( (int) contentLength/1024);
     }
 
     public void transferProgress(TransferEvent arg0, byte[] arg1, int arg2) {
-        //handle.progress(arg2);
+        int work = arg2/1024;
+        
+        handle.progress(lastunit+=work);
+        
     }
 
     public void transferCompleted(TransferEvent arg0) {
