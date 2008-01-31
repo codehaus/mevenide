@@ -30,6 +30,7 @@ public class RepositoryPreferences {
 
     public static final RepositoryInfo LOCAL;
     public static final RepositoryInfo NETBEANS;
+    public static final RepositoryInfo CENTRAL ;
     private static  RepositoryPreferences instance;
     
     /**
@@ -40,6 +41,7 @@ public class RepositoryPreferences {
     static {
         LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null);
         NETBEANS = new RepositoryInfo("netbeans", "Netbeans Repository", "http://deadlock.netbeans.org/maven2/", "http://deadlock.netbeans.org/maven2/.index/netbeans/",true);
+        CENTRAL = new RepositoryInfo("central", "Central  Repository", "http://repo1.maven.org", "http://deadlock.netbeans.org/maven2/.index/central/",true);
     }
     private String KEY_ID = "repository.id";
     private String KEY_NAME = "repository.name";
@@ -72,6 +74,7 @@ public class RepositoryPreferences {
     public  List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> toRet = new ArrayList<RepositoryInfo>();
         toRet.add(LOCAL);
+        toRet.add(CENTRAL);
         toRet.add(NETBEANS);
         Preferences pref = getPreferences();
         int count = 0;
