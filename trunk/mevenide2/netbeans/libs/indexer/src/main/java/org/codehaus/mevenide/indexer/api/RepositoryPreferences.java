@@ -44,7 +44,7 @@ public class RepositoryPreferences {
                 "http://deadlock.netbeans.org/maven2/",
                 "http://deadlock.netbeans.org/maven2/.index/netbeans/", true);//NOI18N
         CENTRAL = new RepositoryInfo("central", "Central  Repository",
-                "http://repo1.maven.org",
+                "http://repo1.maven.org/maven2",
                 "http://deadlock.netbeans.org/maven2/.index/central/", true);//NOI18N
     }
     private String KEY_ID = "repository.id";//NOI18N
