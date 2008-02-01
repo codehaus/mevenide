@@ -394,8 +394,9 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
 
         List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : ris) {
-            if(ri.getRepositoryUrl()!=null)
-            repos.add(ri.getRepositoryUrl());
+            if(ri.getRepositoryUrl()!=null){
+             repos.add(ri.getRepositoryUrl());
+            }
         }
 
         return repos;
