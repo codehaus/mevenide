@@ -42,8 +42,8 @@ import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.IOUtil;
@@ -361,9 +361,10 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         if (path.endsWith("repositories/repository/url") || //NOI18N
             path.endsWith("pluginRepositories/pluginRepository/url") || //NOI18N
             path.endsWith("distributionManagement/repository/url")) { //NOI18N
-            List lst = MavenIndexSettings.getDefault().getCollectedRepositories();
-            String[] strs = (String[])lst.toArray(new String[lst.size()]);
-            return super.createTextValueList(strs, virtualTextCtx);
+            
+            List<String> repoIds = getRepoIds();   
+            return super.createTextValueList(repoIds.toArray(new String[0]),
+                    virtualTextCtx);
         }
         
         if (path.endsWith("modules/module")) { //NOI18N
@@ -387,7 +388,18 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         return null;
     }
+ /*Return repo id's*/
+    private List<String> getRepoIds() {
+        List<String> repos = new ArrayList<String>();
+        
+        List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
+        for (RepositoryInfo ri : ris) {
+            repos.add(ri.getId());
+        }
 
+        return repos;
+
+    }
     private Document loadDocument(ArtifactInfoHolder info, MavenEmbedder embedder) {
         if (info.getArtifactId() != null && info.getGroupId() != null && info.getVersion() != null) {
         

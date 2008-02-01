@@ -46,13 +46,15 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     private final IndexingContext indexingContext;
     private final NexusIndexer nexusIndexer;
     private long tstart;
-    private boolean debug;
+    
     private int count;
-    private InputOutput io;
-    private OutputWriter writer;
+   private ProgressHandle handle;
+    
     private RepositoryInfo ri;
-    private ProgressHandle handle;
-
+    /*Debug*/
+    private boolean debug;
+     private InputOutput io;
+    private OutputWriter writer;
     public RepositoryIndexerListener(NexusIndexer nexusIndexer, IndexingContext indexingContext) {
         this.indexingContext = indexingContext;
         this.nexusIndexer = nexusIndexer;

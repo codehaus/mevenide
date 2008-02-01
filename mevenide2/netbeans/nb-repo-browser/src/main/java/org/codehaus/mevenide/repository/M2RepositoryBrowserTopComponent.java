@@ -338,7 +338,9 @@ final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
         Children.Array array = new Children.Array();
         List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : infos) {
-            array.add(new Node[]{new RepositoryNode(ri)});
+            if(!ri.isRemote() || ri.getIndexUpdateUrl()!=null){
+             array.add(new Node[]{new RepositoryNode(ri)});
+            }
         }
 
         return new AbstractNode(array);

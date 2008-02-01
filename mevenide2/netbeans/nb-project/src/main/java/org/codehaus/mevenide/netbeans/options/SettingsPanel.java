@@ -35,7 +35,6 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
-import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
@@ -691,7 +690,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         txtCommandLine.setText(command != null ? command.getAbsolutePath() : ""); //NOI18N
         txtCommandLine.getDocument().addDocumentListener(docList);
         
-        cbSnapshots.setSelected(MavenIndexSettings.getDefault().isIncludeSnapshots());
+        cbSnapshots.setSelected(RepositoryPreferences.getInstance().isIncludeSnapshots());
         String failureBehaviour = MavenExecutionSettings.getDefault().getFailureBehaviour();
         if (MavenExecutionRequest.REACTOR_FAIL_FAST.equals(failureBehaviour)) {
             rbFailFast.setSelected(true);
@@ -716,7 +715,7 @@ public class SettingsPanel extends javax.swing.JPanel {
         } else {
             rbPluginNone.setSelected(true);
         }
-        comIndex.setSelectedIndex(MavenIndexSettings.getDefault().getIndexUpdateFrequency());
+        comIndex.setSelectedIndex(RepositoryPreferences.getInstance().getIndexUpdateFrequency());
     }
     
     public void applyValues(Settings sett) {
@@ -757,8 +756,8 @@ public class SettingsPanel extends javax.swing.JPanel {
         failureBehaviour = rbFailEnd.isSelected() ? MavenExecutionRequest.REACTOR_FAIL_AT_END : failureBehaviour;
         failureBehaviour = rbFailNever.isSelected() ? MavenExecutionRequest.REACTOR_FAIL_NEVER : failureBehaviour;
         MavenExecutionSettings.getDefault().setFailureBehaviour(failureBehaviour);
-        MavenIndexSettings.getDefault().setIndexUpdateFrequency(comIndex.getSelectedIndex());
-        MavenIndexSettings.getDefault().setIncludeSnapshots(cbSnapshots.isSelected());
+        RepositoryPreferences.getInstance().setIndexUpdateFrequency(comIndex.getSelectedIndex());
+        RepositoryPreferences.getInstance().setIncludeSnapshots(cbSnapshots.isSelected());
         changed = false;
     }
     
