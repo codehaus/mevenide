@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.maven.artifact.UnknownRepositoryLayoutException;
 import org.apache.maven.artifact.factory.ArtifactFactory;
@@ -38,6 +40,14 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.lifecycle.LifecycleExecutor;
+import org.apache.maven.profiles.DefaultProfileManager;
+import org.apache.maven.profiles.ProfileManager;
+import org.apache.maven.profiles.activation.DefaultProfileActivationContext;
+import org.apache.maven.profiles.activation.ProfileActivationContext;
+import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.project.build.model.DefaultModelLineage;
+import org.apache.maven.project.build.model.ModelLineage;
+import org.apache.maven.project.build.model.ModelLineageBuilder;
 import org.apache.maven.settings.io.xpp3.SettingsXpp3Reader;
 import org.apache.maven.wagon.events.TransferListener;
 import org.codehaus.plexus.PlexusContainer;
@@ -72,7 +82,7 @@ import org.openide.util.Lookup;
 public final class EmbedderFactory {
     
     private static ThreadLocal<MavenEmbedder> projectTL = new ThreadLocal<MavenEmbedder>();
-    private static boolean wasReset = false;
+    private static boolean wasReset = true;
     private static MavenEmbedder project;
     private static MavenEmbedder online;
     
@@ -365,6 +375,29 @@ public final class EmbedderFactory {
             Exceptions.printStackTrace( ex );
         }
         return null;
+    }
+    
+    /**
+     * creates model lineage for the given pom file.
+     * Useful to be able to locate where certain elements are defined.
+     * 
+     * @param pom
+     * @param embedder
+     * @param allowStubs
+     * @return
+     */
+    public static ModelLineage createModelLineage(File pom, MavenEmbedder embedder, boolean allowStubs) {
+        try {
+            ModelLineageBuilder bldr = (ModelLineageBuilder) embedder.getPlexusContainer().lookup(ModelLineageBuilder.class);
+            ProfileActivationContext context = new DefaultProfileActivationContext(new Properties(), true); //TODO shall we pass some execution props in here?
+            ProfileManager manager = new DefaultProfileManager(embedder.getPlexusContainer(), context);
+            return bldr.buildModelLineage(pom, embedder.getLocalRepository(), new ArrayList(), manager, allowStubs, true);
+        } catch (ProjectBuildingException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (ComponentLookupException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return new DefaultModelLineage();
     }
     
     private static void copyConfig(PlexusConfiguration old, XmlPlexusConfiguration conf) throws PlexusConfigurationException {

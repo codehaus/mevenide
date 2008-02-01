@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute.ui;
 
+import java.io.File;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +27,14 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.build.model.ModelLineage;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.PropertySplitter;
@@ -37,6 +43,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
@@ -48,6 +55,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     private List<NetbeansActionMapping> historyMappings;
     private int historyIndex = 0;
     private TextValueCompleter goalcompleter;
+    private TextValueCompleter profilecompleter;
     
     /** Creates new form RunGoalsPanel */
     public RunGoalsPanel() {
@@ -70,12 +78,22 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             }
             goalcompleter.setValueList(strs);
         }
+        profilecompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtProfiles, " ");
     }
 
     @Override
     public void addNotify() {
         super.addNotify();
         txtGoals.requestFocus();
+        
+    }
+    
+    private void readProfiles(final File pom) {
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                profilecompleter.setValueList(ModelUtils.retrieveAllProfiles(pom));
+            }
+        });
     }
     
     private String createSpaceSeparatedList(List list) {
@@ -96,10 +114,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);
         historyIndex = this.historyMappings.size();
+        readProfiles(project.getFile());
         moveHistory(-1);
     }
     
-    public void readConfig(RunConfig config) {
+    public void readConfig(final RunConfig config) {
         historyMappings.clear();
         btnNext.setVisible(false);
         btnPrev.setVisible(false);
@@ -123,6 +142,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setOffline(config.isOffline() != null ? config.isOffline().booleanValue() : false);
         setRecursive(config.isRecursive());
         setShowDebug(config.isShowDebug());
+        readProfiles(config.getProject().getPOMFile());
     }
     
     private void readMapping(NetbeansActionMapping mapp) {
