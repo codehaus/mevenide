@@ -14,10 +14,12 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.newproject;
 
-import org.codehaus.mevenide.indexer.MavenIndexSettings;
+import java.util.ArrayList;
+import java.util.List;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.openide.util.Lookup;
@@ -27,18 +29,33 @@ import org.openide.util.Lookup;
  * @author  mkleint
  */
 public class CustomArchetypePanel extends javax.swing.JPanel {
-    
-    private TextValueCompleter completer;
+
+   
+
     /** Creates new form CustomArchetypePanel */
     public CustomArchetypePanel() {
         initComponents();
-        completer = new TextValueCompleter(
-                MavenIndexSettings.getDefault().getCollectedRepositories(), txtRepo);
+        //Value complte decorator
+         new TextValueCompleter(
+                getRepoIds(), txtRepo);
         if (Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class) == null) {
             cbArchetypeNg.setVisible(false);
         }
     }
     
+    /*Return repo id's*/
+    private List<String> getRepoIds() {
+        List<String> repos = new ArrayList<String>();
+        
+        List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
+        for (RepositoryInfo ri : ris) {
+            repos.add(ri.getId());
+        }
+
+        return repos;
+
+    }
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -120,8 +137,6 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
                 .add(jLabel1))
         );
     }// </editor-fold>//GEN-END:initComponents
-    
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbArchetypeNg;
     private javax.swing.JLabel jLabel1;
@@ -134,24 +149,23 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtRepo;
     private javax.swing.JTextField txtVersion;
     // End of variables declaration//GEN-END:variables
-
     public String getArtifactId() {
         return txtArtifactId.getText().trim();
     }
-    
+
     public String getGroupId() {
         return txtGroupId.getText().trim();
     }
+
     public String getVersion() {
         return txtVersion.getText().trim();
     }
-    
+
     public String getRepository() {
         return txtRepo.getText().trim();
     }
-    
+
     public boolean isArchetypeNG() {
         return cbArchetypeNg.isSelected();
     }
-    
 }

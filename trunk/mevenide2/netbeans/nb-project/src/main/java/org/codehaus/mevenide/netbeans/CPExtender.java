@@ -17,9 +17,11 @@
 
 package org.codehaus.mevenide.netbeans;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -28,8 +30,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.indexer.MavenIndexSettings;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -195,11 +198,24 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         return null;
     }
-    
+    private URL[] getRepoURLs(){
+     List<URL> urls=new  ArrayList<URL>();
+     List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
+        for (RepositoryInfo ri : ris) {
+           if(ri.getRepositoryUrl()!=null){
+                try {
+                    urls.add(new URL(ri.getRepositoryUrl()));
+                } catch (MalformedURLException ex) {
+                    //ignore
+                }
+           }
+        }
+     return urls.toArray(new URL[0]);
+    }
     /**
      */ 
     private boolean checkLibraryForPoms(Library library, Model model, String scope) {
-        if (!"j2se".equals(library.getType())) {
+        if (!"j2se".equals(library.getType())) {//NOI18N
             //only j2se library supported for now..
             return false;
         }
@@ -207,7 +223,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         boolean added = false;
         if (poms != null && poms.size() > 0) {
             for (URL pom : poms) {
-                URL[] repos = MavenIndexSettings.getDefault().getCollectedReposAsURLs();
+                URL[] repos = getRepoURLs();
                 String[] result = checkLibrary(pom, repos);
                 if (result != null) {
                     added = true;

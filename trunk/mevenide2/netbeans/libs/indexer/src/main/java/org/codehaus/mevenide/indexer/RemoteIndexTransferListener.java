@@ -14,7 +14,6 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.codehaus.mevenide.indexer;
 
 import org.apache.maven.wagon.events.TransferEvent;
@@ -23,54 +22,77 @@ import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.progress.ProgressHandleFactory;
 import org.openide.util.NbBundle;
-
-
+import org.openide.windows.IOProvider;
+import org.openide.windows.InputOutput;
+import org.openide.windows.OutputWriter;
 
 /**
  *
  * @author Anuradha G
  */
-public class RemoteIndexTransferListener implements TransferListener{
+public class RemoteIndexTransferListener implements TransferListener {
 
-   private ProgressHandle handle;
-   private RepositoryInfo info;
-   private int lastunit;
-    public RemoteIndexTransferListener( RepositoryInfo info) {
-        this.handle =   ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG", new Object[] {})+ info.getName());
+    private ProgressHandle handle;
+    private RepositoryInfo info;
+    private int lastunit;/*last work unit*/
+    /*Debug*/
+
+    private boolean debug;
+     private InputOutput io;
+    private OutputWriter writer;
+   
+    public RemoteIndexTransferListener(RepositoryInfo info) {
+        this.handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG")//NII18N
+                + info.getName());
         this.info = info;
+        handle.start();
+        handle.switchToIndeterminate();
+        
+         if (debug) {
+            io = IOProvider.getDefault().getIO(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG")//NII18N
+                    +(info.getName()), true);
+            writer = io.getOut();
+        }
     }
-   
-   
-    public void transferInitiated(TransferEvent arg0) {
-    
-      
+
+    public void transferInitiated(TransferEvent arg0) {/*EMPTY*/
+
     }
 
     public void transferStarted(TransferEvent arg0) {
         long contentLength = arg0.getResource().getContentLength();
-        handle.start( (int) contentLength/1024);
+        handle.switchToDeterminate((int) contentLength / 1024);
+        if(debug){
+         writer.println("File Size :"+(int) contentLength / 1024);//NII18N
+        }
     }
 
     public void transferProgress(TransferEvent arg0, byte[] arg1, int arg2) {
-        int work = arg2/1024;
-        
-        handle.progress(lastunit+=work);
-        
+        int work = arg2 / 1024;
+
+        handle.progress(lastunit += work);
+        if(debug){
+         writer.println("Units completed :"+lastunit);//NII18N
+        }
     }
 
     public void transferCompleted(TransferEvent arg0) {
-       handle.finish();
+        handle.finish();
+        if(debug){
+         writer.println("Completed");//NII18N
+        }
     }
 
     public void transferError(TransferEvent arg0) {
-         //todo add Error to handler
+       
+        if(debug){
+         writer.println("Finish with Errors");//NII18N
+        }
     }
 
     public void debug(String arg0) {
-          //todo add debug info to handler
+        if(debug){
+         writer.println(arg0);
+        }
     }
-
-    
-   
-
 }
