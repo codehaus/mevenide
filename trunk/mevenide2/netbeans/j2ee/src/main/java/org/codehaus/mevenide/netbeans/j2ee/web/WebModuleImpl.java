@@ -206,8 +206,15 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     public FileObject getArchive() throws IOException {
         //TODO get the correct values for the plugin properties..
         MavenProject proj = project.getOriginalMavenProject();
-        String finalName = proj.getBuild().getFinalName();
+        //MEVENIDE-591 - find the lcoation according to plugin config
         String loc = proj.getBuild().getDirectory();
+        String finalName = PluginPropertyUtils.getPluginProperty(project,
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_WAR, //NOI18N
+                "warName", "war"); //NOI18N        
+        if (finalName == null) {
+            finalName = proj.getBuild().getFinalName();
+        }
+        
         File fil = FileUtil.normalizeFile(new File(loc, finalName + ".war")); //NOI18N
 //        System.out.println("get archive=" + fil);
         return FileUtil.toFileObject(fil);
@@ -233,9 +240,14 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
             fo = getDocumentBase();
         } else {
             MavenProject proj = project.getOriginalMavenProject();
-            String finalName = proj.getBuild().getFinalName();
-            String loc = proj.getBuild().getDirectory();
-            File fil = FileUtil.normalizeFile(new File(loc, finalName));
+            String loc = PluginPropertyUtils.getPluginProperty(project,
+                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_WAR, //NOI18N
+                "webappDirectory", "war"); //NOI18N        
+            if (loc == null) {
+                String finalName = proj.getBuild().getFinalName();
+                loc = proj.getBuild().getDirectory() + File.separator + finalName;
+            }
+            File fil = FileUtil.normalizeFile(new File(loc));
     //        System.out.println("get content=" + fil);
             fo = FileUtil.toFileObject(fil);
         } 
