@@ -89,7 +89,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("repositories/repository/url") || //NOI18N
                 path.endsWith("pluginRepositories/pluginRepository/url")) { //NOI18N
-            List<String> repoIds = getRepoIds();
+            List<String> repoIds = getRepoUrls();
             return super.createTextValueList(repoIds.toArray(new String[0]), virtualTextCtx);
         }
 
@@ -109,13 +109,14 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         return null;
     }
 
-    /*Return repo id's*/
-    private List<String> getRepoIds() {
+    /*Return repo url's*/
+    private List<String> getRepoUrls() {
         List<String> repos = new ArrayList<String>();
 
         List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : ris) {
-            repos.add(ri.getId());
+            if(ri.getRepositoryUrl()!=null)
+            repos.add(ri.getRepositoryUrl());
         }
 
         return repos;
