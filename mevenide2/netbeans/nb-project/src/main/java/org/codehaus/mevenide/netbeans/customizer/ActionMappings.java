@@ -45,6 +45,7 @@ import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -70,6 +71,7 @@ public class ActionMappings extends javax.swing.JPanel {
     
     private GoalsListener goalsListener;
     private TextValueCompleter goalcompleter;
+    private TextValueCompleter profilecompleter;
     private ProfilesListener profilesListener;
     private PropertiesListener propertiesListener;
     private TestListener testListener;
@@ -107,6 +109,7 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProfiles.addFocusListener(focus);
         txtProperties.addFocusListener(focus);
         goalcompleter = new TextValueCompleter(Collections.<String>emptyList(), txtGoals, " "); //NOI18N
+        profilecompleter = new TextValueCompleter(Collections.<String>emptyList(), txtProfiles, " "); //NOI18N
         
     }
     
@@ -213,6 +216,8 @@ public class ActionMappings extends javax.swing.JPanel {
             }
             goalcompleter.setValueList(strs);
         }
+        List<String> lst = ModelUtils.retrieveAllProfiles(project.getPOMFile());
+        profilecompleter.setValueList(lst);
     }
     
     /** This method is called from within the constructor to
