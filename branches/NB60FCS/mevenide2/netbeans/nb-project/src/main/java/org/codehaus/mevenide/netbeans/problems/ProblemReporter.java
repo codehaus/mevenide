@@ -38,6 +38,7 @@ import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
@@ -46,6 +47,9 @@ import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.loaders.DataObjectNotFoundException;
+import org.openide.modules.ModuleInfo;
+import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -136,6 +140,45 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
     }
     
     public void doBaseProblemChecks(MavenProject project) {
+        String packaging = nbproject.getProjectWatcher().getPackagingType();
+        if (ProjectURLWatcher.TYPE_WAR.equals(packaging) ||
+            ProjectURLWatcher.TYPE_EAR.equals(packaging) ||
+            ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+            Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
+            boolean foundJ2ee = false;
+            for (ModuleInfo info : infos) {
+                if ("org.codehaus.mevenide.netbeans.j2ee".equals(info.getCodeNameBase()) && //NOI18N
+                        info.isEnabled()) {
+                    foundJ2ee = true;
+                    break;
+                }
+            }
+            if (!foundJ2ee) {
+                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
+                    NbBundle.getMessage(ProblemReporter.class, "ERR_MissingJ2eeModule"),
+                    NbBundle.getMessage(ProblemReporter.class, "MSG_MissingJ2eeModule"), 
+                    null);
+                addReport(report);
+            }
+        } else if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+            Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
+            boolean foundApisupport = false;
+            for (ModuleInfo info : infos) {
+                if ("org.codehaus.mevenide.netbeans.apisupport".equals(info.getCodeNameBase()) && //NOI18N
+                        info.isEnabled()) {
+                    foundApisupport = true;
+                    break;
+                }
+            }
+            if (!foundApisupport) {
+                ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
+                    NbBundle.getMessage(ProblemReporter.class, "ERR_MissingApisupportModule"),
+                    NbBundle.getMessage(ProblemReporter.class, "MSG_MissingApisupportModule"), 
+                    null);
+                addReport(report);
+            }
+        }   
+        
         //TODO.. non existing dependencies, not declared app server/j2se platform etc..
         if (project != null) {
             MavenProject parent = project;
