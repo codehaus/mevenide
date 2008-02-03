@@ -37,6 +37,9 @@ public final class Archetype {
     public Archetype(boolean deletable, boolean isArchetypeNg) {
         this.deletable = deletable;
         archetypeNg = isArchetypeNg;
+        artifactId = "";
+        groupId = "";
+        version = "";
     }
     
     public Archetype(boolean deletable) {
