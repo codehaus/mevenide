@@ -55,6 +55,10 @@ public class JavaOutputListenerProviderTest extends TestCase {
         provider.processLine("/home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java:[31,1] illegal start of type", visitor);
         assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
+        // happens with external command line parsing sometimes..
+        provider.processLine("[WARNING] /home/mkleint/src/mevenide/mevenide2/netbeans/nb-project/src/test/java/org/codehaus/mevenide/netbeans/output/JavaOutputListenerProviderTest.java:[31,1] deprecated", visitor);
+        assertNotNull(visitor.getOutputListener());
+        visitor.resetVisitor();
         provider.processLine("K:\\jsr144-private\\common-1_4\\workspace\\ri\\oss_common_j2eesdk-1_4-src-ri\\oss_cbe_party_ri\\..\\src\\main\\java\\ossj\\common\\cbe\\party\\PartyValueIteratorImpl.java:[22,7] ossj.common.cbe.party.PartyValueIteratorImpl is not abstract and does not override abstract method getNextPartys(int) in javax.oss.cbe.party.PartyValueIterator", visitor);
         assertNotNull(visitor.getOutputListener());
         visitor.resetVisitor();
