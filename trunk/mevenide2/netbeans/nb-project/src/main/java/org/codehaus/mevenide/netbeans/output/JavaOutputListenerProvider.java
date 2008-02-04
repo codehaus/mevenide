@@ -49,7 +49,7 @@ public class JavaOutputListenerProvider implements OutputProcessor {
     public JavaOutputListenerProvider() {
         //[javac] required because of forked compilation
         //DOTALL seems to fix MEVENIDE-455 on windows. one of the characters seems to be a some kind of newline and that's why the line doesnt' get matched otherwise.
-        failPattern = Pattern.compile("\\s*(?:\\[javac\\])?(?:Compilation failure)?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL); //NOI18N
+        failPattern = Pattern.compile("\\s*(?:\\[WARNING\\])?(?:\\[javac\\])?(?:Compilation failure)?\\s*(.*)\\.java\\:\\[([0-9]*),([0-9]*)\\] (.*)", Pattern.DOTALL); //NOI18N
     }
     
     public void processLine(String line, OutputVisitor visitor) {
