@@ -211,21 +211,21 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
     private void populateGroupId() {
 
-        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getGroups(RepositoryPreferences.LOCAL_REPO_ID));
+        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getGroups());
         groupCompleter = new TextValueCompleter(lst, txtGroupId);
 
     }
 
     private void populateArtifact() {
 
-        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(RepositoryPreferences.LOCAL_REPO_ID, txtGroupId.getText().trim()));
+        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(txtGroupId.getText().trim()));
         artifactCompleter.setValueList(lst);
 
     }
 
     private void populateVersion() {
 
-        List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().getVersions(RepositoryPreferences.LOCAL_REPO_ID, txtGroupId.getText().trim(), txtArtifactId.getText().trim());
+        List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
         List<String> vers = new ArrayList<String>();
         for (NBVersionInfo rec : lst) {
             if (!vers.contains(rec.getVersion())) {

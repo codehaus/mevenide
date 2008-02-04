@@ -35,29 +35,29 @@ public interface RepositoryIndexer {
 
     void deleteArtifactFromIndex(String repoId, Artifact artifact);
 
-    Set<java.lang.String> getGroups(String repoId);
+    Set<java.lang.String> getGroups(String... repoId);
 
-    Set<String> filterGroupIds(String repoId, String prefix);
+    Set<String> filterGroupIds(String prefix, String... repoIds);
 
     List<NBVersionInfo> getRecords(String repoId, String groupId, String artifactId, String version);
 
-    Set<String> getArtifacts(String repoId, String groupId);
+    Set<String> getArtifacts(String groupId, String... repoId);
 
-    List<NBVersionInfo> getVersions(String repoId, String groupId, String artifactId);
+    List<NBVersionInfo> getVersions(String groupId, String artifactId, String... repoIds);
 
-    List<NBGroupInfo> findDependencyUsage(String repoId, String groupId, String artifactId, String version);
+    List<NBGroupInfo> findDependencyUsage(String groupId, String artifactId, String version, String... repoIds);
 
-    List<NBVersionInfo> findByMD5(String repoId, File file);
+    List<NBVersionInfo> findByMD5(File file, String... repoIds);
 
-    List<NBVersionInfo> findByMD5(String repoId, String md5);
+    List<NBVersionInfo> findByMD5(String md5, String... repoIds);
 
-    List<NBVersionInfo> retrievePossibleArchetypes(String repoId);
+    List<NBVersionInfo> retrievePossibleArchetypes(String... repoIds);
 
-    Set<String> filterPluginArtifactIds(String repoId, String groupId, String prefix);
+    Set<String> filterPluginArtifactIds(String groupId, String prefix, String... repoIds);
 
-    Set<String> filterPluginGroupIds(String repoId, String prefix);
+    Set<String> filterPluginGroupIds(String prefix, String... repoIds);
 
-    Set<String> filterArtifactIdForGroupId(String repoId, String groupId, String prefix);
+    Set<String> filterArtifactIdForGroupId(String groupId, String prefix, String... repoIds);
 
     void addIndexChangeListener(ChangeListener cl);
 
