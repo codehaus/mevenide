@@ -138,7 +138,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
             }
         };
         final List<NBGroupInfo> list = RepositoryUtil.getDefaultRepositoryIndexer().
-                findDependencyUsage(RepositoryPreferences.LOCAL_REPO_ID,
+                findDependencyUsage(
                 artifact.getGroupId(),
                     artifact.getArtifactId(), artifact.getVersion());
         Children repoChildren = new Children.Keys<NBGroupInfo>() {

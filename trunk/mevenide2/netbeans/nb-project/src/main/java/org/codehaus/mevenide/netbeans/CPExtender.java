@@ -138,7 +138,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             String[] dep = checkLayer(checksum);
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
-                dep = checkLocalRepo(checksum);
+                dep = checkRepositoryIndices(checksum);
             }
             //if not found anywhere, add to a custom file:// based repository structure within the project's directory.
             if (dep == null || "unknown.binary".equals(dep[0])) {  //NOI18N
@@ -167,9 +167,9 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         return false;
     }
     
-    private String[] checkLocalRepo(String checksum) {
+    private String[] checkRepositoryIndices(String checksum) {
         List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().
-                findByMD5("local",checksum);
+                findByMD5(checksum);
         for (NBVersionInfo elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();

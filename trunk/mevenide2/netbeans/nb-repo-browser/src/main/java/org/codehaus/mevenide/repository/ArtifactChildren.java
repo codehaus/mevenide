@@ -65,7 +65,7 @@ public class ArtifactChildren extends Children.Keys {
 
             public void run() {
 
-                setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(info.getId(), groupId, artifactId));
+                setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(groupId, artifactId, info.getId()));
 
             }
         });

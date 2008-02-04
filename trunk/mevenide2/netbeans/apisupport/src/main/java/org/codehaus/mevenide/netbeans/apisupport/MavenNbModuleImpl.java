@@ -187,7 +187,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         File platformFile = lookForModuleInPlatform(artifactId);
         if (platformFile != null) {
             try {
-                List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().findByMD5("local",platformFile);
+                List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().findByMD5(platformFile);
                 for (NBVersionInfo elem : lst) {
                     dep = new Dependency();
                     dep.setArtifactId(elem.getArtifactId());

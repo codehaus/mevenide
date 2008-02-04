@@ -88,7 +88,7 @@ public class GroupNode extends AbstractNode {
 
                 public void run() {
 
-                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(info.getId(), id));
+                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(id, info.getId()));
 
                 }
             });
