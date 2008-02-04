@@ -147,11 +147,13 @@ public final class FileUtilities {
         FileObject outDir = null;
         outDir = FileUtil.toFileObject(fl);
         File parent = fl.getParentFile();
-        while (outDir == null && parent != null) {
+        boolean wasRefreshed = false;
+        while (outDir == null && parent != null && !wasRefreshed) {
             FileObject par = FileUtil.toFileObject(parent);
             if (par != null) {
                 par.refresh();
                 outDir = FileUtil.toFileObject(fl);
+                wasRefreshed = true;
             } else {
                 parent = parent.getParentFile();
             }
