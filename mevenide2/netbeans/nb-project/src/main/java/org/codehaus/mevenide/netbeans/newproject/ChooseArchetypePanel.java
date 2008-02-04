@@ -312,7 +312,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     boolean valid(WizardDescriptor wizardDescriptor) {
         boolean isSelected = manager.getSelectedNodes().length > 0;
         if (isSelected) {
-            Archetype arch = (Archetype)((AbstractNode)nds[0]).getValue(PROP_ARCHETYPE);
+            Archetype arch = (Archetype)((AbstractNode)manager.getSelectedNodes()[0]).getValue(PROP_ARCHETYPE);
             isSelected = arch != null && arch != LOADING_ARCHETYPE && arch != REMOTE_PLACEHOLDER;
         }
         return isSelected;
