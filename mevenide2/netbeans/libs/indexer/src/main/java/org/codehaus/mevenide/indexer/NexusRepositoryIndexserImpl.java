@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.lucene.document.Field;
@@ -83,15 +84,23 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     private ArtifactRepository repository;
     private NexusIndexer indexer;
     private IndexUpdater remoteIndexUpdater;
-    //
+    
+    /*Indexer Keys*/
     private static final String NB_ARTIFACT = "nba"; //NOI18N
     private static final String NB_DEPENDENCY_GROUP = "nbdg"; //NOI18N
     private static final String NB_DEPENDENCY_ARTIFACT = "nbda"; //NOI18N
     private static final String NB_DEPENDENCY_VERTION = "nbdv"; //NOI18N
+    
+    /*logger*/
+    private static final Logger LOGGER = 
+            Logger.getLogger("org.codehaus.mevenide.indexer.RepositoryIndexer");//NOI18N
+    
+    /*custom Index creators*/
     public static final List<? extends IndexCreator> NB_INDEX = Arrays.asList(
             new MinimalArtifactInfoIndexCreator(),
             new JarFileContentsIndexCreator(),
             new NbIndexCreator());
+    
     /**
      * any reads, writes from/to index shal be done under mutex access.
      */
@@ -100,6 +109,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     public NexusRepositoryIndexserImpl() {
         //to prevent MaxClauseCount exception (will investigate better way)
         BooleanQuery.setMaxClauseCount(Integer.MAX_VALUE);
+        
         try {
             PlexusContainer embedder;
             ContainerConfiguration config = new DefaultContainerConfiguration();
@@ -115,10 +125,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
     }
 
+
     //always call from mutex.writeAccess
     private void loadIndexingContext(final String... repoids) throws IOException, UnsupportedExistingLuceneIndexException {
         assert MUTEX.isWriteAccess();
+         
         for (String repoid : repoids) {
+            LOGGER.finer("Loading Context :"+repoid);//NOI18N
             RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoid);
             indexer.addIndexingContext( //
                     info.getId(), // context id
@@ -131,19 +144,24 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
     }
 
+
     //TODO mkleint: do we really want to start index whenever it's missing?
     // what about just silently returning empty values and let the scheduled
     // idexing kick in..
     private void checkIndexAvailability(final String... ids) throws MutexException {
         assert MUTEX.isWriteAccess();
+       
         for (String id : ids) {
+            LOGGER.finer("Checking Context.. :"+id);//NOI18N
             File file = new File(getDefaultIndexLocation(), id);
             if (!file.exists() || file.listFiles().length <= 0) {
+                LOGGER.finer("Index Not Available :"+id +" At :"+file.getAbsolutePath());//NOI18N
                 indexRepo(id);
             }
+              LOGGER.finer("Index Available :"+id+" At :"+file.getAbsolutePath());//NOI18N
         }
     }
-    
+
     private String[] checkEmptyArray(String... repoids) {
         if (repoids.length == 0) {
             List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
@@ -158,45 +176,58 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return repoids;
     }
 
+
     //always call from mutex.writeAccess
     private void unloadIndexingContext(final String... contextIds) throws IOException {
         assert MUTEX.isWriteAccess();
         for (String contextId : contextIds) {
+             LOGGER.finer("Unloading Context :"+contextId);//NOI18N
             IndexingContext ic = indexer.getIndexingContexts().get(contextId);
             if (ic != null) {
                 indexer.removeIndexingContext(ic, false);
+
             }
         }
     }
 
     public void indexRepo(final String repoId) {
+        LOGGER.finer("Indexing Context :"+repoId);//NOI18N
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
                     loadIndexingContext(repoId);
+
                     try {
                         RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoId);
                         Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                         IndexingContext indexingContext = indexingContexts.get(repoId);
                         if (info == null || indexingContext == null) {
-                            //do nothing
+                            LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
                             return null;
                         }
                         if (info.isRemote()) {
+                            LOGGER.finer("Indexing Remote Repository :"+repoId);//NOI18N
                             RemoteIndexTransferListener listener = new RemoteIndexTransferListener(info);
                             try {
                                 remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, listener);
 
+
+
                             } catch (IOException iOException) {
+                                 LOGGER.warning(iOException.getMessage());//NOI18N
                                 //handle index not found
                                 listener.transferCompleted(null);
                             }
 
                         } else {
+                             LOGGER.finer("Indexing Local Repository :"+repoId);//NOI18N
                             indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+
                         }
+
                     } finally {
+
                         unloadIndexingContext(repoId);
                     }
                     RepositoryPreferences.getInstance().setLastIndexUpdate(repoId, new Date());
@@ -228,7 +259,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
 
                     if (indexingContext == null) {
-                        //do nothing
+                        LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
                         return null;
                     }
 
@@ -256,9 +287,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                         IndexingContext indexingContext = indexingContexts.get(repoId);
                         if (indexingContext == null) {
-                            //do nothing
+                            LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
                             return null;
                         }
+
+
 
 
                         for (Artifact artifact : artifacts) {
@@ -295,7 +328,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
                     IndexingContext indexingContext = indexingContexts.get(repoId);
                     if (indexingContext == null) {
-                        //do nothing
+                        LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
                         return null;
                     }
 
