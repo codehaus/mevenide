@@ -20,10 +20,10 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 import java.io.IOException;
 import javax.swing.event.DocumentEvent;
 import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
@@ -78,7 +78,13 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
         }
         initValues();
-        txtContextPath.setText(moduleProvider.getWebModuleImplementation().getContextPath());
+        //MEVENIDE-604. how can the moduleProvider be null?
+        if (moduleProvider == null) {
+            Logger.getLogger(WebRunCustomizerPanel.class.getName()).info("Module provider instance mising in properties panel. Please report in http://jira.codehaus.org/browse/MEVENIDE-604");
+            txtContextPath.setText("");
+        } else {
+            txtContextPath.setText(moduleProvider.getWebModuleImplementation().getContextPath());
+        }
     }
     
     private void initValues() {
