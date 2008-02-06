@@ -18,9 +18,11 @@ package org.codehaus.mevenide.netbeans;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
@@ -41,6 +43,10 @@ public class ModInstall extends ModuleInstall {
     private static int MILIS_IN_MIN = MILIS_IN_SEC * 60;
     private transient PropertyChangeListener projectsListener;
 
+     /*logger*/
+    private static final Logger LOGGER = 
+            Logger.getLogger("org.codehaus.mevenide.netbeans.ModuleInstall");//NOI18N
+    
     /** Creates a new instance of ModInstall */
     public ModInstall() {
     }
@@ -59,10 +65,13 @@ public class ModInstall extends ModuleInstall {
             if (freq != RepositoryPreferences.FREQ_NEVER) {
                 boolean run = false;
                 if (freq == RepositoryPreferences.FREQ_STARTUP) {
+                    LOGGER.finer("Index At Startup :"+ri.getId());//NOI18N
                     run = true;
                 } else if (freq == RepositoryPreferences.FREQ_ONCE_DAY && checkDiff(ri.getId(),86400000L)) {
+                    LOGGER.finer("Index Once a Day :"+ri.getId());//NOI18N
                     run = true;
                 } else if (freq == RepositoryPreferences.FREQ_ONCE_WEEK && checkDiff(ri.getId(),604800000L)) {
+                    LOGGER.finer("Index once a Week :"+ri.getId());//NOI18N
                     run = true;
                 }
                 if (run) {
@@ -84,7 +93,11 @@ public class ModInstall extends ModuleInstall {
     private boolean checkDiff(String repoid,long amount) {
         Date date = RepositoryPreferences.getInstance().getLastIndexUpdate(repoid);
         Date now = new Date();
+        LOGGER.finer("Check Date Diff :"+repoid);//NOI18N
+        LOGGER.finer("Last Indexed Date :"+SimpleDateFormat.getInstance().format(date));//NOI18N
+        LOGGER.finer("Now :"+SimpleDateFormat.getInstance().format(now));//NOI18N
         long diff = now.getTime() - date.getTime();
+        LOGGER.finer("Diff :"+diff);//NOI18N
         return (diff < 0 || diff > amount);
     }
 
