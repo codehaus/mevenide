@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans;
 
 import java.io.StringReader;
@@ -52,6 +51,7 @@ import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Task;
 import org.openide.util.TaskListener;
 import org.openide.util.actions.Presenter;
@@ -61,9 +61,9 @@ import org.openide.util.actions.Presenter;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class ActionProviderImpl implements ActionProvider {
-    
+
     private NbMavenProject project;
-    private static String[] supported = new String[] {
+    private static String[] supported = new String[]{
         COMMAND_BUILD,
         COMMAND_CLEAN,
         COMMAND_REBUILD,
@@ -76,45 +76,43 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_DEBUG_SINGLE,
         COMMAND_DEBUG_TEST_SINGLE,
         "debug.fix", //NOI18N
-        
+
         //operations
-        COMMAND_DELETE, 
+        COMMAND_DELETE,
         COMMAND_RENAME,
         COMMAND_MOVE,
         COMMAND_COPY,
-        
         "nbmreload" //TODO make actionproviders mergeble //NOI18N
     };
-    
-    
+
     /** Creates a new instance of ActionProviderImpl */
     public ActionProviderImpl(NbMavenProject proj) {
         project = proj;
     }
-    
+
     public String[] getSupportedActions() {
         return supported;
     }
-    
+
     public void invokeAction(String action, Lookup lookup) {
         if (COMMAND_DELETE.equals(action)) {
             DefaultProjectOperations.performDefaultDeleteOperation(project);
-            return ;
+            return;
         }
         if (COMMAND_COPY.equals(action)) {
             DefaultProjectOperations.performDefaultCopyOperation(project);
-            return ;
+            return;
         }
         if (COMMAND_MOVE.equals(action)) {
             DefaultProjectOperations.performDefaultMoveOperation(project);
-            return ;
+            return;
         }
-        
+
         if (COMMAND_RENAME.equals(action)) {
             DefaultProjectOperations.performDefaultRenameOperation(project, null);
-            return ;
+            return;
         }
-        
+
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         if (rc == null) {
             Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.INFO, "No handling for action:" + action + ". Ignoring."); //NOI18N
@@ -123,12 +121,11 @@ public class ActionProviderImpl implements ActionProvider {
             runGoal(action, lookup, rc);
         }
     }
-    
-    
+
     private void runGoal(String action, Lookup lookup, RunConfig config) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
-        
+
         // check the prerequisites
         Lookup.Result<PrerequisitesChecker> result = config.getProject().getLookup().lookup(new Lookup.Template<PrerequisitesChecker>(PrerequisitesChecker.class));
         for (PrerequisitesChecker elem : result.allInstances()) {
@@ -136,22 +133,23 @@ public class ActionProviderImpl implements ActionProvider {
                 return;
             }
         }
-        
+
         // setup executor now..
         ExecutorTask task = RunUtils.executeMaven(config);
-        
+
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
+
             public void taskFinished(Task task2) {
                 ProjectURLWatcher.fireMavenProjectReload(project);
-                RepositoryUtil.getDefaultRepositoryIndexer().updateIndexWithArtifacts("local"/*local*/,project.getOriginalMavenProject().getDependencyArtifacts());
+                RepositoryUtil.getDefaultRepositoryIndexer().updateIndexWithArtifacts("local"/*local*/, project.getOriginalMavenProject().getDependencyArtifacts());
             }
         });
     }
-    
+
     private void setupTaskName(String action, RunConfig config, Lookup lkp) {
         assert config instanceof BeanRunConfig;
-        BeanRunConfig bc = (BeanRunConfig)config;
+        BeanRunConfig bc = (BeanRunConfig) config;
         String title;
         DataObject dobj = lkp.lookup(DataObject.class);
         //#118926 prevent NPE, how come the dobj is null?
@@ -159,26 +157,26 @@ public class ActionProviderImpl implements ActionProvider {
         if (ActionProvider.COMMAND_RUN.equals(action)) {
             title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", bc.getProject().getOriginalMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_DEBUG.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug",  bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug", bc.getProject().getOriginalMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_TEST.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test",  bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test", bc.getProject().getOriginalMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_RUN_SINGLE.equals(action)) {
             title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", dobjName);
         } else if (ActionProvider.COMMAND_DEBUG_SINGLE.equals(action) || ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug",  dobjName);
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug", dobjName);
         } else if (ActionProvider.COMMAND_TEST_SINGLE.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test",  dobjName);
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test", dobjName);
         } else {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build",  bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build", bc.getProject().getOriginalMavenProject().getArtifactId());
         }
         bc.setTaskDisplayName(title);
     }
-    
+
     public boolean isActionEnabled(String action, Lookup lookup) {
         if (COMMAND_DELETE.equals(action) ||
-            COMMAND_RENAME.equals(action) ||
-            COMMAND_COPY.equals(action) ||
-            COMMAND_MOVE.equals(action)) {
+                COMMAND_RENAME.equals(action) ||
+                COMMAND_COPY.equals(action) ||
+                COMMAND_MOVE.equals(action)) {
             return true;
         }
         //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over
@@ -186,34 +184,34 @@ public class ActionProviderImpl implements ActionProvider {
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         return rc != null;
     }
-    
+
     public Action createBasicMavenAction(String name, String action) {
         return new BasicAction(name, action);
     }
-    
+
     public Action createCustomMavenAction(String name, NetbeansActionMapping mapping) {
         return createCustomMavenAction(name, mapping, true);
     }
-    
+
     public Action createCustomMavenAction(String name, NetbeansActionMapping mapping, boolean showUI) {
         return new CustomAction(name, mapping, showUI);
     }
-    
+
     public Action createCustomPopupAction() {
         return new CustomPopupActions();
     }
-    
-    
+
     private final static class BasicAction extends AbstractAction implements ContextAwareAction {
+
         private String actionid;
         private Lookup context;
         private ActionProviderImpl provider;
-        
+
         private BasicAction(String name, String act) {
             actionid = act;
             putValue(Action.NAME, name);
         }
-        
+
         private BasicAction(String name, String act, Lookup cntxt) {
             this(name, act);
             Lookup.Result<Project> res = cntxt.lookup(new Lookup.Template<Project>(Project.class));
@@ -223,7 +221,7 @@ public class ActionProviderImpl implements ActionProvider {
                 provider = this.context.lookup(ActionProviderImpl.class);
             }
         }
-        
+
         public void actionPerformed(java.awt.event.ActionEvent e) {
             if (provider != null) {
                 provider.invokeAction(actionid, context);
@@ -239,26 +237,27 @@ public class ActionProviderImpl implements ActionProvider {
         }
 
         public Action createContextAwareInstance(Lookup actionContext) {
-            return new BasicAction((String)getValue(Action.NAME), actionid, actionContext);
+            return new BasicAction((String) getValue(Action.NAME), actionid, actionContext);
         }
     }
-    
+
     private final class CustomAction extends AbstractAction {
+
         private NetbeansActionMapping mapping;
         private boolean showUI;
-        
+
         private CustomAction(String name, NetbeansActionMapping mapp, boolean showUI) {
             mapping = mapp;
             putValue(Action.NAME, name);
             this.showUI = showUI;
         }
-        
+
         public void actionPerformed(java.awt.event.ActionEvent e) {
             if (!showUI) {
                 ModelRunConfig rc = new ModelRunConfig(project, mapping);
                 rc.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
-                
+
                 setupTaskName("custom", rc, Lookup.EMPTY);
                 runGoal("custom", Lookup.EMPTY, rc); //NOI18N
                 return;
@@ -287,7 +286,7 @@ public class ActionProviderImpl implements ActionProvider {
                         Iterator it = mappings.getActions().iterator();
                         NetbeansActionMapping exist = null;
                         while (it.hasNext()) {
-                            NetbeansActionMapping m = (NetbeansActionMapping)it.next();
+                            NetbeansActionMapping m = (NetbeansActionMapping) it.next();
                             if (tit.equals(m.getActionName())) {
                                 exist = m;
                                 break;
@@ -318,28 +317,37 @@ public class ActionProviderImpl implements ActionProvider {
     }
 
     private final class CustomPopupActions extends AbstractAction implements Presenter.Popup {
-        
+
         private CustomPopupActions() {
             putValue(Action.NAME, NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
         }
-        
+
         public void actionPerformed(java.awt.event.ActionEvent e) {
         }
-    
+
         public JMenuItem getPopupPresenter() {
-            //TODO have some caching/lazy construction strategy
-            JMenu menu = new JMenu(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
-            NetbeansActionMapping[] maps = ActionToGoalUtils.getActiveCustomMappings(project);
-            for (int i = 0; i < maps.length; i++) {
-                NetbeansActionMapping mapp = maps[i];
-                Action act = createCustomMavenAction(mapp.getActionName(), mapp, false);
-                JMenuItem item = new JMenuItem(act);
-                item.setText(mapp.getDisplayName() == null ? mapp.getActionName() : mapp.getDisplayName());
-                menu.add(item);
-            }
-            menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
+           
+            final JMenu menu = new JMenu(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
+            final JMenuItem loading = new JMenuItem(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Loading", new Object[]{}));
+
+            menu.add(loading);
+            /*using lazy construction strategy*/
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    NetbeansActionMapping[] maps = ActionToGoalUtils.getActiveCustomMappings(project);
+                    for (int i = 0; i < maps.length; i++) {
+                        NetbeansActionMapping mapp = maps[i];
+                        Action act = createCustomMavenAction(mapp.getActionName(), mapp, false);
+                        JMenuItem item = new JMenuItem(act);
+                        item.setText(mapp.getDisplayName() == null ? mapp.getActionName() : mapp.getDisplayName());
+                        menu.add(item);
+                    }
+                    menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
+                    menu.remove(loading);
+                }
+            });
             return menu;
         }
     }
-    
 }
