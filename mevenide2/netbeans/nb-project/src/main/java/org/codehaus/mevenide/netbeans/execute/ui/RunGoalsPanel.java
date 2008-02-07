@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.execute.ui;
 
 import java.io.File;
@@ -27,11 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.build.model.ModelLineage;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
@@ -43,6 +38,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
@@ -51,51 +47,62 @@ import org.openide.util.Utilities;
  * @author  mkleint
  */
 public class RunGoalsPanel extends javax.swing.JPanel {
-    
+
     private List<NetbeansActionMapping> historyMappings;
     private int historyIndex = 0;
     private TextValueCompleter goalcompleter;
     private TextValueCompleter profilecompleter;
-    
+
     /** Creates new form RunGoalsPanel */
     public RunGoalsPanel() {
         initComponents();
         historyMappings = new ArrayList<NetbeansActionMapping>();
         btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png"))); //NOI18N
         btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png"))); //NOI18N
+
         
-        //maybe do lazy..
-        goalcompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGoals, " "); //NOI18N
-        GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
-        if (provider != null) {
-            Set<String> strs = provider.getAvailableGoals();
-            try {
-                List<String> phases = EmbedderFactory.getProjectEmbedder().getLifecyclePhases();
-                strs.addAll(phases);
-            } catch (Exception e) {
-                // oh wel just ignore..
-                e.printStackTrace();
+        List<String> wait = new ArrayList<String>(1);
+        wait.add(NbBundle.getMessage(RunGoalsPanel.class, "LBL_PLEASE_WAIT"));
+        goalcompleter = new TextValueCompleter(wait, txtGoals, " "); //NOI18N
+        
+        // doing lazy.. 
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
+                if (provider != null) {
+                    Set<String> strs = provider.getAvailableGoals();
+                    try {
+                        List<String> phases = EmbedderFactory.getProjectEmbedder().getLifecyclePhases();
+                        strs.addAll(phases);
+                    } catch (Exception e) {
+                        // oh wel just ignore..
+                        e.printStackTrace();
+                    }
+                    goalcompleter.setValueList(strs);
+                }
             }
-            goalcompleter.setValueList(strs);
-        }
-        profilecompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtProfiles, " ");
+        });
+
+        profilecompleter = new TextValueCompleter(wait, txtProfiles, " ");
     }
 
     @Override
     public void addNotify() {
         super.addNotify();
         txtGoals.requestFocus();
-        
+
     }
-    
+
     private void readProfiles(final File pom) {
         RequestProcessor.getDefault().post(new Runnable() {
+
             public void run() {
                 profilecompleter.setValueList(ModelUtils.retrieveAllProfiles(pom));
             }
         });
     }
-    
+
     private String createSpaceSeparatedList(List list) {
         String str = ""; //NOI18N
         if (list != null) {
@@ -107,9 +114,8 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
         return str;
     }
-    
-    
-    public void readMapping(NetbeansActionMapping mapp, MavenProject project, Set profiles, ActionToGoalMapping historyMappings)  {
+
+    public void readMapping(NetbeansActionMapping mapp, MavenProject project, Set profiles, ActionToGoalMapping historyMappings) {
         this.historyMappings.clear();
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);
@@ -117,7 +123,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         readProfiles(project.getFile());
         moveHistory(-1);
     }
-    
+
     public void readConfig(final RunConfig config) {
         historyMappings.clear();
         btnNext.setVisible(false);
@@ -127,7 +133,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             StringBuffer buf = new StringBuffer();
             Iterator it = config.getProperties().keySet().iterator();
             while (it.hasNext()) {
-                String key = (String)it.next();
+                String key = (String) it.next();
                 buf.append(key).append("=").append(config.getProperties().getProperty(key)).append("\n"); //NOI18N
             }
             taProperties.setText(buf.toString());
@@ -144,14 +150,14 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setShowDebug(config.isShowDebug());
         readProfiles(config.getProject().getPOMFile());
     }
-    
+
     private void readMapping(NetbeansActionMapping mapp) {
         txtGoals.setText(createSpaceSeparatedList(mapp.getGoals()));
         if (mapp.getProperties() != null) {
             StringBuffer buf = new StringBuffer();
             Iterator it = mapp.getProperties().keySet().iterator();
             while (it.hasNext()) {
-                String key = (String)it.next();
+                String key = (String) it.next();
                 buf.append(key).append("=").append(mapp.getProperties().getProperty(key)).append("\n"); //NOI18N
             }
             taProperties.setText(buf.toString());
@@ -163,7 +169,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
         txtProfiles.setText(createSpaceSeparatedList(mapp.getActivatedProfiles()));
     }
-    
+
     public void applyValues(NetbeansActionMapping mapp) {
         StringTokenizer tok = new StringTokenizer(txtGoals.getText().trim());
         List<String> lst = new ArrayList<String>();
@@ -171,7 +177,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             lst.add(tok.nextToken());
         }
         mapp.setGoals(lst.size() > 0 ? lst : null);
-        
+
         PropertySplitter split = new PropertySplitter(taProperties.getText());
         String token = split.nextPair();
         Properties props = new Properties();
@@ -186,16 +192,16 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             props.setProperty(ActionMappings.PROP_SKIP_TEST, "true"); //NOI18N
         }
         mapp.setProperties(props);
-        
+
         tok = new StringTokenizer(txtProfiles.getText().trim());
         lst = new ArrayList<String>();
         while (tok.hasMoreTokens()) {
             lst.add(tok.nextToken());
         }
         mapp.setActivatedProfiles(lst);
-        
+
     }
-    
+
     public void applyValues(BeanRunConfig rc) {
         StringTokenizer tok = new StringTokenizer(txtGoals.getText().trim());
         List<String> lst = new ArrayList<String>();
@@ -209,7 +215,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             lst.add(tok.nextToken());
         }
         rc.setActivatedProfiles(lst);
-        
+
         PropertySplitter split = new PropertySplitter(taProperties.getText());
         String token = split.nextPair();
         Properties props = new Properties();
@@ -229,7 +235,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         rc.setUpdateSnapshots(isUpdateSnapshots());
         rc.setOffline(Boolean.valueOf(isOffline()));
     }
-    
+
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -384,7 +390,6 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                 .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
     private void cbSkipTestsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbSkipTestsActionPerformed
         String current = taProperties.getText();
         if (current.contains(ActionMappings.PROP_SKIP_TEST)) {
@@ -405,16 +410,15 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         btnPrev.setEnabled(historyIndex != 0);
         btnNext.setEnabled(historyIndex != (historyMappings.size() - 1));
     }
-    
+
     private void btnPrevActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPrevActionPerformed
         moveHistory(-1);
     }//GEN-LAST:event_btnPrevActionPerformed
-    
-    
+
     public boolean isOffline() {
         return cbOffline.isSelected();
     }
-    
+
     public boolean isShowDebug() {
         return cbDebug.isSelected();
     }
@@ -426,31 +430,31 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     public void setShowDebug(boolean b) {
         cbDebug.setSelected(b);
     }
-    
+
     public void setUpdateSnapshots(boolean b) {
         cbUpdateSnapshots.setSelected(b);
     }
-    
+
     public void setSkipTests(boolean b) {
         cbSkipTests.setSelected(b);
     }
-    
+
     public void setRecursive(boolean b) {
         cbRecursive.setSelected(b);
     }
-    
+
     public boolean isSkipTests() {
         return cbSkipTests.isSelected();
     }
-    
+
     public boolean isRecursive() {
         return cbRecursive.isSelected();
     }
-    
+
     public boolean isUpdateSnapshots() {
         return cbUpdateSnapshots.isSelected();
     }
-    
+
     public String isRememberedAs() {
         if (cbRemember.isSelected()) {
             String txt = txtRemember.getText().trim();
@@ -460,7 +464,6 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
         return null;
     }
-    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNext;
     private javax.swing.JButton btnPrev;
