@@ -27,9 +27,6 @@
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
 	     <module>graph</module>
-             <!-- move archetypeng to experimental once it's maven plugin is in some kind of 
-             remote repository-->
-             <module>archetypeng</module>
 	     <module>webframeworks</module>
           </modules>
        </profile>
@@ -148,6 +145,7 @@
      <module>apisupport</module>
      <module>junit</module>
      <module>nb-repo-browser</module>
+     <module>archetypeng</module>
      <!--module>graph</module-->
   </modules>
     <repositories>
