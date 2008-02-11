@@ -21,6 +21,7 @@ import java.beans.FeatureDescriptor;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -34,6 +35,9 @@ import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarQueryManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Lookup;
+import org.openide.util.Lookup.Item;
+import org.openide.util.Lookup.Result;
 import org.w3c.dom.Node;
 
 public final class MavenQueryProvider extends GrammarQueryManager {
@@ -41,8 +45,14 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     private List<GrammarFactory> grammars;
     public MavenQueryProvider() {
         grammars = new ArrayList<GrammarFactory>();
-        // TODO make regitrable/pluggable somehow
-        grammars.add(new DefaultGrammarFactory());
+        
+        
+        Result<GrammarFactory> result = Lookup.getDefault().lookupResult(GrammarFactory.class);
+        Collection<? extends Item<GrammarFactory>> items = result.allItems();
+        for (Item<GrammarFactory> item : items) {
+            grammars.add(item.getInstance());
+        }
+
     }
     
     public Enumeration enabled(GrammarEnvironment ctx) {
@@ -71,77 +81,6 @@ public final class MavenQueryProvider extends GrammarQueryManager {
             }
         }
         return null;
-    }
-    
-    private static class DefaultGrammarFactory extends GrammarFactory {
-        
-        public GrammarQuery isSupported(GrammarEnvironment env) {
-            FileObject fo = env.getFileObject();
-            if (fo.getNameExt().equals("settings.xml") &&  //NOI18N
-                fo.getParent() != null && ".m2".equalsIgnoreCase(fo.getParent().getNameExt())) { //NOI18N
-                //TODO also locate by namespace??
-                //TODO more proper condition
-                return new MavenSettingsGrammar(env);
-            }
-            Project owner = FileOwnerQuery.getOwner(fo);
-            if (owner == null) { //#107511
-                return null;
-            }
-            if (fo.getNameExt().equals("pom.xml") &&  //NOI18N
-                owner.getProjectDirectory().equals(fo.getParent())) {
-                //TODO also locate by namespace??
-                return new MavenProjectGrammar(env);
-            }
-            if (fo.getNameExt().equals("profiles.xml") &&  //NOI18N
-                owner.getProjectDirectory().equals(fo.getParent())) {
-                //TODO also locate by namespace??
-                //TODO more proper condition
-                return new MavenProfilesGrammar(env);
-            }
-            File file = FileUtil.toFile(fo);
-            if (owner.getLookup().lookup(ProjectURLWatcher.class) != null) {
-                // this check means it's a maven based project..
-                if ("src/main/resources/META-INF/archetype.xml".equals(FileUtil.getRelativePath(owner.getProjectDirectory(), env.getFileObject()))) { //NOI18N
-                    return new MavenArchetypeGrammar(env);
-                }
-                //TODO also locate by namespace??
-                String desc = PluginPropertyUtils.getPluginProperty(owner, 
-                        "org.apache.maven.plugins",  //NOI18N
-                        "maven-assembly-plugin",  //NOI18N
-                        "descriptor", "assembly"); //NOI18N
-                if (desc == null) {
-                    desc = PluginPropertyUtils.getPluginProperty(owner, 
-                            "org.apache.maven.plugins",  //NOI18N
-                            "maven-assembly-plugin",  //NOI18N
-                            "descriptor", "directory"); //NOI18N
-                }
-                if (desc != null) {
-                    URI uri = FileUtilities.getDirURI(owner.getProjectDirectory(), desc);
-                    if (uri != null && new File(uri).equals(file)) {
-                        return new MavenAssemblyGrammar(env);
-                    }
-                }
-                desc = PluginPropertyUtils.getPluginProperty(owner, 
-                        "org.codehaus.mojo",  //NOI18N
-                        "nbm-maven-plugin",  //NOI18N
-                        "descriptor", "jar"); //NOI18N
-                if (desc == null) {
-                    desc = PluginPropertyUtils.getPluginProperty(owner, 
-                            "org.codehaus.mevenide.plugins",  //NOI18N
-                            "maven-nbm-plugin",  //NOI18N
-                            "descriptor", "jar"); //NOI18N
-                }
-                if (desc != null) {
-                    URI uri = FileUtilities.getDirURI(owner.getProjectDirectory(), desc);
-                    if (uri != null && new File(uri).equals(file)) {
-                        return new MavenNbmGrammar(env);
-                    }
-                }
-            }
-            return null;
-        }
-        
-        
     }
     
 }
