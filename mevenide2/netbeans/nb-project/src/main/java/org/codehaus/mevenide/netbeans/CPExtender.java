@@ -23,8 +23,10 @@ import java.net.URL;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -198,19 +200,28 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         }
         return null;
     }
-    private URL[] getRepoURLs(){
-     List<URL> urls=new  ArrayList<URL>();
-     List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
+    
+    private URL[] getRepoURLs() {
+        Set<URL> urls = new HashSet<URL>();
+        List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : ris) {
-           if(ri.getRepositoryUrl()!=null){
+            if (ri.getRepositoryUrl() != null) {
                 try {
                     urls.add(new URL(ri.getRepositoryUrl()));
                 } catch (MalformedURLException ex) {
                     //ignore
                 }
-           }
+            }
         }
-     return urls.toArray(new URL[0]);
+        // these 2 urls are essential (together with central) for correct 
+        // resolution of maven pom urls in libraries
+        try {
+            urls.add(new URL("http://download.java.net/maven/2"));
+            urls.add(new URL("http://download.java.net/maven/1"));
+        } catch (MalformedURLException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return urls.toArray(new URL[0]);
     }
     /**
      */ 
