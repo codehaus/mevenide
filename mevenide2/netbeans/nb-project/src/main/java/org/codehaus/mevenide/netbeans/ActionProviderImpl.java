@@ -24,6 +24,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -142,7 +143,7 @@ public class ActionProviderImpl implements ActionProvider {
 
             public void taskFinished(Task task2) {
                 ProjectURLWatcher.fireMavenProjectReload(project);
-                RepositoryUtil.getDefaultRepositoryIndexer().updateIndexWithArtifacts("local"/*local*/, project.getOriginalMavenProject().getDependencyArtifacts());
+                RepositoryUtil.getDefaultRepositoryIndexer().updateIndexWithArtifacts(RepositoryPreferences.LOCAL_REPO_ID, project.getOriginalMavenProject().getDependencyArtifacts());
             }
         });
     }
