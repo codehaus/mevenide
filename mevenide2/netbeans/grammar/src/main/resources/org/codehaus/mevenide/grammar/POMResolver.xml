@@ -3,6 +3,25 @@
 <MIME-resolver>
     <file>
         <ext name="pom"/>
-        <resolver mime="text/xml"/>
+        <resolver mime="text/x-pom+xml"/>
     </file>
+    <file>
+        <ext name="xml"/>
+        <resolver mime="text/x-pom+xml">
+            <xml-rule>
+            	<element name="project" ns="http://maven.apache.org/POM/4.0.0">
+                </element>
+            </xml-rule>
+        </resolver>
+    </file>
+    <file>
+        <ext name="xml"/>
+        <resolver mime="text/x-pomprofile+xml">
+            <xml-rule>
+            	<element name="profilesXml" ns="http://maven.apache.org/POM/4.0.0">
+                </element>
+            </xml-rule>
+        </resolver>
+    </file>
+    
 </MIME-resolver>

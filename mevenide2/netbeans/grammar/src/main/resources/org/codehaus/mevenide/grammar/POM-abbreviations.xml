@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE codetemplates PUBLIC  "-//NetBeans//DTD Editor Code Templates settings 1.0//EN"
+                                "http://www.netbeans.org/dtds/EditorCodeTemplates-1_0.dtd">
+
+<codetemplates>
+    <codetemplate abbreviation="dep" xml:space="preserve">
+        <code><![CDATA[<dependency>
+    <groupId>${GRP newVarName default="groupId"}</groupId>
+    <artifactId>${ART newVarName default="artifactId"}</artifactId>
+    <version>${VER newVarName default="1.0"}</version>${cursor}
+</dependency>]]></code>
+    </codetemplate>
+    <codetemplate abbreviation="plg" xml:space="preserve">
+        <code><![CDATA[<plugin>
+    <groupId>${GRP newVarName default="groupId"}</groupId>
+    <artifactId>${ART newVarName default="artifactId"}</artifactId>
+    <version>${VER newVarName default="1.0"}</version>${cursor}
+</plugin>]]></code>
+    </codetemplate>
+    <codetemplate abbreviation="rep" xml:space="preserve">
+        <code><![CDATA[<repository>
+    <id>${ID newVarName default="repo"}</id>
+    <url>${URL newVarName default="http://"}</url>${cursor}
+</repository>]]></code>
+    </codetemplate>
+    <codetemplate abbreviation="exec" xml:space="preserve">
+        <code><![CDATA[<execution>
+    <id>${ID newVarName default="exec1"}</id>
+    <phase>${PHASE newVarName default="package"}</phase>
+    <goals>
+       <goal>${GOAL newVarName default="goal"}</goal>
+    </goals>
+    <configuration>
+        ${cursor}
+    <configuration>
+</execution>]]></code>
+    </codetemplate>
+</codetemplates>
