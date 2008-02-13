@@ -14,9 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
+
 package org.codehaus.mevenide.netbeans;
 
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -41,17 +41,14 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.plaf.basic.BasicListUI.ListSelectionHandler;
 
 /**
  * inner class does the matching of the JTextField's
  * document to completion strings kept in an ArrayList
  * @author mkleint
  */
-public class TextValueCompleter implements DocumentListener {
 
+public class TextValueCompleter implements DocumentListener {
     private static final String ACTION_FILLIN = "fill-in"; //NOI18N
     private static final String ACTION_HIDEPOPUP = "hidepopup"; //NOI18N
     private static final String ACTION_LISTDOWN = "listdown"; //NOI18N
@@ -68,35 +65,18 @@ public class TextValueCompleter implements DocumentListener {
     private JTextField field;
     private String separators;
     private CaretListener caretListener;
-
+    
     public TextValueCompleter(Collection<String> completions, JTextField fld) {
         this.completions = completions;
         this.field = fld;
         field.getDocument().addDocumentListener(this);
         field.addFocusListener(new FocusAdapter() {
-
             @Override
             public void focusLost(FocusEvent e) {
-                //Fixing mouse selection bug
-                EventQueue.invokeLater(new Runnable() {
-
-                    public void run() {
-                        Object o = completionList.getSelectedValue();
-                        if (o != null) {
-                            field.getDocument().removeDocumentListener(TextValueCompleter.this);
-                            applyCompletion(o.toString());
-                            hidePopup();
-                            field.getDocument().addDocumentListener(TextValueCompleter.this);
-                        } else {
-                            hidePopup();
-                        }
-                    }
-                });
-
+                hidePopup();
             }
         });
         caretListener = new CaretListener() {
-
             public void caretUpdate(CaretEvent arg0) {
                 // only consider caret updates if the popup window is visible
                 if (completionList.isDisplayable() && completionList.isVisible()) {
@@ -108,28 +88,27 @@ public class TextValueCompleter implements DocumentListener {
         completionListModel = new DefaultListModel();
         completionList = new JList(completionListModel);
         completionList.setPrototypeCellValue("lets have it at least this wide and add some more just in case"); //NOI18N
-        completionList.addListSelectionListener(new ListSelectionListener() {
-
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting() && e.getFirstIndex() >= 0) {
+        completionList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() > 1) {
                     field.getDocument().removeDocumentListener(TextValueCompleter.this);
-                    applyCompletion(completionListModel.get(e.getFirstIndex()).toString());
+                    applyCompletion(completionList.getSelectedValue().toString());
                     hidePopup();
                     field.getDocument().addDocumentListener(TextValueCompleter.this);
                 }
             }
         });
         completionList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listScroller = new JScrollPane(completionList,
+        listScroller =new JScrollPane(completionList,
                 ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
                 ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), ACTION_LISTDOWN);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), ACTION_LISTUP);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0), ACTION_LISTPAGEUP);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0), ACTION_LISTPAGEDOWN);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK), ACTION_SHOWPOPUP);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0),ACTION_LISTDOWN);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0),ACTION_LISTUP); 
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_UP, 0),ACTION_LISTPAGEUP); 
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_PAGE_DOWN, 0),ACTION_LISTPAGEDOWN);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, KeyEvent.CTRL_DOWN_MASK),ACTION_SHOWPOPUP);
         field.getActionMap().put(ACTION_LISTDOWN, new AbstractAction() { //NOI18N
-
             public void actionPerformed(ActionEvent e) {
                 if (popup == null) {
                     buildAndShowPopup();
@@ -138,8 +117,7 @@ public class TextValueCompleter implements DocumentListener {
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
-        field.getActionMap().put(ACTION_LISTUP, new AbstractAction() {
-
+        field.getActionMap().put(ACTION_LISTUP,  new AbstractAction() {
             public void actionPerformed(ActionEvent e) {
                 if (popup == null) {
                     buildAndShowPopup();
@@ -149,21 +127,18 @@ public class TextValueCompleter implements DocumentListener {
             }
         });
         field.getActionMap().put(ACTION_LISTPAGEDOWN, new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 completionList.setSelectedIndex(Math.min(completionList.getSelectedIndex() + completionList.getVisibleRowCount(), completionList.getModel().getSize()));
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
         field.getActionMap().put(ACTION_LISTPAGEUP, new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 completionList.setSelectedIndex(Math.max(completionList.getSelectedIndex() - completionList.getVisibleRowCount(), 0));
                 completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
             }
         });
         field.getActionMap().put(ACTION_FILLIN, new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 field.getDocument().removeDocumentListener(TextValueCompleter.this);
                 if (completionList.getSelectedValue() != null) {
@@ -174,24 +149,23 @@ public class TextValueCompleter implements DocumentListener {
             }
         });
         field.getActionMap().put(ACTION_HIDEPOPUP, new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 hidePopup();
             }
         });
         field.getActionMap().put(ACTION_SHOWPOPUP, new AbstractAction() {
-
             public void actionPerformed(ActionEvent e) {
                 buildAndShowPopup();
             }
         });
     }
-
+    
     public TextValueCompleter(Collection<String> completions, JTextField fld, String separators) {
         this(completions, fld);
         this.separators = separators;
     }
-
+    
+    
     private void buildPopup() {
         pattern = Pattern.compile(getCompletionPrefix() + ".+"); //NOI18N
         int entryindex = 0;
@@ -209,7 +183,7 @@ public class TextValueCompleter implements DocumentListener {
             }
         }
     }
-
+    
     private void applyCompletion(String completed) {
         field.removeCaretListener(caretListener);
         if (separators != null) {
@@ -245,7 +219,7 @@ public class TextValueCompleter implements DocumentListener {
         }
         field.addCaretListener(caretListener);
     }
-
+    
     private String getCompletionPrefix() {
         if (separators != null) {
             int pos = field.getCaretPosition();
@@ -273,7 +247,7 @@ public class TextValueCompleter implements DocumentListener {
             return Pattern.quote(field.getText().trim());
         }
     }
-
+    
     private void showPopup() {
         hidePopup();
         if (completionListModel.getSize() == 0) {
@@ -285,14 +259,14 @@ public class TextValueCompleter implements DocumentListener {
         int popX = los.x;
         int popY = los.y + field.getHeight();
         popup = PopupFactory.getSharedInstance().getPopup(field, listScroller, popX, popY);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), ACTION_HIDEPOPUP);
-        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), ACTION_FILLIN);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),ACTION_HIDEPOPUP);
+        field.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0),ACTION_FILLIN);
         popup.show();
         if (completionList.getSelectedIndex() != -1) {
             completionList.ensureIndexIsVisible(completionList.getSelectedIndex());
         }
     }
-
+    
     private void hidePopup() {
         field.getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0));
         field.getInputMap().remove(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0));
@@ -301,36 +275,31 @@ public class TextValueCompleter implements DocumentListener {
             popup = null;
         }
     }
-
+    
     private void buildAndShowPopup() {
         buildPopup();
         showPopup();
     }
-
+    
     // DocumentListener implementation
-    public void insertUpdate(DocumentEvent e) {
+    public void insertUpdate(DocumentEvent e) { 
         if (field.isFocusOwner()) {
-            buildAndShowPopup();
+            buildAndShowPopup(); 
         }
     }
-
-    public void removeUpdate(DocumentEvent e) {
+    public void removeUpdate(DocumentEvent e) { 
         if (field.isFocusOwner() && completionList.isDisplayable() && completionList.isVisible()) {
-            buildAndShowPopup();
+            buildAndShowPopup(); 
         }
     }
-
-    public void changedUpdate(DocumentEvent e) {
+    public void changedUpdate(DocumentEvent e) { 
         if (field.isFocusOwner()) {
-            buildAndShowPopup();
+            buildAndShowPopup(); 
         }
     }
-
+    
     public void setValueList(Collection<String> values) {
         completions = values;
-        if (completionList.isDisplayable() && completionList.isVisible()) {
-            buildAndShowPopup();
-        }
     }
 }
 
