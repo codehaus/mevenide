@@ -233,6 +233,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                         (elem.getPackagings().contains(prjPack.trim()) ||
                         elem.getPackagings().contains("*") || elem.getPackagings().size() == 0)) {//NOI18N
                     action = elem;
+                    break;
                 }
             }
             if (action != null) {
