@@ -34,7 +34,7 @@
             <folder name="x-pom+xml">
                 <folder name="CodeTemplates">
                     <folder name="Defaults">
-                        <file name="abbreviations.xml" url="POM-abbreviations.xml"/>
+                        <file name="org-codehaus-mevenide-grammar-CodeTemplates.xml" url="POM-abbreviations.xml"/>
                     </folder>
                 </folder>
             </folder>
@@ -44,6 +44,7 @@
         <folder name="MIMEResolver">
             <file name="POMResolver.xml" url="POMResolver.xml">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+                <attr name="position" intvalue="309"/>
             </file>
         </folder>
     </folder>
