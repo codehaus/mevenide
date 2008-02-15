@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.execute;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -53,6 +52,7 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsProvider {
+
     private static final String WEB_PATH = "webpagePath";//NOI18N
     private static final String CLASSNAME = "className";//NOI18N
     private static final String CLASSNAME_EXT = "classNameWithExtension";//NOI18N
@@ -60,11 +60,11 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     protected ActionToGoalMapping originalMappings;
     protected NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
     private NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
+
     /** Creates a new instance of DefaultActionProvider */
     public AbstractActionGoalProvider() {
     }
-    
-    
+
     /**
      * just gets the array of FOs from lookup.
      */
@@ -78,8 +78,23 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         }
         return files.toArray(new FileObject[files.size()]);
     }
-    
-    
+
+    public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+        ActionToGoalMapping rawMappings = getRawMappings();
+        Iterator it = rawMappings.getActions().iterator();
+        String prjPack = project.getProjectWatcher().getPackagingType();
+        while (it.hasNext()) {
+            NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
+            if (action.equals(elem.getActionName()) &&
+                    (elem.getPackagings().contains(prjPack.trim()) ||
+                    elem.getPackagings().contains("*"))) {//NOI18N
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public final RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup) {
         FileObject[] fos = extractFileObjectsfromLookup(lookup);
         String relPath = null;
@@ -95,28 +110,27 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                     replaceMap.put(CLASSNAME_EXT, fos[0].getNameExt());
                     replaceMap.put(CLASSNAME, fos[0].getName());
                     replaceMap.put(PACK_CLASSNAME, (FileUtil.getRelativePath(grp[i].getRootFolder(),
-                            fos[0].getParent())
-                            + "." + fos[0].getName()).replace('/','.')); //NOI18N
+                            fos[0].getParent()) + "." + fos[0].getName()).replace('/', '.')); //NOI18N
                     break;
                 }
             }
             if (relPath == null) {
-                replaceMap.put(CLASSNAME_EXT,"");//NOI18N
-                replaceMap.put(CLASSNAME,"");//NOI18N
-                replaceMap.put(PACK_CLASSNAME,"");//NOI18N
+                replaceMap.put(CLASSNAME_EXT, "");//NOI18N
+                replaceMap.put(CLASSNAME, "");//NOI18N
+                replaceMap.put(PACK_CLASSNAME, "");//NOI18N
                 grp = srcs.getSourceGroups("doc_root"); //NOI18N J2EE
                 for (int i = 0; i < grp.length; i++) {
                     relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
                     if (relPath != null) {
-                        replaceMap.put( WEB_PATH,relPath);
+                        replaceMap.put(WEB_PATH, relPath);
                         break;
                     }
                 }
                 if (relPath == null) {
-                    replaceMap.put(WEB_PATH,"");//NOI18N
+                    replaceMap.put(WEB_PATH, "");//NOI18N
                 }
             }
-            
+
         }
         if (group != null && group.equals(MavenSourcesImpl.NAME_TESTSOURCE) &&
                 ActionProvider.COMMAND_RUN_SINGLE.equals(actionName)) {
@@ -130,11 +144,10 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 (ActionProvider.COMMAND_TEST_SINGLE.equals(actionName) ||
                 ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(actionName))) {
             //TODO.. get the rel path for test not class..
-            
         }
         return mapGoalsToAction(project, actionName, replaceMap);
     }
-    
+
     public ActionToGoalMapping getRawMappings() {
         if (originalMappings == null || reloadStream()) {
             InputStream in = getActionDefinitionStream();
@@ -164,7 +177,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         }
         return originalMappings;
     }
-    
+
     public String getRawMappingsAsString() {
         StringWriter str = new StringWriter();
         try {
@@ -174,14 +187,14 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         }
         return str.toString();
     }
-    
+
     /**
      * override in children that are listening on changes of model and need refreshing..
      */
     protected boolean reloadStream() {
         return false;
     }
-    
+
     /**
      * get a action to maven mapping configuration for the given action.
      * No replacements happen.
@@ -202,6 +215,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                         (elem.getPackagings().contains(prjPack.trim()) ||
                         elem.getPackagings().contains("*"))) {//NOI18N
                     action = elem;
+                    break;
                 }
             }
         } catch (XmlPullParserException ex) {
@@ -210,15 +224,14 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             ex.printStackTrace();
         }
         return action;
-        
+
     }
 
-    
     /**
      * content of the input stream shall be the xml with action definitions
      */
     protected abstract InputStream getActionDefinitionStream();
-    
+
     private RunConfig mapGoalsToAction(NbMavenProject project, String actionName, HashMap replaceMap) {
         try {
             // TODO need some caching really badly here..
@@ -246,7 +259,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         }
         return null;
     }
-    
+
     /**
      * takes the input stream and a map, and for each occurence of ${<mapKey>}, replaces it with map entry value..
      */
@@ -258,7 +271,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             String replaceItem = "${" + elem.getKey() + "}";//NOI18N
             int index = buf.indexOf(replaceItem);
             while (index > -1) {
-                String newItem = (String)elem.getValue();
+                String newItem = (String) elem.getValue();
                 if (newItem == null) {
 //                    System.out.println("no value for key=" + replaceItem);
                 }
@@ -269,5 +282,4 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         }
         return new StringReader(buf.toString());
     }
-    
 }

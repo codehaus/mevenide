@@ -180,10 +180,9 @@ public class ActionProviderImpl implements ActionProvider {
                 COMMAND_MOVE.equals(action)) {
             return true;
         }
-        //TODO needs some MAJOR performance optimizations.. for each action, the mappings are loaded all over
-        // again from each provider..
-        RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
-        return rc != null;
+
+        
+        return ActionToGoalUtils.isActionEnable(action, project, lookup);
     }
 
     public Action createBasicMavenAction(String name, String action) {

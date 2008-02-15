@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.io.File;
@@ -37,33 +36,56 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
-    
+
     private AbstractActionGoalProvider platformDelegate = new AbstractActionGoalProvider() {
+
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/platformActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
             assert in != null : "no instream for " + path; //NOI18N
             return in;
         }
+
+        public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+            return isActionEnable(action, project, lookup);
+        }
     };
-    
     private AbstractActionGoalProvider ideDelegate = new AbstractActionGoalProvider() {
+
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/ideActionMappings.xml"; //NOI18N
             InputStream in = getClass().getResourceAsStream(path);
             assert in != null : "no instream for " + path; //NOI18N
             return in;
         }
+
+        public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+            return isActionEnable(action, project, lookup);
+        }
     };
+
     /** Creates a new instance of NbmActionGoalProvider */
     public NbmActionGoalProvider() {
     }
-    
+
+    public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+        if (!ActionProvider.COMMAND_RUN.equals(action) &&
+                !ActionProvider.COMMAND_DEBUG.equals(action) &&
+                !"nbmreload".equals(action)) {
+            return false;
+        }
+        if (hasNbm(project) || isPlatformApp(project)) {
+            return true;
+        }
+        
+        return false;
+    }
+
     public RunConfig createConfigForDefaultAction(String actionName,
             NbMavenProject project,
             Lookup lookup) {
-        if (!ActionProvider.COMMAND_RUN.equals(actionName) && 
-                !ActionProvider.COMMAND_DEBUG.equals(actionName) && 
+        if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
+                !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
                 !"nbmreload".equals(actionName)) {
             return null;
         }
@@ -75,10 +97,10 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return null;
     }
-    
+
     public NetbeansActionMapping getMappingForAction(String actionName,
             NbMavenProject project) {
-        if (!ActionProvider.COMMAND_RUN.equals(actionName) && 
+        if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
                 !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
                 !"nbmreload".equals(actionName)) {
             return null;
@@ -91,8 +113,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return null;
     }
-    
-    
+
     private RunConfig createConfig(String actionName, NbMavenProject project, Lookup lookup, AbstractActionGoalProvider delegate) {
         RunConfig conf = delegate.createConfigForDefaultAction(actionName, project, lookup);
         if (conf != null && project.getOriginalMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
@@ -100,7 +121,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return conf;
     }
-    
+
     private NetbeansActionMapping createMapping(String actionName, NbMavenProject project, AbstractActionGoalProvider delegate) {
         NetbeansActionMapping mapp = delegate.getMappingForAction(actionName, project);
         if (mapp != null && project.getOriginalMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
@@ -108,7 +129,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return mapp;
     }
-    
+
     private boolean hasNbm(Project project) {
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
         boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType());
@@ -125,26 +146,25 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return hasNbm;
     }
-    
-    
+
     private String guessNetbeansInstallation() {
         //TODO netbeans.home is obsolete.. what to replace it with though?
         File fil = new File(System.getProperty("netbeans.home")); //NOI18N
         fil = FileUtil.normalizeFile(fil);
         return fil.getParentFile().getAbsolutePath(); //NOI18N
     }
-    
+
     private boolean isPlatformApp(Project p) {
         ProjectURLWatcher watch = p.getLookup().lookup(ProjectURLWatcher.class);
         boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType());
         if (isPom) {
             String brand = PluginPropertyUtils.getPluginProperty(p, "org.codehaus.mojo", //NOI18N
                     "nbm-maven-plugin", "brandingToken", null); //NOI18N
-            if (brand != null || 
-                watch.getMavenProject().getProperties().getProperty("netbeans.branding.token") != null) { //NOI18N
+            if (brand != null ||
+                    watch.getMavenProject().getProperties().getProperty("netbeans.branding.token") != null) { //NOI18N
                 return true;
             }
         }
         return false;
-    } 
+    }
 }

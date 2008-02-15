@@ -26,11 +26,13 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.Repository;
+import org.openide.util.Lookup;
 
 /**
  * user defined global definitions, to be found in the layers.
@@ -59,7 +61,7 @@ public class NbGlobalActionGoalProvider extends AbstractActionGoalProvider {
         lastModified = new Date();
         return null;
     }
-
+   
     
    /**
      * get custom action maven mapping configuration
