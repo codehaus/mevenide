@@ -5,16 +5,16 @@
 <codetemplates>
     <codetemplate abbreviation="dep" xml:space="preserve">
         <code><![CDATA[<dependency>
-    <groupId>${GRP newVarName default="groupId"}</groupId>
-    <artifactId>${ART newVarName default="artifactId"}</artifactId>
-    <version>${VER newVarName default="1.0"}</version>${cursor}
+    <groupId>${GRP newVarName default=""}</groupId>
+    <artifactId>${ART newVarName default=""}</artifactId>
+    <version>${VER newVarName default=""}</version>${cursor}
 </dependency>]]></code>
     </codetemplate>
     <codetemplate abbreviation="plg" xml:space="preserve">
         <code><![CDATA[<plugin>
-    <groupId>${GRP newVarName default="groupId"}</groupId>
-    <artifactId>${ART newVarName default="artifactId"}</artifactId>
-    <version>${VER newVarName default="1.0"}</version>${cursor}
+    <groupId>${GRP newVarName default=""}</groupId>
+    <artifactId>${ART newVarName default=""}</artifactId>
+    <version>${VER newVarName default=""}</version>${cursor}
 </plugin>]]></code>
     </codetemplate>
     <codetemplate abbreviation="rep" xml:space="preserve">
@@ -28,7 +28,7 @@
     <id>${ID newVarName default="exec1"}</id>
     <phase>${PHASE newVarName default="package"}</phase>
     <goals>
-       <goal>${GOAL newVarName default="goal"}</goal>
+       <goal>${GOAL newVarName default=""}</goal>
     </goals>
     <configuration>
         ${cursor}
