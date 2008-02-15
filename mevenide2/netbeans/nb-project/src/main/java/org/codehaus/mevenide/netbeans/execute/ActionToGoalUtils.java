@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.execute;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -45,20 +44,21 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public final class ActionToGoalUtils {
+
     private static final String FO_ATTR_CUSTOM_MAPP = "customActionMappings"; //NOI18N
-    
+
     /** Creates a new instance of ActionToGoalUtils */
     private ActionToGoalUtils() {
     }
-    
+
     public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
         RunConfig rc = null;
         UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         rc = user.createConfigForDefaultAction(action, project, lookup);
         if (rc == null) {
             // for build and rebuild check the pom for default goal and run that one..
-            if (ActionProvider.COMMAND_BUILD.equals(action) || 
-                ActionProvider.COMMAND_REBUILD.equals(action)) {
+            if (ActionProvider.COMMAND_BUILD.equals(action) ||
+                    ActionProvider.COMMAND_REBUILD.equals(action)) {
                 Build bld = project.getOriginalMavenProject().getBuild();
                 if (bld != null) {
                     String goal = bld.getDefaultGoal();
@@ -91,7 +91,34 @@ public final class ActionToGoalUtils {
         }
         return rc;
     }
-    
+
+    public static boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+       
+        //check UserActionGoalProvider first
+        UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
+        if (user.isActionEnable(action, project, lookup)) {
+            return true;
+        }
+
+        if (ActionProvider.COMMAND_BUILD.equals(action) ||
+                ActionProvider.COMMAND_REBUILD.equals(action)) {
+            Build bld = project.getOriginalMavenProject().getBuild();
+            if (bld != null) {
+                String goal = bld.getDefaultGoal();
+                if (goal != null && goal.trim().length() > 0) {
+                    return true;
+                }
+            }
+        }
+        
+        for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+            if (add.isActionEnable(action, project, lookup)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
         UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
@@ -101,7 +128,7 @@ public final class ActionToGoalUtils {
         }
         return na;
     }
-    
+
     public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
         UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         List<NetbeansActionMapping> toRet = new ArrayList<NetbeansActionMapping>();
@@ -114,7 +141,7 @@ public final class ActionToGoalUtils {
         for (AdditionalM2ActionsProvider prov : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
             if (prov instanceof NbGlobalActionGoalProvider) {
                 // check the global actions defined, include only if not the same name as project-specific one.
-                for (NetbeansActionMapping map : ((NbGlobalActionGoalProvider)prov).getCustomMappings()) {
+                for (NetbeansActionMapping map : ((NbGlobalActionGoalProvider) prov).getCustomMappings()) {
                     if (!names.contains(map.getActionName())) {
                         toRet.add(map);
                     }
@@ -125,8 +152,7 @@ public final class ActionToGoalUtils {
         //TODO possible usecase for custom mappings are update-site creation for nbm typed projects or their parents..
         return toRet.toArray(new NetbeansActionMapping[toRet.size()]);
     }
-    
-    
+
     public static NetbeansActionMapping getDefaultMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
@@ -140,32 +166,31 @@ public final class ActionToGoalUtils {
         }
         return na;
     }
-    
+
     public static void setUserActionMapping(NetbeansActionMapping action, ActionToGoalMapping mapp) {
         List lst = mapp.getActions() != null ? mapp.getActions() : new ArrayList();
         Iterator it = lst.iterator();
         while (it.hasNext()) {
-            NetbeansActionMapping act = (NetbeansActionMapping)it.next();
+            NetbeansActionMapping act = (NetbeansActionMapping) it.next();
             if (act.getActionName().equals(action.getActionName())) {
                 int index = lst.indexOf(act);
                 it.remove();
                 lst.add(index, action);
                 return;
             }
-            
+
         }
         //if not found, dd to the end.
         lst.add(action);
     }
-    
-    
+
     /**
      * read the action mappings from the fileobject attribute "customActionMappings"
      * @parameter fo should be the project's root directory fileobject
      *
      */
     public static ActionToGoalMapping readMappingsFromFileAttributes(FileObject fo) {
-        String string = (String)fo.getAttribute(FO_ATTR_CUSTOM_MAPP);
+        String string = (String) fo.getAttribute(FO_ATTR_CUSTOM_MAPP);
         ActionToGoalMapping mapp = null;
         if (string != null) {
             NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
@@ -182,7 +207,7 @@ public final class ActionToGoalUtils {
         }
         return mapp;
     }
-    
+
     /**
      * writes the action mappings to the fileobject attribute "customActionMappings"
      * @parameter fo should be the project's root directory fileobject

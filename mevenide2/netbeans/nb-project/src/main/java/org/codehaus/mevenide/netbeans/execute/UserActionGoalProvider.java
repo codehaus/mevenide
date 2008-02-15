@@ -31,6 +31,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.filesystems.FileObject;
+import org.openide.util.Lookup;
 
 /**
  * user defined definitions, to be found in the project directory in the nbactions.xml file.
@@ -60,7 +61,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
         lastModified = new Date();
         return null;
     }
-
+  
     
    /**
      * get custom action maven mapping configuration
