@@ -14,17 +14,18 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
-import java.util.List;
-import org.apache.maven.artifact.Artifact;
 import org.codehaus.plexus.util.StringOutputStream;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
-import org.openide.ErrorManager;
+import org.openide.filesystems.FileLock;
+import org.openide.filesystems.FileObject;
+import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
@@ -36,30 +37,56 @@ import org.xml.sax.SAXException;
 
 /**
  * implementation of AuxiliaryConfiguration that relies on FileObject's attributes
+ * for the non shared elements and on ${basedir}/.nb-configuration file for share ones.
  * @author mkleint
  */
 public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
 
     private static final String AUX_CONFIG = "AuxilaryConfiguration"; //NOI18N
+    private static final String CONFIG_FILE_NAME = "nb-configuration.xml"; //NOI18N
     private NbMavenProject project;
-    
+
     /** Creates a new instance of M2AuxilaryConfigImpl */
     public M2AuxilaryConfigImpl(NbMavenProject proj) {
         this.project = proj;
     }
-    
+
     public Element getConfigurationFragment(final String elementName, final String namespace, boolean shared) {
         if (shared) {
-            if (namespace.equals("http://www.sun.com/creator/ns")) {
-                
-                return getMockCreatorElement();
+            final FileObject config = project.getProjectDirectory().getFileObject(CONFIG_FILE_NAME);
+            if (config != null) {
+                return (Element) ProjectManager.mutex().readAccess(new Mutex.Action() {
+
+                    public Object run() {
+                        Document doc;
+                        InputStream in = null;
+                        try {
+                            in = config.getInputStream();
+                            doc = XMLUtil.parse(new InputSource(in), false, true, null, null);
+                            return findElement(doc.getDocumentElement(), elementName, namespace);
+                        } catch (SAXException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } finally {
+                            if (in != null) {
+                                try {
+                                    in.close();
+                                } catch (IOException ex) {
+                                    Exceptions.printStackTrace(ex);
+                                }
+                            }
+                        }
+                        return null;
+                    }
+                });
             }
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
             return null;
         }
-        return (Element)ProjectManager.mutex().readAccess(new Mutex.Action() {
+        return (Element) ProjectManager.mutex().readAccess(new Mutex.Action() {
+
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
+                String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 if (str != null) {
                     Document doc;
                     try {
@@ -72,32 +99,49 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     }
                 }
                 return null;
-            }});
-    }
-    
-    public void putConfigurationFragment(final Element fragment, boolean shared) throws IllegalArgumentException {
-        if (shared) {
-            if (fragment.getNamespaceURI().equals("http://www.sun.com/creator/ns")) {
-                return;
             }
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + fragment.getNodeName()); //NOI18N
-            return;
-        }
+        });
+    }
+
+    public void putConfigurationFragment(final Element fragment, final boolean shared) throws IllegalArgumentException {
         ProjectManager.mutex().writeAccess(new Mutex.Action() {
+
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 Document doc = null;
-                if (str != null) {
-                    try {
-                        doc = XMLUtil.parse(new InputSource(new StringReader(str)), false, true, null, null);
-                    } catch (SAXException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                FileObject config = project.getProjectDirectory().getFileObject(CONFIG_FILE_NAME);
+                if (shared) {
+                    if (config != null) {
+                        try {
+                            doc = XMLUtil.parse(new InputSource(config.getInputStream()), false, true, null, null);
+                        } catch (SAXException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    } else {
+                        String element = "project-shared-configuration"; // NOI18N
+                        doc = XMLUtil.createDocument(element, null, null, null);
+                        doc.getDocumentElement().appendChild(doc.createTextNode(
+                                "\nThis file contains additional configuration written by modules in the NetBeans IDE.\n" +
+                                "The configuration is intended to be shared among all the users of project and\n" +
+                                "therefore it is assumed to be part of version control checkout.\n" +
+                                "Without this configuration present, some functionality in the IDE may be limited or fail altogether.\n\n"));
                     }
                 } else {
-                    String element = "project-private"; // NOI18N
-                    doc = XMLUtil.createDocument(element, null, null, null);
+                    String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
+                    if (str != null) {
+                        try {
+                            doc = XMLUtil.parse(new InputSource(new StringReader(str)), false, true, null, null);
+                        } catch (SAXException ex) {
+                            ex.printStackTrace();
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    } 
+                    if (doc == null) {
+                        String element = "project-private"; // NOI18N
+                        doc = XMLUtil.createDocument(element, null, null, null);
+                    }
                 }
                 if (doc != null) {
                     Element el = findElement(doc.getDocumentElement(), fragment.getNodeName(), fragment.getNamespaceURI());
@@ -106,42 +150,77 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     }
                     doc.getDocumentElement().appendChild(doc.importNode(fragment, true));
                 }
-                
-                try {
-                    StringOutputStream wr = new StringOutputStream();
-                    XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
-                    project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                if (shared) {
+                    FileLock lck = null;
+                    OutputStream out = null;
+                    try {
+                        if (config == null) {
+                            config = project.getProjectDirectory().createData(CONFIG_FILE_NAME);
+                        }
+                        lck = config.lock();
+                        out = config.getOutputStream(lck);
+                        XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } finally {
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                        if (lck != null) {
+                            lck.releaseLock();
+                        }
+                    }
+                } else {
+                    try {
+                        StringOutputStream wr = new StringOutputStream();
+                        XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
+                        project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
                 return null;
             }
         });
-        
+
     }
-    
-    public boolean removeConfigurationFragment(final String elementName, final String namespace, boolean shared) throws IllegalArgumentException {
-        if (shared) {
-            if (namespace.equals("http://www.sun.com/creator/ns")) {
-                return true;
-            }
-            ErrorManager.getDefault().log("Maven2 support doesn't support shared custom configurations. Element was:" + elementName + " , namespace:" + namespace); //NOI18N
-            return false;
-        }
-        return ((Boolean)ProjectManager.mutex().writeAccess(new Mutex.Action() {
+
+    public boolean removeConfigurationFragment(final String elementName, final String namespace, final boolean shared) throws IllegalArgumentException {
+        return ((Boolean) ProjectManager.mutex().writeAccess(new Mutex.Action() {
+
             public Object run() {
-                String str = (String)project.getProjectDirectory().getAttribute(AUX_CONFIG);
                 Document doc = null;
-                if (str != null) {
-                    try {
-                        doc = XMLUtil.parse(new InputSource(new StringReader(str)), false, true, null, null);
-                    } catch (SAXException ex) {
-                        ex.printStackTrace();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
+                FileObject config = project.getProjectDirectory().getFileObject(CONFIG_FILE_NAME);
+                if (shared) {
+                    if (config != null) {
+                        try {
+                            doc = XMLUtil.parse(new InputSource(config.getInputStream()), false, true, null, null);
+                        } catch (SAXException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                    } else {
+                        return Boolean.FALSE;
                     }
+                    
                 } else {
-                    return Boolean.FALSE;
+                    String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
+                    if (str != null) {
+                        try {
+                            doc = XMLUtil.parse(new InputSource(new StringReader(str)), false, true, null, null);
+                        } catch (SAXException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                    } else {
+                        return Boolean.FALSE;
+                    }
                 }
                 if (doc != null) {
                     Element el = findElement(doc.getDocumentElement(), elementName, namespace);
@@ -149,26 +228,48 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         doc.getDocumentElement().removeChild(el);
                     }
                 }
-                try {
-                    StringOutputStream wr = new StringOutputStream();
-                    XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
-                    project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
-                } catch (IOException ex) {
-                    ex.printStackTrace();
+                if (shared) {
+                    FileLock lck = null;
+                    OutputStream out = null;
+                    try {
+                        lck = config.lock();
+                        out = config.getOutputStream(lck);
+                        XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    } finally {
+                        if (out != null) {
+                            try {
+                                out.close();
+                            } catch (IOException ex) {
+                                Exceptions.printStackTrace(ex);
+                            }
+                        }
+                        if (lck != null) {
+                            lck.releaseLock();
+                        }
+                    }
+                } else {
+                    try {
+                        StringOutputStream wr = new StringOutputStream();
+                        XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
+                        project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
+                    } catch (IOException ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
                 }
                 return Boolean.TRUE;
             }
         })).booleanValue();
     }
-    
-    
+
     private static Element findElement(Element parent, String name, String namespace) {
         Element result = null;
         NodeList l = parent.getChildNodes();
         int len = l.getLength();
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
-                Element el = (Element)l.item(i);
+                Element el = (Element) l.item(i);
                 if (name.equals(el.getLocalName()) && namespace.equals(el.getNamespaceURI())) {
                     if (result == null) {
                         result = el;
@@ -179,34 +280,5 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
             }
         }
         return result;
-    }
-
-    //TODO major hack!
-    private Element getMockCreatorElement() {
-        List<Artifact> artifacts = project.getOriginalMavenProject().getCompileArtifacts();
-        boolean create = false;
-        //TODO a hack to return the element only conditionally when the web extension was used.
-        //#123599
-        for (Artifact art : artifacts) {
-            String artId = art.getArtifactId();
-            String grId = art.getGroupId();
-            if (artId.contains("woodstock")) { //NOI18N
-                create = true;
-            }
-            if ("webui".equals(artId)) {
-                create = true;
-            }
-        }
-        if (!create) {
-            return null;
-        }
-        Document doc = XMLUtil.createDocument("creator-data", "http://www.sun.com/creator/ns", null, null);
-        Element el = doc.getDocumentElement();
-        el.setAttribute("jsf.current.theme", "woodstock-theme-default");
-        el.setAttribute("jsf.pagebean.package", project.getOriginalMavenProject().getGroupId());
-        el.setAttribute("jsf.project.libraries.dir", "lib");
-        el.setAttribute("jsf.project.version", "4.0");
-        el.setAttribute("jsf.startPage", "Page1.jsp");
-        return el;
     }
 }
