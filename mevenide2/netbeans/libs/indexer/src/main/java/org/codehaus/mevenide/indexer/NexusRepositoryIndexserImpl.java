@@ -92,7 +92,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     private static final String NB_ARTIFACT = "nba"; //NOI18N
     private static final String NB_DEPENDENCY_GROUP = "nbdg"; //NOI18N
     private static final String NB_DEPENDENCY_ARTIFACT = "nbda"; //NOI18N
-    private static final String NB_DEPENDENCY_VERTION = "nbdv"; //NOI18N
+    private static final String NB_DEPENDENCY_VERSION = "nbdv"; //NOI18N
     
     /*logger*/
     private static final Logger LOGGER = 
@@ -497,7 +497,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         BooleanQuery bq = new BooleanQuery();
                         bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_GROUP, groupId)), BooleanClause.Occur.MUST));
                         bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
-                        bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERTION, version)), BooleanClause.Occur.MUST));
+                        bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERSION, version)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                         infos.addAll(convertToNBGroupInfo(searchResult));
                     } finally {
@@ -763,7 +763,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         for (Dependency d : dependencies) {
                             doc.add(new Field(NB_DEPENDENCY_GROUP, d.getGroupId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
                             doc.add(new Field(NB_DEPENDENCY_ARTIFACT, d.getArtifactId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
-                            doc.add(new Field(NB_DEPENDENCY_VERTION, d.getVersion(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                            doc.add(new Field(NB_DEPENDENCY_VERSION, d.getVersion(), Field.Store.NO, Field.Index.UN_TOKENIZED));
                         }
                     }
                 }
