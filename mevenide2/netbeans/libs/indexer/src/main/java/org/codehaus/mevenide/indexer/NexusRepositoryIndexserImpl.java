@@ -43,6 +43,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.InvalidArtifactRTException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
@@ -61,7 +62,11 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
+import org.sonatype.nexus.artifact.Gav;
+import org.sonatype.nexus.artifact.M2GavCalculator;
 import org.sonatype.nexus.index.ArtifactAvailablility;
+import org.sonatype.nexus.index.ArtifactContext;
+import org.sonatype.nexus.index.ArtifactContextProducer;
 import org.sonatype.nexus.index.ArtifactInfo;
 import org.sonatype.nexus.index.ArtifactInfoGroup;
 import org.sonatype.nexus.index.GGrouping;
@@ -84,6 +89,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     private ArtifactRepository repository;
     private NexusIndexer indexer;
     private IndexUpdater remoteIndexUpdater;
+    private ArtifactContextProducer contextProducer;
     
     /*Indexer Keys*/
     private static final String NB_ARTIFACT = "nba"; //NOI18N
@@ -118,6 +124,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             repository = EmbedderFactory.getProjectEmbedder().getLocalRepository();
             indexer = (NexusIndexer) embedder.lookup(NexusIndexer.class);
             remoteIndexUpdater = (IndexUpdater) embedder.lookup(IndexUpdater.class);
+            contextProducer = (ArtifactContextProducer) embedder.lookup(ArtifactContextProducer.class);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
         } catch (PlexusContainerException ex) {
@@ -222,7 +229,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                         } else {
                              LOGGER.finer("Indexing Local Repository :"+repoId);//NOI18N
-                            indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+                            indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, false));
 
                         }
 
@@ -263,7 +270,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         return null;
                     }
 
-                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext));
+                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, true));
                     indexer.removeIndexingContext(indexingContext, false);
                     return null;
                 }
@@ -301,8 +308,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                             String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
                             pomPath += "pom"; //NOI18N
                             File pom = new File(pomPath);
-
-                            indexer.addArtifactToIndex(pom, indexingContext);
+                            
+                            indexer.addArtifactToIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
 
                         }
                     } finally {
@@ -340,7 +347,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     pomPath += "pom"; //NOI18N
                     File pom = new File(pomPath);
 
-                    indexer.deleteArtifactFromIndex(pom, indexingContext);
+                    indexer.deleteArtifactFromIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
                     unloadIndexingContext(repoId);
                     fireChangeIndex();
                     return null;
@@ -738,32 +745,37 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
         return bVersionInfos;
     }
-
+    
     private static class NbIndexCreator extends AbstractIndexCreator {
 
         public boolean updateArtifactInfo(IndexingContext ctx, Document d, ArtifactInfo artifactInfo) {
             return false;
         }
 
-        public void updateDocument(ArtifactIndexingContext context, Document doc) throws IOException {
+        public void updateDocument(ArtifactIndexingContext context, Document doc) {
             ArtifactInfo ai = context.getArtifactContext().getArtifactInfo();
             doc.add(new Field(NB_ARTIFACT, ai.artifactId, Field.Store.NO, Field.Index.UN_TOKENIZED));
             NBVersionInfo nbvi = new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
                     ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
+            try {
             Artifact artifact = RepositoryUtil.createArtifact(nbvi);
-            if (artifact != null) {
-                MavenProject mp = RepositoryUtil.readMavenProject(artifact);
-                if (mp != null) {
-                    List<Dependency> dependencies = mp.getDependencies();
-                    for (Dependency d : dependencies) {
-                        doc.add(new Field(NB_DEPENDENCY_GROUP, d.getGroupId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
-                        doc.add(new Field(NB_DEPENDENCY_ARTIFACT, d.getArtifactId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
-                        doc.add(new Field(NB_DEPENDENCY_VERTION, d.getVersion(), Field.Store.NO, Field.Index.UN_TOKENIZED));
-
+                if (artifact != null) {
+                    MavenProject mp = RepositoryUtil.readMavenProject(artifact);
+                    if (mp != null) {
+                        List<Dependency> dependencies = mp.getDependencies();
+                        for (Dependency d : dependencies) {
+                            doc.add(new Field(NB_DEPENDENCY_GROUP, d.getGroupId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                            doc.add(new Field(NB_DEPENDENCY_ARTIFACT, d.getArtifactId(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                            doc.add(new Field(NB_DEPENDENCY_VERTION, d.getVersion(), Field.Store.NO, Field.Index.UN_TOKENIZED));
+                        }
                     }
-
                 }
+            } catch (InvalidArtifactRTException ex) {
+                ex.printStackTrace();
             }
+        }
+
+        public void populateArtifactInfo(ArtifactIndexingContext context) throws IOException {
         }
     }
 }
