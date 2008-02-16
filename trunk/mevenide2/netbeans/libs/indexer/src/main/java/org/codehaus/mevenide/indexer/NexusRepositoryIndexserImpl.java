@@ -62,10 +62,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentLookupExcepti
 import org.openide.util.Exceptions;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
-import org.sonatype.nexus.artifact.Gav;
-import org.sonatype.nexus.artifact.M2GavCalculator;
 import org.sonatype.nexus.index.ArtifactAvailablility;
-import org.sonatype.nexus.index.ArtifactContext;
 import org.sonatype.nexus.index.ArtifactContextProducer;
 import org.sonatype.nexus.index.ArtifactInfo;
 import org.sonatype.nexus.index.ArtifactInfoGroup;
