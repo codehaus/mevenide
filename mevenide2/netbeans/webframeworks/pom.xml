@@ -79,6 +79,11 @@
             <version>${netbeans.release}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectuiapi</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
