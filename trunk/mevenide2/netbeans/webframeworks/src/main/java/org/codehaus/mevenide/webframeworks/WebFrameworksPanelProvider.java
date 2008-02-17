@@ -16,45 +16,50 @@
  */
 
 package org.codehaus.mevenide.webframeworks;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JComponent;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
+import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
+import org.openide.util.NbBundle;
 
 /**
  *
- * @author mkleint
+ * @author Milos Kleint (mkleint@codehaus.org)
  */
-public class CustomizerPanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
-
-    public ProjectCustomizer.Category createCategory(Lookup context) {
+public class WebFrameworksPanelProvider implements ProjectCustomizer.CompositeCategoryProvider {
+    
+    /** Creates a new instance of WebRunPanelProvider */
+    public WebFrameworksPanelProvider() {
+    }
+    
+    public Category createCategory(Lookup context) {
         Project project = context.lookup(Project.class);
         ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
-        
         if (ProjectURLWatcher.TYPE_WAR.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
-                    "Webframeworks", //NOI18N
-                    "Web Frameworks",
+                    "FRAMEWORKS", //NOI18N
+                    NbBundle.getMessage(WebFrameworksPanelProvider.class, "PNL_Frameworks"),
                     null,
                     (ProjectCustomizer.Category[])null);
         }
         return null;
     }
-
-    public JComponent createComponent(ProjectCustomizer.Category category, Lookup context) {
-        throw new IllegalStateException("Not implemented yet");
-//        ModelHandle handle = context.lookup(ModelHandle.class);
-//        Project project = context.lookup(Project.class);
-//        PanelSupportedFrameworks wizPanel = new PanelSupportedFrameworks();
-//        final PanelSupportedFrameworksVisual panel = new PanelSupportedFrameworksVisual();
-//        category.setOkButtonListener(new ActionListener() {
-//            public void actionPerformed(ActionEvent arg0) {
-////                panel.applyExternalChanges();
-//            }
-//        });
-//        return panel;
+    
+    public JComponent createComponent(Category category, Lookup context) {
+        ModelHandle handle = context.lookup(ModelHandle.class);
+        final Project prj = context.lookup(Project.class);
+        final WebFrameworksPanel panel = new WebFrameworksPanel(category, handle, prj);
+        category.setOkButtonListener(new ActionListener() {
+            public void actionPerformed(ActionEvent arg0) {
+                panel.applyChanges();
+            }
+        });
+        return panel;
     }
-
+    
 }
