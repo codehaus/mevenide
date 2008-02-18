@@ -10,12 +10,6 @@
         </folder>
     </folder>
     <folder name="Menu">
-        <folder name="Edit">
-            <file name="org-codehaus-mevenide-repository-search-SearchAction.shadow">
-                <attr name="originalFile" stringvalue="Actions/Edit/org-codehaus-mevenide-repository-search-SearchAction.instance"/>
-                <attr name="position" intvalue="2219"/>
-            </file>
-        </folder>
         <folder name="Window">
             <file name="M2RepositoryBrowserAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-codehaus-mevenide-repository-M2RepositoryBrowserAction.instance"/>
