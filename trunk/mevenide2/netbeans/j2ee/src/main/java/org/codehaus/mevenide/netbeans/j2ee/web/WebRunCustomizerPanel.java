@@ -358,13 +358,11 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         String newUrl = txtRelativeUrl.getText().trim();
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {
-                System.out.println("setting run props.");
                 run.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
             if (isDebugCompatible) {
-                System.out.println("setting debug props.");
                 debug.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
