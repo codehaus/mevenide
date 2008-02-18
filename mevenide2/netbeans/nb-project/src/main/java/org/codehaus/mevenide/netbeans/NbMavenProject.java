@@ -427,8 +427,9 @@ public final class NbMavenProject implements Project {
             return fil.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
                     //TODO most probably a performance bottleneck of sorts..
-                    FileObject fo = FileUtil.toFileObject(new File(dir, name));
-                    return !("java".equalsIgnoreCase(name))  && !("webapp".equalsIgnoreCase(name))  && VisibilityQuery.getDefault().isVisible(fo); //NOI18N
+                    return !("java".equalsIgnoreCase(name))  
+                            && !("webapp".equalsIgnoreCase(name))  /*NOI18N*/
+                            && VisibilityQuery.getDefault().isVisible(FileUtil.toFileObject(new File(dir, name))); 
                 }
             });
         }
