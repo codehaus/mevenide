@@ -148,11 +148,11 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
             }
         }
         
-        SimpleDateFormat df = new SimpleDateFormat( IndexingContext.INDEX_TIME_FORMAT );
-        Properties info = new Properties();
-        info.setProperty( IndexingContext.INDEX_FILE, df.format( ctx.getTimestamp() ) );
-        writeIndexInfo( info );
         if (createZip) {
+            SimpleDateFormat df = new SimpleDateFormat( IndexingContext.INDEX_TIME_FORMAT );
+            Properties info = new Properties();
+            info.setProperty( IndexingContext.INDEX_FILE, df.format( ctx.getTimestamp() ) );
+            writeIndexInfo( info );
             createIndexArchive();
         }
         handle.finish();
@@ -161,7 +161,7 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
     
         private void writeIndexInfo( Properties info ) 
         {
-            File indexInfo = new File( IndexingContext.INDEX_FILE + ".properties" );
+            File indexInfo = new File( indexingContext.getIndexDirectoryFile(), IndexingContext.INDEX_FILE + ".properties" );
           
             OutputStream os = null;
 
