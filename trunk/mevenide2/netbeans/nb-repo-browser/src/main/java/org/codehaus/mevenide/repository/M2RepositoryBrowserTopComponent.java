@@ -31,8 +31,6 @@ import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.local.CreateCustomIndexUI;
-import org.codehaus.mevenide.repository.search.SearchAction;
-import org.codehaus.mevenide.repository.search.SearchPanel;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.ErrorManager;
@@ -60,9 +58,6 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     private static final String PREFERRED_ID = "M2RepositoryBrowserTopComponent"; //NOI18N
     private BeanTreeView btv;
     private ExplorerManager manager;
-    private boolean searchMode = false;
-    private SearchPanel searchPanel;
-    private DialogDescriptor searchDD;
 
     private M2RepositoryBrowserTopComponent() {
         initComponents();
@@ -79,22 +74,16 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         map.put("delete", ExplorerUtils.actionDelete(manager, true));
         associateLookup(ExplorerUtils.createLookup(manager, map));
         pnlExplorer.add(btv, BorderLayout.CENTER);
-        btnSearch.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/FindInRepo.png"))); //NOI18N
-        btnBack.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/backToBrowse.png"))); //NOI18N
         btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refreshRepo.png"))); //NOI18N
         btnCreateCustom.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/newIndex.png"))); //NOI18N
-        btnSearch.setText(null);
-        btnBack.setText(null);
         btnIndex.setText(null);
         btnCreateCustom.setText(null);
-        btnBack.setMargin(new Insets(1, 1, 1, 1));
-        btnSearch.setMargin(new Insets(1, 1, 1, 1));
         btnIndex.setMargin(new Insets(1, 1, 1, 1));
         btnCreateCustom.setMargin(new Insets(1, 1, 1, 1));
         RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
 
             public void stateChanged(ChangeEvent e) {
-                checkMode();
+                manager.setRootContext(createRootNode());
             }
         });
     }
@@ -114,8 +103,6 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         pnlExplorer = new javax.swing.JPanel();
         jSeparator1 = new javax.swing.JSeparator();
         jToolBar1 = new javax.swing.JToolBar();
-        btnBack = new javax.swing.JButton();
-        btnSearch = new javax.swing.JButton();
         btnIndex = new javax.swing.JButton();
         btnCreateCustom = new javax.swing.JButton();
 
@@ -127,24 +114,6 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         add(pnlExplorer, java.awt.BorderLayout.CENTER);
 
         jToolBar1.setFloatable(false);
-
-        btnBack.setText("Back to browse");
-        btnBack.setToolTipText("Return back to browse mode");
-        btnBack.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnBackActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnBack);
-
-        btnSearch.setText("Search");
-        btnSearch.setToolTipText("Search Local Repository");
-        btnSearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSearchActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(btnSearch);
 
         btnIndex.setText("Index");
         btnIndex.setToolTipText("Reindex local repository");
@@ -191,22 +160,6 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 
     }//GEN-LAST:event_btnIndexActionPerformed
 
-    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
-        searchMode = false;
-        checkMode();
-        searchPanel = null;
-        searchDD = null;
-    }//GEN-LAST:event_btnBackActionPerformed
-
-    private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
-        if (searchPanel != null && searchDD != null) {
-            ((SearchAction) SearchAction.get(SearchAction.class)).performAction(searchDD, searchPanel);
-        } else {
-            SearchAction.get(SearchAction.class).actionPerformed(null);
-        }
-        
-    }//GEN-LAST:event_btnSearchActionPerformed
-
 private void btnCreateCustomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCreateCustomActionPerformed
 final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
     DialogDescriptor dd = new DialogDescriptor(cciui, NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "LBL_Custom_Index"));
@@ -236,10 +189,8 @@ final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
 }//GEN-LAST:event_btnCreateCustomActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCreateCustom;
     private javax.swing.JButton btnIndex;
-    private javax.swing.JButton btnSearch;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel pnlExplorer;
@@ -282,7 +233,7 @@ final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
 
     @Override
     public void componentOpened() {
-        checkMode();
+        manager.setRootContext(createRootNode());
     }
 
     @Override
@@ -300,16 +251,7 @@ final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
         ExplorerUtils.activateActions(manager, false);
     }
 
-    private void checkMode() {
-        btnBack.setVisible(searchMode);
-        if (!searchMode) {
-            manager.setRootContext(createRootNode());
-//            btnSearch.setText("Search");
-        } else {
-//            btnSearch.setText("Back to browse");
-        }
 
-    }
 
     @Override
     public boolean requestFocusInWindow() {
@@ -346,16 +288,7 @@ final CreateCustomIndexUI cciui=new CreateCustomIndexUI();
         return new AbstractNode(array);
     }
 
-    public void showSearchResults(Node root) {
-        manager.setRootContext(root);
-        searchMode = true;
-        checkMode();
-    }
 
-    public void setSearchDialogCache(DialogDescriptor dd, SearchPanel panel) {
-        searchDD = dd;
-        searchPanel = panel;
-    }
 
     final static class ResolvableHelper implements Serializable {
 
