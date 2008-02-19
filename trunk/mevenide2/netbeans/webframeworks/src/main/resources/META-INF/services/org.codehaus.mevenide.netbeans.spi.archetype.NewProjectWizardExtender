@@ -1,1 +1,2 @@
-org.codehaus.mevenide.webframeworks.ExtenderImpl
+# comment out, frameworks in new project archetype wizard are controversial
+#org.codehaus.mevenide.webframeworks.ExtenderImpl
