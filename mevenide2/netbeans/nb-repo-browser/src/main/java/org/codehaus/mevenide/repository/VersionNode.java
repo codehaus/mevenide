@@ -84,6 +84,7 @@ public class VersionNode extends AbstractNode {
         if(info.isRemote()){
              retValue = new Action[]{
             new AddAsDependencyAction(artifact),
+            CommonArtifactActions.createFindUsages(artifact),
             null,
             CommonArtifactActions.createViewProjectHomeAction(artifact),
             CommonArtifactActions.createViewBugTrackerAction(artifact),
