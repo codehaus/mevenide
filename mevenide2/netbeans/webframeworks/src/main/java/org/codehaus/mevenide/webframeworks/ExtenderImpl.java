@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.webframeworks;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +32,6 @@ import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.web.api.webmodule.WebModule;
-import org.netbeans.modules.web.spi.webmodule.WebFrameworkProvider;
 import org.netbeans.modules.web.spi.webmodule.WebModuleExtender;
 import org.openide.WizardDescriptor;
 import org.openide.WizardDescriptor.FinishablePanel;
@@ -42,6 +40,7 @@ import org.openide.util.Exceptions;
 /**
  *
  * @author mkleint
+ * @deprecated frameworks in new project wizard have strange UI and might not possibly work.
  */
 public class ExtenderImpl implements NewProjectWizardExtender {
 
