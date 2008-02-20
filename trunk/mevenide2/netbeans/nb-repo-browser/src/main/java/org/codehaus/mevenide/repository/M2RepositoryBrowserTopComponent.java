@@ -172,6 +172,7 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             });
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (rrui.getButton() == ret) {
+        //todo 
     }
         
 }//GEN-LAST:event_btnAddRepoActionPerformed
