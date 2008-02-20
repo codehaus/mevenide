@@ -199,7 +199,7 @@ public class RepositoryIndexerListener implements ArtifactScanningListener {
             {
                 os = new BufferedOutputStream( new FileOutputStream( indexArchive ), 4096 );
 
-                IndexUtils.packIndex( indexingContext.getIndexDirectory(), os );
+                IndexUtils.packIndexArchive( indexingContext.getIndexDirectory(), os );
             }
             catch ( IOException e )
             {
