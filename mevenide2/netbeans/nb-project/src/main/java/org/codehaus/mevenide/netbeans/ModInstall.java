@@ -127,7 +127,7 @@ public class ModInstall extends ModuleInstall {
                                     getRepositoryInfoById(rep.getId()) == null) {
                                 RepositoryInfo ri = new RepositoryInfo(rep.getId(),
                                         rep.getId() + " " + NbBundle.getMessage(ModInstall.class, "LBL_REPOSITORY"),//NOI18N
-                                        rep.getUrl(), null, true);
+                                        null,rep.getUrl(), null, true);
                                 RepositoryPreferences.getInstance().addRepositoryInfo(ri);
                             }
                         }
