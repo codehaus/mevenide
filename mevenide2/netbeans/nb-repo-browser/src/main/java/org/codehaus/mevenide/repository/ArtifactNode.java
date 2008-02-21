@@ -67,7 +67,7 @@ public class ArtifactNode extends AbstractNode {
     @Override
     public Image getIcon(int arg0) {
         Image badge = Utilities.loadImage("org/codehaus/mevenide/repository/ArtifactBadge.png", true); //NOI18N
-        return Utilities.mergeImages(super.getIcon(arg0), badge, 0, 0);
+        return badge;
     }
 
     @Override

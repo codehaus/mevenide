@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.prefs.Preferences;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.openide.util.NbPreferences;
 
 /**
@@ -39,16 +40,18 @@ public class RepositoryPreferences {
     
 
     static {
-        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository", null, null);//NOI18N
-        NETBEANS = new RepositoryInfo("netbeans", "Netbeans Repository",
+        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository",
+                EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),null, null,false);//NOI18N
+        NETBEANS = new RepositoryInfo("netbeans", "Netbeans Repository",null,
                 "http://deadlock.netbeans.org/maven2/",
                 "http://deadlock.netbeans.org/maven2/.index/netbeans/", true);//NOI18N
-        CENTRAL = new RepositoryInfo("central", "Central  Repository",
+        CENTRAL = new RepositoryInfo("central", "Central  Repository",null,
                 "http://repo1.maven.org/maven2",
                 "http://deadlock.netbeans.org/maven2/.index/central/", true);//NOI18N
     }
     private String KEY_ID = "repository.id";//NOI18N
     private String KEY_NAME = "repository.name";//NOI18N
+    private String KEY_PATH = "repository.path";//NOI18N
     private String KEY_INDEX_URL = "repository.index.url";//NOI18N
     private String KEY_REPO_URL = "repository.repo.url";//NOI18N
     private String KEY_REPO_REMOTE = "repository.repo.remote";//NOI18N
@@ -90,14 +93,15 @@ public class RepositoryPreferences {
         toRet.add(CENTRAL);
         toRet.add(NETBEANS);
         Preferences pref = getPreferences();
-        int count = 0;
+        int count =  toRet.size();
         String id = pref.get(KEY_ID + "." + count, null);
         while (id != null) {
             String name = pref.get(KEY_NAME + "." + count, null);
+            String path = pref.get(KEY_PATH + "." + count, null);
             String repourl = pref.get(KEY_REPO_URL + "." + count, null);
             String indexurl = pref.get(KEY_INDEX_URL + "." + count, null);
             boolean remote = pref.getBoolean(KEY_REPO_REMOTE + "." + count, true);
-            RepositoryInfo info = new RepositoryInfo(id, name, repourl, indexurl, remote);
+            RepositoryInfo info = new RepositoryInfo(id, name,path, repourl, indexurl, remote);
             toRet.add(info);
             count = count + 1;
             id = pref.get(KEY_ID + "." + count, null);
@@ -113,11 +117,14 @@ public class RepositoryPreferences {
             pref.put(KEY_ID + "." + id, info.id);
             pref.put(KEY_NAME + "." + id, info.name);
             pref.putBoolean(KEY_REPO_REMOTE + "." + id, info.remote);
+            if (info.getRepositoryPath() != null) {
+                pref.put(KEY_PATH+ "." + id, info.repositoryPath);
+            }
             if (info.getRepositoryUrl() != null) {
                 pref.put(KEY_REPO_URL + "." + id, info.repositoryUrl);
             }
             if (info.getIndexUpdateUrl() != null) {
-                pref.put(KEY_REPO_URL + "." + id, info.indexUpdateUrl);
+                pref.put(KEY_INDEX_URL + "." + id, info.indexUpdateUrl);
             }
         //todo fire repository added
         }
@@ -152,44 +159,44 @@ public class RepositoryPreferences {
 
         private String id;
         private String name;
+        private String repositoryPath;
         private String repositoryUrl;
         private String indexUpdateUrl;
         private boolean remote;
 
-        public RepositoryInfo(String id, String name, String repositoryUrl,
-                String indexUpdateUrl) {
+        public RepositoryInfo(String id, String name, String repositoryPath,
+                String repositoryUrl, String indexUpdateUrl, boolean remote) {
             this.id = id;
             this.name = name;
-            this.repositoryUrl = repositoryUrl;
-            this.indexUpdateUrl = indexUpdateUrl;
-
-        }
-
-        public RepositoryInfo(String id, String name, String repositoryUrl,
-                String indexUpdateUrl, boolean remote) {
-            this.id = id;
-            this.name = name;
+            this.repositoryPath = repositoryPath;
             this.repositoryUrl = repositoryUrl;
             this.indexUpdateUrl = indexUpdateUrl;
             this.remote = remote;
         }
 
+        
+
         public String getId() {
             return id;
         }
 
-        public String getIndexUpdateUrl() {
-            return indexUpdateUrl;
-        }
 
         public String getName() {
             return name;
         }
 
+        public String getRepositoryPath() {
+            return repositoryPath;
+        }
+
+        
         public String getRepositoryUrl() {
             return repositoryUrl;
         }
-
+        
+        public String getIndexUpdateUrl() {
+            return indexUpdateUrl;
+        }
         public boolean isRemote() {
             return remote;
         }
