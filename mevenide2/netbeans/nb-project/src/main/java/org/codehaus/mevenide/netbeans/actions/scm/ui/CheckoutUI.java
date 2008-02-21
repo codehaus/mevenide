@@ -17,6 +17,7 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Scm;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.openide.util.NbBundle;
 
 /**
@@ -280,7 +281,7 @@ public class CheckoutUI extends javax.swing.JPanel {
             public List<String> getGoals() {
 
                 List<String> goals = new ArrayList<String>();
-                goals.add("scm:checkout");//NOI18N
+                goals.add(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_SCM_CHECKOUT));//NOI18N
                 return goals;
             }
 
