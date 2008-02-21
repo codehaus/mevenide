@@ -30,6 +30,7 @@ public class MavenCommandSettings {
     public static final String COMMAND_CREATE_ARCHETYPE = "createArchetype"; //NOI18N
     public static final String COMMAND_CREATE_ARCHETYPENG = "createArchetypeNG"; //NOI18N
     public static final String COMMAND_INSTALL_FILE = "installFile"; //NOI18N
+    public static final String COMMAND_SCM_CHECKOUT = "scmCheckout"; //NOI18N
     
     public static MavenCommandSettings getDefault() {
         return INSTANCE;
@@ -68,6 +69,9 @@ public class MavenCommandSettings {
             }
             else if (COMMAND_CREATE_ARCHETYPENG.equals(command)) {
                 toRet = "org.apache.maven.plugins:maven-archetype-plugin:2.0-alpha-1:create";//NOI18N
+            }
+            else if (COMMAND_SCM_CHECKOUT.equals(command)) {
+                toRet = "org.apache.maven.plugins:maven-scm-plugin:1.0:checkout";//NOI18N
             }
         }
         assert toRet != null : "Command " + command + " needs implementation."; //NOI18N
