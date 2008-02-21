@@ -172,7 +172,15 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             });
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (rrui.getButton() == ret) {
-        //todo 
+          final  RepositoryInfo info = rrui.getRepositoryInfo();
+        RepositoryPreferences.getInstance().addRepositoryInfo(info);
+        manager.setRootContext(createRootNode());
+        RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(info.getId());
+                }
+            });
     }
         
 }//GEN-LAST:event_btnAddRepoActionPerformed
@@ -269,7 +277,8 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         Children.Array array = new Children.Array();
         List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : infos) {
-            if(!ri.isRemote() || ri.getIndexUpdateUrl()!=null){
+            if((!ri.isRemote() && ri.getRepositoryPath()!=null )
+                    || ri.getIndexUpdateUrl()!=null){
              array.add(new Node[]{new RepositoryNode(ri)});
             }
         }

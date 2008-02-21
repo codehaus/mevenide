@@ -140,7 +140,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
             indexer.addIndexingContext( //
                     info.getId(), // context id
                     info.getId(), // repository id
-                    info.isRemote() ? null : new File(repository.getBasedir()), // repository folder
+                    info.isRemote() ? null : new File(info.getRepositoryPath()), // repository folder
                     new File(getDefaultIndexLocation(), info.getId()), // index folder
                     info.getRepositoryUrl(), // repositoryUrl
                     info.getIndexUpdateUrl(), // index update url
