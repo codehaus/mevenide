@@ -253,29 +253,31 @@ private void jraRemoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }
 
 private void txtRepoIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepoIdKeyReleased
-  validateInfo();
+    validateInfo();
 }//GEN-LAST:event_txtRepoIdKeyReleased
 
 private void txtRepoPathKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepoPathKeyTyped
-validateInfo();
+    validateInfo();
 }//GEN-LAST:event_txtRepoPathKeyTyped
 
 private void txtRepoNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepoNameKeyReleased
-validateInfo();
+    validateInfo();
 }//GEN-LAST:event_txtRepoNameKeyReleased
 
 private void txtRepoUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepoUrlKeyReleased
-validateInfo();
+    validateInfo();
 }//GEN-LAST:event_txtRepoUrlKeyReleased
 
 private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIndexUrlKeyReleased
-validateInfo();
+    validateInfo();
 }//GEN-LAST:event_txtIndexUrlKeyReleased
     public void modify(RepositoryInfo info){
     
     }
     public RepositoryInfo getRepositoryInfo(){
-      RepositoryInfo info=new RepositoryInfo(txtRepoId.getText().trim(),txtRepoName.getText().trim(),
+      RepositoryInfo info=new RepositoryInfo(txtRepoId.getText().trim(),
+              RepositoryPreferences.TYPE_NEXUS,
+              txtRepoName.getText().trim(),
               jraLocal.isSelected()  ? txtRepoPath.getText().trim() : null,
               jraRemote.isSelected() ? txtRepoUrl.getText().trim()  : null,
               jraRemote.isSelected() ? txtIndexUrl.getText().trim() : null,
@@ -285,50 +287,49 @@ validateInfo();
     }
 
     private void validateInfo(){
-     //check repo id
-     if(txtRepoId.getText().trim().length()==0  ){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error1"));
-         return;
-     }
-     if(RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim()) !=null ){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error2"));
-         return;
-     }
-     
-     //check repo name
-     if(txtRepoName.getText().trim().length()==0  ){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Name_Error1"));
-         return;
-     }
-     if(jraLocal.isSelected()){
-       //check repo url
-     if(txtRepoPath.getText().trim().length()==0  
-             || !new File(txtRepoPath.getText().trim()).exists()){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Path_Error"));
-         return;
-     } 
-     }else{
-       //check repo url
-     if(txtRepoUrl.getText().trim().length()==0  ){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Url_Error"));
-         return;
-     } 
-     //check repo index url
-     if(txtIndexUrl.getText().trim().length()==0  ){
-         btnOK.setEnabled(false);
-         lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Index_Url_Error"));
-         return;
-     }
-     
-     }
-     
-     lblValidate.setText("");
-     btnOK.setEnabled(true);
+        //check repo id
+        if (txtRepoId.getText().trim().length() == 0) {
+            btnOK.setEnabled(false);
+            lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error1"));
+            return;
+        }
+        if (RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim()) != null) {
+            btnOK.setEnabled(false);
+            lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error2"));
+            return;
+        }
+
+        //check repo name
+        if (txtRepoName.getText().trim().length() == 0) {
+            btnOK.setEnabled(false);
+            lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Name_Error1"));
+            return;
+        }
+        if (jraLocal.isSelected()) {
+            //check repo url
+            if (txtRepoPath.getText().trim().length() == 0 || !new File(txtRepoPath.getText().trim()).exists()) {
+                btnOK.setEnabled(false);
+                lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Path_Error"));
+                return;
+            }
+        } else {
+            //check repo url
+            if (txtRepoUrl.getText().trim().length() == 0) {
+                btnOK.setEnabled(false);
+                lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Url_Error"));
+                return;
+            }
+            //check repo index url
+            if (txtIndexUrl.getText().trim().length() == 0) {
+                btnOK.setEnabled(false);
+                lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_Index_Url_Error"));
+                return;
+            }
+
+        }
+
+        lblValidate.setText("");
+        btnOK.setEnabled(true);
     }
 
     public JButton getButton(){

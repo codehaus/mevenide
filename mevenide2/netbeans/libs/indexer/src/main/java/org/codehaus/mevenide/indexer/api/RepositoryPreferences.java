@@ -19,8 +19,10 @@ package org.codehaus.mevenide.indexer.api;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.openide.util.Exceptions;
 import org.openide.util.NbPreferences;
 
 /**
@@ -38,18 +40,22 @@ public class RepositoryPreferences {
      */
     public static final String LOCAL_REPO_ID = "local";//NOI18N
     
+    //TODO - move elsewhere, implementation detail??
+    public static final String TYPE_NEXUS = "nexus"; //NOI18N
+    
 
     static {
-        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, "Local Repository",
+        LOCAL = new RepositoryInfo(LOCAL_REPO_ID, TYPE_NEXUS, "Local Repository",
                 EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),null, null,false);//NOI18N
-        NETBEANS = new RepositoryInfo("netbeans", "Netbeans Repository",null,
+        NETBEANS = new RepositoryInfo("netbeans", TYPE_NEXUS, "Netbeans Repository",null,
                 "http://deadlock.netbeans.org/maven2/",
                 "http://deadlock.netbeans.org/maven2/.index/netbeans/", true);//NOI18N
-        CENTRAL = new RepositoryInfo("central", "Central  Repository",null,
+        CENTRAL = new RepositoryInfo("central", TYPE_NEXUS, "Central  Repository",null,
                 "http://repo1.maven.org/maven2",
                 "http://repo1.maven.org/maven2/.index/", true);//NOI18N
     }
     private String KEY_ID = "repository.id";//NOI18N
+    private String KEY_TYPE = "repository.type";//NOI18N
     private String KEY_NAME = "repository.name";//NOI18N
     private String KEY_PATH = "repository.path";//NOI18N
     private String KEY_INDEX_URL = "repository.index.url";//NOI18N
@@ -74,6 +80,13 @@ public class RepositoryPreferences {
     public synchronized static RepositoryPreferences getInstance() {
         if (instance == null) {
             instance = new RepositoryPreferences();
+            //not very nice but need the repos to be inserted when not present
+            // and to to overwrite potencial edits.
+            // still not clear how to allow people to delete central or netbeans
+            instance.addRepositoryInfo(LOCAL);
+            instance.addRepositoryInfo(CENTRAL);
+            instance.addRepositoryInfo(NETBEANS);
+            
         }
         return instance;
     }
@@ -89,42 +102,45 @@ public class RepositoryPreferences {
 
     public List<RepositoryInfo> getRepositoryInfos() {
         List<RepositoryInfo> toRet = new ArrayList<RepositoryInfo>();
-        toRet.add(LOCAL);
-        toRet.add(CENTRAL);
-        toRet.add(NETBEANS);
         Preferences pref = getPreferences();
-        int count =  toRet.size();
-        String id = pref.get(KEY_ID + "." + count, null);
-        while (id != null) {
-            String name = pref.get(KEY_NAME + "." + count, null);
-            String path = pref.get(KEY_PATH + "." + count, null);
-            String repourl = pref.get(KEY_REPO_URL + "." + count, null);
-            String indexurl = pref.get(KEY_INDEX_URL + "." + count, null);
-            boolean remote = pref.getBoolean(KEY_REPO_REMOTE + "." + count, true);
-            RepositoryInfo info = new RepositoryInfo(id, name,path, repourl, indexurl, remote);
-            toRet.add(info);
-            count = count + 1;
-            id = pref.get(KEY_ID + "." + count, null);
+        try {
+            String[] keys = pref.keys();
+            for (String key : keys) {
+                if (!key.startsWith(KEY_ID)) {
+                    continue;
+                }
+                String id = pref.get(key, null);
+                String name = pref.get(KEY_NAME + "." + id, null);
+                String type = pref.get(KEY_TYPE + "." + id, null);
+                String path = pref.get(KEY_PATH + "." + id, null);
+                String repourl = pref.get(KEY_REPO_URL + "." + id, null);
+                String indexurl = pref.get(KEY_INDEX_URL + "." + id, null);
+                boolean remote = pref.getBoolean(KEY_REPO_REMOTE + "." + id, true);
+                RepositoryInfo info = new RepositoryInfo(id, type, name, path, repourl, indexurl, remote);
+                toRet.add(info);
+            }
+        } catch (BackingStoreException ex) {
+            Exceptions.printStackTrace(ex);
         }
         return toRet;
     }
-    /*prevent concurrunt accsess*/
+    /*prevent concurrent access*/
 
     public synchronized void addRepositoryInfo(RepositoryInfo info) {
         if (getRepositoryInfoById(info.id) == null) {
-            int id = getRepositoryInfos().size();
             Preferences pref = getPreferences();
-            pref.put(KEY_ID + "." + id, info.id);
-            pref.put(KEY_NAME + "." + id, info.name);
-            pref.putBoolean(KEY_REPO_REMOTE + "." + id, info.remote);
+            pref.put(KEY_ID + "." + info.id, info.id);
+            pref.put(KEY_TYPE + "." + info.id, info.type);
+            pref.put(KEY_NAME + "." + info.id, info.name);
+            pref.putBoolean(KEY_REPO_REMOTE + "." + info.id, info.remote);
             if (info.getRepositoryPath() != null) {
-                pref.put(KEY_PATH+ "." + id, info.repositoryPath);
+                pref.put(KEY_PATH+ "." + info.id, info.repositoryPath);
             }
             if (info.getRepositoryUrl() != null) {
-                pref.put(KEY_REPO_URL + "." + id, info.repositoryUrl);
+                pref.put(KEY_REPO_URL + "." + info.id, info.repositoryUrl);
             }
             if (info.getIndexUpdateUrl() != null) {
-                pref.put(KEY_INDEX_URL + "." + id, info.indexUpdateUrl);
+                pref.put(KEY_INDEX_URL + "." + info.id, info.indexUpdateUrl);
             }
         //todo fire repository added
         }
@@ -158,15 +174,17 @@ public class RepositoryPreferences {
     public static class RepositoryInfo {
 
         private String id;
+        private String type;
         private String name;
         private String repositoryPath;
         private String repositoryUrl;
         private String indexUpdateUrl;
         private boolean remote;
 
-        public RepositoryInfo(String id, String name, String repositoryPath,
+        public RepositoryInfo(String id, String type, String name, String repositoryPath,
                 String repositoryUrl, String indexUpdateUrl, boolean remote) {
             this.id = id;
+            this.type = type;
             this.name = name;
             this.repositoryPath = repositoryPath;
             this.repositoryUrl = repositoryUrl;
@@ -180,6 +198,9 @@ public class RepositoryPreferences {
             return id;
         }
 
+        public String getType() {
+            return type;
+        }
 
         public String getName() {
             return name;

@@ -126,6 +126,7 @@ public class ModInstall extends ModuleInstall {
                             if (RepositoryPreferences.getInstance().
                                     getRepositoryInfoById(rep.getId()) == null) {
                                 RepositoryInfo ri = new RepositoryInfo(rep.getId(),
+                                        RepositoryPreferences.TYPE_NEXUS, //TODO this should be somehow omittable, these repos are not meant to be indexed or shown in the browser UI.
                                         rep.getId() + " " + NbBundle.getMessage(ModInstall.class, "LBL_REPOSITORY"),//NOI18N
                                         null,rep.getUrl(), null, true);
                                 RepositoryPreferences.getInstance().addRepositoryInfo(ri);
