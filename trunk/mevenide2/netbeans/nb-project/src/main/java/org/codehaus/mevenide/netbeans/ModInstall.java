@@ -58,10 +58,13 @@ public class ModInstall extends ModuleInstall {
 
         projectsListener = new OpenProjectsListener();
         OpenProjects.getDefault().addPropertyChangeListener(projectsListener);
-
+        int freq = RepositoryPreferences.getInstance().getIndexUpdateFrequency();
         List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (final RepositoryInfo ri : ris) {
-            int freq = RepositoryPreferences.getInstance().getIndexUpdateFrequency();
+            //check this repo can be index
+            if((ri.isRemote()&& ri.getIndexUpdateUrl()==null) ||(ri.getRepositoryPath()==null)){
+             continue;
+            }
             if (freq != RepositoryPreferences.FREQ_NEVER) {
                 boolean run = false;
                 if (freq == RepositoryPreferences.FREQ_STARTUP) {
@@ -126,7 +129,7 @@ public class ModInstall extends ModuleInstall {
                             if (RepositoryPreferences.getInstance().
                                     getRepositoryInfoById(rep.getId()) == null) {
                                 RepositoryInfo ri = new RepositoryInfo(rep.getId(),
-                                        RepositoryPreferences.TYPE_NEXUS, //TODO this should be somehow omittable, these repos are not meant to be indexed or shown in the browser UI.
+                                        RepositoryPreferences.TYPE_NEXUS, 
                                         rep.getId() + " " + NbBundle.getMessage(ModInstall.class, "LBL_REPOSITORY"),//NOI18N
                                         null,rep.getUrl(), null, true);
                                 RepositoryPreferences.getInstance().addRepositoryInfo(ri);
