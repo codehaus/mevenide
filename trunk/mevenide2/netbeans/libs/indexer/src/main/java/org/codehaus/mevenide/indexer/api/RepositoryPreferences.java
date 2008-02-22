@@ -29,11 +29,11 @@ import org.openide.util.NbPreferences;
  *
  * @author Anuradha G
  */
-public class RepositoryPreferences {
+public final class RepositoryPreferences {
 
-    public static final RepositoryInfo LOCAL;
-    public static final RepositoryInfo NETBEANS;
-    public static final RepositoryInfo CENTRAL;
+    private static final RepositoryInfo LOCAL;
+    private static final RepositoryInfo NETBEANS;
+    private static final RepositoryInfo CENTRAL;
     private static RepositoryPreferences instance;
     /**
      * index of local repository
@@ -171,7 +171,7 @@ public class RepositoryPreferences {
     }
 
     /*Repository Info */
-    public static class RepositoryInfo {
+    public static final class RepositoryInfo {
 
         private String id;
         private String type;
