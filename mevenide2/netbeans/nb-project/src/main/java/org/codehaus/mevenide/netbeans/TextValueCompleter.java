@@ -42,6 +42,7 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import org.openide.util.NbBundle;
 
 /**
  * inner class does the matching of the JTextField's
@@ -67,6 +68,8 @@ public class TextValueCompleter implements DocumentListener {
     private String separators;
     private CaretListener caretListener;
     
+    private boolean loading;
+    private static final String LOADING=NbBundle.getMessage(TextValueCompleter.class, "LBL_Loading");
     public TextValueCompleter(Collection<String> completions, JTextField fld) {
         this.completions = completions;
         this.field = fld;
@@ -165,8 +168,21 @@ public class TextValueCompleter implements DocumentListener {
         this(completions, fld);
         this.separators = separators;
     }
-    
-    
+
+    public boolean isLoading() {
+        return loading;
+    }
+
+    public void setLoading(boolean loading) {
+        this.loading = loading;
+        if(loading){
+          completionListModel.removeAllElements();
+          completionListModel.addElement(LOADING);
+        }else{
+          completionListModel.removeElement(LOADING);
+        }
+    }
+
     private void buildPopup() {
         pattern = Pattern.compile(getCompletionPrefix() + ".+"); //NOI18N
         int entryindex = 0;
