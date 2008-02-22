@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
@@ -29,6 +30,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -44,22 +46,28 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     /** Creates new form AddDependencyPanel */
     public AddDependencyPanel() {
         initComponents();
-        populateGroupId();
+        groupCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtGroupId);
         artifactCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtArtifactId);
         versionCompleter = new TextValueCompleter(Collections.EMPTY_LIST, txtVersion);
         txtGroupId.addFocusListener(new FocusAdapter() {
-
             @Override
             public void focusLost(FocusEvent e) {
-                populateArtifact();
-                populateVersion();
+                RequestProcessor.getDefault().post(new Runnable() {
+                    public void run() {
+                        populateArtifact();
+                        populateVersion();
+                    }
+                });
             }
         });
         txtArtifactId.addFocusListener(new FocusAdapter() {
-
             @Override
             public void focusLost(FocusEvent e) {
-                populateVersion();
+                RequestProcessor.getDefault().post(new Runnable() {
+                    public void run() {
+                        populateVersion();
+                    }
+                });
             }
         });
 
@@ -83,6 +91,12 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         txtVersion.getDocument().addDocumentListener(docList);
         txtArtifactId.getDocument().addDocumentListener(docList);
         checkValidState();
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                populateGroupId();
+            }
+        });
+        
     }
 
     public JButton getOkButton() {
@@ -209,31 +223,46 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtGroupId;
     private javax.swing.JTextField txtVersion;
     // End of variables declaration//GEN-END:variables
+    
     private void populateGroupId() {
-
-        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getGroups());
-        groupCompleter = new TextValueCompleter(lst, txtGroupId);
+        assert !SwingUtilities.isEventDispatchThread();
+        final List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getGroups());
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                groupCompleter.setValueList(lst);
+            }
+        });
 
     }
 
     private void populateArtifact() {
+        assert !SwingUtilities.isEventDispatchThread();
 
-        List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(txtGroupId.getText().trim()));
-        artifactCompleter.setValueList(lst);
+        final List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(txtGroupId.getText().trim()));
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                artifactCompleter.setValueList(lst);
+            }
+        });
 
     }
 
     private void populateVersion() {
+        assert !SwingUtilities.isEventDispatchThread();
 
         List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
-        List<String> vers = new ArrayList<String>();
+        final List<String> vers = new ArrayList<String>();
         for (NBVersionInfo rec : lst) {
             if (!vers.contains(rec.getVersion())) {
                 vers.add(rec.getVersion());
             }
         }
         Collections.sort(vers);
-        versionCompleter.setValueList(vers);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                versionCompleter.setValueList(vers);
+            }
+        });
 
     }
 }

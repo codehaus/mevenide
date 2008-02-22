@@ -203,6 +203,7 @@ public class ActionMappings extends javax.swing.JPanel {
     @Override
     public void addNotify() {
         super.addNotify();
+        //TODO move the list population out of AWT.
         GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
         if (provider != null) {
             Set<String> strs = provider.getAvailableGoals();
