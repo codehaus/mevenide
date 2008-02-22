@@ -21,12 +21,15 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.extension.ExtensionScanningException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -106,33 +109,31 @@ public final class RepositoryUtil {
         return bytes;
     }
 
-    public static MavenProject readMavenProject(Artifact artifact) {
+    public static MavenProject readMavenProject(String grId, String artId, String ver, ArtifactRepository repository) {
         MavenProject mavenProject = null;
+        try {
+            // we need to use the online embedder as the project one never
+            // puts anything in the local repository, thus not resolving dependencies.
+            //mkleint: this is somewhat strange thing to do for indexing remote repositories
+            // via the maven-repo-utils CLI tool..
+            ArtifactFactory artifactFactory = (ArtifactFactory) EmbedderFactory.getOnlineEmbedder().getPlexusContainer().lookup(ArtifactFactory.class);
+            Artifact projectArtifact = artifactFactory.createProjectArtifact(
+                    grId,
+                    artId,
+                    ver,
+                    null);
 
-        String absolutePath = artifact.getFile().getAbsolutePath();
-        String extension = artifact.getArtifactHandler().getExtension();
+            MavenProjectBuilder builder = (MavenProjectBuilder) EmbedderFactory.getOnlineEmbedder().getPlexusContainer().lookup(MavenProjectBuilder.class);
+            mavenProject = builder.buildFromRepository(projectArtifact, new ArrayList(), repository);
 
-        String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
-        pomPath += "pom";//NOI18N
-        File file = new File(pomPath);
-        if (file.exists()) {
-            try {
-
-                mavenProject = EmbedderFactory.getProjectEmbedder().
-                        readProject(file);
-
-            } catch (InvalidProjectModelException ex) {
-                //ignore nexus is falling ???
-            } catch (ProjectBuildingException ex) {
-               // Exceptions.printStackTrace(ex);
-            } catch (ExtensionScanningException ex) {
-                //Exceptions.printStackTrace(ex);
-            }catch (Exception exception) {
-                //Exceptions.printStackTrace(exception);
-            }
-
+        } catch (InvalidProjectModelException ex) {
+            //ignore nexus is falling ???
+            ex.printStackTrace();
+        } catch (ProjectBuildingException ex) {
+            ex.printStackTrace();
+        } catch (Exception exception) {
+            exception.printStackTrace();
         }
-
         return mavenProject;
     }
 }

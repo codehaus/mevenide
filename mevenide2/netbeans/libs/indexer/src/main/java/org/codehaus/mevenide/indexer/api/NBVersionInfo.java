@@ -113,5 +113,9 @@ public class NBVersionInfo {
         return classifier;
     }
  
+    @Override
+    public String toString() {
+        return groupId + ":" + artifactId + ":" + version + ":" + repoId;
+    }
     
 }
