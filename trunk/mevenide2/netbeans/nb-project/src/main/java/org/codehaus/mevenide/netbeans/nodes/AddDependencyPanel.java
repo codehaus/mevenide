@@ -52,6 +52,8 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         txtGroupId.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
+                artifactCompleter.setLoading(true);
+                versionCompleter.setLoading(true);
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
                         populateArtifact();
@@ -60,9 +62,11 @@ public class AddDependencyPanel extends javax.swing.JPanel {
                 });
             }
         });
+        
         txtArtifactId.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
+                versionCompleter.setLoading(true);
                 RequestProcessor.getDefault().post(new Runnable() {
                     public void run() {
                         populateVersion();
@@ -91,6 +95,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         txtVersion.getDocument().addDocumentListener(docList);
         txtArtifactId.getDocument().addDocumentListener(docList);
         checkValidState();
+        groupCompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
                 populateGroupId();
@@ -230,6 +235,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 groupCompleter.setValueList(lst);
+                groupCompleter.setLoading(false);
             }
         });
 
@@ -242,6 +248,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 artifactCompleter.setValueList(lst);
+                artifactCompleter.setLoading(false);
             }
         });
 
@@ -261,6 +268,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 versionCompleter.setValueList(vers);
+                versionCompleter.setLoading(false);
             }
         });
 

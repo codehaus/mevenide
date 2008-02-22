@@ -39,7 +39,6 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
-import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
@@ -61,11 +60,8 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         btnPrev.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/back.png"))); //NOI18N
         btnNext.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/forward.png"))); //NOI18N
 
-        
-        List<String> wait = new ArrayList<String>(1);
-        wait.add(NbBundle.getMessage(RunGoalsPanel.class, "LBL_PLEASE_WAIT"));
-        goalcompleter = new TextValueCompleter(wait, txtGoals, " "); //NOI18N
-        
+        goalcompleter = new TextValueCompleter(new ArrayList<String>(0), txtGoals, " "); //NOI18N
+        goalcompleter.setLoading(true);
         // doing lazy.. 
         RequestProcessor.getDefault().post(new Runnable() {
 
@@ -83,13 +79,14 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                     SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             goalcompleter.setValueList(strs);
+                            goalcompleter.setLoading(false);
                         }
                     });
                 }
             }
         });
 
-        profilecompleter = new TextValueCompleter(wait, txtProfiles, " ");
+        profilecompleter = new TextValueCompleter(new ArrayList<String>(0), txtProfiles, " ");
     }
 
     @Override
@@ -100,12 +97,14 @@ public class RunGoalsPanel extends javax.swing.JPanel {
     }
 
     private void readProfiles(final File pom) {
+        profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
                 final List ret = ModelUtils.retrieveAllProfiles(pom);
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
                         profilecompleter.setValueList(ret);
+                        profilecompleter.setLoading(false);
                     }
                 });
             }
