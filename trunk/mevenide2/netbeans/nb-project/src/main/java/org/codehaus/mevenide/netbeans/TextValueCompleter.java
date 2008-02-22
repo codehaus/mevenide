@@ -37,6 +37,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.Popup;
 import javax.swing.PopupFactory;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.DocumentEvent;
@@ -299,7 +300,11 @@ public class TextValueCompleter implements DocumentListener {
     }
     
     public void setValueList(Collection<String> values) {
+        assert SwingUtilities.isEventDispatchThread();
         completions = values;
+        if (field.isFocusOwner() && completionList.isDisplayable() && completionList.isVisible()) {
+            buildAndShowPopup(); 
+        }
     }
 }
 

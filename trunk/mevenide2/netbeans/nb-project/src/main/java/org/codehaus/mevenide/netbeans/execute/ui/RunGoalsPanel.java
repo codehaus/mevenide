@@ -26,6 +26,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
+import javax.swing.SwingUtilities;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
@@ -71,7 +72,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             public void run() {
                 GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
                 if (provider != null) {
-                    Set<String> strs = provider.getAvailableGoals();
+                    final Set<String> strs = provider.getAvailableGoals();
                     try {
                         List<String> phases = EmbedderFactory.getProjectEmbedder().getLifecyclePhases();
                         strs.addAll(phases);
@@ -79,7 +80,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
                         // oh wel just ignore..
                         e.printStackTrace();
                     }
-                    goalcompleter.setValueList(strs);
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            goalcompleter.setValueList(strs);
+                        }
+                    });
                 }
             }
         });
@@ -96,9 +101,13 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     private void readProfiles(final File pom) {
         RequestProcessor.getDefault().post(new Runnable() {
-
             public void run() {
-                profilecompleter.setValueList(ModelUtils.retrieveAllProfiles(pom));
+                final List ret = ModelUtils.retrieveAllProfiles(pom);
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        profilecompleter.setValueList(ret);
+                    }
+                });
             }
         });
     }
