@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.codehaus.mevenide.grammar.AbstractSchemaBasedGrammar.MyTextElement;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.jdom.Element;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
@@ -60,6 +61,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         return getClass().getResourceAsStream("/org/codehaus/mevenide/grammar/settings-1.0.0.xsd"); //NOI18N
     }
 
+    @Override
     protected List getDynamicCompletion(String path, HintContext hintCtx, Element lowestParent) {
         if ("/settings/proxies".equals(path)) { //NOI18N
             // doesn't work!!!'
@@ -95,7 +97,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
 
         if (path.endsWith("pluginGroups/pluginGroup")) { //NOI18N
 
-            Set elems = RepositoryUtil.getDefaultRepositoryIndexer().filterPluginGroupIds(RepositoryPreferences.LOCAL_REPO_ID, virtualTextCtx.getCurrentPrefix());
+            Set elems = RepositoryQueries.filterPluginGroupIds(virtualTextCtx.getCurrentPrefix());
             Iterator it = elems.iterator();
             ArrayList texts = new ArrayList();
             while (it.hasNext()) {
@@ -116,7 +118,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : ris) {
             if(ri.getRepositoryUrl()!=null){
-             repos.add(ri.getRepositoryUrl());
+                repos.add(ri.getRepositoryUrl());
             }
         }
 

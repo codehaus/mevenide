@@ -19,7 +19,8 @@ package org.codehaus.mevenide.repository;
 import java.util.Collections;
 
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -62,11 +63,8 @@ public class ArtifactChildren extends Children.Keys {
 
         setKeys(Collections.singletonList(GroupListChildren.LOADING));
         RequestProcessor.getDefault().post(new Runnable() {
-
             public void run() {
-
-                setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getVersions(groupId, artifactId, info.getId()));
-
+                setKeys(RepositoryQueries.getVersions(groupId, artifactId, info));
             }
         });
 

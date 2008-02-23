@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/indexer/Bundle.properties
 AutoUpdate-Show-In-Client: false
-OpenIDE-Module-Public-Packages: org.codehaus.mevenide.indexer.api.*
+OpenIDE-Module-Public-Packages: org.codehaus.mevenide.indexer.api.*, org.codehaus.mevenide.indexer.spi.*

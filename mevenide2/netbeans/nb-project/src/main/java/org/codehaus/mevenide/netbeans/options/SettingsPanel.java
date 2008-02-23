@@ -35,6 +35,8 @@ import javax.swing.event.DocumentListener;
 
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.settings.Settings;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
@@ -559,13 +561,16 @@ public class SettingsPanel extends javax.swing.JPanel {
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                RepositoryUtil.getDefaultRepositoryIndexer().
-                        indexRepo(RepositoryPreferences.LOCAL_REPO_ID);
-               SwingUtilities.invokeLater(new Runnable() {
+                //TODO shall we iterate all "local" repositories??
+                RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
+                if (info != null) {
+                    RepositoryIndexer.indexRepo(info);
+                    SwingUtilities.invokeLater(new Runnable() {
                         public void run() {
                             btnIndex.setEnabled(true);
                         }
                     });
+                }
             }
         });
     }//GEN-LAST:event_btnIndexActionPerformed

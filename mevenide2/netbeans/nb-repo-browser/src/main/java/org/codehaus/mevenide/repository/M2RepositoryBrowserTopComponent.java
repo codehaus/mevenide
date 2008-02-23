@@ -26,8 +26,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.repository.register.RepositoryRegisterUI;
 import org.openide.DialogDescriptor;
@@ -79,12 +80,12 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         btnAddRepo.setText(null);
         btnIndex.setMargin(new Insets(1, 1, 1, 1));
         btnAddRepo.setMargin(new Insets(1, 1, 1, 1));
-        RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
-
-            public void stateChanged(ChangeEvent e) {
-                manager.setRootContext(createRootNode());
-            }
-        });
+//        RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
+//
+//            public void stateChanged(ChangeEvent e) {
+//                manager.setRootContext(createRootNode());
+//            }
+//        });
     }
 
     public ExplorerManager getExplorerManager() {
@@ -140,16 +141,12 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     private void btnIndexActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnIndexActionPerformed
         btnIndex.setEnabled(false);
         RequestProcessor.getDefault().post(new Runnable() {
-
             public void run() {
                 List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
                 for (RepositoryInfo ri : infos) {
-                    RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(ri.getId());
+                    RepositoryIndexer.indexRepo(ri);
                 }
-
-
                 SwingUtilities.invokeLater(new Runnable() {
-
                     public void run() {
                         btnIndex.setEnabled(true);
                     }
@@ -176,9 +173,8 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         RepositoryPreferences.getInstance().addRepositoryInfo(info);
         manager.setRootContext(createRootNode());
         RequestProcessor.getDefault().post(new Runnable() {
-
                 public void run() {
-                    RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(info.getId());
+                    RepositoryIndexer.indexRepo(info);
                 }
             });
     }

@@ -21,7 +21,7 @@ import java.awt.Image;
 import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;

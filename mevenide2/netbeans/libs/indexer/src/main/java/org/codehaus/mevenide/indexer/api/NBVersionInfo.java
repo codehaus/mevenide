@@ -37,7 +37,7 @@ public class NBVersionInfo {
     private boolean javadocExists;
     private boolean signatureExists;
 
-  public   NBVersionInfo(String repoId,String groupId, String artifactId, String version,
+    public NBVersionInfo(String repoId,String groupId, String artifactId, String version,
             String type, String packaging, String projectName,String ProjectDescription,String classifier) {
         this.repoId = repoId;
         this.groupId = groupId;

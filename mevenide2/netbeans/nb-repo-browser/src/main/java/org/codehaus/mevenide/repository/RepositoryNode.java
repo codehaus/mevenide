@@ -22,7 +22,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.SwingUtilities;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.NbBundle;
@@ -102,13 +103,9 @@ public class RepositoryNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-
-                    RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(info.getId());
-
-
-
+                    RepositoryIndexer.indexRepo(info);
+                    
                     SwingUtilities.invokeLater(new Runnable() {
-
                         public void run() {
                             RefreshIndexAction.this.setEnabled(true);
                         }

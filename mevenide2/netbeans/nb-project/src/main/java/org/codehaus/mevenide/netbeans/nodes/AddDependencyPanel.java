@@ -26,8 +26,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -231,7 +230,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     
     private void populateGroupId() {
         assert !SwingUtilities.isEventDispatchThread();
-        final List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getGroups());
+        final List<String> lst = new ArrayList<String>(RepositoryQueries.getGroups());
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 groupCompleter.setValueList(lst);
@@ -244,7 +243,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     private void populateArtifact() {
         assert !SwingUtilities.isEventDispatchThread();
 
-        final List<String> lst = new ArrayList<String>(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(txtGroupId.getText().trim()));
+        final List<String> lst = new ArrayList<String>(RepositoryQueries.getArtifacts(txtGroupId.getText().trim()));
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 artifactCompleter.setValueList(lst);
@@ -257,7 +256,7 @@ public class AddDependencyPanel extends javax.swing.JPanel {
     private void populateVersion() {
         assert !SwingUtilities.isEventDispatchThread();
 
-        List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
+        List<NBVersionInfo> lst = RepositoryQueries.getVersions(txtGroupId.getText().trim(), txtArtifactId.getText().trim());
         final List<String> vers = new ArrayList<String>();
         for (NBVersionInfo rec : lst) {
             if (!vers.contains(rec.getVersion())) {

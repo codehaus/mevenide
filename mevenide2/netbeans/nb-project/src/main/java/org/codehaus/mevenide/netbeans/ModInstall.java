@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 import org.apache.maven.artifact.repository.ArtifactRepository;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
@@ -81,11 +82,9 @@ public class ModInstall extends ModuleInstall {
                     RequestProcessor.getDefault().post(new Runnable() {
 
                         public void run() {
-
                             if (ri.getIndexUpdateUrl() != null) {
-                                RepositoryUtil.getDefaultRepositoryIndexer().indexRepo(ri.getId());
+                                RepositoryIndexer.indexRepo(ri);
                             }
-
                         }
                     }, MILIS_IN_MIN * 2);
                 }
@@ -115,8 +114,6 @@ public class ModInstall extends ModuleInstall {
     private static class OpenProjectsListener implements PropertyChangeListener {
 
         public void propertyChange(PropertyChangeEvent evt) {
-
-
             Project[] prjs = OpenProjects.getDefault().getOpenProjects();
             for (int i = 0; i < prjs.length; i++) {
                 NbMavenProject mavProj = prjs[i].getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);

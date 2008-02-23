@@ -21,9 +21,11 @@ import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 
 /**
  * Lists archetypes found in local repository index. Will include both old archetypes
@@ -38,9 +40,13 @@ public class LocalRepoProvider implements ArchetypeProvider {
 
     public List<Archetype> getArchetypes() {
         List<Archetype> lst = new ArrayList<Archetype>();
-        
-            List<NBVersionInfo> archs = RepositoryUtil.getDefaultRepositoryIndexer().
-                    retrievePossibleArchetypes(RepositoryPreferences.LOCAL_REPO_ID);
+            RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
+            if (info == null) {
+                Logger.getLogger(LocalRepoProvider.class.getName()).fine("Local repository info cannot be found, how come?");
+                return lst;
+            }
+                    
+            List<NBVersionInfo> archs = RepositoryQueries.retrievePossibleArchetypes(info);
             if (archs == null) {
                 return lst;
             }

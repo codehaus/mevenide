@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.embedder;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,6 +55,7 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
         }
     }
 
+    @Override
     public void resolve(Artifact artifact, List list, ArtifactRepository artifactRepository) throws ArtifactResolutionException, ArtifactNotFoundException {
 //        artifact.setResolved(true);
         //MEVENIDE-422 
@@ -103,54 +103,6 @@ public class NbArtifactResolver extends DefaultArtifactResolver {
             super.resolveAlways(artifact, list, artifactRepository);
             
         }
-    }
-
-    @Override
-    public ArtifactResolutionResult resolveTransitively(
-            Set set, Artifact artifact, 
-            List list, ArtifactRepository artifactRepository, ArtifactMetadataSource artifactMetadataSource) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve trans1=" + artifact);
-        return resolveTransitively(set, artifact, list, artifactRepository, artifactMetadataSource, null);
-    }
-
-    @Override
-    public ArtifactResolutionResult resolveTransitively(
-            Set set, Artifact artifact, 
-            List list, ArtifactRepository artifactRepository, 
-            ArtifactMetadataSource artifactMetadataSource, List list0) throws ArtifactResolutionException, ArtifactNotFoundException {
-//        System.out.println("resolve trans2=" + artifact);
-        return resolveTransitively(set, artifact, Collections.EMPTY_MAP, artifactRepository, list, artifactMetadataSource, null, list0);
-    }
-
-    @Override
-    public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
-                                                         ArtifactRepository localRepository, List remoteRepositories,
-                                                         ArtifactMetadataSource source, ArtifactFilter filter )
-        throws ArtifactResolutionException, ArtifactNotFoundException
-    {
-        return resolveTransitively( artifacts, originatingArtifact, Collections.EMPTY_MAP, localRepository,
-                                    remoteRepositories, source, filter );
-
-    }
-
-    @Override
-    public ArtifactResolutionResult resolveTransitively( Set artifacts, Artifact originatingArtifact,
-                                                         Map managedVersions, ArtifactRepository localRepository,
-                                                         List remoteRepositories, ArtifactMetadataSource source )
-        throws ArtifactResolutionException, ArtifactNotFoundException
-    {
-        return resolveTransitively( artifacts, originatingArtifact, managedVersions, localRepository,
-                                    remoteRepositories, source, null );
-    }
-
-    @Override
-    public ArtifactResolutionResult resolveTransitively(
-            Set set, Artifact artifact, 
-            Map map, ArtifactRepository artifactRepository, 
-            List list, ArtifactMetadataSource artifactMetadataSource, 
-            ArtifactFilter artifactFilter) throws ArtifactResolutionException, ArtifactNotFoundException 
-    {
-        return resolveTransitively(set, artifact, map, artifactRepository, list, artifactMetadataSource, artifactFilter, null);
     }
 
     @Override

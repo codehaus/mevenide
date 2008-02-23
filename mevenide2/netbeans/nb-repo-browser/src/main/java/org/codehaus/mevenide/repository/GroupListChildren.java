@@ -21,7 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -75,7 +76,7 @@ public class GroupListChildren extends Children.Keys {
         setKeys(Collections.singletonList(LOADING));
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                keys = new ArrayList(RepositoryUtil.getDefaultRepositoryIndexer().getGroups(info.getId()));
+                keys = new ArrayList(RepositoryQueries.getGroups(info));
                 setKeys(keys);
             }
         });

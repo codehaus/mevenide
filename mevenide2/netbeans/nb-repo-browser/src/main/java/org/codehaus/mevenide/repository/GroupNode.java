@@ -16,13 +16,13 @@
  */
 package org.codehaus.mevenide.repository;
 
-import org.codehaus.mevenide.repository.*;
 import java.awt.Image;
 import java.util.Collections;
 
 import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -85,11 +85,8 @@ public class GroupNode extends AbstractNode {
             super.addNotify();
             setKeys(Collections.singletonList(GroupListChildren.LOADING));
             RequestProcessor.getDefault().post(new Runnable() {
-
                 public void run() {
-
-                    setKeys(RepositoryUtil.getDefaultRepositoryIndexer().getArtifacts(id, info.getId()));
-
+                    setKeys(RepositoryQueries.getArtifacts(id, info));
                 }
             });
         }

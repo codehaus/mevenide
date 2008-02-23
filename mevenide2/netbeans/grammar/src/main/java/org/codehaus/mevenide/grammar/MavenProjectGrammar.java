@@ -42,8 +42,9 @@ import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.IOUtil;
@@ -271,8 +272,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("dependencies/dependency/groupId")) { //NOI18N
            
-                Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().
-                        filterGroupIds(virtualTextCtx.getCurrentPrefix());
+                Set<String> elems = RepositoryQueries.filterGroupIds(virtualTextCtx.getCurrentPrefix());
                 ArrayList texts = new ArrayList();
                 for (String elem : elems) {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
@@ -282,8 +282,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
             
-                Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().
-                        filterPluginGroupIds(virtualTextCtx.getCurrentPrefix());
+                Set<String> elems = RepositoryQueries.filterPluginGroupIds(virtualTextCtx.getCurrentPrefix());
                 elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
                 ArrayList texts = new ArrayList();
                 for (String elem : elems) {
@@ -304,7 +303,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
               
-                    Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().filterArtifactIdForGroupId(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    Set<String> elems = RepositoryQueries.filterArtifactIdForGroupId(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
                     Iterator it = elems.iterator();
                     ArrayList texts = new ArrayList();
                     while (it.hasNext()) {
@@ -327,7 +326,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
                 
-                    Set<String> elems = RepositoryUtil.getDefaultRepositoryIndexer().filterPluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                    Set<String> elems = RepositoryQueries.filterPluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
                     elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginArtifactIds(hold.getGroupId())));
                     ArrayList texts = new ArrayList();
                     for (String elem : elems) {
