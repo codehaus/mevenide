@@ -146,14 +146,16 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
          
         for (RepositoryInfo info : repoids) {
             LOGGER.finer("Loading Context :" + info.getId());//NOI18N
-            indexer.addIndexingContext( //
-                    info.getId(), // context id
-                    info.getId(), // repository id
-                    info.isRemote() ? null : new File(info.getRepositoryPath()), // repository folder
-                    new File(getDefaultIndexLocation(), info.getId()), // index folder
-                    info.getRepositoryUrl(), // repositoryUrl
-                    info.getIndexUpdateUrl(), // index update url
-                    NB_INDEX);
+            if (info.isLocal() || info.isRemoteDownloadable()) {
+                indexer.addIndexingContext( //
+                        info.getId(), // context id
+                        info.getId(), // repository id
+                        info.isLocal() ? new File(info.getRepositoryPath()) : null, // repository folder
+                        new File(getDefaultIndexLocation(), info.getId()), // index folder
+                        info.isRemoteDownloadable() ? info.getRepositoryUrl() : null, // repositoryUrl
+                        info.isRemoteDownloadable() ? info.getIndexUpdateUrl() : null, // index update url
+                        NB_INDEX);
+            }
         }
     }
 
@@ -203,7 +205,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                             LOGGER.warning("Indexing context chould not be created :"+repo.getId());//NOI18N
                             return null;
                         }
-                        if (repo.isRemote()) {
+                        if (repo.isRemoteDownloadable()) {
                             LOGGER.finer("Indexing Remote Repository :"+repo.getId());//NOI18N
                             RemoteIndexTransferListener listener = new RemoteIndexTransferListener(repo);
                             try {

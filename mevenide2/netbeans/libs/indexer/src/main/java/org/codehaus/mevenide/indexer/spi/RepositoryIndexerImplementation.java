@@ -27,6 +27,10 @@ import org.openide.util.Lookup;
  */
 public interface RepositoryIndexerImplementation {
     
+    /**
+     * type identifier of the implementation.
+     * @return
+     */
     String getType();
 
     void indexRepo(RepositoryInfo repo);
@@ -35,5 +39,10 @@ public interface RepositoryIndexerImplementation {
 
     void deleteArtifactFromIndex(RepositoryInfo repo, Artifact artifact);
 
+    /**
+     * Lookup containing the search queries that are supported by the given implementation.
+     * The <code>BaseQueries</code> is required to be supported by all implementations.
+     * @return
+     */
     Lookup getCapabilityLookup();
 }

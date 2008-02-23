@@ -28,17 +28,16 @@ public final class RepositoryInfo {
     private String repositoryPath;
     private String repositoryUrl;
     private String indexUpdateUrl;
-    private boolean remote;
 
     public RepositoryInfo(String id, String type, String name, String repositoryPath,
-            String repositoryUrl, String indexUpdateUrl, boolean remote) {
+            String repositoryUrl, String indexUpdateUrl) {
         this.id = id;
         this.type = type;
         this.name = name;
         this.repositoryPath = repositoryPath;
         this.repositoryUrl = repositoryUrl;
         this.indexUpdateUrl = indexUpdateUrl;
-        this.remote = remote;
+        assert (isLocal() == true && isRemoteDownloadable() == true) != true : "XXXCannot have both local and remote index fields filled in."; //NOI18N
     }
 
     public String getId() {
@@ -65,8 +64,13 @@ public final class RepositoryInfo {
         return indexUpdateUrl;
     }
 
-    public boolean isRemote() {
-        return remote;
+    public boolean isRemoteDownloadable() {
+        return indexUpdateUrl != null;
     }
+    
+    public boolean isLocal() {
+        return repositoryPath != null;
+    }
+    
 }
 

@@ -63,8 +63,8 @@ public class ModInstall extends ModuleInstall {
         List<RepositoryInfo> ris = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (final RepositoryInfo ri : ris) {
             //check this repo can be index
-            if((ri.isRemote()&& ri.getIndexUpdateUrl()==null) ||(ri.getRepositoryPath()==null)){
-             continue;
+            if (!ri.isRemoteDownloadable() && !ri.isLocal()) {
+                continue;
             }
             if (freq != RepositoryPreferences.FREQ_NEVER) {
                 boolean run = false;
@@ -116,7 +116,7 @@ public class ModInstall extends ModuleInstall {
         public void propertyChange(PropertyChangeEvent evt) {
             Project[] prjs = OpenProjects.getDefault().getOpenProjects();
             for (int i = 0; i < prjs.length; i++) {
-                NbMavenProject mavProj = prjs[i].getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
+                NbMavenProject mavProj = prjs[i].getLookup().lookup(NbMavenProject.class);
                 if (mavProj != null) {
                     List repos = mavProj.getOriginalMavenProject().getRemoteArtifactRepositories();
                     if (repos != null) {
@@ -128,7 +128,7 @@ public class ModInstall extends ModuleInstall {
                                 RepositoryInfo ri = new RepositoryInfo(rep.getId(),
                                         RepositoryPreferences.TYPE_NEXUS, 
                                         rep.getId() + " " + NbBundle.getMessage(ModInstall.class, "LBL_REPOSITORY"),//NOI18N
-                                        null,rep.getUrl(), null, true);
+                                        null, rep.getUrl(), null);
                                 RepositoryPreferences.getInstance().addRepositoryInfo(ri);
                             }
                         }

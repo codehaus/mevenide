@@ -273,8 +273,7 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         Children.Array array = new Children.Array();
         List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
         for (RepositoryInfo ri : infos) {
-            if((!ri.isRemote() && ri.getRepositoryPath()!=null )
-                    || ri.getIndexUpdateUrl()!=null){
+            if (ri.isRemoteDownloadable() || ri.isLocal()) {
              array.add(new Node[]{new RepositoryNode(ri)});
             }
         }

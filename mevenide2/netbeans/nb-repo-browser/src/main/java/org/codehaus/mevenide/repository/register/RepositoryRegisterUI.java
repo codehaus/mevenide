@@ -280,8 +280,7 @@ private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
               txtRepoName.getText().trim(),
               jraLocal.isSelected()  ? txtRepoPath.getText().trim() : null,
               jraRemote.isSelected() ? txtRepoUrl.getText().trim()  : null,
-              jraRemote.isSelected() ? txtIndexUrl.getText().trim() : null,
-              jraRemote.isSelected());
+              jraRemote.isSelected() ? txtIndexUrl.getText().trim() : null);
     
      return info;
     }

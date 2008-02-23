@@ -46,13 +46,13 @@ public final class RepositoryPreferences {
 
     static {
         LOCAL = new RepositoryInfo(LOCAL_REPO_ID, TYPE_NEXUS, "Local Repository",
-                EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),null, null,false);//NOI18N
+                EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),null, null);//NOI18N
         NETBEANS = new RepositoryInfo("netbeans", TYPE_NEXUS, "Netbeans Repository",null,
                 "http://deadlock.netbeans.org/maven2/",
-                "http://deadlock.netbeans.org/maven2/.index/netbeans/", true);//NOI18N
+                "http://deadlock.netbeans.org/maven2/.index/netbeans/");//NOI18N
         CENTRAL = new RepositoryInfo("central", TYPE_NEXUS, "Central  Repository",null,
                 "http://repo1.maven.org/maven2",
-                "http://repo1.maven.org/maven2/.index/", true);//NOI18N
+                "http://repo1.maven.org/maven2/.index/");//NOI18N
     }
     private String KEY_ID = "repository.id";//NOI18N
     private String KEY_TYPE = "repository.type";//NOI18N
@@ -60,7 +60,6 @@ public final class RepositoryPreferences {
     private String KEY_PATH = "repository.path";//NOI18N
     private String KEY_INDEX_URL = "repository.index.url";//NOI18N
     private String KEY_REPO_URL = "repository.repo.url";//NOI18N
-    private String KEY_REPO_REMOTE = "repository.repo.remote";//NOI18N
     /*index settings */
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
@@ -115,8 +114,7 @@ public final class RepositoryPreferences {
                 String path = pref.get(KEY_PATH + "." + id, null);
                 String repourl = pref.get(KEY_REPO_URL + "." + id, null);
                 String indexurl = pref.get(KEY_INDEX_URL + "." + id, null);
-                boolean remote = pref.getBoolean(KEY_REPO_REMOTE + "." + id, true);
-                RepositoryInfo info = new RepositoryInfo(id, type, name, path, repourl, indexurl, remote);
+                RepositoryInfo info = new RepositoryInfo(id, type, name, path, repourl, indexurl);
                 toRet.add(info);
             }
         } catch (BackingStoreException ex) {
@@ -132,7 +130,6 @@ public final class RepositoryPreferences {
             pref.put(KEY_ID + "." + info.getId(), info.getId());
             pref.put(KEY_TYPE + "." + info.getId(), info.getType());
             pref.put(KEY_NAME + "." + info.getId(), info.getName());
-            pref.putBoolean(KEY_REPO_REMOTE + "." + info.getId(), info.isRemote());
             if (info.getRepositoryPath() != null) {
                 pref.put(KEY_PATH+ "." + info.getId(), info.getRepositoryPath());
             }

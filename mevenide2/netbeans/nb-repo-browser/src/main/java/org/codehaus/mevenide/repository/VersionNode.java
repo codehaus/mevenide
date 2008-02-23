@@ -46,7 +46,7 @@ public class VersionNode extends AbstractNode {
     private boolean hasSources;
     private RepositoryInfo info;
     public static Children createChildren(RepositoryInfo info,NBVersionInfo record) {
-        if (!info.isRemote() && !"pom".equals(record.getType())) { //NOI18N
+        if (info.isLocal() && !"pom".equals(record.getType())) { //NOI18N
             try {
                 Artifact art = RepositoryUtil.createArtifact(record);
                 FileObject fo = FileUtil.toFileObject(art.getFile());
@@ -82,7 +82,7 @@ public class VersionNode extends AbstractNode {
     public Action[] getActions(boolean context) {
        Artifact artifact = RepositoryUtil.createArtifact(record);
         Action[] retValue;
-        if(info.isRemote()){
+        if(info.isRemoteDownloadable()){
              retValue = new Action[]{
             new AddAsDependencyAction(artifact),
             CommonArtifactActions.createFindUsages(artifact),
