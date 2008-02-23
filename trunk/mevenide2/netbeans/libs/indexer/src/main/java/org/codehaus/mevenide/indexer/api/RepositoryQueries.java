@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import org.codehaus.mevenide.indexer.spi.ArchetypeQueries;
 import org.codehaus.mevenide.indexer.spi.BaseQueries;
 import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
@@ -47,7 +48,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> getGroups(RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>(200);
+        final Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
@@ -67,7 +68,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> filterGroupIds(String prefix, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>(100);
+        Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
@@ -101,7 +102,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> getArtifacts(String groupId, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>();
+        Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
@@ -205,15 +206,12 @@ public final class RepositoryQueries {
 
     public static List<NBVersionInfo> retrievePossibleArchetypes(RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        System.out.println("retrieve possible arch");
         List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
-            System.out.println("have impl=" + impl);
             if (impl != null) {
                 ArchetypeQueries aq = impl.getCapabilityLookup().lookup(ArchetypeQueries.class);
                 if (aq != null) {
-                    System.out.println("have AQ=" + aq);
                     toRet.addAll(aq.retrievePossibleArchetypes(rps));
                 }
             }
@@ -230,7 +228,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> filterPluginArtifactIds(String groupId, String prefix, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>();
+        Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
@@ -250,7 +248,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> filterPluginGroupIds(String prefix, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>();
+        Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
@@ -271,7 +269,7 @@ public final class RepositoryQueries {
      */
     public static Set<String> filterArtifactIdForGroupId(String groupId, String prefix, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
-        Set<String> toRet = new HashSet<String>();
+        Set<String> toRet = new TreeSet<String>();
         for (List<RepositoryInfo> rps : all) {
             RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
             if (impl != null) {
