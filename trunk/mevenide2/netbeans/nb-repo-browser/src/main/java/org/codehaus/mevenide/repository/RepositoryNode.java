@@ -48,7 +48,7 @@ public class RepositoryNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-        if (info.isRemote()) {
+        if (info.isRemoteDownloadable()) {
             return Utilities.loadImage("org/codehaus/mevenide/repository/remoterepo.png", true); //NOI18N
         }
         return Utilities.loadImage("org/codehaus/mevenide/repository/localrepo.png", true); //NOI18N
