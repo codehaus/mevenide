@@ -29,7 +29,10 @@ import java.util.Collections;
 import java.util.List;
 import javax.swing.tree.TreeSelectionModel;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
@@ -203,13 +206,14 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             return;
         }
         try {
-            List<NBVersionInfo> rec = RepositoryUtil.getDefaultRepositoryIndexer().
-                    getRecords(RepositoryPreferences.LOCAL_REPO_ID,arch.getGroupId(),
-                    arch.getArtifactId(), arch.getVersion());
-            for (NBVersionInfo record : rec) {
-                    Artifact a = RepositoryUtil.createArtifact(record);
-                    RepositoryUtil.getDefaultRepositoryIndexer().
-                            deleteArtifactFromIndex(RepositoryPreferences.LOCAL_REPO_ID, a);
+            RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
+            if (info != null) {
+                List<NBVersionInfo> rec = RepositoryQueries.getRecords(arch.getGroupId(),
+                        arch.getArtifactId(), arch.getVersion(), info);
+                for (NBVersionInfo record : rec) {
+                        Artifact a = RepositoryUtil.createArtifact(record);
+                        RepositoryIndexer.deleteArtifactFromIndex(info, a);
+                }
             }
             File path = new File(EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),
                     arch.getGroupId().replace('.', File.separatorChar) + File.separatorChar + arch.getArtifactId() 

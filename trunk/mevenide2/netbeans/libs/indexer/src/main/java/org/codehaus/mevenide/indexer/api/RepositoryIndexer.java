@@ -16,50 +16,51 @@
  */
 package org.codehaus.mevenide.indexer.api;
 
-import java.io.File;
 import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import javax.swing.event.ChangeListener;
+import java.util.logging.Logger;
 import org.apache.maven.artifact.Artifact;
+import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
+import org.openide.util.Lookup;
 
 /**
  *
  * @author Anuradha G
  */
-public interface RepositoryIndexer {
+public final class RepositoryIndexer {
 
-    void indexRepo(String repoId);//default repo id for local repo is RepositoryPreferences.LOCAL_REPO_ID
-    void indexRepo(String repoId, File repoDir, File indexDir);
-    void updateIndexWithArtifacts(String repoId, Collection<Artifact> artifacts);
+    public static void indexRepo(RepositoryInfo repo) {
+        RepositoryIndexerImplementation impl = findImplementation(repo);
+        if (impl == null) {
+            return;
+        }
+        impl.indexRepo(repo);
+    }
+    
+    public static void updateIndexWithArtifacts(RepositoryInfo repo, Collection<Artifact> artifacts) {
+        RepositoryIndexerImplementation impl = findImplementation(repo);
+        if (impl == null) {
+            return;
+        }
+        impl.updateIndexWithArtifacts(repo, artifacts);
+    }
 
-    void deleteArtifactFromIndex(String repoId, Artifact artifact);
+    public static void deleteArtifactFromIndex(RepositoryInfo repo, Artifact artifact) {
+        RepositoryIndexerImplementation impl = findImplementation(repo);
+        if (impl == null) {
+            return;
+        }
+        impl.deleteArtifactFromIndex(repo, artifact);
+    }
+    
+    static RepositoryIndexerImplementation findImplementation(RepositoryInfo repo) {
+        Collection<? extends RepositoryIndexerImplementation> res = Lookup.getDefault().lookupAll(RepositoryIndexerImplementation.class);
+        for (RepositoryIndexerImplementation impl : res) {
+            if (impl.getType().equals(repo.getType())) {
+                return impl;
+            }
+        }
+        Logger.getLogger(RepositoryIndexer.class.getName()).info("Cannot find repository indexer type:" + repo.getType() + " for repository " + repo.getName());
+        return null;
+    }
 
-    Set<java.lang.String> getGroups(String... repoId);
-
-    Set<String> filterGroupIds(String prefix, String... repoIds);
-
-    List<NBVersionInfo> getRecords(String repoId, String groupId, String artifactId, String version);
-
-    Set<String> getArtifacts(String groupId, String... repoId);
-
-    List<NBVersionInfo> getVersions(String groupId, String artifactId, String... repoIds);
-
-    List<NBGroupInfo> findDependencyUsage(String groupId, String artifactId, String version, String... repoIds);
-
-    List<NBVersionInfo> findByMD5(File file, String... repoIds);
-
-    List<NBVersionInfo> findByMD5(String md5, String... repoIds);
-
-    List<NBVersionInfo> retrievePossibleArchetypes(String... repoIds);
-
-    Set<String> filterPluginArtifactIds(String groupId, String prefix, String... repoIds);
-
-    Set<String> filterPluginGroupIds(String prefix, String... repoIds);
-
-    Set<String> filterArtifactIdForGroupId(String groupId, String prefix, String... repoIds);
-
-    void addIndexChangeListener(ChangeListener cl);
-
-    void removeIndexChangeListener(ChangeListener cl);
 }

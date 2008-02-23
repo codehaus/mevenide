@@ -26,14 +26,11 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.extension.ExtensionScanningException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
-import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -42,12 +39,6 @@ import org.openide.util.Lookup;
 public final class RepositoryUtil {
 
     private RepositoryUtil() {
-    }
-
-    public static RepositoryIndexer getDefaultRepositoryIndexer() {
-        RepositoryIndexer lookup = Lookup.getDefault().lookup(RepositoryIndexer.class);
-
-        return lookup != null ? lookup : new NexusRepositoryIndexserImpl();//default
     }
 
     public static Artifact createArtifact(NBVersionInfo info) {
@@ -81,7 +72,7 @@ public final class RepositoryUtil {
         return art;
     }
 
-    public static String calculateChecksum(File file) throws NoSuchAlgorithmException, IOException {
+    public static String calculateMD5Checksum(File file) throws NoSuchAlgorithmException, IOException {
         byte[] buffer = readFile(file);
 
         String md5sum = DigestUtils.md5Hex(buffer);

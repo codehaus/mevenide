@@ -16,8 +16,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -137,8 +136,7 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
                 return NodeUtils.getTreeFolderIcon(true);
             }
         };
-        final List<NBGroupInfo> list = RepositoryUtil.getDefaultRepositoryIndexer().
-                findDependencyUsage(
+        final List<NBGroupInfo> list = RepositoryQueries.findDependencyUsage(
                 artifact.getGroupId(),
                     artifact.getArtifactId(), artifact.getVersion());
         Children repoChildren = new Children.Keys<NBGroupInfo>() {

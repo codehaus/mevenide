@@ -20,7 +20,7 @@ import javax.swing.Action;
 import org.apache.maven.artifact.Artifact;
 
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
 import org.codehaus.mevenide.repository.dependency.AddAsDependencyAction;

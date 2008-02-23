@@ -19,8 +19,9 @@ package org.codehaus.mevenide.netbeans.newproject;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
@@ -38,11 +39,12 @@ public class RemoteRepoProvider implements ArchetypeProvider {
             if (RepositoryPreferences.LOCAL_REPO_ID.equals(info.getId())) {
                 continue;
             }
-            List<NBVersionInfo> archs = RepositoryUtil.getDefaultRepositoryIndexer().
-                    retrievePossibleArchetypes(info.getId());
+            System.out.println("remote repository=" + info.getId());
+            List<NBVersionInfo> archs = RepositoryQueries.retrievePossibleArchetypes(info);
             if (archs == null) {
                 continue;
             }
+            System.out.println("returned=" + archs.size());
             for (NBVersionInfo art : archs) {
                 //TODO FINDout  how to get contain matadata 
                 // boolean ng = artifact.getFiles().contains("META-INF/maven/archetype-metadata.xml");

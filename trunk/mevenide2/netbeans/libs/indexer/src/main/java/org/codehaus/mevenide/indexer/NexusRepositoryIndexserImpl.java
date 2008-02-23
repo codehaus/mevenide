@@ -16,11 +16,9 @@
  */
 package org.codehaus.mevenide.indexer;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.Map;
 import org.apache.lucene.document.Document;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
-import org.codehaus.mevenide.indexer.api.NBGroupInfo;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +26,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -46,11 +43,14 @@ import org.apache.maven.artifact.InvalidArtifactRTException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
-import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.indexer.spi.ArchetypeQueries;
+import org.codehaus.mevenide.indexer.spi.BaseQueries;
+import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
+import org.codehaus.mevenide.indexer.spi.DependencyInfoQueries;
+import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.ContainerConfiguration;
 import org.codehaus.plexus.DefaultContainerConfiguration;
@@ -59,8 +59,10 @@ import org.codehaus.plexus.PlexusContainer;
 import org.codehaus.plexus.PlexusContainerException;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.Mutex;
 import org.openide.util.MutexException;
+import org.openide.util.lookup.Lookups;
 import org.sonatype.nexus.index.ArtifactAvailablility;
 import org.sonatype.nexus.index.ArtifactContextProducer;
 import org.sonatype.nexus.index.ArtifactInfo;
@@ -80,7 +82,8 @@ import org.sonatype.nexus.index.updater.IndexUpdater;
  *
  * @author Anuradha G
  */
-public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
+public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementation, 
+        BaseQueries, ChecksumQueries, ArchetypeQueries, DependencyInfoQueries {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
@@ -106,6 +109,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
      * any reads, writes from/to index shal be done under mutex access.
      */
     static final Mutex MUTEX = new Mutex();
+    private Lookup lookup;
 
     public NexusRepositoryIndexserImpl() {
         //to prevent MaxClauseCount exception (will investigate better way)
@@ -125,16 +129,23 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         } catch (PlexusContainerException ex) {
             Exceptions.printStackTrace(ex);
         }
+        lookup = Lookups.singleton(this);
     }
 
+    public String getType() {
+        return RepositoryPreferences.TYPE_NEXUS;
+    }
+    
+    public Lookup getCapabilityLookup() {
+        return lookup;
+    }
 
     //always call from mutex.writeAccess
-    private void loadIndexingContext(final String... repoids) throws IOException, UnsupportedExistingLuceneIndexException {
+    private void loadIndexingContext(final RepositoryInfo... repoids) throws IOException, UnsupportedExistingLuceneIndexException {
         assert MUTEX.isWriteAccess();
          
-        for (String repoid : repoids) {
-            LOGGER.finer("Loading Context :"+repoid);//NOI18N
-            RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoid);
+        for (RepositoryInfo info : repoids) {
+            LOGGER.finer("Loading Context :" + info.getId());//NOI18N
             indexer.addIndexingContext( //
                     info.getId(), // context id
                     info.getId(), // repository id
@@ -150,12 +161,12 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
     //TODO mkleint: do we really want to start index whenever it's missing?
     // what about just silently returning empty values and let the scheduled
     // idexing kick in..
-    private void checkIndexAvailability(final String... ids) throws MutexException {
+    private void checkIndexAvailability(final RepositoryInfo... ids) throws MutexException {
         assert MUTEX.isWriteAccess();
        
-        for (String id : ids) {
-            LOGGER.finer("Checking Context.. :"+id);//NOI18N
-            File file = new File(getDefaultIndexLocation(), id);
+        for (RepositoryInfo id : ids) {
+            LOGGER.finer("Checking Context.. :"+id.getId());//NOI18N
+            File file = new File(getDefaultIndexLocation(), id.getId());
             if (!file.exists() || file.listFiles().length <= 0) {
                 LOGGER.finer("Index Not Available :"+id +" At :"+file.getAbsolutePath());//NOI18N
                 indexRepo(id);
@@ -164,58 +175,39 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         }
     }
 
-    private String[] checkEmptyArray(String... repoids) {
-        if (repoids.length == 0) {
-            List<RepositoryInfo> infos = RepositoryPreferences.getInstance().getRepositoryInfos();
-            String[] toRet = new String[infos.size()];
-            int index = 0;
-            for (RepositoryInfo info : infos) {
-                toRet[index] = info.getId();
-                index++;
-            }
-            return toRet;
-        }
-        return repoids;
-    }
-
 
     //always call from mutex.writeAccess
-    private void unloadIndexingContext(final String... contextIds) throws IOException {
+    private void unloadIndexingContext(final RepositoryInfo... repos) throws IOException {
         assert MUTEX.isWriteAccess();
-        for (String contextId : contextIds) {
-             LOGGER.finer("Unloading Context :"+contextId);//NOI18N
-            IndexingContext ic = indexer.getIndexingContexts().get(contextId);
+        for (RepositoryInfo repo : repos) {
+             LOGGER.finer("Unloading Context :" + repo.getId());//NOI18N
+            IndexingContext ic = indexer.getIndexingContexts().get(repo.getId());
             if (ic != null) {
                 indexer.removeIndexingContext(ic, false);
-
             }
         }
     }
 
-    public void indexRepo(final String repoId) {
-        LOGGER.finer("Indexing Context :"+repoId);//NOI18N
+    public void indexRepo(final RepositoryInfo repo) {
+        LOGGER.finer("Indexing Context :"+repo);//NOI18N
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
-                    loadIndexingContext(repoId);
+                    loadIndexingContext(repo);
 
                     try {
-                        RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(repoId);
                         Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
-                        IndexingContext indexingContext = indexingContexts.get(repoId);
-                        if (info == null || indexingContext == null) {
-                            LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
+                        IndexingContext indexingContext = indexingContexts.get(repo.getId());
+                        if (indexingContext == null) {
+                            LOGGER.warning("Indexing context chould not be created :"+repo.getId());//NOI18N
                             return null;
                         }
-                        if (info.isRemote()) {
-                            LOGGER.finer("Indexing Remote Repository :"+repoId);//NOI18N
-                            RemoteIndexTransferListener listener = new RemoteIndexTransferListener(info);
+                        if (repo.isRemote()) {
+                            LOGGER.finer("Indexing Remote Repository :"+repo.getId());//NOI18N
+                            RemoteIndexTransferListener listener = new RemoteIndexTransferListener(repo);
                             try {
                                 remoteIndexUpdater.fetchAndUpdateIndex(indexingContext, listener);
-
-
-
                             } catch (IOException iOException) {
                                  LOGGER.warning(iOException.getMessage());//NOI18N
                                 //handle index not found
@@ -223,16 +215,14 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                             }
 
                         } else {
-                             LOGGER.finer("Indexing Local Repository :"+repoId);//NOI18N
+                             LOGGER.finer("Indexing Local Repository :"+repo.getId());//NOI18N
                             indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, false));
-
                         }
 
                     } finally {
-
-                        unloadIndexingContext(repoId);
+                        unloadIndexingContext(repo);
                     }
-                    RepositoryPreferences.getInstance().setLastIndexUpdate(repoId, new Date());
+                    RepositoryPreferences.getInstance().setLastIndexUpdate(repo.getId(), new Date());
                     fireChangeIndex();
 
                     return null;
@@ -276,20 +266,20 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     }
 
-    public void updateIndexWithArtifacts(final String repoId, final Collection<Artifact> artifacts) {
+    public void updateIndexWithArtifacts(final RepositoryInfo repo, final Collection<Artifact> artifacts) {
 
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
 
-                    checkIndexAvailability(repoId);
-                    loadIndexingContext(repoId);
+                    checkIndexAvailability(repo);
+                    loadIndexingContext(repo);
                     try {
                         Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
-                        IndexingContext indexingContext = indexingContexts.get(repoId);
+                        IndexingContext indexingContext = indexingContexts.get(repo.getId());
                         if (indexingContext == null) {
-                            LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
+                            LOGGER.warning("Indexing context chould not be created :" + repo.getId());//NOI18N
                             return null;
                         }
 
@@ -305,7 +295,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
                         }
                     } finally {
-                        unloadIndexingContext(repoId);
+                        unloadIndexingContext(repo);
                     }
                     fireChangeIndex();
                     return null;
@@ -317,29 +307,32 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     }
 
-    public void deleteArtifactFromIndex(final String repoId, final Artifact artifact) {
+    public void deleteArtifactFromIndex(final RepositoryInfo repo, final Artifact artifact) {
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
-                    checkIndexAvailability(repoId);
-                    loadIndexingContext(repoId);
-                    Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
-                    IndexingContext indexingContext = indexingContexts.get(repoId);
-                    if (indexingContext == null) {
-                        LOGGER.warning("Indexing context chould not be created :"+repoId);//NOI18N
-                        return null;
+                    checkIndexAvailability(repo);
+                    loadIndexingContext(repo);
+                    try {
+                        Map<String, IndexingContext> indexingContexts = indexer.getIndexingContexts();
+                        IndexingContext indexingContext = indexingContexts.get(repo.getId());
+                        if (indexingContext == null) {
+                            LOGGER.warning("Indexing context chould not be created :"+repo.getId());//NOI18N
+                            return null;
+                        }
+
+                        String absolutePath = artifact.getFile().getAbsolutePath();
+                        String extension = artifact.getArtifactHandler().getExtension();
+
+                        String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
+                        pomPath += "pom"; //NOI18N
+                        File pom = new File(pomPath);
+
+                        indexer.deleteArtifactFromIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
+                    } finally {
+                        unloadIndexingContext(repo);
                     }
-
-                    String absolutePath = artifact.getFile().getAbsolutePath();
-                    String extension = artifact.getArtifactHandler().getExtension();
-
-                    String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
-                    pomPath += "pom"; //NOI18N
-                    File pom = new File(pomPath);
-
-                    indexer.deleteArtifactFromIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
-                    unloadIndexingContext(repoId);
                     fireChangeIndex();
                     return null;
                 }
@@ -353,13 +346,13 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return new File(repository.getBasedir(), ".index/nexus"); //NOI18N
     }
 
-    public Set<String> getGroups(String... repoIds) {
-        return filterGroupIds( "", repoIds);
+    public Set<String> getGroups(List<RepositoryInfo> repos) {
+        return filterGroupIds( "", repos);
     }
 
-    public Set<String> filterGroupIds(final String prefix, final String... repoIds ) {
+    public Set<String> filterGroupIds(final String prefix, List<RepositoryInfo> repos) {
         final Set<String> groups = new TreeSet<String>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -393,14 +386,15 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return groups;
     }
 
-    public List<NBVersionInfo> getRecords(final String repoId, final String groupId, final String artifactId, final String version) {
+    public List<NBVersionInfo> getRecords(final String groupId, final String artifactId, final String version, List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
-                    checkIndexAvailability(repoId);
-                    loadIndexingContext(repoId);
+                    checkIndexAvailability(allrepos);
+                    loadIndexingContext(allrepos);
                     try {
                         BooleanQuery bq = new BooleanQuery();
                         String id = groupId + AbstractIndexCreator.FS + artifactId + AbstractIndexCreator.FS + version + AbstractIndexCreator.FS;
@@ -409,7 +403,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                                 bq);
                         infos.addAll(convertToNBVersionInfo(searchGrouped));
                     } finally {
-                        unloadIndexingContext(repoId);
+                        unloadIndexingContext(allrepos);
                     }
                     return null;
                 }
@@ -420,10 +414,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public Set<String> getArtifacts(final String groupId, String... repoIds) {
+    public Set<String> getArtifacts(final String groupId, List<RepositoryInfo> repos) {
         final Set<String> artifacts = new TreeSet<String>();
-        final String[] allrepos = checkEmptyArray(repoIds);
-        
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -450,9 +443,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return artifacts;
     }
 
-    public List<NBVersionInfo> getVersions(final String groupId, final String artifactId, String... repoIds ) {
+    public List<NBVersionInfo> getVersions(final String groupId, final String artifactId, List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -477,9 +470,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public List<NBGroupInfo> findDependencyUsage(final String groupId, final String artifactId, final String version, String... repoIds) {
-        final List<NBGroupInfo> infos = new ArrayList<NBGroupInfo>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+    public List<NBVersionInfo> findDependencyUsage(final String groupId, final String artifactId, final String version, List<RepositoryInfo> repos) {
+        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -492,7 +485,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                         bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_ARTIFACT, artifactId)), BooleanClause.Occur.MUST));
                         bq.add(new BooleanClause(new TermQuery(new Term(NB_DEPENDENCY_VERSION, version)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
-                        infos.addAll(convertToNBGroupInfo(searchResult));
+                        infos.addAll(convertToNBVersionInfo(searchResult));
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
@@ -505,23 +498,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public List<NBVersionInfo> findByMD5(File file, String... repoIds) {
-        try {
-            String calculateChecksum = RepositoryUtil.calculateChecksum(file);
-
-            return findByMD5(calculateChecksum, repoIds);
-        } catch (NoSuchAlgorithmException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-        return new ArrayList<NBVersionInfo>(0);
-    }
-
-    public List<NBVersionInfo> findByMD5(final String md5, String... repoIds) {
+    public List<NBVersionInfo> findByMD5(final String md5, List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -545,9 +524,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public List<NBVersionInfo> retrievePossibleArchetypes(String... repoIds) {
+    public List<NBVersionInfo> retrievePossibleArchetypes(List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
@@ -557,7 +536,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     loadIndexingContext(allrepos);
                     try {
                         BooleanQuery bq = new BooleanQuery();
-                        bq.add(new BooleanClause(indexer.constructQuery(ArtifactInfo.PACKAGING, "maven-archetype"), BooleanClause.Occur.MUST));
+                        bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-archetype")), BooleanClause.Occur.MUST)); //NOI18N
                         Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                         infos.addAll(convertToNBVersionInfo(search));
                     } finally {
@@ -572,11 +551,10 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return infos;
     }
 
-    public Set<String> filterPluginArtifactIds(final String groupId, final String prefix, String... repoIds) {
+    public Set<String> filterPluginArtifactIds(final String groupId, final String prefix, List<RepositoryInfo> repos) {
         final Set<String> artifacts = new TreeSet<String>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
-
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
 
                 public Object run() throws Exception {
@@ -585,7 +563,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     try {
                         BooleanQuery bq = new BooleanQuery();
                         String id = groupId + AbstractIndexCreator.FS + prefix;
-                        bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.PACKAGING, ("maven-plugin"))), BooleanClause.Occur.MUST));
+                        bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
                         bq.add(new BooleanClause(new PrefixQuery(new Term(ArtifactInfo.UINFO, id)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                         for (ArtifactInfo artifactInfo : search) {
@@ -603,9 +581,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return artifacts;
     }
 
-    public Set<String> filterPluginGroupIds(final String prefix, String... repoIds) {
+    public Set<String> filterPluginGroupIds(final String prefix, List<RepositoryInfo> repos) {
         final Set<String> artifacts = new TreeSet<String>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
 
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
@@ -615,7 +593,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
                     loadIndexingContext(allrepos);
                     try {
                         BooleanQuery bq = new BooleanQuery();
-                        bq.add(new BooleanClause(indexer.constructQuery(ArtifactInfo.PACKAGING, "maven-plugin"), BooleanClause.Occur.MUST));
+                        bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
                         bq.add(new BooleanClause(new PrefixQuery(new Term(ArtifactInfo.UINFO, prefix)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                         for (ArtifactInfo artifactInfo : search) {
@@ -633,9 +611,9 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
         return artifacts;
     }
 
-    public Set<String> filterArtifactIdForGroupId(final String groupId, final String prefix, String... repoIds) {
+    public Set<String> filterArtifactIdForGroupId(final String groupId, final String prefix, List<RepositoryInfo> repos) {
         final Set<String> artifacts = new TreeSet<String>();
-        final String[] allrepos = checkEmptyArray(repoIds);
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
 
             MUTEX.writeAccess(new Mutex.ExceptionAction() {
@@ -686,39 +664,6 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexer {
 
     }
 
-    private List<NBGroupInfo> convertToNBGroupInfo(Collection<ArtifactInfo> artifactInfos) {
-        List<NBGroupInfo> groupInfos = new ArrayList<NBGroupInfo>();
-
-        //tempmaps
-        Map<String, NBGroupInfo> groupMap = new HashMap<String, NBGroupInfo>();
-        Map<String, NBArtifactInfo> artifactMap = new HashMap<String, NBArtifactInfo>();
-        for (ArtifactInfo ai : artifactInfos) {
-            String groupId = ai.groupId;
-            String artId = ai.artifactId;
-
-
-            NBGroupInfo ug = groupMap.get(groupId);
-            if (ug == null) {
-                ug = new NBGroupInfo(groupId);
-                groupInfos.add(ug);
-                groupMap.put(groupId, ug);
-            }
-            NBArtifactInfo ua = artifactMap.get(artId);
-            if (ua == null) {
-                ua = new NBArtifactInfo(artId);
-                ug.addArtifactInfo(ua);
-                artifactMap.put(artId, ua);
-            }
-            NBVersionInfo nbvi = new NBVersionInfo(ai.repository, ai.groupId, ai.artifactId,
-                    ai.version, ai.packaging, ai.packaging, ai.name, ai.description, ai.classifier);
-            /*Javadoc & Sources*/
-            nbvi.setJavadocExists(ai.javadocExists == ArtifactAvailablility.PRESENT);
-            nbvi.setSourcesExists(ai.sourcesExists == ArtifactAvailablility.PRESENT);
-            nbvi.setSignatureExists(ai.signatureExists == ArtifactAvailablility.PRESENT);
-        }
-        return groupInfos;
-
-    }
 
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();

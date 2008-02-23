@@ -24,6 +24,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -143,7 +145,10 @@ public class ActionProviderImpl implements ActionProvider {
 
             public void taskFinished(Task task2) {
                 ProjectURLWatcher.fireMavenProjectReload(project);
-                RepositoryUtil.getDefaultRepositoryIndexer().updateIndexWithArtifacts(RepositoryPreferences.LOCAL_REPO_ID, project.getOriginalMavenProject().getDependencyArtifacts());
+                RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
+                if (info != null) {
+                    RepositoryIndexer.updateIndexWithArtifacts(info, project.getOriginalMavenProject().getDependencyArtifacts());
+                }
             }
         });
     }

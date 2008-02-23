@@ -127,20 +127,20 @@ public final class RepositoryPreferences {
     /*prevent concurrent access*/
 
     public synchronized void addRepositoryInfo(RepositoryInfo info) {
-        if (getRepositoryInfoById(info.id) == null) {
+        if (getRepositoryInfoById(info.getId()) == null) {
             Preferences pref = getPreferences();
-            pref.put(KEY_ID + "." + info.id, info.id);
-            pref.put(KEY_TYPE + "." + info.id, info.type);
-            pref.put(KEY_NAME + "." + info.id, info.name);
-            pref.putBoolean(KEY_REPO_REMOTE + "." + info.id, info.remote);
+            pref.put(KEY_ID + "." + info.getId(), info.getId());
+            pref.put(KEY_TYPE + "." + info.getId(), info.getType());
+            pref.put(KEY_NAME + "." + info.getId(), info.getName());
+            pref.putBoolean(KEY_REPO_REMOTE + "." + info.getId(), info.isRemote());
             if (info.getRepositoryPath() != null) {
-                pref.put(KEY_PATH+ "." + info.id, info.repositoryPath);
+                pref.put(KEY_PATH+ "." + info.getId(), info.getRepositoryPath());
             }
             if (info.getRepositoryUrl() != null) {
-                pref.put(KEY_REPO_URL + "." + info.id, info.repositoryUrl);
+                pref.put(KEY_REPO_URL + "." + info.getId(), info.getRepositoryUrl());
             }
             if (info.getIndexUpdateUrl() != null) {
-                pref.put(KEY_INDEX_URL + "." + info.id, info.indexUpdateUrl);
+                pref.put(KEY_INDEX_URL + "." + info.getId(), info.getIndexUpdateUrl());
             }
         //todo fire repository added
         }
@@ -170,56 +170,4 @@ public final class RepositoryPreferences {
         getPreferences().putBoolean(PROP_SNAPSHOTS, includeSnapshots);
     }
 
-    /*Repository Info */
-    public static final class RepositoryInfo {
-
-        private String id;
-        private String type;
-        private String name;
-        private String repositoryPath;
-        private String repositoryUrl;
-        private String indexUpdateUrl;
-        private boolean remote;
-
-        public RepositoryInfo(String id, String type, String name, String repositoryPath,
-                String repositoryUrl, String indexUpdateUrl, boolean remote) {
-            this.id = id;
-            this.type = type;
-            this.name = name;
-            this.repositoryPath = repositoryPath;
-            this.repositoryUrl = repositoryUrl;
-            this.indexUpdateUrl = indexUpdateUrl;
-            this.remote = remote;
-        }
-
-        
-
-        public String getId() {
-            return id;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getRepositoryPath() {
-            return repositoryPath;
-        }
-
-        
-        public String getRepositoryUrl() {
-            return repositoryUrl;
-        }
-        
-        public String getIndexUpdateUrl() {
-            return indexUpdateUrl;
-        }
-        public boolean isRemote() {
-            return remote;
-        }
-    }
 }

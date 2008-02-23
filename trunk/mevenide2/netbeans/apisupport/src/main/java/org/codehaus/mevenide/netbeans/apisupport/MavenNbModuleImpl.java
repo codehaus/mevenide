@@ -31,6 +31,7 @@ import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -187,7 +188,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         File platformFile = lookForModuleInPlatform(artifactId);
         if (platformFile != null) {
             try {
-                List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().findByMD5(platformFile);
+                List<NBVersionInfo> lst = RepositoryQueries.findByMD5(platformFile);
                 for (NBVersionInfo elem : lst) {
                     dep = new Dependency();
                     dep.setArtifactId(elem.getArtifactId());

@@ -33,8 +33,9 @@ import java.util.regex.Pattern;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryPreferences.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -136,7 +137,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             
             //toLowercase() seems to be required, not sure why..
 
-            String checksum = RepositoryUtil.calculateChecksum(FileUtil.toFile(file)).toLowerCase();
+            String checksum = RepositoryUtil.calculateMD5Checksum(FileUtil.toFile(file)).toLowerCase();
             String[] dep = checkLayer(checksum);
             //TODO before searching the index, check the checksums of existing dependencies, should be faster..
             if (dep == null) {
@@ -170,8 +171,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private String[] checkRepositoryIndices(String checksum) {
-        List<NBVersionInfo> lst = RepositoryUtil.getDefaultRepositoryIndexer().
-                findByMD5(checksum);
+        List<NBVersionInfo> lst = RepositoryQueries.findByMD5(checksum);
         for (NBVersionInfo elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();
@@ -216,6 +216,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         // these 2 urls are essential (together with central) for correct 
         // resolution of maven pom urls in libraries
         try {
+            urls.add(new URL("http://repo1.maven.org/maven2"));
             urls.add(new URL("http://download.java.net/maven/2"));
             urls.add(new URL("http://download.java.net/maven/1"));
         } catch (MalformedURLException ex) {
