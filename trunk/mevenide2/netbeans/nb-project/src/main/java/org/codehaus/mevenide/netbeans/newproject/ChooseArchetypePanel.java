@@ -25,9 +25,13 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeMap;
 import javax.swing.tree.TreeSelectionModel;
+import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
@@ -405,7 +409,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             return ChooseArchetypePanel.createNodes(arch, Children.LEAF);
         }
 
-        private void addArchetypes(List<Archetype> archetypes) {
+        private void addArchetypes(Collection<Archetype> archetypes) {
             keys.addAll(archetypes);
             keys.remove(LOADING_ARCHETYPE);
             setKeys(keys);
@@ -423,6 +427,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     
     private static class RemoteRepoChildren extends Children.Keys<Archetype> implements Runnable {
         private List<Archetype> keys;
+        private TreeMap<String, TreeMap<DefaultArtifactVersion, Archetype>> res = new TreeMap<String, TreeMap<DefaultArtifactVersion, Archetype>>();
 
         private RemoteRepoChildren() {
             keys = new ArrayList<Archetype>();
@@ -442,24 +447,53 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         
         @Override
         protected Node[] createNodes(Archetype key) {
-            return ChooseArchetypePanel.createNodes(key, LEAF);
+            if (key == LOADING_ARCHETYPE) {
+                return ChooseArchetypePanel.createNodes(key, LEAF);
+            }
+            String id = key.getGroupId() + "|" + key.getArtifactId();
+            TreeMap<DefaultArtifactVersion, Archetype> rs = res.get(id);
+            Children childs = Children.LEAF;
+            if (rs != null && rs.size() > 1) {
+                //can it be actually null?
+                childs = new Childs();
+                ((Childs)childs).addArchetypes(rs.values());
+            } 
+            return ChooseArchetypePanel.createNodes(key, childs);
         }
 
         public void run() {
             ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
             RemoteRepoProvider provider = new RemoteRepoProvider();
-            List<Archetype> archetypes = new ArrayList<Archetype>();
             for (Archetype ar : provider.getArchetypes()) {
                 if (customCreator == null && ar.archetypeNg) {
                     continue;
                 }
-                if (!archetypes.contains(ar)) {
-                    archetypes.add(ar);
+                String key = ar.getGroupId() + "|" + ar.getArtifactId();
+                TreeMap<DefaultArtifactVersion, Archetype> archs = res.get(key);
+                if (archs == null) {
+                    archs = new TreeMap<DefaultArtifactVersion, Archetype>(new VersionComparator());
+                    res.put(key, archs);
                 }
+                if (!archs.containsValue(ar)) {
+                    DefaultArtifactVersion ver = new DefaultArtifactVersion(ar.getVersion());
+                    archs.put(ver, ar);
+                }
+            }
+            List<Archetype> archetypes = new ArrayList<Archetype>();
+            for (TreeMap<DefaultArtifactVersion, Archetype> map : res.values()) {
+                archetypes.add(map.values().iterator().next());
             }
             keys = archetypes;
             setKeys(keys);
         }
         
+    }
+    
+    private static class VersionComparator implements Comparator<DefaultArtifactVersion> {
+        public int compare(DefaultArtifactVersion o1, DefaultArtifactVersion o2) {
+            assert o1 != null;
+            assert o2 != null;
+            return o2.compareTo(o1);
+        }
     }
 }
