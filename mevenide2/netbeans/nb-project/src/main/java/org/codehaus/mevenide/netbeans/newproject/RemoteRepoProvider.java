@@ -39,12 +39,10 @@ public class RemoteRepoProvider implements ArchetypeProvider {
             if (RepositoryPreferences.LOCAL_REPO_ID.equals(info.getId())) {
                 continue;
             }
-            System.out.println("remote repository=" + info.getId());
             List<NBVersionInfo> archs = RepositoryQueries.findArchetypes(info);
             if (archs == null) {
                 continue;
             }
-            System.out.println("returned=" + archs.size());
             for (NBVersionInfo art : archs) {
                 //TODO FINDout  how to get contain matadata 
                 // boolean ng = artifact.getFiles().contains("META-INF/maven/archetype-metadata.xml");
