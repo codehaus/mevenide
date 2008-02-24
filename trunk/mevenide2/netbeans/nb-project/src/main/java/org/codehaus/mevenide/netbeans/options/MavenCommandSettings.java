@@ -37,7 +37,7 @@ public class MavenCommandSettings {
     }
     
     protected final Preferences getPreferences() {
-        return NbPreferences.root().node("org/codehaus/mevenide/commands");
+        return NbPreferences.root().node("org/codehaus/mevenide/commands"); //NOI18N
     }
     
     protected final String putProperty(String key, String value) {
