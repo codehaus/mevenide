@@ -46,7 +46,7 @@ public class LocalRepoProvider implements ArchetypeProvider {
                 return lst;
             }
                     
-            List<NBVersionInfo> archs = RepositoryQueries.retrievePossibleArchetypes(info);
+            List<NBVersionInfo> archs = RepositoryQueries.findArchetypes(info);
             if (archs == null) {
                 return lst;
             }

@@ -204,7 +204,7 @@ public final class RepositoryQueries {
         return toRet;
     }
 
-    public static List<NBVersionInfo> retrievePossibleArchetypes(RepositoryInfo... repos) {
+    public static List<NBVersionInfo> findArchetypes(RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
         List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
         for (List<RepositoryInfo> rps : all) {
@@ -212,7 +212,7 @@ public final class RepositoryQueries {
             if (impl != null) {
                 ArchetypeQueries aq = impl.getCapabilityLookup().lookup(ArchetypeQueries.class);
                 if (aq != null) {
-                    toRet.addAll(aq.retrievePossibleArchetypes(rps));
+                    toRet.addAll(aq.findArchetypes(rps));
                 }
             }
         }

@@ -40,7 +40,7 @@ public class RemoteRepoProvider implements ArchetypeProvider {
                 continue;
             }
             System.out.println("remote repository=" + info.getId());
-            List<NBVersionInfo> archs = RepositoryQueries.retrievePossibleArchetypes(info);
+            List<NBVersionInfo> archs = RepositoryQueries.findArchetypes(info);
             if (archs == null) {
                 continue;
             }
