@@ -62,5 +62,17 @@ public final class RepositoryIndexer {
         Logger.getLogger(RepositoryIndexer.class.getName()).info("Cannot find repository indexer type:" + repo.getType() + " for repository " + repo.getName());
         return null;
     }
+    
+    public static String[] getAvailableTypes() {
+        Collection<? extends RepositoryIndexerImplementation> res = Lookup.getDefault().lookupAll(RepositoryIndexerImplementation.class);
+        String[] toRet = new String[res.size()];
+        int index = 0;
+        for (RepositoryIndexerImplementation impl : res) {
+            toRet[index] = impl.getType();
+            index++;
+        }
+        return toRet;
+        
+    }
 
 }
