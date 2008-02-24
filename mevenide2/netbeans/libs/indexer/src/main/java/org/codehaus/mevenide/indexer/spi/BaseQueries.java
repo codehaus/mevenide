@@ -22,7 +22,7 @@ import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 
 /**
- *
+ * The basic set of queries. To be implemented by all index managers.
  * @author Milos Kleint
  */
 public interface BaseQueries {

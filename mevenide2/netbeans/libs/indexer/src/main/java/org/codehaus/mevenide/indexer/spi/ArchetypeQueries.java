@@ -20,11 +20,11 @@ import org.codehaus.mevenide.indexer.api.*;
 import java.util.List;
 
 /**
- *
+ * Query to find archetypes. Non mandatory for repository managers.
  * @author Milos Kleint
  */
 public interface ArchetypeQueries {
 
-    List<NBVersionInfo> retrievePossibleArchetypes(List<RepositoryInfo> repos);
+    List<NBVersionInfo> findArchetypes(List<RepositoryInfo> repos);
 
 }

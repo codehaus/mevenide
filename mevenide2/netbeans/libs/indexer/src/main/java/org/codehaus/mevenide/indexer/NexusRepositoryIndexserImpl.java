@@ -526,7 +526,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         return infos;
     }
 
-    public List<NBVersionInfo> retrievePossibleArchetypes(List<RepositoryInfo> repos) {
+    public List<NBVersionInfo> findArchetypes(List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {

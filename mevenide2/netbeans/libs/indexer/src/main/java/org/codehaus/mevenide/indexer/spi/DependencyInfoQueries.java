@@ -21,7 +21,7 @@ import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 
 /**
- *
+ * Query to find dependency information of artifacts.Non mandatory for repository managers.
  * @author Milos Kleint
  */
 public interface DependencyInfoQueries {

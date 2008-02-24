@@ -22,7 +22,10 @@ import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.openide.util.Lookup;
 
 /**
- *
+ * Implementation of repository indexer (repository manager). Apart from basic
+ * indexing features also serves as provider of various index queries.
+ * Implementations are expected to be registered in default Lookup (META-INF/services).
+ * 
  * @author Milos Kleint
  */
 public interface RepositoryIndexerImplementation {
@@ -33,6 +36,10 @@ public interface RepositoryIndexerImplementation {
      */
     String getType();
 
+    /**
+     * Index local repository or retrieve remote prepopulated index for local use.
+     * @param repo
+     */
     void indexRepo(RepositoryInfo repo);
     
     void updateIndexWithArtifacts(RepositoryInfo repo, Collection<Artifact> artifacts);
