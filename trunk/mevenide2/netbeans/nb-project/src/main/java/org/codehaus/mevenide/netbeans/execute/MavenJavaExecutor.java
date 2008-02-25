@@ -115,12 +115,13 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 out.setThreshold(MavenEmbedderLogger.LEVEL_INFO);
             }
             
-            File userLoc = new File(System.getProperty("user.home"), ".m2");//NOI18N
-            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
+            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false);//NOI18N
             DefaultConfiguration settConfig = new DefaultConfiguration();
             settConfig.setGlobalSettingsFile(globalSettingsPath);
-            settConfig.setUserSettingsFile(userSettingsPath);
+            if (userSettingsPath.exists()) {
+                settConfig.setUserSettingsFile(userSettingsPath);
+            }
             ConfigurationValidationResult setres = MavenEmbedder.validateConfiguration(settConfig);
             if (!setres.isValid()) {
                 if (setres.getUserSettingsException() != null) {

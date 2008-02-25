@@ -283,7 +283,7 @@ public final class EmbedderFactory {
 
         //TODO remove explicit activation
         req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
-        File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
+        File userLoc = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE; //NOI18N
         File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
         File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
         
@@ -294,11 +294,13 @@ public final class EmbedderFactory {
             Exceptions.printStackTrace(Exceptions.attachMessage(userSettingsException,
                     "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
         }
-        if (cvr.isValid()) {
-            req.setUserSettingsFile(userSettingsPath);
-        } else {
-            LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
-            req.setUserSettingsFile(globalSettingsPath);
+        if (userLoc.exists()) {
+            if (cvr.isValid()) {
+                req.setUserSettingsFile(userSettingsPath);
+            } else {
+                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
+                req.setUserSettingsFile(globalSettingsPath);
+            }
         }
 
         req.setGlobalSettingsFile(globalSettingsPath);
