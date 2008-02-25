@@ -35,4 +35,10 @@
     <configuration>
 </execution>]]></code>
     </codetemplate>
+    <codetemplate abbreviation="prof" xml:space="preserve">
+        <code><![CDATA[<profile>
+    <id>${ID newVarName default="profile1"}</id>
+</profile>]]></code>
+    </codetemplate>
+    
 </codetemplates>
