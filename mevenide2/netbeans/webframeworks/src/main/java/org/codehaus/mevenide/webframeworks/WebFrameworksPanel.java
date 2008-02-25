@@ -27,12 +27,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionListener;
-import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.project.Project;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
-import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.web.api.webmodule.ExtenderController;
 import org.netbeans.modules.web.spi.webmodule.WebModuleExtender;
 
@@ -47,8 +43,6 @@ import org.netbeans.modules.web.spi.webmodule.WebFrameworkProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 
 public class WebFrameworksPanel extends javax.swing.JPanel implements ListSelectionListener {
-    //copied constant from j2ee module.
-    public static final String DEV_NULL = "WTF"; //NOI18N
     
     private final ProjectCustomizer.Category category;
     private Project project;
@@ -94,66 +88,12 @@ public class WebFrameworksPanel extends javax.swing.JPanel implements ListSelect
         
     }
     
-    @Override
-    public void addNotify() {
-        super.addNotify();
-        //whenever the panel gets shown update the serverInstanceId property..
-        boolean configured = hasServerInstanceId();
-        if (!configured) {
-            category.setErrorMessage("Before adding Webframeworks, you need to setup Application Server to use.");
-        } else {
-            category.setErrorMessage(null);
-        }
-        category.setValid(configured);
-        jButtonAdd.setEnabled(configured);
-    }
-
-    private boolean hasServerInstanceId() {
-        J2eeModuleProvider prov = project.getLookup().lookup(J2eeModuleProvider.class);
-        String serverInstanceID = prov.getServerInstanceID();
-        if (DEV_NULL.equals(serverInstanceID)) {
-            serverInstanceID = null;
-        }
-        if (serverInstanceID == null) {
-            // shall we check only if project has no server instance or always??
-            serverInstanceID = handle.getNetbeansPrivateProfile(false).getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-            if (serverInstanceID != null) {
-                String server = Deployment.getDefault().getServerID(serverInstanceID);
-                if (server == null) {
-                    // server not defined for this guy, how come?
-                    serverInstanceID = null;
-                }
-            }
-        }
-        if (serverInstanceID == null) {
-            String str = handle.getPOMModel().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
-            if (str == null) {
-                org.apache.maven.model.Profile prof = handle.getNetbeansPublicProfile(false);
-                if (prof != null) {
-                    str = prof.getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
-                }
-            }
-            if (str != null) {
-                String[] server = Deployment.getDefault().getInstancesOfServer(str);
-                if (server != null && server.length > 0) {
-                    serverInstanceID = server[0];
-                }
-            }
-        }
-        if (serverInstanceID != null) {
-            ExtenderController.Properties properties = controller.getProperties();
-            properties.setProperty("serverInstanceID", serverInstanceID); // NOI18N
-            return true;
-        }
-        return false;
-    }
-    
     private void initFrameworksList() {
         WebModule webModule = WebModule.getWebModule(project.getProjectDirectory());
 
-        String j2eeVersion = webModule.getJ2eePlatformVersion();
         
         ExtenderController.Properties properties = controller.getProperties();
+        String j2eeVersion = webModule.getJ2eePlatformVersion();
         properties.setProperty("j2eeLevel", j2eeVersion); // NOI18N
         
         jListFrameworks.setModel(new DefaultListModel());
