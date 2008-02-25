@@ -29,6 +29,7 @@ import org.openide.util.Lookup;
 public final class RepositoryIndexer {
 
     public static void indexRepo(RepositoryInfo repo) {
+        assert repo != null;
         RepositoryIndexerImplementation impl = findImplementation(repo);
         if (impl == null) {
             return;
@@ -37,6 +38,10 @@ public final class RepositoryIndexer {
     }
     
     public static void updateIndexWithArtifacts(RepositoryInfo repo, Collection<Artifact> artifacts) {
+        assert repo != null;
+        if (artifacts == null || artifacts.size() == 0) {
+            return;
+        }
         RepositoryIndexerImplementation impl = findImplementation(repo);
         if (impl == null) {
             return;
@@ -45,6 +50,10 @@ public final class RepositoryIndexer {
     }
 
     public static void deleteArtifactFromIndex(RepositoryInfo repo, Artifact artifact) {
+        assert repo != null;
+        if (artifact == null) {
+            return;
+        }
         RepositoryIndexerImplementation impl = findImplementation(repo);
         if (impl == null) {
             return;
