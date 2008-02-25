@@ -27,7 +27,6 @@
              <module>libs/continuum-rpc</module>
              <module>continuum</module>
 	     <module>graph</module>
-	     <module>webframeworks</module>
           </modules>
        </profile>
       
@@ -146,6 +145,7 @@
      <module>junit</module>
      <module>nb-repo-browser</module>
      <module>archetypeng</module>
+     <module>webframeworks</module>
      <!--module>graph</module-->
   </modules>
     <repositories>
