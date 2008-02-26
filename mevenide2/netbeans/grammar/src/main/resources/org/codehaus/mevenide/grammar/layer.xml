@@ -49,6 +49,14 @@
                     </folder>
                 </folder>
             </folder>
+            <folder name="x-maven-profile+xml">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+                <folder name="CodeTemplates">
+                    <folder name="Defaults">
+                        <file name="org-codehaus-mevenide-grammar-CodeTemplates.xml" url="profile-abbreviations.xml"/>
+                    </folder>
+                </folder>
+            </folder>
         </folder>
     </folder>
     <folder name="Services">

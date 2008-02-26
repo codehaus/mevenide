@@ -16,7 +16,7 @@
     </file>
     <file>
         <ext name="xml"/>
-        <resolver mime="text/x-maven-profile+xml">
+    <resolver mime="text/x-maven-profile+xml">
             <xml-rule>
             	<element name="profilesXml" ns="http://maven.apache.org/POM/4.0.0">
                 </element>
