@@ -139,8 +139,7 @@ public class MavenRunJarImpl implements MavenRunJar {
                     plat = JavaPlatformManager.getDefault().getDefaultPlatform();
                 }
                 FileObject jav = plat.findTool("java"); //NOI18N
-                File fil = FileUtil.toFile(jav);
-                cmd.append(fil.exists() ? fil.getAbsolutePath() : executable);
+                cmd.append(jav != null ? FileUtil.toFile(jav).getAbsolutePath() : executable);
             } else {
                 cmd.append(executable);
             }
