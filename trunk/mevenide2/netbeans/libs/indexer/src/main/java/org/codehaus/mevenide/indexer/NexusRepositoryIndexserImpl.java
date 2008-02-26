@@ -286,14 +286,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         }
 
                         for (Artifact artifact : artifacts) {
-                            String absolutePath = artifact.getFile().getAbsolutePath();
+                            String absolutePath;
+                            if (artifact.getFile() != null) {
+                                absolutePath = artifact.getFile().getAbsolutePath();
+                            } else {
+                                //well sort of hack, assume the default repo layout in the repository..
+                                absolutePath = repo.getRepositoryPath() + File.separator + repository.pathOf(artifact);
+                            }
                             String extension = artifact.getArtifactHandler().getExtension();
 
                             String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
                             pomPath += "pom"; //NOI18N
                             File pom = new File(pomPath);
-                            
-                            indexer.addArtifactToIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
+                            if (pom.exists()) {
+                                indexer.addArtifactToIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
+                            }
 
                         }
                     } finally {
@@ -324,14 +331,21 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                             return null;
                         }
 
-                        String absolutePath = artifact.getFile().getAbsolutePath();
+                        String absolutePath;
+                        if (artifact.getFile() != null) {
+                            absolutePath = artifact.getFile().getAbsolutePath();
+                        } else {
+                            //well sort of hack, assume the default repo layout in the repository..
+                            absolutePath = repo.getRepositoryPath() + File.separator + repository.pathOf(artifact);
+                        }
                         String extension = artifact.getArtifactHandler().getExtension();
 
                         String pomPath = absolutePath.substring(0, absolutePath.length() - extension.length());
                         pomPath += "pom"; //NOI18N
                         File pom = new File(pomPath);
-
-                        indexer.deleteArtifactFromIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
+                        if (pom.exists()) {
+                            indexer.deleteArtifactFromIndex(contextProducer.getArtifactContext(indexingContext, pom), indexingContext);
+                        }
                     } finally {
                         unloadIndexingContext(repo);
                     }
