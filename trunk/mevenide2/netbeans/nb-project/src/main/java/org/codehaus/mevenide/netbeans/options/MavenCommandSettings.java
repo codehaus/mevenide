@@ -68,7 +68,7 @@ public class MavenCommandSettings {
                 toRet = "install:install-file";//NOI18N
             }
             else if (COMMAND_CREATE_ARCHETYPENG.equals(command)) {
-                toRet = "org.apache.maven.plugins:maven-archetype-plugin:2.0-alpha-2:create";//NOI18N
+                toRet = "org.apache.maven.plugins:maven-archetype-plugin:2.0-alpha-1:create";//NOI18N
             }
             else if (COMMAND_SCM_CHECKOUT.equals(command)) {
                 toRet = "org.apache.maven.plugins:maven-scm-plugin:1.0:checkout";//NOI18N
