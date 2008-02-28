@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.queries;
 
+import java.io.File;
 import java.net.URI;
 import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -49,8 +50,13 @@ public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
         if (javaFile == null) {
             return null;
         }
+        File file = FileUtil.toFile(javaFile);
+        if (file == null) {
+            //#128609 something in jar?
+            return null;
+        }
         URI[] tests = project.getSourceRoots(true);
-        URI uri = FileUtil.toFile(javaFile).toURI();
+        URI uri = file.toURI();
         assert "file".equals(uri.getScheme());
         String goal = "compile"; //NOI18N
         for (URI testuri : tests) {
