@@ -50,6 +50,10 @@ public class PropertySplitterTest extends TestCase {
         instance = new PropertySplitter("exec=\"test1 exec2=test2\"");
         result = instance.nextPair();
         assertEquals("exec=test1 exec2=test2", result);
+        //Issue MEVENIDE-600
+        instance = new PropertySplitter("netbeans.jar.run.workdir=\"C:\\Documents and Settings\\Anuradha\\My Documents\\NetBeansProjects\\mavenproject4\"");
+        result = instance.nextPair();
+        assertEquals("netbeans.jar.run.workdir=C:\\Documents and Settings\\Anuradha\\My Documents\\NetBeansProjects\\mavenproject4", result);
         
         instance = new PropertySplitter("exec=\"test1 exec2=test2\" exec2=\"test3==test3\"");
         result = instance.nextPair();

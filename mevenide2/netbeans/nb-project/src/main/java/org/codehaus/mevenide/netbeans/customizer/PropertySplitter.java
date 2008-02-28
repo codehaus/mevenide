@@ -62,7 +62,7 @@ public class PropertySplitter {
                 if (escapeNext) {
                     buffer.append(c);
                     escapeNext = false;
-                } else if (c == escape) {
+                } else if (!inQuote && c == escape) {
                     escapeNext = true;
                 } else if (inQuote) {
                     if (c == quoteChar) {
