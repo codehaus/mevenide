@@ -4,3 +4,8 @@ OpenIDE-Module-Layer: org/codehaus/mevenide/netbeans/layer.xml
 OpenIDE-Module-Install: org/codehaus/mevenide/netbeans/ModInstall.class
 AutoUpdate-Show-In-Client: false
 OpenIDE-Module-Recommends: MavenKit
+# ideally public packages should be just org.codehaus.mevenide.netbeans.api.**
+#but lots of mevenide plugins use classes from other packages too.
+#the manifest entry seems to be necessary for people who want to build on top 
+# of mevenide and are usign netbeans ant based projects..
+OpenIDE-Module-Public-Packages: org.codehaus.mevenide.netbeans.**
