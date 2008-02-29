@@ -142,7 +142,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
             Iterator it = config.getProperties().keySet().iterator();
             while (it.hasNext()) {
                 String key = (String) it.next();
-                buf.append(key).append("=").append(config.getProperties().getProperty(key)).append("\n"); //NOI18N
+                buf.append(key).append("=").append("\"").append(config.getProperties().getProperty(key)).append("\"").append("\n"); //NOI18N
             }
             taProperties.setText(buf.toString());
             if (buf.toString().matches(".*maven\\.test\\.skip\\s*=\\s*true\\s*.*")) { //NOI18N
