@@ -17,25 +17,16 @@
 package org.codehaus.mevenide.buildplan.ui;
 
 import java.awt.Image;
-import java.util.Arrays;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.lifecycle.NoSuchPhaseException;
-import org.apache.maven.lifecycle.model.MojoBinding;
-import org.apache.maven.lifecycle.plan.BuildPlan;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
-import org.codehaus.mevenide.buildplan.nodes.MojoNode;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
+import org.codehaus.mevenide.buildplan.nodes.MavenProjectNode;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -55,7 +46,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         initComponents();
         treeView = (BeanTreeView) jScrollPane1;
         setName(planView.getProject().getName());
-        //jScrollPane1.s
+    //jScrollPane1.s
     }
 
     public ExplorerManager getExplorerManager() {
@@ -79,28 +70,22 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
             @Override
             public String getHtmlDisplayName() {
                 return NbBundle.getMessage(BuildPlanViewUI.class,
-                "LBL_Buildplan_of_goals", new Object[]{getTasksAsString()});
+                        "LBL_Buildplan_of_goals", new Object[]{getTasksAsString()});
             }
-            
         };
-       
+
         explorerManager.setRootContext(node);
+        List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
+        mavenProjects.add(planView.getProject());
+        List collectedProjects = planView.getProject().getCollectedProjects();
 
-        MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
-        try {
-            BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(planView.getTasks()),
-                    planView.getProject());
-
-            List mojoBindings = buildPlan.renderExecutionPlan(new Stack());
-            for (Iterator it = mojoBindings.iterator(); it.hasNext();) {
-                MojoBinding binding = (MojoBinding) it.next();
-                array.add(new Node[]{new MojoNode(binding)});
-            }
-        } catch (NoSuchPhaseException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
+        if (collectedProjects != null) {
+            mavenProjects.addAll(collectedProjects);
         }
+        for (MavenProject mp : mavenProjects) {
+            array.add(new Node[]{new MavenProjectNode(mp, planView.getTasks())});
+        }
+
         treeView.expandNode(node);
     }
 
