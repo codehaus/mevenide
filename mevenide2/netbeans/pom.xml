@@ -146,6 +146,7 @@
      <module>nb-repo-browser</module>
      <module>archetypeng</module>
      <module>webframeworks</module>
+     <module>lifecycle-build-plan</module>
      <!--module>graph</module-->
   </modules>
     <repositories>

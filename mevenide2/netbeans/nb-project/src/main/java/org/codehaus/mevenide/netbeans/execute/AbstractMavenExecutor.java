@@ -36,11 +36,13 @@ import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
+import org.codehaus.mevenide.netbeans.spi.lifecycle.MavenBuildPlanSupport;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.Cancellable;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 import org.openide.windows.InputOutput;
@@ -55,6 +57,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
     protected ReRunAction rerun;
     protected ReRunAction rerunDebug;
     protected StopAction stop;
+    protected BuildPlanAction buildPlan;
     private List<String> messages = new ArrayList<String>();
     private List<OutputListener> listeners = new ArrayList<OutputListener>();
 
@@ -156,6 +159,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
     protected final void actionStatesAtStart() {
         rerun.setEnabled(false);
         rerunDebug.setEnabled(false);
+        buildPlan.setEnabled(true);
         stop.setEnabled(true);
         
     }
@@ -171,8 +175,10 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         rerun = (ReRunAction)vals.next();
         rerunDebug = (ReRunAction)vals.next();
         stop = (StopAction)vals.next();
+        buildPlan = (BuildPlanAction)vals.next();
         rerun.setConfig(config);
         rerunDebug.setConfig(config);
+        buildPlan.setConfig(config);
         stop.setExecutor(this);
     }
     
@@ -195,6 +201,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         col.add(rerun);
         col.add(rerunDebug);
         col.add(stop);
+        col.add(buildPlan);
         return col;
     }
     
@@ -203,12 +210,15 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         rerun = new ReRunAction(false);
         rerunDebug = new ReRunAction(true);
         stop = new StopAction();
+        buildPlan = new BuildPlanAction();
         rerun.setConfig(config);
         rerunDebug.setConfig(config);
+        buildPlan.setConfig(config);
         stop.setExecutor(this);
         Action[] actions = new Action[] {
             rerun, 
             rerunDebug,
+            buildPlan,
             stop
         };
         return actions;
@@ -270,6 +280,31 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         }
         public void actionPerformed(ActionEvent e) {
             exec.cancel();
+        }
+    }
+    static class BuildPlanAction extends AbstractAction {
+        private RunConfig config;
+        private MavenBuildPlanSupport mbps;
+        BuildPlanAction() {
+            putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/buildplangoals.png"))); //NOi18N
+            putValue(Action.NAME, NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Build_Plan"));
+            putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Build_Plan_tip"));
+            mbps= Lookup.getDefault().lookup(MavenBuildPlanSupport.class);
+            setEnabled(false);
+        }
+
+        @Override
+        public boolean isEnabled() {
+            return mbps!=null && super.isEnabled();
+        }
+        
+        void setConfig(RunConfig config) {
+            this.config = config;
+        }
+        public void actionPerformed(ActionEvent e) {
+            //
+           
+           mbps.openBuildPlanView(config.getProject().getOriginalMavenProject(), config.getGoals().toArray(new String[0]));
         }
     }
 }
