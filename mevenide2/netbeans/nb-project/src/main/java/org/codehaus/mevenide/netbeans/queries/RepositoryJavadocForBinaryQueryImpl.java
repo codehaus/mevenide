@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.queries;
 
 import java.io.File;
@@ -38,10 +37,10 @@ import org.openide.filesystems.URLMapper;
  * @author  Milos Kleint (mkleint@codehaus.org
  */
 public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQueryImplementation {
-    
+
     public RepositoryJavadocForBinaryQueryImpl() {
     }
-    
+
     /**
      * Find any Javadoc corresponding to the given classpath root containing
      * Java classes.
@@ -77,18 +76,21 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
 //                        File pom = new File(parent, artifact + "-" + version + ".pom");
 //                        // maybe this condition is already overkill..
 //                        if (pom.exists()) {
-                            File javadoc = new File(parent, artifact + "-" + version + "-javadoc.jar"); //NOI18N
+                        File javadoc = new File(parent, artifact + "-" + version + "-javadoc.jar"); //NOI18N
+                        if (javadoc.exists() ||
+                                (jarFile.getName().startsWith(artifact) && jarFile.getName().contains(version))) { //#121657
                             return new DocResult(javadoc);
-//                        }
+                        }
                     }
                 }
             }
         }
         return null;
-        
+
     }
-    
-    private class DocResult implements JavadocForBinaryQuery.Result  {
+
+    private class DocResult implements JavadocForBinaryQuery.Result {
+
         private File file;
         private final List<ChangeListener> listeners;
 
@@ -96,18 +98,19 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
             file = javadoc;
             listeners = new ArrayList<ChangeListener>();
         }
+
         public void addChangeListener(ChangeListener changeListener) {
             synchronized (listeners) {
                 listeners.add(changeListener);
             }
         }
-        
+
         public void removeChangeListener(ChangeListener changeListener) {
             synchronized (listeners) {
                 listeners.remove(changeListener);
             }
         }
-        
+
         public java.net.URL[] getRoots() {
             if (file.exists()) {
                 try {
@@ -117,7 +120,7 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
                     // don't examine here, just return 2 places..
                     url[0] = FileUtil.getArchiveRoot(file.toURI().toURL());
                     url[1] = new URL(url[0] + "apidocs/"); //NOI18N
-                    
+
                     //TODO there are also some other possible layout in the remote repository
                     // eg. jung/jung jas javadoc i "doc" subfolder, not sure we can cater for everything..
                     return url;
@@ -127,7 +130,5 @@ public class RepositoryJavadocForBinaryQueryImpl implements JavadocForBinaryQuer
             }
             return new URL[0];
         }
-        
     }
-    
 }
