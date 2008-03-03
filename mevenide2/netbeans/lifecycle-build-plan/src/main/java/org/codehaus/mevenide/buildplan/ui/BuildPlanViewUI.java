@@ -28,6 +28,7 @@ import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
+import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
@@ -75,18 +76,49 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         };
 
         explorerManager.setRootContext(node);
-        List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
-        mavenProjects.add(planView.getProject());
-        List collectedProjects = planView.getProject().getCollectedProjects();
-
-        if (collectedProjects != null) {
-            mavenProjects.addAll(collectedProjects);
-        }
-        for (MavenProject mp : mavenProjects) {
-            array.add(new Node[]{new MavenProjectNode(mp, planView.getTasks())});
-        }
+        array.add(new Node[]{createLoadingNode()});
 
         treeView.expandNode(node);
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                Children.Array array = new Children.Array();
+                List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
+                mavenProjects.add(planView.getProject());
+                List collectedProjects = planView.getProject().getCollectedProjects();
+
+                if (collectedProjects != null) {
+                    mavenProjects.addAll(collectedProjects);
+                }
+                for (MavenProject mp : mavenProjects) {
+                    array.add(new Node[]{new MavenProjectNode(mp, planView.getTasks())});
+                }
+                final AbstractNode node = new AbstractNode(array) {
+
+                    @Override
+                    public Image getIcon(int arg0) {
+                        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/buildplangoals.png");
+                    }
+
+                    @Override
+                    public Image getOpenedIcon(int arg0) {
+                        return getIcon(arg0);
+                    }
+
+                    @Override
+                    public String getHtmlDisplayName() {
+                        return NbBundle.getMessage(BuildPlanViewUI.class,
+                                "LBL_Buildplan_of_goals", new Object[]{getTasksAsString()});
+                    }
+                };
+                explorerManager.setRootContext(node);
+                treeView.expandNode(node);
+            }
+        });
+
+
+
+
     }
 
     private String getTasksAsString() {
@@ -99,6 +131,20 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         }
 
         return sb.toString();
+    }
+
+    public static Node createLoadingNode() {
+        AbstractNode nd = new AbstractNode(Children.LEAF) {
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/wait.gif");
+            }
+        };
+        nd.setName("Loading"); //NOI18N
+
+        nd.setDisplayName(NbBundle.getMessage(BuildPlanViewUI.class, "Node_Loading"));
+        return nd;
     }
 
     /** This method is called from within the constructor to
