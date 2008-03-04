@@ -18,7 +18,6 @@ package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -28,8 +27,6 @@ import org.apache.maven.lifecycle.NoSuchPhaseException;
 import org.apache.maven.lifecycle.model.MojoBinding;
 import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -61,8 +58,31 @@ public class MavenProjectNode extends AbstractNode {
         return getIcon(arg0);
     }
 
+    private static class MojoChildern extends Children.Keys<MojoBinding>{
+        private List<MojoBinding> bindings;
+
+        public MojoChildern(List<MojoBinding> bindings) {
+            this.bindings = bindings;
+        }
+        
+        
+        @Override
+        protected Node[] createNodes(MojoBinding arg0) {
+           return new Node[]{new MojoNode(arg0)};
+        }
+
+        @Override
+        protected void addNotify() {
+            super.addNotify();
+            setKeys(bindings);
+        }
+    
+       
+    
+    }
+    
     public static Children createChildern(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
-        Children.Array array = new Children.Array();
+        
        
         try {
             BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
@@ -70,17 +90,12 @@ public class MavenProjectNode extends AbstractNode {
 
             List mojoBindings = buildPlan.renderExecutionPlan(new Stack());
             buildPlan.resetExecutionProgress();
-            for (Iterator it = mojoBindings.iterator(); it.hasNext();) {
-                MojoBinding binding = (MojoBinding) it.next();
-
-                    array.add(new Node[]{new MojoNode(binding)});
-                
-            }
+            return new MojoChildern(mojoBindings);
         } catch (NoSuchPhaseException ex) {
             Exceptions.printStackTrace(ex);
         } catch (MavenEmbedderException ex) {
             ex.printStackTrace();
         }
-        return array;
+        return new Children.Array();
     }
 }
