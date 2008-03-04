@@ -19,9 +19,12 @@ package org.codehaus.mevenide.buildplan.ui;
 import java.awt.Image;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.codehaus.mevenide.buildplan.nodes.MavenProjectNode;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -55,8 +58,8 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
     }
 
     public void buildNodeView() {
-        Children.Array array = new Children.Array();
-        AbstractNode node = new AbstractNode(array) {
+        final Children.Array array = new Children.Array();
+        final AbstractNode node = new AbstractNode(array) {
 
             @Override
             public Image getIcon(int arg0) {
@@ -76,13 +79,14 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         };
 
         explorerManager.setRootContext(node);
-        array.add(new Node[]{createLoadingNode()});
+        final Node loadingNode = createLoadingNode();
+        array.add(new Node[]{loadingNode});
 
         treeView.expandNode(node);
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-                Children.Array array = new Children.Array();
+                explorerManager.setRootContext(node);
                 List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
                 mavenProjects.add(planView.getProject());
                 List collectedProjects = planView.getProject().getCollectedProjects();
@@ -90,34 +94,15 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
                 if (collectedProjects != null) {
                     mavenProjects.addAll(collectedProjects);
                 }
+                
+                MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
                 for (MavenProject mp : mavenProjects) {
-                    array.add(new Node[]{new MavenProjectNode(mp, planView.getTasks())});
+                    array.add(new Node[]{new MavenProjectNode(embedder, mp, planView.getTasks())});
                 }
-                final AbstractNode node = new AbstractNode(array) {
-
-                    @Override
-                    public Image getIcon(int arg0) {
-                        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/buildplangoals.png");
-                    }
-
-                    @Override
-                    public Image getOpenedIcon(int arg0) {
-                        return getIcon(arg0);
-                    }
-
-                    @Override
-                    public String getHtmlDisplayName() {
-                        return NbBundle.getMessage(BuildPlanViewUI.class,
-                                "LBL_Buildplan_of_goals", new Object[]{getTasksAsString()});
-                    }
-                };
-                explorerManager.setRootContext(node);
+                array.remove(new Node[]{loadingNode});
                 treeView.expandNode(node);
             }
         });
-
-
-
 
     }
 
