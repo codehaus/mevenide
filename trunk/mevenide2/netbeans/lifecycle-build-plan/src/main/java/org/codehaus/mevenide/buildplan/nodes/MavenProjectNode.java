@@ -30,7 +30,6 @@ import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
-import org.netbeans.api.project.ProjectUtils;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -45,8 +44,8 @@ public class MavenProjectNode extends AbstractNode {
 
     private MavenProject nmp;
 
-    public MavenProjectNode(MavenProject nmp, String... tasks) {
-        super(createChildern(nmp, tasks));
+    public MavenProjectNode(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
+        super(createChildern(embedder,nmp, tasks));
         this.nmp = nmp;
         setDisplayName(nmp.getName());
         setShortDescription(nmp.getDescription());
@@ -54,7 +53,7 @@ public class MavenProjectNode extends AbstractNode {
 
     @Override
     public Image getIcon(int arg0) {
-         return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/Maven2Icon.gif");
+        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/Maven2Icon.gif");
     }
 
     @Override
@@ -62,17 +61,20 @@ public class MavenProjectNode extends AbstractNode {
         return getIcon(arg0);
     }
 
-    public static Children createChildern(MavenProject nmp, String... tasks) {
+    public static Children createChildern(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
         Children.Array array = new Children.Array();
-        MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
+       
         try {
             BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
                     nmp);
 
             List mojoBindings = buildPlan.renderExecutionPlan(new Stack());
+            buildPlan.resetExecutionProgress();
             for (Iterator it = mojoBindings.iterator(); it.hasNext();) {
                 MojoBinding binding = (MojoBinding) it.next();
-                array.add(new Node[]{new MojoNode(binding)});
+
+                    array.add(new Node[]{new MojoNode(binding)});
+                
             }
         } catch (NoSuchPhaseException ex) {
             Exceptions.printStackTrace(ex);
