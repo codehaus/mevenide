@@ -22,6 +22,7 @@ import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -296,7 +297,7 @@ public class DependenciesNode extends AbstractNode {
             if (!transitive1 && transitive2)  {
                 return -1;
             }
-            return art1.getFile().getName().compareTo(art2.getFile().getName());
+            return art1.getArtifactId().compareTo(art2.getArtifactId());
         }
         
     }
