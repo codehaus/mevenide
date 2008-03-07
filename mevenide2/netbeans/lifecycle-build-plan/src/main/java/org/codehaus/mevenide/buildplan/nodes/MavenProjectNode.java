@@ -17,18 +17,17 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
-import java.util.Map;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.lifecycle.NoSuchPhaseException;
-import org.apache.maven.lifecycle.model.MojoBinding;
 import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.buildplan.BuildPlanGroup;
 import org.codehaus.mevenide.buildplan.BuildPlanUtil;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -62,21 +61,21 @@ public class MavenProjectNode extends AbstractNode {
 
     private static class PhaseChildern extends Children.Keys<String> {
 
-        java.util.Map<String, List<MojoBinding>> map;
+        BuildPlanGroup bpg;
 
-        public PhaseChildern(java.util.Map<String, List<MojoBinding>> map) {
-            this.map = map;
+        public PhaseChildern(BuildPlanGroup bpg) {
+            this.bpg =  bpg;
         }
 
         @Override
         protected Node[] createNodes(String key) {
-            return new Node[]{new PhaseNode(key, map.get(key))};
+            return new Node[]{new PhaseNode(key, bpg.getMojoBindings(key))};
         }
 
         @Override
         protected void addNotify() {
             super.addNotify();
-         setKeys(new ArrayList<String>(map.keySet()));
+            setKeys(bpg.getPhaseList());
         }
     }
 
@@ -84,15 +83,20 @@ public class MavenProjectNode extends AbstractNode {
 
 
         try {
+
             BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
-                    nmp);
+                    new MavenProject(embedder.readModel(nmp.getFile())));
 
 
-            Map<String, List<MojoBinding>> map = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
+            BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
 
 
-          return new PhaseChildern(map);
+            return new PhaseChildern(bpg);
 
+        } catch (XmlPullParserException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
         } catch (NoSuchPhaseException ex) {
             Exceptions.printStackTrace(ex);
         } catch (MavenEmbedderException ex) {

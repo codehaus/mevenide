@@ -16,10 +16,7 @@
  */
 package org.codehaus.mevenide.buildplan;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Stack;
 import org.apache.maven.lifecycle.LifecycleUtils;
 import org.apache.maven.lifecycle.NoSuchPhaseException;
@@ -40,35 +37,26 @@ public class BuildPlanUtil {
     private BuildPlanUtil() {
     }
 
-    public static  Map<String, List<MojoBinding>> getMojoBindingsGroupByPhase(BuildPlan buildPlan) throws NoSuchPhaseException {
-
+    public static BuildPlanGroup getMojoBindingsGroupByPhase(BuildPlan buildPlan) throws NoSuchPhaseException {
+        BuildPlanGroup bpg = new BuildPlanGroup();
         List<MojoBinding> bindings = buildPlan.renderExecutionPlan(new Stack());
-        List<MojoBinding> noneSpecified = new ArrayList<MojoBinding>();
-        Map<String, List<MojoBinding>> map = new HashMap<String, List<MojoBinding>>();
+
 
         for (MojoBinding mb : bindings) {
             Phase phase = LifecycleUtils.findPhaseForMojoBinding(mb, buildPlan.getLifecycleBindings(), true);
-            if (phase == null) {
-                noneSpecified.add(mb);
-            } else {
-                List<MojoBinding> mbs = map.get(phase.getName());
-                if(mbs==null){
-                 mbs=new ArrayList<MojoBinding>();
-                 map.put(phase.getName(), mbs);
-                }
-                mbs.add(mb);
+            String phaseKey = PHASE_NONE_SPECIFIED;
+            if (phase != null) {
+                phaseKey = phase.getName();
             }
+            bpg.putMojoBinding(phaseKey, mb);
         }
 
 
 
 
-        if (noneSpecified.size() > 0) {
-            map.put(PHASE_NONE_SPECIFIED, noneSpecified);
 
-        }
         buildPlan.resetExecutionProgress();
-        return map;
+        return bpg;
 
     }
 }
