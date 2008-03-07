@@ -14,35 +14,32 @@
  *  limitations under the License.
  *  under the License.
  */
+
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import org.apache.maven.lifecycle.MojoBindingUtils;
+import java.util.List;
 import org.apache.maven.lifecycle.model.MojoBinding;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
  *
  * @author Anuradha G
  */
-public class MojoNode extends AbstractNode {
+public class PhaseNode extends AbstractNode{
 
-    private MojoBinding mb;
-
-    public MojoNode(MojoBinding mb) {
-        super(createChildren(mb));
-        this.mb = mb;
-        setDisplayName(MojoBindingUtils.toString(mb));
-        setShortDescription(MojoBindingUtils.toString(mb));
-
+    public PhaseNode(String name,List<MojoBinding> bindings) {
+        super(new MojoChildern(bindings));
+        setDisplayName(NbBundle.getMessage(PhaseNode.class, "LBL_Phase", new Object[] {name}));
     }
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/mojo.png");
+        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/phase.png");
     }
 
     @Override
@@ -52,16 +49,30 @@ public class MojoNode extends AbstractNode {
 
     @Override
     public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
-        buffer.append(mb.getGroupId()).append(" : ").
-                append(mb.getArtifactId()).append(" : ").
-                append(mb.getVersion()).append(" : <b>").append(mb.getGoal());
-        return buffer.append("</html>").toString();
+        return getDisplayName();
     }
+  
+    private static class MojoChildern extends Children.Keys<MojoBinding>{
+        private List<MojoBinding> bindings;
 
-    public static Children createChildren(MojoBinding mb) {
-        Children.Array array = new Children.Array();
-        array.add(new Node[]{new ExecutionNode(mb.getExecutionId())});
-        return array;
+        public MojoChildern(List<MojoBinding> bindings) {
+            this.bindings = bindings;
+        }
+        
+        
+        @Override
+        protected Node[] createNodes(MojoBinding arg0) {
+           return new Node[]{new MojoNode(arg0)};
+        }
+
+        @Override
+        protected void addNotify() {
+            super.addNotify();
+            setKeys(bindings);
+        }
+    
+       
+    
     }
+    
 }
