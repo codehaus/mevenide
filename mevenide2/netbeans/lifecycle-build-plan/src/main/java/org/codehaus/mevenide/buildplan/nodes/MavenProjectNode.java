@@ -17,16 +17,18 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
+import java.util.Map;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.lifecycle.NoSuchPhaseException;
 import org.apache.maven.lifecycle.model.MojoBinding;
 import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.buildplan.BuildPlanUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -41,10 +43,10 @@ public class MavenProjectNode extends AbstractNode {
 
     private MavenProject nmp;
 
-    public MavenProjectNode(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
-        super(createChildern(embedder,nmp, tasks));
+    public MavenProjectNode(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
+        super(createChildern(embedder, nmp, tasks));
         this.nmp = nmp;
-        setDisplayName(nmp.getName());
+        setDisplayName(nmp.getName() + " (" + nmp.getPackaging() + ")");
         setShortDescription(nmp.getDescription());
     }
 
@@ -58,39 +60,39 @@ public class MavenProjectNode extends AbstractNode {
         return getIcon(arg0);
     }
 
-    private static class MojoChildern extends Children.Keys<MojoBinding>{
-        private List<MojoBinding> bindings;
+    private static class PhaseChildern extends Children.Keys<String> {
 
-        public MojoChildern(List<MojoBinding> bindings) {
-            this.bindings = bindings;
+        java.util.Map<String, List<MojoBinding>> map;
+
+        public PhaseChildern(java.util.Map<String, List<MojoBinding>> map) {
+            this.map = map;
         }
-        
-        
+
         @Override
-        protected Node[] createNodes(MojoBinding arg0) {
-           return new Node[]{new MojoNode(arg0)};
+        protected Node[] createNodes(String key) {
+            return new Node[]{new PhaseNode(key, map.get(key))};
         }
 
         @Override
         protected void addNotify() {
             super.addNotify();
-            setKeys(bindings);
+         setKeys(new ArrayList<String>(map.keySet()));
         }
-    
-       
-    
     }
-    
-    public static Children createChildern(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
-        
-       
+
+    public static Children createChildern(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
+
+
         try {
             BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
                     nmp);
 
-            List mojoBindings = buildPlan.renderExecutionPlan(new Stack());
-            buildPlan.resetExecutionProgress();
-            return new MojoChildern(mojoBindings);
+
+            Map<String, List<MojoBinding>> map = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
+
+
+          return new PhaseChildern(map);
+
         } catch (NoSuchPhaseException ex) {
             Exceptions.printStackTrace(ex);
         } catch (MavenEmbedderException ex) {
