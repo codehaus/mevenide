@@ -55,7 +55,8 @@ public class MojoNode extends AbstractNode {
         StringBuffer buffer = new StringBuffer("<html>");
         buffer.append(mb.getGroupId()).append(" : ").
                 append(mb.getArtifactId()).append(" : ").
-                append(mb.getVersion()).append(" : <b>").append(mb.getGoal());
+                append(mb.getVersion() == null ? "" : mb.getVersion() + ":").
+                append("  <b>").append(mb.getGoal());
         return buffer.append("</html>").toString();
     }
 

@@ -18,7 +18,6 @@ package org.codehaus.mevenide.buildplan;
 
 import java.util.List;
 import java.util.Stack;
-import org.apache.maven.lifecycle.LifecycleUtils;
 import org.apache.maven.lifecycle.NoSuchPhaseException;
 import org.apache.maven.lifecycle.model.MojoBinding;
 import org.apache.maven.lifecycle.model.Phase;
@@ -43,7 +42,7 @@ public class BuildPlanUtil {
 
 
         for (MojoBinding mb : bindings) {
-            Phase phase = LifecycleUtils.findPhaseForMojoBinding(mb, buildPlan.getLifecycleBindings(), true);
+            Phase phase = mb.getPhase();
             String phaseKey = PHASE_NONE_SPECIFIED;
             if (phase != null) {
                 phaseKey = phase.getName();
