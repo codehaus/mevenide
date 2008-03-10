@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.embedder;
 
 import java.io.File;
@@ -32,10 +31,9 @@ import org.apache.maven.wagon.TransferFailedException;
  * @author mkleint
  */
 public class NbWagonManager extends DefaultWagonManager {
-    
+
     private List<Artifact> letGoes = new ArrayList<Artifact>();
-    
-    
+
     /** Creates a new instance of NbWagonManager */
     public NbWagonManager() {
     }
@@ -46,7 +44,7 @@ public class NbWagonManager extends DefaultWagonManager {
             letGoes.add(artifact);
         }
     }
-    
+
     //MEVENIDE-422
     public void cleanLetGone(Artifact artifact) {
         synchronized (letGoes) {
@@ -82,7 +80,7 @@ public class NbWagonManager extends DefaultWagonManager {
 
     @Override
     public void getArtifact(Artifact artifact, ArtifactRepository repository) throws TransferFailedException, ResourceDoesNotExistException {
-  
+
 //        System.out.println("getArtifact2=" + artifact);
         artifact.setResolved(true);
 //        original.getArtifact(artifact, repository);
@@ -104,5 +102,42 @@ public class NbWagonManager extends DefaultWagonManager {
     public void getArtifactMetadata(ArtifactMetadata metadata, ArtifactRepository remoteRepository, File destination, String checksumPolicy) throws TransferFailedException, ResourceDoesNotExistException {
 //        System.out.println("getartifact metadata=" + metadata);
 //        original.getArtifactMetadata(metadata, remoteRepository, destination, checksumPolicy);
+    }
+
+    @Override
+    public void getArtifact(Artifact artifact,
+            ArtifactRepository repository,
+            boolean forceUpdateCheck) throws TransferFailedException, ResourceDoesNotExistException 
+    {
+        this.getArtifact(artifact, repository);
+    }
+
+    @Override
+    public void getArtifact(Artifact artifact,
+            List remoteRepositories,
+            boolean forceUpdateCheck)
+            throws TransferFailedException, ResourceDoesNotExistException 
+    {
+        boolean cont;
+        synchronized (letGoes) {
+            cont = letGoes.contains(artifact);
+        }
+        if (cont) {
+            try {
+                super.getArtifact(artifact, remoteRepositories, forceUpdateCheck);
+            } catch (TransferFailedException exc) {
+                //ignore, we will just pretend it didn't happen.
+                artifact.setResolved(true);
+            } catch (ResourceDoesNotExistException exc) {
+                //ignore, we will just pretend it didn't happen.
+                artifact.setResolved(true);
+            }
+            synchronized (letGoes) {
+                letGoes.remove(artifact);
+            }
+        } else {
+            artifact.setResolved(true);
+        }
+
     }
 }
