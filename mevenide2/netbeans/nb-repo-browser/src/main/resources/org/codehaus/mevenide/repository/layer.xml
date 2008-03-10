@@ -2,9 +2,6 @@
 <!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
 <filesystem>
     <folder name="Actions">
-        <folder name="Edit">
-            <file name="org-codehaus-mevenide-repository-search-SearchAction.instance"/>
-        </folder>
         <folder name="Window">
             <file name="org-codehaus-mevenide-repository-M2RepositoryBrowserAction.instance"/>
         </folder>
@@ -13,7 +10,7 @@
         <folder name="Window">
             <file name="M2RepositoryBrowserAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-codehaus-mevenide-repository-M2RepositoryBrowserAction.instance"/>
-                <attr name="position" intvalue="519"/>
+                <attr name="position" intvalue="1105"/>
             </file>
         </folder>
     </folder>
@@ -23,7 +20,9 @@
         </folder>
         <folder name="Modes">
             <folder name="explorer">
-                <file name="M2RepositoryBrowserTopComponent.wstcref" url="M2RepositoryBrowserTopComponentWstcref.xml"/>
+                <file name="M2RepositoryBrowserTopComponent.wstcref" url="M2RepositoryBrowserTopComponentWstcref.xml">
+                    <attr name="position" intvalue="411"/>
+                </file>    
             </folder>
         </folder>
     </folder>
