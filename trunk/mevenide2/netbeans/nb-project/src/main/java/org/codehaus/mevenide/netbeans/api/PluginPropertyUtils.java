@@ -29,6 +29,7 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.options.MavenVersionSettings;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.project.Project;
 
@@ -227,7 +228,6 @@ public class PluginPropertyUtils {
 
     
     private static final String CONFIGURATION_EL = "configuration";//NOI18N
-    private static final String RELEASE_VERSION = "RELEASE";//NOI18N
     
     /**
      * update the source level of project to given value.
@@ -245,7 +245,7 @@ public class PluginPropertyUtils {
         Plugin plugin = new Plugin();
         plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
         plugin.setArtifactId(Constants.PLUGIN_COMPILER);
-        plugin.setVersion(RELEASE_VERSION);
+        plugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_COMPILER));
         Plugin old = null;
         Build bld = handle.getPOMModel().getBuild();
         if (bld != null) {
@@ -295,11 +295,11 @@ public class PluginPropertyUtils {
         Plugin plugin = new Plugin();
         plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
         plugin.setArtifactId(Constants.PLUGIN_COMPILER);
-        plugin.setVersion(RELEASE_VERSION);
+        plugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_COMPILER));
         Plugin plugin2 = new Plugin();
         plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
         plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
-        plugin2.setVersion(RELEASE_VERSION);
+        plugin2.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_RESOURCES));
         Plugin old = null;
         Plugin old2 = null;
         Build bld = handle.getPOMModel().getBuild();

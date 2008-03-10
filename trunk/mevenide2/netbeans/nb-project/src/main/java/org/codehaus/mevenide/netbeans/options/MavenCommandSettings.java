@@ -24,7 +24,7 @@ import org.openide.util.NbPreferences;
  * allow minor (mostly version) changes by advanced users?)
  * @author mkleint
  */
-public class MavenCommandSettings {
+public final class MavenCommandSettings {
     private static final MavenCommandSettings INSTANCE = new MavenCommandSettings();
     
     public static final String COMMAND_CREATE_ARCHETYPE = "createArchetype"; //NOI18N
