@@ -179,12 +179,12 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
     }
 
     private boolean isPomFile(Document doc) {
-        String type = (String) doc.getProperty("mimeType");
+        String type = (String) doc.getProperty("mimeType"); //NOI18N
         if (type != null) {
-            if ("text/x-maven-pom+xml".equals(type)) {
+            if ("text/x-maven-pom+xml".equals(type)) { //NOI18N
                 return true;
             }
-            if (!"text/xml".equals(type)) {
+            if (!"text/xml".equals(type)) { //NOI18N
                 return false;
             }
         }
