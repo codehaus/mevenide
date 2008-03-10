@@ -156,7 +156,9 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setOffline(config.isOffline() != null ? config.isOffline().booleanValue() : false);
         setRecursive(config.isRecursive());
         setShowDebug(config.isShowDebug());
-        readProfiles(config.getProject().getPOMFile());
+        if(config.getProject()!=null){
+         readProfiles(config.getProject().getPOMFile());
+        }
     }
 
     private void readMapping(NetbeansActionMapping mapp) {
