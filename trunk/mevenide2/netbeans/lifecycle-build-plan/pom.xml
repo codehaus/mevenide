@@ -39,6 +39,16 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-filesystems</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-netbeans-modules-projectapi</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
             <artifactId>org-jdesktop-layout</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
@@ -59,9 +69,7 @@
             <artifactId>nb-project</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
-        
     </dependencies>
-    
     <build>
         <plugins>
             <plugin>

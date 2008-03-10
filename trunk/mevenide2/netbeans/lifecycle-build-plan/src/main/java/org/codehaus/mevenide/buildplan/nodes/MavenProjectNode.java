@@ -17,34 +17,30 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import java.io.IOException;
-import java.util.Arrays;
 
-import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.lifecycle.NoSuchPhaseException;
-import org.apache.maven.lifecycle.plan.BuildPlan;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.buildplan.BuildPlanGroup;
-import org.codehaus.mevenide.buildplan.BuildPlanUtil;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node;
-import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class MavenProjectNode extends AbstractNode {
 
     private MavenProject nmp;
+    private String[] tasks;
 
-    public MavenProjectNode(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
-        super(createChildern(embedder, nmp, tasks));
+    public MavenProjectNode(MavenProject nmp, String... tasks) {
+        super(Children.LEAF);
         this.nmp = nmp;
+        this.tasks = tasks;
         setDisplayName(nmp.getName() + " (" + nmp.getPackaging() + ")");
         setShortDescription(nmp.getDescription());
     }
@@ -55,53 +51,23 @@ public class MavenProjectNode extends AbstractNode {
     }
 
     @Override
-    public Image getOpenedIcon(int arg0) {
-        return getIcon(arg0);
+    public Action[] getActions(boolean bool) {
+        return new Action[]{new AbstractAction(NbBundle.getMessage(MavenProjectNode.class, "LBL_Show_BuildPlan", getDisplayName())) {
+
+                public void actionPerformed(ActionEvent e) {
+                    new BuildPlanView(nmp, tasks).open();
+                }
+            }
+                };
     }
 
-    private static class PhaseChildern extends Children.Keys<String> {
+    @Override
+    public Action getPreferredAction() {
+        return new AbstractAction(NbBundle.getMessage(MavenProjectNode.class, "LBL_Show_BuildPlan", getDisplayName())) {
 
-        BuildPlanGroup bpg;
-
-        public PhaseChildern(BuildPlanGroup bpg) {
-            this.bpg =  bpg;
-        }
-
-        @Override
-        protected Node[] createNodes(String key) {
-            return new Node[]{new PhaseNode(key, bpg.getMojoBindings(key))};
-        }
-
-        @Override
-        protected void addNotify() {
-            super.addNotify();
-            setKeys(bpg.getPhaseList());
-        }
-    }
-
-    public static Children createChildern(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
-
-
-        try {
-
-            BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
-                    new MavenProject(embedder.readModel(nmp.getFile())));
-
-
-            BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
-
-
-            return new PhaseChildern(bpg);
-
-        } catch (XmlPullParserException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (NoSuchPhaseException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
-        }
-        return new Children.Array();
+            public void actionPerformed(ActionEvent e) {
+                new BuildPlanView(nmp, tasks).open();
+            }
+        };
     }
 }
