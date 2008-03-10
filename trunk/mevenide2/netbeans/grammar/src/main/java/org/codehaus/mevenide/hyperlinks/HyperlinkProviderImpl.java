@@ -179,6 +179,18 @@ public class HyperlinkProviderImpl implements HyperlinkProvider {
     }
 
     private boolean isPomFile(Document doc) {
+        String type = (String) doc.getProperty("mimeType");
+        if (type != null) {
+            if ("text/x-maven-pom+xml".equals(type)) {
+                return true;
+            }
+            if (!"text/xml".equals(type)) {
+                return false;
+            }
+        }
+
+        //TODO this should be eventually abandoned in favour of specific supported mimetypes.
+        
         DataObject dObject = NbEditorUtilities.getDataObject(doc);
         if (dObject != null && "pom.xml".equalsIgnoreCase(dObject.getPrimaryFile().getNameExt())) { //NOI18N
             // is that enough?
