@@ -613,7 +613,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         bq.add(new BooleanClause(new PrefixQuery(new Term(ArtifactInfo.UINFO, prefix)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
                         for (ArtifactInfo artifactInfo : search) {
-                            artifacts.add(artifactInfo.artifactId);
+                            artifacts.add(artifactInfo.groupId);
                         }
                     } finally {
                         unloadIndexingContext(allrepos);
