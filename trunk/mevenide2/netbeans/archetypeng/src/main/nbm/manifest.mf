@@ -1,4 +1,3 @@
 Manifest-Version: 1.0
 OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/archetypeng/Bundle.properties
-OpenIDE-Module-Layer: org/codehaus/mevenide/archetypeng/layer.xml
 OpenIDE-Module-Public-Packages: -
