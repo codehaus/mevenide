@@ -16,18 +16,29 @@
  */
 package org.codehaus.mevenide.buildplan;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 import org.apache.maven.lifecycle.NoSuchPhaseException;
 import org.apache.maven.lifecycle.model.MojoBinding;
 import org.apache.maven.lifecycle.model.Phase;
 import org.apache.maven.lifecycle.plan.BuildPlan;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.nodes.MojoNode;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectManager;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.NbBundle;
 
 /**
  *
- * @author Anuradha
+ * @author Anuradha G
  */
 public class BuildPlanUtil {
 
@@ -57,5 +68,31 @@ public class BuildPlanUtil {
         buildPlan.resetExecutionProgress();
         return bpg;
 
+    }
+
+    /**ref by ModulesNode
+     *todo : move to some api utils class
+     */
+    public static Collection<MavenProject> getSubProjects(MavenProject project) {
+        Collection<MavenProject> modules = new ArrayList<MavenProject>();
+        File base = project.getBasedir();
+        for (Iterator it = project.getModules().iterator(); it.hasNext();) {
+            String elem = (String) it.next();
+            File projDir = FileUtil.normalizeFile(new File(base, elem));
+            FileObject fo = FileUtil.toFileObject(projDir);
+            if (fo != null) {
+                try {
+                    Project prj = ProjectManager.getDefault().findProject(fo);
+                    if (prj != null && prj.getLookup().lookup(NbMavenProject.class) != null) {
+                        modules.add(((NbMavenProject) prj).getOriginalMavenProject());
+                    }
+                } catch (IllegalArgumentException ex) {
+                    ex.printStackTrace();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        return modules;
     }
 }

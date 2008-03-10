@@ -17,12 +17,13 @@
 package org.codehaus.mevenide.buildplan.ui;
 
 import java.awt.Image;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.buildplan.BuildPlanUtil;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
-import org.codehaus.mevenide.buildplan.nodes.MavenProjectNode;
+import org.codehaus.mevenide.buildplan.nodes.LifecycleNode;
+import org.codehaus.mevenide.buildplan.nodes.ModulesNode;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
 import org.openide.explorer.ExplorerManager;
@@ -49,8 +50,8 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         this.planView = planView;
         initComponents();
         treeView = (BeanTreeView) jScrollPane1;
-        setName(planView.getProject().getName());
-    //jScrollPane1.s
+        setName(planView.getProject().getName() + " (" + planView.getProject().getPackaging() + ")");
+    
     }
 
     public ExplorerManager getExplorerManager() {
@@ -87,19 +88,17 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
 
             public void run() {
                 explorerManager.setRootContext(node);
-                List<MavenProject> mavenProjects = new ArrayList<MavenProject>();
-                mavenProjects.add(planView.getProject());
-                List collectedProjects = planView.getProject().getCollectedProjects();
+                 MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
 
-                if (collectedProjects != null) {
-                    mavenProjects.addAll(collectedProjects);
-                }
-                
-                MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
-                for (MavenProject mp : mavenProjects) {
-                    array.add(new Node[]{new MavenProjectNode(embedder, mp, planView.getTasks())});
-                }
+                    array.add(new Node[]{new LifecycleNode(embedder, planView.getProject(),
+                            planView.getTasks())});
+
+                Collection<MavenProject> subProjects = BuildPlanUtil.getSubProjects(planView.getProject());
+                if(subProjects.size()>0){
+                  array.add(new Node[]{new ModulesNode( subProjects, planView.getTasks())});
+                }    
                 array.remove(new Node[]{loadingNode});
+                
                 treeView.expandNode(node);
             }
         });
@@ -130,6 +129,10 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
 
         nd.setDisplayName(NbBundle.getMessage(BuildPlanViewUI.class, "Node_Loading"));
         return nd;
+    }
+
+    public MavenProject getProject() {
+        return planView.getProject();
     }
 
     /** This method is called from within the constructor to
