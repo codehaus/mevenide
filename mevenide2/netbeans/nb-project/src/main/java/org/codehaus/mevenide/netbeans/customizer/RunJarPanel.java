@@ -48,6 +48,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.codehaus.mevenide.netbeans.options.MavenVersionSettings;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -410,6 +411,7 @@ public class RunJarPanel extends javax.swing.JPanel {
             jarPlugin = new Plugin();
             jarPlugin.setArtifactId(ARTFACTID_JAR); 
             jarPlugin.setGroupId(Constants.GROUP_APACHE_PLUGINS); 
+            jarPlugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_JAR));
             handle.getNetbeansPublicProfile().getBuild().addPlugin(jarPlugin);
         }
         if (jarPlugin.getConfiguration() == null) {
@@ -428,7 +430,7 @@ public class RunJarPanel extends javax.swing.JPanel {
             assPlugin = new org.apache.maven.model.Plugin();
             assPlugin.setArtifactId(ARITFACTID_ASSEMBLY); 
             assPlugin.setGroupId(Constants.GROUP_APACHE_PLUGINS); 
-//not necessary, can be workarounded in other ways..            assPlugin.setVersion("2.1"); //MEVENIDE-523
+            assPlugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_ASSEMBLY));
             handle.getNetbeansPublicProfile().getBuild().addPlugin(assPlugin);
         }
         //#96834
