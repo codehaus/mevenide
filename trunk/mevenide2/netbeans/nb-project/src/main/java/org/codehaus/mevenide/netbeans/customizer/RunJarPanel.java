@@ -392,6 +392,14 @@ public class RunJarPanel extends javax.swing.JPanel {
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
+            //MEVENIDE-599
+            NetbeansActionMapping[] activeCustomMappings = ActionToGoalUtils.getActiveCustomMappings(project);
+            for (NetbeansActionMapping actionMapping : activeCustomMappings) {
+                actionMapping.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
+                ActionToGoalUtils.setUserActionMapping(actionMapping, handle.getActionMappings());
+                handle.markAsModified(handle.getActionMappings());
+            }
+            
         }
     }
 
