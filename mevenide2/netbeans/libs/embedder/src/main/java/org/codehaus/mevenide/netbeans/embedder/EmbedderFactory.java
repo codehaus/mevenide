@@ -38,6 +38,7 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.lifecycle.LifecycleExecutor;
+import org.apache.maven.lifecycle.plan.BuildPlanner;
 import org.apache.maven.profiles.DefaultProfileManager;
 import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.profiles.activation.DefaultProfileActivationContext;
@@ -319,6 +320,17 @@ public final class EmbedderFactory {
                 } catch (PlexusConfigurationException ex) {
                     ex.printStackTrace();
                 }
+                
+                 desc = plexusContainer.getComponentDescriptor("org.apache.maven.lifecycle.plan.BuildPlanner");
+                desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner"); //NOI18N
+                try {
+                    PlexusConfiguration oldConf = desc.getConfiguration();
+                    XmlPlexusConfiguration conf = new XmlPlexusConfiguration(oldConf.getName());
+                    copyConfig(oldConf, conf);
+                    desc.setConfiguration(conf);
+                } catch (PlexusConfigurationException ex) {
+                    ex.printStackTrace();
+                }
                 try {
                     desc = new ComponentDescriptor();
                     desc.setRole(TransferListener.class.getName());
@@ -331,6 +343,7 @@ public final class EmbedderFactory {
                 } catch (ComponentRepositoryException ex) {
                     ex.printStackTrace();
                 }
+                
 
             }
         });

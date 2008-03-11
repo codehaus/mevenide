@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.buildplan;
 
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.ui.BuildPlanTopComponent;
 import org.codehaus.mevenide.buildplan.ui.BuildPlanViewUI;
@@ -25,11 +26,12 @@ import org.codehaus.mevenide.buildplan.ui.BuildPlanViewUI;
  * @author Anuradha G
  */
 public class BuildPlanView {
-
+    private MavenEmbedder embedder;
     private MavenProject project;
     private String[] tasks;
     private BuildPlanViewUI bpvui;
-    public BuildPlanView(MavenProject project, String... tasks) {
+    public BuildPlanView(MavenEmbedder embedder,MavenProject project, String... tasks) {
+        this.embedder = embedder;
         this.project = project;
         this.tasks = tasks;
         bpvui=new BuildPlanViewUI(this);
@@ -54,6 +56,11 @@ public class BuildPlanView {
         //todo
     }
 
+    public MavenEmbedder getEmbedder() {
+        return embedder;
+    }
+ 
+    
     public MavenProject getProject() {
         return project;
     }

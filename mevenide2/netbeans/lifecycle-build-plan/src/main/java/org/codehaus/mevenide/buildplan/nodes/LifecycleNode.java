@@ -14,20 +14,22 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.embedder.MavenEmbedderException;
-import org.apache.maven.lifecycle.NoSuchPhaseException;
+import org.apache.maven.lifecycle.LifecycleLoaderException;
+import org.apache.maven.lifecycle.LifecycleSpecificationException;
 import org.apache.maven.lifecycle.plan.BuildPlan;
+import org.apache.maven.lifecycle.plan.BuildPlanner;
+import org.apache.maven.lifecycle.plan.LifecyclePlannerException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanGroup;
 import org.codehaus.mevenide.buildplan.BuildPlanUtil;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner;
+import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -65,7 +67,7 @@ public class LifecycleNode extends AbstractNode {
         BuildPlanGroup bpg;
 
         public PhaseChildern(BuildPlanGroup bpg) {
-            this.bpg =  bpg;
+            this.bpg = bpg;
         }
 
         @Override
@@ -84,24 +86,26 @@ public class LifecycleNode extends AbstractNode {
 
 
         try {
+            synchronized (embedder) {
+                NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
 
-            BuildPlan buildPlan = embedder.getBuildPlan(Arrays.asList(tasks),
-                    new MavenProject(embedder.readModel(nmp.getFile())));
+                List<String> list = Arrays.asList(tasks);
+
+                BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, nmp, buildPlanner.getMavenSession());
+
+                BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
 
 
-            BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
-
-
-            return new PhaseChildern(bpg);
-
-        } catch (XmlPullParserException ex) {
+                return new PhaseChildern(bpg);
+            }
+        } catch (LifecycleLoaderException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
+        } catch (LifecycleSpecificationException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (NoSuchPhaseException ex) {
+        } catch (LifecyclePlannerException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (MavenEmbedderException ex) {
-            ex.printStackTrace();
+        } catch (ComponentLookupException ex) {
+            Exceptions.printStackTrace(ex);
         }
         return new Children.Array();
     }

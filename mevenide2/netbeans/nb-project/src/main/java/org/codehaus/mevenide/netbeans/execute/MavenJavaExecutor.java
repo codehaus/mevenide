@@ -134,6 +134,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             }
             
             embedder = EmbedderFactory.createExecuteEmbedder(out);
+            super.embedder=embedder;
             if (config.getProject() != null) {
                 try {
                     checkDebuggerListening(config, out);
