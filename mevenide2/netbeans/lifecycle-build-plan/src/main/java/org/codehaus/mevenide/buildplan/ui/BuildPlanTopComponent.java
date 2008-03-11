@@ -50,7 +50,7 @@ public final class BuildPlanTopComponent extends TopComponent {
                     JTabbedPane pane = (JTabbedPane) evt.getSource();
                     int sel = pane.getSelectedIndex();
                     pane.removeTabAt(sel);
-                    if (pane.getTabCount() == 2) {
+                    if (pane.getTabCount() == 1) {
                         BuildPlanViewUI bpvui = (BuildPlanViewUI) pane.getComponent(0);
                        
                         pane.removeAll();
