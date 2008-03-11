@@ -14,13 +14,12 @@
  *  limitations under the License.
  *  under the License.
  */
-
 package org.codehaus.mevenide.buildplan.ui;
 
+import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.Serializable;
-import java.util.ResourceBundle;
 import java.util.logging.Logger;
 import javax.swing.JTabbedPane;
 import org.openide.awt.TabbedPaneFactory;
@@ -47,9 +46,19 @@ public final class BuildPlanTopComponent extends TopComponent {
         tabpane.addPropertyChangeListener(TabbedPaneFactory.PROP_CLOSE, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                JTabbedPane pane = (JTabbedPane) evt.getSource();
-                int sel = pane.getSelectedIndex();
-                pane.removeTabAt(sel);
+                synchronized (BuildPlanTopComponent.class) {
+                    JTabbedPane pane = (JTabbedPane) evt.getSource();
+                    int sel = pane.getSelectedIndex();
+                    pane.removeTabAt(sel);
+                    if (pane.getTabCount() == 2) {
+                        BuildPlanViewUI bpvui = (BuildPlanViewUI) pane.getComponent(0);
+                       
+                        pane.removeAll();
+                        removeAll();
+                        addView(bpvui);
+
+                    }
+                }
             }
         });
     }
@@ -64,16 +73,7 @@ public final class BuildPlanTopComponent extends TopComponent {
 
         tabpane = TabbedPaneFactory.createCloseButtonTabbedPane();
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(tabpane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 729, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(tabpane, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-        );
+        setLayout(new java.awt.BorderLayout());
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTabbedPane tabpane;
@@ -115,11 +115,50 @@ public final class BuildPlanTopComponent extends TopComponent {
         return TopComponent.PERSISTENCE_ALWAYS;
     }
 
-    public void addView(BuildPlanViewUI viewUI){
-        
-        tabpane.addTab(NbBundle.getMessage(BuildPlanTopComponent.class,"LBL_Buildplan_of")
-                +viewUI.getName()+"    "/*adding space to prevent overlap of X*/,
-                viewUI);
+    public void addView(BuildPlanViewUI viewUI) {
+
+        synchronized (BuildPlanTopComponent.class) {
+
+            if (getComponents().length == 0) {
+
+                setName(NbBundle.getMessage(BuildPlanTopComponent.class,
+                        "CTL_BuildPlanTopComponent") + " - " + viewUI.getName());
+                add(viewUI, BorderLayout.CENTER);
+            } else {
+                if (tabpane.getParent()==null) {
+                    BuildPlanViewUI current = (BuildPlanViewUI) getComponents()[0];
+                    tabpane.addTab(NbBundle.getMessage(BuildPlanTopComponent.class,
+                            "LBL_Buildplan_of") + current.getName() + "    "/*adding space to prevent overlap of X*/,
+                            current);
+                    removeAll();
+                    add(tabpane, BorderLayout.CENTER);
+
+                    
+                }
+                //______________________________________________________________
+
+                int componentCount = tabpane.getComponentCount();
+                tabpane.addTab(NbBundle.getMessage(BuildPlanTopComponent.class,
+                        "LBL_Buildplan_of") + viewUI.getName() + "    "/*adding space to prevent overlap of X*/,
+                        viewUI);
+                setName(NbBundle.getMessage(BuildPlanTopComponent.class,
+                        "CTL_BuildPlanTopComponent"));
+                tabpane.setSelectedIndex(componentCount);
+            }
+            repaint();
+            updateUI();
+        }
+    }
+
+    @Override
+    protected void componentOpened() {
+        super.componentOpened();
+    }
+
+    @Override
+    protected void componentClosed() {
+        tabpane.removeAll();
+        removeAll();
     }
 
     /** replaces this in object stream */
