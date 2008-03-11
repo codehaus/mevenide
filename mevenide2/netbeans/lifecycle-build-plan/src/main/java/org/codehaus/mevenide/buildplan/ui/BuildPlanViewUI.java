@@ -17,22 +17,15 @@
 package org.codehaus.mevenide.buildplan.ui;
 
 import java.awt.Image;
-import java.util.Collection;
-import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.buildplan.BuildPlanUtil;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
-import org.codehaus.mevenide.buildplan.nodes.LifecycleNode;
-import org.codehaus.mevenide.buildplan.nodes.ModulesNode;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
+import org.codehaus.mevenide.buildplan.nodes.NodeUtils;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
-import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
 /**
@@ -51,7 +44,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         initComponents();
         treeView = (BeanTreeView) jScrollPane1;
         setName(planView.getProject().getName() + " (" + planView.getProject().getPackaging() + ")");
-    
+
     }
 
     public ExplorerManager getExplorerManager() {
@@ -59,8 +52,8 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
     }
 
     public void buildNodeView() {
-        final Children.Array array = new Children.Array();
-        final AbstractNode node = new AbstractNode(array) {
+        final Children children = NodeUtils.createBuildPlanChildren(planView.getProject(), planView.getTasks());
+        final AbstractNode node = new AbstractNode(children) {
 
             @Override
             public Image getIcon(int arg0) {
@@ -80,28 +73,8 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         };
 
         explorerManager.setRootContext(node);
-        final Node loadingNode = createLoadingNode();
-        array.add(new Node[]{loadingNode});
-
         treeView.expandNode(node);
-        RequestProcessor.getDefault().post(new Runnable() {
 
-            public void run() {
-                explorerManager.setRootContext(node);
-                 MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
-
-                    array.add(new Node[]{new LifecycleNode(embedder, planView.getProject(),
-                            planView.getTasks())});
-
-                Collection<MavenProject> subProjects = BuildPlanUtil.getSubProjects(planView.getProject());
-                if(subProjects.size()>0){
-                  array.add(new Node[]{new ModulesNode( subProjects, planView.getTasks())});
-                }    
-                array.remove(new Node[]{loadingNode});
-                
-                treeView.expandNode(node);
-            }
-        });
 
     }
 
@@ -117,19 +90,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         return sb.toString();
     }
 
-    public static Node createLoadingNode() {
-        AbstractNode nd = new AbstractNode(Children.LEAF) {
 
-            @Override
-            public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/wait.gif");
-            }
-        };
-        nd.setName("Loading"); //NOI18N
-
-        nd.setDisplayName(NbBundle.getMessage(BuildPlanViewUI.class, "Node_Loading"));
-        return nd;
-    }
 
     public MavenProject getProject() {
         return planView.getProject();

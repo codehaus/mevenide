@@ -54,6 +54,12 @@ public class BuildPlanUtil {
 
         for (MojoBinding mb : bindings) {
             Phase phase = mb.getPhase();
+            if (mb.getGroupId().equals("org.apache.maven.plugins.internal") //NOi18N
+                    && mb.getArtifactId().equals("maven-state-management")) {
+                //ignore this
+                continue;
+            }
+
             String phaseKey = PHASE_NONE_SPECIFIED;
             if (phase != null) {
                 phaseKey = phase.getName();

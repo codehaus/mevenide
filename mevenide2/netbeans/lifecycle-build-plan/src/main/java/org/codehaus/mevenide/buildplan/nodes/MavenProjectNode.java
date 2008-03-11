@@ -18,14 +18,9 @@ package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
 
-import java.awt.event.ActionEvent;
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.openide.nodes.AbstractNode;
-import org.openide.nodes.Children;
-import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
@@ -34,13 +29,9 @@ import org.openide.util.Utilities;
  */
 public class MavenProjectNode extends AbstractNode {
 
-    private MavenProject nmp;
-    private String[] tasks;
-
     public MavenProjectNode(MavenProject nmp, String... tasks) {
-        super(Children.LEAF);
-        this.nmp = nmp;
-        this.tasks = tasks;
+        super(NodeUtils.createBuildPlanChildren(nmp, tasks));
+
         setDisplayName(nmp.getName() + " (" + nmp.getPackaging() + ")");
         setShortDescription(nmp.getDescription());
     }
@@ -51,23 +42,12 @@ public class MavenProjectNode extends AbstractNode {
     }
 
     @Override
-    public Action[] getActions(boolean bool) {
-        return new Action[]{new AbstractAction(NbBundle.getMessage(MavenProjectNode.class, "LBL_Show_BuildPlan", getDisplayName())) {
-
-                public void actionPerformed(ActionEvent e) {
-                    new BuildPlanView(nmp, tasks).open();
-                }
-            }
-                };
+    public Image getOpenedIcon(int arg0) {
+        return getIcon(arg0);   
     }
 
     @Override
-    public Action getPreferredAction() {
-        return new AbstractAction(NbBundle.getMessage(MavenProjectNode.class, "LBL_Show_BuildPlan", getDisplayName())) {
-
-            public void actionPerformed(ActionEvent e) {
-                new BuildPlanView(nmp, tasks).open();
-            }
-        };
+    public Action[] getActions(boolean bool) {
+        return new Action[]{};
     }
 }
