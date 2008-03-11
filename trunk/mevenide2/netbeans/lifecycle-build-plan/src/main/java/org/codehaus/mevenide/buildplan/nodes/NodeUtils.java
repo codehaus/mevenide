@@ -21,8 +21,6 @@ import java.util.Collection;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanUtil;
-import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -53,7 +51,8 @@ public class NodeUtils {
         return nd;
     }
 
-    public static Children createBuildPlanChildren(final MavenProject mp, final String... tasks) {
+    public static Children createBuildPlanChildren(final  MavenEmbedder embedder,
+            final MavenProject mp, final String... tasks) {
         final Children.Array array = new Children.Array();
         final Node loadingNode = createLoadingNode();
         array.add(new Node[]{loadingNode});
@@ -63,15 +62,14 @@ public class NodeUtils {
 
             public void run() {
 
-                MavenEmbedder embedder = EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger());
-
+               
                 array.add(new Node[]{new LifecycleNode(embedder, mp,
                             tasks)
                         });
 
                 Collection<MavenProject> subProjects = BuildPlanUtil.getSubProjects(mp);
                 if (subProjects.size() > 0) {
-                    array.add(new Node[]{new ModulesNode(subProjects, tasks)});
+                    array.add(new Node[]{new ModulesNode(embedder,subProjects, tasks)});
                 }
                 array.remove(new Node[]{loadingNode});
 

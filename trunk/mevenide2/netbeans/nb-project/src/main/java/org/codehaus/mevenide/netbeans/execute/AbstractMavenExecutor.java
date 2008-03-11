@@ -30,6 +30,7 @@ import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -58,6 +59,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
     protected ReRunAction rerunDebug;
     protected StopAction stop;
     protected BuildPlanAction buildPlan;
+    protected MavenEmbedder embedder;
     private List<String> messages = new ArrayList<String>();
     private List<OutputListener> listeners = new ArrayList<OutputListener>();
 
@@ -282,7 +284,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
             exec.cancel();
         }
     }
-    static class BuildPlanAction extends AbstractAction {
+     class BuildPlanAction extends AbstractAction {
         private RunConfig config;
         private MavenBuildPlanSupport mbps;
         BuildPlanAction() {
@@ -295,7 +297,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
 
         @Override
         public boolean isEnabled() {
-            return mbps!=null && super.isEnabled();
+            return mbps!=null && embedder!=null&& super.isEnabled();
         }
         
         void setConfig(RunConfig config) {
@@ -304,7 +306,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         public void actionPerformed(ActionEvent e) {
             //
            
-           mbps.openBuildPlanView(config.getProject().getOriginalMavenProject(), config.getGoals().toArray(new String[0]));
+           mbps.openBuildPlanView(embedder,config.getProject().getOriginalMavenProject(), config.getGoals().toArray(new String[0]));
         }
     }
 }

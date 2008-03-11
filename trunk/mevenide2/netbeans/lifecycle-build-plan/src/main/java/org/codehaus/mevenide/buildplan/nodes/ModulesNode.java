@@ -35,8 +35,8 @@ import org.openide.util.Utilities;
 public class ModulesNode extends AbstractNode {
 
     /** Creates a new instance of ModulesNode */
-    public ModulesNode( Collection<MavenProject> projects, String... tasks) {
-        super(new ModulesChildren( projects, tasks));
+    public ModulesNode(MavenEmbedder embedder, Collection<MavenProject> projects, String... tasks) {
+        super(new ModulesChildren(embedder, projects, tasks));
         setName("Modules"); //NOI18N
 
         setDisplayName(NbBundle.getMessage(ModulesNode.class, "LBL_Modules"));
@@ -64,18 +64,19 @@ public class ModulesNode extends AbstractNode {
     }
 
     public static class ModulesChildren extends Children.Keys<MavenProject> {
-
+        private MavenEmbedder embedder;
         private Collection<MavenProject> projects;
         private String[] tasks;
 
-        public ModulesChildren( Collection<MavenProject> projects, String... tasks) {
+        public ModulesChildren(MavenEmbedder embedder, Collection<MavenProject> projects, String... tasks) {
+            this.embedder = embedder;
             this.projects = projects;
             this.tasks = tasks;
         }
 
         @Override
         protected Node[] createNodes(MavenProject arg0) {
-            return new Node[]{new MavenProjectNode( arg0, tasks)};
+            return new Node[]{new MavenProjectNode(embedder, arg0, tasks)};
         }
 
         @Override

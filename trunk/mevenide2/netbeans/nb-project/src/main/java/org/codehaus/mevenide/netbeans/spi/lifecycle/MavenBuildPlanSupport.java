@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.spi.lifecycle;
 
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 
 /**
@@ -24,5 +25,5 @@ import org.apache.maven.project.MavenProject;
  * @author Anuradha G
  */
 public interface  MavenBuildPlanSupport {
-    void openBuildPlanView(MavenProject project,String... tasks);
+    void openBuildPlanView(MavenEmbedder embedder,MavenProject project,String... tasks);
 }

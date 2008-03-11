@@ -24,7 +24,6 @@ import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -52,7 +51,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
     }
 
     public void buildNodeView() {
-        final Children children = NodeUtils.createBuildPlanChildren(planView.getProject(), planView.getTasks());
+        final Children children = NodeUtils.createBuildPlanChildren(planView.getEmbedder(),planView.getProject(), planView.getTasks());
         final AbstractNode node = new AbstractNode(children) {
 
             @Override

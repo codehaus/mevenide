@@ -19,6 +19,7 @@ package org.codehaus.mevenide.buildplan.nodes;
 import java.awt.Image;
 
 import javax.swing.Action;
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.util.Utilities;
@@ -29,8 +30,8 @@ import org.openide.util.Utilities;
  */
 public class MavenProjectNode extends AbstractNode {
 
-    public MavenProjectNode(MavenProject nmp, String... tasks) {
-        super(NodeUtils.createBuildPlanChildren(nmp, tasks));
+    public MavenProjectNode(MavenEmbedder embedder,MavenProject nmp, String... tasks) {
+        super(NodeUtils.createBuildPlanChildren(embedder,nmp, tasks));
 
         setDisplayName(nmp.getName() + " (" + nmp.getPackaging() + ")");
         setShortDescription(nmp.getDescription());

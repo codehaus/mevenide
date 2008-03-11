@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.buildplan;
 
+import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.spi.lifecycle.MavenBuildPlanSupport;
 
@@ -23,12 +24,14 @@ import org.codehaus.mevenide.netbeans.spi.lifecycle.MavenBuildPlanSupport;
  *
  * @author Anuradha
  */
-public class MavenBuildPlanSupportImpl implements MavenBuildPlanSupport {
+public class MavenBuildPlanSupportImpl implements MavenBuildPlanSupport{
 
     public MavenBuildPlanSupportImpl() {
     }
 
-    public void openBuildPlanView(MavenProject project, String... tasks) {
-        new BuildPlanView(project, tasks).open();  
+    public void openBuildPlanView(MavenEmbedder embedder,MavenProject project, String... tasks) {
+        new BuildPlanView(embedder, project, tasks).open();  
     }
+
+    
 }
