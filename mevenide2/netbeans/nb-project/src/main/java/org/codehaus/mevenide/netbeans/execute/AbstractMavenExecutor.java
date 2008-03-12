@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.awt.event.ActionEvent;
@@ -54,70 +53,96 @@ import org.openide.windows.OutputListener;
  * @author mkleint
  */
 public abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
+
     protected RunConfig config;
     protected ReRunAction rerun;
     protected ReRunAction rerunDebug;
     protected StopAction stop;
     protected BuildPlanAction buildPlan;
-    protected MavenEmbedder embedder;
     private List<String> messages = new ArrayList<String>();
     private List<OutputListener> listeners = new ArrayList<OutputListener>();
-
-    protected  ExecutorTask task;
-    private static final Set forbidden = new HashSet(); 
+    protected ExecutorTask task;
+    private static final Set forbidden = new HashSet();
+    
 
     static {
         forbidden.add("netbeans.logger.console"); //NOI18N
+
         forbidden.add("java.util.logging.config.class"); //NOI18N
+
         forbidden.add("netbeans.autoupdate.language"); //NOI18N
+
         forbidden.add("netbeans.dirs"); //NOI18N
+
         forbidden.add("netbeans.home"); //NOI18N
+
         forbidden.add("sun.awt.exception.handler"); //NOI18N
+
         forbidden.add("org.openide.TopManager.GUI"); //NOI18N
+
         forbidden.add("org.openide.major.version"); //NOI18N
+
         forbidden.add("netbeans.autoupdate.variant"); //NOI18N
+
         forbidden.add("netbeans.dynamic.classpath"); //NOI18N
+
         forbidden.add("netbeans.autoupdate.country"); //NOI18N
+
         forbidden.add("netbeans.hash.code"); //NOI18N
+
         forbidden.add("org.openide.TopManager"); //NOI18N
+
         forbidden.add("org.openide.version"); //NOI18N
+
         forbidden.add("netbeans.buildnumber"); //NOI18N
+
         forbidden.add("javax.xml.parsers.DocumentBuilderFactory"); //NOI18N
+
         forbidden.add("javax.xml.parsers.SAXParserFactory"); //NOI18N
+
         forbidden.add("rave.build"); //NOI18N
+
         forbidden.add("netbeans.accept_license_class"); //NOI18N
+
         forbidden.add("rave.version"); //NOI18N
+
         forbidden.add("netbeans.autoupdate.version"); //NOI18N
+
         forbidden.add("netbeans.importclass"); //NOI18N
+
         forbidden.add("netbeans.user"); //NOI18N
 //        forbidden.add("java.class.path");
 //        forbidden.add("https.nonProxyHosts");
-        
+
     }
-    
+
     public AbstractMavenExecutor(RunConfig conf) {
         super(conf.getExecutionName());
         config = conf;
-        
+
     }
-    
+
     protected final void checkDebuggerListening(RunConfig config, AbstractOutputHandler handler) throws MojoExecutionException, MojoFailureException {
         if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
+
             JPDAStart start = new JPDAStart();
             start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
             start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
+
             start.setLog(handler.getLogger());
             String val = start.execute(config.getProject());
             Enumeration en = config.getProperties().propertyNames();
             while (en.hasMoreElements()) {
-                String key = (String)en.nextElement();
+                String key = (String) en.nextElement();
                 String value = config.getProperties().getProperty(key);
                 StringBuffer buf = new StringBuffer(value);
                 String replaceItem = "${jpda.address}";//NOI18N
+
                 int index = buf.indexOf(replaceItem);
                 while (index > -1) {
                     String newItem = val;
                     newItem = newItem == null ? "" : newItem;//NOI18N
+
                     buf.replace(index, index + replaceItem.length(), newItem);
                     index = buf.indexOf(replaceItem);
                 }
@@ -125,20 +150,19 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
                 config.getProperties().setProperty(key, buf.toString());
             }
             config.getProperties().put("jpda.address", val);//NOI18N
+
         }
     }
-    
 
     public final void setTask(ExecutorTask task) {
         this.task = task;
     }
 
-    
     public final void addInitialMessage(String line, OutputListener listener) {
         messages.add(line);
         listeners.add(listener);
     }
-    
+
     protected final void processInitialMessage() {
         Iterator<String> it1 = messages.iterator();
         Iterator<OutputListener> it2 = listeners.iterator();
@@ -156,34 +180,33 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
             Exceptions.printStackTrace(ex);
         }
     }
-    
-    
+
     protected final void actionStatesAtStart() {
         rerun.setEnabled(false);
         rerunDebug.setEnabled(false);
         buildPlan.setEnabled(true);
         stop.setEnabled(true);
-        
+
     }
-    
+
     protected final void actionStatesAtFinish() {
         rerun.setEnabled(true);
         rerunDebug.setEnabled(true);
         stop.setEnabled(false);
     }
-    
+
     @Override
     protected void reassignAdditionalContext(Iterator vals) {
-        rerun = (ReRunAction)vals.next();
-        rerunDebug = (ReRunAction)vals.next();
-        stop = (StopAction)vals.next();
-        buildPlan = (BuildPlanAction)vals.next();
+        rerun = (ReRunAction) vals.next();
+        rerunDebug = (ReRunAction) vals.next();
+        stop = (StopAction) vals.next();
+        buildPlan = (BuildPlanAction) vals.next();
         rerun.setConfig(config);
         rerunDebug.setConfig(config);
         buildPlan.setConfig(config);
         stop.setExecutor(this);
     }
-    
+
     protected final Properties excludeNetBeansProperties(Properties props) {
         Properties toRet = new Properties();
         Enumeration<String> en = (Enumeration<String>) props.propertyNames();
@@ -192,11 +215,11 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
             if (!forbidden.contains(key)) {
                 toRet.put(key, props.getProperty(key));
             }
-            
+
         }
         return toRet;
     }
-    
+
     @Override
     protected final Collection createContext() {
         Collection col = super.createContext();
@@ -206,7 +229,7 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         col.add(buildPlan);
         return col;
     }
-    
+
     @Override
     protected Action[] createNewTabActions() {
         rerun = new ReRunAction(false);
@@ -217,34 +240,35 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
         rerunDebug.setConfig(config);
         buildPlan.setConfig(config);
         stop.setExecutor(this);
-        Action[] actions = new Action[] {
-            rerun, 
+        Action[] actions = new Action[]{
+            rerun,
             rerunDebug,
             buildPlan,
             stop
         };
         return actions;
     }
-    
+
     static class ReRunAction extends AbstractAction {
+
         private RunConfig config;
         private boolean debug;
-        
+
         public ReRunAction(boolean debug) {
-            this.debug  = debug;
-            this.putValue(Action.SMALL_ICON, debug ? 
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) : //NOI18N
-                new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));//NOI18N
+            this.debug = debug;
+            this.putValue(Action.SMALL_ICON, debug ? new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refreshdebug.png")) : //NOI18N
+                    new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/refresh.png")));//NOI18N
+
             putValue(Action.NAME, debug ? NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Rerun_extra") : NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Rerun"));
-            putValue(Action.SHORT_DESCRIPTION, debug ? NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun_Extra"): NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun"));
+            putValue(Action.SHORT_DESCRIPTION, debug ? NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun_Extra") : NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Rerun"));
             setEnabled(false);
-            
+
         }
-        
+
         void setConfig(RunConfig config) {
             this.config = config;
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             if (debug) {
                 RunGoalsPanel pnl = new RunGoalsPanel();
@@ -264,49 +288,67 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
                 RunConfig newConfig = config;
                 RunUtils.executeMaven(newConfig);
             }
-            //TODO the waiting on tasks won't work..
+        //TODO the waiting on tasks won't work..
         }
     }
-    
+
     static class StopAction extends AbstractAction {
+
         private AbstractMavenExecutor exec;
+
         StopAction() {
             putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/stop.gif"))); //NOi18N
+
             putValue(Action.NAME, NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Stop_execution"));
             putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Stop_Execution"));
             setEnabled(false);
         }
-        
+
         void setExecutor(AbstractMavenExecutor ex) {
             exec = ex;
         }
+
         public void actionPerformed(ActionEvent e) {
             exec.cancel();
         }
     }
-     class BuildPlanAction extends AbstractAction {
+
+    static class BuildPlanAction extends AbstractAction {
+
+        private MavenEmbedder embedder;
         private RunConfig config;
         private MavenBuildPlanSupport mbps;
+
         BuildPlanAction() {
             putValue(Action.SMALL_ICON, new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/netbeans/execute/buildplangoals.png"))); //NOi18N
+
             putValue(Action.NAME, NbBundle.getMessage(AbstractMavenExecutor.class, "TXT_Build_Plan"));
             putValue(Action.SHORT_DESCRIPTION, NbBundle.getMessage(AbstractMavenExecutor.class, "TIP_Build_Plan_tip"));
-            mbps= Lookup.getDefault().lookup(MavenBuildPlanSupport.class);
+            mbps = Lookup.getDefault().lookup(MavenBuildPlanSupport.class);
             setEnabled(false);
         }
 
         @Override
         public boolean isEnabled() {
-            return mbps!=null && embedder!=null&& super.isEnabled();
+            return mbps != null &&  super.isEnabled();
         }
-        
-        void setConfig(RunConfig config) {
+
+        public void setConfig(RunConfig config) {
             this.config = config;
         }
+
+        public void setEmbedder(MavenEmbedder embedder) {
+            this.embedder = embedder;
+            setEnabled(embedder != null);
+        }
+
         public void actionPerformed(ActionEvent e) {
             //
-           
-           mbps.openBuildPlanView(embedder,config.getProject().getOriginalMavenProject(), config.getGoals().toArray(new String[0]));
+            if (embedder != null && config != null) {
+                mbps.openBuildPlanView(embedder,
+                        config.getProject().getOriginalMavenProject(),
+                        config.getGoals().toArray(new String[0]));
+            }
         }
     }
 }

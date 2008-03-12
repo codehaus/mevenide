@@ -88,11 +88,13 @@ public class LifecycleNode extends AbstractNode {
         try {
             synchronized (embedder) {
                 NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
-
+                if(buildPlanner.getMavenSession()==null ){
+                 return Children.LEAF;
+                }
                 List<String> list = Arrays.asList(tasks);
 
                 BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, nmp, buildPlanner.getMavenSession());
-
+                
                 BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
 
 
@@ -100,9 +102,9 @@ public class LifecycleNode extends AbstractNode {
             }
         } catch (LifecycleLoaderException ex) {
             Exceptions.printStackTrace(ex);
-        } catch (LifecycleSpecificationException ex) {
-            Exceptions.printStackTrace(ex);
         } catch (LifecyclePlannerException ex) {
+            Exceptions.printStackTrace(ex);
+        } catch (LifecycleSpecificationException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
