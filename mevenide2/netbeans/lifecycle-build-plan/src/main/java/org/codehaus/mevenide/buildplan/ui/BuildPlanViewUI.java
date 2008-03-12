@@ -22,7 +22,7 @@ import java.util.List;
 import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
-import org.codehaus.mevenide.buildplan.nodes.MavenProjectNode;
+import org.codehaus.mevenide.buildplan.nodes.LifecycleNode;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -67,7 +67,7 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
             ReactorManager rm = new ReactorManager(list, ReactorManager.FAIL_FAST);
             List<MavenProject> sortedProjects = rm.getSortedProjects();
             for (MavenProject mavenProject : sortedProjects) {
-                children.add(new Node[]{new MavenProjectNode(planView.getEmbedder(),
+                children.add(new Node[]{new LifecycleNode(planView.getEmbedder(),
                         mavenProject, planView.getTasks())});
             }
 

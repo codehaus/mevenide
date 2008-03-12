@@ -19,6 +19,7 @@ package org.codehaus.mevenide.buildplan.nodes;
 import java.awt.Image;
 import java.util.Arrays;
 import java.util.List;
+import javax.swing.Action;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.lifecycle.LifecycleLoaderException;
 import org.apache.maven.lifecycle.LifecycleSpecificationException;
@@ -36,6 +37,7 @@ import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
+import org.openide.util.actions.SystemAction;
 
 /**
  *
@@ -61,6 +63,18 @@ public class LifecycleNode extends AbstractNode {
     public Image getOpenedIcon(int arg0) {
         return getIcon(arg0);
     }
+
+    @Override
+    public Action[] getActions(boolean arg0) {
+        return new Action[]{};
+    }
+
+    @Override
+    public String getHtmlDisplayName() {
+        return getDisplayName()+" : <b>"+nmp.getName()+" ("+nmp.getPackaging()+")";
+    }
+
+    
 
     private static class PhaseChildern extends Children.Keys<String> {
 
