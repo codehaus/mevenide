@@ -19,10 +19,12 @@ package org.codehaus.mevenide.buildplan.nodes;
 import java.awt.Image;
 import java.util.List;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -50,7 +52,7 @@ public class NodeUtils {
         return nd;
     }
 
-    public static Children createBuildPlanChildren(final  MavenEmbedder embedder,
+    public static Children createBuildPlanChildren(final MavenEmbedder embedder,
             final List<MavenProject> mps, final String... tasks) {
         final Children.Array array = new Children.Array();
         final Node loadingNode = createLoadingNode();
@@ -60,14 +62,18 @@ public class NodeUtils {
         RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
-
-                for (MavenProject mp : mps) {
-                   array.add(new Node[]{new LifecycleNode(embedder, mp,
-                            tasks)
-                        }); 
+                try {
+                    ReactorManager rm = new ReactorManager(mps, ReactorManager.FAIL_FAST);
+                    List<MavenProject> sortedProjects = rm.getSortedProjects();
+                    for (MavenProject mp : sortedProjects) {
+                        array.add(new Node[]{new LifecycleNode(embedder, mp,
+                                    tasks)
+                                });
+                    }
+                } catch (Exception e) {
+                    Exceptions.printStackTrace(e);
                 }
 
-                
                 array.remove(new Node[]{loadingNode});
 
 
