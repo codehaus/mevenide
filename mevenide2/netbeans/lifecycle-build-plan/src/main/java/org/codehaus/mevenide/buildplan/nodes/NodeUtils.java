@@ -66,11 +66,6 @@ public class NodeUtils {
                 array.add(new Node[]{new LifecycleNode(embedder, mp,
                             tasks)
                         });
-
-                Collection<MavenProject> subProjects = BuildPlanUtil.getSubProjects(mp);
-                if (subProjects.size() > 0) {
-                    array.add(new Node[]{new ModulesNode(embedder,subProjects, tasks)});
-                }
                 array.remove(new Node[]{loadingNode});
 
 
