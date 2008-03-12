@@ -30,7 +30,11 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanGroup;
 import org.codehaus.mevenide.buildplan.BuildPlanUtil;
 import org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner;
+import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
+import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
+import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
+import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -98,6 +102,10 @@ public class LifecycleNode extends AbstractNode {
     public static Children createChildern(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
 
 
+        AggregateProgressHandle handle = AggregateProgressFactory.createSystemHandle("Constructing Build Plan", new ProgressContributor[0], null, null);
+        handle.setInitialDelay(2000);
+        handle.start();
+        ProgressTransferListener.setAggregateHandle(handle);
         try {
             synchronized (embedder) {
                 NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
@@ -121,6 +129,9 @@ public class LifecycleNode extends AbstractNode {
             Exceptions.printStackTrace(ex);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
+        } finally {
+            ProgressTransferListener.clearAggregateHandle();
+            handle.finish();
         }
         return new Children.Array();
     }
