@@ -17,13 +17,18 @@
 package org.codehaus.mevenide.buildplan.ui;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.List;
+import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanView;
-import org.codehaus.mevenide.buildplan.nodes.NodeUtils;
+import org.codehaus.mevenide.buildplan.nodes.MavenProjectNode;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
+import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
@@ -51,7 +56,28 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
     }
 
     public void buildNodeView() {
-        final Children children = NodeUtils.createBuildPlanChildren(planView.getEmbedder(),planView.getProject(), planView.getTasks());
+        final Children.Array children = new Children.Array();
+        
+        
+        List<MavenProject> list=new ArrayList<MavenProject>(); 
+        list.add(planView.getProject());
+        list.addAll(planView.getProject().getCollectedProjects());
+        try {
+
+            ReactorManager rm = new ReactorManager(list, ReactorManager.FAIL_FAST);
+            List<MavenProject> sortedProjects = rm.getSortedProjects();
+            for (MavenProject mavenProject : sortedProjects) {
+                children.add(new Node[]{new MavenProjectNode(planView.getEmbedder(),
+                        mavenProject, planView.getTasks())});
+            }
+
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        } 
+        
+        
+        
+        
         final AbstractNode node = new AbstractNode(children) {
 
             @Override
