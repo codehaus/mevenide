@@ -17,10 +17,9 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import java.util.Collection;
+import java.util.List;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.buildplan.BuildPlanUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -52,7 +51,7 @@ public class NodeUtils {
     }
 
     public static Children createBuildPlanChildren(final  MavenEmbedder embedder,
-            final MavenProject mp, final String... tasks) {
+            final List<MavenProject> mps, final String... tasks) {
         final Children.Array array = new Children.Array();
         final Node loadingNode = createLoadingNode();
         array.add(new Node[]{loadingNode});
@@ -62,10 +61,13 @@ public class NodeUtils {
 
             public void run() {
 
-               
-                array.add(new Node[]{new LifecycleNode(embedder, mp,
+                for (MavenProject mp : mps) {
+                   array.add(new Node[]{new LifecycleNode(embedder, mp,
                             tasks)
-                        });
+                        }); 
+                }
+
+                
                 array.remove(new Node[]{loadingNode});
 
 
