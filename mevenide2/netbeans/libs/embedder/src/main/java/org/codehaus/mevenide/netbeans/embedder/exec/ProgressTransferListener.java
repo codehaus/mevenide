@@ -44,15 +44,6 @@ public class ProgressTransferListener implements TransferListener {
         handleRef.set(hndl);
     }
     
-    private AggregateProgressHandle getHandle() {
-        if (handleRef.get() == null) {
-            handleRef.set(AggregateProgressFactory.createHandle("Fallback", new ProgressContributor[0], null, null));
-            handleRef.get().start();
-            //TODO just a fallback.. shall not happen..
-        }
-        return handleRef.get();
-    }
-    
     public static void clearAggregateHandle() {
         handleRef.remove();
         contribRef.remove();
