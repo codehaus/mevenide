@@ -76,6 +76,7 @@ public class MavenSettingsGrammar extends AbstractSchemaBasedGrammar {
         return Collections.EMPTY_LIST;
     }
 
+    @Override
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
         if (path.endsWith("releases/updatePolicy") || //NOI18N
                 path.endsWith("snapshots/updatePolicy")) { //NOI18N

@@ -46,6 +46,7 @@ public class MavenNbmGrammar extends AbstractSchemaBasedGrammar {
     }
     
 
+    @Override
     protected Enumeration getDynamicValueCompletion(String path, HintContext hintCtx, Element lowestParent) {
         if ("/nbm/dependencies/dependency/type".equals(path)) { //NOI18N
             return createTextValueList(new String[] {
