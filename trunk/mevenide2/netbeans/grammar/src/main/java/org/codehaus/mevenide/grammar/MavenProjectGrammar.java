@@ -24,7 +24,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,17 +34,15 @@ import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.repository.metadata.Metadata;
 import org.apache.maven.artifact.repository.metadata.Versioning;
 import org.apache.maven.artifact.repository.metadata.io.xpp3.MetadataXpp3Reader;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.util.IOUtil;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -224,6 +221,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         }
         if (path.endsWith("dependencies/dependency/version") || //NOI18N
             path.endsWith("plugins/plugin/version") || //NOI18N
+            path.endsWith("extensions/extension/version") || //NOI18N
             path.endsWith("/project/parent/version")) { //NOI18N
             
             //poor mans solution, just check local repository for possible versions..
@@ -236,31 +234,14 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             ArtifactInfoHolder hold = findPluginInfo(previous, null, false);
             if (hold.getGroupId() != null && hold.getArtifactId() != null) {
-                File lev1 = new File(EmbedderFactory.getOnlineEmbedder().getLocalRepository().getBasedir(), hold.getGroupId().replace('.', File.separatorChar));
-                File dir = new File(lev1, hold.getArtifactId());
-                File[] versions = dir.listFiles(new FileFilter() {
-                    public boolean accept(File pathname) {
-                        if (pathname.isDirectory()) {
-                            File[] subdirs = pathname.listFiles(new FileFilter() {
-                                public boolean accept(File pathname) {
-                                    return  pathname.isDirectory();
-                                }
-                            });
-                            return subdirs.length == 0;
-                        }
-                        return false;
-                    }
-                });
+                List<NBVersionInfo> versions = RepositoryQueries.getVersions(hold.getGroupId(), hold.getArtifactId());
                 Set<String> verStrings = new HashSet<String>();
                 if (versions != null) {
-                    for (int i = 0; i < versions.length; i++) {
-                        if (versions[i].getName().startsWith(virtualTextCtx.getCurrentPrefix())) {
-                            verStrings.add(versions[i].getName());
+                    for (NBVersionInfo info : versions) {
+                        if (info.getVersion().startsWith(virtualTextCtx.getCurrentPrefix())) {
+                            verStrings.add(info.getVersion());
                         }
                     }
-                }
-                if (path.endsWith("plugins/plugin/version")) { //NOI18N
-                    verStrings.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginVersions(hold.getGroupId(), hold.getArtifactId())));
                 }
                 Collection elems = new ArrayList();
                 for (String vers : verStrings) {
@@ -270,7 +251,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(elems);
             }
         }
-        if (path.endsWith("dependencies/dependency/groupId")) { //NOI18N
+        if (path.endsWith("dependencies/dependency/groupId") || //NOI18N
+            path.endsWith("extensions/extension/groupId")) {    //NOI18N
            
                 Set<String> elems = RepositoryQueries.filterGroupIds(virtualTextCtx.getCurrentPrefix());
                 ArrayList texts = new ArrayList();
@@ -283,7 +265,7 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         if (path.endsWith("plugins/plugin/groupId")) { //NOI18N
             
                 Set<String> elems = RepositoryQueries.filterPluginGroupIds(virtualTextCtx.getCurrentPrefix());
-                elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
+//                elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginGroupIds()));
                 ArrayList texts = new ArrayList();
                 for (String elem : elems) {
                     texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
@@ -291,9 +273,8 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
                 return Collections.enumeration(texts);
            
         }
-        if (path.endsWith("dependencies/dependency/artifactId")) { //NOI18N
-            //poor mans solution, just check local repository for possible versions..
-            // in future would be nice to include remote repositories somehow..
+        if (path.endsWith("dependencies/dependency/artifactId") || //NOI18N
+            path.endsWith("extensions/extension/artifactId")) {    //NOI18N
             Node previous;
             if (virtualTextCtx.getCurrentPrefix().length() == 0) {
                 previous = virtualTextCtx.getPreviousSibling();
@@ -325,15 +306,12 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
             }
             ArtifactInfoHolder hold = findArtifactInfo(previous);
             if (hold.getGroupId() != null) {
-                
-                    Set<String> elems = RepositoryQueries.filterPluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
-                    elems.addAll(getRelevant(virtualTextCtx.getCurrentPrefix(), getCachedPluginArtifactIds(hold.getGroupId())));
-                    ArrayList texts = new ArrayList();
-                    for (String elem : elems) {
-                        texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
-                    }
-                    return Collections.enumeration(texts);
-               
+                Set<String> elems = RepositoryQueries.filterPluginArtifactIds(hold.getGroupId(), virtualTextCtx.getCurrentPrefix());
+                ArrayList texts = new ArrayList();
+                for (String elem : elems) {
+                    texts.add(new MyTextElement(elem, virtualTextCtx.getCurrentPrefix()));
+                }
+                return Collections.enumeration(texts);
             }
         }
         
@@ -469,19 +447,6 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         return Collections.enumeration(toReturn);
     }
     
-    private WeakReference<Set<String>> pluginGroupIdRef = null;
-    private Set<String> getCachedPluginGroupIds() {
-        Set<String> cached = pluginGroupIdRef != null ? pluginGroupIdRef.get() :null;
-        if (cached == null) {
-            File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
-            assert expandedPath != null : "Shall have path expanded.."; //NOI18N
-            cached = new HashSet<String>();
-            checkFolder(expandedPath, "", cached); //NOI18N
-            pluginGroupIdRef = new WeakReference<Set<String>>(cached);
-        }
-        return cached;
-    }
-    
     private void checkFolder(File parent, String groupId, Set<String> list) {
         File[] files = parent.listFiles();
         boolean hasFile = false;
@@ -498,60 +463,6 @@ public class MavenProjectGrammar extends AbstractSchemaBasedGrammar {
         if (hasFile) {
             list.add(groupId);
         }
-    }
-    
-    private Set<String> getRelevant(String prefix, Set<String> list) {
-        Set<String> toRet = new HashSet<String>();
-        for (String val : list) {
-            if (val.startsWith(prefix)) {
-                toRet.add(val);
-            }
-        }
-        return toRet;
-    }
-
-    private Set<String> getCachedPluginArtifactIds(String groupId) {
-        File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
-        assert expandedPath != null : "Shall have path expanded.."; //NOI18N
-        File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
-        File[] files = folder.listFiles();
-        if (files == null) {
-            //#102112 - the plugin group is not in our cache.
-            return Collections.emptySet();
-        }
-        Set<String> toRet = new HashSet<String>();
-        Pattern patt = Pattern.compile("([a-zA-Z\\-]*)\\-[0-9]+(.*)"); //NOI18N
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile()) {
-                Matcher match = patt.matcher(files[i].getName());
-                if (match.matches()) {
-                    toRet.add(match.group(1));
-                }
-            }
-        }
-        return toRet;
-    }
-    
-    private Set<String> getCachedPluginVersions(String groupId, String artifactId) {
-        File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
-        assert expandedPath != null : "Shall have path expanded.."; //NOI18N
-        File folder = new File(expandedPath, groupId.replace('.', File.separatorChar));
-        File[] files = folder.listFiles();
-        if (files == null) {
-            //#102112 - the plugin group is not in our cache.
-            return Collections.emptySet();
-        }
-        Set<String> toRet = new HashSet<String>();
-        for (int i = 0; i < files.length; i++) {
-            if (files[i].isFile() && files[i].getName().startsWith(artifactId)) {
-                String vers = files[i].getName().substring(artifactId.length() + 1);
-                if (vers.endsWith(".xml")) { //NOI18N
-                    vers = vers.substring(0, vers.length() - ".xml".length()); //NOI18N
-                }
-                toRet.add(vers);
-            }
-        }
-        return toRet;
     }
     
     private static class ArtifactInfoHolder  {
