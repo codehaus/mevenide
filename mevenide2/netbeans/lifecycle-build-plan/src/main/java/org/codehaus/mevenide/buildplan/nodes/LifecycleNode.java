@@ -53,8 +53,8 @@ public class LifecycleNode extends AbstractNode {
     public LifecycleNode(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
         super(createChildern(embedder, nmp, tasks));
         this.nmp = nmp;
-        setDisplayName(NbBundle.getMessage(LifecycleNode.class, "LBL_Lifecycle"));
-        setShortDescription(nmp.getDescription());
+        setDisplayName(nmp.getName()+" ("+nmp.getPackaging()+")");
+        setShortDescription(NbBundle.getMessage(LifecycleNode.class, "LBL_Lifecycle",getDisplayName()) );
     }
 
     @Override
@@ -72,12 +72,7 @@ public class LifecycleNode extends AbstractNode {
         return new Action[]{};
     }
 
-    @Override
-    public String getHtmlDisplayName() {
-        return getDisplayName()+" : <b>"+nmp.getName()+" ("+nmp.getPackaging()+")";
-    }
-
-    
+     
 
     private static class PhaseChildern extends Children.Keys<String> {
 
