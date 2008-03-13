@@ -114,8 +114,7 @@ public final class EmbedderFactory {
            
             //TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
-            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
-            File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
+            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
             
             //validating  Configuration
@@ -186,8 +185,7 @@ public final class EmbedderFactory {
             
             //TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
-            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
-            File userSettingsPath = new File(userLoc, "settings.xml"); //NOI18N
+            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
             
             //validating  Configuration
@@ -321,7 +319,7 @@ public final class EmbedderFactory {
                     ex.printStackTrace();
                 }
                 
-                 desc = plexusContainer.getComponentDescriptor("org.apache.maven.lifecycle.plan.BuildPlanner");
+                desc = plexusContainer.getComponentDescriptor("org.apache.maven.lifecycle.plan.BuildPlanner");
                 desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner"); //NOI18N
                 try {
                     PlexusConfiguration oldConf = desc.getConfiguration();
@@ -418,7 +416,7 @@ public final class EmbedderFactory {
         private FileObject dir;
 
         public SettingsFileListener() {
-            File userLoc = new File(System.getProperty("user.home"), ".m2");
+            File userLoc = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE.getParentFile();
             try {
 
                 dir = FileUtil.createFolder(userLoc);
