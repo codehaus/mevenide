@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.swing.Action;
 import org.apache.maven.embedder.MavenEmbedder;
+import org.apache.maven.execution.MavenSession;
 import org.apache.maven.lifecycle.LifecycleLoaderException;
 import org.apache.maven.lifecycle.LifecycleSpecificationException;
 import org.apache.maven.lifecycle.plan.BuildPlan;
@@ -102,20 +103,19 @@ public class LifecycleNode extends AbstractNode {
         handle.start();
         ProgressTransferListener.setAggregateHandle(handle);
         try {
-            synchronized (embedder) {
-                NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
-                if(buildPlanner.getMavenSession()==null ){
-                 return Children.LEAF;
-                }
-                List<String> list = Arrays.asList(tasks);
-
-                BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, nmp, buildPlanner.getMavenSession());
-                
-                BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
-
-
-                return new PhaseChildern(bpg);
+            NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
+            MavenSession session = buildPlanner.getMavenSession();
+            if (session == null) {
+                return Children.LEAF;
             }
+            List<String> list = Arrays.asList(tasks);
+
+            BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, nmp, session);
+
+            BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
+
+
+            return new PhaseChildern(bpg);
         } catch (LifecycleLoaderException ex) {
             Exceptions.printStackTrace(ex);
         } catch (LifecyclePlannerException ex) {
