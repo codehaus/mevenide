@@ -218,7 +218,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
 
                         } else {
                              LOGGER.finer("Indexing Local Repository :"+repo.getId());//NOI18N
-                            indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, false));
+                            indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, false), true);
                         }
 
                     } finally {
@@ -257,7 +257,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         return null;
                     }
 
-                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, true));
+                    indexer.scan(indexingContext, new RepositoryIndexerListener(indexer, indexingContext, true), true);
                     indexer.removeIndexingContext(indexingContext, false);
                     return null;
                 }
@@ -366,7 +366,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         return filterGroupIds( "", repos);
     }
 
-    public Set<String> filterGroupIds(final String prefix, List<RepositoryInfo> repos) {
+    public Set<String> filterGroupIds(final String prefix, final List<RepositoryInfo> repos) {
         final Set<String> groups = new TreeSet<String>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
@@ -374,10 +374,37 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
 
                 public Object run() throws Exception {
                     checkIndexAvailability(allrepos);
-
                     loadIndexingContext(allrepos); 
+                    List<RepositoryInfo> slowCheck = new ArrayList<RepositoryInfo>();
+                    for (RepositoryInfo repo : repos) {
+                        boolean unload = true;
+                        try {
+                            IndexingContext context = indexer.getIndexingContexts().get(repo.getId());
+                            Set<String> all = indexer.getAllGroups(context);
+                            if (all.size() > 0) {
+                                if (prefix.length() == 0) {
+                                    groups.addAll(all);
+                                } else {
+                                    for (String gr : all) {
+                                        if (gr.startsWith(prefix)) {
+                                            groups.add(gr);
+                                        }
+                                    }
+                                }
+                            } else {
+                                slowCheck.add(repo);
+                                unload = false;
+                            }
+                        } finally {
+                            if (unload) {
+                                unloadIndexingContext(repo);
+                            }
+                        }
+                    }
+                    
+                    final RepositoryInfo[] slowrepos = slowCheck.toArray(new RepositoryInfo[slowCheck.size()]);
+                    
                     try {
-
                         BooleanQuery bq = new BooleanQuery();
                         bq.add(new BooleanClause(new PrefixQuery(new Term(ArtifactInfo.UINFO, prefix)), BooleanClause.Occur.MUST));
 
@@ -391,7 +418,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                                 bq);
                         groups.addAll(searchGrouped.keySet());
                     } finally {
-                        unloadIndexingContext(allrepos);
+                        unloadIndexingContext(slowrepos);
                     }
                     return null;
                 }
