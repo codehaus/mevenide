@@ -37,8 +37,8 @@ import org.apache.maven.embedder.DefaultConfiguration;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.embedder.MavenEmbedderException;
 import org.apache.maven.embedder.MavenEmbedderLogger;
+import org.apache.maven.extension.ExtensionManager;
 import org.apache.maven.lifecycle.LifecycleExecutor;
-import org.apache.maven.lifecycle.plan.BuildPlanner;
 import org.apache.maven.profiles.DefaultProfileManager;
 import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.profiles.activation.DefaultProfileActivationContext;
@@ -139,6 +139,9 @@ public final class EmbedderFactory {
                     try {
                         ComponentDescriptor desc = plexusContainer.getComponentDescriptor(ArtifactFactory.ROLE);
                         desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbArtifactFactory"); //NOI18N
+                        
+                        desc = plexusContainer.getComponentDescriptor("org.apache.maven.extension.ExtensionManager");
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.NbExtensionManager"); //NOI18N
 
                         desc = plexusContainer.getComponentDescriptor(ResolutionListener.ROLE);
                         if (desc == null) {
