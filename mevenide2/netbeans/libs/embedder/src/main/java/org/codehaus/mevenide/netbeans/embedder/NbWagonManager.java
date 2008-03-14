@@ -33,6 +33,7 @@ import org.apache.maven.wagon.TransferFailedException;
 public class NbWagonManager extends DefaultWagonManager {
 
     private List<Artifact> letGoes = new ArrayList<Artifact>();
+    private static ThreadLocal<Boolean> gatesOpened = new ThreadLocal<Boolean>();
 
     /** Creates a new instance of NbWagonManager */
     public NbWagonManager() {
@@ -51,16 +52,28 @@ public class NbWagonManager extends DefaultWagonManager {
             letGoes.remove(artifact);
         }
     }
+    
+    public void openSesame() {
+        synchronized (letGoes) {
+            gatesOpened.set(true);
+        }
+    }
+    
+    public void closeSesame() {
+        synchronized (letGoes) {
+            gatesOpened.set(false);
+        }
+    }
 
     @Override
     public void getArtifact(Artifact artifact, List remoteRepositories) throws TransferFailedException, ResourceDoesNotExistException {
 //        System.out.println("getArtifact1 =" + artifact);
         boolean cont;
         synchronized (letGoes) {
-            cont = letGoes.contains(artifact);
+            cont = gatesOpened.get() || letGoes.contains(artifact);
         }
         if (cont) {
-//            System.out.println("downloading=" + artifact);
+//            System.out.println("downloading1=" + artifact + " gates=" + gatesOpened.get());
             try {
                 super.getArtifact(artifact, remoteRepositories);
             } catch (TransferFailedException exc) {
@@ -80,10 +93,7 @@ public class NbWagonManager extends DefaultWagonManager {
 
     @Override
     public void getArtifact(Artifact artifact, ArtifactRepository repository) throws TransferFailedException, ResourceDoesNotExistException {
-
-//        System.out.println("getArtifact2=" + artifact);
-        artifact.setResolved(true);
-//        original.getArtifact(artifact, repository);
+        this.getArtifact(artifact, repository, true);
     }
 
     @Override
@@ -100,6 +110,10 @@ public class NbWagonManager extends DefaultWagonManager {
 
     @Override
     public void getArtifactMetadata(ArtifactMetadata metadata, ArtifactRepository remoteRepository, File destination, String checksumPolicy) throws TransferFailedException, ResourceDoesNotExistException {
+        if (gatesOpened.get()) {
+//            System.out.println("checking metadata");
+            super.getArtifactMetadata(metadata, remoteRepository, destination, checksumPolicy);
+        }
 //        System.out.println("getartifact metadata=" + metadata);
 //        original.getArtifactMetadata(metadata, remoteRepository, destination, checksumPolicy);
     }
@@ -109,7 +123,12 @@ public class NbWagonManager extends DefaultWagonManager {
             ArtifactRepository repository,
             boolean forceUpdateCheck) throws TransferFailedException, ResourceDoesNotExistException 
     {
-        this.getArtifact(artifact, repository);
+        if (gatesOpened.get()) {
+//            System.out.println("downloading2=" + artifact + " " + " gates=" + gatesOpened.get());
+            super.getArtifact(artifact, repository, forceUpdateCheck);
+        } else {
+            artifact.setResolved(true);
+        }
     }
 
     @Override
@@ -120,9 +139,10 @@ public class NbWagonManager extends DefaultWagonManager {
     {
         boolean cont;
         synchronized (letGoes) {
-            cont = letGoes.contains(artifact);
+            cont = gatesOpened.get() || letGoes.contains(artifact);
         }
         if (cont) {
+//            System.out.println("downloading3=" + artifact + " gates=" + gatesOpened.get());
             try {
                 super.getArtifact(artifact, remoteRepositories, forceUpdateCheck);
             } catch (TransferFailedException exc) {
