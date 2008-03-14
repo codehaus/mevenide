@@ -55,30 +55,23 @@ public class NodeUtils {
     public static Children createBuildPlanChildren(final MavenEmbedder embedder,
             final List<MavenProject> mps, final String... tasks) {
         final Children.Array array = new Children.Array();
-        final Node loadingNode = createLoadingNode();
-        array.add(new Node[]{loadingNode});
 
-
-        RequestProcessor.getDefault().post(new Runnable() {
-
-            public void run() {
-                try {
-                    ReactorManager rm = new ReactorManager(mps, ReactorManager.FAIL_FAST);
-                    List<MavenProject> sortedProjects = rm.getSortedProjects();
-                    for (MavenProject mp : sortedProjects) {
-                        array.add(new Node[]{new LifecycleNode(embedder, mp,
-                                    tasks)
-                                });
-                    }
-                } catch (Exception e) {
-                    Exceptions.printStackTrace(e);
-                }
-
-                array.remove(new Node[]{loadingNode});
-
-
+        try {
+            ReactorManager rm = new ReactorManager(mps, ReactorManager.FAIL_FAST);
+            List<MavenProject> sortedProjects = rm.getSortedProjects();
+            for (MavenProject mp : sortedProjects) {
+                array.add(new Node[]{new LifecycleNode(embedder, mp,
+                            tasks)
+                        });
             }
-        });
+        } catch (Exception e) {
+            Exceptions.printStackTrace(e);
+        }
+
+
+
+
+
         return array;
     }
 }
