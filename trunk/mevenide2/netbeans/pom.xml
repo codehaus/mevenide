@@ -57,7 +57,7 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>l10n-maven-plugin</artifactId>
-                        <version>1.0</version>
+                        <version>1.0-SNAPSHOT</version>
                         <executions>
                             <execution>
                                 <goals>
@@ -73,7 +73,7 @@
                   <plugin>
                       <groupId>org.codehaus.mojo</groupId>
                       <artifactId>l10n-maven-plugin</artifactId>
-                      <version>1.0</version>
+                      <version>1.0-SNAPSHOT</version>
                       <configuration>
                           <aggregate>true</aggregate>
                           <locales>
