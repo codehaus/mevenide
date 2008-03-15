@@ -70,7 +70,7 @@ public class NbWagonManager extends DefaultWagonManager {
 //        System.out.println("getArtifact1 =" + artifact);
         boolean cont;
         synchronized (letGoes) {
-            cont = gatesOpened.get() || letGoes.contains(artifact);
+            cont = areGatesOpened() || letGoes.contains(artifact);
         }
         if (cont) {
 //            System.out.println("downloading1=" + artifact + " gates=" + gatesOpened.get());
@@ -110,7 +110,7 @@ public class NbWagonManager extends DefaultWagonManager {
 
     @Override
     public void getArtifactMetadata(ArtifactMetadata metadata, ArtifactRepository remoteRepository, File destination, String checksumPolicy) throws TransferFailedException, ResourceDoesNotExistException {
-        if (gatesOpened.get()) {
+        if (areGatesOpened()) {
 //            System.out.println("checking metadata");
             super.getArtifactMetadata(metadata, remoteRepository, destination, checksumPolicy);
         }
@@ -123,7 +123,7 @@ public class NbWagonManager extends DefaultWagonManager {
             ArtifactRepository repository,
             boolean forceUpdateCheck) throws TransferFailedException, ResourceDoesNotExistException 
     {
-        if (gatesOpened.get()) {
+        if (areGatesOpened()) {
 //            System.out.println("downloading2=" + artifact + " " + " gates=" + gatesOpened.get());
             super.getArtifact(artifact, repository, forceUpdateCheck);
         } else {
@@ -139,7 +139,7 @@ public class NbWagonManager extends DefaultWagonManager {
     {
         boolean cont;
         synchronized (letGoes) {
-            cont = gatesOpened.get() || letGoes.contains(artifact);
+            cont = areGatesOpened() || letGoes.contains(artifact);
         }
         if (cont) {
 //            System.out.println("downloading3=" + artifact + " gates=" + gatesOpened.get());
@@ -159,5 +159,10 @@ public class NbWagonManager extends DefaultWagonManager {
             artifact.setResolved(true);
         }
 
+    }
+    
+    private boolean areGatesOpened() {
+        Boolean b = gatesOpened.get();
+        return b != null ? b : false;
     }
 }
