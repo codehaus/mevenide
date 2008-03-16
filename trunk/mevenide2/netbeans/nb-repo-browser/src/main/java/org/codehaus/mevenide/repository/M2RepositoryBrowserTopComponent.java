@@ -169,8 +169,8 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
             });
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (rrui.getButton() == ret) {
-          final  RepositoryInfo info = rrui.getRepositoryInfo();
-        RepositoryPreferences.getInstance().addRepositoryInfo(info);
+        final  RepositoryInfo info = rrui.getRepositoryInfo();
+        RepositoryPreferences.getInstance().addOrModifyRepositoryInfo(info);
         manager.setRootContext(createRootNode());
         RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {

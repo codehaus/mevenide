@@ -32,7 +32,6 @@ import org.openide.util.NbPreferences;
 public final class RepositoryPreferences {
 
     private static final RepositoryInfo LOCAL;
-    private static final RepositoryInfo NETBEANS;
     private static final RepositoryInfo CENTRAL;
     private static RepositoryPreferences instance;
     /**
@@ -47,19 +46,17 @@ public final class RepositoryPreferences {
     static {
         LOCAL = new RepositoryInfo(LOCAL_REPO_ID, TYPE_NEXUS, "Local Repository",
                 EmbedderFactory.getProjectEmbedder().getLocalRepository().getBasedir(),null, null);//NOI18N
-        NETBEANS = new RepositoryInfo("netbeans", TYPE_NEXUS, "Netbeans Repository",null,
-                "http://deadlock.netbeans.org/maven2/",
-                "http://deadlock.netbeans.org/maven2/.index/netbeans/");//NOI18N
         CENTRAL = new RepositoryInfo("central", TYPE_NEXUS, "Central  Repository",null,
                 "http://repo1.maven.org/maven2",
                 "http://repo1.maven.org/maven2/.index/");//NOI18N
     }
-    private String KEY_ID = "repository.id";//NOI18N
-    private String KEY_TYPE = "repository.type";//NOI18N
-    private String KEY_NAME = "repository.name";//NOI18N
-    private String KEY_PATH = "repository.path";//NOI18N
-    private String KEY_INDEX_URL = "repository.index.url";//NOI18N
-    private String KEY_REPO_URL = "repository.repo.url";//NOI18N
+    private static final String KEY_ID = "repository.id";//NOI18N
+    private static final String KEY_TYPE = "repository.type";//NOI18N
+    private static final String KEY_NAME = "repository.name";//NOI18N
+    private static final String KEY_PATH = "repository.path";//NOI18N
+    private static final String KEY_INDEX_URL = "repository.index.url";//NOI18N
+    private static final String KEY_REPO_URL = "repository.repo.url";//NOI18N
+    private static final String KEY_REMOVED = "repository.removed"; //NOI18N
     /*index settings */
     public static final String PROP_INDEX_FREQ = "indexUpdateFrequency"; //NOI18N
     public static final String PROP_LAST_INDEX_UPDATE = "lastIndexUpdate"; //NOI18N
@@ -82,10 +79,8 @@ public final class RepositoryPreferences {
             //not very nice but need the repos to be inserted when not present
             // and to to overwrite potencial edits.
             // still not clear how to allow people to delete central or netbeans
-            instance.addRepositoryInfo(LOCAL);
-            instance.addRepositoryInfo(CENTRAL);
-            instance.addRepositoryInfo(NETBEANS);
-            
+            instance.addDefaultRepositoryInfo(LOCAL);
+            instance.addDefaultRepositoryInfo(CENTRAL);
         }
         return instance;
     }
@@ -122,26 +117,67 @@ public final class RepositoryPreferences {
         }
         return toRet;
     }
-    /*prevent concurrent access*/
 
-    public synchronized void addRepositoryInfo(RepositoryInfo info) {
-        if (getRepositoryInfoById(info.getId()) == null) {
-            Preferences pref = getPreferences();
-            pref.put(KEY_ID + "." + info.getId(), info.getId());
-            pref.put(KEY_TYPE + "." + info.getId(), info.getType());
-            pref.put(KEY_NAME + "." + info.getId(), info.getName());
-            if (info.getRepositoryPath() != null) {
-                pref.put(KEY_PATH+ "." + info.getId(), info.getRepositoryPath());
-            }
-            if (info.getRepositoryUrl() != null) {
-                pref.put(KEY_REPO_URL + "." + info.getId(), info.getRepositoryUrl());
-            }
-            if (info.getIndexUpdateUrl() != null) {
-                pref.put(KEY_INDEX_URL + "." + info.getId(), info.getIndexUpdateUrl());
-            }
+    /**
+     * 
+     * @param info
+     */
+    public synchronized void addOrModifyRepositoryInfo(RepositoryInfo info) {
+        Preferences pref = getPreferences();
+        pref.put(KEY_ID + "." + info.getId(), info.getId());
+        pref.put(KEY_TYPE + "." + info.getId(), info.getType());
+        pref.put(KEY_NAME + "." + info.getId(), info.getName());
+        if (info.getRepositoryPath() != null) {
+            pref.put(KEY_PATH + "." + info.getId(), info.getRepositoryPath());
+        } else {
+            pref.remove(KEY_PATH + "." + info.getId());
+        }
+        if (info.getRepositoryUrl() != null) {
+            pref.put(KEY_REPO_URL + "." + info.getId(), info.getRepositoryUrl());
+        } else {
+            pref.remove(KEY_REPO_URL + "." + info.getId());
+        }
+        if (info.getIndexUpdateUrl() != null) {
+            pref.put(KEY_INDEX_URL + "." + info.getId(), info.getIndexUpdateUrl());
+        } else {
+            pref.remove(KEY_INDEX_URL + "." + info.getId());
+        }
+        pref.remove(KEY_REMOVED + "." + info.getId());
         //todo fire repository added
+    }
+    
+    /**
+     * To be used from modules adding default instances of repositories.
+     * Such repository will only be really added if not present yet and not removed by user.
+     * @param info
+     */
+    public synchronized void addDefaultRepositoryInfo(RepositoryInfo info) {
+        Preferences pref = getPreferences();
+        if (pref.getBoolean(KEY_REMOVED + "." + info.getId(), false)) {
+            //user removed the setting.
+            return;
+        }
+        if (getRepositoryInfoById(info.getId()) != null) {
+            //user possibly changed the setting..
+            return;
+        }
+        addOrModifyRepositoryInfo(info);
+    }
+    
+    public void removeRepositoryInfo(RepositoryInfo info) {
+        if (getRepositoryInfoById(info.getId()) != null) {
+            Preferences pref = getPreferences();
+            pref.remove(KEY_ID + "." + info.getId());
+            pref.remove(KEY_TYPE + "." + info.getId());
+            pref.remove(KEY_NAME + "." + info.getId());
+            pref.remove(KEY_PATH + "." + info.getId());
+            pref.remove(KEY_REPO_URL + "." + info.getId());
+            pref.remove(KEY_INDEX_URL + "." + info.getId());
+            pref.putBoolean(KEY_REMOVED + "." + info.getId(), true);
         }
     }
+
+    
 
     public void setIndexUpdateFrequency(int fr) {
         getPreferences().putInt(PROP_INDEX_FREQ, fr);

@@ -129,7 +129,7 @@ public class ModInstall extends ModuleInstall {
                                         RepositoryPreferences.TYPE_NEXUS, 
                                         rep.getId() + " " + NbBundle.getMessage(ModInstall.class, "LBL_REPOSITORY"),//NOI18N
                                         null, rep.getUrl(), null);
-                                RepositoryPreferences.getInstance().addRepositoryInfo(ri);
+                                RepositoryPreferences.getInstance().addOrModifyRepositoryInfo(ri);
                             }
                         }
                     }

@@ -3,6 +3,8 @@ package org.codehaus.mevenide.netbeans.apisupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.openide.modules.ModuleInstall;
 
 /**
@@ -37,6 +39,16 @@ public class Installer extends ModuleInstall {
             new IllegalStateException("Cannot fix dependencies for org.codehaus.mevenide.netbeans.apisupport. " + //NOI18N
                     "Please log a report at http://jira.codehaus.org/browse/MEVENIDE"); //NOI18N
         }
+    }
+
+    @Override
+    public void restored() {
+        super.restored();
+        RepositoryInfo NETBEANS = new RepositoryInfo("netbeans", RepositoryPreferences.TYPE_NEXUS, "Netbeans Repository",null,
+                "http://deadlock.netbeans.org/maven2/", //NOI18N
+                "http://deadlock.netbeans.org/maven2/.index/netbeans/");//NOI18N
+        RepositoryPreferences.getInstance().addDefaultRepositoryInfo(NETBEANS);
+
     }
     
 }
