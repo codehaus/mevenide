@@ -419,10 +419,12 @@ public final class EmbedderFactory {
         private FileObject dir;
 
         public SettingsFileListener() {
-            File userLoc = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE.getParentFile();
+            File userLoc = FileUtil.normalizeFile(MavenEmbedder.DEFAULT_USER_SETTINGS_FILE.getParentFile());
             try {
-
-                dir = FileUtil.createFolder(userLoc);
+                dir = FileUtil.toFileObject(userLoc);
+                if (dir == null) {
+                    dir = FileUtil.createFolder(userLoc);
+                }
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             }
