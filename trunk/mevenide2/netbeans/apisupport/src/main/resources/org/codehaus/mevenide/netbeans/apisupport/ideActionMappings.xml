@@ -31,7 +31,7 @@
         <actionName>nbmreload</actionName>
         <goals>
             <goal>install</goal>
-            <goal>org.codehaus.mevenide:netbeans-nbmreload-plugin:RELEASE:reload</goal>
+            <goal>org.codehaus.mevenide:netbeans-nbmreload-plugin:1.0.1:reload</goal>
         </goals>
     </action>
 
