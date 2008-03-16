@@ -15,21 +15,19 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.j2ee.ejb;
+package org.codehaus.mevenide.netbeans.j2ee.ear;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
-import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
+import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 
@@ -38,21 +36,21 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
  *
  * @author  mkleint
  */
-public class EjbRunCustomizerPanel extends javax.swing.JPanel {
+public class EarRunCustomizerPanel extends javax.swing.JPanel {
 
     private NbMavenProject project;
     private ModelHandle handle;
-    private EjbJar module;
+    private Ear module;
     private ArrayList listeners;
 
     /**
      * Creates new form EjbRunCustomizerPanel
      */
-    public EjbRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
+    public EarRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
         initComponents();
         this.handle = handle;
         this.project = project;
-        module = EjbJar.getEjbJar(project.getProjectDirectory());
+        module = Ear.getEar(project.getProjectDirectory());
         loadComboModel();
         if (module != null) {
             txtJ2EEVersion.setText(module.getJ2eePlatformVersion());
@@ -189,7 +187,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         //#109507 workaround
         POHImpl poh = project.getLookup().lookup(POHImpl.class);
         poh.hackModuleServerChange();
-        EjbModuleProviderImpl moduleProvider = project.getLookup().lookup(EjbModuleProviderImpl.class);
+        EarModuleProviderImpl moduleProvider = project.getLookup().lookup(EarModuleProviderImpl.class);
 
         moduleProvider.loadPersistedServerId();
     }
@@ -207,9 +205,9 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         lblJ2EEVersion = new javax.swing.JLabel();
         txtJ2EEVersion = new javax.swing.JTextField();
 
-        lblServer.setText(org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "LBL_Server")); // NOI18N
+        lblServer.setText(org.openide.util.NbBundle.getMessage(EarRunCustomizerPanel.class, "LBL_Server")); // NOI18N
 
-        lblJ2EEVersion.setText(org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "LBL_J2EE_Version")); // NOI18N
+        lblJ2EEVersion.setText(org.openide.util.NbBundle.getMessage(EarRunCustomizerPanel.class, "LBL_J2EE_Version")); // NOI18N
 
         txtJ2EEVersion.setEditable(false);
 
@@ -274,7 +272,7 @@ public class EjbRunCustomizerPanel extends javax.swing.JPanel {
         @Override
         public String toString() {
             if (MavenDeploymentImpl.DEV_NULL.equals(id)) {
-                return org.openide.util.NbBundle.getMessage(EjbRunCustomizerPanel.class, "MSG_No_Server");
+                return org.openide.util.NbBundle.getMessage(EarRunCustomizerPanel.class, "MSG_No_Server");
             }
             return Deployment.getDefault().getServerInstanceDisplayName(id);
         }
