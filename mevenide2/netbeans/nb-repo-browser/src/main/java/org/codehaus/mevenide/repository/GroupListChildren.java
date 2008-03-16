@@ -73,6 +73,10 @@ public class GroupListChildren extends Children.Keys {
     @Override
     protected void addNotify() {
         super.addNotify();
+        refreshGroups();
+    }
+    
+    public void refreshGroups() {
         setKeys(Collections.singletonList(LOADING));
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {

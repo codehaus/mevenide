@@ -34,6 +34,7 @@ import org.openide.util.NbBundle;
 public class RepositoryRegisterUI extends javax.swing.JPanel {
 
     private static File lastFolder = new File(System.getProperty("user.home")); //NOI18N
+    private boolean modify = false;
 
     /** Creates new form RepositoryRegisterUI */
     public RepositoryRegisterUI() {
@@ -309,9 +310,24 @@ private void txtRepoUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:eve
 private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIndexUrlKeyReleased
     validateInfo();
 }//GEN-LAST:event_txtIndexUrlKeyReleased
-    public void modify(RepositoryInfo info){
-    
+    public void modify(RepositoryInfo info) {
+        modify = true;
+        txtRepoId.setEditable(false);
+        txtRepoId.setText(info.getId());
+        txtRepoName.setText(info.getName());
+        comType.setSelectedItem(info.getType());
+        if (info.isLocal()) {
+            jraLocal.setSelected(true);
+            txtRepoPath.setText(info.getRepositoryPath());
+            jraLocalActionPerformed(null);
+        } else if (info.isRemoteDownloadable()) {
+            jraRemote.setSelected(true);
+            txtRepoUrl.setText(info.getRepositoryUrl());
+            txtIndexUrl.setText(info.getIndexUpdateUrl());
+            jraRemoteActionPerformed(null);
+        }
     }
+    
     public RepositoryInfo getRepositoryInfo(){
       RepositoryInfo info=new RepositoryInfo(txtRepoId.getText().trim(),
               (String)comType.getSelectedItem(),
@@ -330,7 +346,7 @@ private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
             lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error1"));
             return;
         }
-        if (RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim()) != null) {
+        if (!modify && RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim()) != null) {
             btnOK.setEnabled(false);
             lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error2"));
             return;
@@ -369,9 +385,10 @@ private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
         btnOK.setEnabled(true);
     }
 
-    public JButton getButton(){
-     return btnOK;
+    public JButton getButton() {
+        return btnOK;
     }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBrowse;
     private javax.swing.JButton btnOK;
