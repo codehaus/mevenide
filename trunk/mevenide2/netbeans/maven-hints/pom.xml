@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-java-hints</artifactId>
-            <version>${mevenide.nb.release}</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.modules</groupId>
@@ -50,7 +50,7 @@
         <dependency>
             <groupId>org.netbeans.api</groupId>
             <artifactId>org-netbeans-modules-java-source</artifactId>
-            <version>${mevenide.nb.release}</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
