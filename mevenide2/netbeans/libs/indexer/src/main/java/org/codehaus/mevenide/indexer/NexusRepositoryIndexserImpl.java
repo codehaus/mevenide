@@ -377,27 +377,29 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     loadIndexingContext(allrepos); 
                     List<RepositoryInfo> slowCheck = new ArrayList<RepositoryInfo>();
                     for (RepositoryInfo repo : repos) {
-                        boolean unload = true;
-                        try {
-                            IndexingContext context = indexer.getIndexingContexts().get(repo.getId());
-                            Set<String> all = indexer.getAllGroups(context);
-                            if (all.size() > 0) {
-                                if (prefix.length() == 0) {
-                                    groups.addAll(all);
-                                } else {
-                                    for (String gr : all) {
-                                        if (gr.startsWith(prefix)) {
-                                            groups.add(gr);
+                        if (repo.isLocal() || repo.isRemoteDownloadable()) {
+                            boolean unload = true;
+                            try {
+                                IndexingContext context = indexer.getIndexingContexts().get(repo.getId());
+                                Set<String> all = indexer.getAllGroups(context);
+                                if (all.size() > 0) {
+                                    if (prefix.length() == 0) {
+                                        groups.addAll(all);
+                                    } else {
+                                        for (String gr : all) {
+                                            if (gr.startsWith(prefix)) {
+                                                groups.add(gr);
+                                            }
                                         }
                                     }
+                                } else {
+                                    slowCheck.add(repo);
+                                    unload = false;
                                 }
-                            } else {
-                                slowCheck.add(repo);
-                                unload = false;
-                            }
-                        } finally {
-                            if (unload) {
-                                unloadIndexingContext(repo);
+                            } finally {
+                                if (unload) {
+                                    unloadIndexingContext(repo);
+                                }
                             }
                         }
                     }
