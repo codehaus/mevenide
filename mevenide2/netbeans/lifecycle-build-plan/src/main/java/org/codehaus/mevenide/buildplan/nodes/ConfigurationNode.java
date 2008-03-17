@@ -17,32 +17,31 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
-import org.apache.maven.lifecycle.MojoBindingUtils;
+import javax.swing.Action;
 import org.apache.maven.lifecycle.model.MojoBinding;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
-import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.Utilities;
 
 /**
  *
  * @author Anuradha G
  */
-public class MojoNode extends AbstractNode {
+public class ConfigurationNode extends AbstractNode {
 
     private MojoBinding mb;
 
-    public MojoNode(MojoBinding mb) {
-        super(createChildren(mb));
+    public ConfigurationNode(MojoBinding mb) {
+        super(mb.getConfiguration() == null ? Children.LEAF : new ElementChildren((Xpp3Dom) mb.getConfiguration()));
+        setDisplayName(NbBundle.getMessage(ConfigurationNode.class, "LBL_Configuration"));
         this.mb = mb;
-        setDisplayName(MojoBindingUtils.toString(mb));
-        setShortDescription(MojoBindingUtils.toString(mb));
-
     }
 
     @Override
     public Image getIcon(int arg0) {
-        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/mojo.png");
+        return Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/config.png");
     }
 
     @Override
@@ -51,20 +50,7 @@ public class MojoNode extends AbstractNode {
     }
 
     @Override
-    public String getHtmlDisplayName() {
-        StringBuffer buffer = new StringBuffer("<html>");
-        buffer.append(mb.getGroupId()).append(" : ").
-                append(mb.getArtifactId()).append(" : ").
-                append(mb.getVersion() == null ? "" : mb.getVersion() + ":").
-                append("  <b>").append(mb.getGoal());
-        return buffer.append("</html>").toString();
-    }
-
-    public static Children createChildren(MojoBinding mb) {
-        Children.Array array = new Children.Array();
-        
-        array.add(new Node[]{
-            new ExecutionNode(mb.getExecutionId()),new ConfigurationNode(mb)});
-        return array;
+    public Action[] getActions(boolean arg0) {
+        return new Action[0];
     }
 }
