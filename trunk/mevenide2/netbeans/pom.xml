@@ -28,6 +28,7 @@
              <module>continuum</module>
 	     <module>graph</module>
              <module>lifecycle-build-plan</module>
+             <!--module>maven-hints</module-->
           </modules>
        </profile>
       
