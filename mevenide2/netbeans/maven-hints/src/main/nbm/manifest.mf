@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Install: org/codehaus/mevenide/hints/Installer.class
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/hints/Bundle.properties
+OpenIDE-Module-Layer: org/codehaus/mevenide/hints/layer.xml
+AutoUpdate-Show-In-Client: false
