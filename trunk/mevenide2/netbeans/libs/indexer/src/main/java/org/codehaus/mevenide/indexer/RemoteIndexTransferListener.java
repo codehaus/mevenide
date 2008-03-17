@@ -38,19 +38,17 @@ public class RemoteIndexTransferListener implements TransferListener {
     /*Debug*/
 
     private boolean debug;
-     private InputOutput io;
+    private InputOutput io;
     private OutputWriter writer;
-   
+
     public RemoteIndexTransferListener(RepositoryInfo info) {
-        this.handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG")//NII18N
-                + info.getName());
+
         this.info = info;
-        handle.start();
-        handle.switchToIndeterminate();
-        
-         if (debug) {
+
+
+        if (debug) {
             io = IOProvider.getDefault().getIO(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG")//NII18N
-                    +(info.getName()), true);
+                    + (info.getName()), true);
             writer = io.getOut();
         }
     }
@@ -61,38 +59,47 @@ public class RemoteIndexTransferListener implements TransferListener {
 
     public void transferStarted(TransferEvent arg0) {
         long contentLength = arg0.getResource().getContentLength();
-        handle.switchToDeterminate((int) contentLength / 1024);
-        if(debug){
-         writer.println("File Size :"+(int) contentLength / 1024);//NII18N
+        this.handle = ProgressHandleFactory.createHandle(NbBundle.getMessage(RemoteIndexTransferListener.class, "LBL_Transfer_TAG")//NII18N
+                + info.getName());
+        handle.start((int) contentLength / 1024);
+        if (debug) {
+            writer.println("File Size :" + (int) contentLength / 1024);//NII18N
+
         }
     }
 
     public void transferProgress(TransferEvent arg0, byte[] arg1, int arg2) {
         int work = arg2 / 1024;
+        if (handle != null) {
+            handle.progress(lastunit += work);
+        }
+        if (debug) {
+            writer.println("Units completed :" + lastunit);//NII18N
 
-        handle.progress(lastunit += work);
-        if(debug){
-         writer.println("Units completed :"+lastunit);//NII18N
         }
     }
 
     public void transferCompleted(TransferEvent arg0) {
-        handle.finish();
-        if(debug){
-         writer.println("Completed");//NII18N
+        if (handle != null) {
+            handle.finish();
+        }
+        if (debug) {
+            writer.println("Completed");//NII18N
+
         }
     }
 
     public void transferError(TransferEvent arg0) {
-       
-        if(debug){
-         writer.println("Finish with Errors");//NII18N
+
+        if (debug) {
+            writer.println("Finish with Errors");//NII18N
+
         }
     }
 
     public void debug(String arg0) {
-        if(debug){
-         writer.println(arg0);
+        if (debug) {
+            writer.println(arg0);
         }
     }
 }
