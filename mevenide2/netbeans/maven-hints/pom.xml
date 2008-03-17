@@ -29,9 +29,16 @@
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
-            <artifactId>org.netbeans.libs.javacapi</artifactId>
+            <artifactId>org-netbeans-libs-javacapi</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.lang</groupId>
+            <artifactId>javac-api</artifactId>
+            <version>1.6-NETBEANS-${netbeans.release}</version>
+            <scope>provided</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.codehaus.mevenide</groupId>
             <artifactId>nb-project</artifactId>
@@ -45,7 +52,7 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-spi-editor-hints</artifactId>
-            <version>${mevenide.nb.release}</version>
+            <version>${netbeans.release}</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
