@@ -37,6 +37,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.InvalidArtifactRTException;
@@ -49,6 +50,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.indexer.spi.ArchetypeQueries;
 import org.codehaus.mevenide.indexer.spi.BaseQueries;
 import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
+import org.codehaus.mevenide.indexer.spi.ClassesQuery;
 import org.codehaus.mevenide.indexer.spi.DependencyInfoQueries;
 import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -83,7 +85,7 @@ import org.sonatype.nexus.index.updater.IndexUpdater;
  * @author Anuradha G
  */
 public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementation, 
-        BaseQueries, ChecksumQueries, ArchetypeQueries, DependencyInfoQueries {
+        BaseQueries, ChecksumQueries, ArchetypeQueries, DependencyInfoQueries,ClassesQuery {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
@@ -502,6 +504,34 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         String id = groupId + AbstractIndexCreator.FS + artifactId + AbstractIndexCreator.FS;
                         bq.add(new BooleanClause(new PrefixQuery(new Term(ArtifactInfo.UINFO, id)), BooleanClause.Occur.MUST));
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                        infos.addAll(convertToNBVersionInfo(searchResult));
+                    } finally {
+                        unloadIndexingContext(allrepos);
+                    }
+                    return null;
+                }
+            });
+        } catch (MutexException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return infos;
+    }
+    
+    public List<NBVersionInfo> findVersionsByClass(final String className, List<RepositoryInfo> repos) {
+        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
+        try {
+            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+
+                public Object run() throws Exception {
+                    checkIndexAvailability(allrepos);
+                    loadIndexingContext(allrepos);
+                    try {
+                       
+                        
+                       
+                        Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR,
+                                indexer.constructQuery(ArtifactInfo.NAMES, (className)));
                         infos.addAll(convertToNBVersionInfo(searchResult));
                     } finally {
                         unloadIndexingContext(allrepos);

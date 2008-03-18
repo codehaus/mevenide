@@ -23,7 +23,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +30,7 @@ import java.util.TreeSet;
 import org.codehaus.mevenide.indexer.spi.ArchetypeQueries;
 import org.codehaus.mevenide.indexer.spi.BaseQueries;
 import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
+import org.codehaus.mevenide.indexer.spi.ClassesQuery;
 import org.codehaus.mevenide.indexer.spi.DependencyInfoQueries;
 import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
 import org.openide.util.Exceptions;
@@ -198,6 +198,21 @@ public final class RepositoryQueries {
                 ChecksumQueries chq = impl.getCapabilityLookup().lookup(ChecksumQueries.class);
                 if (chq != null) {
                     toRet.addAll(chq.findByMD5(md5, rps));
+                }
+            }
+        }
+        return toRet;
+    }
+    
+    public static List<NBVersionInfo> findVersionsByClass(final String className, RepositoryInfo... repos) {
+        Collection<List<RepositoryInfo>> all = splitReposByType(repos);
+        List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
+        for (List<RepositoryInfo> rps : all) {
+            RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
+            if (impl != null) {
+                ClassesQuery chq = impl.getCapabilityLookup().lookup(ClassesQuery.class);
+                if (chq != null) {
+                    toRet.addAll(chq.findVersionsByClass(className, rps));
                 }
             }
         }
