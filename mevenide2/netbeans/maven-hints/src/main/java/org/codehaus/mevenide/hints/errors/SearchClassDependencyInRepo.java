@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
@@ -139,9 +140,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
     private Collection<NBVersionInfo> filter(NbMavenProject mavProj, List<NBVersionInfo> nbvis) {
 
-        FileObject fo = mavProj.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-
-        Model model = WriterUtils.loadModel(fo);
+       
         Map<String, NBVersionInfo> items = new HashMap<String, NBVersionInfo>();
 
         for (NBVersionInfo info : nbvis) {
@@ -154,8 +153,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 items.put(key, info);
             }
             //check dependency already added
-            List<Dependency> dependencies = model.getDependencies();
-            for (Dependency dependency : dependencies) {
+            List<Artifact> dependencies=new ArrayList<Artifact>();
+            dependencies.addAll(mavProj.getOriginalMavenProject().getCompileArtifacts());
+            for (Artifact dependency : dependencies) {
                 //check group id and ArtifactId 
                 if (dependency.getGroupId() != null && dependency.getGroupId().equals(info.getGroupId())) {
                     if (dependency.getArtifactId() != null && dependency.getArtifactId().equals(info.getArtifactId())) {
