@@ -36,6 +36,7 @@ import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.java.lexer.JavaTokenId;
 import org.netbeans.api.java.source.CompilationInfo;
@@ -51,6 +52,7 @@ import org.netbeans.spi.editor.hints.EnhancedFix;
 import org.netbeans.spi.editor.hints.Fix;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -300,6 +302,11 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         public ChangeInfo implement() throws Exception {
             addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
                     nbvi.getVersion(), nbvi.getType(), null, null);
+            RequestProcessor.getDefault().post(new Runnable() {
+                public void run() {
+                    mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                }
+            });
             return null;
         }
     }
