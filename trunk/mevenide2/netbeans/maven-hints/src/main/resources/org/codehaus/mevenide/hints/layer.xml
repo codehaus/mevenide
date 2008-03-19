@@ -3,9 +3,12 @@
 <filesystem>
     <folder name="org-netbeans-modules-java-hints">
         <folder name="rules">
+            <folder name="errors">
+                <file name="org-codehaus-mevenide-hints-SearchClassDependencyInRepo.instance"/>
+            </folder>
             <folder name="hints">
                 <folder name="general">
-                    <file name="org-codehaus-mevenide-hints-TestMavenHint.instance"/>
+                    <!--file name="org-codehaus-mevenide-hints-TestMavenHint.instance"/-->
                 </folder>
             </folder>
         </folder>

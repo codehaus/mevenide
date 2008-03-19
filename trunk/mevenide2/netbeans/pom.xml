@@ -28,7 +28,7 @@
              <module>continuum</module>
 	     <module>graph</module>
              <module>lifecycle-build-plan</module>
-             <!--module>maven-hints</module-->
+             <module>maven-hints</module>
           </modules>
        </profile>
       
@@ -124,6 +124,8 @@
      <module>archetypeng</module>
      <module>webframeworks</module>
      <!--module>graph</module-->
+      <module>lifecycle-build-plan</module>
+      <!--module>maven-hints</module-->
   </modules>
     <repositories>
         <repository>
