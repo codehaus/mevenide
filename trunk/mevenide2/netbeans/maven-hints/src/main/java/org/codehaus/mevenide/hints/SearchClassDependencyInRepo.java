@@ -144,9 +144,8 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         for (NBVersionInfo info : nbvis) {
             String key = info.getGroupId() 
                     +":"
-                    + info.getArtifactId()
-                    +":"
-                    + info.getVersion();
+                    + info.getArtifactId();
+            
             boolean b = items.containsKey(key);
             if (!b) {
                 items.put(key, info);
