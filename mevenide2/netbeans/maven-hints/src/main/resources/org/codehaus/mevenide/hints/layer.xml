@@ -4,7 +4,7 @@
     <folder name="org-netbeans-modules-java-hints">
         <folder name="rules">
             <folder name="errors">
-                <file name="org-codehaus-mevenide-hints-SearchClassDependencyInRepo.instance"/>
+                <file name="org-codehaus-mevenide-hints-errors-SearchClassDependencyInRepo.instance"/>
             </folder>
             <folder name="hints">
                 <folder name="general">
