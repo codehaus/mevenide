@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.hints;
+package org.codehaus.mevenide.hints.errors;
 
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree.Kind;
@@ -52,6 +52,7 @@ import org.netbeans.spi.editor.hints.EnhancedFix;
 import org.netbeans.spi.editor.hints.Fix;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Exceptions;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
 /**
@@ -273,7 +274,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
     }
 
     public String getDisplayName() {
-        return "Add Class Dependency From Maven Repository";
+        return NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Class_Search_DisplayName");
     }
 
     public void cancel() {
@@ -295,7 +296,10 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         }
 
         public String getText() {
-            return "Add Maven Dependency # " + nbvi.getGroupId() + " : " + nbvi.getArtifactId() + " : " + nbvi.getVersion();
+            return NbBundle.getMessage(SearchClassDependencyInRepo.class,
+                    "LBL_Class_Search_Fix",nbvi.getGroupId()
+                    + " : " + nbvi.getArtifactId()
+                    + " : " + nbvi.getVersion()) ;
 
         }
 
