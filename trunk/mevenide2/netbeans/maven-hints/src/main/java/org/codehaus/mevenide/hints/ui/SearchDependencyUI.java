@@ -52,8 +52,10 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         BeanTreeView beanTreeView = (BeanTreeView) treeView;
         beanTreeView.setPopupAllowed(false);
         beanTreeView.setRootVisible(false);
-
+        addButton.setEnabled(false);
+        
         txtClassName.setText(clazz);
+        txtClassName.selectAll();
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent arg0) {
