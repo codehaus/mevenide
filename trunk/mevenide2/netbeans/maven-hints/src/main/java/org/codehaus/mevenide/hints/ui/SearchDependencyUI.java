@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.hints.ui;
 
+import java.awt.Image;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
+import org.openide.util.Utilities;
 
 /**
  *
@@ -53,7 +55,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         beanTreeView.setPopupAllowed(false);
         beanTreeView.setRootVisible(false);
         addButton.setEnabled(false);
-        
+
         txtClassName.setText(clazz);
         txtClassName.selectAll();
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
@@ -90,13 +92,15 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         return addButton;
     }
     private RequestProcessor.Task task;
+
     public synchronized void load() {
-        if(task!=null && !task.isFinished()){
-         task.cancel();
+        if (task != null && !task.isFinished()) {
+            task.cancel();
         }
-         task= RequestProcessor.getDefault().create(new Runnable() {
- 
+        task = RequestProcessor.getDefault().create(new Runnable() {
+
             public void run() {
+                explorerManager.setRootContext(createLoadingNode());
                 List<NBVersionInfo> infos = RepositoryQueries.findVersionsByClass(txtClassName.getText());
                 Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
 
@@ -119,9 +123,12 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                         array.add(new Node[]{new ArtifactNode(key, map.get(key))});
                     }
                     explorerManager.setRootContext(node);
+                } else {
+                    explorerManager.setRootContext(createEmptyNode());
                 }
             }
         });
+        
         task.run();
     }
 
@@ -183,7 +190,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     }// </editor-fold>//GEN-END:initComponents
 
 private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClassNameKeyReleased
-  load();
+    load();
 }//GEN-LAST:event_txtClassNameKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -195,5 +202,33 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
 
     public ExplorerManager getExplorerManager() {
         return explorerManager;
+    }
+
+    public static Node createLoadingNode() {
+        AbstractNode nd = new AbstractNode(Children.LEAF) {
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/codehaus/mevenide/repository/wait.gif");
+            }
+        };
+        nd.setName("Loading"); //NOI18N
+
+        nd.setDisplayName(NbBundle.getMessage(SearchDependencyUI.class, "Node_Loading"));
+        return nd;
+    }
+
+    public static Node createEmptyNode() {
+        AbstractNode nd = new AbstractNode(Children.LEAF) {
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/codehaus/mevenide/repository/empty.png");
+            }
+        };
+        nd.setName("Empty"); //NOI18N
+
+        nd.setDisplayName(NbBundle.getMessage(SearchDependencyUI.class, "Node_Empty"));
+        return nd;
     }
 }
