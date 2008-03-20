@@ -46,7 +46,10 @@ public class VersionNode extends AbstractNode {
         
             setName(versionInfo.getVersion());
             setDisplayName(versionInfo.getVersion() + " [ " + versionInfo.getType() 
-                    + (versionInfo.getClassifier() != null ? ("," + versionInfo.getClassifier()) : "") + " ]");
+                    + (versionInfo.getClassifier() != null ? ("," + versionInfo.getClassifier()) : "") + " ] -"
+                    + "[ "+versionInfo.getRepoId()+" ]"
+                    
+                    );
         
         setIconBaseWithExtension("org/codehaus/mevenide/hints/DependencyJar.gif"); //NOI18N
     }
