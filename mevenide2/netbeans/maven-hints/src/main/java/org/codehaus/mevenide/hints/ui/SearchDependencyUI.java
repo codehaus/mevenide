@@ -48,6 +48,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     private ExplorerManager explorerManager = new ExplorerManager();
     private JButton addButton = new JButton(NbBundle.getMessage(SearchDependencyUI.class, "BTN_Add"));
     private BeanTreeView beanTreeView;
+
     /** Creates new form SearchDependencyUI */
     public SearchDependencyUI(String clazz) {
         initComponents();
@@ -124,7 +125,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                     for (String key : keyList) {
                         array.add(new Node[]{new ArtifactNode(key, map.get(key))});
                     }
-                    
+
                     beanTreeView.setRootVisible(false);
                     explorerManager.setRootContext(node);
                 } else {
@@ -133,7 +134,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 }
             }
         });
-        
+
         task.run();
     }
 
@@ -216,6 +217,11 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
             public Image getIcon(int arg0) {
                 return Utilities.loadImage("org/codehaus/mevenide/repository/wait.gif");
             }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return getIcon(arg0);
+            }
         };
         nd.setName("Loading"); //NOI18N
 
@@ -229,6 +235,11 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
             @Override
             public Image getIcon(int arg0) {
                 return Utilities.loadImage("org/codehaus/mevenide/repository/empty.png");
+            }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return getIcon(arg0);
             }
         };
         nd.setName("Empty"); //NOI18N
