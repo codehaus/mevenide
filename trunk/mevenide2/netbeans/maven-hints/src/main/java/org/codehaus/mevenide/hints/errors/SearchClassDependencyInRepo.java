@@ -154,6 +154,14 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
 
         Map<String, NBVersionInfo> items = new HashMap<String, NBVersionInfo>();
+        //check dependency already added
+        List<Dependency> dependencies = new ArrayList<Dependency>();
+        MavenProject prj = mavProj.getOriginalMavenProject();
+        if (test) {
+            dependencies.addAll(prj.getTestDependencies());
+        } else {
+            dependencies.addAll(prj.getDependencies());
+        }
 
         for (NBVersionInfo info : nbvis) {
             String key = info.getGroupId() + ":" + info.getArtifactId();
@@ -161,13 +169,6 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             boolean b = items.containsKey(key);
             if (!b) {
                 items.put(key, info);
-            }
-            //check dependency already added
-            List<Dependency> dependencies = new ArrayList<Dependency>();
-            if (test) {
-                dependencies.addAll(mavProj.getOriginalMavenProject().getTestDependencies());
-            } else {
-                dependencies.addAll(mavProj.getOriginalMavenProject().getDependencies());
             }
             for (Dependency dependency : dependencies) {
                 //check group id and ArtifactId and Scope even
