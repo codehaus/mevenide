@@ -99,7 +99,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         if (task != null && !task.isFinished()) {
             task.cancel();
         }
-        task = RequestProcessor.getDefault().create(new Runnable() {
+        task = RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
                 beanTreeView.setRootVisible(true);
@@ -133,9 +133,8 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                     explorerManager.setRootContext(createEmptyNode());
                 }
             }
-        });
+        },100);
 
-        task.run();
     }
 
     public String getClassSearchName() {
@@ -215,7 +214,7 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/repository/wait.gif");
+                return Utilities.loadImage("org/codehaus/mevenide/hints/wait.gif");
             }
 
             @Override
@@ -234,7 +233,7 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
 
             @Override
             public Image getIcon(int arg0) {
-                return Utilities.loadImage("org/codehaus/mevenide/repository/empty.png");
+                return Utilities.loadImage("org/codehaus/mevenide/hints/empty.png");
             }
 
             @Override
