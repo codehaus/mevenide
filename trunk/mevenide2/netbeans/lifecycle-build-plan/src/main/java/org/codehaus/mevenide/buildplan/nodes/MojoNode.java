@@ -62,9 +62,12 @@ public class MojoNode extends AbstractNode {
 
     public static Children createChildren(MojoBinding mb) {
         Children.Array array = new Children.Array();
-        
-        array.add(new Node[]{
-            new ExecutionNode(mb.getExecutionId()),new ConfigurationNode(mb)});
+        Node[] nodes=new Node[mb.getConfiguration()==null? 1:2];
+        nodes[0]=new ExecutionNode(mb);
+        if(mb.getConfiguration()!=null){
+         nodes[1]=new ConfigurationNode(mb);
+        }
+        array.add(nodes);
         return array;
     }
 }
