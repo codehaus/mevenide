@@ -47,11 +47,11 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
 
     private ExplorerManager explorerManager = new ExplorerManager();
     private JButton addButton = new JButton(NbBundle.getMessage(SearchDependencyUI.class, "BTN_Add"));
-
+    private BeanTreeView beanTreeView;
     /** Creates new form SearchDependencyUI */
     public SearchDependencyUI(String clazz) {
         initComponents();
-        BeanTreeView beanTreeView = (BeanTreeView) treeView;
+        beanTreeView = (BeanTreeView) treeView;
         beanTreeView.setPopupAllowed(false);
         beanTreeView.setRootVisible(false);
         addButton.setEnabled(false);
@@ -101,6 +101,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         task = RequestProcessor.getDefault().create(new Runnable() {
 
             public void run() {
+                beanTreeView.setRootVisible(true);
                 explorerManager.setRootContext(createLoadingNode());
                 List<NBVersionInfo> infos = RepositoryQueries.findVersionsByClass(txtClassName.getText());
                 Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
@@ -123,8 +124,11 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                     for (String key : keyList) {
                         array.add(new Node[]{new ArtifactNode(key, map.get(key))});
                     }
+                    
+                    beanTreeView.setRootVisible(false);
                     explorerManager.setRootContext(node);
                 } else {
+                    beanTreeView.setRootVisible(true);
                     explorerManager.setRootContext(createEmptyNode());
                 }
             }
