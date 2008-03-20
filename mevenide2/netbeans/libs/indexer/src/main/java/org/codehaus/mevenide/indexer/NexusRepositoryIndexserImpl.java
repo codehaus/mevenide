@@ -530,7 +530,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         
                        
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR,
-                                indexer.constructQuery(ArtifactInfo.NAMES, (className)));
+                                indexer.constructQuery(ArtifactInfo.NAMES, (className+"*")));
                         infos.addAll(convertToNBVersionInfo(searchResult));
                     } finally {
                         unloadIndexingContext(allrepos);
