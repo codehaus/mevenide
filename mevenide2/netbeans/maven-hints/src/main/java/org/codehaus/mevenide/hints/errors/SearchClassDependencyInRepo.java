@@ -19,20 +19,20 @@ package org.codehaus.mevenide.hints.errors;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.Tree.Kind;
 import com.sun.source.util.TreePath;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -52,6 +52,7 @@ import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.EnhancedFix;
 import org.netbeans.spi.editor.hints.Fix;
 import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
@@ -124,69 +125,64 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         String simpleName = ident.text().toString();
         //copyed from ImportClass-end
+        boolean isTestSource=false;
+        
+        MavenProject mp = mavProj.getOriginalMavenProject();
+        String testSourceDirectory = mp.getBuild().getTestSourceDirectory();
+        File testdir=new File(testSourceDirectory);
 
+        FileObject fo = FileUtil.toFileObject(testdir);
+        
+        isTestSource=FileUtil.isParentOf(fo, fileObject);
+         
+        
+        
         Collection<NBVersionInfo> findVersionsByClass = filter(mavProj,
-                RepositoryQueries.findVersionsByClass(simpleName));
+                RepositoryQueries.findVersionsByClass(simpleName),isTestSource);
 
 
         List<Fix> fixes = new ArrayList<Fix>();
         for (NBVersionInfo nbvi : findVersionsByClass) {
-            fixes.add(new MavenFixImport(mavProj, nbvi));
+            fixes.add(new MavenFixImport(mavProj, nbvi,isTestSource));
         }
 
 
         return fixes;
     }
 
-    private Collection<NBVersionInfo> filter(NbMavenProject mavProj, List<NBVersionInfo> nbvis) {
+    private Collection<NBVersionInfo> filter(NbMavenProject mavProj, List<NBVersionInfo> nbvis, boolean test) {
 
-       
+
         Map<String, NBVersionInfo> items = new HashMap<String, NBVersionInfo>();
 
         for (NBVersionInfo info : nbvis) {
-            String key = info.getGroupId() 
-                    +":"
-                    + info.getArtifactId();
-            
+            String key = info.getGroupId() + ":" + info.getArtifactId();
+
             boolean b = items.containsKey(key);
             if (!b) {
                 items.put(key, info);
             }
             //check dependency already added
-            List<Artifact> dependencies=new ArrayList<Artifact>();
-            dependencies.addAll(mavProj.getOriginalMavenProject().getCompileArtifacts());
-            for (Artifact dependency : dependencies) {
-                //check group id and ArtifactId 
+            List<Dependency> dependencies = new ArrayList<Dependency>();
+            if (test) {
+                dependencies.addAll(mavProj.getOriginalMavenProject().getTestDependencies());
+            } else {
+                dependencies.addAll(mavProj.getOriginalMavenProject().getDependencies());
+            }
+            for (Dependency dependency : dependencies) {
+                //check group id and ArtifactId and Scope even
                 if (dependency.getGroupId() != null && dependency.getGroupId().equals(info.getGroupId())) {
                     if (dependency.getArtifactId() != null && dependency.getArtifactId().equals(info.getArtifactId())) {
-                        return Collections.emptyList();
+                        if(!test &&dependency.getScope() !=null && ("compile".equals(dependency.getScope()))){//NOI18N
+                          return Collections.emptyList();
+                        }
                     }
                 }
             }
 
         }
         List<NBVersionInfo> filterd = new ArrayList<NBVersionInfo>(items.values());
-        Collections.sort(filterd, new Comparator<NBVersionInfo>() {
 
-            public int compare(NBVersionInfo o1, NBVersionInfo o2) {
-                int n = o1.getGroupId().compareTo(o2.getGroupId());
-                if (n != 0) {
-                    return n;
-                }
-
-                n = o1.getArtifactId().compareTo(o2.getArtifactId());
-                if (n != 0) {
-                    return n;
-                }
-
-                n = o1.getVersion().compareTo(o2.getVersion());
-                if (n != 0) {
-                    return n;
-                }
-                return 0;
-            }
-        });
-       
         return filterd;
 
     }
@@ -252,9 +248,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         if (model != null) {
             Dependency dep = PluginPropertyUtils.checkModelDependency(model, group, artifact, true);
             dep.setVersion(version);
-            if (scope != null) {
-                dep.setScope(scope);
-            }
+
+            dep.setScope(scope);
+
             if (type != null) {
                 dep.setType(type);
             }
@@ -285,11 +281,14 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         private NbMavenProject mavProj;
         private NBVersionInfo nbvi;
+        private boolean test;
 
-        public MavenFixImport(NbMavenProject mavProj, NBVersionInfo versionInfo) {
+        public MavenFixImport(NbMavenProject mavProj, NBVersionInfo nbvi, boolean test) {
             this.mavProj = mavProj;
-            this.nbvi = versionInfo;
+            this.nbvi = nbvi;
+            this.test = test;
         }
+       
 
         public CharSequence getSortText() {
             return getText();
@@ -297,16 +296,15 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         public String getText() {
             return NbBundle.getMessage(SearchClassDependencyInRepo.class,
-                    "LBL_Class_Search_Fix",nbvi.getGroupId()
-                    + " : " + nbvi.getArtifactId()
-                    + " : " + nbvi.getVersion()) ;
+                    "LBL_Class_Search_Fix", nbvi.getGroupId() + " : " + nbvi.getArtifactId() + " : " + nbvi.getVersion());
 
         }
 
         public ChangeInfo implement() throws Exception {
             addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
-                    nbvi.getVersion(), nbvi.getType(), null, null);
+                    nbvi.getVersion(), nbvi.getType(), test?"test":null, null);//NOI18N
             RequestProcessor.getDefault().post(new Runnable() {
+
                 public void run() {
                     mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
                 }
