@@ -77,6 +77,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 }
             }
         });
+        explorerManager.setRootContext(createEmptyNode());
         load();
     }
 
