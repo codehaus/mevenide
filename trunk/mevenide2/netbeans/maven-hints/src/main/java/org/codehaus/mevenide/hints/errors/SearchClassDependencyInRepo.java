@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.hints.ui.SearchDependencyUI;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -51,6 +52,8 @@ import org.netbeans.modules.java.hints.spi.ErrorRule.Data;
 import org.netbeans.spi.editor.hints.ChangeInfo;
 import org.netbeans.spi.editor.hints.EnhancedFix;
 import org.netbeans.spi.editor.hints.Fix;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
@@ -125,27 +128,29 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         String simpleName = ident.text().toString();
         //copyed from ImportClass-end
-        boolean isTestSource=false;
-        
+        boolean isTestSource = false;
+
         MavenProject mp = mavProj.getOriginalMavenProject();
         String testSourceDirectory = mp.getBuild().getTestSourceDirectory();
-        File testdir=new File(testSourceDirectory);
+        File testdir = new File(testSourceDirectory);
 
         FileObject fo = FileUtil.toFileObject(testdir);
-        
-        isTestSource=FileUtil.isParentOf(fo, fileObject);
-         
-        
-        
-        Collection<NBVersionInfo> findVersionsByClass = filter(mavProj,
-                RepositoryQueries.findVersionsByClass(simpleName),isTestSource);
 
-
+        isTestSource = FileUtil.isParentOf(fo, fileObject);
         List<Fix> fixes = new ArrayList<Fix>();
-        for (NBVersionInfo nbvi : findVersionsByClass) {
-            fixes.add(new MavenFixImport(mavProj, nbvi,isTestSource));
-        }
 
+        if (true) {//TODO add hint customizer and make option switchable 
+            fixes.add(new MavenSearchFix(mavProj, simpleName, isTestSource));
+        } else {
+            Collection<NBVersionInfo> findVersionsByClass = filter(mavProj,
+                    RepositoryQueries.findVersionsByClass(simpleName), isTestSource);
+
+
+
+            for (NBVersionInfo nbvi : findVersionsByClass) {
+                fixes.add(new MavenFixImport(mavProj, nbvi, isTestSource));
+            }
+        }
 
         return fixes;
     }
@@ -174,8 +179,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 //check group id and ArtifactId and Scope even
                 if (dependency.getGroupId() != null && dependency.getGroupId().equals(info.getGroupId())) {
                     if (dependency.getArtifactId() != null && dependency.getArtifactId().equals(info.getArtifactId())) {
-                        if(!test &&dependency.getScope() !=null && ("compile".equals(dependency.getScope()))){//NOI18N
-                          return Collections.emptyList();
+                        if (!test && dependency.getScope() != null && ("compile".equals(dependency.getScope()))) {//NOI18N
+
+                            return Collections.emptyList();
                         }
                     }
                 }
@@ -289,7 +295,6 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             this.nbvi = nbvi;
             this.test = test;
         }
-       
 
         public CharSequence getSortText() {
             return getText();
@@ -303,13 +308,69 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         public ChangeInfo implement() throws Exception {
             addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
-                    nbvi.getVersion(), nbvi.getType(), test?"test":null, null);//NOI18N
+                    nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null);//NOI18N
+
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
                     mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
                 }
             });
+            return null;
+        }
+    }
+
+    static final class MavenSearchFix implements EnhancedFix {
+
+        private NbMavenProject mavProj;
+        private String clazz;
+        private boolean test;
+
+        public MavenSearchFix(NbMavenProject mavProj, String clazz, boolean test) {
+            this.mavProj = mavProj;
+            this.clazz = clazz;
+            this.test = test;
+        }
+
+        public CharSequence getSortText() {
+            return getText();
+        }
+
+        public String getText() {
+            return org.openide.util.NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Class_Search_ALL_Fix",clazz);
+
+        }
+
+        public ChangeInfo implement() throws Exception {
+            NBVersionInfo nbvi = null;
+            SearchDependencyUI dependencyUI = new SearchDependencyUI(clazz);
+
+            DialogDescriptor dd = new DialogDescriptor(dependencyUI,
+                    org.openide.util.NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Search_Repo"));
+            dd.setClosingOptions(new Object[]{
+                        dependencyUI.getAddButton(),
+                        DialogDescriptor.CANCEL_OPTION
+                    });
+            dd.setOptions(new Object[]{
+                        dependencyUI.getAddButton(),
+                        DialogDescriptor.CANCEL_OPTION
+                    });
+            Object ret = DialogDisplayer.getDefault().notify(dd);
+            if (dependencyUI.getAddButton() == ret) {
+                nbvi=dependencyUI.getSelectedVersion();
+            }
+            
+            if (nbvi != null) {
+                addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
+                        nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null);//NOI18N
+
+                RequestProcessor.getDefault().post(new Runnable() {
+
+                    public void run() {
+                        mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                    }
+                });
+            }
             return null;
         }
     }
