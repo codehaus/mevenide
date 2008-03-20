@@ -17,6 +17,7 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
+import org.apache.maven.lifecycle.model.MojoBinding;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.util.NbBundle;
@@ -28,9 +29,14 @@ import org.openide.util.Utilities;
  */
 public class ExecutionNode extends AbstractNode {
 
-    public ExecutionNode(String name) {
+    public ExecutionNode(MojoBinding mb) {
         super(Children.LEAF);
-        setDisplayName(NbBundle.getMessage(ExecutionNode.class, "LBL_executionId", new Object[]{name}));
+        setDisplayName(NbBundle.getMessage(ExecutionNode.class, "LBL_executionId",
+                new Object[]{
+            mb.getExecutionId(),
+            mb.getOrigin()!=null?mb.getOrigin():"n/a",
+            mb.getOriginDescription()!=null?mb.getOriginDescription():"n/a",
+        }));
     }
 
     @Override
