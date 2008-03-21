@@ -26,10 +26,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.lucene.document.Field;
@@ -530,8 +533,8 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                         
                        
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR,
-                                indexer.constructQuery(ArtifactInfo.NAMES, (className+"*")));
-                        infos.addAll(convertToNBVersionInfo(searchResult));
+                                indexer.constructQuery(ArtifactInfo.NAMES, (className)));
+                        infos.addAll(convertToNBVersionInfo(postProcessClasses(searchResult, className)));
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
@@ -738,6 +741,19 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
 
     }
 
+    private Collection<ArtifactInfo> postProcessClasses(Collection<ArtifactInfo> artifactInfos, String classname) {
+        int patter = Pattern.DOTALL + Pattern.MULTILINE;
+        Pattern patt = Pattern.compile(".*/" + classname + "$.*", patter);
+        Iterator<ArtifactInfo> it = artifactInfos.iterator();
+        while (it.hasNext()) {
+            ArtifactInfo ai = it.next();
+            Matcher m = patt.matcher(ai.classNames);
+            if (!m.matches()) {
+                it.remove();
+            }
+        }
+        return artifactInfos;
+    }
 
     private List<NBVersionInfo> convertToNBVersionInfo(Collection<ArtifactInfo> artifactInfos) {
         List<NBVersionInfo> bVersionInfos = new ArrayList<NBVersionInfo>();
