@@ -148,12 +148,10 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     
     private int getType(FileObject file) {
         if (isChildOf(file, project.getSourceRoots(false)) ||
-            isChildOf(file, project.getGeneratedSourceRoots()) ||
-            isChildOf(file, project.getResources(false))) {
+            isChildOf(file, project.getGeneratedSourceRoots())) {
             return TYPE_SRC;
         }
-        if (isChildOf(file, project.getSourceRoots(true)) ||
-            isChildOf(file, project.getResources(true))) {
+        if (isChildOf(file, project.getSourceRoots(true))) {
             return TYPE_TESTSRC;
         }
         
@@ -163,6 +161,15 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             return TYPE_WEB;
         }
         
+        //MEVENIDE-613, #125603 need to check later than the actual java sources..
+        // sometimes the root of resources is the basedir for example that screws up 
+        // test sources.
+        if (isChildOf(file, project.getResources(false))) {
+            return TYPE_SRC;
+        }
+        if (isChildOf(file, project.getResources(true))) {
+            return TYPE_TESTSRC;
+        }
         return TYPE_UNKNOWN;
     }
     
