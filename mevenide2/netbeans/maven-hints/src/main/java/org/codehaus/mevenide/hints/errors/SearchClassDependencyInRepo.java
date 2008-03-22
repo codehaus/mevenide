@@ -142,6 +142,8 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         if (true) {//TODO add hint customizer and make option switchable 
             fixes.add(new MavenSearchFix(mavProj, simpleName, isTestSource));
         } else {
+            //mkleint: this option is has rather serious performance impact.
+            // we need to work on performance before we enable it..
             Collection<NBVersionInfo> findVersionsByClass = filter(mavProj,
                     RepositoryQueries.findVersionsByClass(simpleName), isTestSource);
 
