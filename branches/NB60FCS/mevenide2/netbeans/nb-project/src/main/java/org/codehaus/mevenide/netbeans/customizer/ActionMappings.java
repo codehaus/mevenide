@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.customizer;
 import java.awt.Component;
 import java.awt.Cursor;
 import javax.swing.JList;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -42,6 +41,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.Constants;
@@ -618,7 +618,12 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         while (tok != null) {
             String[] prp = StringUtils.split(tok, "=", 2); //NOI18N
             if (prp.length == 2) {
-                props.setProperty(prp[0], prp[1]);
+                String key = prp[0];
+                //in case the user adds -D by mistake, remove it to get a parsable xml file.
+                if (key.startsWith("-D")) { //NOI18N
+                    key = key.substring("-D".length()); //NOI18N
+                }
+                props.setProperty(key, prp[1]);
             }
             tok = split.nextPair();
         }
