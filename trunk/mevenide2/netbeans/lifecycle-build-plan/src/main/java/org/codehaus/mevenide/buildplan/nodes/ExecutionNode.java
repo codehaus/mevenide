@@ -35,7 +35,7 @@ public class ExecutionNode extends AbstractNode {
                 new Object[]{
             mb.getExecutionId(),
             mb.getOrigin()!=null?mb.getOrigin():"n/a",
-            mb.getOriginDescription()!=null?mb.getOriginDescription():"n/a",
+            mb.getOriginDescription()!=null? " - "+mb.getOriginDescription():"",
         }));
     }
 
