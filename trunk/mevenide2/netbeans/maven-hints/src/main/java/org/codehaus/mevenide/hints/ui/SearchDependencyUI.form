@@ -16,14 +16,15 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="lblSelected" alignment="0" min="-2" pref="430" max="-2" attributes="0"/>
                   <Component id="treeView" alignment="0" pref="430" max="32767" attributes="0"/>
                   <Component id="txtClassName" alignment="1" pref="430" max="32767" attributes="0"/>
                   <Component id="lblMatchingArtifacts" alignment="0" pref="430" max="32767" attributes="0"/>
                   <Component id="lblClassName" alignment="0" pref="430" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -36,8 +37,10 @@
               <Component id="txtClassName" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="lblMatchingArtifacts" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="treeView" pref="234" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="treeView" pref="214" max="32767" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="lblSelected" min="-2" pref="14" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -77,6 +80,8 @@
           <ResourceString bundle="org/codehaus/mevenide/hints/ui/Bundle.properties" key="LBL_Matching_artifacts" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;)"/>
         </Property>
       </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="lblSelected">
     </Component>
   </SubComponents>
 </Form>

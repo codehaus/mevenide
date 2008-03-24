@@ -10,6 +10,11 @@
                 <folder name="general">
                     <!--file name="org-codehaus-mevenide-hints-TestMavenHint.instance"/-->
                 </folder>
+                <folder name="maven">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.hints.Bundle"/>
+                    
+                    <file name="org-codehaus-mevenide-hints-errors-SearchClassDependencyHint.instance"/>
+                </folder>
             </folder>
         </folder>
     </folder>

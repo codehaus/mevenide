@@ -48,7 +48,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     private ExplorerManager explorerManager = new ExplorerManager();
     private JButton addButton = new JButton(NbBundle.getMessage(SearchDependencyUI.class, "BTN_Add"));
     private BeanTreeView beanTreeView;
-
+    private NBVersionInfo nbvi;
     /** Creates new form SearchDependencyUI */
     public SearchDependencyUI(String clazz) {
         initComponents();
@@ -65,15 +65,36 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 if (arg0.getPropertyName().equals("selectedNodes")) {//NOI18N
 
                     Node[] selectedNodes = explorerManager.getSelectedNodes();
-                    boolean enable = false;
+                   
                     for (Node node : selectedNodes) {
                         if (node instanceof VersionNode) {
-                            enable = true;
+
+                            nbvi=((VersionNode) node).getNBVersionInfo();
+        
+                            
                             break;
 
+                        }else if(node instanceof ArtifactNode){
+                            NBVersionInfo info=null;
+                            ArtifactNode an=(ArtifactNode) node;
+                            List<NBVersionInfo> infos = an.getVersionInfos();
+                            for (NBVersionInfo nbvi : infos) {
+                                if(info==null || nbvi.getVersion().compareTo(info.getVersion())>0){
+                                
+                                  info=nbvi;
+                                }
+                            }
+                            nbvi=info;
                         }
                     }
-                    addButton.setEnabled(enable);
+                    if(nbvi!=null){
+                     lblSelected.setText(nbvi.getGroupId()+" : "+nbvi.getArtifactId()
+                             +" : "+nbvi.getVersion()+ " [ " + nbvi.getType() 
+                             + (nbvi.getClassifier() != null ? ("," + nbvi.getClassifier()) : "")+" ]");
+                    }else{
+                     lblSelected.setText(null);
+                    }
+                    addButton.setEnabled(nbvi!=null);
 
                 }
             }
@@ -83,11 +104,8 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     }
 
     public NBVersionInfo getSelectedVersion() {
-        Node[] selectedNodes = explorerManager.getSelectedNodes();
-        if (selectedNodes.length > 0) {
-            return ((VersionNode) selectedNodes[0]).getNBVersionInfo();
-        }
-        return null;
+        
+        return nbvi;
     }
 
     public JButton getAddButton() {
@@ -102,6 +120,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         task = RequestProcessor.getDefault().post(new Runnable() {
 
             public void run() {
+                lblSelected.setText(null);
                 beanTreeView.setRootVisible(true);
                 explorerManager.setRootContext(createLoadingNode());
                 List<NBVersionInfo> infos = RepositoryQueries.findVersionsByClass(txtClassName.getText());
@@ -154,6 +173,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         txtClassName = new javax.swing.JTextField();
         treeView = new BeanTreeView();
         lblMatchingArtifacts = new javax.swing.JLabel();
+        lblSelected = new javax.swing.JLabel();
 
         lblClassName.setText(org.openide.util.NbBundle.getMessage(SearchDependencyUI.class, "LBL_Class_Name")); // NOI18N
 
@@ -174,6 +194,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                    .add(org.jdesktop.layout.GroupLayout.LEADING, lblSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 430, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, treeView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                     .add(txtClassName, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
                     .add(org.jdesktop.layout.GroupLayout.LEADING, lblMatchingArtifacts, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
@@ -190,7 +211,9 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblMatchingArtifacts)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(treeView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE))
+                .add(treeView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -201,6 +224,7 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblClassName;
     private javax.swing.JLabel lblMatchingArtifacts;
+    private javax.swing.JLabel lblSelected;
     private javax.swing.JScrollPane treeView;
     private javax.swing.JTextField txtClassName;
     // End of variables declaration//GEN-END:variables

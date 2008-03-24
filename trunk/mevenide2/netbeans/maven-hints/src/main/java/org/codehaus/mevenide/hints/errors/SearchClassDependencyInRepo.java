@@ -71,16 +71,19 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
     public Set<String> getCodes() {
         return new HashSet<String>(Arrays.asList(
-                "compiler.err.cant.resolve",
-                "compiler.err.cant.resolve.location",
-                "compiler.err.doesnt.exist",
-                "compiler.err.not.stmt"));
+                "compiler.err.cant.resolve",//NOI18N
+                "compiler.err.cant.resolve.location",//NOI18N
+                "compiler.err.doesnt.exist",//NOI18N
+                "compiler.err.not.stmt"));//NOI18N
     }
 
     public List<Fix> run(final CompilationInfo info, String diagnosticKey,
             final int offset, TreePath treePath, Data<Void> data) {
+        
+        if (!SearchClassDependencyHint.isHintEnabled()) {
+            return Collections.emptyList();
+        }
         //copyed from ImportClass
-
         int errorPosition = offset + 1; //TODO: +1 required to work OK, rethink
 
         if (errorPosition == (-1)) {
@@ -135,11 +138,14 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         File testdir = new File(testSourceDirectory);
 
         FileObject fo = FileUtil.toFileObject(testdir);
+        //need check null because Test Dir may null
+        if (fo != null) {
+            isTestSource = FileUtil.isParentOf(fo, fileObject);
+        }
 
-        isTestSource = FileUtil.isParentOf(fo, fileObject);
         List<Fix> fixes = new ArrayList<Fix>();
+        if (SearchClassDependencyHint.isSearchDialog()) { 
 
-        if (true) {//TODO add hint customizer and make option switchable 
             fixes.add(new MavenSearchFix(mavProj, simpleName, isTestSource));
         } else {
             //mkleint: this option is has rather serious performance impact.
@@ -275,7 +281,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
     }
 
     public String getId() {
-        return "MAVEN_MISSING_CLASS";
+        return "MAVEN_MISSING_CLASS";//NOI18N
     }
 
     public String getDisplayName() {
@@ -339,7 +345,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         }
 
         public String getText() {
-            return org.openide.util.NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Class_Search_ALL_Fix",clazz);
+            return org.openide.util.NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Class_Search_ALL_Fix", clazz);
 
         }
 
@@ -359,9 +365,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                     });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (dependencyUI.getAddButton() == ret) {
-                nbvi=dependencyUI.getSelectedVersion();
+                nbvi = dependencyUI.getSelectedVersion();
             }
-            
+
             if (nbvi != null) {
                 addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
                         nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null);//NOI18N

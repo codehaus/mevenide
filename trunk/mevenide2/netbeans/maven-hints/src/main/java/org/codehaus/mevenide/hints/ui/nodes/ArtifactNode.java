@@ -18,6 +18,7 @@ package org.codehaus.mevenide.hints.ui.nodes;
 
 import java.awt.Image;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 
@@ -28,11 +29,10 @@ import org.openide.util.Utilities;
 
 /**
  *
- * @author mkleint
  * @author Anuradha G
  */
 public class ArtifactNode extends AbstractNode {
-
+    private List<NBVersionInfo> versionInfos;
     public ArtifactNode(String name, final List<NBVersionInfo> list) {
         super(new Children.Keys<NBVersionInfo>() {
 
@@ -51,6 +51,7 @@ public class ArtifactNode extends AbstractNode {
                 setKeys(list);
             }
         });
+        this.versionInfos=list;
         setName(name);
         setDisplayName(name);
     }
@@ -66,4 +67,10 @@ public class ArtifactNode extends AbstractNode {
     public Image getOpenedIcon(int arg0) {
         return getIcon(arg0);
     }
+
+    public List<NBVersionInfo> getVersionInfos() {
+        return new ArrayList<NBVersionInfo>(versionInfos);
+    }
+    
+    
 }
