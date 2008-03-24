@@ -17,16 +17,14 @@
 
 package org.codehaus.mevenide.netbeans.classpath;
 
-import java.beans.PropertyChangeEvent;
 import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.TestCase;
 import org.apache.maven.model.Resource;
-import org.netbeans.spi.java.classpath.ClassPathImplementation;
+import org.openide.filesystems.FileUtil;
 
 /**
  *
@@ -50,23 +48,27 @@ public class ExcludingResourceImplTest extends TestCase {
 
     public void testGetRoots() throws Exception {
         System.out.println("getRoots");
+        File file = FileUtil.normalizeFile(new File("/home/mkleint2/tmp"));
+            
         ExcludingResourceImpl instance = new ExcludingResourceImpl2(false, 
-                Collections.singletonList(createRes("/home/mkleint2/tmp",
+                Collections.singletonList(createRes(file.getAbsolutePath(),
                 new String[] {
                     "NOTE.txt",
                     "LICENSE.txt"
                 },
                 null)));
-        URL expResult = new URL("file:/home/mkleint2/tmp/");
+        URL expResult = new URL("file:/"+file.getAbsolutePath()+"/");
         URL[] result = instance.getRoots();
         assertEquals(1, result.length);
+        
         assertEquals(expResult, result[0]);
     }
 
     public void testIncludes() {
         System.out.println("includes");
+        File file = FileUtil.normalizeFile(new File("/home/mkleint2/tmp/"));
         ExcludingResourceImpl instance = new ExcludingResourceImpl2(false, 
-                Collections.singletonList(createRes("/home/mkleint2/tmp",
+                Collections.singletonList(createRes(file.getAbsolutePath(),
                 new String[] {
                     "NOTE.txt",
                     "LICENSE.txt"
@@ -79,7 +81,7 @@ public class ExcludingResourceImplTest extends TestCase {
         assertTrue(instance.includes(url, "LICENSE.txt"));
         
         instance = new ExcludingResourceImpl2(false, 
-                Collections.singletonList(createRes("/home/mkleint/tmp",
+                Collections.singletonList(createRes(file.getAbsolutePath(),
                 new String[] {
                     "**/Bundle.properties",
                     "*/Bundle_ja.properties",
@@ -102,7 +104,7 @@ public class ExcludingResourceImplTest extends TestCase {
         assertFalse(instance.includes(url, "org/milos/xman2/xman.gif"));
         
         instance = new ExcludingResourceImpl2(false, 
-                Collections.singletonList(createRes("/home/mkleint/tmp",
+                Collections.singletonList(createRes(file.getAbsolutePath(),
                 null, null
         )));
         url = instance.getRoots()[0];
