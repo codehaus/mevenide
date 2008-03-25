@@ -370,7 +370,7 @@ public class ActionProviderImpl implements ActionProvider {
                     menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
                     menu.remove(loading);
                 }
-            });
+            },100);
             return menu;
         }
     }
