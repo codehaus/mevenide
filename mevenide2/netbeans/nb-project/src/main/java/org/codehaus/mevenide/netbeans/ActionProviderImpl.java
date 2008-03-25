@@ -27,7 +27,6 @@ import javax.swing.JMenuItem;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
@@ -36,6 +35,7 @@ import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
+import org.codehaus.mevenide.netbeans.execute.AbstractMavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -121,11 +121,11 @@ public class ActionProviderImpl implements ActionProvider {
             Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.INFO, "No handling for action:" + action + ". Ignoring."); //NOI18N
         } else {
             setupTaskName(action, rc, lookup);
-            runGoal(action, lookup, rc);
+            runGoal(action, lookup, rc,true);
         }
     }
 
-    private void runGoal(String action, Lookup lookup, RunConfig config) {
+    private void runGoal(String action, Lookup lookup, RunConfig config,boolean checkShowDialog) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
 
@@ -137,9 +137,28 @@ public class ActionProviderImpl implements ActionProvider {
             }
         }
 
-        // setup executor now..
-        ExecutorTask task = RunUtils.executeMaven(config);
-
+       
+       
+        if(checkShowDialog &&MavenExecutionSettings.getDefault().isShowRunDialog()){
+         RunGoalsPanel pnl = new RunGoalsPanel();
+                DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "TIT_Run_maven"));
+                pnl.readConfig(config);
+                Object retValue = DialogDisplayer.getDefault().notify(dd);
+                if (retValue == DialogDescriptor.OK_OPTION) {
+                    BeanRunConfig newConfig = new BeanRunConfig();
+                    newConfig.setExecutionDirectory(config.getExecutionDirectory());
+                    newConfig.setExecutionName(config.getExecutionName());
+                    newConfig.setTaskDisplayName(config.getTaskDisplayName());
+                    newConfig.setProject(config.getProject());
+                    pnl.applyValues(newConfig);
+                    config=newConfig;
+                }else{
+                 return;
+                }
+        } 
+         // setup executor now..   
+         ExecutorTask task = RunUtils.executeMaven(config);
+         
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
 
@@ -264,7 +283,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY);
-                runGoal("custom", Lookup.EMPTY, rc); //NOI18N
+                runGoal("custom", Lookup.EMPTY, rc,true); //NOI18N
                 return;
             }
             RunGoalsPanel pnl = new RunGoalsPanel();
@@ -316,7 +335,7 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY);
-                runGoal("custom", Lookup.EMPTY, rc); //NOI18N
+                runGoal("custom", Lookup.EMPTY, rc,false); //NOI18N
             }
         }
     }
