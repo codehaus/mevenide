@@ -61,6 +61,7 @@ public final class BuildPlanTopComponent extends TopComponent {
                 }
             }
         });
+        putClientProperty("SlidingName", NbBundle.getMessage(BuildPlanTopComponent.class, "CTL_BuildPlanTopComponent")); //NOI18N 
     }
 
     /** This method is called from within the constructor to
@@ -122,7 +123,7 @@ public final class BuildPlanTopComponent extends TopComponent {
             if (getComponents().length == 0) {
 
                 setName(NbBundle.getMessage(BuildPlanTopComponent.class,
-                        "CTL_BuildPlanTopComponent") + " - " + viewUI.getName());
+                        "CTL_BuildPlanTopComponent2", viewUI.getName()));
                 add(viewUI, BorderLayout.CENTER);
             } else {
                 if (tabpane.getParent()==null) {
