@@ -37,6 +37,7 @@ public class MavenExecutionSettings  {
     public static final String PROP_SYNCH_PROXY = "synchronizeProxySettings"; //NOI18N
     public static final String PROP_USE_COMMANDLINE = "useCommandLineMaven"; //NOI18N
     public static final String PROP_COMMANDLINE_PATH = "commandLineMavenPath"; //NOI18N
+    public static final String PROP_SHOW_RUN_DIALOG = "showRunDialog"; //NOI18N
     
     private static final MavenExecutionSettings INSTANCE = new MavenExecutionSettings();
     
@@ -151,5 +152,10 @@ public class MavenExecutionSettings  {
         }
     }
     
-    
+    public boolean isShowRunDialog(){
+     return getPreferences().getBoolean(PROP_SHOW_RUN_DIALOG, false);
+    }
+    public void setShowRunDialog(boolean  b){
+      getPreferences().putBoolean(PROP_SHOW_RUN_DIALOG, b);
+    }
 }
