@@ -49,10 +49,16 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
             public void propertyChange(PropertyChangeEvent evt) {
                 if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
                     List newValues = getPath();
-                    if (hasChanged(resources, newValues)) {
+                    synchronized (AbstractProjectClassPathImpl.this) {
                         List oldvalue = resources;
-                        resources = newValues;
-                        support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
+//                        System.out.println("checking=" + AbstractProjectClassPathImpl.this.getClass());
+                        if (hasChanged(oldvalue, newValues)) {
+                            resources = newValues;
+//                            System.out.println("old=" + oldvalue);
+//                            System.out.println("new=" + newValues);
+//                            System.out.println("firing change=" + AbstractProjectClassPathImpl.this.getClass());
+                            support.firePropertyChange(ClassPathImplementation.PROP_RESOURCES, oldvalue, resources);
+                        }
                     }
                 }
             }
@@ -65,17 +71,15 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         }
         Iterator it = oldValues.iterator();
         ArrayList nl = new ArrayList();
-        if (newValues != null) {
-            nl.addAll(newValues);
-        }
+        nl.addAll(newValues);
         while (it.hasNext()) {
             PathResourceImplementation res = (PathResourceImplementation)it.next();
             URL oldUrl = res.getRoots()[0];
-            Iterator inner = nl.iterator();
             boolean found = false;
             if (nl.size() == 0) {
                 return true;
             }
+            Iterator inner = nl.iterator();
             while (inner.hasNext()) {
                 PathResourceImplementation res2 = (PathResourceImplementation)inner.next();
                 URL newUrl = res2.getRoots()[0];
@@ -120,9 +124,16 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
                 // was not created yet) then corresponding File will
                 // not be ended with slash. Fix that.
                 
-                //TODO what are all the extensions that get into classpath??
-                if (pieces[i].toString().toLowerCase().endsWith(".jar")  //NOI18N
-                 || pieces[i].toString().toLowerCase().endsWith(".ejb3")) {//NOI18N
+                //HACK the url is considered archive if the name contains a dot.
+                // should be safe since the only folder classpath items are sources and target/classes
+                // if this causes problems we need to move the url finetuning in the place which
+                //creates the URIs (createPath())
+                String lowecasePath = pieces[i].toString().toLowerCase();
+                int lastdot = lowecasePath.lastIndexOf('.');
+                int lastslash = lowecasePath.lastIndexOf('/');
+                boolean isFile = (lastdot > 0 && lastdot > lastslash);
+                
+                if (isFile) {//NOI18N
                     entry = FileUtil.getArchiveRoot(pieces[i].toURL());
                 } else {
                     entry = pieces[i].toURL();
