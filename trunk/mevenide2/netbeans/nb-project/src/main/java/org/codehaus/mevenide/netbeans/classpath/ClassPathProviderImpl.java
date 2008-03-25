@@ -45,7 +45,7 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
     private static final int TYPE_UNKNOWN = -1;
     
     private NbMavenProject project;
-    private ClassPath[] cache = new ClassPath[7];
+    private ClassPath[] cache = new ClassPath[8];
     
     public ClassPathProviderImpl(NbMavenProject proj) {
         project = proj;
@@ -115,9 +115,21 @@ public final class ClassPathProviderImpl implements ClassPathProvider {
             return getSourcepath(fileType);
         } else if (type.equals(ClassPath.BOOT)) {
             return getBootClassPath();
+        } else if (type.equals("classpath/packaged")) { //NOI18N
+            //a semi-private contract with visual web.
+            return getProvidedClassPath();
         } else {
             return null;
         }
+    }
+
+    private ClassPath getProvidedClassPath() {
+        ClassPath cp = cache[7];
+        if (cp == null) {
+            cp = ClassPathFactory.createClassPath(new PackagedClassPathImpl(project));
+            cache[7] = cp;
+        }
+        return cp;
     }
     
     
