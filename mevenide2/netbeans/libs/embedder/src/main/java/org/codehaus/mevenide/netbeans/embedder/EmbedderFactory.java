@@ -236,6 +236,58 @@ public final class EmbedderFactory {
 
     }
 
+    public  static MavenEmbedder createOnlineEmbedder() {
+        
+            Configuration req = new DefaultConfiguration();
+            req.setClassLoader(EmbedderFactory.class.getClassLoader());
+            
+            //TODO remove explicit activation
+            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
+            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
+            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
+            
+            //validating  Configuration
+            ConfigurationValidationResult cvr = MavenEmbedder.validateConfiguration(req);
+            Exception userSettingsException = cvr.getUserSettingsException();
+            if (userSettingsException != null) {
+                Exceptions.printStackTrace(Exceptions.attachMessage(userSettingsException,
+                        "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
+            }
+            if (cvr.isValid()) {
+                req.setUserSettingsFile(userSettingsPath);
+            } else {
+                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
+                req.setUserSettingsFile(globalSettingsPath);
+            }
+            req.setGlobalSettingsFile(globalSettingsPath);
+            req.setConfigurationCustomizer(new ContainerCustomizer() {
+
+                public void customize(PlexusContainer plexusContainer) {
+                    try {
+                        ComponentDescriptor desc = new ComponentDescriptor();
+                        desc.setRole(TransferListener.class.getName());
+                        plexusContainer.addComponentDescriptor(desc);
+                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
+                        desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
+                        ComponentRequirement requirement = new ComponentRequirement();
+                        requirement.setRole(TransferListener.class.getName());
+                        desc.addRequirement(requirement);
+                    } catch (ComponentRepositoryException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            });
+
+            req.setMavenEmbedderLogger(new NullEmbedderLogger());
+            MavenEmbedder embedder = null;
+            try {
+                embedder=  new MavenEmbedder(req);
+            } catch (MavenEmbedderException e) {
+                ErrorManager.getDefault().notify(e);
+            }
+            return embedder;
+        }
+        
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) /*throws MavenEmbedderException*/ {
         ClassLoader loader = Lookup.getDefault().lookup(ClassLoader.class);
 
