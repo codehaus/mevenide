@@ -56,7 +56,7 @@ public class SingleServer extends javax.swing.JPanel {
         xmlRpcUrlLabel.setLabelFor(xmlRpcUrlTextField);
         xmlRpcUrlLabel.setText("XmlRpc-Url :");
 
-        xmlRpcUrlTextField.setText("http://localhost:8080/continuum/xmlrpc");
+        xmlRpcUrlTextField.setText("http://localhost:9090/xmlrpc");
         xmlRpcUrlTextField.setToolTipText("The continuum xml rpc URL. Usually http://localhost:8080/continuum/xmlrpc");
 
         userLabel.setLabelFor(userTextField);
@@ -69,7 +69,7 @@ public class SingleServer extends javax.swing.JPanel {
         passwordLabel.setLabelFor(passwordField);
         passwordLabel.setText("Password :");
 
-        webUrlTextField.setText("http://localhost:8080/continuum");
+        webUrlTextField.setText("http://localhost:9090");
         webUrlTextField.setToolTipText("The continuum admin URL. Usually http://localhost:8080/continuum ");
 
         webUrlLabel.setLabelFor(webUrlTextField);

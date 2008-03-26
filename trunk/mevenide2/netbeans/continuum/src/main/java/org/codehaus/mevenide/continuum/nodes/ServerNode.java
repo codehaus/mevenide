@@ -22,14 +22,17 @@ import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
+import org.codehaus.mevenide.continuum.ContinuumClient;
 import org.codehaus.mevenide.continuum.ContinuumSettings2;
-import org.codehaus.mevenide.continuum.ServerInfo;
+import org.codehaus.mevenide.continuum.forms.MavenProjectForm;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
+import org.openide.NotifyDescriptor;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.RequestProcessor;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -37,37 +40,35 @@ import org.openide.util.RequestProcessor;
  */
 public class ServerNode extends AbstractNode {
 
+    private ContinuumClient client;
+
     /** Creates a new instance of ContinuumServerNode */
     public ServerNode(String serverRawInfo) {
-        super(new ServerChildren(serverRawInfo));
-        ServerInfo serverInfo = new ServerInfo(serverRawInfo);
-        setName(serverRawInfo);
-        setDisplayName(serverInfo.getXmlRpcUrl().toString());
+        super(new ServerChildren(new ContinuumClient(serverRawInfo)));
+        client = ((ServerChildren)getChildren()).getClient();
+        
+        setName(client.getServerInfo().toString());
+        setDisplayName(client.getServerInfo().getXmlRpcUrl().toString());
         setIconBaseWithExtension("org/codehaus/mevenide/continuum/threeBrands.gif");
     }
 
     public Action[] getActions(boolean b) {
-        Action[] retValue = {new RemoveAction(), new RefreshAction()};
+        Action[] retValue = {new RemoveAction(), new RefreshAction(), new AddMaven2Action(client)};
         return retValue;
     }
 
     protected static class ServerChildren extends Children.Keys {
 
-        private ServerInfo serverInfo;
-        private ContinuumXmlRpcClient reader;
-        private RequestProcessor queue;
+        private ContinuumClient client;
 
-        public ServerChildren(String serverRawInfo) {
-            this.serverInfo = new ServerInfo(serverRawInfo);
-            this.queue = new RequestProcessor("Continuum server processor", 1);
-            reader = new ContinuumXmlRpcClient(serverInfo.getXmlRpcUrl(), serverInfo.getUser(), serverInfo.getPassword());
-
+        public ServerChildren(ContinuumClient client) {
+            this.client = client;
         }
 
         protected Node[] createNodes(Object object) {
             if (object instanceof ProjectGroupSummary) {
                 ProjectGroupSummary projectGroup = (ProjectGroupSummary) object;
-                return new Node[]{new ProjectGroupNode(projectGroup, reader, serverInfo, queue)};
+                return new Node[]{new ProjectGroupNode(projectGroup, client)};
             }
             if (object instanceof String) {
                 AbstractNode nd = new AbstractNode(Children.LEAF);
@@ -77,33 +78,40 @@ public class ServerNode extends AbstractNode {
             return new Node[0];
         }
 
+        @Override
         protected void removeNotify() {
             super.removeNotify();
             setKeys(Collections.EMPTY_LIST);
         }
 
+        @Override
         protected void addNotify() {
             super.addNotify();
-            if (reader != null) {
-                setKeys(Collections.singleton("Connecting to "+serverInfo.getXmlRpcUrl()+" ..."));
-                queue.post(new Runnable() {
+            if (client != null) {
+                setKeys(Collections.singleton("Connecting to " + client.getServerInfo().getXmlRpcUrl() + " ..."));
+                client.getQueue().post(new Runnable() {
 
                     @SuppressWarnings("unchecked")
                     public void run() {
                         try {
-                            setKeys(reader.getAllProjectGroups());
+                            setKeys(client.getXmlRpcClient().getAllProjectGroups());
                         } catch (Exception ex) {
                             setKeys(Collections.singletonList(getDisplayableMessageFrom(ex)));
                             throw new RuntimeException(ex);
                         }
                     }
-
-                    private String getDisplayableMessageFrom(Exception ex) {
-                        return (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getName();
-                    }
                 });
             }
         }
+
+        private String getDisplayableMessageFrom(Exception ex) {
+            return (ex.getMessage() != null) ? ex.getMessage() : ex.getClass().getName();
+        }
+
+        public ContinuumClient getClient() {
+            return client;
+        }
+
     }
 
     @SuppressWarnings("serial")
@@ -126,7 +134,35 @@ public class ServerNode extends AbstractNode {
         }
 
         public void actionPerformed(ActionEvent e) {
-            setChildren(new ServerChildren(getName()));
+            setChildren(new ServerChildren(new ContinuumClient(getName())));
         }
+    }
+
+    private class AddMaven2Action extends AbstractAction {
+
+        private ContinuumClient client;
+
+        public AddMaven2Action(ContinuumClient client) {
+            this.putValue(Action.NAME, NbBundle.getMessage(ServerNode.class, "ServerNode.addMaven2.action"));
+            this.client = client;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            MavenProjectForm form = new MavenProjectForm();
+            DialogDescriptor dd = new DialogDescriptor(form, NbBundle.getMessage(ServerNode.class, "ServerNode.addMaven2.action") );
+            dd.setOptions(new Object[]{
+                        NotifyDescriptor.OK_OPTION,
+                        NotifyDescriptor.CANCEL_OPTION
+                    });
+            Object ret = DialogDisplayer.getDefault().notify(dd);
+            if (ret == NotifyDescriptor.OK_OPTION) {
+                try {
+                    // TODO : enqueue + refresh + exception handling 
+                    client.getXmlRpcClient().addMavenTwoProject(form.getPomUrl());
+                } catch (Exception ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        }       
     }
 }

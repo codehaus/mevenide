@@ -24,34 +24,22 @@ import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import org.apache.maven.continuum.xmlrpc.client.ContinuumXmlRpcClient;
 import org.apache.maven.continuum.xmlrpc.project.Project;
-import org.apache.maven.continuum.xmlrpc.project.ProjectGroup;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
 import org.apache.maven.continuum.xmlrpc.project.ProjectSummary;
-import org.codehaus.mevenide.continuum.ServerInfo;
+import org.codehaus.mevenide.continuum.ContinuumClient;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
-import org.openide.util.RequestProcessor;
 
 public class ProjectGroupNode extends AbstractNode {
 
-    // private ServerInfo serverInfo;
-    // private ProjectGroup projectGroup;
-    // private ContinuumXmlRpcClient reader;
-    // private RequestProcessor queue;
     public ProjectGroupNode(ProjectGroupSummary projectGroup,
-            ContinuumXmlRpcClient reader, ServerInfo serverInfo,
-            RequestProcessor queue) {
-        super(new ProjectGroupChildren(projectGroup, reader, serverInfo, queue));
+            ContinuumClient client) {
+        super(new ProjectGroupChildren(projectGroup, client));
         setName(Integer.toString(projectGroup.getId()));
         setDisplayName(projectGroup.getName());
         setIconBaseWithExtension("org/codehaus/mevenide/continuum/threeBrands.gif");
-    // this.projectGroup = projectGroup;
-    // this.serverInfo= serverInfo;
-    // this.reader = reader;
-    // this.queue = queue;
     }
 
     public Action[] getActions(boolean b) {
@@ -62,26 +50,19 @@ public class ProjectGroupNode extends AbstractNode {
     @SuppressWarnings("unchecked")
     private static class ProjectGroupChildren extends Children.Keys {
 
-        private ServerInfo serverInfo;
         private ProjectGroupSummary projectGroup;
-        private ContinuumXmlRpcClient reader;
-        private RequestProcessor queue;
+        private ContinuumClient client;
 
         public ProjectGroupChildren(ProjectGroupSummary projectGroup,
-                ContinuumXmlRpcClient reader, ServerInfo serverInfo,
-                RequestProcessor queue) {
+                ContinuumClient client) {
             this.projectGroup = projectGroup;
-            this.serverInfo = serverInfo;
-            this.reader = reader;
-            this.queue = queue;
+            this.client = client;
         }
 
         protected Node[] createNodes(Object object) {
             if (object instanceof Project) {
                 Project project = (Project) object;
-                return new Node[]{new ProjectNode(project, reader,
-                    serverInfo, queue)
-                };
+                return new Node[]{new ProjectNode(project, client)};
             }
             if (object instanceof String) {
                 AbstractNode nd = new AbstractNode(Children.LEAF);
@@ -98,16 +79,16 @@ public class ProjectGroupNode extends AbstractNode {
 
         protected void addNotify() {
             super.addNotify();
-            if (reader != null) {
+            if (client != null && client.getXmlRpcClient() != null) {
                 setKeys(Collections.singleton("Fetching projects ..."));
-                queue.post(new Runnable() {
+                client.getQueue().post(new Runnable() {
 
                     @SuppressWarnings("unchecked")
                     public void run() {
                         try {
                             Collection<Project> projects = new ArrayList<Project>();
-                            for (ProjectSummary summary : reader.getProjects(projectGroup.getId())) {
-                                projects.add(reader.getProjectWithAllDetails(summary.getId()));
+                            for (ProjectSummary summary : client.getXmlRpcClient().getProjects(projectGroup.getId())) {
+                                projects.add(client.getXmlRpcClient().getProjectWithAllDetails(summary.getId()));
                             }
                             setKeys(projects);
                         } catch (Exception ex) {
@@ -134,9 +115,7 @@ public class ProjectGroupNode extends AbstractNode {
         public void actionPerformed(ActionEvent e) {
             setChildren(new ProjectGroupChildren(
                     ((ProjectGroupChildren) getChildren()).projectGroup,
-                    ((ProjectGroupChildren) getChildren()).reader,
-                    ((ProjectGroupChildren) getChildren()).serverInfo,
-                    ((ProjectGroupChildren) getChildren()).queue));
+                    ((ProjectGroupChildren) getChildren()).client));
         }
     }
 }
