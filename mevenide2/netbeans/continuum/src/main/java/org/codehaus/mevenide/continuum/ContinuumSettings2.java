@@ -36,15 +36,6 @@ public class ContinuumSettings2  {
     
     private static ContinuumSettings2 INSTANCE = new ContinuumSettings2();
     private Preferences preferences;
-//    private List<ServerInfo> serverInfos;
-    
-//    protected void initialize() {
-//        super.initialize();
-//        List<ServerInfo> servers = new ArrayList<ServerInfo>();
-//        servers.add(new ServerInfo("maven.zones.apache.org",8000,8080));
-////        servers.add(new ServerInfo("localhost",8000,8080));
-//        setServers(servers);
-//    }
     
     public String displayName() {
         return NbBundle.getMessage(ContinuumSettings2.class, "LBL_Settings"); //NOI18N
