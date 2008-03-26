@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 
 /**
  *
@@ -46,15 +47,14 @@ class SourceClassPathImpl extends AbstractProjectClassPathImpl {
         if (new File(webSrc).exists()) {
             col.add(webSrc);
         }
-        
-        //needed for form module to find the bundle files..
-        URI[] res = getMavenProject().getResources(false);
-        for (URI resource : res) {
-            col.add(resource);
-        }
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        
+    }
+
+    @Override
+    protected FilteringPathResourceImplementation getFilteringResources() {
+        return new ExcludingResourceImpl(getMavenProject(), false);
     }
     
 }

@@ -215,6 +215,7 @@ public class MavenSourcesImpl implements Sources {
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
+                //TODO we should probably add includes/excludes to source groups.
                 return new SourceGroup[] { GenericSources.group(project, fo, "resources",  //NOI18N
                         NbBundle.getMessage(MavenSourcesImpl.class, "SG_Project_Resources"), null, null) };
             }

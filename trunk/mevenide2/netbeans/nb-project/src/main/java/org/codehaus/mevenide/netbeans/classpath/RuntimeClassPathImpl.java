@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -57,10 +58,6 @@ class RuntimeClassPathImpl extends AbstractProjectClassPathImpl {
             }
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
-        }
-        URI[] res = getMavenProject().getResources(false);
-        for (URI resource : res) {
-            lst.add(resource);
         }
         URI[] uris = new URI[lst.size()];
         uris = (URI[])lst.toArray(uris);
