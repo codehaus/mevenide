@@ -23,6 +23,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.build.model.ModelLineage;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.NullEmbedderLogger;
 
 /**
  * Various maven model related utilities.
@@ -38,7 +39,8 @@ public final class ModelUtils {
      */
     public static List<String> retrieveAllProfiles(File pom) {
         List<String> values = new ArrayList<String>();
-        ModelLineage lin = EmbedderFactory.createModelLineage(pom, EmbedderFactory.getOnlineEmbedder(), true);
+        ModelLineage lin = EmbedderFactory.createModelLineage(pom,
+                EmbedderFactory.createExecuteEmbedder(new NullEmbedderLogger()), true);
         List<Model> models = lin.getModelsInDescendingOrder();
         for (Model mdl : models) {
             List<Profile> profs = mdl.getProfiles();
