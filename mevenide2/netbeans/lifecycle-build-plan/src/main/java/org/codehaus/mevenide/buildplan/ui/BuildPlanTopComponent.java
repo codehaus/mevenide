@@ -42,7 +42,7 @@ public final class BuildPlanTopComponent extends TopComponent {
         initComponents();
         setName(NbBundle.getMessage(BuildPlanTopComponent.class, "CTL_BuildPlanTopComponent"));
 
-        setIcon(Utilities.loadImage("org/codehaus/mevenide/buildplan/ui/buildplan.png", true));
+        setIcon(Utilities.loadImage("org/codehaus/mevenide/buildplan/nodes/buildplangoals.png", true));
         tabpane.addPropertyChangeListener(TabbedPaneFactory.PROP_CLOSE, new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
