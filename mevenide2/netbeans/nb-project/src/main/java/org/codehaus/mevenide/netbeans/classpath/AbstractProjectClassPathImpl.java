@@ -34,6 +34,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
 
@@ -113,8 +114,13 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     
     abstract URI[] createPath();
     
+    //to be overriden by subclasses..
+    protected FilteringPathResourceImplementation getFilteringResources() {
+        return null;
+    }
+    
     private List getPath() {
-        List result = new ArrayList();
+        List<PathResourceImplementation> result = new ArrayList<PathResourceImplementation>();
         URI[] pieces = createPath();
         for (int i = 0; i < pieces.length; i++) {
             try {
@@ -147,6 +153,10 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
             } catch (MalformedURLException mue) {
                 ErrorManager.getDefault().notify(mue);
             }
+        }
+        FilteringPathResourceImplementation filtering = getFilteringResources();
+        if (filtering != null) {
+            result.add(filtering);
         }
         return Collections.unmodifiableList(result);
     }

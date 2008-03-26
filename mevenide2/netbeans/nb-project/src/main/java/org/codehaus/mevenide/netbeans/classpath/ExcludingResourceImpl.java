@@ -137,7 +137,11 @@ public class ExcludingResourceImpl extends PathResourceBase
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-//        throw new UnsupportedOperationException("Not supported yet.");
+        if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            //TODO optimize somehow? it's just too much work to figure if something changed..
+             firePropertyChange(PROP_ROOTS, null, null);
+//             super.firePropertyChange(this.PROP_INCLUDES, null, null);
+        }
     }
 
     private void processInEx(Map<URL, String> cludes, URL entry, List res) {
