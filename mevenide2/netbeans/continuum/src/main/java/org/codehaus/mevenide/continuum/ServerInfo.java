@@ -20,7 +20,6 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.StringTokenizer;
-import org.apache.commons.lang.StringUtils;
 import org.openide.util.Exceptions;
 
 /**
@@ -29,80 +28,78 @@ import org.openide.util.Exceptions;
  */
 @SuppressWarnings("serial")
 public class ServerInfo implements Serializable {
-    
+
     private URL xmlRpcUrl;
     private URL webUrl;
     private String user;
     private String password;
-    
+
     public ServerInfo() {
     }
-    
+
     public ServerInfo(String rawInfos) {
         try {
-        StringTokenizer tokenizer = new StringTokenizer(rawInfos, ",");
+            StringTokenizer tokenizer = new StringTokenizer(rawInfos, ",");
             setXmlRpcUrl(new URL(tokenizer.nextToken()));
             setWebUrl(new URL(tokenizer.nextToken()));
-            if (tokenizer.hasMoreTokens()){
+            if (tokenizer.hasMoreTokens()) {
                 setUser(tokenizer.nextToken());
                 setPassword(tokenizer.nextToken());
-    }
-            else {
+            } else {
                 setUser(null);
-                setPassword(null);                
+                setPassword(null);
             }
         } catch (MalformedURLException ex) {
             Exceptions.printStackTrace(ex);
         }
     }
-    
+
     public ServerInfo(URL xmlRpcUrl, URL webUrl, String user, String password) {
         setXmlRpcUrl(xmlRpcUrl);
         setWebUrl(webUrl);
         setUser(user);
         setPassword(password);
     }
-    
+
     public URL getXmlRpcUrl() {
         return xmlRpcUrl;
     }
-    
+
     public void setXmlRpcUrl(URL url) {
         this.xmlRpcUrl = url;
     }
-    
+
     public URL getWebUrl() {
         return webUrl;
     }
-    
+
     public void setWebUrl(URL url) {
         this.webUrl = url;
     }
-    
+
     public String getUser() {
         return user;
     }
-    
+
     public void setUser(String user) {
         this.user = user;
     }
-    
+
     public String getPassword() {
         return password;
     }
-    
+
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     @Override
     public String toString() {
-        return xmlRpcUrl+","+webUrl+","+(user==null?"":user)+","+(password==null?"":password);
+        return xmlRpcUrl + "," + webUrl + "," + (user == null ? "" : user) + "," + (password == null ? "" : password);
     }
-    
+
     @Override
     public boolean equals(Object object) {
         return this.toString().equalsIgnoreCase(object.toString());
     }
-    
 }
