@@ -20,6 +20,7 @@ import java.io.File;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -96,21 +97,31 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     }
 
-    private void readProfiles(final File pom) {
+    private void readProfiles(final MavenProject mavenProject) {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                final List ret = ModelUtils.retrieveAllProfiles(pom);
+                final List ret = ModelUtils.retrieveAllProfiles(mavenProject.getFile());
+                readChildProfiles(ret, mavenProject);
+                //omit duplicates
+                final Set set=new HashSet(ret);
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        profilecompleter.setValueList(ret);
+                        profilecompleter.setValueList(new ArrayList<String>(set));
                         profilecompleter.setLoading(false);
                     }
                 });
             }
         });
     }
-
+    private void readChildProfiles(List list,MavenProject mavenProject){
+       List<MavenProject> mps=mavenProject.getCollectedProjects();
+       
+        for (MavenProject mp : mps) {
+            List ret = ModelUtils.retrieveAllProfiles(mp.getFile());
+            list.addAll(ret);
+        }
+    }
     private String createSpaceSeparatedList(List list) {
         String str = ""; //NOI18N
         if (list != null) {
@@ -128,7 +139,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);
         historyIndex = this.historyMappings.size();
-        readProfiles(project.getFile());
+        readProfiles(project);
         moveHistory(-1);
     }
 
@@ -157,7 +168,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setRecursive(config.isRecursive());
         setShowDebug(config.isShowDebug());
         if(config.getProject()!=null){
-         readProfiles(config.getProject().getPOMFile());
+         readProfiles(config.getProject().getOriginalMavenProject());
         }
     }
 
