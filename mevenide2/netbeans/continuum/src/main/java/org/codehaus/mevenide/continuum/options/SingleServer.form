@@ -73,7 +73,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="xmlRpcUrlTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" value="http://localhost:8080/continuum/xmlrpc"/>
+        <Property name="text" type="java.lang.String" value="http://localhost:9090/xmlrpc"/>
         <Property name="toolTipText" type="java.lang.String" value="The continuum xml rpc URL. Usually http://localhost:8080/continuum/xmlrpc"/>
       </Properties>
     </Component>
@@ -106,7 +106,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="webUrlTextField">
       <Properties>
-        <Property name="text" type="java.lang.String" value="http://localhost:8080/continuum"/>
+        <Property name="text" type="java.lang.String" value="http://localhost:9090"/>
         <Property name="toolTipText" type="java.lang.String" value="The continuum admin URL. Usually http://localhost:8080/continuum "/>
       </Properties>
     </Component>

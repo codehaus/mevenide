@@ -36,6 +36,7 @@ import org.apache.maven.continuum.xmlrpc.project.BuildDefinition;
 import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectDependency;
 import org.apache.maven.continuum.xmlrpc.project.ProjectDeveloper;
+import org.codehaus.mevenide.continuum.ContinuumClient;
 import org.codehaus.mevenide.continuum.ServerInfo;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
@@ -55,20 +56,15 @@ import org.openide.windows.OutputWriter;
  */
 public class ProjectNode extends AbstractNode {
 
-    private RequestProcessor queue;
     private Project project;
-    private ServerInfo serverInfo;
-    private ContinuumXmlRpcClient reader;
+    private ContinuumClient client;
     private RequestProcessor.Task refreshTask;
 
     /** Creates a new instance of ProjectNode */
-    public ProjectNode(Project proj, ContinuumXmlRpcClient read,
-            ServerInfo servInfo, RequestProcessor rp) {
+    public ProjectNode(Project proj, ContinuumClient client) {
         super(Children.LEAF);
-        this.serverInfo = servInfo;
-        this.queue = rp;
+        this.client = client;
         project = proj;
-        reader = read;
         setName(project.getName());
         setDisplayName(project.getName());
         String executor = project.getExecutorId();
@@ -79,7 +75,7 @@ public class ProjectNode extends AbstractNode {
         } else if ("ant".equals(executor)) {
             setIconBaseWithExtension("org/codehaus/mevenide/continuum/AntIcon.gif");
         }
-        refreshTask = queue.create(new RepeatingRefresher());
+        refreshTask = client.getQueue().create(new RepeatingRefresher());
     }
 
     public Image getIcon(int param) {
@@ -244,7 +240,7 @@ public class ProjectNode extends AbstractNode {
 
         public void actionPerformed(ActionEvent e) {
             try {
-                reader.updateProject(project);
+                client.getXmlRpcClient().updateProject(project);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
             }
@@ -264,7 +260,7 @@ public class ProjectNode extends AbstractNode {
 
         public void actionPerformed(ActionEvent e) {
             try {
-                reader.buildProject(project.getId());
+                client.getXmlRpcClient().buildProject(project.getId());
                 refreshTask.schedule(1000);
             } catch (Exception ex) {
                 Exceptions.printStackTrace(ex);
@@ -286,7 +282,7 @@ public class ProjectNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    String pathRoot = serverInfo.getWebUrl().toExternalForm();
+                    String pathRoot = client.getServerInfo().getWebUrl().toExternalForm();
                     InputOutput io = IOProvider.getDefault().getIO(
                             "Continuum-" + project.getName(), true);
                     io.select();
@@ -294,7 +290,7 @@ public class ProjectNode extends AbstractNode {
                     try {
                         BufferedReader read;
                         if (pathRoot != null) {	
-                            String loginPath = pathRoot + "/security/login.action?username="+ serverInfo.getUser()+"&password="+serverInfo.getPassword()+"&method:login=login";
+                            String loginPath = pathRoot + "/security/login.action?username="+ client.getServerInfo().getUser()+"&password="+client.getServerInfo().getPassword()+"&method:login=login";
                             String path = pathRoot + "/buildOutputText.action?buildId=" + project.getLatestBuildId() + "&projectId=" + project.getId() + "&projectGroupId=" + project.getProjectGroup().getId();
                             HttpClient client = new HttpClient();
                             out.println("Connect to " + loginPath.substring(0, loginPath.indexOf("&password")));
@@ -318,7 +314,7 @@ public class ProjectNode extends AbstractNode {
                         } else {
                             read = new BufferedReader(
                                     new StringReader(
-                                    "You don't defined the URL for locating the build outputs" + " for server '" + serverInfo.getWebUrl().toString() + "'. Please go to Options dialog and under Miscellaneous update " + "your server settings."));
+                                    "You don't defined the URL for locating the build outputs" + " for server '" + client.getServerInfo().getWebUrl().toString() + "'. Please go to Options dialog and under Miscellaneous update " + "your server settings."));
                         }
                         String line = read.readLine();
                         while (line != null) {
@@ -340,7 +336,7 @@ public class ProjectNode extends AbstractNode {
 
         public void run() {
             try {
-                reader.updateProject(project);
+                client.getXmlRpcClient().updateProject(project);
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
