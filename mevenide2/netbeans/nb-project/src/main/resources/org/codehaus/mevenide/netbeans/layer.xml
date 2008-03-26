@@ -35,8 +35,6 @@
     <folder name="Templates">
             
         <folder name="Project">
-            <attr name="APISupport/Maven2" boolvalue="true"/>
-            <attr name="Maven2/Samples" boolvalue="true"/>
             <folder name="Maven2">
                 <attr name="position" intvalue="943"/>
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.netbeans.newproject.Bundle"/>
