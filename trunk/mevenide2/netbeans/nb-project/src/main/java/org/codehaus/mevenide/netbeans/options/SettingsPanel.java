@@ -28,6 +28,9 @@ import java.util.Properties;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -141,15 +144,15 @@ public class SettingsPanel extends javax.swing.JPanel {
     {
         String path = txtCommandLine.getText().trim();
         if (path.length() == 0) {
-            lblExternalVersion.setText("");
+            lblExternalVersion.setText(""); //NOI18N
             return;
         }
         File root = new File(path);
-        File lib = new File(root, "lib");
+        File lib = new File(root, "lib"); //NOI18N
         if (lib.exists()) {
             File[] jars = lib.listFiles(new FilenameFilter() {
                 public boolean accept(File dir, String name) {
-                    return name.endsWith(".jar");
+                    return name.endsWith(".jar"); //NOI18N
                 }
             });
             for (File jar : jars) {
@@ -157,16 +160,16 @@ public class SettingsPanel extends javax.swing.JPanel {
                 try
                 {
                     jf = new JarFile(jar);
-                    ZipEntry entry = jf.getEntry("META-INF/maven/org.apache.maven/maven-core/pom.properties");
+                    ZipEntry entry = jf.getEntry("META-INF/maven/org.apache.maven/maven-core/pom.properties");//NOI18N
                     if (entry != null) {
                         InputStream resourceAsStream = jf.getInputStream(entry);
                         Properties properties = new Properties();
                         properties.load( resourceAsStream );
                         if ( properties.getProperty( "builtOn" ) != null ) { //NOI18N
                             lblExternalVersion.setText(NbBundle.getMessage(SettingsPanel.class, "LBL_ExMavenVersion1", 
-                                    properties.getProperty( "version", "unknown" ), properties.getProperty( "builtOn" )));
+                                    properties.getProperty( "version", "unknown" ), properties.getProperty( "builtOn" )));//NOI18N
                         } else {
-                            lblExternalVersion.setText(NbBundle.getMessage(SettingsPanel.class, "LBL_ExMavenVersion2", properties.getProperty( "version", "unknown" )));
+                            lblExternalVersion.setText(NbBundle.getMessage(SettingsPanel.class, "LBL_ExMavenVersion2", properties.getProperty( "version", "unknown" )));//NOI18N
                         }
                         return;
                     }
@@ -183,7 +186,7 @@ public class SettingsPanel extends javax.swing.JPanel {
             }
         }
         //add red color..
-        lblExternalVersion.setText("<html>Not valid Maven installation directory.</html>");
+        lblExternalVersion.setText(org.openide.util.NbBundle.getMessage(SettingsPanel.class, "ERR_NoValidInstallation"));
     }
     
     private void initValues() {
@@ -216,6 +219,16 @@ public class SettingsPanel extends javax.swing.JPanel {
             controller.firePropChange(MavenOptionController.PROP_VALID, Boolean.valueOf(oldvalid), Boolean.valueOf(valid));
         }
         initExternalVersion();
+    }
+    
+    private ComboBoxModel createComboModel() {
+        return new DefaultComboBoxModel(
+                new String[] { 
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_weekly"), 
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Daily"),
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Always"),
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Never") });
+        
     }
     
     /** This method is called from within the constructor to
@@ -306,7 +319,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(rbChecksumNone)
                     .add(rbChecksumStrict)
                     .add(rbChecksumLax))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         pnlChecksumsLayout.setVerticalGroup(
             pnlChecksumsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -423,7 +436,7 @@ public class SettingsPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lblIndex.text")); // NOI18N
 
-        comIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Once a week", "Once a day", "On every startup", "Never" }));
+        comIndex.setModel(createComboModel());
 
         org.openide.awt.Mnemonics.setLocalizedText(btnIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnIndex.text")); // NOI18N
         btnIndex.addActionListener(new java.awt.event.ActionListener() {
@@ -472,7 +485,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                             .add(btnGoals)
                             .add(cbOffline)
                             .add(cbDebug)
@@ -487,8 +500,8 @@ public class SettingsPanel extends javax.swing.JPanel {
                             .add(lblIndex))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
-                            .add(comIndex, 0, 261, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                            .add(comIndex, 0, 271, Short.MAX_VALUE)
                             .add(cbSnapshots))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -498,12 +511,12 @@ public class SettingsPanel extends javax.swing.JPanel {
                         .add(lblCommandLine)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblEmbeddedVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblEmbeddedVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
                             .add(layout.createSequentialGroup()
-                                .add(txtCommandLine, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
+                                .add(txtCommandLine, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                                 .add(6, 6, 6)
                                 .add(btnCommandLine))
-                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblExternalVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblExternalVersion, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED))
                     .add(cbUseCommandLine))
                 .addContainerGap())
