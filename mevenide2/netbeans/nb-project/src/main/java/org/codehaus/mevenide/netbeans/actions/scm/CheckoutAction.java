@@ -17,16 +17,27 @@
 package org.codehaus.mevenide.netbeans.actions.scm;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import javax.swing.AbstractAction;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.actions.ActionsUtil;
 import org.codehaus.mevenide.netbeans.actions.scm.ui.CheckoutUI;
+import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectManager;
+import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileObject;
+import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
+import org.openide.util.Task;
+import org.openide.util.TaskListener;
 
 /**
  *
@@ -58,8 +69,25 @@ public class CheckoutAction extends AbstractAction {
         });
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (checkoutUI.getCheckoutButton() == ret) {
-            RunUtils.executeMaven(checkoutUI.getRunConfig());
-
+            final RunConfig rc = checkoutUI.getRunConfig();
+            ExecutorTask task = RunUtils.executeMaven(rc);
+            task.addTaskListener(new TaskListener() {
+                public void taskFinished(Task task) {
+                    FileObject fo = FileUtil.toFileObject(rc.getExecutionDirectory());
+                    if (fo != null) {
+                        try {
+                            Project prj = ProjectManager.getDefault().findProject(fo);
+                            if (prj != null) {
+                                OpenProjects.getDefault().open(new Project[] {prj}, false);
+                            }
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } catch (IllegalArgumentException ex) {
+                            Exceptions.printStackTrace(ex);
+                        }
+                    }
+                }
+            });
         }
     }
 
