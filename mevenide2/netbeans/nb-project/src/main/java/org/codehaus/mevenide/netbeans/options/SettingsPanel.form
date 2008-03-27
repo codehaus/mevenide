@@ -29,7 +29,7 @@
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="pnlFail" max="32767" attributes="2"/>
-                          <Component id="cbErrors" alignment="1" pref="280" max="32767" attributes="1"/>
+                          <Component id="cbErrors" alignment="1" pref="299" max="32767" attributes="1"/>
                           <Component id="btnGoals" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="cbOffline" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Component id="cbDebug" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -48,8 +48,8 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtLocalRepository" alignment="1" pref="261" max="32767" attributes="0"/>
-                          <Component id="comIndex" pref="261" max="32767" attributes="0"/>
+                          <Component id="txtLocalRepository" alignment="1" pref="271" max="32767" attributes="0"/>
+                          <Component id="comIndex" pref="271" max="32767" attributes="0"/>
                           <Component id="cbSnapshots" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -64,7 +64,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="cbUseCommandLine" alignment="0" min="-2" max="-2" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="txtCommandLine" pref="282" max="32767" attributes="0"/>
+                              <Component id="txtCommandLine" pref="294" max="32767" attributes="0"/>
                               <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
                               <Component id="btnCommandLine" linkSize="1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -107,7 +107,7 @@
                   <Component id="pnlPlugins" max="32767" attributes="1"/>
                   <Component id="pnlFail" alignment="0" max="32767" attributes="1"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="7" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="lblLocalRepository" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="btnLocalRepository" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -197,7 +197,7 @@
                       <Component id="rbChecksumStrict" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="rbChecksumLax" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="52" max="32767" attributes="0"/>
+                  <EmptySpace pref="53" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -516,13 +516,8 @@
     </Component>
     <Component class="javax.swing.JComboBox" name="comIndex">
       <Properties>
-        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-          <StringArray count="4">
-            <StringItem index="0" value="Once a week"/>
-            <StringItem index="1" value="Once a day"/>
-            <StringItem index="2" value="On every startup"/>
-            <StringItem index="3" value="Never"/>
-          </StringArray>
+        <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="createComboModel()" type="code"/>
         </Property>
       </Properties>
     </Component>
