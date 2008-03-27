@@ -23,6 +23,7 @@ package org.codehaus.mevenide.indexer.api;
  */
 public final class FieldQuery {
 
+    public static final String FIELD_ANY = "any";
     public static final String FIELD_GROUPID = "groupId";
     public static final String FIELD_ARTIFACTID = "artifactId";
     public static final String FIELD_VERSION = "version";
