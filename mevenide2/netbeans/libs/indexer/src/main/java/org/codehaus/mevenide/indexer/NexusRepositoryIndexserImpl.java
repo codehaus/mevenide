@@ -18,6 +18,7 @@ package org.codehaus.mevenide.indexer;
 
 import java.util.Map;
 import org.apache.lucene.document.Document;
+import org.codehaus.mevenide.indexer.api.FieldQuery;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.PrefixQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.InvalidArtifactRTException;
@@ -54,6 +56,7 @@ import org.codehaus.mevenide.indexer.spi.BaseQueries;
 import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
 import org.codehaus.mevenide.indexer.spi.ClassesQuery;
 import org.codehaus.mevenide.indexer.spi.DependencyInfoQueries;
+import org.codehaus.mevenide.indexer.spi.GenericFindQuery;
 import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.plexus.ContainerConfiguration;
@@ -87,7 +90,8 @@ import org.sonatype.nexus.index.updater.IndexUpdater;
  * @author Anuradha G
  */
 public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementation, 
-        BaseQueries, ChecksumQueries, ArchetypeQueries, DependencyInfoQueries,ClassesQuery {
+        BaseQueries, ChecksumQueries, ArchetypeQueries, DependencyInfoQueries,
+        ClassesQuery, GenericFindQuery {
 
     private ArtifactRepository repository;
     private NexusIndexer indexer;
@@ -718,6 +722,65 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         }
         return artifacts;
     }
+    
+    public List<NBVersionInfo> find(final List<FieldQuery> fields, List<RepositoryInfo> repos) {
+        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
+        try {
+            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+                public Object run() throws Exception {
+                    checkIndexAvailability(allrepos);
+                    loadIndexingContext(allrepos);
+                    try {
+                        BooleanQuery bq = new BooleanQuery();
+                        for (FieldQuery field : fields) {
+                            BooleanClause.Occur occur = field.getOccur() == FieldQuery.OCCUR_SHOULD ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST;
+                            String fieldName = toNexusField(field.getField());
+                            if (fieldName != null) {
+                                Query q;
+                                if (field.getMatch() == FieldQuery.MATCH_EXACT) {
+                                    q = new TermQuery(new Term(fieldName, field.getValue()));
+                                } else {
+                                    q = new PrefixQuery(new Term(fieldName, field.getValue()));
+                                }
+                                BooleanClause bc = new BooleanClause(q, occur);
+                                bq.add(bc); //NOI18N
+                            } else {
+                                //TODO when all fields, we need to create separate
+                                //queries for each field.
+                            }
+                        }
+                        Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                        infos.addAll(convertToNBVersionInfo(search));
+                    } finally {
+                        unloadIndexingContext(allrepos);
+                    }
+                    return null;
+                }
+
+            });
+        } catch (MutexException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return infos;
+    }
+    
+    private String toNexusField(String field) {
+        if (FieldQuery.FIELD_ARTIFACTID.equals(field)) {
+            return ArtifactInfo.ARTIFACT_ID;
+        } else if (FieldQuery.FIELD_GROUPID.equals(field)) {
+            return ArtifactInfo.GROUP_ID;
+        } else if (FieldQuery.FIELD_VERSION.equals(field)) {
+            return ArtifactInfo.VERSION;
+        } else if (FieldQuery.FIELD_CLASSES.equals(field)) {
+            return ArtifactInfo.NAMES;
+        } else if (FieldQuery.FIELD_NAME.equals(field)) {
+            return ArtifactInfo.NAME;
+        } else if (FieldQuery.FIELD_DESCRIPTION.equals(field)) {
+            return ArtifactInfo.DESCRIPTION;
+        }
+        return null;
+    }
 
     public void addIndexChangeListener(ChangeListener cl) {
         synchronized (changeListeners) {
@@ -801,4 +864,5 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         public void populateArtifactInfo(ArtifactIndexingContext context) throws IOException {
         }
     }
+
 }

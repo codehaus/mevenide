@@ -32,6 +32,7 @@ import org.codehaus.mevenide.indexer.spi.BaseQueries;
 import org.codehaus.mevenide.indexer.spi.ChecksumQueries;
 import org.codehaus.mevenide.indexer.spi.ClassesQuery;
 import org.codehaus.mevenide.indexer.spi.DependencyInfoQueries;
+import org.codehaus.mevenide.indexer.spi.GenericFindQuery;
 import org.codehaus.mevenide.indexer.spi.RepositoryIndexerImplementation;
 import org.openide.util.Exceptions;
 
@@ -175,7 +176,6 @@ public final class RepositoryQueries {
     
 
     public static List<NBVersionInfo> findByMD5(File file, RepositoryInfo... repos) {
-        Collection<List<RepositoryInfo>> all = splitReposByType(repos);
         List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
         try {
             String calculateChecksum = RepositoryUtil.calculateMD5Checksum(file);
@@ -274,6 +274,22 @@ public final class RepositoryQueries {
         }
         return toRet;
     }
+    
+    public static List<NBVersionInfo> find(List<FieldQuery> fields, RepositoryInfo... repos) {
+        Collection<List<RepositoryInfo>> all = splitReposByType(repos);
+        List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
+        for (List<RepositoryInfo> rps : all) {
+            RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
+            if (impl != null) {
+                GenericFindQuery gfq = impl.getCapabilityLookup().lookup(GenericFindQuery.class);
+                if (gfq != null) {
+                    toRet.addAll(gfq.find(fields, rps));
+                }
+            }
+        }
+        return toRet;
+    }
+    
 
     /**
      * 
