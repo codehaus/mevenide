@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>3.0.10</version>
+    <version>3.0.12</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>3.0.11</version>
+    <version>3.0.12</version>
     <name>NetBeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
