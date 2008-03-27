@@ -18,7 +18,7 @@ package org.codehaus.mevenide.indexer;
 
 import java.util.Map;
 import org.apache.lucene.document.Document;
-import org.codehaus.mevenide.indexer.api.FieldQuery;
+import org.codehaus.mevenide.indexer.api.QueryField;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import java.io.File;
 import java.io.IOException;
@@ -723,7 +723,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         return artifacts;
     }
     
-    public List<NBVersionInfo> find(final List<FieldQuery> fields, List<RepositoryInfo> repos) {
+    public List<NBVersionInfo> find(final List<QueryField> fields, List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
         try {
@@ -733,12 +733,12 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                     loadIndexingContext(allrepos);
                     try {
                         BooleanQuery bq = new BooleanQuery();
-                        for (FieldQuery field : fields) {
-                            BooleanClause.Occur occur = field.getOccur() == FieldQuery.OCCUR_SHOULD ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST;
+                        for (QueryField field : fields) {
+                            BooleanClause.Occur occur = field.getOccur() == QueryField.OCCUR_SHOULD ? BooleanClause.Occur.SHOULD : BooleanClause.Occur.MUST;
                             String fieldName = toNexusField(field.getField());
                             if (fieldName != null) {
                                 Query q;
-                                if (field.getMatch() == FieldQuery.MATCH_EXACT) {
+                                if (field.getMatch() == QueryField.MATCH_EXACT) {
                                     q = new TermQuery(new Term(fieldName, field.getValue()));
                                 } else {
                                     q = new PrefixQuery(new Term(fieldName, field.getValue()));
@@ -766,17 +766,17 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
     }
     
     private String toNexusField(String field) {
-        if (FieldQuery.FIELD_ARTIFACTID.equals(field)) {
+        if (QueryField.FIELD_ARTIFACTID.equals(field)) {
             return ArtifactInfo.ARTIFACT_ID;
-        } else if (FieldQuery.FIELD_GROUPID.equals(field)) {
+        } else if (QueryField.FIELD_GROUPID.equals(field)) {
             return ArtifactInfo.GROUP_ID;
-        } else if (FieldQuery.FIELD_VERSION.equals(field)) {
+        } else if (QueryField.FIELD_VERSION.equals(field)) {
             return ArtifactInfo.VERSION;
-        } else if (FieldQuery.FIELD_CLASSES.equals(field)) {
+        } else if (QueryField.FIELD_CLASSES.equals(field)) {
             return ArtifactInfo.NAMES;
-        } else if (FieldQuery.FIELD_NAME.equals(field)) {
+        } else if (QueryField.FIELD_NAME.equals(field)) {
             return ArtifactInfo.NAME;
-        } else if (FieldQuery.FIELD_DESCRIPTION.equals(field)) {
+        } else if (QueryField.FIELD_DESCRIPTION.equals(field)) {
             return ArtifactInfo.DESCRIPTION;
         }
         return null;

@@ -21,7 +21,7 @@ package org.codehaus.mevenide.indexer.api;
  * 
  * @author mkleint
  */
-public final class FieldQuery {
+public final class QueryField {
 
     public static final String FIELD_ANY = "any";
     public static final String FIELD_GROUPID = "groupId";

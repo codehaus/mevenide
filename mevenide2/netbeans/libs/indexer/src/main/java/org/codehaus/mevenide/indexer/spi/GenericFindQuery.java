@@ -18,7 +18,7 @@
 package org.codehaus.mevenide.indexer.spi;
 
 import java.util.List;
-import org.codehaus.mevenide.indexer.api.FieldQuery;
+import org.codehaus.mevenide.indexer.api.QueryField;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 
@@ -29,6 +29,6 @@ import org.codehaus.mevenide.indexer.api.RepositoryInfo;
  */
 public interface  GenericFindQuery {
     
-    public List<NBVersionInfo> find(List<FieldQuery> fields, List<RepositoryInfo> repos);
+    public List<NBVersionInfo> find(List<QueryField> fields, List<RepositoryInfo> repos);
     
 }
