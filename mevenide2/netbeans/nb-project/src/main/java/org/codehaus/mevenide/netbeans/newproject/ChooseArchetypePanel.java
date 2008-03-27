@@ -422,6 +422,7 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             super(new RemoteRepoChildren());
             setName("remote-repo-content"); //NOI18N
             setDisplayName(NbBundle.getMessage(ChooseArchetypePanel.class, "LBL_Remote"));
+            setIconBaseWithExtension("org/codehaus/mevenide/netbeans/newproject/remoterepo.png");
         }
     }
     
