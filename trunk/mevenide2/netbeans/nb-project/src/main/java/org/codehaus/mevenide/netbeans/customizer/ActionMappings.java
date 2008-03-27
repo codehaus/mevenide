@@ -218,7 +218,7 @@ public class ActionMappings extends javax.swing.JPanel {
             goalcompleter.setValueList(strs);
         }
         if (project != null) {
-            List<String> lst = ModelUtils.retrieveAllProfiles(project.getPOMFile());
+            List<String> lst = ModelUtils.retrieveAllProfiles(project.getOriginalMavenProject());
             profilecompleter.setValueList(lst);
         }
     }
