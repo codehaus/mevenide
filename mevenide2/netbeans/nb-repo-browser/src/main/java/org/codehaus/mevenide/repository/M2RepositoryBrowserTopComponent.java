@@ -18,18 +18,19 @@ package org.codehaus.mevenide.repository;
 
 import java.awt.BorderLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.List;
 import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.text.DefaultEditorKit;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.repository.register.RepositoryRegisterUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -73,7 +74,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         map.put(DefaultEditorKit.pasteAction, ExplorerUtils.actionPaste(manager));
         map.put("delete", ExplorerUtils.actionDelete(manager, true));
         associateLookup(ExplorerUtils.createLookup(manager, map));
-        pnlExplorer.add(btv, BorderLayout.CENTER);
+        pnlBrowse.add(btv, BorderLayout.CENTER);
         btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refreshRepo.png"))); //NOI18N
         btnAddRepo.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/AddRepo.png"))); //NOI18N
         btnIndex.setText(null);
@@ -86,10 +87,32 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
 //                manager.setRootContext(createRootNode());
 //            }
 //        });
+        hideFind();
     }
 
     public ExplorerManager getExplorerManager() {
         return manager;
+    }
+
+    private void hideFind() {
+        pnlFind.removeAll();
+        pnlFind.setVisible(false);
+        
+        jSplitPane1.setDividerLocation(1.0);
+        jSplitPane1.setEnabled(false);
+    }
+    
+    private void showFind(List<NBVersionInfo> infos, DialogDescriptor dd) {
+        FindResultsPanel pnl = new FindResultsPanel(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                hideFind();
+            }
+        }, dd);
+        pnl.setResults(infos);
+        pnlFind.add(pnl);
+        pnlFind.setVisible(true);
+        jSplitPane1.setEnabled(true);
+        jSplitPane1.setDividerLocation(0.5);
     }
 
     /** This method is called from within the constructor to
@@ -101,15 +124,28 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
     private void initComponents() {
 
         pnlExplorer = new javax.swing.JPanel();
-        jSeparator1 = new javax.swing.JSeparator();
+        jSplitPane1 = new javax.swing.JSplitPane();
+        pnlBrowse = new javax.swing.JPanel();
+        pnlFind = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         btnIndex = new javax.swing.JButton();
         btnAddRepo = new javax.swing.JButton();
+        btnFind = new javax.swing.JButton();
 
         setLayout(new java.awt.BorderLayout());
 
         pnlExplorer.setLayout(new java.awt.BorderLayout());
-        pnlExplorer.add(jSeparator1, java.awt.BorderLayout.PAGE_START);
+
+        jSplitPane1.setDividerSize(3);
+        jSplitPane1.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
+
+        pnlBrowse.setLayout(new java.awt.BorderLayout());
+        jSplitPane1.setTopComponent(pnlBrowse);
+
+        pnlFind.setLayout(new java.awt.BorderLayout());
+        jSplitPane1.setRightComponent(pnlFind);
+
+        pnlExplorer.add(jSplitPane1, java.awt.BorderLayout.CENTER);
 
         add(pnlExplorer, java.awt.BorderLayout.CENTER);
 
@@ -135,6 +171,17 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
             }
         });
         jToolBar1.add(btnAddRepo);
+
+        btnFind.setText("Find");
+        btnFind.setFocusable(false);
+        btnFind.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnFind.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnFind.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFindActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnFind);
 
         add(jToolBar1, java.awt.BorderLayout.PAGE_START);
     }// </editor-fold>//GEN-END:initComponents
@@ -181,12 +228,35 @@ private void btnAddRepoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
         
 }//GEN-LAST:event_btnAddRepoActionPerformed
 
+private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFindActionPerformed
+    hideFind();
+    final FindInRepoPanel pnl = new FindInRepoPanel();
+    final DialogDescriptor dd = new DialogDescriptor(pnl, "Find In Repositories");
+    Object ret = DialogDisplayer.getDefault().notify(dd);
+    if (ret == DialogDescriptor.OK_OPTION) {
+        RequestProcessor.getDefault().post(new Runnable() {
+            public void run() {
+                final List<NBVersionInfo> infos = RepositoryQueries.find(pnl.getQuery());
+                SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            showFind(infos, dd);
+                        }
+                    });
+            }
+        });
+    }
+    
+}//GEN-LAST:event_btnFindActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddRepo;
+    private javax.swing.JButton btnFind;
     private javax.swing.JButton btnIndex;
-    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JPanel pnlBrowse;
     private javax.swing.JPanel pnlExplorer;
+    private javax.swing.JPanel pnlFind;
     // End of variables declaration//GEN-END:variables
     /**
      * Gets default instance. Do not use directly: reserved for *.settings files only,

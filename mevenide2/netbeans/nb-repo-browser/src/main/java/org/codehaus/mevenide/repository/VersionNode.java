@@ -45,7 +45,7 @@ public class VersionNode extends AbstractNode {
     private boolean hasJavadoc;
     private boolean hasSources;
     private RepositoryInfo info;
-    public static Children createChildren(RepositoryInfo info,NBVersionInfo record) {
+    public static Children createChildren(RepositoryInfo info, NBVersionInfo record) {
         if (info.isLocal() && !"pom".equals(record.getType())) { //NOI18N
             try {
                 Artifact art = RepositoryUtil.createArtifact(record);
