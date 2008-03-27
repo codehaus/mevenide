@@ -219,8 +219,8 @@ public class TextValueCompleter implements DocumentListener {
                     while (tok.hasMoreTokens()) {
                         newValue = newValue + tok.nextToken();
                     }
-                    field.setText(newValue);
-                    field.setCaretPosition(count + completed.length());
+                    field.setText(newValue+" ");
+                    field.setCaretPosition(count + completed.length()+tok.countTokens()+2);
                     field.addCaretListener(caretListener);
                     return;
                 } else {
@@ -229,10 +229,10 @@ public class TextValueCompleter implements DocumentListener {
                 }
             }
             newValue = newValue + completed;
-            field.setText(newValue);
-            field.setCaretPosition(newValue.length());
+            field.setText(newValue+" ");
+            field.setCaretPosition(newValue.length()+1);
         } else {
-            field.setText(completed);
+            field.setText(completed+" ");
         }
         field.addCaretListener(caretListener);
     }
