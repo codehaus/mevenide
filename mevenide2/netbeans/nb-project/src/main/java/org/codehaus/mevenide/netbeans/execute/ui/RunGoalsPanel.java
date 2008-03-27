@@ -16,11 +16,9 @@
  */
 package org.codehaus.mevenide.netbeans.execute.ui;
 
-import java.io.File;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
@@ -101,27 +99,20 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                final List ret = ModelUtils.retrieveAllProfiles(mavenProject.getFile());
-                readChildProfiles(ret, mavenProject);
-                //omit duplicates
-                final Set set=new HashSet(ret);
+                final List ret = ModelUtils.retrieveAllProfiles(mavenProject);
+                
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
-                        profilecompleter.setValueList(new ArrayList<String>(set));
+                        profilecompleter.setValueList(ret);
                         profilecompleter.setLoading(false);
                     }
                 });
             }
         });
     }
-    private void readChildProfiles(List list,MavenProject mavenProject){
-       List<MavenProject> mps=mavenProject.getCollectedProjects();
-       
-        for (MavenProject mp : mps) {
-            List ret = ModelUtils.retrieveAllProfiles(mp.getFile());
-            list.addAll(ret);
-        }
-    }
+
+    
+    
     private String createSpaceSeparatedList(List list) {
         String str = ""; //NOI18N
         if (list != null) {

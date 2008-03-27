@@ -16,39 +16,63 @@
  */
 package org.codehaus.mevenide.netbeans.api;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.maven.execution.DefaultMavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionRequest;
+import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
-import org.apache.maven.project.build.model.ModelLineage;
+import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 
 /**
  * Various maven model related utilities.
  * @author mkleint
+ * @author Anuradha G
  */
 public final class ModelUtils {
 
     /**
-     * Get all possible profiles defined in pom and it's parents.
+     * Get all possible profiles defined .
      * 
      * @param pom
      * @return
      */
-    public static List<String> retrieveAllProfiles(File pom) {
-        List<String> values = new ArrayList<String>();
-        ModelLineage lin = EmbedderFactory.createModelLineage(pom,
-                EmbedderFactory.createOnlineEmbedder(), true);
-        List<Model> models = lin.getModelsInDescendingOrder();
-        for (Model mdl : models) {
-            List<Profile> profs = mdl.getProfiles();
-            if (profs != null) {
-                for (Profile prof : profs) {
-                    values.add(prof.getId());
-                }
+    public static List<String> retrieveAllProfiles(MavenProject mavenProject) {
+        Set<String> values = new HashSet<String>();
+        MavenProject root = getRootMavenProject(mavenProject);
+
+        /** BEGIN
+         * Sometimes Need load project again  to get getCollectedProjects correctly 
+         * may be project.getParent() related. to: Milos any Idea ?
+         */
+        MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+        req.setPomFile(root.getFile().getAbsolutePath());
+        MavenExecutionResult res = EmbedderFactory.getProjectEmbedder().readProjectWithDependencies(req);
+        root = res.getProject();
+        /*END*************************************************************/
+
+        List<MavenProject> mps = root.getCollectedProjects();
+        for (MavenProject mp : mps) {
+
+            Model model = mp.getModel();
+            List<Profile> profiles = model.getProfiles();
+            for (Profile profile : profiles) {
+                values.add(profile.getId());
             }
         }
-        return values;
+        return new ArrayList<String>(values);
+    }
+
+    private static MavenProject getRootMavenProject(MavenProject mavenProject) {
+        if (mavenProject.getParent() != null) {
+
+            return getRootMavenProject(mavenProject.getParent());
+        }
+
+        return mavenProject;
     }
 }
