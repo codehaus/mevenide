@@ -24,11 +24,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,7 +40,6 @@ import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
-import org.codehaus.mevenide.netbeans.spi.archetype.NewProjectWizardExtender;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -68,52 +64,17 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     static final String PROPERTY_CUSTOM_CREATOR = "customCreator"; //NOI18N
     private transient int index;
     private transient WizardDescriptor.Panel[] panels;
-    private transient WizardDescriptor.Panel[] basicPanels;
-    private transient WizardDescriptor.Panel[] additionalPanels;
-    private transient HashMap<WizardDescriptor.Panel, NewProjectWizardExtender> mapping;
     private transient WizardDescriptor wiz;
     private final List<ChangeListener> listeners;
-    private Archetype selectedArchetype = null;
     
     public MavenWizardIterator() {
         listeners = new ArrayList<ChangeListener>();
-        mapping = new HashMap<WizardDescriptor.Panel, NewProjectWizardExtender>();
     }
     
     public static MavenWizardIterator createIterator() {
         return new MavenWizardIterator();
     }
 
-    private void checkSelectedArchetype() {
-        final Archetype archetype = (Archetype)wiz.getProperty("archetype"); //NOI18N
-        if (archetype != null && !archetype.equals(selectedArchetype)) {
-            mapping.clear();
-            List<WizardDescriptor.Panel> addit = new ArrayList<WizardDescriptor.Panel>();
-            Collection<? extends NewProjectWizardExtender> res = Lookup.getDefault().lookupAll(NewProjectWizardExtender.class);
-            for (NewProjectWizardExtender extender : res) {
-                WizardDescriptor.FinishablePanel pnl = extender.createPanel(archetype);
-                if (pnl != null) {
-                    mapping.put(pnl, extender);
-                    addit.add(pnl);
-                }
-            }
-            additionalPanels = addit.toArray(new WizardDescriptor.Panel[addit.size()]);
-            panels = new WizardDescriptor.Panel[basicPanels.length + additionalPanels.length];
-            int i = 0;
-            for (WizardDescriptor.Panel one : basicPanels) {
-                panels[i] = one;
-                i = i + 1;
-            }
-            i = basicPanels.length;
-            for (WizardDescriptor.Panel one : additionalPanels) {
-                panels[i] = one;
-                i = i + 1;
-            }
-            selectedArchetype = archetype;
-            updateSteps();
-            fireChange();
-        }
-    }
     
     private WizardDescriptor.Panel[] createPanels() {
         return new WizardDescriptor.Panel[] {
@@ -177,12 +138,8 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
                 }
                 Project prj = ProjectManager.getDefault().findProject(fDir);
                 if (prj != null) {
-                    for (WizardDescriptor.Panel pnl : mapping.keySet()) {
-                        NewProjectWizardExtender ext = mapping.get(pnl);
-                        resultSet.addAll(ext.instantiate(prj, wiz));
-                    }
+                    prj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
                 }
-                prj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
             }
             return resultSet;
         } finally {
@@ -198,7 +155,6 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         }
         index = 0;
         panels = createPanels();
-        basicPanels = panels;
         updateSteps();
     }
     
@@ -207,10 +163,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
         this.wiz.putProperty("name",null); //NOI18N
         this.wiz = null;
         panels = null;
-        basicPanels = null;
-        additionalPanels = null;
         listeners.clear();
-        mapping.clear();
     }
     
     public String name() {
@@ -219,12 +172,10 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     }
     
     public boolean hasNext() {
-        checkSelectedArchetype();
         return index < panels.length - 1;
     }
     
     public boolean hasPrevious() {
-        checkSelectedArchetype();
         return index > 0;
     }
     
