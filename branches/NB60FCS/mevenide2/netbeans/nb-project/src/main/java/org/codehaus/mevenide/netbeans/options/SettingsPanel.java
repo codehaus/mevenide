@@ -22,6 +22,8 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.StringReader;
 import javax.swing.BorderFactory;
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -137,6 +139,16 @@ public class SettingsPanel extends javax.swing.JPanel {
         }
     }
     
+    private ComboBoxModel createComboModel() {
+        return new DefaultComboBoxModel(
+                new String[] { 
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_weekly"), 
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Daily"),
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Always"),
+            org.openide.util.NbBundle.getMessage(SettingsPanel.class, "FREQ_Never") });
+    }
+    
+    
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -223,7 +235,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(rbChecksumNone)
                     .add(rbChecksumStrict)
                     .add(rbChecksumLax))
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         pnlChecksumsLayout.setVerticalGroup(
             pnlChecksumsLayout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -340,7 +352,7 @@ public class SettingsPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.lblIndex.text")); // NOI18N
 
-        comIndex.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Once a week", "Once a day", "On every startup", "Never" }));
+        comIndex.setModel(createComboModel());
 
         org.openide.awt.Mnemonics.setLocalizedText(btnIndex, org.openide.util.NbBundle.getMessage(SettingsPanel.class, "SettingsPanel.btnIndex.text")); // NOI18N
         btnIndex.addActionListener(new java.awt.event.ActionListener() {
@@ -385,7 +397,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, cbErrors, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
                             .add(btnGoals)
                             .add(cbOffline)
                             .add(cbDebug)
@@ -400,8 +412,8 @@ public class SettingsPanel extends javax.swing.JPanel {
                             .add(lblIndex))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
-                            .add(comIndex, 0, 261, Short.MAX_VALUE)
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtLocalRepository, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
+                            .add(comIndex, 0, 271, Short.MAX_VALUE)
                             .add(cbSnapshots))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
@@ -413,7 +425,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(cbUseCommandLine)
                             .add(layout.createSequentialGroup()
-                                .add(txtCommandLine, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                                .add(txtCommandLine, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
                                 .add(6, 6, 6)
                                 .add(btnCommandLine)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)))))
@@ -449,7 +461,7 @@ public class SettingsPanel extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                     .add(pnlPlugins, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .add(pnlFail, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 7, Short.MAX_VALUE)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblLocalRepository)
                     .add(btnLocalRepository)

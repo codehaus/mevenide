@@ -273,8 +273,8 @@ public class ActionMappings extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbSkipTests.text")); // NOI18N
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbCommandLine, "&Use external Maven for build execution");
-        cbCommandLine.setToolTipText("If checked, will build with external version of Maven. Otherwise builds with embedded Maven.");
+        org.openide.awt.Mnemonics.setLocalizedText(cbCommandLine, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_UseExternal")); // NOI18N
+        cbCommandLine.setToolTipText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TLT_UseExternal")); // NOI18N
         cbCommandLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
         cbCommandLine.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
@@ -284,7 +284,7 @@ public class ActionMappings extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(lblMappings, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_Actions")); // NOI18N
         lblMappings.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
-        org.openide.awt.Mnemonics.setLocalizedText(btnSetup, "<html><a href=\"\">Setup external Maven home</a></html>");
+        org.openide.awt.Mnemonics.setLocalizedText(btnSetup, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_SetupExternal")); // NOI18N
         btnSetup.setBorder(null);
         btnSetup.setBorderPainted(false);
         btnSetup.setContentAreaFilled(false);
@@ -298,9 +298,9 @@ public class ActionMappings extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE))
+                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
                     .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 539, Short.MAX_VALUE)
+                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(btnAdd)
@@ -321,9 +321,9 @@ public class ActionMappings extends javax.swing.JPanel {
                                 .add(cbRecursively)
                                 .add(18, 18, 18)
                                 .add(cbSkipTests))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE)
-                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 551, Short.MAX_VALUE))))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
+                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
+                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
