@@ -10,7 +10,7 @@
   <packaging>pom</packaging>
   <name>NetBeans Support</name>
   <description>NetBeans Support</description>
-  <version>3.0.10</version>
+  <version>3.0.12</version>
   <inceptionYear>2005</inceptionYear>
   <licenses>
     <license>
@@ -164,7 +164,7 @@
       <java15.home>${java.home}/..</java15.home>
       <!-- the version of netbeans we depend on-->
        <netbeans.release>RELEASE60-BETA2</netbeans.release>
-       <mevenide.nb.release>3.0.10</mevenide.nb.release>
+       <mevenide.nb.release>3.0.12</mevenide.nb.release>
   </properties>
   <!--reporting>
       <plugins>
