@@ -275,7 +275,7 @@ public final class RepositoryQueries {
         return toRet;
     }
     
-    public static List<NBVersionInfo> find(List<FieldQuery> fields, RepositoryInfo... repos) {
+    public static List<NBVersionInfo> find(List<QueryField> fields, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
         List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
         for (List<RepositoryInfo> rps : all) {

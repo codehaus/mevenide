@@ -19,7 +19,7 @@ package org.codehaus.mevenide.repository;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.mevenide.indexer.api.FieldQuery;
+import org.codehaus.mevenide.indexer.api.QueryField;
 
 /**
  *
@@ -32,26 +32,26 @@ public class FindInRepoPanel extends javax.swing.JPanel {
         initComponents();
     }
     
-    List<FieldQuery> getQuery() {
-        List<FieldQuery> fq = new ArrayList<FieldQuery>();
+    List<QueryField> getQuery() {
+        List<QueryField> fq = new ArrayList<QueryField>();
         String q = txtFind.getText().trim();
         String[]  splits = q.split(" ");
         List<String> fields = new ArrayList<String>();
-        fields.add(FieldQuery.FIELD_GROUPID);
-        fields.add(FieldQuery.FIELD_ARTIFACTID);
-        fields.add(FieldQuery.FIELD_VERSION);
+        fields.add(QueryField.FIELD_GROUPID);
+        fields.add(QueryField.FIELD_ARTIFACTID);
+        fields.add(QueryField.FIELD_VERSION);
         if (cbName.isSelected()) {
-            fields.add(FieldQuery.FIELD_NAME);
+            fields.add(QueryField.FIELD_NAME);
         }
         if (cbDescription.isSelected()) {
-            fields.add(FieldQuery.FIELD_DESCRIPTION);
+            fields.add(QueryField.FIELD_DESCRIPTION);
         }
         if (cbClasses.isSelected()) {
-            fields.add(FieldQuery.FIELD_CLASSES);
+            fields.add(QueryField.FIELD_CLASSES);
         }
         for (String one : splits) {
             for (String fld : fields) {
-                FieldQuery f = new FieldQuery();
+                QueryField f = new QueryField();
                 f.setField(fld);
                 f.setValue(one);
                 fq.add(f);
