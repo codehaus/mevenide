@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +33,6 @@ import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -46,6 +46,7 @@ import org.netbeans.modules.apisupport.project.spi.NbModuleProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.modules.SpecificationVersion;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -53,6 +54,8 @@ import org.openide.modules.SpecificationVersion;
  */
 public class MavenNbModuleImpl implements NbModuleProvider {
     private Project project;
+    private DependencyAdder dependencyAdder = new DependencyAdder();
+    private RequestProcessor.Task tsk = RequestProcessor.getDefault().create(dependencyAdder);
     
     /**
      * the property defined by nbm-maven-plugin's run-ide goal.
@@ -224,26 +227,44 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         if (dep.getVersion() == null) {
             dep.setVersion("RELEASE60"); //NOI18N
         }
-        
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-        Model model = WriterUtils.loadModel(fo); //NOI18N
-        if (model != null) {
-            Dependency mdlDep = PluginPropertyUtils.checkModelDependency(model, dep.getGroupId(), dep.getArtifactId(), true);
-            mdlDep.setVersion(dep.getVersion());
-            try {
-                WriterUtils.writePomModel(fo, model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
-                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        } else { //NOPMD
-            //TODO warn somehow?
-            //the pom file is probably being edited..
-        } 
-
+        dependencyAdder.addDependency(dep);
+        tsk.schedule(200);
         return true;
     }
+    
+    private class DependencyAdder implements Runnable {
+        List<Dependency> toAdd = new ArrayList<Dependency>();
+        
+        private synchronized void addDependency(Dependency dep) {
+            toAdd.add(dep);
+        }
+        
+        public void run() {
+            FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
+            Model model = WriterUtils.loadModel(fo); //NOI18N
+            if (model != null) {
+                synchronized (this) {
+                    for (Dependency dep : toAdd) {
+                        Dependency mdlDep = PluginPropertyUtils.checkModelDependency(model, dep.getGroupId(), dep.getArtifactId(), true);
+                        mdlDep.setVersion(dep.getVersion());
+                    }
+                    toAdd.clear();
+                }
+                try {
+                    WriterUtils.writePomModel(fo, model);
+                    ProjectURLWatcher.fireMavenProjectReload(project);
+                    project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            } else { //NOPMD
+            //TODO warn somehow?
+            //the pom file is probably being edited..
+            } 
+        }
+        
+    }
+            
 
     public NbModuleType getModuleType() {
         return NbModuleProvider.STANDALONE;
