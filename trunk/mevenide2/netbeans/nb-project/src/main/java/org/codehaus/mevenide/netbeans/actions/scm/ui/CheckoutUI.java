@@ -190,10 +190,8 @@ public class CheckoutUI extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "CheckoutUI.jLabel1.text")); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "CheckoutUI.jLabel2.text")); // NOI18N
 
-        lblFolderError.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(lblFolderError, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "LBL_Folder")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -263,7 +261,7 @@ public class CheckoutUI extends javax.swing.JPanel {
                     .add(txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .add(5, 5, 5)
                 .add(jLabel2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 13, Short.MAX_VALUE)
                 .add(lblLocalFolderDescription)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
