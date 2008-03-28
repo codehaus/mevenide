@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.actions.scm.ui;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,6 +40,7 @@ import org.openide.util.NbBundle;
 public class CheckoutUI extends javax.swing.JPanel {
 
     private static File lastFolder = new File(System.getProperty("user.home")); //NOI18N
+
     private final JButton checkoutButton;
     private Scm scm;
     private Artifact artifact;
@@ -49,18 +51,41 @@ public class CheckoutUI extends javax.swing.JPanel {
         this.artifact = artifact;
         StringBuffer buffer = new StringBuffer();
         buffer.append("<b>");//NOI18N
+
         buffer.append(artifact.getArtifactId());
         buffer.append("</b>");//NOI18N
+
         buffer.append(":");//NOI18N
+
         buffer.append("<b>");//NOI18N
+
         buffer.append(artifact.getVersion().toString());
         buffer.append("</b>");//NOI18N
+
         initComponents();
         lblDescription.setText(org.openide.util.NbBundle.getMessage(CheckoutUI.class, "LBL_Description", buffer.toString())); // NOI18N
+
         checkoutButton = new JButton(NbBundle.getMessage(CheckoutUI.class, "BTN_Checkout"));//NOI18N
         //checkoutButton.setEnabled(false);//TODO validate 
+
         load();
         txtFolder.setText(ProjectChooser.getProjectsFolder().getAbsolutePath() + File.separator + artifact.getArtifactId());
+        validateFolder();
+    }
+
+    private void validateFolder() {
+
+        File file = new File(txtFolder.getText());
+        if (file.exists() && file.list() != null && file.list().length > 0) {
+            checkoutButton.setEnabled(false);
+            lblFolderError.setForeground(Color.red);
+            lblFolderError.setText(NbBundle.getMessage(CheckoutUI.class, "LBL_Folder_Error"));
+        } else {
+            lblFolderError.setText(NbBundle.getMessage(CheckoutUI.class, "LBL_Folder"));
+            checkoutButton.setEnabled(true);
+            lblFolderError.setForeground(Color.BLACK);
+        }
+
     }
 
     private void load() {
@@ -74,8 +99,6 @@ public class CheckoutUI extends javax.swing.JPanel {
 
         }
         if (scm.getDeveloperConnection() != null) {
-
-
         } else {
 
             developerConnection.setEnabled(false);
@@ -113,6 +136,7 @@ public class CheckoutUI extends javax.swing.JPanel {
         txtUrl = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        lblFolderError = new javax.swing.JLabel();
 
         org.openide.awt.Mnemonics.setLocalizedText(lblDescription, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "LBL_Description")); // NOI18N
 
@@ -160,7 +184,11 @@ public class CheckoutUI extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(jLabel1, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "CheckoutUI.jLabel1.text")); // NOI18N
 
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         org.openide.awt.Mnemonics.setLocalizedText(jLabel2, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "CheckoutUI.jLabel2.text")); // NOI18N
+
+        lblFolderError.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        org.openide.awt.Mnemonics.setLocalizedText(lblFolderError, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "LBL_Folder")); // NOI18N
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -169,42 +197,47 @@ public class CheckoutUI extends javax.swing.JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(lblLocalFolderDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .add(chkPrintDebugInfo)
-                    .add(lblConnection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 258, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
-                    .add(layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(layout.createSequentialGroup()
-                                .add(defaultConnection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 97, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
-                                .add(developerConnection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 122, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                                .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                                    .add(jLabel2, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 442, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                                    .add(org.jdesktop.layout.GroupLayout.TRAILING, txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 450, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(10, 10, 10)
-                        .add(lblLocalFolder, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 76, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(txtFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 366, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnFile))
-                    .add(lblLocalFolderDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 297, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(lblDescription, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
                     .add(lblAuthenticationDescription, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 297, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
                         .add(10, 10, 10)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(lblUser)
                             .add(lblPassword))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 36, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 134, Short.MAX_VALUE)
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
                             .add(txtPassword)
                             .add(txtUser, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 172, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(lblActhenticationHint, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 266, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
+                        .add(lblActhenticationHint, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 266, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(lblConnection, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+                    .add(layout.createSequentialGroup()
+                        .add(10, 10, 10)
+                        .add(lblLocalFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 99, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                        .add(10, 10, 10)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(10, 10, 10)
+                                .add(lblFolderError, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                                .add(txtFolder, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 435, Short.MAX_VALUE)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(btnFile))))
+                    .add(layout.createSequentialGroup()
+                        .add(10, 10, 10)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
+                            .add(jLabel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .add(defaultConnection, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(layout.createSequentialGroup()
+                                .add(10, 10, 10)
+                                .add(jLabel2, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtUrl, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 522, Short.MAX_VALUE)
+                            .add(developerConnection, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 122, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -220,18 +253,20 @@ public class CheckoutUI extends javax.swing.JPanel {
                     .add(defaultConnection))
                 .add(3, 3, 3)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
-                    .add(txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(jLabel1))
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                    .add(jLabel1)
+                    .add(txtUrl, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(5, 5, 5)
                 .add(jLabel2)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 16, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 14, Short.MAX_VALUE)
                 .add(lblLocalFolderDescription)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(btnFile)
-                    .add(txtFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(lblLocalFolder))
-                .add(18, 18, 18)
+                    .add(lblLocalFolder)
+                    .add(txtFolder, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(5, 5, 5)
+                .add(lblFolderError, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblAuthenticationDescription)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
@@ -263,6 +298,7 @@ public class CheckoutUI extends javax.swing.JPanel {
         if (ret == JFileChooser.APPROVE_OPTION) {
             txtFolder.setText(chooser.getSelectedFile().getAbsolutePath());
             txtFolder.requestFocusInWindow();
+            validateFolder();
         }
     }//GEN-LAST:event_btnFileActionPerformed
 
@@ -295,6 +331,7 @@ public class CheckoutUI extends javax.swing.JPanel {
 
                 List<String> goals = new ArrayList<String>();
                 goals.add(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_SCM_CHECKOUT));//NOI18N
+
                 return goals;
             }
 
@@ -309,13 +346,16 @@ public class CheckoutUI extends javax.swing.JPanel {
             public Properties getProperties() {
                 Properties properties = new Properties();
                 String path = txtFolder.getText();
-               
+
                 properties.put("checkoutDirectory", path);//NOI18N
+
                 properties.put("connectionUrl", txtUrl.getText());//NOI18N
 
                 if (txtUser.getText().trim().length() != 0) {
                     properties.put("username", txtUser.getText());//NOI18N
+
                     properties.put("password ", new String(txtPassword.getPassword()));//NOI18N
+
                 }
                 return properties;
             }
@@ -333,7 +373,7 @@ public class CheckoutUI extends javax.swing.JPanel {
             }
 
             public void setOffline(Boolean bool) {
-            //
+                //
             }
 
             public boolean isRecursive() {
@@ -371,6 +411,7 @@ public class CheckoutUI extends javax.swing.JPanel {
     private javax.swing.JLabel lblAuthenticationDescription;
     private javax.swing.JLabel lblConnection;
     private javax.swing.JLabel lblDescription;
+    private javax.swing.JLabel lblFolderError;
     private javax.swing.JLabel lblLocalFolder;
     private javax.swing.JLabel lblLocalFolderDescription;
     private javax.swing.JLabel lblPassword;
