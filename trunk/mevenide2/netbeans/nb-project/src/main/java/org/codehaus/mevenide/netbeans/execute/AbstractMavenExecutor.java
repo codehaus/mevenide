@@ -330,7 +330,8 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
 
         @Override
         public boolean isEnabled() {
-            return mbps != null &&  super.isEnabled();
+            return mbps != null && config!=null && config.getProject()!=null
+                    && super.isEnabled();
         }
 
         public void setConfig(RunConfig config) {
