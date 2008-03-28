@@ -206,7 +206,9 @@ public class TextValueCompleter implements DocumentListener {
         if (separators != null) {
             int pos = field.getCaretPosition();
             String currentText = field.getText();
+             int caretPosition=0;
             StringTokenizer tok = new StringTokenizer(currentText, separators, true);
+           int tokens =tok.countTokens();
             int count = 0;
             String newValue = ""; //NOI18N
             while (tok.hasMoreTokens()) {
@@ -215,12 +217,14 @@ public class TextValueCompleter implements DocumentListener {
                     if (separators.indexOf(token.charAt(0)) != -1) {
                         newValue = newValue + token;
                     }
-                    newValue = newValue + completed;
+                    newValue = newValue + completed+separators;
+                     caretPosition=newValue.length();
                     while (tok.hasMoreTokens()) {
                         newValue = newValue + tok.nextToken();
                     }
-                    field.setText(newValue+" ");
-                    field.setCaretPosition(count + completed.length()+tok.countTokens()+2);
+                    field.setText(newValue);
+                  
+                    field.setCaretPosition(caretPosition);
                     field.addCaretListener(caretListener);
                     return;
                 } else {
@@ -228,11 +232,11 @@ public class TextValueCompleter implements DocumentListener {
                     newValue = newValue + token;
                 }
             }
-            newValue = newValue + completed;
-            field.setText(newValue+" ");
-            field.setCaretPosition(newValue.length()+1);
+            newValue = newValue + completed+separators;
+            field.setText(newValue);
+            field.setCaretPosition(newValue.length());
         } else {
-            field.setText(completed+" ");
+            field.setText(completed+separators);
         }
         field.addCaretListener(caretListener);
     }
