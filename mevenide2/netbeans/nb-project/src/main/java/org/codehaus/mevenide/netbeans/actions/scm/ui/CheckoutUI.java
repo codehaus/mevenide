@@ -162,6 +162,12 @@ public class CheckoutUI extends javax.swing.JPanel {
         lblLocalFolderDescription.setForeground(new java.awt.Color(0, 0, 102));
         org.openide.awt.Mnemonics.setLocalizedText(lblLocalFolderDescription, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "LBL_LocalFolderDescription")); // NOI18N
 
+        txtFolder.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtFolderKeyReleased(evt);
+            }
+        });
+
         org.openide.awt.Mnemonics.setLocalizedText(btnFile, org.openide.util.NbBundle.getMessage(CheckoutUI.class, "BTN_Browse")); // NOI18N
         btnFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -313,6 +319,10 @@ public class CheckoutUI extends javax.swing.JPanel {
             txtUrl.setText(scm.getDeveloperConnection());
         }
     }//GEN-LAST:event_developerConnectionActionPerformed
+
+private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtFolderKeyReleased
+   validateFolder();
+}//GEN-LAST:event_txtFolderKeyReleased
 
     public RunConfig getRunConfig() {
 
