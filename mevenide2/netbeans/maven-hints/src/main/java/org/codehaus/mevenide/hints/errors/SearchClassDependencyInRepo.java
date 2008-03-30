@@ -351,7 +351,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         public ChangeInfo implement() throws Exception {
             NBVersionInfo nbvi = null;
-            SearchDependencyUI dependencyUI = new SearchDependencyUI(clazz);
+            SearchDependencyUI dependencyUI = new SearchDependencyUI(clazz, mavProj);
 
             DialogDescriptor dd = new DialogDescriptor(dependencyUI,
                     org.openide.util.NbBundle.getMessage(SearchClassDependencyInRepo.class, "LBL_Search_Repo"));
