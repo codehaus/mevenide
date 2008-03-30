@@ -54,9 +54,6 @@
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="txtClassName">
-      <Events>
-        <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="txtClassNameKeyReleased"/>
-      </Events>
     </Component>
     <Container class="javax.swing.JScrollPane" name="treeView">
       <Properties>

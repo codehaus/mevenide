@@ -21,20 +21,29 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import org.apache.maven.model.Dependency;
 import org.codehaus.mevenide.hints.ui.nodes.ArtifactNode;
 import org.codehaus.mevenide.hints.ui.nodes.VersionNode;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -49,9 +58,13 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     private JButton addButton = new JButton(NbBundle.getMessage(SearchDependencyUI.class, "BTN_Add"));
     private BeanTreeView beanTreeView;
     private NBVersionInfo nbvi;
+    private RequestProcessor.Task task;
+    private boolean retrigger = false;
+    private NbMavenProject project;
     /** Creates new form SearchDependencyUI */
-    public SearchDependencyUI(String clazz) {
+    public SearchDependencyUI(String clazz, NbMavenProject mavProj) {
         initComponents();
+        project = mavProj;
         beanTreeView = (BeanTreeView) treeView;
         beanTreeView.setPopupAllowed(false);
         beanTreeView.setRootVisible(false);
@@ -62,7 +75,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         explorerManager.addPropertyChangeListener(new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent arg0) {
-                if (arg0.getPropertyName().equals("selectedNodes")) {//NOI18N
+                if (arg0.getPropertyName().equals(ExplorerManager.PROP_SELECTED_NODES)) {//NOI18N
 
                     Node[] selectedNodes = explorerManager.getSelectedNodes();
                    
@@ -101,6 +114,20 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         });
         explorerManager.setRootContext(createEmptyNode());
         load();
+        txtClassName.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) {
+                load();
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                load();
+            }
+
+            public void changedUpdate(DocumentEvent e) {
+                load();
+            }
+            
+        });
     }
 
     public NBVersionInfo getSelectedVersion() {
@@ -111,49 +138,89 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     public JButton getAddButton() {
         return addButton;
     }
-    private RequestProcessor.Task task;
 
     public synchronized void load() {
-        if (task != null && !task.isFinished()) {
-            task.cancel();
+        if (task == null) {
+            task = RequestProcessor.getDefault().create(new Runnable() {
+                public void run() {
+                    final String[] search = new String[1];
+                    try {
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            public void run() {
+                                lblSelected.setText(null);
+                                beanTreeView.setRootVisible(true);
+                                search[0] = getClassSearchName();
+//for debugging purposes only lblMatchingArtifacts.setText(search[0]);
+                            }
+                        });
+                    } catch (Exception ex) {
+                        Exceptions.printStackTrace(ex);
+                    }
+                    
+                    Node node;
+                    boolean visible = false;
+                    explorerManager.setRootContext(createLoadingNode());
+                    if (search[0].length() > 0) {
+                        List<NBVersionInfo> infos = RepositoryQueries.findVersionsByClass(search[0]);
+                        //the actual lucene query takes much longer than our queue
+                        // timeout, we should not start new tasks until this one is
+                        //finished.. and this one should either finish with correct data
+                        // or immediately retrigger a new search.
+                        synchronized (SearchDependencyUI.this) {
+                            if (retrigger) {
+                                retrigger = false;
+                                task.schedule(20);
+                                return;
+                            }
+                        }
+                        Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
+
+                        for (NBVersionInfo nbvi : infos) {
+                            String key = nbvi.getGroupId() + " : " + nbvi.getArtifactId();
+                            List<NBVersionInfo> get = map.get(key);
+                            if (get == null) {
+                                get = new ArrayList<NBVersionInfo>();
+                                map.put(key, get);
+                            }
+                            get.add(nbvi);
+                        }
+                        Set<String> keySet = map.keySet();
+                        if (keySet.size() > 0) {
+                            Children.Array array = new Children.Array();
+                            node = new AbstractNode(array);
+                            List<String> keyList = new ArrayList<String>(keySet);
+                            Collections.sort(keyList, new HeuristicsComparator());
+                            for (String key : keyList) {
+                                array.add(new Node[]{new ArtifactNode(key, map.get(key))});
+                            }
+                            visible = false;
+                        } else {
+                            node = createEmptyNode();
+                            visible = true;
+                        }
+                    } else {
+                        node = createEmptyNode();
+                        visible = true;
+                    }
+                    final Node fNode = node;
+                    final boolean fVisible = visible;
+                    SwingUtilities.invokeLater(new Runnable() {
+                        public void run() {
+                            beanTreeView.setRootVisible(fVisible);
+                            explorerManager.setRootContext(fNode);
+                        }
+                    });
+                    
+                }
+            }, true);
         }
-        task = RequestProcessor.getDefault().post(new Runnable() {
-
-            public void run() {
-                lblSelected.setText(null);
-                beanTreeView.setRootVisible(true);
-                explorerManager.setRootContext(createLoadingNode());
-                List<NBVersionInfo> infos = RepositoryQueries.findVersionsByClass(txtClassName.getText());
-                Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
-
-                for (NBVersionInfo nbvi : infos) {
-                    String key = nbvi.getGroupId() + " : " + nbvi.getArtifactId();
-                    List<NBVersionInfo> get = map.get(key);
-                    if (get == null) {
-                        get = new ArrayList<NBVersionInfo>();
-                        map.put(key, get);
-                    }
-                    get.add(nbvi);
-                }
-                Set<String> keySet = map.keySet();
-                if (keySet.size() > 0) {
-                    Children.Array array = new Children.Array();
-                    AbstractNode node = new AbstractNode(array);
-                    List<String> keyList = new ArrayList<String>(keySet);
-                    Collections.sort(keyList);
-                    for (String key : keyList) {
-                        array.add(new Node[]{new ArtifactNode(key, map.get(key))});
-                    }
-
-                    beanTreeView.setRootVisible(false);
-                    explorerManager.setRootContext(node);
-                } else {
-                    beanTreeView.setRootVisible(true);
-                    explorerManager.setRootContext(createEmptyNode());
-                }
-            }
-        },100);
-
+        if (!task.isFinished() && task.getDelay() == 0) {
+            retrigger = true;
+            //if running, just flag the 'retrigger' variable,
+            //chances are the task is currently doing a lucene search..
+        } else {
+            task.schedule(500);
+        }
     }
 
     public String getClassSearchName() {
@@ -176,12 +243,6 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         lblSelected = new javax.swing.JLabel();
 
         lblClassName.setText(org.openide.util.NbBundle.getMessage(SearchDependencyUI.class, "LBL_Class_Name")); // NOI18N
-
-        txtClassName.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                txtClassNameKeyReleased(evt);
-            }
-        });
 
         treeView.setBorder(javax.swing.BorderFactory.createEtchedBorder(null, javax.swing.UIManager.getDefaults().getColor("ComboBox.selectionBackground")));
 
@@ -216,10 +277,6 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 .add(lblSelected, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 14, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtClassNameKeyReleased
-    load();
-}//GEN-LAST:event_txtClassNameKeyReleased
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lblClassName;
@@ -270,4 +327,41 @@ private void txtClassNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:e
         nd.setDisplayName(NbBundle.getMessage(SearchDependencyUI.class, "Node_Empty"));
         return nd;
     }
+    
+    //TODO
+    // for netbeans projects, org.netbeans.api is the prefered item in the list
+    // for web/ejb/ear projects, javax.* are probably preferred.
+    // possibly items from groupids that are already present in the pom should also be
+    // put up front.
+    private class HeuristicsComparator implements Comparator<String> {
+        private Set<String> privilegedGroupIds = new HashSet<String>();
+        
+        private HeuristicsComparator() {
+            String packaging = project.getLookup().lookup(ProjectURLWatcher.class).getPackagingType();
+            if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+                privilegedGroupIds.add("org.netbeans.api"); //NOI18N
+            }
+            //TODO add some more heuristics
+            List<Dependency> deps = project.getOriginalMavenProject().getDependencies();
+            for (Dependency d : deps) {
+                privilegedGroupIds.add(d.getGroupId());
+            }
+        }
+
+        public int compare(String s1, String s2) {
+            String[] split1 = s1.split(":");
+            String[] split2 = s2.split(":");
+            boolean b1 = privilegedGroupIds.contains(split1[0].trim());
+            boolean b2 = privilegedGroupIds.contains(split2[0].trim());
+            if (b1 && !b2) {
+                return -1;
+            }
+            if (!b1 && b2) {
+                return 1;
+            }
+            return s1.compareTo(s2);
+        }
+        
+    }
+            
 }
