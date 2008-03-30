@@ -40,6 +40,7 @@ class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
     URI[] createPath() {
         Collection col = new ArrayList();
         col.addAll(Arrays.asList(getMavenProject().getSourceRoots(true)));
+        col.addAll(Arrays.asList(getMavenProject().getResources(true)));
         
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
@@ -48,7 +49,8 @@ class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
     
     @Override
     protected FilteringPathResourceImplementation getFilteringResources() {
-        return new ExcludingResourceImpl(getMavenProject(), true);
+        return null;
+//        return new ExcludingResourceImpl(getMavenProject(), true);
     }
     
     

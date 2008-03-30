@@ -47,6 +47,7 @@ class SourceClassPathImpl extends AbstractProjectClassPathImpl {
         if (new File(webSrc).exists()) {
             col.add(webSrc);
         }
+        col.addAll(Arrays.asList(getMavenProject().getResources(false)));
         URI[] uris = new URI[col.size()];
         uris = (URI[])col.toArray(uris);
         return uris;        
@@ -54,7 +55,8 @@ class SourceClassPathImpl extends AbstractProjectClassPathImpl {
 
     @Override
     protected FilteringPathResourceImplementation getFilteringResources() {
-        return new ExcludingResourceImpl(getMavenProject(), false);
+        return null;
+//        return new ExcludingResourceImpl(getMavenProject(), false);
     }
     
 }
