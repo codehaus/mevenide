@@ -125,7 +125,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         return str;
     }
 
-    public void readMapping(NetbeansActionMapping mapp, MavenProject project, Set profiles, ActionToGoalMapping historyMappings) {
+    public void readMapping(NetbeansActionMapping mapp, MavenProject project, ActionToGoalMapping historyMappings) {
         this.historyMappings.clear();
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);

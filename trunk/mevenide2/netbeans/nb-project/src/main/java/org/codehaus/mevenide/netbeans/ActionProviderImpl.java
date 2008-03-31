@@ -289,7 +289,7 @@ public class ActionProviderImpl implements ActionProvider {
             RunGoalsPanel pnl = new RunGoalsPanel();
             DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ActionProviderImpl.class, "TIT_Run_Maven"));
             ActionToGoalMapping maps = ActionToGoalUtils.readMappingsFromFileAttributes(project.getProjectDirectory());
-            pnl.readMapping(mapping, project.getOriginalMavenProject(), project.getAvailableProfiles(), maps);
+            pnl.readMapping(mapping, project.getOriginalMavenProject(), maps);
             pnl.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
             pnl.setOffline(MavenSettingsSingleton.getInstance().createUserSettingsModel().isOffline());
             pnl.setRecursive(true);

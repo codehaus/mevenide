@@ -22,8 +22,6 @@ import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,27 +31,17 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.UIManager;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.apache.maven.execution.DefaultMavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionRequest;
-import org.apache.maven.execution.MavenExecutionResult;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
 import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.awt.StatusDisplayer;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -188,44 +176,14 @@ public class DependenciesNode extends AbstractNode {
             });
             Object ret = DialogDisplayer.getDefault().notify(dd);
             if (pnl.getOkButton() == ret) {
-                addDependency(project, pnl.getGroupId(), pnl.getArtifactId(), pnl.getVersion(), null, pnl.getScope(), null);
+               ModelUtils. addDependency(project.getProjectDirectory().getFileObject("pom.xml")/*NOI18N*/,
+                       pnl.getGroupId(), pnl.getArtifactId(), pnl.getVersion(),
+                       null, pnl.getScope(), null,false);
             }
         }
     }
     
-    /**
-     * a somewhat api method for adding dependenciy to pom.
-     * TODO: expose exception handling..
-     */
-    public static void addDependency(NbMavenProject project, 
-            String group, 
-            String artifact, 
-            String version, 
-            String type, 
-            String scope, 
-            String classifier) {
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-        Model model = WriterUtils.loadModel(fo);
-        if (model != null) {
-            Dependency dep = PluginPropertyUtils.checkModelDependency(model, group, artifact, true);
-            dep.setVersion(version);
-            if (scope != null) {
-                dep.setScope(scope);
-            }
-            if (type != null) {
-                dep.setType(type);
-            }
-            if (classifier != null) {
-                dep.setClassifier(classifier);
-            }
-            try {
-                WriterUtils.writePomModel(fo, model);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-    
+ 
     private class DownloadJavadocSrcAction extends AbstractAction {
         private boolean javadoc;
         public DownloadJavadocSrcAction(boolean javadoc) {
