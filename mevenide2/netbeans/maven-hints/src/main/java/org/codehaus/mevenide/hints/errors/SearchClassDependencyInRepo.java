@@ -31,15 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.hints.ui.SearchDependencyUI;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.java.lexer.JavaTokenId;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.lexer.Token;
@@ -75,11 +73,12 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 "compiler.err.cant.resolve.location",//NOI18N
                 "compiler.err.doesnt.exist",//NOI18N
                 "compiler.err.not.stmt"));//NOI18N
+
     }
 
     public List<Fix> run(final CompilationInfo info, String diagnosticKey,
             final int offset, TreePath treePath, Data<Void> data) {
-        
+
         if (!SearchClassDependencyHint.isHintEnabled()) {
             return Collections.emptyList();
         }
@@ -144,7 +143,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         }
 
         List<Fix> fixes = new ArrayList<Fix>();
-        if (SearchClassDependencyHint.isSearchDialog()) { 
+        if (SearchClassDependencyHint.isSearchDialog()) {
 
             fixes.add(new MavenSearchFix(mavProj, simpleName, isTestSource));
         } else {
@@ -245,43 +244,9 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         return null;
     }
 
-    /*
-     *Copyed from org.codehaus.mevenide.netbeans.nodes.DependenciesNode
-     * 
-     *  this method should  provided as API. (mkleint)?
-     */
-    public static void addDependency(NbMavenProject project,
-            String group,
-            String artifact,
-            String version,
-            String type,
-            String scope,
-            String classifier) {
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-
-        Model model = WriterUtils.loadModel(fo);
-        if (model != null) {
-            Dependency dep = PluginPropertyUtils.checkModelDependency(model, group, artifact, true);
-            dep.setVersion(version);
-
-            dep.setScope(scope);
-
-            if (type != null) {
-                dep.setType(type);
-            }
-            if (classifier != null) {
-                dep.setClassifier(classifier);
-            }
-            try {
-                WriterUtils.writePomModel(fo, model);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
     public String getId() {
         return "MAVEN_MISSING_CLASS";//NOI18N
+
     }
 
     public String getDisplayName() {
@@ -315,8 +280,8 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         }
 
         public ChangeInfo implement() throws Exception {
-            addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
-                    nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null);//NOI18N
+            ModelUtils.addDependency(mavProj.getProjectDirectory().getFileObject("pom.xml"), nbvi.getGroupId(), nbvi.getArtifactId(),
+                    nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null, true);//NOI18N
 
             RequestProcessor.getDefault().post(new Runnable() {
 
@@ -369,8 +334,8 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             }
 
             if (nbvi != null) {
-                addDependency(mavProj, nbvi.getGroupId(), nbvi.getArtifactId(),
-                        nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null);//NOI18N
+                ModelUtils.addDependency(mavProj.getProjectDirectory().getFileObject("pom.xml"), nbvi.getGroupId(), nbvi.getArtifactId(),
+                        nbvi.getVersion(), nbvi.getType(), test ? "test" : null, null, true);//NOI18N
 
                 RequestProcessor.getDefault().post(new Runnable() {
 

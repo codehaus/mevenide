@@ -17,19 +17,14 @@
 package org.codehaus.mevenide.repository.dependency;
 
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.util.List;
 import javax.swing.AbstractAction;
 import org.apache.maven.artifact.Artifact;
-import org.apache.maven.model.Dependency;
-import org.apache.maven.model.Model;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.repository.dependency.ui.AddDependencyUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
-import org.openide.filesystems.FileObject;
 import org.openide.util.NbBundle;
 
 /**
@@ -69,45 +64,14 @@ public class AddAsDependencyAction extends AbstractAction {
         if (adui.getAddButton() == ret) {
             List<NbMavenProject> nmps = adui.getSelectedMavenProjects();
             for (NbMavenProject project : nmps) {
-                addDependency(project, record.getGroupId(), record.getArtifactId(),
-                        record.getVersion(), record.getType(), null, null);
+                ModelUtils.addDependency(project.getProjectDirectory().getFileObject("pom.xml") /*NOI18N*/,
+                        record.getGroupId(), record.getArtifactId(),
+                        record.getVersion(), record.getType(), null, null,false);
             }
 
         }
 
     }
 
-    /*
-     *Copyed from org.codehaus.mevenide.netbeans.nodes.DependenciesNode
-     * 
-     *  this method should  provided as API. (mkleint)?
-     */
-    public static void addDependency(NbMavenProject project,
-            String group,
-            String artifact,
-            String version,
-            String type,
-            String scope,
-            String classifier) {
-        FileObject fo = project.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
-        Model model = WriterUtils.loadModel(fo);
-        if (model != null) {
-            Dependency dep = PluginPropertyUtils.checkModelDependency(model, group, artifact, true);
-            dep.setVersion(version);
-            if (scope != null) {
-                dep.setScope(scope);
-            }
-            if (type != null) {
-                dep.setType(type);
-            }
-            if (classifier != null) {
-                dep.setClassifier(classifier);
-            }
-            try {
-                WriterUtils.writePomModel(fo, model);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
+
 }

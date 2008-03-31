@@ -20,9 +20,9 @@ package org.codehaus.mevenide.netbeans.output;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
-import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.util.NbBundle;
@@ -108,7 +108,8 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
         }
         
         public void outputLineAction(OutputEvent arg0) {
-            DependenciesNode.addDependency(project, group, artifact, version, type, scope, null);
+            ModelUtils.addDependency(project.getProjectDirectory().getFileObject("pom.xml")/*NOI18N*/,
+                    group, artifact, version, type, scope, null,false);
             NotifyDescriptor nd = new NotifyDescriptor.Message(NbBundle.getMessage(DependencyAnalyzeOutputProcessor.class, "MSG_Dependency", group + ":" + artifact));
             DialogDisplayer.getDefault().notify(nd);
         }
