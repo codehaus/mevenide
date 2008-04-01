@@ -183,6 +183,14 @@ public class NbArtifactResolverTest extends TestCase {
         public void setDefaultRepositoryPermissions(RepositoryPermissions permissions) {
             throw new UnsupportedOperationException("Not supported yet.");
         }
+
+        public void getArtifactMetadataFromDeploymentRepository(ArtifactMetadata arg0, ArtifactRepository arg1, File arg2, String arg3) throws TransferFailedException, ResourceDoesNotExistException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public ArtifactRepository getMirrorRepository(ArtifactRepository arg0) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
         
     }
     

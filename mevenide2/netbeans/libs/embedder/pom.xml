@@ -13,10 +13,9 @@
   <version>3.1-SNAPSHOT</version>
   <dependencies>
          <dependency>
-            <groupId>org.apache.maven</groupId>
+            <groupId>org.codehaus.mevenide.maven</groupId>
             <artifactId>maven-embedder</artifactId>
-            <version>2.1-20080305</version>
-            <classifier>mevenide</classifier>
+            <version>2.1-20080401</version>
         </dependency>
         <dependency>
             <groupId>jdom</groupId>
