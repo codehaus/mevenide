@@ -55,9 +55,9 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
     public void buildNodeView() {
         List<MavenProject> list=new ArrayList<MavenProject>(); 
         list.add(planView.getProject());
-        list.addAll(planView.getProject().getCollectedProjects());
-         Children children = NodeUtils.createBuildPlanChildren(planView.getEmbedder(),
-                    list, planView.getTasks());
+        list.addAll(planView.getCollectedProjects());
+         Children children = NodeUtils.createBuildPlanChildren(planView,
+                    list);
 
         final AbstractNode node = new AbstractNode(children) {
 
@@ -96,11 +96,6 @@ public class BuildPlanViewUI extends javax.swing.JPanel implements ExplorerManag
         return sb.toString();
     }
 
-
-
-    public MavenProject getProject() {
-        return planView.getProject();
-    }
 
     /** This method is called from within the constructor to
      * initialize the form.

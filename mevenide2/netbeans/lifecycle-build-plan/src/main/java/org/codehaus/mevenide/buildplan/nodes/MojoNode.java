@@ -17,12 +17,18 @@
 package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import org.apache.maven.lifecycle.MojoBindingUtils;
 import org.apache.maven.lifecycle.model.MojoBinding;
+import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -32,8 +38,8 @@ public class MojoNode extends AbstractNode {
 
     private MojoBinding mb;
 
-    public MojoNode(MojoBinding mb) {
-        super(createChildren(mb));
+    public MojoNode(BuildPlanView view, MavenProject nmp, MojoBinding mb) {
+        super(createChildren(view, nmp, mb), Lookups.fixed(view, nmp, mb));
         this.mb = mb;
         setDisplayName(MojoBindingUtils.toString(mb));
         setShortDescription(MojoBindingUtils.toString(mb));
@@ -51,6 +57,11 @@ public class MojoNode extends AbstractNode {
     }
 
     @Override
+    public Action[] getActions(boolean arg0) {
+        return new Action[] { new FixateVersion()};
+    }
+
+    @Override
     public String getHtmlDisplayName() {
         StringBuffer buffer = new StringBuffer("<html>");
         buffer.append(mb.getGroupId()).append(" : ").
@@ -60,14 +71,27 @@ public class MojoNode extends AbstractNode {
         return buffer.append("</html>").toString();
     }
 
-    public static Children createChildren(MojoBinding mb) {
+    public static Children createChildren(BuildPlanView view, MavenProject nmp, MojoBinding mb) {
         Children.Array array = new Children.Array();
-        Node[] nodes=new Node[mb.getConfiguration()==null? 1:2];
-        nodes[0]=new ExecutionNode(mb);
-        if(mb.getConfiguration()!=null){
-         nodes[1]=new ConfigurationNode(mb);
+        Node[] nodes = new Node[mb.getConfiguration()==null? 1:2];
+        nodes[0] = new ExecutionNode(mb);
+        if (mb.getConfiguration()!=null) {
+            nodes[1] = new ConfigurationNode(mb);
         }
         array.add(nodes);
         return array;
+    }
+    
+    private class FixateVersion extends AbstractAction {
+
+        private FixateVersion() {
+            setEnabled(mb.isLateBound());
+            putValue(Action.NAME, "Fixate version in POM");
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+        
     }
 }

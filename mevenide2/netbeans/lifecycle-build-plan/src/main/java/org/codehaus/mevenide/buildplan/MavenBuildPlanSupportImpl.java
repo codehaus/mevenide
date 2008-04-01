@@ -24,7 +24,7 @@ import org.codehaus.mevenide.netbeans.spi.lifecycle.MavenBuildPlanSupport;
  *
  * @author Anuradha
  */
-public class MavenBuildPlanSupportImpl implements MavenBuildPlanSupport{
+public class MavenBuildPlanSupportImpl implements MavenBuildPlanSupport {
 
     public MavenBuildPlanSupportImpl() {
     }
