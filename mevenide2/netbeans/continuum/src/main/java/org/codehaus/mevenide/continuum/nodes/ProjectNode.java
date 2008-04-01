@@ -73,7 +73,7 @@ public class ProjectNode extends AbstractNode {
         } else if ("maven1".equals(executor)) {
             setIconBaseWithExtension("org/codehaus/mevenide/continuum/MavenIcon.gif");
         } else if ("ant".equals(executor)) {
-            setIconBaseWithExtension("org/codehaus/mevenide/continuum/AntIcon.gif");
+            setIconBaseWithExtension("org/codehaus/mevenide/continuum/ant-freeform.png");
         }
         refreshTask = client.getQueue().create(new RepeatingRefresher());
     }

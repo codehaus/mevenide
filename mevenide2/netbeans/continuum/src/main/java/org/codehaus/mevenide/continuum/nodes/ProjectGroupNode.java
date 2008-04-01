@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.continuum.nodes;
 
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,6 +25,8 @@ import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import javax.swing.Icon;
+import javax.swing.UIManager;
 import org.apache.maven.continuum.xmlrpc.project.Project;
 import org.apache.maven.continuum.xmlrpc.project.ProjectGroupSummary;
 import org.apache.maven.continuum.xmlrpc.project.ProjectSummary;
@@ -31,6 +34,7 @@ import org.codehaus.mevenide.continuum.ContinuumClient;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.Utilities;
 
 public class ProjectGroupNode extends AbstractNode {
 
@@ -38,8 +42,8 @@ public class ProjectGroupNode extends AbstractNode {
             ContinuumClient client) {
         super(new ProjectGroupChildren(projectGroup, client));
         setName(Integer.toString(projectGroup.getId()));
-        setDisplayName(projectGroup.getName());
-        setIconBaseWithExtension("org/codehaus/mevenide/continuum/threeBrands.gif");
+        setDisplayName(projectGroup.getName()); 
+//        setIconBaseWithExtension("");
     }
 
     public Action[] getActions(boolean b) {
@@ -47,6 +51,23 @@ public class ProjectGroupNode extends AbstractNode {
         return retValue;
     }
 
+    private Image getIcon(boolean opened) {
+        Icon baseIcon = UIManager.getIcon(opened ? "Tree.openIcon" : "Tree.closedIcon"); 
+        Image badge = Utilities.loadImage("org/codehaus/mevenide/continuum/continuum-badge.png", true); //NOI18N
+        return Utilities.mergeImages(Utilities.icon2Image(baseIcon), badge, 8, 8);
+    }
+
+    @Override
+    public Image getIcon(int type) {
+        return getIcon(false);
+    }
+
+    @Override
+    public Image getOpenedIcon(int type) {
+        return getIcon(true);
+    }
+
+    
     @SuppressWarnings("unchecked")
     private static class ProjectGroupChildren extends Children.Keys {
 
