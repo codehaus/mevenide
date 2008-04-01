@@ -120,7 +120,7 @@ public final class ModelUtils {
         //read from profiles.xml
         Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
         while (it2.hasNext()) {
-            Profile prof = (Profile) it2.next();
+            org.apache.maven.settings.Profile prof = (org.apache.maven.settings.Profile) it2.next();
             profileIds.add(prof.getId());
         }
         //read from modle
