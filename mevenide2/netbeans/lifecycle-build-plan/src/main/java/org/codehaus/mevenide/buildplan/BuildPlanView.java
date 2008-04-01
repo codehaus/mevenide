@@ -152,7 +152,6 @@ public class BuildPlanView {
     }
     
     private void processProjects() {
-        System.out.println("processing..");
         synchronized (queue) {
             queue.add(getProject());
             queue.addAll(getCollectedProjects());
