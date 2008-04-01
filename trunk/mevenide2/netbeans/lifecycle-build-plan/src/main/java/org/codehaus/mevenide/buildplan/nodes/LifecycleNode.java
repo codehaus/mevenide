@@ -30,6 +30,7 @@ import org.apache.maven.lifecycle.plan.LifecyclePlannerException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.BuildPlanGroup;
 import org.codehaus.mevenide.buildplan.BuildPlanUtil;
+import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.codehaus.mevenide.netbeans.embedder.exec.NBBuildPlanner;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.plexus.component.repository.exception.ComponentLookupException;
@@ -43,6 +44,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
+import org.openide.util.lookup.Lookups;
 
 /**
  *
@@ -52,8 +54,8 @@ public class LifecycleNode extends AbstractNode {
 
     private MavenProject nmp;
 
-    public LifecycleNode(MavenEmbedder embedder, MavenProject nmp, String... tasks) {
-        super(new PhaseChildern(embedder, nmp, tasks));
+    public LifecycleNode(BuildPlanView view, MavenProject nmp) {
+        super(new PhaseChildren(view, nmp), Lookups.fixed(view, nmp));
         this.nmp = nmp;
         setDisplayName(nmp.getName() + " (" + nmp.getPackaging() + ")");
         setShortDescription(NbBundle.getMessage(LifecycleNode.class, "LBL_Lifecycle", getDisplayName()));
@@ -74,17 +76,15 @@ public class LifecycleNode extends AbstractNode {
         return new Action[]{};
     }
 
-    private static class PhaseChildern extends Children.Keys<BuildPlanGroup> {
+    private static class PhaseChildren extends Children.Keys<BuildPlanGroup> {
 
         private final BuildPlanGroup loading = new BuildPlanGroup();
-        MavenEmbedder embedder;
         MavenProject nmp;
-        String[] tasks;
+        private BuildPlanView view;
 
-        public PhaseChildern(MavenEmbedder embedder, MavenProject nmp, String[] tasks) {
-            this.embedder = embedder;
+        public PhaseChildren(BuildPlanView view, MavenProject nmp) {
             this.nmp = nmp;
-            this.tasks = tasks;
+            this.view = view;
         }
 
         @Override
@@ -96,7 +96,7 @@ public class LifecycleNode extends AbstractNode {
             Node[] ns = new Node[phaseList.size()];
             for (int i = 0; i < phaseList.size(); i++) {
                 String phase = phaseList.get(i);
-                ns[i] = new PhaseNode(phase, bpg.getMojoBindings(phase));
+                ns[i] = new PhaseNode(view, nmp, phase, bpg.getMojoBindings(phase));
             }
 
 
@@ -110,37 +110,8 @@ public class LifecycleNode extends AbstractNode {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    AggregateProgressHandle handle = AggregateProgressFactory.createSystemHandle("Constructing Build Plan", new ProgressContributor[0], null, null);
-                    handle.setInitialDelay(2000);
-                    handle.start();
-                    ProgressTransferListener.setAggregateHandle(handle);
-                    try {
-                        NBBuildPlanner buildPlanner = (NBBuildPlanner) embedder.getPlexusContainer().lookup(BuildPlanner.class);
-                        MavenSession session = buildPlanner.getMavenSession();
-                        if (session == null) {
-                            return;
-                        }
-                        List<String> list = Arrays.asList(tasks);
-
-                        BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, nmp, session);
-
-                        BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
-
-
-                        setKeys(new BuildPlanGroup[]{bpg});
-                    } catch (LifecycleLoaderException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (LifecyclePlannerException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (LifecycleSpecificationException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } catch (ComponentLookupException ex) {
-                        Exceptions.printStackTrace(ex);
-                    } finally {
-                        ProgressTransferListener.clearAggregateHandle();
-                        handle.finish();
-                    }
-
+                    BuildPlanGroup bpg = view.retrieveBuildPlanGroup(nmp);
+                    setKeys(new BuildPlanGroup[]{bpg});                    
                 }
             });
 

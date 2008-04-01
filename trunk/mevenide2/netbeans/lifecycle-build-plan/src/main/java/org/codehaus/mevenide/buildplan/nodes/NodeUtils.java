@@ -18,9 +18,9 @@ package org.codehaus.mevenide.buildplan.nodes;
 
 import java.awt.Image;
 import java.util.List;
-import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.execution.ReactorManager;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.buildplan.BuildPlanView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
@@ -51,26 +51,21 @@ public class NodeUtils {
         return nd;
     }
 
-    public static Children createBuildPlanChildren(final MavenEmbedder embedder,
-            final List<MavenProject> mps, final String... tasks) {
+    public static Children createBuildPlanChildren(final BuildPlanView view,
+            final List<MavenProject> mps) {
         final Children.Array array = new Children.Array();
 
         try {
             ReactorManager rm = new ReactorManager(mps, ReactorManager.FAIL_FAST);
             List<MavenProject> sortedProjects = rm.getSortedProjects();
             for (MavenProject mp : sortedProjects) {
-                array.add(new Node[]{new LifecycleNode(embedder, mp,
-                            tasks)
+                array.add(new Node[]{new LifecycleNode(view, mp)
                         });
             }
         } catch (Exception e) {
             Exceptions.printStackTrace(e);
         }
-
-
-
-
-
         return array;
     }
+    
 }
