@@ -236,7 +236,7 @@ public class TextValueCompleter implements DocumentListener {
             field.setText(newValue);
             field.setCaretPosition(newValue.length());
         } else {
-            field.setText(completed+separators);
+            field.setText(completed);
         }
         field.addCaretListener(caretListener);
     }
