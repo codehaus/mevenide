@@ -220,7 +220,7 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     
     @Override
     public FileObject[] getSourceRoots() {
-        //TODO??
+        //TODO instead of src/test/java, drop the resources in..
         Sources sources = ProjectUtils.getSources(project);
         SourceGroup[] groups = sources.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_JAVA);
         //#116215, 121147 just workaround the AIOOBE

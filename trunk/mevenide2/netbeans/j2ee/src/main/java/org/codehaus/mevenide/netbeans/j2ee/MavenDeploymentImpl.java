@@ -112,6 +112,8 @@ public class MavenDeploymentImpl implements MavenDeployment {
                     }
                 }
             } catch (Exception ex) {
+//                log.info(ex);
+//                log.info(ex.getCause());
                 throw new MojoExecutionException("Failed Deployment:" + ex.getMessage(), ex);//NOI18N - no localization in maven build now.
             }
         } finally {
