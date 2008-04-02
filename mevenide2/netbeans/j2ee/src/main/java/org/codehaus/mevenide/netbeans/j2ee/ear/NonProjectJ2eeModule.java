@@ -21,6 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
@@ -101,7 +102,8 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
     
     public Iterator getArchiveContents() throws IOException {
 //        System.out.println("NPJM: get archive content..");
-        return null;
+        FileObject fo = getArchive();
+        return new ContentIterator(FileUtil.getArchiveRoot(fo));
     }
     
     public FileObject getContentDirectory() throws IOException {
@@ -238,6 +240,59 @@ public class NonProjectJ2eeModule implements J2eeModuleImplementation {
         }
         return webAppAnnMetadataModel;
     }
+    
+    
+    // inspired by netbeans' webmodule codebase, not really sure what is the point
+    // of the iterator..
+    private static final class ContentIterator implements Iterator {
+        private ArrayList ch;
+        private FileObject root;
         
+        private ContentIterator(FileObject f) {
+            this.ch = new ArrayList();
+            ch.add(f);
+            this.root = f;
+        }
+        
+        public boolean hasNext() {
+            return ! ch.isEmpty();
+        }
+        
+        public Object next() {
+            FileObject f = (FileObject) ch.get(0);
+            ch.remove(0);
+            if (f.isFolder()) {
+                f.refresh();
+                FileObject[] chArr = f.getChildren();
+                for (int i = 0; i < chArr.length; i++) {
+                    ch.add(chArr [i]);
+                }
+            }
+            return new FSRootRE(root, f);
+        }
+        
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+        
+    }
+        
+    private static final class FSRootRE implements J2eeModule.RootedEntry {
+        private FileObject f;
+        private FileObject root;
+        
+        FSRootRE(FileObject rt, FileObject fo) {
+            f = fo;
+            root = rt;
+        }
+        
+        public FileObject getFileObject() {
+            return f;
+        }
+        
+        public String getRelativePath() {
+            return FileUtil.getRelativePath(root, f);
+        }
+    }
     
 }
