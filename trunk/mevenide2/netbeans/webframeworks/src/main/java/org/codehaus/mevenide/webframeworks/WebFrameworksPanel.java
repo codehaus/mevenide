@@ -17,11 +17,15 @@
 
 package org.codehaus.mevenide.webframeworks;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
@@ -49,8 +53,14 @@ public class WebFrameworksPanel extends javax.swing.JPanel implements ListSelect
     private List newExtenders = new LinkedList();
     private List usedFrameworks = new LinkedList();
     private Map<WebFrameworkProvider, WebModuleExtender> extenders = new IdentityHashMap<WebFrameworkProvider, WebModuleExtender>();
+    List<String> addedFrameworks = new LinkedList<String>();
+
     private ExtenderController controller = ExtenderController.create();
     private ModelHandle handle;
+    // ui logging
+    static final String UI_LOGGER_NAME = "org.netbeans.ui.web.project"; //NOI18N
+    static final Logger UI_LOGGER = Logger.getLogger(UI_LOGGER_NAME);
+    
     
     /** Creates new form WebFrameworksPanel */
     public WebFrameworksPanel(ProjectCustomizer.Category category, ModelHandle handle, Project prj) {
@@ -74,14 +84,14 @@ public class WebFrameworksPanel extends javax.swing.JPanel implements ListSelect
                         }
                         
                         // ui logging of the added frameworks
-//                        if ((addedFrameworkNames != null) && (addedFrameworkNames.size() > 0)) {
-//                            LogRecord logRecord = new LogRecord(Level.INFO, "UI_WEB_PROJECT_FRAMEWORK_ADDED");  //NOI18N
-//                            logRecord.setLoggerName(UI_LOGGER_NAME); //NOI18N
-//                            logRecord.setResourceBundle(NbBundle.getBundle(WebProjectProperties.class));
-//
-//                            logRecord.setParameters(addedFrameworkNames.toArray());
-//                            UI_LOGGER.log(logRecord);
-//                        }
+                        if ((addedFrameworks != null) && (addedFrameworks.size() > 0)) {
+                            LogRecord logRecord = new LogRecord(Level.INFO, "UI_WEB_PROJECT_FRAMEWORK_ADDED");  //NOI18N
+                            logRecord.setLoggerName(UI_LOGGER_NAME); //NOI18N
+                            logRecord.setResourceBundle(NbBundle.getBundle(WebFrameworksPanel.class));
+
+                            logRecord.setParameters(addedFrameworks.toArray());
+                            UI_LOGGER.log(logRecord);
+                        }
 //                    }
 //                });
             }
@@ -210,7 +220,6 @@ public class WebFrameworksPanel extends javax.swing.JPanel implements ListSelect
         gridBagConstraints.insets = new java.awt.Insets(12, 12, 0, 12);
         inner.add(panel, gridBagConstraints);
  
-        List<String> addedFrameworks = new LinkedList<String>();
         DialogDescriptor desc = new DialogDescriptor(inner, NbBundle.getMessage(WebFrameworksPanel.class, "LBL_SelectWebExtension_DialogTitle")); //NOI18N
         Object res = DialogDisplayer.getDefault().notify(desc);
         if (res.equals(NotifyDescriptor.YES_OPTION)) {
