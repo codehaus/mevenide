@@ -83,9 +83,11 @@ public final class ActionToGoalUtils {
                 }
             }
             for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
-                rc = add.createConfigForDefaultAction(action, project, lookup);
-                if (rc != null) {
-                    break;
+                if (add.isActionEnable(action, project, lookup)) {
+                    rc = add.createConfigForDefaultAction(action, project, lookup);
+                    if (rc != null) {
+                        break;
+                    }
                 }
             }
         }

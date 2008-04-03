@@ -68,7 +68,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
     /**
      * just gets the array of FOs from lookup.
      */
-    private static FileObject[] extractFileObjectsfromLookup(Lookup lookup) {
+    protected static FileObject[] extractFileObjectsfromLookup(Lookup lookup) {
         List<FileObject> files = new ArrayList<FileObject>();
         Iterator<? extends DataObject> it = lookup.lookup(new Lookup.Template<DataObject>(DataObject.class)).allInstances().iterator();
         while (it.hasNext()) {
@@ -109,8 +109,8 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                     group = grp[i].getName();
                     replaceMap.put(CLASSNAME_EXT, fos[0].getNameExt());
                     replaceMap.put(CLASSNAME, fos[0].getName());
-                    replaceMap.put(PACK_CLASSNAME, (FileUtil.getRelativePath(grp[i].getRootFolder(),
-                            fos[0].getParent()) + "." + fos[0].getName()).replace('/', '.')); //NOI18N
+                    String pack = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0].getParent());
+                    replaceMap.put(PACK_CLASSNAME, (pack + (pack.length() > 0 ? "." : "") + fos[0].getName()).replace('/', '.')); //NOI18N
                     break;
                 }
             }
@@ -118,17 +118,17 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
                 replaceMap.put(CLASSNAME_EXT, "");//NOI18N
                 replaceMap.put(CLASSNAME, "");//NOI18N
                 replaceMap.put(PACK_CLASSNAME, "");//NOI18N
-                grp = srcs.getSourceGroups("doc_root"); //NOI18N J2EE
-                for (int i = 0; i < grp.length; i++) {
-                    relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
-                    if (relPath != null) {
-                        replaceMap.put(WEB_PATH, relPath);
-                        break;
-                    }
+            }
+            grp = srcs.getSourceGroups("doc_root"); //NOI18N J2EE
+            for (int i = 0; i < grp.length; i++) {
+                relPath = FileUtil.getRelativePath(grp[i].getRootFolder(), fos[0]);
+                if (relPath != null) {
+                    replaceMap.put(WEB_PATH, relPath);
+                    break;
                 }
-                if (relPath == null) {
-                    replaceMap.put(WEB_PATH, "");//NOI18N
-                }
+            }
+            if (relPath == null) {
+                replaceMap.put(WEB_PATH, "");//NOI18N
             }
 
         }
