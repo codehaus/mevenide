@@ -113,6 +113,8 @@ public class BuildPlanView {
     
     /**
      * mavenproject instances as loaded by the project embedder.
+     * TODO this list is wrong in case the executed list of projects differs.
+     * eg. when a profile with <modules> section is activated.
      * @return
      */
     public List getCollectedProjects() {
