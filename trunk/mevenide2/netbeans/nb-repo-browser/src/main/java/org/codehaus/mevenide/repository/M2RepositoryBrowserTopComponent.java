@@ -77,10 +77,11 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         pnlBrowse.add(btv, BorderLayout.CENTER);
         btnIndex.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/refreshRepo.png"))); //NOI18N
         btnAddRepo.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/AddRepo.png"))); //NOI18N
+        btnFind.setIcon(new ImageIcon(Utilities.loadImage("org/codehaus/mevenide/repository/FindInRepo.png"))); //NOI18N
         btnIndex.setText(null);
         btnAddRepo.setText(null);
-        btnIndex.setMargin(new Insets(1, 1, 1, 1));
-        btnAddRepo.setMargin(new Insets(1, 1, 1, 1));
+        btnFind.setText(null);
+
 //        RepositoryUtil.getDefaultRepositoryIndexer().addIndexChangeListener(new ChangeListener() {
 //
 //            public void stateChanged(ChangeEvent e) {
@@ -152,7 +153,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         jToolBar1.setFloatable(false);
 
         btnIndex.setText("Index");
-        btnIndex.setToolTipText("Reindex local repository");
+        btnIndex.setToolTipText(org.openide.util.NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "LBL_REPO_Update_Indexes")); // NOI18N
         btnIndex.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnIndexActionPerformed(evt);
@@ -173,6 +174,7 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         jToolBar1.add(btnAddRepo);
 
         btnFind.setText("Find");
+        btnFind.setToolTipText(org.openide.util.NbBundle.getMessage(M2RepositoryBrowserTopComponent.class, "LBL_REPO_Find")); // NOI18N
         btnFind.setFocusable(false);
         btnFind.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnFind.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
