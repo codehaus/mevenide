@@ -39,9 +39,6 @@
     </dependencies>
     <build>
         <plugins>
-            <!-- we need to shade the archiva binaries as well.
-                 eventually just use something else/new, 
-                 the current archiva is not good for our purposes. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
