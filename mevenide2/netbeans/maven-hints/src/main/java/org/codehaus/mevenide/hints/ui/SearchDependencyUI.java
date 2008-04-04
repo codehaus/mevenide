@@ -338,8 +338,29 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         
         private HeuristicsComparator() {
             String packaging = project.getLookup().lookup(ProjectURLWatcher.class).getPackagingType();
-            if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+            if (ProjectURLWatcher.TYPE_NBM.equalsIgnoreCase(packaging)) {
                 privilegedGroupIds.add("org.netbeans.api"); //NOI18N
+            }
+            if (ProjectURLWatcher.TYPE_WAR.equalsIgnoreCase(packaging) || 
+                ProjectURLWatcher.TYPE_EAR.equalsIgnoreCase(packaging) || 
+                ProjectURLWatcher.TYPE_EJB.equalsIgnoreCase(packaging)) {
+                privilegedGroupIds.add("javax.activation");//NOI18N
+                privilegedGroupIds.add("javax.ejb");//NOI18N
+                privilegedGroupIds.add("javax.faces");//NOI18N
+                privilegedGroupIds.add("javax.j2ee");//NOI18N
+                privilegedGroupIds.add("javax.jdo");//NOI18N
+                privilegedGroupIds.add("javax.jms");//NOI18N
+                privilegedGroupIds.add("javax.mail");//NOI18N
+                privilegedGroupIds.add("javax.management");//NOI18N
+                privilegedGroupIds.add("javax.naming");//NOI18N
+                privilegedGroupIds.add("javax.persistence");//NOI18N
+                privilegedGroupIds.add("javax.portlet");//NOI18N
+                privilegedGroupIds.add("javax.resource");//NOI18N
+                privilegedGroupIds.add("javax.security");//NOI18N
+                privilegedGroupIds.add("javax.servlet");//NOI18N
+                privilegedGroupIds.add("javax.sql");//NOI18N
+                privilegedGroupIds.add("javax.transaction");//NOI18N
+                privilegedGroupIds.add("javax.xml");//NOI18N
             }
             //TODO add some more heuristics
             List<Dependency> deps = project.getOriginalMavenProject().getDependencies();
