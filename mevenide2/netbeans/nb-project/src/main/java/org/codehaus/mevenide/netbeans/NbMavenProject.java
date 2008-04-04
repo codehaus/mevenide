@@ -47,8 +47,8 @@ import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -441,7 +441,7 @@ public final class NbMavenProject implements Project {
      * gets a Collection of profile ids accessible to the project, is rather slow as it reloads the files all over again.
      */
     public Collection<String> getAvailableProfiles() {
-        return ModelUtils.retrieveAllProfiles(getOriginalMavenProject());
+        return ProfileUtils.retrieveAllProfiles(getOriginalMavenProject());
     }
 
     public synchronized Lookup getLookup() {

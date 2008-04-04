@@ -45,7 +45,7 @@ import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ModelUtils;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -218,7 +218,7 @@ public class ActionMappings extends javax.swing.JPanel {
             goalcompleter.setValueList(strs);
         }
         if (project != null) {
-            List<String> lst = ModelUtils.retrieveAllProfiles(project.getOriginalMavenProject());
+            List<String> lst = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
             profilecompleter.setValueList(lst);
         }
     }
