@@ -29,7 +29,7 @@ import javax.swing.SwingUtilities;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
-import org.codehaus.mevenide.netbeans.api.ModelUtils;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.PropertySplitter;
@@ -99,7 +99,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                final List ret = ModelUtils.retrieveAllProfiles(mavenProject);
+                final List ret = ProfileUtils.retrieveAllProfiles(mavenProject);
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
