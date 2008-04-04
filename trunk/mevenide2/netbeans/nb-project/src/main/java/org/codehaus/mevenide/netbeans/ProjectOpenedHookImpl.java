@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -32,6 +35,7 @@ import org.netbeans.spi.project.ui.ProjectOpenedHook;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.NbBundle;
 
 /**
  * openhook implementation, register global classpath and also
@@ -44,6 +48,10 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
     private NbMavenProject project;
     private List<URI> uriReferences = new ArrayList<URI>();
 
+    // ui logging
+    static final String UI_LOGGER_NAME = "org.netbeans.ui.maven.project"; //NOI18N
+    static final Logger UI_LOGGER = Logger.getLogger(UI_LOGGER_NAME);
+    
     ProjectOpenedHookImpl(NbMavenProject proj) {
         project = proj;
     }
@@ -77,6 +85,13 @@ class ProjectOpenedHookImpl extends ProjectOpenedHook {
         GlobalPathRegistry.getDefault().register(ClassPath.COMPILE, cpProvider.getProjectClassPaths(ClassPath.COMPILE));
 //        GlobalPathRegistry.getDefault().register(ClassPath.EXECUTE, cpProvider.getProjectClassPaths(ClassPath.EXECUTE));
         project.doBaseProblemChecks();
+        
+        //UI logging.. log what was the packaging type for the opened project..
+        LogRecord record = new LogRecord(Level.INFO, "UI_MAVEN_PROJECT_OPENED");
+        record.setLoggerName(UI_LOGGER_NAME); //NOI18N
+        record.setParameters(new Object[] {project.getProjectWatcher().getPackagingType()});
+        record.setResourceBundle(NbBundle.getBundle(ProjectOpenedHookImpl.class));
+        UI_LOGGER.log(record);
     }
     
     protected void projectClosed() {
