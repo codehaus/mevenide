@@ -30,6 +30,7 @@ import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.SubprojectProvider;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
+import org.openide.util.RequestProcessor;
 
 /**
  *
@@ -46,6 +47,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
             return in;
         }
 
+        @Override
         public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
             return isActionEnable(action, project, lookup);
         }
@@ -59,13 +61,30 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
             return in;
         }
 
+        @Override
         public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
             return isActionEnable(action, project, lookup);
         }
     };
 
+    private int CACHED_PLATFORM = VAL_NOT_CACHED;
+    
+    private static int VAL_NOT_CACHED = 0;
+    private static int VAL_IDE = 1;
+    private static int VAL_PLATFORM = 2;
+    private static int VAL_NOT_NB = 3;
+    
+    private RequestProcessor.Task clearingTask = RequestProcessor.getDefault().create(
+    new Runnable() {
+        public void run() {
+            CACHED_PLATFORM = VAL_NOT_CACHED;
+        }
+    });
+    
+    
     /** Creates a new instance of NbmActionGoalProvider */
     public NbmActionGoalProvider() {
+        
     }
 
     public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
@@ -74,7 +93,18 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
                 !"nbmreload".equals(action)) {
             return false;
         }
-        if (hasNbm(project) || isPlatformApp(project)) {
+        if (CACHED_PLATFORM == VAL_NOT_CACHED) {
+            if (isPlatformApp(project)) {
+                CACHED_PLATFORM = VAL_PLATFORM;
+            }
+            else if (hasNbm(project)) {
+                CACHED_PLATFORM = VAL_IDE;
+            } else {
+                CACHED_PLATFORM = VAL_NOT_NB;
+            }
+            clearingTask.schedule(500);
+        } 
+        if (CACHED_PLATFORM != VAL_NOT_NB) {
             return true;
         }
         
@@ -146,7 +176,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
         return hasNbm;
     }
-
+    
     private String guessNetbeansInstallation() {
         //TODO netbeans.home is obsolete.. what to replace it with though?
         File fil = new File(System.getProperty("netbeans.home")); //NOI18N
