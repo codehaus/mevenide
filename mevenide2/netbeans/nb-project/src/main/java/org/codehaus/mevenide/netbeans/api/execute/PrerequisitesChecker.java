@@ -17,12 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.api.execute;
 
-import org.codehaus.mevenide.netbeans.execute.*;
-
 /**
  * check wheather the given runConfig has a chance to be sucessful or needs corrective measure.
  * Usecase would be the netbeans-run-plugin which requires a netbeans-public profile with a
  * jar and assembly configurations..
+ * Alternatively can be used for post processing of the RunConfig before it gets
+ * executed.
  * @author mkleint
  */
 public interface PrerequisitesChecker {
