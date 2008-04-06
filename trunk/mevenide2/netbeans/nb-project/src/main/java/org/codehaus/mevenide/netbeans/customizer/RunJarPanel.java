@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.customizer;
 
 import java.awt.Dialog;
+import java.util.MissingResourceException;
 import javax.swing.event.DocumentEvent;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
@@ -67,28 +68,38 @@ import org.openide.util.NbBundle;
 
 /**
  * panel for displaying the Run Jar project related properties..
+ * in older version was bound to netbeans-jar-plugin, now is bound to plain
+ * exec-maven-plugin:exec
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class RunJarPanel extends javax.swing.JPanel {
+    /**deprecated items
+     */
     private static final String ARTFACTID_JAR = "maven-jar-plugin";//NOI18N
     private static final String ARITFACTID_ASSEMBLY = "maven-assembly-plugin";//NOI18N
     private static final String CONFIGURATION_EL = "configuration";//NOI18N
-
-    private static final String RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
-    private static final String RUN_WORKDIR = "netbeans.jar.run.workdir"; //NOI18N
-    private static final String RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams"; //NOI18N
+    private static final String DEPRECATED_RUN_PARAMS = "netbeans.jar.run.params"; //NOI18N
+    private static final String DEPRECATED_RUN_WORKDIR = "netbeans.jar.run.workdir"; //NOI18N
+    private static final String DEPRECATED_RUN_JVM_PARAMS = "netbeans.jar.run.jvmparams"; //NOI18N
+    private boolean isDeprecatedRun = false;
+    private boolean isDeprecatedDebug = false;
+    private Plugin jarPlugin;
+    private Plugin assemblyPlugin;
+    
+    private boolean isCurrentRun = true;
+    private boolean isCurrentDebug = true;
+    private static final String RUN_PARAMS = "exec.args"; //NOI18N
+    private static final String RUN_WORKDIR = "exec.workingdir"; //NOI18N
+    private static final String DEFAULT_DEBUG_PARAMS = "-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}"; //NOI18N
+    
     private ModelHandle handle;
     private NbMavenProject project;
     private NetbeansActionMapping run;
     private NetbeansActionMapping debug;
-    private boolean isRunCompatible = true;
-    private boolean isDebugCompatible = true;
     private String oldMainClass;
     private String oldParams;
     private String oldVMParams;
     private String oldWorkDir;
-    private Plugin jarPlugin;
-    private Plugin assemblyPlugin;
     
     public RunJarPanel(ModelHandle handle, NbMavenProject project) {
         initComponents();
@@ -130,39 +141,100 @@ public class RunJarPanel extends javax.swing.JPanel {
         txtVMOptions.getDocument().addDocumentListener(docListener);
         txtWorkDir.getDocument().addDocumentListener(docListener);
     }
+
+    /**
+     * @deprecated 
+     */
+    private void applyDeprecatedExternalChanges() throws MissingResourceException {
+        File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies"); //NOI18N
+        if (!assDir.exists()) {
+            assDir.mkdirs();
+        }
+        File assembly = new File(assDir, "netbeans-run.xml"); //NOI18N
+        if (!assembly.exists()) {
+            InputStream instr = null;
+            OutputStream outstr = null;
+            try {
+                assembly.createNewFile();
+                instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml"); //NOI18N
+                outstr = new FileOutputStream(assembly);
+                IOUtil.copy(instr, outstr);
+            } catch (IOException exc) {
+                ErrorManager.getDefault().notify(exc);
+                NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "Err_CannotCreate", assembly));
+                DialogDisplayer.getDefault().notify(nd);
+            } finally {
+                IOUtil.close(instr);
+                IOUtil.close(outstr);
+            }
+        }
+    }
     
     private void initValues() {
         run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project);
         debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
-        isRunCompatible = checkMapping(run);
-        isDebugCompatible = checkMapping(debug);
-        Profile publicProfile = handle.getNetbeansPublicProfile(false);
-        jarPlugin = null;
-        assemblyPlugin = null;
-        if (publicProfile != null && publicProfile.getBuild() != null) {
-            BuildBase bld = publicProfile.getBuild();
-            Iterator it = bld.getPlugins().iterator();
-            while (it.hasNext()) {
-                Plugin elem = (Plugin)it.next();
-                if (ARTFACTID_JAR.equals(elem.getArtifactId())) { //NOI18N
-                    jarPlugin = elem;
-                }
-                if (ARITFACTID_ASSEMBLY.equals(elem.getArtifactId())) { //NOI18N
-                    assemblyPlugin = elem;
-                }
+        isCurrentRun = checkNewMapping(run);
+        isCurrentDebug = checkNewMapping(debug);
+        System.out.println("is current=" + isCurrentRun + isCurrentDebug);
+        if (isCurrentDebug || isCurrentRun) {
+            oldWorkDir = run.getProperties().getProperty(RUN_WORKDIR);
+            if (oldWorkDir == null) {
+                oldWorkDir = debug.getProperties().getProperty(RUN_WORKDIR);
             }
-        }
-        if (jarPlugin != null) {
-            Xpp3Dom conf = (Xpp3Dom)jarPlugin.getConfiguration();
-            Xpp3Dom archive = conf.getChild("archive"); //NOI18N
-            if (archive != null) {
-                Xpp3Dom manifest = archive.getChild("manifest"); //NOI18N
-                if (manifest != null) {
-                    Xpp3Dom mainClass = manifest.getChild("mainClass"); //NOI18N
-                    if (mainClass != null) {
-                        oldMainClass = mainClass.getValue();
+            String params = run.getProperties().getProperty(RUN_PARAMS);
+            if (params == null) {
+                params = debug.getProperties().getProperty(RUN_PARAMS);
+            }
+            if (params != null) {
+                oldVMParams = splitJVMParams(params);
+                if (oldVMParams != null && oldVMParams.contains("-classpath %classpath")) {
+                    oldVMParams = oldVMParams.replace("-classpath %classpath", "");
+                }
+                oldMainClass = splitMainClass(params);
+                if (oldMainClass != null && oldMainClass.equals("${packageClassName}")) {
+                    oldMainClass = "";
+                }
+                oldParams = splitParams(params);
+            }
+        } else {
+            isDeprecatedRun = checkDeprecatedMapping(run);
+            isDeprecatedDebug = checkDeprecatedMapping(debug);
+            if (isDeprecatedDebug || isDeprecatedRun) {
+                Profile publicProfile = handle.getNetbeansPublicProfile(false);
+                jarPlugin = null;
+                assemblyPlugin = null;
+                if (publicProfile != null && publicProfile.getBuild() != null) {
+                    BuildBase bld = publicProfile.getBuild();
+                    Iterator it = bld.getPlugins().iterator();
+                    while (it.hasNext()) {
+                        Plugin elem = (Plugin)it.next();
+                        if (ARTFACTID_JAR.equals(elem.getArtifactId())) { //NOI18N
+                            jarPlugin = elem;
+                        }
+                        if (ARITFACTID_ASSEMBLY.equals(elem.getArtifactId())) { //NOI18N
+                            assemblyPlugin = elem;
+                        }
                     }
                 }
+                if (jarPlugin != null) {
+                    Xpp3Dom conf = (Xpp3Dom)jarPlugin.getConfiguration();
+                    Xpp3Dom archive = conf.getChild("archive"); //NOI18N
+                    if (archive != null) {
+                        Xpp3Dom manifest = archive.getChild("manifest"); //NOI18N
+                        if (manifest != null) {
+                            Xpp3Dom mainClass = manifest.getChild("mainClass"); //NOI18N
+                            if (mainClass != null) {
+                                oldMainClass = mainClass.getValue();
+                            }
+                        }
+                    }
+                }
+                oldParams = isDeprecatedRun ? run.getProperties().getProperty(DEPRECATED_RUN_PARAMS) :
+                                          debug.getProperties().getProperty(DEPRECATED_RUN_PARAMS);
+                oldWorkDir = isDeprecatedRun ? run.getProperties().getProperty(DEPRECATED_RUN_WORKDIR) :
+                                          debug.getProperties().getProperty(DEPRECATED_RUN_WORKDIR);
+                oldVMParams = isDeprecatedRun ? run.getProperties().getProperty(DEPRECATED_RUN_JVM_PARAMS) :
+                                            debug.getProperties().getProperty(DEPRECATED_RUN_JVM_PARAMS);
             }
         }
         
@@ -171,12 +243,6 @@ public class RunJarPanel extends javax.swing.JPanel {
         } else {
             oldMainClass = ""; //NOI18N
         }
-        oldParams = isRunCompatible ? run.getProperties().getProperty(RUN_PARAMS) :
-                                      debug.getProperties().getProperty(RUN_PARAMS);
-        oldWorkDir = isRunCompatible ? run.getProperties().getProperty(RUN_WORKDIR) :
-                                      debug.getProperties().getProperty(RUN_WORKDIR);
-        oldVMParams = isRunCompatible ? run.getProperties().getProperty(RUN_JVM_PARAMS) :
-                                        debug.getProperties().getProperty(RUN_JVM_PARAMS);
         if (oldParams != null) {
             txtArguments.setText(oldParams);
         } else {
@@ -200,7 +266,7 @@ public class RunJarPanel extends javax.swing.JPanel {
      * WARNING: Do NOT modify this code. The content of this method is
      * always regenerated by the Form Editor.
      */
-    // <editor-fold defaultstate="collapsed" desc=" Generated Code ">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         lblMainClass = new javax.swing.JLabel();
@@ -219,11 +285,6 @@ public class RunJarPanel extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(lblMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_MainClass")); // NOI18N
 
         org.openide.awt.Mnemonics.setLocalizedText(btnMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "BTN_Browse")); // NOI18N
-        btnMainClass.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnMainClassActionPerformed(evt);
-            }
-        });
 
         lblArguments.setLabelFor(txtArguments);
         org.openide.awt.Mnemonics.setLocalizedText(lblArguments, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_Arguments")); // NOI18N
@@ -314,34 +375,11 @@ public class RunJarPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnWorkDirActionPerformed
 
-    private void btnMainClassActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMainClassActionPerformed
-// TODO add your handling code here:
-    }//GEN-LAST:event_btnMainClassActionPerformed
-
     void applyExternalChanges() {
         String newMainClass = txtMainClass.getText().trim();
         if (!newMainClass.equals(oldMainClass)) {
-            File assDir = new File(new File(new File(project.getOriginalMavenProject().getBasedir(), "src"), "main"), "assemblies"); //NOI18N
-            if (!assDir.exists()) {
-                assDir.mkdirs();
-            }
-            File assembly = new File(assDir, "netbeans-run.xml"); //NOI18N
-            if (!assembly.exists()) {
-                InputStream instr = null;
-                OutputStream outstr = null;
-                try {
-                    assembly.createNewFile();
-                    instr = getClass().getResourceAsStream("/org/codehaus/mevenide/netbeans/execute/netbeans-run.xml"); //NOI18N
-                    outstr = new FileOutputStream(assembly);
-                    IOUtil.copy(instr, outstr);
-                } catch (IOException exc) {
-                    ErrorManager.getDefault().notify(exc);
-                    NotifyDescriptor nd = new NotifyDescriptor.Message(org.openide.util.NbBundle.getMessage(RunJarPanel.class, "Err_CannotCreate", assembly));
-                    DialogDisplayer.getDefault().notify(nd);
-                } finally {
-                    IOUtil.close(instr);
-                    IOUtil.close(outstr);
-                }
+            if (isDeprecatedRun || isDeprecatedDebug) {
+                applyDeprecatedExternalChanges();
             }
         }
         
@@ -349,63 +387,85 @@ public class RunJarPanel extends javax.swing.JPanel {
     
     void applyChanges() {
         String newMainClass = txtMainClass.getText().trim();
-        if (!newMainClass.equals(oldMainClass)) {
-            jarPlugin = checkJarPlugin(jarPlugin, newMainClass);
-            assemblyPlugin = checkAssemblyPlugin(assemblyPlugin);
-            handle.markAsModified(handle.getPOMModel());
-        }
         String newParams = txtArguments.getText().trim();
-        if (!newParams.equals(oldParams)) {
-            if (isRunCompatible) {
-                run.getProperties().setProperty(RUN_PARAMS, newParams);
-                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
-            }
-            if (isDebugCompatible) {
-                debug.getProperties().setProperty(RUN_PARAMS, newParams);
-                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
-            }
-        }
         String newVMParams = txtVMOptions.getText().trim();
-        if (!newVMParams.equals(oldVMParams)) {
-            if (isRunCompatible) {
-                run.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
-                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
-            }
-            if (isDebugCompatible) {
-                debug.getProperties().setProperty(RUN_JVM_PARAMS, newVMParams);
-                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
-            }
-        }
         String newWorkDir = txtWorkDir.getText().trim();
-        if (!newWorkDir.equals(oldWorkDir)) {
-            if (isRunCompatible) {
+        if (isCurrentRun || isCurrentDebug) {
+            String newAllParams = newVMParams + " -classpath %classpath "; //NOI18N
+            if (newMainClass.trim().length() > 0) {
+                newAllParams = newAllParams + newMainClass + " "; //NOI18N
+            } else {
+                newAllParams = newAllParams + "${packageClassName} "; //NOI18N
+            }
+            newAllParams = newAllParams + newParams;
+            if (isCurrentRun) {
+                run.getProperties().setProperty(RUN_PARAMS, newAllParams);
                 run.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
                 ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
-            if (isDebugCompatible) {
+            if (isCurrentDebug) {
+                debug.getProperties().setProperty(RUN_PARAMS, DEFAULT_DEBUG_PARAMS + " " + newAllParams);
                 debug.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
                 ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
-            //MEVENIDE-599
-            NetbeansActionMapping[] activeCustomMappings = ActionToGoalUtils.getActiveCustomMappings(project);
-            for (NetbeansActionMapping actionMapping : activeCustomMappings) {
-                if(actionMapping.getProperties().getProperty(RUN_WORKDIR)!=null){
-                    actionMapping.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(actionMapping, handle.getActionMappings());
+        } else if (isDeprecatedRun || isDeprecatedDebug) {
+            if (!newMainClass.equals(oldMainClass)) {
+                jarPlugin = checkJarPlugin(jarPlugin, newMainClass);
+                assemblyPlugin = checkAssemblyPlugin(assemblyPlugin);
+                handle.markAsModified(handle.getPOMModel());
+            }
+            if (!newParams.equals(oldParams)) {
+                if (isDeprecatedRun) {
+                    run.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
+                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                    handle.markAsModified(handle.getActionMappings());
+                }
+                if (isDeprecatedDebug) {
+                    debug.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
+                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
                     handle.markAsModified(handle.getActionMappings());
                 }
             }
-            
+            if (!newVMParams.equals(oldVMParams)) {
+                if (isDeprecatedRun) {
+                    run.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
+                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                    handle.markAsModified(handle.getActionMappings());
+                }
+                if (isDeprecatedDebug) {
+                    debug.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
+                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                    handle.markAsModified(handle.getActionMappings());
+                }
+            }
+            if (!newWorkDir.equals(oldWorkDir)) {
+                if (isDeprecatedRun) {
+                    run.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
+                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                    handle.markAsModified(handle.getActionMappings());
+                }
+                if (isDeprecatedDebug) {
+                    debug.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
+                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                    handle.markAsModified(handle.getActionMappings());
+                }
+                //MEVENIDE-599
+                NetbeansActionMapping[] activeCustomMappings = ActionToGoalUtils.getActiveCustomMappings(project);
+                for (NetbeansActionMapping actionMapping : activeCustomMappings) {
+                    if (actionMapping.getProperties().getProperty(DEPRECATED_RUN_WORKDIR) != null) {
+                        actionMapping.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
+                        ActionToGoalUtils.setUserActionMapping(actionMapping, handle.getActionMappings());
+                        handle.markAsModified(handle.getActionMappings());
+                    }
+                }
+
+            }
         }
     }
 
-    private boolean checkMapping(NetbeansActionMapping map) {
+    private boolean checkDeprecatedMapping(NetbeansActionMapping map) {
         Iterator it = map.getGoals().iterator();
         while (it.hasNext()) {
             String goal = (String) it.next();
@@ -415,7 +475,23 @@ public class RunJarPanel extends javax.swing.JPanel {
         }
         return false;
     }
+    
+    private boolean checkNewMapping(NetbeansActionMapping map) {
+        Iterator it = map.getGoals().iterator();
+        while (it.hasNext()) {
+            String goal = (String) it.next();
+            if (goal.matches("org\\.codehaus\\.mojo\\:exec-maven-plugin\\:(.)+\\:exec") //NOI18N
+                    || goal.indexOf("exec:exec") > -1) { //NOI18N
+                return true;
+            }
+        }
+        return false;
+    }
+    
 
+    /**
+     * @deprecated 
+     */
     private Plugin checkJarPlugin(Plugin jarPlugin, String val) {
         if (jarPlugin == null) {
             jarPlugin = new Plugin();
@@ -435,6 +511,9 @@ public class RunJarPanel extends javax.swing.JPanel {
         return jarPlugin;
     }
 
+    /**
+     * @deprecated 
+     */
     private Plugin checkAssemblyPlugin(Plugin assPlugin) {
         if (assPlugin == null) {
             assPlugin = new org.apache.maven.model.Plugin();
@@ -473,6 +552,34 @@ public class RunJarPanel extends javax.swing.JPanel {
         return child;
     }
     
+    static String splitJVMParams(String line) {
+        String[] splitted = line.split(" ");
+        String jvms = "";
+        for (String s : splitted) {
+            if (s.startsWith("-") || s.contains("%classpath")) {
+                jvms = jvms + " " + s;
+            } else if (s.equals("${packageClassName}") || s.matches("[\\w]+[\\.]{0,1}[\\w]*")) {
+                break;
+            }
+        }
+        return jvms.trim();
+    }
+    
+    static String splitMainClass(String line) {
+        String jvm = splitJVMParams(line);
+        String ln = line.substring(jvm.length()).trim();
+        String[] splitted = ln.split(" ", 2);
+        return splitted[0];
+    }
+    
+    static String splitParams(String line) {
+        String main = splitMainClass(line);
+        int i = line.indexOf(main);
+        if (i > -1) {
+            return line.substring(i + main.length()).trim();
+        }
+        return "";
+    }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMainClass;

@@ -92,6 +92,7 @@
                 </file>
             </folder>    
             <folder name="Lookup">
+                <file name="org-codehaus-mevenide-netbeans-runjar-J2seLookupProvider.instance"/>
             </folder>    
             <folder name="Customizer">
                 <file name="org-codehaus-mevenide-netbeans-customizer-BasicPanelProvider.instance">

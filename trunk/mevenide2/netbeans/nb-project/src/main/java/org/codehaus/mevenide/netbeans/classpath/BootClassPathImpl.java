@@ -84,15 +84,16 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
         this.support.removePropertyChangeListener (listener);
     }
 
-    private JavaPlatform findActivePlatform () {
+    JavaPlatform findActivePlatform () {
         activePlatformValid = true;
         if (platformManager == null) {
             platformManager = JavaPlatformManager.getDefault();
             platformManager.addPropertyChangeListener(WeakListeners.propertyChange(this, platformManager));
             ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
             watch.addPropertyChangeListener(this);
-            
         }                
+        
+        //TODO ideally we would handle this by toolchains in future.
         String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
         lastHintValue = val;
         JavaPlatform plat = getActivePlatform(val);
@@ -101,7 +102,6 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
             plat = platformManager.getDefaultPlatform();
             activePlatformValid = false;
         }
-        //TODO how to find custom compiler in m2?
         //Invalid platform ID or default platform
         return plat;
     }

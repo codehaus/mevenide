@@ -65,9 +65,13 @@
             <packaging>jar</packaging>
         </packagings>
         <goals>
-            <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-run-plugin:1.1.4:run-jar</goal>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
         </goals>
+        <properties>
+            <exec.args>-classpath %classpath ${packageClassName}</exec.args>
+            <exec.executable>java</exec.executable>
+        </properties>
     </action>
     <action>
         <actionName>debug</actionName>
@@ -75,11 +79,12 @@
             <packaging>jar</packaging>
         </packagings>
         <goals>
-            <goal>package</goal>
-            <goal>org.codehaus.mevenide:netbeans-run-plugin:1.1.4:run-jar</goal>
+            <goal>process-classes</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
         </goals>
         <properties>
-            <netbeans.jar.run.debugparams>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}</netbeans.jar.run.debugparams>
+            <exec.args>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName}</exec.args>
+            <exec.executable>java</exec.executable>
             <jpda.listen>true</jpda.listen>
         </properties>
     </action>

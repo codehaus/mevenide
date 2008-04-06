@@ -32,6 +32,8 @@ import org.openide.util.NbBundle;
  * checks if the run/debug actions with default mappings can be sucessfully executed or not.
  * checks the profile configuration...
  * @author mkleint
+ * @deprecated just for compatibility reasons there, should not
+ * be actually showing any UI, since the org.codehaus.mevenide:netbeans-run-plugin is no more default.
  */
 public class JarPackagingRunChecker implements PrerequisitesChecker {
     
