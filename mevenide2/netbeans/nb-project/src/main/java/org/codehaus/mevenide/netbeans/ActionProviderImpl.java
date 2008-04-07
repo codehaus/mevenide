@@ -16,17 +16,22 @@
  */
 package org.codehaus.mevenide.netbeans;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.StringReader;
 import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
@@ -50,6 +55,7 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.execution.ExecutorTask;
+import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
@@ -86,6 +92,7 @@ public class ActionProviderImpl implements ActionProvider {
         COMMAND_MOVE,
         COMMAND_COPY,
         "nbmreload" //TODO make actionproviders mergeble //NOI18N
+
     };
 
     /** Creates a new instance of ActionProviderImpl */
@@ -119,13 +126,14 @@ public class ActionProviderImpl implements ActionProvider {
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         if (rc == null) {
             Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.INFO, "No handling for action:" + action + ". Ignoring."); //NOI18N
+
         } else {
             setupTaskName(action, rc, lookup);
-            runGoal(action, lookup, rc,true);
+            runGoal(action, lookup, rc, true);
         }
     }
 
-    private void runGoal(String action, Lookup lookup, RunConfig config,boolean checkShowDialog) {
+    private void runGoal(String action, Lookup lookup, RunConfig config, boolean checkShowDialog) {
         // save all edited files.. maybe finetune for project's files only, however that would fail for multiprojects..
         LifecycleManager.getDefault().saveAll();
 
@@ -137,28 +145,28 @@ public class ActionProviderImpl implements ActionProvider {
             }
         }
 
-       
-       
-        if(checkShowDialog &&MavenExecutionSettings.getDefault().isShowRunDialog()){
-         RunGoalsPanel pnl = new RunGoalsPanel();
-                DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "TIT_Run_maven"));
-                pnl.readConfig(config);
-                Object retValue = DialogDisplayer.getDefault().notify(dd);
-                if (retValue == DialogDescriptor.OK_OPTION) {
-                    BeanRunConfig newConfig = new BeanRunConfig();
-                    newConfig.setExecutionDirectory(config.getExecutionDirectory());
-                    newConfig.setExecutionName(config.getExecutionName());
-                    newConfig.setTaskDisplayName(config.getTaskDisplayName());
-                    newConfig.setProject(config.getProject());
-                    pnl.applyValues(newConfig);
-                    config=newConfig;
-                }else{
-                 return;
-                }
-        } 
-         // setup executor now..   
-         ExecutorTask task = RunUtils.executeMaven(config);
-         
+
+
+        if (checkShowDialog && MavenExecutionSettings.getDefault().isShowRunDialog()) {
+            RunGoalsPanel pnl = new RunGoalsPanel();
+            DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "TIT_Run_maven"));
+            pnl.readConfig(config);
+            Object retValue = DialogDisplayer.getDefault().notify(dd);
+            if (retValue == DialogDescriptor.OK_OPTION) {
+                BeanRunConfig newConfig = new BeanRunConfig();
+                newConfig.setExecutionDirectory(config.getExecutionDirectory());
+                newConfig.setExecutionName(config.getExecutionName());
+                newConfig.setTaskDisplayName(config.getTaskDisplayName());
+                newConfig.setProject(config.getProject());
+                pnl.applyValues(newConfig);
+                config = newConfig;
+            } else {
+                return;
+            }
+        }
+        // setup executor now..   
+        ExecutorTask task = RunUtils.executeMaven(config);
+
         // fire project change on when finishing maven execution, to update the classpath etc. -MEVENIDE-83
         task.addTaskListener(new TaskListener() {
 
@@ -179,6 +187,7 @@ public class ActionProviderImpl implements ActionProvider {
         DataObject dobj = lkp.lookup(DataObject.class);
         //#118926 prevent NPE, how come the dobj is null?
         String dobjName = dobj != null ? dobj.getName() : ""; //NOI18N
+
         if (ActionProvider.COMMAND_RUN.equals(action)) {
             title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", bc.getProject().getOriginalMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_DEBUG.equals(action)) {
@@ -205,7 +214,7 @@ public class ActionProviderImpl implements ActionProvider {
             return true;
         }
 
-        
+
         return ActionToGoalUtils.isActionEnable(action, project, lookup);
     }
 
@@ -223,6 +232,10 @@ public class ActionProviderImpl implements ActionProvider {
 
     public Action createCustomPopupAction() {
         return new CustomPopupActions();
+    }
+
+    public Action createProfilesPopupAction() {
+        return new ProfilesPopupActions();
     }
 
     private final static class BasicAction extends AbstractAction implements ContextAwareAction {
@@ -283,7 +296,8 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY);
-                runGoal("custom", Lookup.EMPTY, rc,true); //NOI18N
+                runGoal("custom", Lookup.EMPTY, rc, true); //NOI18N
+
                 return;
             }
             RunGoalsPanel pnl = new RunGoalsPanel();
@@ -306,6 +320,7 @@ public class ActionProviderImpl implements ActionProvider {
                         UserActionGoalProvider usr = project.getLookup().lookup(UserActionGoalProvider.class);
                         ActionToGoalMapping mappings = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
                         String tit = "CUSTOM-" + pnl.isRememberedAs(); //NOI18N
+
                         mapping.setActionName(tit);
                         Iterator it = mappings.getActions().iterator();
                         NetbeansActionMapping exist = null;
@@ -335,7 +350,8 @@ public class ActionProviderImpl implements ActionProvider {
                 rc.setTaskDisplayName(NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build"));
 
                 setupTaskName("custom", rc, Lookup.EMPTY);
-                runGoal("custom", Lookup.EMPTY, rc,false); //NOI18N
+                runGoal("custom", Lookup.EMPTY, rc, false); //NOI18N
+
             }
         }
     }
@@ -350,7 +366,7 @@ public class ActionProviderImpl implements ActionProvider {
         }
 
         public JMenuItem getPopupPresenter() {
-           
+
             final JMenu menu = new JMenu(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_Run"));
             final JMenuItem loading = new JMenuItem(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Loading", new Object[]{}));
 
@@ -370,7 +386,54 @@ public class ActionProviderImpl implements ActionProvider {
                     menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
                     menu.remove(loading);
                 }
-            },100);
+            }, 100);
+            return menu;
+        }
+    }
+
+    private final class ProfilesPopupActions extends AbstractAction implements Presenter.Popup {
+
+        private ProfilesPopupActions() {
+            putValue(Action.NAME, NbBundle.getMessage(ActionProviderImpl.class, "LBL_Profiles"));
+        }
+
+        public void actionPerformed(java.awt.event.ActionEvent e) {
+        }
+
+        public JMenuItem getPopupPresenter() {
+
+            final JMenu menu = new JMenu(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Profiles"));
+            final JMenuItem loading = new JMenuItem(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Loading", new Object[]{}));
+
+            menu.add(loading);
+            /*using lazy construction strategy*/
+            RequestProcessor.getDefault().post(new Runnable() {
+
+                public void run() {
+                    List<String> retrieveAllProfiles = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
+                   
+                    List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles( project.getOriginalMavenProject(),false,new String [0]);
+
+                    for (final String profile : retrieveAllProfiles) {
+                        final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile, retrieveActivatedProfiles.contains(profile));
+                        menu.add(item);
+                        item.addActionListener(new ActionListener() {
+
+                            public void actionPerformed(ActionEvent e) {
+                                if (item.isSelected()) {
+                                    ProfileUtils.enableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
+                                    
+                                } else {
+                                    ProfileUtils.disableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
+                                    
+                                }
+
+                            }
+                        });
+                    }
+                    menu.remove(loading);
+                }
+            }, 100);
             return menu;
         }
     }

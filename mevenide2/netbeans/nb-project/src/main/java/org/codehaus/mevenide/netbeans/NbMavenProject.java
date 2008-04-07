@@ -169,6 +169,12 @@ public final class NbMavenProject implements Project {
         if (project == null) {
             try {
                 MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+
+                List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
+                req.addActiveProfiles(activeProfiles);
+                List<String> disableProfiles = ProfileUtils.retrieveInactiveProfiles(FileUtil.toFileObject(getPOMFile()), false,new String [0]);
+                req.addInactiveProfiles(disableProfiles);
+
                 req.setPomFile(projectFile.getAbsolutePath());
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
@@ -462,6 +468,7 @@ public final class NbMavenProject implements Project {
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
                     new M2AuxilaryConfigImpl(this),
+                    new M2ProfilesAuxilaryConfigImpl(this),
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),
                     new ProjectOpenedHookImpl(this),

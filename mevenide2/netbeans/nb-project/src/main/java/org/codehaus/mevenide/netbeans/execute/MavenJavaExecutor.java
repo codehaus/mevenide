@@ -20,7 +20,6 @@ package org.codehaus.mevenide.netbeans.execute;
 import java.lang.reflect.Field;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.*;
 import java.util.ArrayList;
@@ -39,14 +38,12 @@ import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.reactor.MavenExecutionException;
 import org.apache.maven.settings.Activation;
 import org.apache.maven.settings.ActivationProperty;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
-import org.apache.maven.settings.Settings;
-import org.apache.maven.settings.SettingsConfigurationException;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -166,7 +163,6 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                 myProfile.setActivation(act);
             }
             //TODO we need to reenact the custom dynamic profile.
-            
 //            Settings settings = embedder.buildSettings( userSettingsPath,
 //                    globalSettingsPath,
 //                    MavenExecutionSettings.getDefault().getPluginUpdatePolicy());
@@ -180,7 +176,14 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
 //            }
 //            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
 //            }
-            req.addActiveProfiles(config.getActivatedProfiles());
+            if (config.getProject() != null) {
+                List<String> active = ProfileUtils.retrieveMergedActiveProfiles(config.getProject().getOriginalMavenProject(), false, ((List<String>) config.getActivatedProfiles()).toArray(new String[0]));
+                List<String> inactive = ProfileUtils.retrieveInactiveProfiles(FileUtil.toFileObject(config.getProject().getPOMFile()), false, ((List<String>) config.getActivatedProfiles()).toArray(new String[0]));
+                req.addActiveProfiles(active);
+                req.addInactiveProfiles(inactive);
+            } else {
+                req.addActiveProfiles(config.getActivatedProfiles());
+            }
             // TODO remove explicit activation
             req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();
