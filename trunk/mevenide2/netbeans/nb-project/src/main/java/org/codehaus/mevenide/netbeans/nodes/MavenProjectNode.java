@@ -151,11 +151,13 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
             lst.add(act);
         }
         lst.add(null);
-//        lst.add(new LifecycleMapTest());
+
         lst.add(provider.createCustomPopupAction()); 
+        lst.add(provider.createProfilesPopupAction()); 
+        
         // separator
         lst.add(null);
-        lst.add(project.createRefreshAction());
+        lst.add(NbMavenProject.createRefreshAction());
         lst.add(CommonProjectActions.setAsMainProjectAction());
         lst.add(CommonProjectActions.openSubprojectsAction());
         if ("pom".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) { //NOI18N
