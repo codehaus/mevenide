@@ -43,6 +43,8 @@ import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
+import org.openide.xml.XMLUtil;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
@@ -55,6 +57,7 @@ public class ProfileUtils {
     private static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
     private static final String INACTIVEPROFILES = "inactiveProfiles";//NOI18N
     private static final String SEPERATOR = " ";//NOI18N
+    private static final String NAMESPACE =  null;//FIXME add propper namespase
 
     /**
      * 
@@ -120,30 +123,35 @@ public class ProfileUtils {
             return;
         }
 
-        Element element = ac.getConfigurationFragment(PROFILES, null, shared);
-        if (element != null) {
-            String disableProfiles = element.getAttributeNS(null, INACTIVEPROFILES);
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
+        if (element == null) {
 
-            if (disableProfiles != null && disableProfiles.length() > 0) {
-                StringTokenizer tokenizer = new StringTokenizer(disableProfiles, SEPERATOR);
-                Set<String> set = new HashSet<String>(tokenizer.countTokens());
-                while (tokenizer.hasMoreTokens()) {
-                    set.add(tokenizer.nextToken());
-                }
-                set.remove(id);
-                StringBuffer buffer = new StringBuffer();
-                for (String profle : set) {
-                    buffer.append(profle).append(SEPERATOR);
-                }
-                element.setAttributeNS(null, INACTIVEPROFILES, buffer.toString().trim());
-            }
-            String activeProfiles = element.getAttributeNS(null, ACTIVEPROFILES);
-            element.setAttributeNS(null, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
-            ac.putConfigurationFragment(element, shared);
-            Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
-            List<Project> projects = Arrays.asList(openProjects);
-            reloadProjectGroup(FileUtil.toFile(getRootProjectPom(pom).getParent()), projects);
+            String root = "project-private"; // NOI18N"
+
+            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
+            element = doc.createElementNS(NAMESPACE, PROFILES);
         }
+        String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
+
+        if (disableProfiles != null && disableProfiles.length() > 0) {
+            StringTokenizer tokenizer = new StringTokenizer(disableProfiles, SEPERATOR);
+            Set<String> set = new HashSet<String>(tokenizer.countTokens());
+            while (tokenizer.hasMoreTokens()) {
+                set.add(tokenizer.nextToken());
+            }
+            set.remove(id);
+            StringBuffer buffer = new StringBuffer();
+            for (String profle : set) {
+                buffer.append(profle).append(SEPERATOR);
+            }
+            element.setAttributeNS(NAMESPACE, INACTIVEPROFILES, buffer.toString().trim());
+        }
+        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
+        element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
+        ac.putConfigurationFragment(element, shared);
+        Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
+        List<Project> projects = Arrays.asList(openProjects);
+        reloadProjectGroup(FileUtil.toFile(getRootProjectPom(pom).getParent()), projects);
     }
 
     public static void disableProfile(FileObject pom, String id, boolean shared) {
@@ -151,9 +159,16 @@ public class ProfileUtils {
         if (ac == null) {
             return;
         }
-        Element element = ac.getConfigurationFragment(PROFILES, null, shared);
-        if (element != null) {
-            String activeProfiles = element.getAttributeNS(null, ACTIVEPROFILES);
+        
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
+        if (element == null) {
+
+            String root = "project-private"; // NOI18N"
+
+            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
+            element = doc.createElementNS(NAMESPACE, PROFILES);
+        }
+            String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
 
             if (activeProfiles != null && activeProfiles.length() > 0) {
                 StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
@@ -166,15 +181,15 @@ public class ProfileUtils {
                 for (String profle : set) {
                     buffer.append(profle).append(SEPERATOR);
                 }
-                element.setAttributeNS(null, ACTIVEPROFILES, buffer.toString().trim());
+                element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, buffer.toString().trim());
             }
-            String disableProfiles = element.getAttributeNS(null, INACTIVEPROFILES);
-            element.setAttributeNS(null, INACTIVEPROFILES, disableProfiles + SEPERATOR + id);
+            String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
+            element.setAttributeNS(NAMESPACE, INACTIVEPROFILES, disableProfiles + SEPERATOR + id);
             ac.putConfigurationFragment(element, shared);
             Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
             List<Project> projects = Arrays.asList(openProjects);
             reloadProjectGroup(FileUtil.toFile(getRootProjectPom(pom)).getParentFile(), projects);
-        }
+        
     }
 
     /**
@@ -210,10 +225,10 @@ public class ProfileUtils {
     private static List<String> retrieveActiveProfiles(AuxiliaryConfiguration ac, boolean shared) {
 
         Set<String> prifileides = new HashSet<String>();
-        Element element = ac.getConfigurationFragment(PROFILES, null, shared);
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
         if (element != null) {
 
-            String activeProfiles = element.getAttributeNS(null, ACTIVEPROFILES);
+            String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
 
             if (activeProfiles != null && activeProfiles.length() > 0) {
                 StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
@@ -229,11 +244,11 @@ public class ProfileUtils {
     private static List<String> retrieveInactiveProfiles(AuxiliaryConfiguration ac, boolean shared, String... excludes) {
 
         Set<String> prifileides = new HashSet<String>();
-        Element element = ac.getConfigurationFragment(PROFILES, null, shared);
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
         if (element != null) {
 
 
-            String disableProfiles = element.getAttributeNS(null, INACTIVEPROFILES);
+            String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
 
             if (disableProfiles != null && disableProfiles.length() > 0) {
                 StringTokenizer tokenizer = new StringTokenizer(disableProfiles, SEPERATOR);
@@ -296,7 +311,7 @@ public class ProfileUtils {
                 if (mavProj != null && projects.contains(project)) {
                     ProjectURLWatcher.fireMavenProjectReload(project);
                 }
-                Model model =   EmbedderFactory.getProjectEmbedder().readModel(mavProj.getPOMFile());
+                Model model = EmbedderFactory.getProjectEmbedder().readModel(mavProj.getPOMFile());
                 List<String> modules = model.getModules();
                 for (String name : modules) {
                     reloadProjectGroup(new File(basedir, name), projects);
