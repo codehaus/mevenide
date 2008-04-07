@@ -43,7 +43,6 @@ import org.apache.maven.settings.ActivationProperty;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -176,14 +175,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
 //            }
 //            if (MavenExecutionSettings.getDefault().isSynchronizeProxy()) {
 //            }
-            if (config.getProject() != null) {
-                List<String> active = ProfileUtils.retrieveMergedActiveProfiles(config.getProject().getOriginalMavenProject(), false, ((List<String>) config.getActivatedProfiles()).toArray(new String[0]));
-                List<String> inactive = ProfileUtils.retrieveInactiveProfiles(FileUtil.toFileObject(config.getProject().getPOMFile()), false, ((List<String>) config.getActivatedProfiles()).toArray(new String[0]));
-                req.addActiveProfiles(active);
-                req.addInactiveProfiles(inactive);
-            } else {
-                req.addActiveProfiles(config.getActivatedProfiles());
-            }
+            
+            req.addActiveProfiles(config.getActivatedProfiles());
+            
             // TODO remove explicit activation
             req.addActiveProfile(PROFILE_PUBLIC).addActiveProfile(PROFILE_PRIVATE);
             //            req.activateDefaultEventMonitor();

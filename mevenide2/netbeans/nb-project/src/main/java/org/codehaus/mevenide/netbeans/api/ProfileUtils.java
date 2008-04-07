@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,18 +26,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
 import org.apache.maven.model.Model;
-import org.apache.maven.model.Parent;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
-import org.netbeans.api.project.ProjectManager;
-import org.netbeans.api.project.ui.OpenProjects;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -55,20 +50,28 @@ public class ProfileUtils {
 
     private static final String PROFILES = "profiles";//NOI18N
     private static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
-    private static final String INACTIVEPROFILES = "inactiveProfiles";//NOI18N
     private static final String SEPERATOR = " ";//NOI18N
-    private static final String NAMESPACE =  null;//FIXME add propper namespase
+    private static final String NAMESPACE = null;//FIXME add propper namespase
 
     /**
      * 
      * 
      */
     private static AuxiliaryConfiguration getAuxiliaryConfiguration(FileObject pom) {
-        Project owner = FileOwnerQuery.getOwner(getRootProjectPom(pom));
+        Project owner = FileOwnerQuery.getOwner(pom);
         if (owner != null) {
             return owner.getLookup().lookup(M2AuxilaryConfigImpl.class);
         }
         return null;
+    }
+
+    public static List<String> retrieveActiveProfiles(MavenProject mavenProject) {
+        Set<String> prifileides = new HashSet<String>();
+        List<Profile> profiles = mavenProject.getActiveProfiles();
+        for (Profile profile : profiles) {
+            prifileides.add(profile.getId());
+        }
+        return new ArrayList<String>(prifileides);
     }
 
     public static List<String> retrieveMergedActiveProfiles(MavenProject mavenProject, boolean shared, String... includes) {
@@ -78,20 +81,13 @@ public class ProfileUtils {
         }
         Set<String> prifileides = new HashSet<String>();
 
-        List<Profile> profiles = mavenProject.getActiveProfiles();
-        for (Profile profile : profiles) {
-            prifileides.add(profile.getId());
-        }
+        prifileides.addAll(retrieveActiveProfiles(mavenProject));
 
         List<String> retrieveActiveProfiles = retrieveActiveProfiles(ac, shared);
         for (String profile : retrieveActiveProfiles) {
             prifileides.add(profile);
         }
 
-        List<String> retrieveDisableProfiles = retrieveInactiveProfiles(ac, shared, new String[0]);
-        for (String profile : retrieveDisableProfiles) {
-            prifileides.remove(profile);
-        }
         for (String profileIds : includes) {
             prifileides.add(profileIds);
         }
@@ -105,16 +101,6 @@ public class ProfileUtils {
         }
 
         return retrieveActiveProfiles(ac, shared);
-    }
-
-    public static List<String> retrieveInactiveProfiles(FileObject pom, boolean shared, String... excludes) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
-        if (ac == null) {
-            return Collections.<String>emptyList();
-        }
-
-
-        return retrieveInactiveProfiles(ac, shared, excludes);
     }
 
     public static void enableProfile(FileObject pom, String id, boolean shared) {
@@ -131,10 +117,32 @@ public class ProfileUtils {
             Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
             element = doc.createElementNS(NAMESPACE, PROFILES);
         }
-        String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
 
-        if (disableProfiles != null && disableProfiles.length() > 0) {
-            StringTokenizer tokenizer = new StringTokenizer(disableProfiles, SEPERATOR);
+
+        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
+        element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
+        ac.putConfigurationFragment(element, shared);
+
+    }
+
+    public static void disableProfile(FileObject pom, String id, boolean shared) {
+        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
+        if (ac == null) {
+            return;
+        }
+
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
+        if (element == null) {
+
+            String root = "project-private"; // NOI18N"
+
+            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
+            element = doc.createElementNS(NAMESPACE, PROFILES);
+        }
+        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
+
+        if (activeProfiles != null && activeProfiles.length() > 0) {
+            StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
             Set<String> set = new HashSet<String>(tokenizer.countTokens());
             while (tokenizer.hasMoreTokens()) {
                 set.add(tokenizer.nextToken());
@@ -144,52 +152,11 @@ public class ProfileUtils {
             for (String profle : set) {
                 buffer.append(profle).append(SEPERATOR);
             }
-            element.setAttributeNS(NAMESPACE, INACTIVEPROFILES, buffer.toString().trim());
+            element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, buffer.toString().trim());
         }
-        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
-        element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
+
         ac.putConfigurationFragment(element, shared);
-        Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
-        List<Project> projects = Arrays.asList(openProjects);
-        reloadProjectGroup(FileUtil.toFile(getRootProjectPom(pom).getParent()), projects);
-    }
 
-    public static void disableProfile(FileObject pom, String id, boolean shared) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
-        if (ac == null) {
-            return;
-        }
-        
-        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
-        if (element == null) {
-
-            String root = "project-private"; // NOI18N"
-
-            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
-            element = doc.createElementNS(NAMESPACE, PROFILES);
-        }
-            String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
-
-            if (activeProfiles != null && activeProfiles.length() > 0) {
-                StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
-                Set<String> set = new HashSet<String>(tokenizer.countTokens());
-                while (tokenizer.hasMoreTokens()) {
-                    set.add(tokenizer.nextToken());
-                }
-                set.remove(id);
-                StringBuffer buffer = new StringBuffer();
-                for (String profle : set) {
-                    buffer.append(profle).append(SEPERATOR);
-                }
-                element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, buffer.toString().trim());
-            }
-            String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
-            element.setAttributeNS(NAMESPACE, INACTIVEPROFILES, disableProfiles + SEPERATOR + id);
-            ac.putConfigurationFragment(element, shared);
-            Project[] openProjects = OpenProjects.getDefault().getOpenProjects();
-            List<Project> projects = Arrays.asList(openProjects);
-            reloadProjectGroup(FileUtil.toFile(getRootProjectPom(pom)).getParentFile(), projects);
-        
     }
 
     /**
@@ -241,31 +208,6 @@ public class ProfileUtils {
         return new ArrayList<String>(prifileides);
     }
 
-    private static List<String> retrieveInactiveProfiles(AuxiliaryConfiguration ac, boolean shared, String... excludes) {
-
-        Set<String> prifileides = new HashSet<String>();
-        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
-        if (element != null) {
-
-
-            String disableProfiles = element.getAttributeNS(NAMESPACE, INACTIVEPROFILES);
-
-            if (disableProfiles != null && disableProfiles.length() > 0) {
-                StringTokenizer tokenizer = new StringTokenizer(disableProfiles, SEPERATOR);
-
-                while (tokenizer.hasMoreTokens()) {
-                    prifileides.remove(tokenizer.nextToken());
-                }
-
-
-            }
-        }
-        for (String pid : excludes) {
-            prifileides.remove(pid);
-        }
-        return new ArrayList<String>(prifileides);
-    }
-
     private static void exteactProfiles(Set<String> profileIds, File file, Model model) {
 
         File basedir = FileUtil.normalizeFile(file);
@@ -298,55 +240,5 @@ public class ProfileUtils {
             }
         }
 
-    }
-
-    private static void reloadProjectGroup(File basedir, List<Project> projects) {
-
-        Project project;
-        try {
-            project = ProjectManager.getDefault().findProject(FileUtil.toFileObject(basedir));
-            if (project != null) {
-                NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
-
-                if (mavProj != null && projects.contains(project)) {
-                    ProjectURLWatcher.fireMavenProjectReload(project);
-                }
-                Model model = EmbedderFactory.getProjectEmbedder().readModel(mavProj.getPOMFile());
-                List<String> modules = model.getModules();
-                for (String name : modules) {
-                    reloadProjectGroup(new File(basedir, name), projects);
-                }
-            }
-        } catch (XmlPullParserException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IllegalArgumentException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-
-    }
-
-    private static FileObject getRootProjectPom(FileObject pom) {
-        try {
-
-            Model readModel = EmbedderFactory.getProjectEmbedder().readModel(FileUtil.toFile(pom));
-            Parent parent = readModel.getParent();
-            if (parent != null) {
-                FileObject grandFo = pom.getParent().getParent();
-                if (grandFo != null) {
-                    FileObject parentpom = grandFo.getFileObject("pom", "xml");//NOI18N
-
-                    if (parentpom != null) {
-                        return getRootProjectPom(parentpom);
-                    }
-                }
-            }
-        } catch (XmlPullParserException ex) {
-            Exceptions.printStackTrace(ex);
-        } catch (IOException ex) {
-            Exceptions.printStackTrace(ex);
-        }
-        return pom;
     }
 }

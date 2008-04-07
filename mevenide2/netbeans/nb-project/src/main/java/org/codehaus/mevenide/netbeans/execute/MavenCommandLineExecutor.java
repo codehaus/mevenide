@@ -26,7 +26,6 @@ import java.util.List;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.api.progress.ProgressHandle;
@@ -167,12 +166,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
         if (config.isUpdateSnapshots()) {
             toRet.add("--update-snapshots");//NOI18N
         }
-        List<String> active = config.getActivatedProfiles();
-        if(config.getProject()!=null){
-         active = ProfileUtils.retrieveMergedActiveProfiles(config.getProject().getOriginalMavenProject(), false, active.toArray(new String[0]));
-        
-         //FIXME  add inactive profiles as cli areg ?
-        }
+
         String profiles = "";//NOI18N
         
         for (Object profile : config.getActivatedProfiles()) {
