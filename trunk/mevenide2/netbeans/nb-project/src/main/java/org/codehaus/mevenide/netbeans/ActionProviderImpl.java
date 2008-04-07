@@ -17,7 +17,6 @@
 package org.codehaus.mevenide.netbeans;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.StringReader;
 import java.util.Iterator;
 import java.util.List;
@@ -411,23 +410,32 @@ public class ActionProviderImpl implements ActionProvider {
 
                 public void run() {
                     List<String> retrieveAllProfiles = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
-                   
-                    List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles( project.getOriginalMavenProject(),false,new String [0]);
 
+                    List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles(project.getOriginalMavenProject(), false, new String[0]);
+                    List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(project.getOriginalMavenProject());
                     for (final String profile : retrieveAllProfiles) {
+                        final boolean activeByDefault = activeProfiles.contains(profile);
                         final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile, retrieveActivatedProfiles.contains(profile));
+
+
                         menu.add(item);
-                        item.addActionListener(new ActionListener() {
+
+                        item.setAction(new AbstractAction(profile) {
 
                             public void actionPerformed(ActionEvent e) {
                                 if (item.isSelected()) {
                                     ProfileUtils.enableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
-                                    
+
                                 } else {
                                     ProfileUtils.disableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
-                                    
-                                }
 
+                                }
+                                ProjectURLWatcher.fireMavenProjectReload(project);
+                            }
+
+                            @Override
+                            public boolean isEnabled() {
+                                return !activeByDefault;
                             }
                         });
                     }

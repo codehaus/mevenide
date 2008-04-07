@@ -172,9 +172,6 @@ public final class NbMavenProject implements Project {
 
                 List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
                 req.addActiveProfiles(activeProfiles);
-                List<String> disableProfiles = ProfileUtils.retrieveInactiveProfiles(FileUtil.toFileObject(getPOMFile()), false,new String [0]);
-                req.addInactiveProfiles(disableProfiles);
-
                 req.setPomFile(projectFile.getAbsolutePath());
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
