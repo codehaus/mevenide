@@ -177,7 +177,6 @@ class MainClassChooser extends JPanel {
         lblMainClass = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jMainClassList = new javax.swing.JList();
-        rbOnce = new javax.swing.JRadioButton();
         rbSession = new javax.swing.JRadioButton();
         rbPermanent = new javax.swing.JRadioButton();
 
@@ -189,9 +188,6 @@ class MainClassChooser extends JPanel {
         jScrollPane1.setMinimumSize(new java.awt.Dimension(100, 200));
         jScrollPane1.setViewportView(jMainClassList);
         jMainClassList.getAccessibleContext().setAccessibleDescription(org.openide.util.NbBundle.getMessage(MainClassChooser.class, "AD_jMainClassList")); // NOI18N
-
-        buttonGroup1.add(rbOnce);
-        org.openide.awt.Mnemonics.setLocalizedText(rbOnce, org.openide.util.NbBundle.getMessage(MainClassChooser.class, "MainClassChooser.rbOnce.text")); // NOI18N
 
         buttonGroup1.add(rbSession);
         rbSession.setSelected(true);
@@ -207,10 +203,9 @@ class MainClassChooser extends JPanel {
             .add(layout.createSequentialGroup()
                 .addContainerGap()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                     .add(rbPermanent)
                     .add(rbSession)
-                    .add(rbOnce)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
                     .add(lblMainClass))
                 .addContainerGap())
         );
@@ -221,9 +216,7 @@ class MainClassChooser extends JPanel {
                 .add(lblMainClass, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 15, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 173, Short.MAX_VALUE)
-                .add(18, 18, 18)
-                .add(rbOnce)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                 .add(rbSession)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(rbPermanent)
@@ -241,7 +234,6 @@ class MainClassChooser extends JPanel {
     private javax.swing.JList jMainClassList;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblMainClass;
-    javax.swing.JRadioButton rbOnce;
     javax.swing.JRadioButton rbPermanent;
     javax.swing.JRadioButton rbSession;
     // End of variables declaration//GEN-END:variables

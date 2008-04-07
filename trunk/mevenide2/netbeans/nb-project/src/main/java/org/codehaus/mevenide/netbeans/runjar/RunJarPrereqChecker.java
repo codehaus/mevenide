@@ -61,7 +61,6 @@ import org.openide.util.NbBundle;
 public class RunJarPrereqChecker implements PrerequisitesChecker {
 
     private String mainClass;
-    private boolean onceOnly = false;
     
     public boolean checkRunConfig(String actionName, RunConfig config) {
         if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
@@ -141,11 +140,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
                 }
             }
         });
-        if (onceOnly) {
-            panel.rbOnce.setSelected(true);
-        } else {
-            panel.rbSession.setSelected(true);
-        }
+        panel.rbSession.setSelected(true);
         okButton.setEnabled(false);
         DialogDescriptor desc = new DialogDescriptor(
                 panel,
