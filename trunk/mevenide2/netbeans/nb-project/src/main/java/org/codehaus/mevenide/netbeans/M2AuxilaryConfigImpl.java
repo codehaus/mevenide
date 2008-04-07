@@ -80,8 +80,18 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         return null;
                     }
                 });
+            } else {
+                String element = "project-shared-configuration"; // NOI18N
+
+                Document doc = XMLUtil.createDocument(element, null, null, null);
+                doc.getDocumentElement().appendChild(doc.createTextNode(
+                        "\nThis file contains  configuration written by modules in the NetBeans IDE.\n" +
+                        "The configuration is intended to be shared among all the users of project and\n" +
+                        "therefore it is assumed to be part of version control checkout.\n\n"));
+
+                return doc.createElementNS(namespace, elementName);
             }
-            return null;
+
         }
         return (Element) ProjectManager.mutex().readAccess(new Mutex.Action() {
 
@@ -91,12 +101,21 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     Document doc;
                     try {
                         doc = XMLUtil.parse(new InputSource(new StringReader(str)), false, true, null, null);
-                        return findElement(doc.getDocumentElement(), elementName, namespace);
+                        Element element = findElement(doc.getDocumentElement(), elementName, namespace);
+                        if (element == null) {
+                            element = doc.createElementNS(namespace, elementName);
+                        }
+                        return element;
                     } catch (SAXException ex) {
                         ex.printStackTrace();
                     } catch (IOException ex) {
                         ex.printStackTrace();
                     }
+                } else {
+                    String element = "project-private"; // NOI18N"
+
+                    Document doc = XMLUtil.createDocument(element, namespace, null, null);
+                    return doc.createElementNS(namespace, elementName);
                 }
                 return null;
             }
@@ -104,7 +123,10 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     }
 
     public void putConfigurationFragment(final Element fragment, final boolean shared) throws IllegalArgumentException {
-        ProjectManager.mutex().writeAccess(new Mutex.Action() {
+        ProjectManager.mutex().writeAccess(new  
+
+             Mutex  
+                   .Action() {
 
             public Object run() {
                 Document doc = null;
@@ -120,12 +142,33 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         }
                     } else {
                         String element = "project-shared-configuration"; // NOI18N
+
                         doc = XMLUtil.createDocument(element, null, null, null);
                         doc.getDocumentElement().appendChild(doc.createTextNode(
-                                "\nThis file contains additional configuration written by modules in the NetBeans IDE.\n" +
+                                "\nThis file contains  configuration written by modules in the NetBeans IDE.\n" +
                                 "The configuration is intended to be shared among all the users of project and\n" +
-                                "therefore it is assumed to be part of version control checkout.\n" +
-                                "Without this configuration present, some functionality in the IDE may be limited or fail altogether.\n\n"));
+                                "therefore it is assumed to be part of version control checkout.\n\n"));
+                        FileLock lck = null;
+                        OutputStream out = null;
+                        try {
+                            lck = config.lock();
+                            out = config.getOutputStream(lck);
+                            XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+
+                        } catch (IOException ex) {
+                            Exceptions.printStackTrace(ex);
+                        } finally {
+                            if (out != null) {
+                                try {
+                                    out.close();
+                                } catch (IOException ex) {
+                                    Exceptions.printStackTrace(ex);
+                                }
+                            }
+                            if (lck != null) {
+                                lck.releaseLock();
+                            }
+                        }
                     }
                 } else {
                     String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
@@ -137,9 +180,10 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
-                    } 
+                    }
                     if (doc == null) {
                         String element = "project-private"; // NOI18N
+
                         doc = XMLUtil.createDocument(element, null, null, null);
                     }
                 }
@@ -160,6 +204,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         lck = config.lock();
                         out = config.getOutputStream(lck);
                         XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     } finally {
@@ -178,6 +223,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     try {
                         StringOutputStream wr = new StringOutputStream();
                         XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
+
                         project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                     } catch (IOException ex) {
                         ex.printStackTrace();
@@ -190,7 +236,10 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
     }
 
     public boolean removeConfigurationFragment(final String elementName, final String namespace, final boolean shared) throws IllegalArgumentException {
-        return ((Boolean) ProjectManager.mutex().writeAccess(new Mutex.Action() {
+        return ((Boolean) ProjectManager.mutex().writeAccess(new  
+
+             Mutex  
+                   .Action() {
 
             public Object run() {
                 Document doc = null;
@@ -207,7 +256,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     } else {
                         return Boolean.FALSE;
                     }
-                    
+
                 } else {
                     String str = (String) project.getProjectDirectory().getAttribute(AUX_CONFIG);
                     if (str != null) {
@@ -235,6 +284,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                         lck = config.lock();
                         out = config.getOutputStream(lck);
                         XMLUtil.write(doc, out, "UTF-8"); //NOI18N
+
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
                     } finally {
@@ -253,6 +303,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
                     try {
                         StringOutputStream wr = new StringOutputStream();
                         XMLUtil.write(doc, wr, "UTF-8"); //NOI18N
+
                         project.getProjectDirectory().setAttribute(AUX_CONFIG, wr.toString());
                     } catch (IOException ex) {
                         Exceptions.printStackTrace(ex);
@@ -270,7 +321,7 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
         for (int i = 0; i < len; i++) {
             if (l.item(i).getNodeType() == Node.ELEMENT_NODE) {
                 Element el = (Element) l.item(i);
-                if (name.equals(el.getLocalName()) && namespace.equals(el.getNamespaceURI())) {
+                if (name.equals(el.getLocalName()) && (namespace == null || namespace.equals(el.getNamespaceURI()))) {
                     if (result == null) {
                         result = el;
                     } else {

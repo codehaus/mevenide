@@ -30,7 +30,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.model.Parent;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.M2ProfilesAuxilaryConfigImpl;
+import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -63,7 +63,7 @@ public class ProfileUtils {
     private static AuxiliaryConfiguration getAuxiliaryConfiguration(FileObject pom) {
         Project owner = FileOwnerQuery.getOwner(getRootProjectPom(pom));
         if (owner != null) {
-            return owner.getLookup().lookup(M2ProfilesAuxilaryConfigImpl.class);
+            return owner.getLookup().lookup(M2AuxilaryConfigImpl.class);
         }
         return null;
     }
