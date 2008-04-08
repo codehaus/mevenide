@@ -413,7 +413,9 @@ public class ActionProviderImpl implements ActionProvider {
                     List<String> retrieveAllProfiles = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
 
                     List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles(project.getOriginalMavenProject(), false, new String[0]);
+                    List<String> customActiveProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(project.getOriginalMavenProject().getFile()), false);
                     List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(project.getOriginalMavenProject());
+                    activeProfiles.removeAll(customActiveProfiles);
                     for (final String profile : retrieveAllProfiles) {
                         final boolean activeByDefault = activeProfiles.contains(profile);
                         final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile, retrieveActivatedProfiles.contains(profile));
