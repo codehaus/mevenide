@@ -82,8 +82,8 @@ public class ProfileUtils {
         //read from profiles.xml
         Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getActiveProfiles().iterator();
         while (it2.hasNext()) {
-            org.apache.maven.settings.Profile prof = (org.apache.maven.settings.Profile) it2.next();
-            prifileides.add(prof.getId());
+          
+            prifileides.add((String) it2.next());
         }
         return new ArrayList<String>(prifileides);
     }
