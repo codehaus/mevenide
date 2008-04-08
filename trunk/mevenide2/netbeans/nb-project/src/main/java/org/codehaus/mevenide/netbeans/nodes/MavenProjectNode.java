@@ -36,6 +36,7 @@ import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.codehaus.mevenide.netbeans.problems.ProblemsPanel;
@@ -153,7 +154,10 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
         lst.add(null);
 
         lst.add(provider.createCustomPopupAction()); 
-        lst.add(provider.createProfilesPopupAction()); 
+        lst.add(provider.createProfilesPopupAction());
+        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+            lst.add(CommonProjectActions.setProjectConfigurationAction());
+        }
         
         // separator
         lst.add(null);

@@ -38,6 +38,7 @@ import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.AbstractMavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
@@ -49,6 +50,7 @@ import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionX
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
+import org.netbeans.spi.project.ProjectConfiguration;
 import org.netbeans.spi.project.ui.support.DefaultProjectOperations;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -121,7 +123,7 @@ public class ActionProviderImpl implements ActionProvider {
             DefaultProjectOperations.performDefaultRenameOperation(project, null);
             return;
         }
-
+        
         RunConfig rc = ActionToGoalUtils.createRunConfig(action, project, lookup);
         if (rc == null) {
             Logger.getLogger(ActionProviderImpl.class.getName()).log(Level.INFO, "No handling for action:" + action + ". Ignoring."); //NOI18N
@@ -212,7 +214,6 @@ public class ActionProviderImpl implements ActionProvider {
                 COMMAND_MOVE.equals(action)) {
             return true;
         }
-
 
         return ActionToGoalUtils.isActionEnable(action, project, lookup);
     }
