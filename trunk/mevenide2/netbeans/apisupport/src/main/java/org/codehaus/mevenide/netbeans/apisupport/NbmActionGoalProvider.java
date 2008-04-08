@@ -37,7 +37,7 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
-
+    private static final RequestProcessor PROCESSOR=new  RequestProcessor("NbmActionGoalProvider Clearing Task");//NOI18N
     private AbstractActionGoalProvider platformDelegate = new AbstractActionGoalProvider() {
 
         protected InputStream getActionDefinitionStream() {
@@ -74,7 +74,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     private static int VAL_PLATFORM = 2;
     private static int VAL_NOT_NB = 3;
     
-    private RequestProcessor.Task clearingTask = new RequestProcessor("NbmActionGoalProvider Clearing Task").create(
+    private RequestProcessor.Task clearingTask = PROCESSOR.create(
     new Runnable() {
         public void run() {
             CACHED_PLATFORM = VAL_NOT_CACHED;
