@@ -20,6 +20,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -42,6 +43,9 @@ public class J2seLookupProvider implements LookupProvider {
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
         Provider prov = new Provider(project, ic);
+        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+            ic.add(new M2ConfigProvider(project));
+        }
         return prov;
     }
     

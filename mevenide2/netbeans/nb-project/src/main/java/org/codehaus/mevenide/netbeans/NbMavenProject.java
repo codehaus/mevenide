@@ -50,6 +50,7 @@ import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
