@@ -71,6 +71,20 @@ public class ProfileUtils {
         for (Profile profile : profiles) {
             prifileides.add(profile.getId());
         }
+        //read from Settings.xml
+        profiles=MavenSettingsSingleton.getInstance().createUserSettingsModel().getActiveProfiles();
+        for (Profile profile : profiles) {
+            prifileides.add(profile.getId());
+        }
+        
+        File basedir = FileUtil.normalizeFile(mavenProject.getBasedir());
+        FileObject fileObject = FileUtil.toFileObject(basedir);
+        //read from profiles.xml
+        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
+        while (it2.hasNext()) {
+            org.apache.maven.settings.Profile prof = (org.apache.maven.settings.Profile) it2.next();
+            prifileides.add(prof.getId());
+        }
         return new ArrayList<String>(prifileides);
     }
 
