@@ -80,7 +80,7 @@ public class ProfileUtils {
         File basedir = FileUtil.normalizeFile(mavenProject.getBasedir());
         FileObject fileObject = FileUtil.toFileObject(basedir);
         //read from profiles.xml
-        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
+        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getActiveProfiles().iterator();
         while (it2.hasNext()) {
             org.apache.maven.settings.Profile prof = (org.apache.maven.settings.Profile) it2.next();
             prifileides.add(prof.getId());
