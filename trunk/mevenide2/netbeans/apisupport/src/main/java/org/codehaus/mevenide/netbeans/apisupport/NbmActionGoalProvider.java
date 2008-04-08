@@ -74,7 +74,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     private static int VAL_PLATFORM = 2;
     private static int VAL_NOT_NB = 3;
     
-    private RequestProcessor.Task clearingTask = RequestProcessor.getDefault().create(
+    private RequestProcessor.Task clearingTask = new RequestProcessor("NbmActionGoalProvider Clearing Task").create(
     new Runnable() {
         public void run() {
             CACHED_PLATFORM = VAL_NOT_CACHED;
@@ -84,7 +84,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     
     /** Creates a new instance of NbmActionGoalProvider */
     public NbmActionGoalProvider() {
-        
+        clearingTask.setPriority(Thread.MIN_PRIORITY);
     }
 
     public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
