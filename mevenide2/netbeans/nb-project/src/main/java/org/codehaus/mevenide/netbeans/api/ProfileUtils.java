@@ -244,9 +244,10 @@ public class ProfileUtils {
             File pom = FileUtil.normalizeFile(new File(dir, "pom.xml"));//NOI18N
 
             try {
-
-                Model readModel = EmbedderFactory.getProjectEmbedder().readModel(pom);
-                exteactProfiles(profileIds, dir, readModel);
+                if(pom.exists()){
+                    Model readModel = EmbedderFactory.getProjectEmbedder().readModel(pom);
+                    exteactProfiles(profileIds, dir, readModel);
+                }
             } catch (XmlPullParserException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (IOException ex) {
