@@ -32,20 +32,20 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="lblValidate" alignment="0" pref="457" max="32767" attributes="0"/>
-                          <Component id="lblHeader" alignment="0" pref="457" max="32767" attributes="0"/>
+                          <Component id="lblValidate" alignment="0" pref="548" max="32767" attributes="0"/>
+                          <Component id="lblHeader" alignment="0" pref="548" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="lblRepoName" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="lblRepoId" alignment="0" pref="127" max="32767" attributes="1"/>
+                                  <Component id="lblRepoId" alignment="0" pref="136" max="32767" attributes="1"/>
                                   <Component id="lblType" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtRepoId" alignment="0" pref="310" max="32767" attributes="1"/>
-                                  <Component id="txtRepoName" alignment="0" pref="310" max="32767" attributes="1"/>
-                                  <Component id="comType" alignment="0" min="-2" pref="230" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="txtRepoId" pref="398" max="32767" attributes="1"/>
+                                  <Component id="txtRepoName" alignment="1" pref="398" max="32767" attributes="1"/>
+                                  <Component id="comType" alignment="0" min="-2" pref="220" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                       </Group>
@@ -75,19 +75,14 @@
                               </Group>
                           </Group>
                       </Group>
+                      <EmptySpace pref="30" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Component id="txtRepoPath" pref="222" max="32767" attributes="1"/>
+                          <Component id="txtIndexUrl" pref="398" max="32767" attributes="1"/>
+                          <Component id="txtRepoUrl" alignment="1" pref="398" max="32767" attributes="1"/>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="txtRepoPath" pref="325" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="btnBrowse" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="txtRepoUrl" alignment="1" pref="306" max="32767" attributes="1"/>
-                                  <Component id="txtIndexUrl" alignment="0" pref="306" max="32767" attributes="1"/>
-                              </Group>
                           </Group>
                       </Group>
                   </Group>
@@ -138,7 +133,7 @@
                   <Component id="lblIndexUrl" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="txtIndexUrl" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
+              <EmptySpace pref="25" max="32767" attributes="0"/>
               <Component id="lblValidate" min="-2" pref="17" max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -149,9 +144,6 @@
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Tahoma" size="11" style="1"/>
-        </Property>
-        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-          <Color blue="66" green="0" red="0" type="rgb"/>
         </Property>
         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
           <ResourceString bundle="org/codehaus/mevenide/repository/register/Bundle.properties" key="LBL_Repo_Register_Header" replaceFormat="org.openide.util.NbBundle.getMessage({sourceFileName}.class, &quot;{key}&quot;, {arguments})"/>
