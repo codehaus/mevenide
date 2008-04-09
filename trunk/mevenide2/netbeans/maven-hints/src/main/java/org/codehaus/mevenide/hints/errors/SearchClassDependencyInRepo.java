@@ -16,9 +16,11 @@
  */
 package org.codehaus.mevenide.hints.errors;
 
+import com.sun.source.tree.ArrayTypeTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewArrayTree;
 import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.ParameterizedTypeTree;
 import com.sun.source.tree.Tree;
@@ -129,6 +131,10 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                  leaf=path.getParentPath().getParentPath().getLeaf();
                 }
                 break;
+                case ARRAY_TYPE:{
+                 leaf=path.getParentPath().getParentPath().getLeaf();
+                }
+                break;
             }
             switch (leaf.getKind()) {
                 case VARIABLE:
@@ -150,38 +156,59 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                                         }
                                     }
                                     break;
+                                case ARRAY_TYPE:
+                                     {
+                                        ArrayTypeTree ptt = ((ArrayTypeTree) variableTree.getType());
+                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                            typeName = ((IdentifierTree) ptt.getType()).getName();
+                                        }
+                                    }
+                                    break;
 
                             }
                         }
 
                         ExpressionTree initializer = variableTree.getInitializer();
-                        if (typeName != null && initializer != null && initializer.getKind() == Kind.NEW_CLASS) {
+                        if (typeName != null && initializer != null) {
 
-                            NewClassTree classTree = (NewClassTree) initializer;
-                            ExpressionTree identifier = classTree.getIdentifier();
-                            if (identifier != null) {
-                                Name itName = null;
-                                switch (identifier.getKind()) {
-                                    case IDENTIFIER:
-                                        itName = ((IdentifierTree) identifier).getName();
-                                        break;
-                                    case PARAMETERIZED_TYPE:
-                                         {
+                            Name itName = null;
+                            switch (initializer.getKind()) {
+                                case NEW_CLASS:
+                                     {
+                                        ExpressionTree identifier = null;
+                                        NewClassTree classTree = (NewClassTree) initializer;
+                                        identifier = classTree.getIdentifier();
 
-                                            ParameterizedTypeTree ptt = ((ParameterizedTypeTree) identifier);
-                                            if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
-                                                itName = ((IdentifierTree) ptt.getType()).getName();
+                                        if (identifier != null) {
+
+                                            switch (identifier.getKind()) {
+                                                case IDENTIFIER:
+                                                    itName = ((IdentifierTree) identifier).getName();
+                                                    break;
+                                                case PARAMETERIZED_TYPE:
+                                                     {
+
+                                                        ParameterizedTypeTree ptt = ((ParameterizedTypeTree) identifier);
+                                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                                            itName = ((IdentifierTree) ptt.getType()).getName();
+                                                        }
+                                                    }
+                                                    break;
                                             }
                                         }
-
-                                        break;
+                                    }
+                                    break;
+                                case NEW_ARRAY: {
+                                    NewArrayTree arrayTree = (NewArrayTree) initializer;
+                                    Tree type = arrayTree.getType();
+                                    itName = ((IdentifierTree) type).getName();
                                 }
-
-                                if (typeName.equals(itName)) {
-                                    return Collections.<Fix>emptyList();
-                                }
+                                break;
                             }
 
+                            if (typeName.equals(itName)) {
+                                return Collections.<Fix>emptyList();
+                            }
                         }
                     }
                     break;
