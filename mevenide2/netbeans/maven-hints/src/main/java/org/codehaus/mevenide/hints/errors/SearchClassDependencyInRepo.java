@@ -16,8 +16,14 @@
  */
 package org.codehaus.mevenide.hints.errors;
 
+import com.sun.source.tree.ExpressionTree;
+import com.sun.source.tree.IdentifierTree;
 import com.sun.source.tree.MethodInvocationTree;
+import com.sun.source.tree.NewClassTree;
+import com.sun.source.tree.ParameterizedTypeTree;
+import com.sun.source.tree.Tree;
 import com.sun.source.tree.Tree.Kind;
+import com.sun.source.tree.VariableTree;
 import com.sun.source.util.TreePath;
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +36,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.Name;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.hints.ui.SearchDependencyUI;
@@ -113,7 +120,74 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 return Collections.<Fix>emptyList();
             }
         }
+        if (path.getParentPath() != null) {
+            Tree leaf = path.getParentPath().getLeaf();
+            
+            switch(leaf.getKind()){
+                //genaric handling
+                case PARAMETERIZED_TYPE:{
+                 leaf=path.getParentPath().getParentPath().getLeaf();
+                }
+                break;
+            }
+            switch (leaf.getKind()) {
+                case VARIABLE:
+                     {
+                        Name typeName = null;
+                        VariableTree variableTree = (VariableTree) leaf;
+                        if (variableTree.getType() != null) {
+                            switch (variableTree.getType().getKind()) {
+                                case IDENTIFIER:
+                                     {
+                                        typeName = ((IdentifierTree) variableTree.getType()).getName();
+                                    }
+                                    break;
+                                case PARAMETERIZED_TYPE:
+                                     {
+                                        ParameterizedTypeTree ptt = ((ParameterizedTypeTree) variableTree.getType());
+                                        if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                            typeName = ((IdentifierTree) ptt.getType()).getName();
+                                        }
+                                    }
+                                    break;
 
+                            }
+                        }
+
+                        ExpressionTree initializer = variableTree.getInitializer();
+                        if (typeName != null && initializer != null && initializer.getKind() == Kind.NEW_CLASS) {
+
+                            NewClassTree classTree = (NewClassTree) initializer;
+                            ExpressionTree identifier = classTree.getIdentifier();
+                            if (identifier != null) {
+                                Name itName = null;
+                                switch (identifier.getKind()) {
+                                    case IDENTIFIER:
+                                        itName = ((IdentifierTree) identifier).getName();
+                                        break;
+                                    case PARAMETERIZED_TYPE:
+                                         {
+
+                                            ParameterizedTypeTree ptt = ((ParameterizedTypeTree) identifier);
+                                            if (ptt.getType() != null && ptt.getType().getKind() == Kind.IDENTIFIER) {
+                                                itName = ((IdentifierTree) ptt.getType()).getName();
+                                            }
+                                        }
+
+                                        break;
+                                }
+
+                                if (typeName.equals(itName)) {
+                                    return Collections.<Fix>emptyList();
+                                }
+                            }
+
+                        }
+                    }
+                    break;
+
+            }
+        }
         Token ident = null;
 
         try {
@@ -347,4 +421,6 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             return null;
         }
     }
+    
+   
 }
