@@ -17,14 +17,20 @@
 
 package org.codehaus.mevenide.netbeans.api.customizer;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.apache.maven.model.Activation;
 import org.apache.maven.model.ActivationProperty;
 import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 
@@ -36,6 +42,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 public final class ModelHandle {
     public static final String PANEL_RUN = "RUN"; //NOI18N
     public static final String PANEL_BASIC = "BASIC"; //NOI18N
+    public static final String PANEL_CONFIGURATION = "CONFIGURATION"; //NOI18N
     public static final String PANEL_MAPPING = "MAPPING"; //NOI18N
     public static final String PANEL_LIBRARIES = "LIBRARIES"; //NOI18N
     public static final String PANEL_SOURCES = "SOURCES"; //NOI18N
@@ -47,12 +54,16 @@ public final class ModelHandle {
     private Model model;
     private MavenProject project;
     private ProfilesRoot profiles; 
-    private ActionToGoalMapping mapping;
+    private Map<String, ActionToGoalMapping> mappings;
+    private Map<ActionToGoalMapping, Boolean> modMappings;
     private org.apache.maven.model.Profile publicProfile;
     private org.apache.maven.profiles.Profile privateProfile;
-    private boolean modMapping = false;
+    private List<Configuration> configurations;
     private boolean modProfiles = false;
     private boolean modModel = false;
+    private boolean modConfig = false;
+    private Configuration active;
+    private boolean enabled = false;
     
     static {
         AccessorImpl impl = new AccessorImpl();
@@ -63,8 +74,11 @@ public final class ModelHandle {
     static class AccessorImpl extends CustomizerProviderImpl.ModelAccessor {
         
          public ModelHandle createHandle(Model model, ProfilesRoot prof,
-                                        MavenProject proj, ActionToGoalMapping mapp) {
-            return new ModelHandle(model, prof, proj, mapp);
+                                        MavenProject proj, 
+                                        Map<String, ActionToGoalMapping> mapp, 
+                                        List<ModelHandle.Configuration> configs,
+                                        ModelHandle.Configuration active) {
+            return new ModelHandle(model, prof, proj, mapp, configs, active);
         }
         
          public void assign() {
@@ -76,11 +90,19 @@ public final class ModelHandle {
     }
     
     /** Creates a new instance of ModelHandle */
-    private ModelHandle(Model mdl, ProfilesRoot profile, MavenProject proj, ActionToGoalMapping mapping) {
+    private ModelHandle(Model mdl, ProfilesRoot profile, MavenProject proj, 
+                        Map<String, ActionToGoalMapping> mappings,
+                        List<Configuration> configs, Configuration active) {
         model = mdl;
         project = proj;
-        this.mapping = mapping;
         this.profiles = profile;
+        this.mappings = mappings;
+        this.modMappings = new HashMap<ActionToGoalMapping, Boolean>();
+        for (ActionToGoalMapping map : mappings.values()) {
+            modMappings.put(map, Boolean.FALSE);
+        }
+        configurations = configs;
+        this.active = active;
     }
     
     /**
@@ -190,32 +212,173 @@ public final class ModelHandle {
      * action mapping model
      */ 
     public ActionToGoalMapping getActionMappings() {
-        return mapping;
+        return mappings.get(M2Configuration.DEFAULT);
+    }
+    
+    /**
+     * action mapping model
+     */ 
+    public ActionToGoalMapping getActionMappings(Configuration config) {
+        ActionToGoalMapping mapp = mappings.get(config.getId());
+        if (mapp == null) {
+            mapp = new ActionToGoalMapping();
+            mappings.put(config.getId(), mapp);
+            modMappings.put(mapp, Boolean.FALSE);
+        }
+        return mapp;
+    }
+
+    
+    public void setConfigurationsEnabled(boolean bool) {
+        enabled = bool;
+    }
+    
+    public boolean isConfigurationsEnabled() {
+        return enabled;
+    }
+    
+    public List<Configuration> getConfigurations() {
+        return configurations;
+    }
+    
+    public void addConfiguration(Configuration config) {
+        configurations.add(config);
+    }
+    
+    public void removeConfiguration(Configuration config) {
+        configurations.remove(config);
+        if (active == config) {
+            active = configurations.size() > 0 ? configurations.get(0) : null;
+        }
+    }
+    
+    public Configuration getActiveConfiguration() {
+        return active;
+    }
+    public void setActiveConfiguration(Configuration conf) {
+        active = conf;
     }
     
     public boolean isModified(Object obj) {
-        if (obj == mapping) {
-            return modMapping; 
+        if (modMappings.containsKey(obj)) {
+            return modMappings.get(obj); 
         } else if (obj == profiles) {
             return modProfiles;
         } else if (obj == model) {
             return modModel;
+        } else if (obj == configurations || configurations.contains(obj)) {
+            return modConfig;
         }
         return true;
     }
     
     /**
-     * always after modifying the models, makr them as modified.
+     * always after modifying the models, mark them as modified.
      * without the marking, the particular file will not be saved.
      * @param obj either getPOMModel(), getActionMappings() or getProfileModel()
      */ 
     public void markAsModified(Object obj) {
-        if (obj == mapping) {
-            modMapping = true;
+        if (modMappings.containsKey(obj)) {
+            modMappings.put((ActionToGoalMapping)obj, Boolean.TRUE);
         } else if (obj == profiles) {
             modProfiles = true;
         } else if (obj == model) {
             modModel = true;
+        } else if (obj == configurations || configurations.contains(obj)) {
+            modConfig = true;
         }
+    }
+
+    
+    public static Configuration createProfileConfiguration(String id) {
+        Configuration conf = new Configuration();
+        conf.setId(id);
+        conf.setDisplayName(id);
+        conf.setProfileBased(true);
+        return conf;
+    }
+    
+    public static Configuration createDefaultConfiguration() {
+        Configuration conf = new Configuration();
+        conf.setId(M2Configuration.DEFAULT);
+        conf.setDisplayName("<Default Configuration>");
+        conf.setDefault(true);
+        return conf;
+    }
+    
+    public static Configuration createCustomConfiguration(String id) {
+        Configuration conf = new Configuration();
+        conf.setId(id);
+        conf.setDisplayName(id);
+        return conf;
+    }
+    
+    /**
+     * a javabean wrapper for configurations within the project customizer
+     * 
+     */
+    public static class Configuration {
+        private String id;
+        private boolean profileBased = false;
+        private boolean defaul = false;
+
+        private String displayName;
+        private List<String> activatedProfiles;
+        
+        Configuration() {}
+
+        public String getFileNameExt() {
+            return M2Configuration.getFileNameExt(id);
+        }
+
+        public boolean isDefault() {
+            return defaul;
+        }
+
+        public void setDefault(boolean def) {
+            this.defaul = def;
+        }
+        
+        public List<String> getActivatedProfiles() {
+            return activatedProfiles;
+        }
+
+        public void setActivatedProfiles(List<String> activatedProfiles) {
+            this.activatedProfiles = activatedProfiles;
+        }
+
+        public String getDisplayName() {
+            return displayName;
+        }
+
+        public void setDisplayName(String displayName) {
+            if (isProfileBased()) {
+                return;
+            }
+            this.displayName = displayName;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        void setId(String id) {
+            this.id = id;
+        }
+
+        public boolean isProfileBased() {
+            return profileBased;
+        }
+
+        void setProfileBased(boolean profileBased) {
+            this.profileBased = profileBased;
+        }
+
+        @Override
+        public String toString() {
+            return getDisplayName();
+        }
+        
+        
     }
 }

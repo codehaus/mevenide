@@ -43,6 +43,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -649,7 +650,8 @@ public class SettingsPanel extends javax.swing.JPanel {
             Object retVal = DialogDisplayer.getDefault().notify(dd);
             if (retVal == DialogDescriptor.OK_OPTION) {
                 FileObject dir = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject("Projects/org-codehaus-mevenide-netbeans"); //NOI18N
-                CustomizerProviderImpl.writeNbActionsModel(dir, mappings);
+                // just make sure the name of the file is always nbactions.xml
+                CustomizerProviderImpl.writeNbActionsModel(dir, mappings, M2Configuration.getFileNameExt(M2Configuration.DEFAULT));
             }
         } catch (Exception ex) {
             Exceptions.printStackTrace(ex);

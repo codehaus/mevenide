@@ -35,6 +35,7 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.ActiveJ2SEPlatformProvider;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -167,7 +168,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
 
     private void writeMapping(String actionName, NbMavenProject project, String clazz) {
         try {
-            UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
+            UserActionGoalProvider usr = project.getLookup().lookup(UserActionGoalProvider.class);
             ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
             NetbeansActionMapping mapp = ActionToGoalUtils.getDefaultMapping(actionName, project);
             mapping.addAction(mapp);
@@ -181,7 +182,8 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
                     str.setValue(val);
                 }
             }
-            CustomizerProviderImpl.writeNbActionsModel(project.getProjectDirectory(), mapping);
+            //TODO we should definitely write to the mappings of active configuration here..
+            CustomizerProviderImpl.writeNbActionsModel(project.getProjectDirectory(), mapping, M2Configuration.getFileNameExt(M2Configuration.DEFAULT));
         } catch (Exception e) {
             Exceptions.attachMessage(e, "Cannot persist action configuration.");
             Exceptions.printStackTrace(e);

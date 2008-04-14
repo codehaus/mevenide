@@ -17,8 +17,10 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import java.awt.Component;
 import java.awt.Dialog;
 import java.util.MissingResourceException;
+import javax.swing.JList;
 import javax.swing.event.DocumentEvent;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.Font;
@@ -34,8 +36,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -48,6 +54,7 @@ import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
+import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.options.MavenVersionSettings;
 import org.codehaus.plexus.util.IOUtil;
@@ -100,11 +107,29 @@ public class RunJarPanel extends javax.swing.JPanel {
     private String oldParams;
     private String oldVMParams;
     private String oldWorkDir;
+    private String oldAllParams;
+    private DocumentListener docListener;
+    private ActionListener comboListener;
     
     public RunJarPanel(ModelHandle handle, NbMavenProject project) {
         initComponents();
         this.handle = handle;
         this.project = project;
+        comConfiguration.setEditable(false);
+        comConfiguration.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component com = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (com instanceof JLabel) {
+                    if (value == RunJarPanel.this.handle.getActiveConfiguration()) {
+                        com.setFont(com.getFont().deriveFont(Font.BOLD));
+                    }
+                }
+                return com;
+            }
+        });
+        setupConfigurations();
+        
         initValues();
         lblMainClass.setFont(lblMainClass.getFont().deriveFont(Font.BOLD));
         List<FileObject> roots = new ArrayList<FileObject>();
@@ -123,7 +148,7 @@ public class RunJarPanel extends javax.swing.JPanel {
         }
 
         btnMainClass.addActionListener(new MainClassListener(roots.toArray(new FileObject[roots.size()]), txtMainClass));
-        DocumentListener docListener = new DocumentListener() {
+        docListener = new DocumentListener() {
             public void insertUpdate(DocumentEvent arg0) {
                 applyChanges();
             }
@@ -136,11 +161,33 @@ public class RunJarPanel extends javax.swing.JPanel {
                 applyChanges();
             }
         };
+        comboListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                removeListeners();
+                initValues();
+                addListeners();
+            }
+        };
+    }
+
+    private void addListeners() {
+        System.out.println("adding listeners");
+        comConfiguration.addActionListener(comboListener);
         txtMainClass.getDocument().addDocumentListener(docListener);
         txtArguments.getDocument().addDocumentListener(docListener);
         txtVMOptions.getDocument().addDocumentListener(docListener);
         txtWorkDir.getDocument().addDocumentListener(docListener);
     }
+    
+    private void removeListeners() {
+        System.out.println("removing listeners");
+        comConfiguration.removeActionListener(comboListener);
+        txtMainClass.getDocument().removeDocumentListener(docListener);
+        txtArguments.getDocument().removeDocumentListener(docListener);
+        txtVMOptions.getDocument().removeDocumentListener(docListener);
+        txtWorkDir.getDocument().removeDocumentListener(docListener);
+    }
+    
 
     /**
      * @deprecated 
@@ -171,11 +218,28 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     private void initValues() {
-        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project);
-        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
+        run = null;
+        debug = null;
+        if (handle.isConfigurationsEnabled()) {
+            ActionToGoalMapping mapp = handle.getActionMappings((ModelHandle.Configuration) comConfiguration.getSelectedItem());
+            List<NetbeansActionMapping> lst = mapp.getActions();
+            for (NetbeansActionMapping m : lst) {
+                if (ActionProvider.COMMAND_RUN.equals(m.getActionName())) {
+                    run = m;
+                }
+                if (ActionProvider.COMMAND_DEBUG.equals(m.getActionName())) {
+                    debug = m;
+                }
+            }
+        }
+        if (run == null) {
+            run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project, null);
+        }
+        if (debug == null) {
+            debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project, null);
+        }
         isCurrentRun = checkNewMapping(run);
         isCurrentDebug = checkNewMapping(debug);
-        System.out.println("is current=" + isCurrentRun + isCurrentDebug);
         if (isCurrentDebug || isCurrentRun) {
             oldWorkDir = run.getProperties().getProperty(RUN_WORKDIR);
             if (oldWorkDir == null) {
@@ -186,6 +250,7 @@ public class RunJarPanel extends javax.swing.JPanel {
                 params = debug.getProperties().getProperty(RUN_PARAMS);
             }
             if (params != null) {
+                oldAllParams = params;
                 oldVMParams = splitJVMParams(params);
                 if (oldVMParams != null && oldVMParams.contains("-classpath %classpath")) {
                     oldVMParams = oldVMParams.replace("-classpath %classpath", "");
@@ -195,6 +260,8 @@ public class RunJarPanel extends javax.swing.JPanel {
                     oldMainClass = "";
                 }
                 oldParams = splitParams(params);
+            } else {
+                oldAllParams = "";
             }
         } else {
             isDeprecatedRun = checkDeprecatedMapping(run);
@@ -238,27 +305,37 @@ public class RunJarPanel extends javax.swing.JPanel {
             }
         }
         
-        if (oldMainClass != null) {
-            txtMainClass.setText(oldMainClass);
-        } else {
+        if (oldMainClass == null) {
             oldMainClass = ""; //NOI18N
         }
-        if (oldParams != null) {
-            txtArguments.setText(oldParams);
-        } else {
+        txtMainClass.setText(oldMainClass);
+        if (oldParams == null) {
             oldParams = ""; //NOI18N
         }
-        if (oldVMParams != null) {
-            txtVMOptions.setText(oldVMParams);
-        } else {
+        txtArguments.setText(oldParams);
+        if (oldVMParams == null) {
             oldVMParams = ""; //NOI18N
         }
-        if (oldWorkDir != null) {
-            txtWorkDir.setText(oldWorkDir);
-        } else {
+        txtVMOptions.setText(oldVMParams);
+        if (oldWorkDir == null) {
             oldWorkDir = ""; //NOI18N
         }
+        txtWorkDir.setText(oldWorkDir);
         
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        setupConfigurations();
+        initValues();
+        addListeners();
+    }
+    
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        removeListeners();
     }
     
     /** This method is called from within the constructor to
@@ -280,6 +357,8 @@ public class RunJarPanel extends javax.swing.JPanel {
         lblVMOptions = new javax.swing.JLabel();
         txtVMOptions = new javax.swing.JTextField();
         lblHint = new javax.swing.JLabel();
+        lblConfiguration = new javax.swing.JLabel();
+        comConfiguration = new javax.swing.JComboBox();
 
         lblMainClass.setLabelFor(txtMainClass);
         org.openide.awt.Mnemonics.setLocalizedText(lblMainClass, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_MainClass")); // NOI18N
@@ -304,40 +383,48 @@ public class RunJarPanel extends javax.swing.JPanel {
 
         org.openide.awt.Mnemonics.setLocalizedText(lblHint, org.openide.util.NbBundle.getMessage(RunJarPanel.class, "LBL_VMHint")); // NOI18N
 
+        org.openide.awt.Mnemonics.setLocalizedText(lblConfiguration, "Configuration:");
+
+        comConfiguration.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
+            .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                    .add(layout.createSequentialGroup()
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(lblArguments)
-                            .add(lblMainClass)
-                            .add(lblWorkDir)
-                            .add(lblVMOptions))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
-                            .add(txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
-                            .add(txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
-                            .add(txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE))
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
-                            .add(btnWorkDir)
-                            .add(btnMainClass)))
-                    .add(layout.createSequentialGroup()
-                        .add(87, 87, 87)
-                        .add(lblHint)))
-                .addContainerGap())
+                    .add(lblWorkDir)
+                    .add(lblVMOptions)
+                    .add(lblArguments)
+                    .add(lblConfiguration)
+                    .add(lblMainClass))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(txtVMOptions, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .add(txtWorkDir, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .add(txtArguments, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .add(txtMainClass, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
+                    .add(comConfiguration, 0, 209, Short.MAX_VALUE))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(btnWorkDir)
+                    .add(btnMainClass)))
+            .add(layout.createSequentialGroup()
+                .add(128, 128, 128)
+                .add(lblHint)
+                .addContainerGap(208, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
             .add(layout.createSequentialGroup()
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(lblConfiguration)
+                    .add(comConfiguration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                .add(18, 18, 18)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblMainClass)
-                    .add(txtMainClass, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                    .add(btnMainClass))
+                    .add(btnMainClass)
+                    .add(txtMainClass, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblArguments)
@@ -353,7 +440,7 @@ public class RunJarPanel extends javax.swing.JPanel {
                     .add(txtVMOptions, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(lblHint)
-                .addContainerGap(181, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -386,10 +473,19 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     void applyChanges() {
+        System.out.println("applying changes..");
+        Thread.dumpStack();
+        
         String newMainClass = txtMainClass.getText().trim();
         String newParams = txtArguments.getText().trim();
         String newVMParams = txtVMOptions.getText().trim();
         String newWorkDir = txtWorkDir.getText().trim();
+        ActionToGoalMapping a2gm; 
+        if (handle.isConfigurationsEnabled()) {
+            a2gm = handle.getActionMappings((ModelHandle.Configuration) comConfiguration.getSelectedItem());
+        } else {
+            a2gm = handle.getActionMappings();
+        }
         if (isCurrentRun || isCurrentDebug) {
             String newAllParams = newVMParams + " -classpath %classpath "; //NOI18N
             if (newMainClass.trim().length() > 0) {
@@ -398,17 +494,20 @@ public class RunJarPanel extends javax.swing.JPanel {
                 newAllParams = newAllParams + "${packageClassName} "; //NOI18N
             }
             newAllParams = newAllParams + newParams;
-            if (isCurrentRun) {
-                run.getProperties().setProperty(RUN_PARAMS, newAllParams);
-                run.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
-                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
-            }
-            if (isCurrentDebug) {
-                debug.getProperties().setProperty(RUN_PARAMS, DEFAULT_DEBUG_PARAMS + " " + newAllParams);
-                debug.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
-                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                handle.markAsModified(handle.getActionMappings());
+            newAllParams = newAllParams.trim();
+            if (!oldAllParams.equals(newAllParams)) {
+                if (isCurrentRun) {
+                    run.getProperties().setProperty(RUN_PARAMS, newAllParams);
+                    run.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
+                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    handle.markAsModified(a2gm);
+                }
+                if (isCurrentDebug) {
+                    debug.getProperties().setProperty(RUN_PARAMS, DEFAULT_DEBUG_PARAMS + " " + newAllParams);
+                    debug.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
+                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    handle.markAsModified(a2gm);
+                }
             }
         } else if (isDeprecatedRun || isDeprecatedDebug) {
             if (!newMainClass.equals(oldMainClass)) {
@@ -419,48 +518,47 @@ public class RunJarPanel extends javax.swing.JPanel {
             if (!newParams.equals(oldParams)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
-                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
-                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    handle.markAsModified(a2gm);
                 }
             }
             if (!newVMParams.equals(oldVMParams)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
-                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
-                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    handle.markAsModified(a2gm);
                 }
             }
             if (!newWorkDir.equals(oldWorkDir)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
-                    handle.markAsModified(handle.getActionMappings());
+                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    handle.markAsModified(a2gm);
                 }
                 //MEVENIDE-599
                 NetbeansActionMapping[] activeCustomMappings = ActionToGoalUtils.getActiveCustomMappings(project);
                 for (NetbeansActionMapping actionMapping : activeCustomMappings) {
                     if (actionMapping.getProperties().getProperty(DEPRECATED_RUN_WORKDIR) != null) {
                         actionMapping.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                        ActionToGoalUtils.setUserActionMapping(actionMapping, handle.getActionMappings());
-                        handle.markAsModified(handle.getActionMappings());
+                        ActionToGoalUtils.setUserActionMapping(actionMapping, a2gm);
+                        handle.markAsModified(a2gm);
                     }
                 }
-
             }
         }
     }
@@ -553,12 +651,12 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     static String splitJVMParams(String line) {
-        String[] splitted = line.split(" ");
+        String[] splitted = line.split(" "); //NOI18N
         String jvms = "";
         for (String s : splitted) {
-            if (s.startsWith("-") || s.contains("%classpath")) {
+            if (s.startsWith("-") || s.contains("%classpath")) { //NOI18N
                 jvms = jvms + " " + s;
-            } else if (s.equals("${packageClassName}") || s.matches("[\\w]+[\\.]{0,1}[\\w]*")) {
+            } else if (s.equals("${packageClassName}") || s.matches("[\\w]+[\\.]{0,1}[\\w\\.]*")) { //NOI18N
                 break;
             }
         }
@@ -566,10 +664,17 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     static String splitMainClass(String line) {
-        String jvm = splitJVMParams(line);
-        String ln = line.substring(jvm.length()).trim();
-        String[] splitted = ln.split(" ", 2);
-        return splitted[0];
+        String[] splitted = line.split(" ");
+        for (String s : splitted) {
+            if (s.startsWith("-") || s.contains("%classpath")) { //NOI18N
+                continue;
+            } else if (s.equals("${packageClassName}") || s.matches("[\\w]+[\\.]{0,1}[\\w\\.]*")) { //NOI18N
+                return s;
+            } else {
+                Logger.getLogger(RunJarPanel.class.getName()).fine("failed splitting main class from=" + line); //NOI18N
+            }
+        }
+        return ""; //NOI18N
     }
     
     static String splitParams(String line) {
@@ -584,7 +689,9 @@ public class RunJarPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnMainClass;
     private javax.swing.JButton btnWorkDir;
+    private javax.swing.JComboBox comConfiguration;
     private javax.swing.JLabel lblArguments;
+    private javax.swing.JLabel lblConfiguration;
     private javax.swing.JLabel lblHint;
     private javax.swing.JLabel lblMainClass;
     private javax.swing.JLabel lblVMOptions;
@@ -594,6 +701,25 @@ public class RunJarPanel extends javax.swing.JPanel {
     private javax.swing.JTextField txtVMOptions;
     private javax.swing.JTextField txtWorkDir;
     // End of variables declaration//GEN-END:variables
+
+    private void setupConfigurations() {
+        if (handle.isConfigurationsEnabled()) {
+            lblConfiguration.setVisible(true);
+            comConfiguration.setVisible(true);
+            DefaultComboBoxModel comModel = new DefaultComboBoxModel();
+            for (ModelHandle.Configuration conf : handle.getConfigurations()) {
+                comModel.addElement(conf);
+            }
+            comConfiguration.setModel(comModel);
+            comConfiguration.setSelectedItem(handle.getActiveConfiguration());
+        } else {
+            lblConfiguration.setVisible(false);
+            comConfiguration.setVisible(false);
+            DefaultComboBoxModel comModel = new DefaultComboBoxModel();
+            comConfiguration.setModel(comModel);
+        }
+    }
+    // End of variables declaration
 
         // Innercasses -------------------------------------------------------------
     
@@ -647,7 +773,9 @@ public class RunJarPanel extends javax.swing.JPanel {
             Dialog dlg = DialogDisplayer.getDefault ().createDialog (desc);
             dlg.setVisible (true);
             if (desc.getValue() == options[0]) {
+               System.out.println("setting main");
                mainClassTextField.setText (panel.getSelectedMainClass ());
+               System.out.println("set main");
             } 
             dlg.dispose();
         }

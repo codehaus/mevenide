@@ -36,6 +36,7 @@ import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
@@ -155,7 +156,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
 
         lst.add(provider.createCustomPopupAction()); 
         lst.add(provider.createProfilesPopupAction());
-        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+        if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             lst.add(CommonProjectActions.setProjectConfigurationAction());
         }
         
@@ -164,7 +165,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
         lst.add(NbMavenProject.createRefreshAction());
         lst.add(CommonProjectActions.setAsMainProjectAction());
         lst.add(CommonProjectActions.openSubprojectsAction());
-        if ("pom".equalsIgnoreCase(project.getOriginalMavenProject().getPackaging())) { //NOI18N
+        if (ProjectURLWatcher.TYPE_POM.equalsIgnoreCase(project.getProjectWatcher().getPackagingType())) { //NOI18N
             lst.add(new CloseSuprojectsAction());
         }
         lst.add(CommonProjectActions.closeProjectAction());

@@ -29,7 +29,9 @@ import java.util.StringTokenizer;
 import org.apache.maven.model.Build;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
@@ -54,7 +56,7 @@ public final class ActionToGoalUtils {
 
     public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
         RunConfig rc = null;
-        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+        if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
             rc = configs.getActiveConfiguration().createConfigForDefaultAction(action, project, lookup);
         }
@@ -103,7 +105,7 @@ public final class ActionToGoalUtils {
 
     public static boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
        
-        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+        if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
             if (configs.getActiveConfiguration().isActionEnable(action, project, lookup)) {
                 return true;
@@ -135,11 +137,11 @@ public final class ActionToGoalUtils {
         return false;
     }
 
-    public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project) {
+    public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project, M2Configuration configuration) {
         NetbeansActionMapping na = null;
-        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
-            M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
-            na = configs.getActiveConfiguration().getMappingForAction(action, project);
+        if (configuration != null) {
+            // this parameter is somewhat suspicuous, not idea when it could be ever used from the customizer..
+            na = configuration.getMappingForAction(action, project);
         }
         if (na == null) {
             UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
@@ -157,7 +159,7 @@ public final class ActionToGoalUtils {
         List<NetbeansActionMapping> toRet = new ArrayList<NetbeansActionMapping>();
         List<String> names = new ArrayList<String>();
         // first add all project specific custom actions.
-        if (M2ConfigProvider.CONFIGURATIONS_ENABLED) {
+        if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             for (NetbeansActionMapping map : configs.getActiveConfiguration().getCustomMappings()) {
                 toRet.add(map);
                 names.add(map.getActionName());
