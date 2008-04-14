@@ -53,9 +53,9 @@ public class BuildPlanView {
     private String[] tasks;
     private BuildPlanViewUI bpvui;
     
-    private PriorityQueue<MavenProject> queue;
+    private final PriorityQueue<MavenProject> queue;
     private PriorityComparator comparator;
-    private HashMap<MavenProject, BuildPlanGroup> results;
+    private final HashMap<MavenProject, BuildPlanGroup> results;
     
     public BuildPlanView(MavenEmbedder embedder,MavenProject project, String... tasks) {
         this.embedder = embedder;
@@ -181,7 +181,7 @@ public class BuildPlanView {
                 }
                 List<String> list = Arrays.asList(getTasks());
 
-                BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, prj, session);
+                BuildPlan buildPlan = buildPlanner.constructBuildPlan(list, prj, session, false); //mkleint: what does the boolean param actually do?
 
                 BuildPlanGroup bpg = BuildPlanUtil.getMojoBindingsGroupByPhase(buildPlan);
                 
