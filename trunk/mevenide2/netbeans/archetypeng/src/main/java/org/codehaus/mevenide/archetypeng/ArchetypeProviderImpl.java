@@ -82,6 +82,7 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
         config.setGoals(Collections.singletonList(MavenCommandSettings.getDefault().getCommand(MavenCommandSettings.COMMAND_CREATE_ARCHETYPENG))); //NOI18N
         if (arch.getRepository() != null) {
             props.setProperty("archetype.repository", arch.getRepository()); //NOI18N
+            props.setProperty("archetypeRepository", arch.getRepository()); //NOI18N
         }
         config.setProperties(props);
         
