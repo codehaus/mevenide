@@ -172,8 +172,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         });
         
         //TODO remove the NbMavenProject dependency
-        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class));
-        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class));
+        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class),null);
+        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class),null);
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
         oldUrl = isRunCompatible ? run.getProperties().getProperty(PROP_CLIENT_URL_PART) : //NOI18N

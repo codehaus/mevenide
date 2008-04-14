@@ -23,13 +23,15 @@ import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.netbeans.spi.project.ActionProvider;
+import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.netbeans.spi.project.ProjectConfigurationProvider;
 import org.openide.util.RequestProcessor;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 /**
  *
@@ -42,13 +44,23 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private List<M2Configuration> profiles = null;
     private final M2Configuration DEFAULT;
     private M2Configuration active;
+    private String initialActive;
     
-    //temporary
-    public static boolean CONFIGURATIONS_ENABLED = Boolean.getBoolean("maven.showConfigurations"); //NOI18N
     
     public M2ConfigProvider(NbMavenProject proj) {
         project = proj;
         DEFAULT = M2Configuration.createDefault(project);
+        //read the active one..
+        AuxiliaryConfiguration conf = project.getLookup().lookup(AuxiliaryConfiguration.class);
+        Element el = conf.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, false);
+        if (el != null) {
+            NodeList list = el.getElementsByTagNameNS(ConfigurationProviderEnabler.NAMESPACE, ConfigurationProviderEnabler.ACTIVATED);
+            if (list.getLength() > 0) {
+                Element enEl = (Element)list.item(0);
+                initialActive = new String(enEl.getTextContent());
+            }
+        }
+        
         active = DEFAULT;
         project.getProjectWatcher().addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
@@ -96,9 +108,15 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         support.removePropertyChangeListener(lst);
     }
 
-    public M2Configuration getActiveConfiguration() {
-        if (!CONFIGURATIONS_ENABLED) {
-            return null;
+    public synchronized M2Configuration getActiveConfiguration() {
+        if (initialActive != null) {
+            for (M2Configuration conf : getConfigurations()) {
+                if (initialActive.equals(conf.getId())) {
+                    active = conf;
+                    initialActive = null;
+                    break;
+                }
+            }
         }
         return active;
     }
@@ -106,13 +124,13 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     public synchronized void setActiveConfiguration(M2Configuration configuration) throws IllegalArgumentException, IOException {
         M2Configuration old = active;
         active = configuration;
+        ConfigurationProviderEnabler.writeAuxiliaryData(
+                project.getLookup().lookup(AuxiliaryConfiguration.class), 
+                ConfigurationProviderEnabler.ACTIVATED, active.getId());
         support.firePropertyChange(PROP_CONFIGURATION_ACTIVE, old, active);
     }
 
     private List<M2Configuration> createProfilesList() {
-        if (!CONFIGURATIONS_ENABLED) {
-            return Collections.<M2Configuration>emptyList();
-        }
         List<String> profs = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
         List<M2Configuration> config = new ArrayList<M2Configuration>();
         config.add(DEFAULT);

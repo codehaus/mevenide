@@ -18,10 +18,12 @@ package org.codehaus.mevenide.netbeans.spi.archetype;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.Collections;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -43,7 +45,8 @@ public final class WizardExtenderUtils {
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
         ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-        return CustomizerProviderImpl.ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapping);
+        return CustomizerProviderImpl.ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), 
+                Collections.<String, ActionToGoalMapping>singletonMap(M2Configuration.DEFAULT,mapping), null, null);
     }
     
     public static void writeModelHandle(ModelHandle handle, NbMavenProject project) throws IOException {

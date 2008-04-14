@@ -101,6 +101,9 @@
                 <file name="org-codehaus-mevenide-netbeans-customizer-SourcesPanelProvider.instance">
                     <attr name="position" intvalue="200"/>
                 </file>
+                <file name="org-codehaus-mevenide-netbeans-configurations-ConfigurationsPanelProvider.instance">
+                    <attr name="position" intvalue="212"/>
+                </file>
                 <file name="org-codehaus-mevenide-netbeans-customizer-RunJarPanelProvider.instance">
                     <attr name="position" intvalue="300"/>
                 </file>
@@ -139,7 +142,7 @@
                     <file name="commons-logging-api-1.0.4.pom" url="libraries/commons-logging-api-1.0.4.pom">
                         <attr name="MD5" stringvalue="0b98e0895cd4e66c3eb4c511de112163"/>
                     </file>
-                </folder>
+            </folder>
                 <folder name="struts">
                     <file name="antlr-2.7.2.pom" url="libraries/antlr-2.7.2.pom">
                         <attr name="MD5" stringvalue="a73459120df5cadf75eaa98453433a01"/>

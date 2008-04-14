@@ -29,10 +29,19 @@ import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -48,6 +57,8 @@ import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.ProjectConfigurationProvider;
+import org.netbeans.spi.project.ProjectConfigurationProvider;
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.openide.filesystems.FileLock;
@@ -113,8 +124,34 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
-        ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));
-        handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapping);
+        Map<String, ActionToGoalMapping> mapps = new HashMap<String, ActionToGoalMapping>();
+        NetbeansBuildActionXpp3Reader reader = new NetbeansBuildActionXpp3Reader();
+        ActionToGoalMapping mapping = reader.read(new StringReader(usr.getRawMappingsAsString()));
+        mapps.put(M2Configuration.DEFAULT, mapping);
+        List<ModelHandle.Configuration> configs = new ArrayList<ModelHandle.Configuration>();
+        ModelHandle.Configuration active = null;
+        boolean configEnabled = project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled();
+        if (configEnabled) {
+            M2Configuration act = project.getLookup().lookup(M2ConfigProvider.class).getActiveConfiguration();
+            for (M2Configuration config : project.getLookup().lookup(M2ConfigProvider.class).getConfigurations()) {
+                mapps.put(config.getId(), reader.read(new StringReader(config.getRawMappingsAsString())));
+                
+                //TODO we have only profile based now, need to distinguish somehow later..
+                ModelHandle.Configuration c = M2Configuration.DEFAULT.equals(config.getId()) 
+                        ? ModelHandle.createDefaultConfiguration()
+                        : ModelHandle.createProfileConfiguration(config.getId());
+                configs.add(c);
+                if (act.equals(config)) {
+                    active = c;
+                }
+            }
+        } else {
+            configs.add(ModelHandle.createDefaultConfiguration());
+            active = configs.get(0);
+        }
+        
+        handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapps, configs, active);
+        handle.setConfigurationsEnabled(configEnabled);
     }
     
     public static ModelAccessor ACCESSOR = null;
@@ -133,7 +170,8 @@ public class CustomizerProviderImpl implements CustomizerProvider {
     
     public static abstract class ModelAccessor {
         
-        public abstract ModelHandle createHandle(Model model, ProfilesRoot prof, MavenProject proj, ActionToGoalMapping mapp);
+        public abstract ModelHandle createHandle(Model model, ProfilesRoot prof, MavenProject proj, Map<String, ActionToGoalMapping> mapp, 
+                List<ModelHandle.Configuration> configs, ModelHandle.Configuration active);
         
     }
     /** Listens to the actions on the Customizer's option buttons */
@@ -194,11 +232,29 @@ public class CustomizerProviderImpl implements CustomizerProvider {
             WriterUtils.writeProfilesModel(project.getProjectDirectory(), handle.getProfileModel());
         }
         if (handle.isModified(handle.getActionMappings())) {
-            writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings());
+            writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings(), M2Configuration.getFileNameExt(M2Configuration.DEFAULT));
+        }
+        project.getLookup().lookup(ConfigurationProviderEnabler.class).enableConfigurations(handle.isConfigurationsEnabled());
+        if (handle.isConfigurationsEnabled()) {
+            M2ConfigProvider prv = project.getLookup().lookup(M2ConfigProvider.class);
+            //TODO we need to set the configurations for the case of non profile configs
+            String id = handle.getActiveConfiguration() != null ? handle.getActiveConfiguration().getId() : M2Configuration.DEFAULT;
+            for (M2Configuration m2 : prv.getConfigurations()) {
+                if (id.equals(m2.getId())) {
+                    prv.setActiveConfiguration(m2);
+                }
+            }
+            //TODO save the action mappings for configurations as well.
+            for (ModelHandle.Configuration c : handle.getConfigurations()) {
+                if (handle.isModified(handle.getActionMappings(c))) {
+                    writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings(c), M2Configuration.getFileNameExt(c.getId()));
+                }
+                
+            }
         }
    }
     
-   public static void writeNbActionsModel(final FileObject pomDir, final ActionToGoalMapping mapping) throws IOException {
+   public static void writeNbActionsModel(final FileObject pomDir, final ActionToGoalMapping mapping, final String path) throws IOException {
         pomDir.getFileSystem().runAtomicAction(new FileSystem.AtomicAction() {
             public void run() throws IOException {
                 JDOMFactory factory = new DefaultJDOMFactory();
@@ -208,9 +264,9 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                 OutputStreamWriter outStr = null;
                 try {
                     Document doc;
-                    FileObject fo = pomDir.getFileObject(UserActionGoalProvider.FILENAME);
+                    FileObject fo = pomDir.getFileObject(path);
                     if (fo == null) {
-                        fo = pomDir.createData(UserActionGoalProvider.FILENAME);
+                        fo = pomDir.createData(path);
                         doc = factory.document(factory.element("actions")); //NOI18N
                     } else {
                         //TODO..

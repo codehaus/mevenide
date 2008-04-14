@@ -32,6 +32,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
@@ -337,7 +338,8 @@ public class ActionProviderImpl implements ActionProvider {
                             mappings.addAction(mapping);
                         }
                         mapping.setDisplayName(pnl.isRememberedAs());
-                        CustomizerProviderImpl.writeNbActionsModel(project.getProjectDirectory(), mappings);
+                        //TODO shall we write to configuration based files or not?
+                        CustomizerProviderImpl.writeNbActionsModel(project.getProjectDirectory(), mappings, M2Configuration.getFileNameExt(M2Configuration.DEFAULT));
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

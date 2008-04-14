@@ -29,6 +29,7 @@ import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.spi.project.ProjectConfiguration;
 import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -40,7 +41,7 @@ import org.openide.filesystems.FileObject;
  */
 public class M2Configuration extends AbstractActionGoalProvider implements ProjectConfiguration  {
 
-    private static String DEFAULT = "%%DEFAULT%%"; //NOI18N
+    public static String DEFAULT = "%%DEFAULT%%"; //NOI18N
     
     static M2Configuration createDefault(NbMavenProject prj) {
         return new M2Configuration(DEFAULT, prj);
@@ -48,8 +49,8 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     
     private String id;
     private NbMavenProject project;
-    private static final String FILENAME_PREFIX = "nbactions-"; //NOI18N
-    private static final String FILENAME_SUFFIX = ".xml"; //NOI18N
+    static final String FILENAME_PREFIX = "nbactions-"; //NOI18N
+    static final String FILENAME_SUFFIX = ".xml"; //NOI18N
     private Date lastModified = new Date();
     
     public M2Configuration(String id, NbMavenProject proj) {
@@ -66,6 +67,13 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     
     public String getId() {
         return id;
+    }
+    
+    public static String getFileNameExt(String id) {
+        if (DEFAULT.equals(id)) {
+            return UserActionGoalProvider.FILENAME;
+        }
+        return FILENAME_PREFIX + id + FILENAME_SUFFIX;
     }
 
     @Override

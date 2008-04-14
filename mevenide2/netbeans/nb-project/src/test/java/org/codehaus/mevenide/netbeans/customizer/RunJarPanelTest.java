@@ -53,6 +53,12 @@ public class RunJarPanelTest extends TestCase {
         assertEquals("Main", RunJarPanel.splitMainClass(line));
         assertEquals("arg1 arg2.xsjs.xjsj.MainParam", RunJarPanel.splitParams(line));
         
+        //non trimmed line
+        line = " -classpath %classpath ${packageClassName} %classpath ${packageClassName} ";
+        assertEquals("-classpath %classpath", RunJarPanel.splitJVMParams(line));
+        assertEquals("${packageClassName}", RunJarPanel.splitMainClass(line));
+        assertEquals("%classpath ${packageClassName}", RunJarPanel.splitParams(line));
+
     }
 
 
