@@ -42,6 +42,7 @@ import org.apache.maven.profiles.DefaultProfileManager;
 import org.apache.maven.profiles.ProfileManager;
 import org.apache.maven.profiles.activation.DefaultProfileActivationContext;
 import org.apache.maven.profiles.activation.ProfileActivationContext;
+import org.apache.maven.project.DefaultProjectBuilderConfiguration;
 import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.build.model.DefaultModelLineage;
 import org.apache.maven.project.build.model.ModelLineage;
@@ -436,7 +437,12 @@ public final class EmbedderFactory {
             ModelLineageBuilder bldr = (ModelLineageBuilder) embedder.getPlexusContainer().lookup(ModelLineageBuilder.class);
             ProfileActivationContext context = new DefaultProfileActivationContext(new Properties(), true); //TODO shall we pass some execution props in here?
             ProfileManager manager = new DefaultProfileManager(embedder.getPlexusContainer(), context);
-            return bldr.buildModelLineage(pom, embedder.getLocalRepository(), new ArrayList(), manager, allowStubs, true);
+            DefaultProjectBuilderConfiguration conf = new DefaultProjectBuilderConfiguration();
+            conf.setGlobalProfileManager(manager);
+            conf.setExecutionProperties(new Properties());
+            conf.setLocalRepository(embedder.getLocalRepository());
+            conf.setUserProperties(new Properties());
+            return bldr.buildModelLineage(pom, conf, new ArrayList(), allowStubs, true);
         } catch (ProjectBuildingException ex) {
             Exceptions.printStackTrace(ex);
         } catch (ComponentLookupException ex) {

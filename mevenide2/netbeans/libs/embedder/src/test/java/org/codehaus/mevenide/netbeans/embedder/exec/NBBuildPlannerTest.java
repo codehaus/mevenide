@@ -53,15 +53,15 @@ public class NBBuildPlannerTest extends TestCase {
     
     private class BP implements BuildPlanner {
 
-        public BuildPlan constructBuildPlan(List arg0, MavenProject arg1, MavenSession arg2) throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
         public void constructInitialProjectBuildPlans(MavenSession arg0) throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
 
         public BuildPlan constructInitialProjectBuildPlan(MavenProject arg0, MavenSession arg1) throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        public BuildPlan constructBuildPlan(List tasks, MavenProject project, MavenSession session, boolean allowUnbindableMojos) throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
             throw new UnsupportedOperationException("Not supported yet.");
         }
         

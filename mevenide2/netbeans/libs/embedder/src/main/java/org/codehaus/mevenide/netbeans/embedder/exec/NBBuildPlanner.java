@@ -60,8 +60,9 @@ public class NBBuildPlanner extends DefaultBuildPlanner {
     }
     
     @Override
-    public synchronized BuildPlan constructBuildPlan(List tasks, MavenProject project, MavenSession session) throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
-        return super.constructBuildPlan(tasks, project, session);
+    public synchronized BuildPlan constructBuildPlan(List tasks, MavenProject project, MavenSession session, boolean allowUnbindableMojos) 
+            throws LifecycleLoaderException, LifecycleSpecificationException, LifecyclePlannerException {
+        return super.constructBuildPlan(tasks, project, session, allowUnbindableMojos);
     }
     
 }

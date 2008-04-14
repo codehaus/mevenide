@@ -58,7 +58,9 @@ public class MojoNode extends AbstractNode {
 
     @Override
     public Action[] getActions(boolean arg0) {
-        return new Action[] { new FixateVersion()};
+        return new Action[] { 
+//            new FixateVersion()
+        };
     }
 
     @Override
@@ -82,16 +84,16 @@ public class MojoNode extends AbstractNode {
         return array;
     }
     
-    private class FixateVersion extends AbstractAction {
-
-        private FixateVersion() {
-            setEnabled(mb.isLateBound());
-            putValue(Action.NAME, "Fixate version in POM");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            
-        }
-        
-    }
+//    private class FixateVersion extends AbstractAction {
+//
+//        private FixateVersion() {
+//            setEnabled(mb.isLateBound());
+//            putValue(Action.NAME, "Fixate version in POM");
+//        }
+//
+//        public void actionPerformed(ActionEvent e) {
+//            
+//        }
+//        
+//    }
 }
