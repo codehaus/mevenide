@@ -72,9 +72,9 @@ public class ProfileUtils {
             prifileides.add(profile.getId());
         }
         //read from Settings.xml
-        profiles=MavenSettingsSingleton.getInstance().createUserSettingsModel().getActiveProfiles();
-        for (Profile profile : profiles) {
-            prifileides.add(profile.getId());
+        List<String> profileStrings = MavenSettingsSingleton.getInstance().createUserSettingsModel().getActiveProfiles();
+        for (String profile : profileStrings) {
+            prifileides.add(profile);
         }
         
         File basedir = FileUtil.normalizeFile(mavenProject.getBasedir());
