@@ -189,6 +189,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             req.setGoals(config.getGoals());
             //mavenCLI adds all System.getProperties() in there as well..
             Properties props = new Properties();
+            EmbedderFactory.fillEnvVars(props);
             props.putAll(excludeNetBeansProperties(System.getProperties()));
             props.putAll(config.getProperties());
             props.setProperty("netbeans.execution", "true");//NOI18N

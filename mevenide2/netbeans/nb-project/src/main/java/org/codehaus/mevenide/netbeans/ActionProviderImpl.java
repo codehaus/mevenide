@@ -32,7 +32,6 @@ import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
@@ -41,8 +40,8 @@ import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
-import org.codehaus.mevenide.netbeans.execute.AbstractMavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
+import org.codehaus.mevenide.netbeans.execute.MavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.ui.RunGoalsPanel;
@@ -51,7 +50,6 @@ import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionX
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
-import org.netbeans.spi.project.ProjectConfiguration;
 import org.netbeans.spi.project.ui.support.DefaultProjectOperations;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -151,7 +149,7 @@ public class ActionProviderImpl implements ActionProvider {
 
         if (checkShowDialog && MavenExecutionSettings.getDefault().isShowRunDialog()) {
             RunGoalsPanel pnl = new RunGoalsPanel();
-            DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(AbstractMavenExecutor.class, "TIT_Run_maven"));
+            DialogDescriptor dd = new DialogDescriptor(pnl, org.openide.util.NbBundle.getMessage(MavenExecutor.class, "TIT_Run_maven"));
             pnl.readConfig(config);
             Object retValue = DialogDisplayer.getDefault().notify(dd);
             if (retValue == DialogDescriptor.OK_OPTION) {
