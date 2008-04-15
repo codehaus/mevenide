@@ -52,7 +52,7 @@ import org.openide.windows.OutputListener;
  * common code for MAvenExecutors, sharing tabs and actions..
  * @author mkleint
  */
-public abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
+abstract class AbstractMavenExecutor extends OutputTabMaintainer implements MavenExecutor, Cancellable {
 
     protected RunConfig config;
     protected ReRunAction rerun;
@@ -67,56 +67,34 @@ public abstract class AbstractMavenExecutor extends OutputTabMaintainer implemen
 
     static {
         forbidden.add("netbeans.logger.console"); //NOI18N
-
         forbidden.add("java.util.logging.config.class"); //NOI18N
-
         forbidden.add("netbeans.autoupdate.language"); //NOI18N
-
         forbidden.add("netbeans.dirs"); //NOI18N
-
         forbidden.add("netbeans.home"); //NOI18N
-
         forbidden.add("sun.awt.exception.handler"); //NOI18N
-
         forbidden.add("org.openide.TopManager.GUI"); //NOI18N
-
         forbidden.add("org.openide.major.version"); //NOI18N
-
         forbidden.add("netbeans.autoupdate.variant"); //NOI18N
-
         forbidden.add("netbeans.dynamic.classpath"); //NOI18N
-
         forbidden.add("netbeans.autoupdate.country"); //NOI18N
-
         forbidden.add("netbeans.hash.code"); //NOI18N
-
         forbidden.add("org.openide.TopManager"); //NOI18N
-
         forbidden.add("org.openide.version"); //NOI18N
-
         forbidden.add("netbeans.buildnumber"); //NOI18N
-
         forbidden.add("javax.xml.parsers.DocumentBuilderFactory"); //NOI18N
-
         forbidden.add("javax.xml.parsers.SAXParserFactory"); //NOI18N
-
         forbidden.add("rave.build"); //NOI18N
-
         forbidden.add("netbeans.accept_license_class"); //NOI18N
-
         forbidden.add("rave.version"); //NOI18N
-
         forbidden.add("netbeans.autoupdate.version"); //NOI18N
-
         forbidden.add("netbeans.importclass"); //NOI18N
-
         forbidden.add("netbeans.user"); //NOI18N
 //        forbidden.add("java.class.path");
 //        forbidden.add("https.nonProxyHosts");
 
     }
 
-    public AbstractMavenExecutor(RunConfig conf) {
+    protected AbstractMavenExecutor(RunConfig conf) {
         super(conf.getExecutionName());
         config = conf;
 

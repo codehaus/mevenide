@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 import org.apache.maven.artifact.UnknownRepositoryLayoutException;
@@ -60,6 +62,7 @@ import org.codehaus.plexus.component.repository.exception.ComponentRepositoryExc
 import org.codehaus.plexus.configuration.PlexusConfiguration;
 import org.codehaus.plexus.configuration.PlexusConfigurationException;
 import org.codehaus.plexus.configuration.xml.XmlPlexusConfiguration;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileChangeAdapter;
 import org.openide.filesystems.FileEvent;
@@ -469,6 +472,30 @@ public final class EmbedderFactory {
             copyConfig(oldChild, newChild);
         }
     }
+
+
+    /**
+     * Maven assumes the env vars are included in execution properties with the "env." prefix.
+     * 
+     * @param properties
+     */
+    public static void fillEnvVars(Properties properties) {
+        try
+        {
+            Properties envVars = CommandLineUtils.getSystemEnvVars();
+            Iterator i = envVars.entrySet().iterator();
+            while ( i.hasNext() )
+            {
+                Map.Entry e = (Map.Entry) i.next();
+                properties.setProperty( "env." + e.getKey().toString(), e.getValue().toString() );
+            }
+        }
+        catch ( IOException e )
+        {
+            System.err.println( "Error getting environment vars for profile activation: " + e );
+        }
+    }
+    
 
     private static class SettingsFileListener extends FileChangeAdapter {
 
