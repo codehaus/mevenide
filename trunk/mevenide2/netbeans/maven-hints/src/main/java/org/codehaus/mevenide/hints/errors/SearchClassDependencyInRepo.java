@@ -38,6 +38,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import javax.lang.model.element.Name;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.project.MavenProject;
@@ -72,7 +73,7 @@ import org.openide.util.RequestProcessor;
  * @author Anuradha G
  */
 public class SearchClassDependencyInRepo implements ErrorRule<Void> {
-
+    private AtomicBoolean cancel=new AtomicBoolean(false);
     public SearchClassDependencyInRepo() {
     }
 
@@ -87,7 +88,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
     public List<Fix> run(final CompilationInfo info, String diagnosticKey,
             final int offset, TreePath treePath, Data<Void> data) {
-
+        cancel.set(false);
         if (!SearchClassDependencyHint.isHintEnabled()) {
             return Collections.emptyList();
         }
@@ -122,6 +123,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 return Collections.<Fix>emptyList();
             }
         }
+        if(cancel.get()) return Collections.<Fix>emptyList();
         if (path.getParentPath() != null) {
             Tree leaf = path.getParentPath().getLeaf();
             
@@ -231,6 +233,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
         String simpleName = ident.text().toString();
         //copyed from ImportClass-end
+        if(cancel.get()) return Collections.<Fix>emptyList();
         boolean isTestSource = false;
 
         MavenProject mp = mavProj.getOriginalMavenProject();
@@ -355,7 +358,8 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
     }
 
     public void cancel() {
-        // Does nothing
+        //cancel task
+        cancel.set(true);
     }
 
     static final class MavenFixImport implements EnhancedFix {
