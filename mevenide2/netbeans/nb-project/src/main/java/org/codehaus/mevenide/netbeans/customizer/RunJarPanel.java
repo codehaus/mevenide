@@ -171,7 +171,6 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
 
     private void addListeners() {
-        System.out.println("adding listeners");
         comConfiguration.addActionListener(comboListener);
         txtMainClass.getDocument().addDocumentListener(docListener);
         txtArguments.getDocument().addDocumentListener(docListener);
@@ -180,7 +179,6 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     private void removeListeners() {
-        System.out.println("removing listeners");
         comConfiguration.removeActionListener(comboListener);
         txtMainClass.getDocument().removeDocumentListener(docListener);
         txtArguments.getDocument().removeDocumentListener(docListener);
