@@ -57,6 +57,7 @@ import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.netbeans.api.project.ProjectUtils;
+import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.netbeans.spi.project.ProjectConfigurationProvider;
 import org.netbeans.spi.project.ProjectConfigurationProvider;
 import org.netbeans.spi.project.ui.CustomizerProvider;
@@ -132,19 +133,45 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         ModelHandle.Configuration active = null;
         boolean configEnabled = project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled();
         if (configEnabled) {
-            M2Configuration act = project.getLookup().lookup(M2ConfigProvider.class).getActiveConfiguration();
-            for (M2Configuration config : project.getLookup().lookup(M2ConfigProvider.class).getConfigurations()) {
+            M2ConfigProvider provider = project.getLookup().lookup(M2ConfigProvider.class);
+            M2Configuration act = provider.getActiveConfiguration();
+            M2Configuration defconfig = provider.getDefaultConfig();
+            mapps.put(defconfig.getId(), reader.read(new StringReader(defconfig.getRawMappingsAsString())));
+            ModelHandle.Configuration c = ModelHandle.createDefaultConfiguration();
+            configs.add(c);
+            if (act.equals(defconfig)) {
+                active = c;
+            }
+            
+            for (M2Configuration config : provider.getSharedConfigurations()) {
                 mapps.put(config.getId(), reader.read(new StringReader(config.getRawMappingsAsString())));
-                
-                //TODO we have only profile based now, need to distinguish somehow later..
-                ModelHandle.Configuration c = M2Configuration.DEFAULT.equals(config.getId()) 
-                        ? ModelHandle.createDefaultConfiguration()
-                        : ModelHandle.createProfileConfiguration(config.getId());
+                c = ModelHandle.createCustomConfiguration(config.getId());
+                c.setActivatedProfiles(config.getActivatedProfiles());
+                c.setShared(true);
                 configs.add(c);
                 if (act.equals(config)) {
                     active = c;
                 }
             }
+            for (M2Configuration config : provider.getNonSharedConfigurations()) {
+                mapps.put(config.getId(), reader.read(new StringReader(config.getRawMappingsAsString())));
+                c = ModelHandle.createCustomConfiguration(config.getId());
+                c.setActivatedProfiles(config.getActivatedProfiles());
+                c.setShared(false);
+                configs.add(c);
+                if (act.equals(config)) {
+                    active = c;
+                }
+            }
+            for (M2Configuration config : provider.getProfileConfigurations()) {
+                mapps.put(config.getId(), reader.read(new StringReader(config.getRawMappingsAsString())));
+                c = ModelHandle.createProfileConfiguration(config.getId());
+                configs.add(c);
+                if (act.equals(config)) {
+                    active = c;
+                }
+            }
+            
         } else {
             configs.add(ModelHandle.createDefaultConfiguration());
             active = configs.get(0);
@@ -236,7 +263,25 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         }
         project.getLookup().lookup(ConfigurationProviderEnabler.class).enableConfigurations(handle.isConfigurationsEnabled());
         if (handle.isConfigurationsEnabled()) {
+            List<M2Configuration> shared = new ArrayList<M2Configuration>();
+            List<M2Configuration> nonshared = new ArrayList<M2Configuration>();
+            
+            if (handle.isModified(handle.getConfigurations())) {
+                for (ModelHandle.Configuration mdlConf : handle.getConfigurations()) {
+                    if (!mdlConf.isDefault() && !mdlConf.isProfileBased()) {
+                        M2Configuration c = new M2Configuration(mdlConf.getId(), project);
+                        c.setActivatedProfiles(mdlConf.getActivatedProfiles());
+                        if (mdlConf.isShared()) {
+                            shared.add(c);
+                        } else {
+                            nonshared.add(c);
+                        }
+                    }
+                }
+            }
+            
             M2ConfigProvider prv = project.getLookup().lookup(M2ConfigProvider.class);
+            prv.setConfigurations(shared, nonshared, true);
             //TODO we need to set the configurations for the case of non profile configs
             String id = handle.getActiveConfiguration() != null ? handle.getActiveConfiguration().getId() : M2Configuration.DEFAULT;
             for (M2Configuration m2 : prv.getConfigurations()) {
@@ -244,7 +289,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                     prv.setActiveConfiguration(m2);
                 }
             }
-            //TODO save the action mappings for configurations as well.
+            //save action mappings for configurations..
             for (ModelHandle.Configuration c : handle.getConfigurations()) {
                 if (handle.isModified(handle.getActionMappings(c))) {
                     writeNbActionsModel(project.getProjectDirectory(), handle.getActionMappings(c), M2Configuration.getFileNameExt(c.getId()));

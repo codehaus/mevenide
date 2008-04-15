@@ -48,6 +48,7 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     }
     
     private String id;
+    private List<String> profiles;
     private NbMavenProject project;
     static final String FILENAME_PREFIX = "nbactions-"; //NOI18N
     static final String FILENAME_SUFFIX = ".xml"; //NOI18N
@@ -68,6 +69,15 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     public String getId() {
         return id;
     }
+    
+    public void setActivatedProfiles(List<String> profs) {
+        profiles = profs;
+    }
+    
+    public List<String> getActivatedProfiles() {
+        return profiles;
+    }
+    
     
     public static String getFileNameExt(String id) {
         if (DEFAULT.equals(id)) {
@@ -154,5 +164,6 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME_PREFIX + id + FILENAME_SUFFIX);
         return (fo == null || fo.lastModified().after(lastModified));
     }
+
 
 }

@@ -24,11 +24,12 @@ import java.util.List;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
-import javax.swing.ListCellRenderer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle.Configuration;
+import org.openide.DialogDescriptor;
+import org.openide.DialogDisplayer;
 
 /**
  *
@@ -52,9 +53,10 @@ public class ConfigurationsPanel extends javax.swing.JPanel {
         //temporary
         cbProfiles.setSelected(true);
         cbProfiles.setEnabled(false);
-        btnAdd.setVisible(false);
-        btnEdit.setVisible(false);
-        btnRemove.setVisible(false);
+//        btnAdd.setVisible(false);
+//        btnEdit.setVisible(false);
+//        btnRemove.setVisible(false);
+//        addProfileConfigurations();
         
         initUI(handle.isConfigurationsEnabled());
         createListModel();
@@ -69,24 +71,37 @@ public class ConfigurationsPanel extends javax.swing.JPanel {
                 return supers;
             }
         });
+        
+        lstConfigurations.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
+                if (conf == null || conf.isProfileBased() || conf.isProfileBased()) {
+                    btnEdit.setEnabled(false);
+                    btnRemove.setEnabled(false);
+                } else {
+                    btnEdit.setEnabled(true);
+                    btnRemove.setEnabled(true);
+                }
+            }
+        });
     }
 
     private void createListModel() {
-        boolean isProfile = false;
+//        boolean isProfile = false;
         DefaultListModel model = new DefaultListModel();
         if (handle.getConfigurations() != null) {
             for (ModelHandle.Configuration hndl : handle.getConfigurations()) {
                 model.addElement(hndl);
-                if (hndl.isProfileBased()) {
-                    isProfile = true;
-                }
+//                if (hndl.isProfileBased()) {
+//                    isProfile = true;
+//                }
             }
         }
         lstConfigurations.setModel(model);
         lstConfigurations.setSelectedValue(handle.getActiveConfiguration(), true);
-        if (isProfile) {
+//        if (isProfile) {
             cbProfiles.setSelected(true);
-        }
+//        }
     }
 
 
@@ -131,6 +146,7 @@ public class ConfigurationsPanel extends javax.swing.JPanel {
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
+        lstConfigurations.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(lstConfigurations);
 
         btnAdd.setText(org.openide.util.NbBundle.getMessage(ConfigurationsPanel.class, "ConfigurationsPanel.btnAdd.text")); // NOI18N
@@ -219,16 +235,28 @@ private void cbEnableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void cbProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbProfilesActionPerformed
 // TODO add your handling code here:
     initListUI(cbProfiles.isSelected());
-    if (cbProfiles.isSelected()) {
-        addProfileConfigurations();
-    } else {
-        removeProfileConfigurations();
-    }
+//    if (cbProfiles.isSelected()) {
+//        addProfileConfigurations();
+//    } else {
+//        removeProfileConfigurations();
+//    }
     
 }//GEN-LAST:event_cbProfilesActionPerformed
 
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
 // TODO add your handling code here:
+    NewConfigurationPanel pnl = new NewConfigurationPanel();
+    DialogDescriptor dd = new DialogDescriptor(pnl, "Add configuration");
+    Object ret = DialogDisplayer.getDefault().notify(dd);
+    if (ret == DialogDescriptor.OK_OPTION) {
+        ModelHandle.Configuration conf = ModelHandle.createCustomConfiguration(pnl.getConfigurationId());
+        conf.setShared(pnl.isShared());
+        conf.setActivatedProfiles(pnl.getProfiles());
+        handle.addConfiguration(conf);
+        handle.markAsModified(handle.getConfigurations());
+        createListModel();
+        lstConfigurations.setSelectedValue(conf, true);
+    }
 }//GEN-LAST:event_btnAddActionPerformed
 
 private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
@@ -237,11 +265,16 @@ private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
 
 private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
 // TODO add your handling code here:
+    ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
+    if (conf != null) {
+        handle.removeConfiguration(conf);
+        createListModel();
+    }
 }//GEN-LAST:event_btnRemoveActionPerformed
 
 private void btnActivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivateActionPerformed
 // TODO add your handling code here:
-    ModelHandle.Configuration conf = (Configuration) lstConfigurations.getSelectedValue();
+    ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
     if (conf != null) {
         handle.setActiveConfiguration(conf);
     }
@@ -265,51 +298,51 @@ private void btnActivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private void initListUI(boolean selected) {
         lstConfigurations.setEnabled(selected);
         btnActivate.setEnabled(selected);
-        btnAdd.setEnabled(false);
-        btnEdit.setEnabled(false);
-        btnRemove.setEnabled(false);
+        btnAdd.setEnabled(selected);
+        btnEdit.setEnabled(selected);
+        btnRemove.setEnabled(selected);
     }
     // End of variables declaration
 
  
     private void initUI(boolean configsEnabled) {
-        cbProfiles.setEnabled(configsEnabled);
+//        cbProfiles.setEnabled(configsEnabled);
         initListUI(configsEnabled);
     }
 
 
-    private void addProfileConfigurations() {
-        ArrayList<ModelHandle.Configuration> lst = new ArrayList<ModelHandle.Configuration>(handle.getConfigurations());
-        lastNonProfileList.clear();
-        for (ModelHandle.Configuration conf : lst) {
-            if (!conf.isProfileBased() && !conf.isDefault()) {
-                handle.removeConfiguration(conf);
-                lastNonProfileList.add(conf);
-                handle.markAsModified(handle.getConfigurations());
-            }
-        }
-        //currently profile based are mutually exclusive to non-profile based..
-        for (String profile : ProfileUtils.retrieveAllProfiles(handle.getProject())) {
-            handle.addConfiguration(ModelHandle.createProfileConfiguration(profile));
-            handle.markAsModified(handle.getConfigurations());
-        }
-        createListModel();
-    }
+//    private void addProfileConfigurations() {
+//        ArrayList<ModelHandle.Configuration> lst = new ArrayList<ModelHandle.Configuration>(handle.getConfigurations());
+//        lastNonProfileList.clear();
+//        for (ModelHandle.Configuration conf : lst) {
+//            if (!conf.isProfileBased() && !conf.isDefault()) {
+//                handle.removeConfiguration(conf);
+//                lastNonProfileList.add(conf);
+//                handle.markAsModified(handle.getConfigurations());
+//            }
+//        }
+//        //currently profile based are mutually exclusive to non-profile based..
+//        for (String profile : ProfileUtils.retrieveAllProfiles(handle.getProject())) {
+//            handle.addConfiguration(ModelHandle.createProfileConfiguration(profile));
+//            handle.markAsModified(handle.getConfigurations());
+//        }
+//        createListModel();
+//    }
     
-    private void removeProfileConfigurations() {
-        ArrayList<ModelHandle.Configuration> lst = new ArrayList<ModelHandle.Configuration>(handle.getConfigurations());
-        for (ModelHandle.Configuration conf : lst) {
-            if (conf.isProfileBased() && !conf.isDefault()) {
-                handle.removeConfiguration(conf);
-                handle.markAsModified(handle.getConfigurations());
-            }
-        }
-        //currently profile based are mutually exclusive to non-profile based..
-        for (ModelHandle.Configuration conf : lastNonProfileList) {
-            handle.addConfiguration(conf);
-            handle.markAsModified(handle.getConfigurations());
-        }
-        createListModel();
-    }
+//    private void removeProfileConfigurations() {
+//        ArrayList<ModelHandle.Configuration> lst = new ArrayList<ModelHandle.Configuration>(handle.getConfigurations());
+//        for (ModelHandle.Configuration conf : lst) {
+//            if (conf.isProfileBased() && !conf.isDefault()) {
+//                handle.removeConfiguration(conf);
+//                handle.markAsModified(handle.getConfigurations());
+//            }
+//        }
+//        //currently profile based are mutually exclusive to non-profile based..
+//        for (ModelHandle.Configuration conf : lastNonProfileList) {
+//            handle.addConfiguration(conf);
+//            handle.markAsModified(handle.getConfigurations());
+//        }
+//        createListModel();
+//    }
 
 }

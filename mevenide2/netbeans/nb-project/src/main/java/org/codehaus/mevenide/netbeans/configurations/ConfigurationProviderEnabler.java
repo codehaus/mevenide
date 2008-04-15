@@ -17,7 +17,9 @@
 
 package org.codehaus.mevenide.netbeans.configurations;
 
+import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.util.lookup.InstanceContent;
 import org.openide.xml.XMLUtil;
@@ -35,6 +37,10 @@ public class ConfigurationProviderEnabler {
     static String ROOT = "config-data"; //NOI18N
     static String ENABLED = "enabled"; //NOI18N
     static String ACTIVATED = "activated"; //NOI18N
+    static String CONFIGURATIONS = "configurations"; //NOI18N
+    static String CONFIG = "configuration"; //NOI18N
+    static String CONFIG_PROFILES_ATTR = "profiles"; //NOI18N
+    static String CONFIG_ID_ATTR = "id"; //NOI18N
     
     private Boolean cached;
     private InstanceContent instanceContent;
@@ -89,6 +95,33 @@ public class ConfigurationProviderEnabler {
         }
         enEl.setTextContent(value);
         conf.putConfigurationFragment(el, false);
+    }
+    
+    static void writeAuxiliaryData(AuxiliaryConfiguration conf, boolean shared, List<M2Configuration> configs) {
+        Element el = conf.getConfigurationFragment(ROOT, NAMESPACE, shared);
+        if (el == null) {
+            el = XMLUtil.createDocument(ROOT, NAMESPACE, null, null).getDocumentElement();
+        }
+        Element enEl;
+        NodeList list = el.getElementsByTagNameNS(NAMESPACE, CONFIGURATIONS);
+        if (list.getLength() > 0) {
+            enEl = (Element)list.item(0);
+            NodeList nl = enEl.getChildNodes();
+            int len = nl.getLength();
+            for (int i = 0; i < len; i++) {
+                enEl.removeChild(nl.item(0));
+            }
+        } else {
+            enEl = el.getOwnerDocument().createElementNS(NAMESPACE, CONFIGURATIONS);
+            el.appendChild(enEl);
+        }
+        for (M2Configuration config : configs) {
+            Element child  = enEl.getOwnerDocument().createElementNS(NAMESPACE, CONFIG);
+            child.setAttribute(CONFIG_ID_ATTR, config.getId());
+            child.setAttribute(CONFIG_PROFILES_ATTR, StringUtils.join(config.getActivatedProfiles().iterator(), " "));
+            enEl.appendChild(child);
+        }
+        conf.putConfigurationFragment(el, shared);
     }
     
 }
