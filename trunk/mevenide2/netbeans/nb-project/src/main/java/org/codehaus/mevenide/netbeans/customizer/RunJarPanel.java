@@ -471,7 +471,6 @@ public class RunJarPanel extends javax.swing.JPanel {
     }
     
     void applyChanges() {
-        System.out.println("applying changes..");
         Thread.dumpStack();
         
         String newMainClass = txtMainClass.getText().trim();
@@ -771,9 +770,7 @@ public class RunJarPanel extends javax.swing.JPanel {
             Dialog dlg = DialogDisplayer.getDefault ().createDialog (desc);
             dlg.setVisible (true);
             if (desc.getValue() == options[0]) {
-               System.out.println("setting main");
                mainClassTextField.setText (panel.getSelectedMainClass ());
-               System.out.println("set main");
             } 
             dlg.dispose();
         }
