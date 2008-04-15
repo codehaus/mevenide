@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.netbeans.spi.project.ActionProvider;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.netbeans.spi.project.ProjectConfigurationProvider;
@@ -87,10 +89,12 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     }
 
     public boolean hasCustomizer() {
-        return false;
+        return true;
     }
 
     public void customize() {
+        CustomizerProviderImpl prv = project.getLookup().lookup(CustomizerProviderImpl.class);
+        prv.showCustomizer(ModelHandle.PANEL_CONFIGURATION);
     }
 
     public boolean configurationsAffectAction(String action) {
