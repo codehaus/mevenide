@@ -1,5 +1,5 @@
 /*
- *  Copyright 2008 mkleint.
+ * Copyright 2008 Mevenide Team
  * 
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,7 +22,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
@@ -44,6 +46,8 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
     private NbMavenProject project;
     private List<M2Configuration> profiles = null;
+    private List<M2Configuration> shared = null;
+    private List<M2Configuration> nonshared = null;
     private final M2Configuration DEFAULT;
     private M2Configuration active;
     private String initialActive;
@@ -85,9 +89,41 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         if (profiles == null) {
             profiles = createProfilesList();
         }
-        return new ArrayList<M2Configuration>(profiles);
+        if (shared == null) {
+            //read from auxconf
+            shared = readConfiguration(true);
+        }
+        if (nonshared == null) {
+            //read from auxconf
+            nonshared = readConfiguration(false);
+        }
+        ArrayList<M2Configuration> toRet = new ArrayList<M2Configuration>();
+        toRet.add(DEFAULT);
+        toRet.addAll(shared);
+        toRet.addAll(nonshared);
+        toRet.addAll(profiles);
+        return toRet;
     }
 
+    public M2Configuration getDefaultConfig() {
+        return DEFAULT;
+    }
+    
+    public synchronized Collection<M2Configuration> getProfileConfigurations() {
+        getConfigurations();
+        return profiles;
+    }
+    
+    public synchronized Collection<M2Configuration> getSharedConfigurations() {
+        getConfigurations();
+        return shared;
+    }
+    
+    public synchronized Collection<M2Configuration> getNonSharedConfigurations() {
+        getConfigurations();
+        return nonshared;
+    }
+    
     public boolean hasCustomizer() {
         return true;
     }
@@ -124,6 +160,16 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         }
         return active;
     }
+    
+    public synchronized void setConfigurations(List<M2Configuration> shared, List<M2Configuration> nonshared, boolean includeProfiles) {
+        AuxiliaryConfiguration aux = project.getLookup().lookup(AuxiliaryConfiguration.class);
+        ConfigurationProviderEnabler.writeAuxiliaryData(aux, true, shared);
+        ConfigurationProviderEnabler.writeAuxiliaryData(aux, false, nonshared);
+        this.shared = shared;
+        this.nonshared = nonshared;
+        this.profiles = null;
+        firePropertyChange();
+    }
 
     public synchronized void setActiveConfiguration(M2Configuration configuration) throws IllegalArgumentException, IOException {
         M2Configuration old = active;
@@ -137,8 +183,10 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private List<M2Configuration> createProfilesList() {
         List<String> profs = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
         List<M2Configuration> config = new ArrayList<M2Configuration>();
-        config.add(DEFAULT);
+//        config.add(DEFAULT);
         for (String prof : profs) {
+            M2Configuration c = new M2Configuration(prof, project);
+            c.setActivatedProfiles(Collections.singletonList(prof));
             config.add(new M2Configuration(prof, project));
         }
         return config;
@@ -146,5 +194,30 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
 
     private void firePropertyChange() {
         support.firePropertyChange(ProjectConfigurationProvider.PROP_CONFIGURATIONS, null, null);
+    }
+    
+    private List<M2Configuration> readConfiguration(boolean shared) {
+        AuxiliaryConfiguration aux = project.getLookup().lookup(AuxiliaryConfiguration.class);
+        Element el = aux.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, shared);
+        if (el != null) {
+            NodeList list = el.getElementsByTagNameNS(ConfigurationProviderEnabler.NAMESPACE, ConfigurationProviderEnabler.CONFIG);
+            if (list.getLength() > 0) {
+                List<M2Configuration> toRet = new ArrayList<M2Configuration>();
+                int len = list.getLength();
+                for (int i = 0; i < len; i++) {
+                    Element enEl = (Element)list.item(i);
+                    
+                    M2Configuration c = new M2Configuration(enEl.getAttribute(ConfigurationProviderEnabler.CONFIG_ID_ATTR), project);
+                    String profs = enEl.getAttribute(ConfigurationProviderEnabler.CONFIG_PROFILES_ATTR);
+                    if (profs != null) {
+                        String[] s = profs.split(" ");
+                        c.setActivatedProfiles(Arrays.asList(s));
+                    }
+                    toRet.add(c);
+                }
+                return toRet;
+            }
+        }
+        return new ArrayList<M2Configuration>();
     }
 }

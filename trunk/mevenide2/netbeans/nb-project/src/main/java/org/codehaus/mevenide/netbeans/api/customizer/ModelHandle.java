@@ -243,6 +243,7 @@ public final class ModelHandle {
     
     public void addConfiguration(Configuration config) {
         configurations.add(config);
+        modConfig = true;
     }
     
     public void removeConfiguration(Configuration config) {
@@ -250,6 +251,7 @@ public final class ModelHandle {
         if (active == config) {
             active = configurations.size() > 0 ? configurations.get(0) : null;
         }
+        modConfig = true;
     }
     
     public Configuration getActiveConfiguration() {
@@ -324,6 +326,7 @@ public final class ModelHandle {
 
         private String displayName;
         private List<String> activatedProfiles;
+        private boolean shared = false;
         
         Configuration() {}
 
@@ -360,6 +363,14 @@ public final class ModelHandle {
 
         public String getId() {
             return id;
+        }
+
+        public void setShared(boolean shared) {
+            this.shared = shared;
+        }
+        
+        public boolean isShared() {
+            return shared;
         }
 
         void setId(String id) {
