@@ -32,7 +32,7 @@ public class ConfigurationsPanelProvider implements ProjectCustomizer.CompositeC
 
     public ProjectCustomizer.Category createCategory(Lookup context) {
         return ProjectCustomizer.Category.create(
-                ModelHandle.PANEL_MAPPING, 
+                ModelHandle.PANEL_CONFIGURATION, 
                 NbBundle.getMessage(ConfigurationsPanelProvider.class, "TIT_Configurations"), 
                 null,
                 (ProjectCustomizer.Category[])null);
