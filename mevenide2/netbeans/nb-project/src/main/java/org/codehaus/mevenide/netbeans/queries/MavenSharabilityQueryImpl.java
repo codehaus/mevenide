@@ -17,9 +17,12 @@
 package org.codehaus.mevenide.netbeans.queries;
 
 import java.io.File;
+import java.util.Collection;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
+import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.netbeans.api.queries.SharabilityQuery;
 import org.netbeans.spi.queries.SharabilityQueryImplementation;
 import org.openide.filesystems.FileObject;
@@ -59,6 +62,18 @@ public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation
         if (file.equals(new File(basedir, "profiles.xml"))) { //NOI18N
             //profiles.xml are not meant to be put in version control.
             return false;
+        }
+        if (file.getName().startsWith("nbactions") && file.getParentFile().equals(basedir)) { //NOI18N
+            //non shared custom configurations shall not be added to version control.
+            M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
+            if (configs != null) {
+                Collection<M2Configuration> col = configs.getNonSharedConfigurations();
+                for (M2Configuration conf : col) {
+                    if (file.getName().equals(M2Configuration.getFileNameExt(conf.getId()))) {
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }
