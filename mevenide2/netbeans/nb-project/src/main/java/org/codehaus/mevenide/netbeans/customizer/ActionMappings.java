@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
@@ -79,6 +80,7 @@ public class ActionMappings extends javax.swing.JPanel {
     private CheckBoxUpdater commandLineUpdater;
     public static final String PROP_SKIP_TEST="maven.test.skip"; //NOI18N
     private ActionToGoalMapping actionmappings;
+    private ActionListener comboListener;
     
     private ActionMappings() {
         initComponents();
@@ -110,16 +112,17 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProperties.addFocusListener(focus);
         goalcompleter = new TextValueCompleter(Collections.<String>emptyList(), txtGoals, " "); //NOI18N
         profilecompleter = new TextValueCompleter(Collections.<String>emptyList(), txtProfiles, " "); //NOI18N
-        
     }
     
     public ActionMappings(ActionToGoalMapping mapp) {
         this();
-        actionmappings = mapp;
+        actionmappings = mapp;        
         loadMappings();
         btnSetup.setVisible(false);
         cbCommandLine.setVisible(false);
         cbRecursively.setVisible(false);
+        comConfiguration.setVisible(false);
+        lblConfiguration.setVisible(false);
         clearFields();
         Mnemonics.setLocalizedText(btnAdd, NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnAdd.text2"));
         Mnemonics.setLocalizedText(btnRemove, NbBundle.getMessage(ActionMappings.class, "ActionMappings.btnRemove.text2"));
@@ -142,6 +145,21 @@ public class ActionMappings extends javax.swing.JPanel {
         titles.put(ActionProvider.COMMAND_RUN_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Run_file"));
         titles.put(ActionProvider.COMMAND_TEST, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_project"));
         titles.put(ActionProvider.COMMAND_TEST_SINGLE, org.openide.util.NbBundle.getMessage(ActionMappings.class, "COM_Test_file"));
+        comConfiguration.setEditable(false);
+        comConfiguration.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                Component com = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (com instanceof JLabel) {
+                    if (value == ActionMappings.this.handle.getActiveConfiguration()) {
+                        com.setFont(com.getFont().deriveFont(Font.BOLD));
+                    }
+                }
+                return com;
+            }
+        });
+        setupConfigurations();
+        
         loadMappings();
         btnSetup.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btnSetup.addActionListener(new ActionListener() {
@@ -198,11 +216,33 @@ public class ActionMappings extends javax.swing.JPanel {
             }
         };
         clearFields();
+        comboListener = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                clearFields();
+                loadMappings();
+                addListeners();
+            }
+        };
     }
+    
+    private void addListeners() {
+        comConfiguration.addActionListener(comboListener);
+    }
+    
+    
+    @Override
+    public void removeNotify() {
+        super.removeNotify();
+        clearFields();
+    }
+    
     
     @Override
     public void addNotify() {
         super.addNotify();
+        setupConfigurations();
+        loadMappings();
+        addListeners();
         //TODO move the list population out of AWT.
         GoalsProvider provider = Lookup.getDefault().lookup(GoalsProvider.class);
         if (provider != null) {
@@ -231,6 +271,10 @@ public class ActionMappings extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        cbCommandLine = new javax.swing.JCheckBox();
+        btnSetup = new javax.swing.JButton();
+        lblConfiguration = new javax.swing.JLabel();
+        comConfiguration = new javax.swing.JComboBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         lstMappings = new javax.swing.JList();
         btnAdd = new javax.swing.JButton();
@@ -243,10 +287,22 @@ public class ActionMappings extends javax.swing.JPanel {
         txtProperties = new javax.swing.JTextField();
         cbRecursively = new javax.swing.JCheckBox();
         cbSkipTests = new javax.swing.JCheckBox();
-        cbCommandLine = new javax.swing.JCheckBox();
         lblHint = new javax.swing.JLabel();
         lblMappings = new javax.swing.JLabel();
-        btnSetup = new javax.swing.JButton();
+
+        org.openide.awt.Mnemonics.setLocalizedText(cbCommandLine, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_UseExternal")); // NOI18N
+        cbCommandLine.setToolTipText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TLT_UseExternal")); // NOI18N
+        cbCommandLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        cbCommandLine.setMargin(new java.awt.Insets(0, 0, 0, 0));
+
+        org.openide.awt.Mnemonics.setLocalizedText(btnSetup, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_SetupExternal")); // NOI18N
+        btnSetup.setBorder(null);
+        btnSetup.setBorderPainted(false);
+        btnSetup.setContentAreaFilled(false);
+        btnSetup.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        lblConfiguration.setLabelFor(comConfiguration);
+        org.openide.awt.Mnemonics.setLocalizedText(lblConfiguration, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.lblConfiguration.text")); // NOI18N
 
         lstMappings.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
@@ -281,22 +337,11 @@ public class ActionMappings extends javax.swing.JPanel {
         org.openide.awt.Mnemonics.setLocalizedText(cbSkipTests, org.openide.util.NbBundle.getMessage(ActionMappings.class, "ActionMappings.cbSkipTests.text")); // NOI18N
         cbSkipTests.setMargin(new java.awt.Insets(0, 0, 0, 0));
 
-        org.openide.awt.Mnemonics.setLocalizedText(cbCommandLine, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_UseExternal")); // NOI18N
-        cbCommandLine.setToolTipText(org.openide.util.NbBundle.getMessage(ActionMappings.class, "TLT_UseExternal")); // NOI18N
-        cbCommandLine.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        cbCommandLine.setMargin(new java.awt.Insets(0, 0, 0, 0));
-
         lblHint.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
 
         lblMappings.setLabelFor(lstMappings);
         org.openide.awt.Mnemonics.setLocalizedText(lblMappings, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_Actions")); // NOI18N
         lblMappings.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-
-        org.openide.awt.Mnemonics.setLocalizedText(btnSetup, org.openide.util.NbBundle.getMessage(ActionMappings.class, "LBL_SetupExternal")); // NOI18N
-        btnSetup.setBorder(null);
-        btnSetup.setBorderPainted(false);
-        btnSetup.setContentAreaFilled(false);
-        btnSetup.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -306,18 +351,11 @@ public class ActionMappings extends javax.swing.JPanel {
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                     .add(layout.createSequentialGroup()
                         .addContainerGap()
-                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
-                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                        .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 560, Short.MAX_VALUE)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(btnAdd)
-                            .add(btnRemove)))
+                        .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 519, Short.MAX_VALUE))
                     .add(layout.createSequentialGroup()
                         .add(cbCommandLine)
-                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 220, Short.MAX_VALUE)
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 61, Short.MAX_VALUE)
                         .add(btnSetup, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 210, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
-                    .add(lblMappings)
                     .add(layout.createSequentialGroup()
                         .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
                             .add(lblGoals)
@@ -329,9 +367,21 @@ public class ActionMappings extends javax.swing.JPanel {
                                 .add(cbRecursively)
                                 .add(18, 18, 18)
                                 .add(cbSkipTests))
-                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
-                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
-                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE))))
+                            .add(org.jdesktop.layout.GroupLayout.TRAILING, txtProperties, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                            .add(txtProfiles, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                            .add(txtGoals, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)))
+                    .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, layout.createSequentialGroup()
+                                .add(lblConfiguration)
+                                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                                .add(comConfiguration, 0, 299, Short.MAX_VALUE))
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, lblMappings)
+                            .add(org.jdesktop.layout.GroupLayout.LEADING, jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE))
+                        .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                        .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                            .add(btnRemove)
+                            .add(btnAdd))))
                 .addContainerGap())
         );
 
@@ -344,14 +394,18 @@ public class ActionMappings extends javax.swing.JPanel {
                     .add(cbCommandLine)
                     .add(btnSetup))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblMappings, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 30, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
+                    .add(comConfiguration, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
+                    .add(lblConfiguration))
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
+                .add(lblMappings)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
+                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 109, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(layout.createSequentialGroup()
                         .add(btnAdd)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                        .add(btnRemove))
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 119, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                        .add(btnRemove)))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(lblGoals)
@@ -369,7 +423,7 @@ public class ActionMappings extends javax.swing.JPanel {
                     .add(cbRecursively)
                     .add(cbSkipTests))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                .add(lblHint, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -383,7 +437,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         nam.setActionName(CUSTOM_ACTION_PREFIX + nd.getInputText()); 
         getActionMappings().addAction(nam);
         if (handle != null) {
-            handle.markAsModified(handle.getActionMappings());
+            handle.markAsModified(getActionMappings());
         }
         MappingWrapper wr = new MappingWrapper(nam);
         wr.setUserDefined(true);
@@ -421,7 +475,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                         wr.setUserDefined(false);
                         lstMappingsValueChanged(null);
                         if (handle != null) {
-                            handle.markAsModified(handle.getActionMappings());
+                            handle.markAsModified(getActionMappings());
                         }
                         break;
                     }
@@ -469,16 +523,16 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private void loadMappings() {
         DefaultListModel model = new DefaultListModel();
         if (handle != null) {
-            addSingleAction(ActionProvider.COMMAND_BUILD, handle, model);
-            addSingleAction(ActionProvider.COMMAND_CLEAN, handle, model);
-            addSingleAction(ActionProvider.COMMAND_REBUILD, handle, model);
-            addSingleAction(ActionProvider.COMMAND_TEST, handle, model);
-            addSingleAction(ActionProvider.COMMAND_TEST_SINGLE, handle, model);
-            addSingleAction(ActionProvider.COMMAND_RUN, handle, model);
-            addSingleAction(ActionProvider.COMMAND_RUN_SINGLE, handle, model);
-            addSingleAction(ActionProvider.COMMAND_DEBUG, handle, model);
-            addSingleAction(ActionProvider.COMMAND_DEBUG_SINGLE, handle, model);
-            addSingleAction(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, handle, model);
+            addSingleAction(ActionProvider.COMMAND_BUILD, model);
+            addSingleAction(ActionProvider.COMMAND_CLEAN, model);
+            addSingleAction(ActionProvider.COMMAND_REBUILD, model);
+            addSingleAction(ActionProvider.COMMAND_TEST, model);
+            addSingleAction(ActionProvider.COMMAND_TEST_SINGLE, model);
+            addSingleAction(ActionProvider.COMMAND_RUN, model);
+            addSingleAction(ActionProvider.COMMAND_RUN_SINGLE, model);
+            addSingleAction(ActionProvider.COMMAND_DEBUG, model);
+            addSingleAction(ActionProvider.COMMAND_DEBUG_SINGLE, model);
+            addSingleAction(ActionProvider.COMMAND_DEBUG_TEST_SINGLE, model);
         }
         List customs = getActionMappings().getActions();
         if (customs != null) {
@@ -495,9 +549,9 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
         lstMappings.setModel(model);
     }
     
-    private void addSingleAction(String action, ModelHandle user, DefaultListModel model) {
+    private void addSingleAction(String action, DefaultListModel model) {
         NetbeansActionMapping mapp = null;
-        List lst = user.getActionMappings().getActions();
+        List lst = getActionMappings().getActions();
         if (lst != null) {
             Iterator it = lst.iterator();
             while (it.hasNext()) {
@@ -536,6 +590,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     private void clearFields() {
+        comConfiguration.removeActionListener(comboListener);
         txtGoals.getDocument().removeDocumentListener(goalsListener);
         txtProfiles.getDocument().removeDocumentListener(profilesListener);
         txtProperties.getDocument().removeDocumentListener(propertiesListener);
@@ -606,7 +661,9 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private javax.swing.JCheckBox cbCommandLine;
     private javax.swing.JCheckBox cbRecursively;
     private javax.swing.JCheckBox cbSkipTests;
+    private javax.swing.JComboBox comConfiguration;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblConfiguration;
     private javax.swing.JLabel lblGoals;
     private javax.swing.JLabel lblHint;
     private javax.swing.JLabel lblMappings;
@@ -647,7 +704,11 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     private ActionToGoalMapping getActionMappings() {
         assert handle != null || actionmappings != null;
         if (handle != null) {
-            return handle.getActionMappings();
+            if (handle.isConfigurationsEnabled()) {
+                return handle.getActionMappings((ModelHandle.Configuration) comConfiguration.getSelectedItem());
+            } else {
+                return handle.getActionMappings();
+            }
         }
         return actionmappings;
     }
@@ -746,9 +807,9 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                         mapping.setActionName(map.getActionName());
                         map.setMapping(mapping);
                     }
-                    handle.getActionMappings().addAction(mapping);
+                    getActionMappings().addAction(mapping);
                     if (handle != null) {
-                        handle.markAsModified(handle.getActionMappings());
+                        handle.markAsModified(getActionMappings());
                     }
                     map.setUserDefined(true);
                     updateColor(map);
@@ -773,7 +834,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 }
                 mapp.setGoals(goals);
                 if (handle != null) {
-                    handle.markAsModified(handle.getActionMappings());
+                    handle.markAsModified(getActionMappings());
                 }
             }
             return wr;
@@ -795,7 +856,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 }
                 mapp.setActivatedProfiles(profs);
                 if (handle != null) {
-                    handle.markAsModified(handle.getActionMappings());
+                    handle.markAsModified(getActionMappings());
                 }
             }
             return wr;
@@ -852,12 +913,29 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 }
                 map.getMapping().setRecursive(cbRecursively.isSelected());
                 if (handle != null) {
-                    handle.markAsModified(handle.getActionMappings());
+                    handle.markAsModified(getActionMappings());
                 }
             }
         }
         
     }
     
+    private void setupConfigurations() {
+        if (handle.isConfigurationsEnabled()) {
+            lblConfiguration.setVisible(true);
+            comConfiguration.setVisible(true);
+            DefaultComboBoxModel comModel = new DefaultComboBoxModel();
+            for (ModelHandle.Configuration conf : handle.getConfigurations()) {
+                comModel.addElement(conf);
+            }
+            comConfiguration.setModel(comModel);
+            comConfiguration.setSelectedItem(handle.getActiveConfiguration());
+        } else {
+            lblConfiguration.setVisible(false);
+            comConfiguration.setVisible(false);
+            DefaultComboBoxModel comModel = new DefaultComboBoxModel();
+            comConfiguration.setModel(comModel);
+        }
+    }
     
 }
