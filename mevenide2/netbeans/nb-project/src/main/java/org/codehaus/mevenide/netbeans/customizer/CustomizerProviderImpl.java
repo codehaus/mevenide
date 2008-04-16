@@ -263,10 +263,11 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         }
         project.getLookup().lookup(ConfigurationProviderEnabler.class).enableConfigurations(handle.isConfigurationsEnabled());
         if (handle.isConfigurationsEnabled()) {
-            List<M2Configuration> shared = new ArrayList<M2Configuration>();
-            List<M2Configuration> nonshared = new ArrayList<M2Configuration>();
+            M2ConfigProvider prv = project.getLookup().lookup(M2ConfigProvider.class);
             
             if (handle.isModified(handle.getConfigurations())) {
+                List<M2Configuration> shared = new ArrayList<M2Configuration>();
+                List<M2Configuration> nonshared = new ArrayList<M2Configuration>();
                 for (ModelHandle.Configuration mdlConf : handle.getConfigurations()) {
                     if (!mdlConf.isDefault() && !mdlConf.isProfileBased()) {
                         M2Configuration c = new M2Configuration(mdlConf.getId(), project);
@@ -278,10 +279,9 @@ public class CustomizerProviderImpl implements CustomizerProvider {
                         }
                     }
                 }
+                prv.setConfigurations(shared, nonshared, true);
             }
             
-            M2ConfigProvider prv = project.getLookup().lookup(M2ConfigProvider.class);
-            prv.setConfigurations(shared, nonshared, true);
             //TODO we need to set the configurations for the case of non profile configs
             String id = handle.getActiveConfiguration() != null ? handle.getActiveConfiguration().getId() : M2Configuration.DEFAULT;
             for (M2Configuration m2 : prv.getConfigurations()) {
