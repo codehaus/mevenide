@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.execute;
 
+import java.util.Set;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.File;
 import java.util.ArrayList;
@@ -81,11 +82,22 @@ public class BeanRunConfig implements RunConfig {
     }
 
     public Properties getProperties() {
-        return properties;
+        Properties newProperties=new Properties();
+        newProperties.putAll(properties);
+        return newProperties;
+    }
+
+    public  String removeProperty(String key) {
+        return (String) properties.remove(key);
+    }
+
+    public  String setProperty(String key, String value) {
+        return (String) properties.setProperty(key, value);
     }
 
     public void setProperties(Properties properties) {
-        this.properties = properties;
+        properties.clear();
+        this.properties.putAll(properties);
     }
 
     public boolean isShowDebug() {

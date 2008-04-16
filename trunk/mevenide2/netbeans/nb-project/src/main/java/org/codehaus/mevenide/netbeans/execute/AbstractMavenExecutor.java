@@ -110,6 +110,7 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
             start.setLog(handler.getLogger());
             String val = start.execute(config.getProject());
             Enumeration en = config.getProperties().propertyNames();
+            
             while (en.hasMoreElements()) {
                 String key = (String) en.nextElement();
                 String value = config.getProperties().getProperty(key);
@@ -125,10 +126,10 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
                     index = buf.indexOf(replaceItem);
                 }
                 //                System.out.println("setting property=" + key + "=" + buf.toString());
-                config.getProperties().setProperty(key, buf.toString());
+                config.setProperty(key, buf.toString());
             }
-            config.getProperties().put("jpda.address", val);//NOI18N
-
+            config.setProperty("jpda.address", val);//NOI18N
+            
         }
     }
 

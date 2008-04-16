@@ -40,6 +40,12 @@ public interface RunConfig {
     
     Properties getProperties();
     
+    void setProperties(Properties properties);
+    
+    String setProperty(String key, String value);
+    
+    String removeProperty(String key);
+
     boolean isShowDebug();
     
     boolean isShowError();

@@ -82,7 +82,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
                         FileObject fo = plat.getJavaPlatform().findTool(val);
                         if (fo != null) {
                             File fl = FileUtil.toFile(fo);
-                            config.getProperties().setProperty("exec.executable", fl.getAbsolutePath()); //NOI18N
+                            config.setProperty("exec.executable", fl.getAbsolutePath()); //NOI18N
                         }
                     }
                 }
@@ -96,7 +96,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
                         return false;
                     }
                     val = val.replace("${packageClassName}", mc); //NOI18N
-                    str.setValue(val);
+                    config.setProperty((String) str.getKey(), val);
                 }
             }
         }
