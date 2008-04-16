@@ -369,7 +369,7 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                 return newProperties;
             }
             public void setProperties(Properties properties) {
-              properties.clear();
+              this.properties.clear();
               this.properties.putAll(properties);
             }
             public boolean isShowDebug() {
