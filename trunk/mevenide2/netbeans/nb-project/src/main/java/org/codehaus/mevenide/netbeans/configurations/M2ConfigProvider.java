@@ -172,6 +172,9 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     }
 
     public synchronized void setActiveConfiguration(M2Configuration configuration) throws IllegalArgumentException, IOException {
+        if (active == configuration || (active != null && active.equals(configuration))) {
+            return;
+        }
         M2Configuration old = active;
         active = configuration;
         ConfigurationProviderEnabler.writeAuxiliaryData(
