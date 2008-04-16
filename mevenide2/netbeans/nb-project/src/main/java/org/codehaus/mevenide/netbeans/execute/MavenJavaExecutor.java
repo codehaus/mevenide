@@ -90,6 +90,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
      */
     public void run() {
         finishing = false;
+        final Properties origanalProperties = config.getProperties();
         InputOutput ioput = getInputOutput();
         actionStatesAtStart();
         String basedir = System.getProperty(BASEDIR);//NOI18N
@@ -243,6 +244,9 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
             } else {
                 System.setProperty( BASEDIR,basedir);
             }
+            //MEVENIDE-623 re add original Properties
+            config.setProperties(origanalProperties);
+            
             actionStatesAtFinish();
             EmbedderFactory.resetProjectEmbedder();
             final List<File> fireList = MyLifecycleExecutor.getAffectedProjects();

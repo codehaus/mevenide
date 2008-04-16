@@ -55,7 +55,17 @@ public class ProxyRunConfig implements RunConfig {
     public Properties getProperties() {
         return delegate.getProperties();
     }
+    
+    public  String removeProperty(String key) {
+        return delegate.removeProperty(key);
+    }
 
+    public  String setProperty(String key, String value) {
+        return delegate.setProperty(key, value);
+    }
+    public void setProperties(Properties properties){
+      delegate.setProperties(properties);
+    }
     public boolean isShowDebug() {
         return delegate.isShowDebug();
     }

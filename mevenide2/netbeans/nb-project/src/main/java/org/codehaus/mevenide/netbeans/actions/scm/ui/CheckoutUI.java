@@ -325,6 +325,7 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
     public RunConfig getRunConfig() {
 
         return new RunConfig() {
+           Properties properties = new Properties();
 
             public File getExecutionDirectory() {
                 File file = new File(txtFolder.getText());
@@ -352,7 +353,6 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
             }
 
             public Properties getProperties() {
-                Properties properties = new Properties();
                 String path = txtFolder.getText();
 
                 properties.put("checkoutDirectory", path);//NOI18N
@@ -363,11 +363,15 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                     properties.put("username", txtUser.getText());//NOI18N
 
                     properties.put("password ", new String(txtPassword.getPassword()));//NOI18N
-
                 }
-                return properties;
+                Properties newProperties=new Properties();
+                newProperties.putAll(properties);
+                return newProperties;
             }
-
+            public void setProperties(Properties properties) {
+              properties.clear();
+              this.properties.putAll(properties);
+            }
             public boolean isShowDebug() {
                 return chkPrintDebugInfo.isSelected();
             }
@@ -398,6 +402,14 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
 
             public boolean isInteractive() {
                 return true;
+            }
+
+            public String removeProperty(String key) {
+                return (String) properties.remove(key);
+            }
+
+            public String setProperty(String key, String value) {
+                return (String) properties.setProperty(key, value);
             }
         };
 

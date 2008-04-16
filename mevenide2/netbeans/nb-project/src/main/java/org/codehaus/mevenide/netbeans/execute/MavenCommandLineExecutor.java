@@ -23,6 +23,7 @@ import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -56,6 +57,7 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
      */
     public void run() {
         InputOutput ioput = getInputOutput();
+        final Properties origanalProperties = config.getProperties();
         actionStatesAtStart();
         handle.start();
         processInitialMessage();
@@ -103,6 +105,10 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
             throw death;
         } finally {
             out.buildFinished();
+            
+            //MEVENIDE-623 re add original Properties
+            config.setProperties(origanalProperties);
+            
             handle.finish();
             ioput.getOut().close();
             ioput.getErr().close();
