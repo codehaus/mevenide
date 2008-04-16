@@ -51,14 +51,14 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
         if (mp != null) {
             //TODO instead of SD
             FileObject src = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
-            if (src != null && FileUtil.isParentOf(src, file)) {
+            if (src != null &&  (src.equals(file) || FileUtil.isParentOf(src, file))) {
                 String compileEnc = defEnc;
                 if (compileEnc != null) {
                     return Charset.forName(compileEnc);
                 }
             }
             FileObject testsrc = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
-            if (testsrc != null && FileUtil.isParentOf(testsrc, file)) {
+            if (testsrc != null && (testsrc.equals(file) || FileUtil.isParentOf(testsrc, file))) {
                 String testcompileEnc = PluginPropertyUtils.getPluginProperty(project, 
                         Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING_PARAM, "testCompile"); //NOI18N
                 if (testcompileEnc != null) {
@@ -99,7 +99,7 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
     private boolean isWithin(URI[] res, FileObject file) throws MalformedURLException {
         for (URI ur : res) {
             FileObject fo = URLMapper.findFileObject(ur.toURL());
-            if (fo != null && FileUtil.isParentOf(fo, file)) {
+            if (fo != null && (fo.equals(file) || FileUtil.isParentOf(fo, file))) {
                 return true;
             } 
         }
