@@ -112,6 +112,20 @@
             <version>${netbeans.release}</version>
         </dependency>
     </dependencies>
+    
+    <profiles>
+        <profile>
+            <!-- a profile for creating a binary for netbeans 6.0 -->
+            <id>nb60</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.netbeans.modules</groupId>
+                    <artifactId>org-netbeans-spi-editor-hints</artifactId>
+                    <version>RELEASE60</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
