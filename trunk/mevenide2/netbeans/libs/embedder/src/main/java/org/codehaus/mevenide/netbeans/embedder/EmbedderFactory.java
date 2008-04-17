@@ -117,6 +117,9 @@ public final class EmbedderFactory {
            
             //TODO remove explicit activation
             req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
+            Properties props = new Properties();
+            props.putAll(System.getProperties());
+            req.setSystemProperties(fillEnvVars(props));
             File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
             File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
             
@@ -186,110 +189,70 @@ public final class EmbedderFactory {
 
     public synchronized static MavenEmbedder getOnlineEmbedder() {
         if (online == null) {
-            Configuration req = new DefaultConfiguration();
-            req.setClassLoader(EmbedderFactory.class.getClassLoader());
-            
-            //TODO remove explicit activation
-            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
-            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
-            
-            //validating  Configuration
-            ConfigurationValidationResult cvr = MavenEmbedder.validateConfiguration(req);
-            Exception userSettingsException = cvr.getUserSettingsException();
-            if (userSettingsException != null) {
-                Exceptions.printStackTrace(Exceptions.attachMessage(userSettingsException,
-                        "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
-            }
-            if (cvr.isValid()) {
-                req.setUserSettingsFile(userSettingsPath);
-            } else {
-                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
-                req.setUserSettingsFile(globalSettingsPath);
-            }
-            req.setGlobalSettingsFile(globalSettingsPath);
-            req.setConfigurationCustomizer(new ContainerCustomizer() {
-
-                public void customize(PlexusContainer plexusContainer) {
-                    try {
-                        ComponentDescriptor desc = new ComponentDescriptor();
-                        desc.setRole(TransferListener.class.getName());
-                        plexusContainer.addComponentDescriptor(desc);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
-                        desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
-                        ComponentRequirement requirement = new ComponentRequirement();
-                        requirement.setRole(TransferListener.class.getName());
-                        desc.addRequirement(requirement);
-                    } catch (ComponentRepositoryException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
-
-            req.setMavenEmbedderLogger(new NullEmbedderLogger());
-            MavenEmbedder embedder = null;
-            try {
-                embedder = new MavenEmbedder(req);
-            } catch (MavenEmbedderException e) {
-                ErrorManager.getDefault().notify(e);
-            }
-            online = embedder;
+            online = createOnlineEmbedder();
         }
         return online;
 
     }
 
-    public  static MavenEmbedder createOnlineEmbedder() {
-        
-            Configuration req = new DefaultConfiguration();
-            req.setClassLoader(EmbedderFactory.class.getClassLoader());
-            
-            //TODO remove explicit activation
-            req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
-            File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
-            File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
-            
-            //validating  Configuration
-            ConfigurationValidationResult cvr = MavenEmbedder.validateConfiguration(req);
-            Exception userSettingsException = cvr.getUserSettingsException();
-            if (userSettingsException != null) {
-                Exceptions.printStackTrace(Exceptions.attachMessage(userSettingsException,
-                        "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
-            }
-            if (cvr.isValid()) {
-                req.setUserSettingsFile(userSettingsPath);
-            } else {
-                LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
-                req.setUserSettingsFile(globalSettingsPath);
-            }
-            req.setGlobalSettingsFile(globalSettingsPath);
-            req.setConfigurationCustomizer(new ContainerCustomizer() {
+    public static MavenEmbedder createOnlineEmbedder() {
+        Configuration req = new DefaultConfiguration();
+        req.setClassLoader(EmbedderFactory.class.getClassLoader());
 
-                public void customize(PlexusContainer plexusContainer) {
-                    try {
-                        ComponentDescriptor desc = new ComponentDescriptor();
-                        desc.setRole(TransferListener.class.getName());
-                        plexusContainer.addComponentDescriptor(desc);
-                        desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
-                        desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
-                        ComponentRequirement requirement = new ComponentRequirement();
-                        requirement.setRole(TransferListener.class.getName());
-                        desc.addRequirement(requirement);
-                    } catch (ComponentRepositoryException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            });
+        //TODO remove explicit activation
+        req.addActiveProfile("netbeans-public").addActiveProfile("netbeans-private"); //NOI18N
 
-            req.setMavenEmbedderLogger(new NullEmbedderLogger());
-            MavenEmbedder embedder = null;
-            try {
-                embedder=  new MavenEmbedder(req);
-            } catch (MavenEmbedderException e) {
-                ErrorManager.getDefault().notify(e);
-            }
-            return embedder;
+        File userSettingsPath = MavenEmbedder.DEFAULT_USER_SETTINGS_FILE;
+        File globalSettingsPath = InstalledFileLocator.getDefault().locate("maven2/settings.xml", null, false); //NOI18N
+
+        //validating  Configuration
+        ConfigurationValidationResult cvr = MavenEmbedder.validateConfiguration(req);
+        Exception userSettingsException = cvr.getUserSettingsException();
+        if (userSettingsException != null) {
+            Exceptions.printStackTrace(Exceptions.attachMessage(userSettingsException,
+                    "Maven Settings file cannot be properly parsed. Until it's fixed, it will be ignored."));
         }
+        if (cvr.isValid()) {
+            req.setUserSettingsFile(userSettingsPath);
+        } else {
+            LOG.info("Maven settings file is corrupted. See http://www.netbeans.org/issues/show_bug.cgi?id=96919"); //NOI18N
+
+            req.setUserSettingsFile(globalSettingsPath);
+        }
+        req.setGlobalSettingsFile(globalSettingsPath);
+        
+        Properties props = new Properties();
+        props.putAll(System.getProperties());
+        req.setSystemProperties(fillEnvVars(props));
+        
+        req.setConfigurationCustomizer(new ContainerCustomizer() {
+
+            public void customize(PlexusContainer plexusContainer) {
+                try {
+                    ComponentDescriptor desc = new ComponentDescriptor();
+                    desc.setRole(TransferListener.class.getName());
+                    plexusContainer.addComponentDescriptor(desc);
+                    desc.setImplementation("org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener"); //NOI18N
+
+                    desc = plexusContainer.getComponentDescriptor(WagonManager.ROLE);
+                    ComponentRequirement requirement = new ComponentRequirement();
+                    requirement.setRole(TransferListener.class.getName());
+                    desc.addRequirement(requirement);
+                } catch (ComponentRepositoryException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
+
+        req.setMavenEmbedderLogger(new NullEmbedderLogger());
+        MavenEmbedder embedder = null;
+        try {
+            embedder = new MavenEmbedder(req);
+        } catch (MavenEmbedderException e) {
+            ErrorManager.getDefault().notify(e);
+        }
+        return embedder;
+    }
         
     public static MavenEmbedder createExecuteEmbedder(MavenEmbedderLogger logger) /*throws MavenEmbedderException*/ {
         ClassLoader loader = Lookup.getDefault().lookup(ClassLoader.class);
@@ -479,7 +442,7 @@ public final class EmbedderFactory {
      * 
      * @param properties
      */
-    public static void fillEnvVars(Properties properties) {
+    public static Properties fillEnvVars(Properties properties) {
         try
         {
             Properties envVars = CommandLineUtils.getSystemEnvVars();
@@ -488,12 +451,14 @@ public final class EmbedderFactory {
             {
                 Map.Entry e = (Map.Entry) i.next();
                 properties.setProperty( "env." + e.getKey().toString(), e.getValue().toString() );
+                System.out.println("" + e.getKey() + "=" + e.getValue());
             }
         }
         catch ( IOException e )
         {
-            System.err.println( "Error getting environment vars for profile activation: " + e );
+            Exceptions.printStackTrace(e);
         }
+        return properties;
     }
     
 
