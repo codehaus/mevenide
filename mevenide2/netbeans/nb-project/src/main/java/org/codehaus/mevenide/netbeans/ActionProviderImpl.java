@@ -411,7 +411,10 @@ public class ActionProviderImpl implements ActionProvider {
 
                 public void run() {
                     List<String> retrieveAllProfiles = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
-
+                    //TODO.. this probably needs some caching..
+                    // a better approach to always reading auxiliary configuration is to store an object in project's lookup that holds the data
+                    // and only on writing changes updates..
+                    
                     List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles(project.getOriginalMavenProject(), false, new String[0]);
                     List<String> customActiveProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(project.getOriginalMavenProject().getFile()), false);
                     List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(project.getOriginalMavenProject());

@@ -155,9 +155,10 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
         lst.add(null);
 
         lst.add(provider.createCustomPopupAction()); 
-        lst.add(provider.createProfilesPopupAction());
         if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             lst.add(CommonProjectActions.setProjectConfigurationAction());
+        } else {
+            lst.add(provider.createProfilesPopupAction());
         }
         
         // separator
