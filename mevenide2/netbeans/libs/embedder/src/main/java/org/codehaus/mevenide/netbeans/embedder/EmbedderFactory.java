@@ -451,7 +451,6 @@ public final class EmbedderFactory {
             {
                 Map.Entry e = (Map.Entry) i.next();
                 properties.setProperty( "env." + e.getKey().toString(), e.getValue().toString() );
-                System.out.println("" + e.getKey() + "=" + e.getValue());
             }
         }
         catch ( IOException e )
