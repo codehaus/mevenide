@@ -50,6 +50,7 @@ import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -116,6 +117,8 @@ public final class NbMavenProject implements Project {
     private MavenProject oldProject;
     private ProjectURLWatcher watcher;
     private ProjectState state;
+    private ConfigurationProviderEnabler configEnabler;
+    private M2AuxilaryConfigImpl auxiliary;
     public static WatcherAccessor ACCESSOR = null;
     
 
@@ -152,6 +155,8 @@ public final class NbMavenProject implements Project {
         state = projectState;
         problemReporter = new ProblemReporter(this);
         watcher = ACCESSOR.createWatcher(this);
+        auxiliary = new M2AuxilaryConfigImpl(this);
+        configEnabler = new ConfigurationProviderEnabler(this, auxiliary);
     }
 
     public File getPOMFile() {
@@ -170,9 +175,15 @@ public final class NbMavenProject implements Project {
         if (project == null) {
             try {
                 MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-
-                List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
-                req.addActiveProfiles(activeProfiles);
+                if (configEnabler.isConfigurationEnabled()) {
+                    req.addActiveProfiles(configEnabler.getConfigProvider().getActiveConfiguration().getActivatedProfiles());
+                } else {
+                    //TODO.. this probably needs some caching..
+                    // a better approach to always reading auxiliary configuration is to store an object in project's lookup that holds the data
+                    // and only on writing changes updates..
+                    List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
+                    req.addActiveProfiles(activeProfiles);
+                }
                 req.setPomFile(projectFile.getAbsolutePath());
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
@@ -452,7 +463,6 @@ public final class NbMavenProject implements Project {
         if (lookup == null) {
             lookup = createBasicLookup();
             lookup = LookupProviderSupport.createCompositeLookup(lookup, "Projects/org-codehaus-mevenide-netbeans/Lookup"); //NOI18N
-
         }
         return lookup;
     }
@@ -465,7 +475,7 @@ public final class NbMavenProject implements Project {
                     new MavenForBinaryQueryImpl(this),
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
-                    new M2AuxilaryConfigImpl(this),
+                    auxiliary,
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),
                     new ProjectOpenedHookImpl(this),
@@ -485,6 +495,7 @@ public final class NbMavenProject implements Project {
                     new TemplateAttrProvider(this),
                     //operations
                     new OperationsImpl(this, state),
+                    configEnabler,
                     // default mergers..        
                     UILookupMergerSupport.createPrivilegedTemplatesMerger(),
                     UILookupMergerSupport.createRecommendedTemplatesMerger(),

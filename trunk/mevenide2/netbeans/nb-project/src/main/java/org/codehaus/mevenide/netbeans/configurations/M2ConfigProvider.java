@@ -51,14 +51,15 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private final M2Configuration DEFAULT;
     private M2Configuration active;
     private String initialActive;
+    private AuxiliaryConfiguration aux;
     
     
-    public M2ConfigProvider(NbMavenProject proj) {
+    public M2ConfigProvider(NbMavenProject proj, AuxiliaryConfiguration aux) {
         project = proj;
+        this.aux = aux;
         DEFAULT = M2Configuration.createDefault(project);
         //read the active one..
-        AuxiliaryConfiguration conf = project.getLookup().lookup(AuxiliaryConfiguration.class);
-        Element el = conf.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, false);
+        Element el = aux.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, false);
         if (el != null) {
             NodeList list = el.getElementsByTagNameNS(ConfigurationProviderEnabler.NAMESPACE, ConfigurationProviderEnabler.ACTIVATED);
             if (list.getLength() > 0) {
@@ -190,7 +191,7 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         for (String prof : profs) {
             M2Configuration c = new M2Configuration(prof, project);
             c.setActivatedProfiles(Collections.singletonList(prof));
-            config.add(new M2Configuration(prof, project));
+            config.add(c);
         }
         return config;
     }

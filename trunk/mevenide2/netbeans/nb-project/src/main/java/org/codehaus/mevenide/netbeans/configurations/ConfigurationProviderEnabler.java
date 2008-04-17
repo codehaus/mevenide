@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.configurations;
 
 import java.util.List;
+import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
@@ -44,39 +45,56 @@ public class ConfigurationProviderEnabler {
     
     private Boolean cached;
     private InstanceContent instanceContent;
-    private M2ConfigProvider provider;    
+    private M2ConfigProvider provider;
+    private M2AuxilaryConfigImpl aux;
 
-    public ConfigurationProviderEnabler(NbMavenProject project, InstanceContent ic) {
-        this.instanceContent = ic;
+    public ConfigurationProviderEnabler(NbMavenProject project, M2AuxilaryConfigImpl auxiliary) {
         this.project = project;
-        provider = new M2ConfigProvider(project);
-        if (isConfigurationEnabled()) {
-            ic.add(provider);
-        }
+        aux = auxiliary;
+        provider = new M2ConfigProvider(project, aux);
+    }
+    
+    public M2ConfigProvider getConfigProvider() {
+        return provider;
     }
 
-    public boolean isConfigurationEnabled() {
+    public synchronized boolean isConfigurationEnabled() {
         boolean enabled = false;
-        AuxiliaryConfiguration conf = project.getLookup().lookup(AuxiliaryConfiguration.class);
-        Element el = conf.getConfigurationFragment(ROOT, NAMESPACE, false);
-        if (el != null) {
-            NodeList list = el.getElementsByTagNameNS(NAMESPACE, ENABLED);
-            if (list.getLength() > 0) {
-                Element enEl = (Element)list.item(0);
-                enabled = Boolean.parseBoolean(enEl.getTextContent());
+        if (cached == null) {
+            Element el = aux.getConfigurationFragment(ROOT, NAMESPACE, false);
+            if (el != null) {
+                NodeList list = el.getElementsByTagNameNS(NAMESPACE, ENABLED);
+                if (list.getLength() > 0) {
+                    Element enEl = (Element)list.item(0);
+                    enabled = Boolean.parseBoolean(enEl.getTextContent());
+                }
             }
+            cached = enabled;
+        } else {
+            enabled = cached;
         }
         return enabled;
     }
     
-    public void enableConfigurations(boolean enable) {
-        AuxiliaryConfiguration conf = project.getLookup().lookup(AuxiliaryConfiguration.class);
+    public synchronized void enableConfigurations(boolean enable) {
         if (enable) {
-            writeAuxiliaryData(conf, ENABLED, Boolean.toString(enable));
-            instanceContent.add(provider);
+            writeAuxiliaryData(aux, ENABLED, Boolean.toString(enable));
+            if (instanceContent != null) {
+                instanceContent.add(provider);
+            }
         } else {
-            conf.removeConfigurationFragment(ROOT, NAMESPACE, false);
-            instanceContent.remove(provider);
+            aux.removeConfigurationFragment(ROOT, NAMESPACE, false);
+            if (instanceContent != null) {
+                instanceContent.remove(provider);
+            }
+        }
+        cached = enable;
+    }
+    
+    public synchronized void setInstanceContent(InstanceContent ic) {
+        this.instanceContent = ic;
+        if (isConfigurationEnabled()) {
+            ic.add(provider);
         }
     }
     
@@ -123,5 +141,5 @@ public class ConfigurationProviderEnabler {
         }
         conf.putConfigurationFragment(el, shared);
     }
-    
+
 }

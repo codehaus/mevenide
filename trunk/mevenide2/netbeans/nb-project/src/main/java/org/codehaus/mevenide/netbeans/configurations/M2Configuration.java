@@ -57,6 +57,7 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     public M2Configuration(String id, NbMavenProject proj) {
         this.id = id;
         this.project = proj;
+        profiles = Collections.<String>emptyList();
     }
 
     public String getDisplayName() {
