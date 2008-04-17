@@ -37,6 +37,7 @@ import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
@@ -175,6 +176,9 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         } else {
             configs.add(ModelHandle.createDefaultConfiguration());
             active = configs.get(0);
+            for (String profile : ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject())) {
+                configs.add(ModelHandle.createProfileConfiguration(profile));
+            }
         }
         
         handle = ACCESSOR.createHandle(model, prof, project.getOriginalMavenProject(), mapps, configs, active);
