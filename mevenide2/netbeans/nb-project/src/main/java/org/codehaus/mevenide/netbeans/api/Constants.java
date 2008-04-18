@@ -74,6 +74,10 @@ public interface Constants {
     public static final String ENCODING_PARAM = "encoding"; //NOI18N
     public static final String SOURCE_PARAM = "source";//NOI18N
     public static final String TARGET_PARAM = "target";//NOI18N
-    
+
+    //this property was introduced as part of this proposal:
+    //http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
+    public static String ENCODING_PROP = "project.build.sourceEncoding"; //NOI18N
+
     
 }

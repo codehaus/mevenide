@@ -45,16 +45,19 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
     }
 
     public Charset getEncoding(FileObject file) {
-        String defEnc = PluginPropertyUtils.getPluginProperty(project, 
-                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER,ENCODING_PARAM, "compile"); //NOI18N
+        String defEnc = project.getOriginalMavenProject().getProperties().getProperty(Constants.ENCODING_PROP);
         MavenProject mp = project.getOriginalMavenProject();
         if (mp != null) {
             //TODO instead of SD
             FileObject src = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
             if (src != null &&  (src.equals(file) || FileUtil.isParentOf(src, file))) {
-                String compileEnc = defEnc;
+                String compileEnc = PluginPropertyUtils.getPluginProperty(project, 
+                      Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER,ENCODING_PARAM, "compile"); //NOI18N;
                 if (compileEnc != null) {
                     return Charset.forName(compileEnc);
+                }
+                if (defEnc != null) {
+                    return Charset.forName(defEnc);
                 }
             }
             FileObject testsrc = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
@@ -63,6 +66,9 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
                         Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING_PARAM, "testCompile"); //NOI18N
                 if (testcompileEnc != null) {
                     return Charset.forName(testcompileEnc);
+                }
+                if (defEnc != null) {
+                    return Charset.forName(defEnc);
                 }
             }
         }
@@ -75,6 +81,9 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
                         Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_RESOURCES, ENCODING_PARAM, "resources"); //NOI18N
                 if (resourceEnc != null) {
                     return Charset.forName(resourceEnc);
+                }
+                if (defEnc != null) {
+                    return Charset.forName(defEnc);
                 }
             }
             
@@ -89,9 +98,15 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
                 if (testresourceEnc != null) {
                     return Charset.forName(testresourceEnc);
                 }
+                if (defEnc != null) {
+                    return Charset.forName(defEnc);
+                }
             }
         } catch (MalformedURLException malformedURLException) {
             Exceptions.printStackTrace(malformedURLException);
+        }
+        if (defEnc != null) {
+            return Charset.forName(defEnc);
         }
         return Charset.defaultCharset();
     }
