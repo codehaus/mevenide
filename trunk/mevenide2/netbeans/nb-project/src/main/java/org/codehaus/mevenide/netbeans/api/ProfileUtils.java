@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.mevenide.netbeans.M2AuxilarvProfilesCache;
 import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -48,10 +49,10 @@ import org.w3c.dom.Element;
  */
 public class ProfileUtils {
 
-    private static final String PROFILES = "profiles";//NOI18N
-    private static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
-    private static final String SEPERATOR = " ";//NOI18N
-    private static final String NAMESPACE = null;//FIXME add propper namespase
+    public static final String PROFILES = "profiles";//NOI18N
+    public static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
+    public static final String SEPERATOR = " ";//NOI18N
+    public static final String NAMESPACE = null;//FIXME add propper namespase
 
     /**
      * 
@@ -61,6 +62,13 @@ public class ProfileUtils {
         Project owner = FileOwnerQuery.getOwner(pom);
         if (owner != null) {
             return owner.getLookup().lookup(M2AuxilaryConfigImpl.class);
+        }
+        return null;
+    }
+    private static M2AuxilarvProfilesCache getM2AuxilarvProfilesCache(FileObject pom) {
+        Project owner = FileOwnerQuery.getOwner(pom);
+        if (owner != null) {
+            return owner.getLookup().lookup(M2AuxilarvProfilesCache.class);
         }
         return null;
     }
@@ -89,18 +97,15 @@ public class ProfileUtils {
     }
 
     public static List<String> retrieveMergedActiveProfiles(MavenProject mavenProject, boolean shared, String... includes) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(FileUtil.toFileObject(mavenProject.getFile()));
-        if (ac == null) {
+        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(FileUtil.toFileObject(mavenProject.getFile()));
+        if (auxilarvProfilesCache == null) {
             return Collections.<String>emptyList();
         }
         Set<String> prifileides = new HashSet<String>();
 
         prifileides.addAll(retrieveActiveProfiles(mavenProject));
 
-        List<String> retrieveActiveProfiles = retrieveActiveProfiles(ac, shared);
-        for (String profile : retrieveActiveProfiles) {
-            prifileides.add(profile);
-        }
+        prifileides.addAll(auxilarvProfilesCache.getActiveProfiles(shared));
 
         for (String profileIds : includes) {
             prifileides.add(profileIds);
@@ -109,12 +114,12 @@ public class ProfileUtils {
     }
 
     public static List<String> retrieveActiveProfiles(FileObject pom, boolean shared) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
-        if (ac == null) {
+         M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
+        if (auxilarvProfilesCache == null) {
             return Collections.<String>emptyList();
         }
 
-        return retrieveActiveProfiles(ac, shared);
+        return auxilarvProfilesCache.getActiveProfiles(shared);
     }
 
     public static void enableProfile(FileObject pom, String id, boolean shared) {
@@ -136,7 +141,10 @@ public class ProfileUtils {
         String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
         element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
         ac.putConfigurationFragment(element, shared);
-
+        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
+        if (auxilarvProfilesCache != null) {
+            auxilarvProfilesCache.refresh(ac);
+        }
     }
 
     public static void disableProfile(FileObject pom, String id, boolean shared) {
@@ -170,7 +178,10 @@ public class ProfileUtils {
         }
 
         ac.putConfigurationFragment(element, shared);
-
+        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
+        if (auxilarvProfilesCache != null) {
+            auxilarvProfilesCache.refresh(ac);
+        }
     }
 
     /**
@@ -203,24 +214,7 @@ public class ProfileUtils {
         return mavenProject;
     }
 
-    private static List<String> retrieveActiveProfiles(AuxiliaryConfiguration ac, boolean shared) {
-
-        Set<String> prifileides = new HashSet<String>();
-        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
-        if (element != null) {
-
-            String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
-
-            if (activeProfiles != null && activeProfiles.length() > 0) {
-                StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
-
-                while (tokenizer.hasMoreTokens()) {
-                    prifileides.add(tokenizer.nextToken());
-                }
-            }
-        }
-        return new ArrayList<String>(prifileides);
-    }
+    
 
     private static void exteactProfiles(Set<String> profileIds, File file, Model model) {
 
