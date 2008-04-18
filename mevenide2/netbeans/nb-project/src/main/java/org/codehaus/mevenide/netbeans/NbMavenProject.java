@@ -51,7 +51,6 @@ import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProfileUtils;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
-import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.JarPackagingRunChecker;
@@ -178,9 +177,6 @@ public final class NbMavenProject implements Project {
                 if (configEnabler.isConfigurationEnabled()) {
                     req.addActiveProfiles(configEnabler.getConfigProvider().getActiveConfiguration().getActivatedProfiles());
                 } else {
-                    //TODO.. this probably needs some caching..
-                    // a better approach to always reading auxiliary configuration is to store an object in project's lookup that holds the data
-                    // and only on writing changes updates..
                     List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
                     req.addActiveProfiles(activeProfiles);
                 }
@@ -476,6 +472,7 @@ public final class NbMavenProject implements Project {
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
                     auxiliary,
+                    new M2AuxilarvProfilesCache(auxiliary),
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),
                     new ProjectOpenedHookImpl(this),
