@@ -21,8 +21,11 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.jdom.Element;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.HintContext;
 
@@ -50,8 +53,13 @@ public class MavenProfilesGrammar extends AbstractSchemaBasedGrammar {
     @Override
     protected Enumeration getDynamicValueCompletion(String path, HintContext virtualTextCtx, Element el) {
         if (path.endsWith("activeProfiles/activeProfile")) { //NOI18N
-            List<String> profiles = ProfileUtils.retrieveAllProfiles(getMavenProject());
-            return super.createTextValueList((String[])profiles.toArray(new String[profiles.size()]), virtualTextCtx);
+
+            Project proj = FileOwnerQuery.getOwner(getEnvironment().getFileObject());
+            if (proj != null) {
+                ProjectProfileHandler profileHandler = proj.getLookup().lookup(ProjectProfileHandler.class);
+                List<String> profiles = profileHandler.getAllProfiles();
+                return super.createTextValueList((String[]) profiles.toArray(new String[profiles.size()]), virtualTextCtx);
+            }
         }
         return null;
     }

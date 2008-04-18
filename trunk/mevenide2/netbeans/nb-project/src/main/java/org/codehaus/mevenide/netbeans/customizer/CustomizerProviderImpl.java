@@ -37,11 +37,9 @@ import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
-import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
-import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -58,9 +56,6 @@ import org.jdom.JDOMFactory;
 import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.netbeans.api.project.ProjectUtils;
-import org.netbeans.spi.project.AuxiliaryConfiguration;
-import org.netbeans.spi.project.ProjectConfigurationProvider;
-import org.netbeans.spi.project.ProjectConfigurationProvider;
 import org.netbeans.spi.project.ui.CustomizerProvider;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.openide.filesystems.FileLock;
@@ -176,7 +171,8 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         } else {
             configs.add(ModelHandle.createDefaultConfiguration());
             active = configs.get(0);
-            for (String profile : ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject())) {
+            ProjectProfileHandler profileHandler = project.getLookup().lookup(ProjectProfileHandler.class);
+            for (String profile : profileHandler.getAllProfiles()) {
                 configs.add(ModelHandle.createProfileConfiguration(profile));
             }
         }

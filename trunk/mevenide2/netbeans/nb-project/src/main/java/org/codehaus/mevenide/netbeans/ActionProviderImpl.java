@@ -18,6 +18,7 @@ package org.codehaus.mevenide.netbeans;
 
 import java.awt.event.ActionEvent;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -30,7 +31,7 @@ import javax.swing.JMenuItem;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
@@ -55,7 +56,6 @@ import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.LifecycleManager;
 import org.openide.execution.ExecutorTask;
-import org.openide.filesystems.FileUtil;
 import org.openide.loaders.DataObject;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
@@ -302,7 +302,7 @@ public class ActionProviderImpl implements ActionProvider {
             RunGoalsPanel pnl = new RunGoalsPanel();
             DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ActionProviderImpl.class, "TIT_Run_Maven"));
             ActionToGoalMapping maps = ActionToGoalUtils.readMappingsFromFileAttributes(project.getProjectDirectory());
-            pnl.readMapping(mapping, project.getOriginalMavenProject(), maps);
+            pnl.readMapping(mapping, project, maps);
             pnl.setShowDebug(MavenExecutionSettings.getDefault().isShowDebug());
             pnl.setOffline(MavenSettingsSingleton.getInstance().createUserSettingsModel().isOffline());
             pnl.setRecursive(true);
@@ -410,18 +410,16 @@ public class ActionProviderImpl implements ActionProvider {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    List<String> retrieveAllProfiles = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
-                    //TODO.. this probably needs some caching..
-                    // a better approach to always reading auxiliary configuration is to store an object in project's lookup that holds the data
-                    // and only on writing changes updates..
+                    final ProjectProfileHandler profileHandler = project.getLookup().lookup(ProjectProfileHandler.class);
+                    List<String> retrieveAllProfiles = profileHandler.getAllProfiles();
                     
-                    List<String> retrieveActivatedProfiles = ProfileUtils.retrieveMergedActiveProfiles(project.getOriginalMavenProject(), false, new String[0]);
-                    List<String> customActiveProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(project.getOriginalMavenProject().getFile()), false);
-                    List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(project.getOriginalMavenProject());
+                    List<String> mergedActiveProfiles = profileHandler.getMergedActiveProfiles(false);
+                    List<String> customActiveProfiles = profileHandler.getActiveProfiles(false);
+                    List<String> activeProfiles = new ArrayList<String>(mergedActiveProfiles);
                     activeProfiles.removeAll(customActiveProfiles);
                     for (final String profile : retrieveAllProfiles) {
                         final boolean activeByDefault = activeProfiles.contains(profile);
-                        final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile, retrieveActivatedProfiles.contains(profile));
+                        final JCheckBoxMenuItem item = new JCheckBoxMenuItem(profile, mergedActiveProfiles.contains(profile));
 
 
                         menu.add(item);
@@ -430,10 +428,10 @@ public class ActionProviderImpl implements ActionProvider {
 
                             public void actionPerformed(ActionEvent e) {
                                 if (item.isSelected()) {
-                                    ProfileUtils.enableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
+                                    profileHandler.enableProfile( profile, false);
 
                                 } else {
-                                    ProfileUtils.disableProfile(FileUtil.toFileObject(project.getPOMFile()), profile, false);
+                                    profileHandler.disableProfile( profile, false);
 
                                 }
                                 ProjectURLWatcher.fireMavenProjectReload(project);

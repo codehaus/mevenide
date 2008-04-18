@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.netbeans.spi.project.ActionProvider;
@@ -201,8 +201,8 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     }
 
     private List<M2Configuration> createProfilesList() {
-        //project.getOriinalMavenProject cannot be executed from within the getOriginalMavenProject method..
-        List<String> profs = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
+         ProjectProfileHandler profileHandler = project.getLookup().lookup(ProjectProfileHandler.class);
+        List<String> profs = profileHandler.getAllProfiles();
         List<M2Configuration> config = new ArrayList<M2Configuration>();
 //        config.add(DEFAULT);
         for (String prof : profs) {
