@@ -69,7 +69,7 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         MavenProject root = getRootMavenProject(nmp.getOriginalMavenProject());
 
 
-        exteactProfiles(profileIds, root.getBasedir(), root.getModel());
+        extractProfiles(profileIds, root.getBasedir(), root.getModel());
 
 
 
@@ -169,14 +169,14 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         return mavenProject;
     }
 
-    private static void exteactProfiles(Set<String> profileIds, File file, Model model) {
+    private static void extractProfiles(Set<String> profileIds, File file, Model model) {
 
         File basedir = FileUtil.normalizeFile(file);
         FileObject fileObject = FileUtil.toFileObject(basedir);
         //read from profiles.xml
         Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
         while (it2.hasNext()) {
-            org.apache.maven.settings.Profile prof = (org.apache.maven.settings.Profile) it2.next();
+            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
             profileIds.add(prof.getId());
         }
         //read from modle
@@ -193,7 +193,7 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
             try {
                 if (pom.exists()) {
                     Model readModel = EmbedderFactory.getProjectEmbedder().readModel(pom);
-                    exteactProfiles(profileIds, dir, readModel);
+                    extractProfiles(profileIds, dir, readModel);
                 }
             } catch (XmlPullParserException ex) {
                 Exceptions.printStackTrace(ex);
