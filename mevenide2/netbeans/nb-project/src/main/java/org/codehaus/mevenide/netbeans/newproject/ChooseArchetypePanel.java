@@ -20,6 +20,7 @@ import org.apache.maven.artifact.Artifact;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.archetype.ArchetypeProvider;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyVetoException;
@@ -83,6 +84,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
         
         this.wizardPanel = wizPanel;
         tv = new BeanTreeView();
+        tv.setMinimumSize(new Dimension(50, 50));
         manager = new ExplorerManager();
         pnlView.add(tv, BorderLayout.CENTER);
         tv.setBorder(jScrollPane1.getBorder());
@@ -165,7 +167,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             .add(jLabel2)
             .add(lblHint)
             .add(org.jdesktop.layout.GroupLayout.TRAILING, layout.createSequentialGroup()
-                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE)
+                .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 385, Short.MAX_VALUE)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.TRAILING)
                     .add(btnCustom)
@@ -173,7 +175,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
             .add(layout.createSequentialGroup()
                 .add(jLabel1)
                 .addContainerGap())
-            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 557, Short.MAX_VALUE)
+            .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
         );
 
         layout.linkSize(new java.awt.Component[] {btnCustom, btnRemove}, org.jdesktop.layout.GroupLayout.HORIZONTAL);
@@ -190,7 +192,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
                         .add(btnCustom)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                         .add(btnRemove))
-                    .add(pnlView, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 154, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE))
+                    .add(pnlView, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(jLabel1)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
