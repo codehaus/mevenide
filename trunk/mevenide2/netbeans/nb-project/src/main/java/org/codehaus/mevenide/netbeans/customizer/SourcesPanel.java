@@ -31,14 +31,10 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import org.apache.maven.model.Build;
-import org.apache.maven.model.Model;
-import org.apache.maven.model.Plugin;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.java.queries.SourceLevelQuery;
 import org.netbeans.api.queries.FileEncodingQuery;
 import org.openide.filesystems.FileObject;
@@ -58,7 +54,6 @@ public class SourcesPanel extends JPanel {
     private String sourceLevel;
     private ModelHandle handle;
 
-
     public SourcesPanel( ModelHandle handle, NbMavenProject project ) {
         initComponents();
         this.handle = handle;
@@ -74,8 +69,11 @@ public class SourcesPanel extends JPanel {
         }));
         
         comSourceLevel.setSelectedItem(sourceLevel);
-        String enc = PluginPropertyUtils.getPluginProperty(project, 
+        String enc = project.getOriginalMavenProject().getProperties().getProperty(Constants.ENCODING_PROP);
+        if (enc == null) {
+            enc = PluginPropertyUtils.getPluginProperty(project,
                     Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, Constants.ENCODING_PARAM, null);
+        }
         Charset chs = null;
         if (enc != null) {
             chs = Charset.forName(enc);
@@ -91,6 +89,10 @@ public class SourcesPanel extends JPanel {
         if (chs != null) {
             encoding = chs.name();
         }
+        // TODO oh well, we fallback to default platform encoding.. that's correct
+        // for times before the http://docs.codehaus.org/display/MAVENUSER/POM+Element+for+Source+File+Encoding
+        // proposal. this proposal defines the default value as ISO-8859-1
+        
         if (encoding == null) {
             encoding = Charset.defaultCharset().toString();
         }
@@ -129,8 +131,7 @@ public class SourcesPanel extends JPanel {
         String encName;
         if (enc != null) {
             encName = enc.name();
-        }
-        else {
+        } else {
             encName = encoding;
         }
         PluginPropertyUtils.checkEncoding(handle, encName);

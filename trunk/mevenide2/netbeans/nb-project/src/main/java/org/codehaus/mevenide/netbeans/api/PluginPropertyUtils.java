@@ -286,62 +286,74 @@ public class PluginPropertyUtils {
      * @param enc encoding to use
      */
     public static void checkEncoding(ModelHandle handle, String enc) {
-        String source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
-                Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, 
-                Constants.ENCODING_PARAM, null);
+        boolean wasProperty = false;
+        String source = handle.getProject().getProperties().getProperty(Constants.ENCODING_PROP);
+        if (source == null) {
+            source = PluginPropertyUtils.getPluginProperty(handle.getProject(), 
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, 
+                    Constants.ENCODING_PARAM, null);
+        } else {
+            wasProperty = true;
+        }
         if (source != null && source.contains(enc)) {
             return;
         }
-        Plugin plugin = new Plugin();
-        plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
-        plugin.setArtifactId(Constants.PLUGIN_COMPILER);
-        plugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_COMPILER));
-        Plugin plugin2 = new Plugin();
-        plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
-        plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
-        plugin2.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_RESOURCES));
-        Plugin old = null;
-        Plugin old2 = null;
-        Build bld = handle.getPOMModel().getBuild();
-        if (bld != null) {
-            old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
-            old2 = (Plugin) bld.getPluginsAsMap().get(plugin2.getKey());
+        if (wasProperty) {
+            //new approach, assume all plugins conform to the new setting.
+            handle.getPOMModel().getProperties().setProperty(Constants.ENCODING_PROP, enc);
+            //do not bother configuring the plugins in this case.
         } else {
-            handle.getPOMModel().setBuild(new Build());
+            Plugin plugin = new Plugin();
+            plugin.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+            plugin.setArtifactId(Constants.PLUGIN_COMPILER);
+            plugin.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_COMPILER));
+            Plugin plugin2 = new Plugin();
+            plugin2.setGroupId(Constants.GROUP_APACHE_PLUGINS);
+            plugin2.setArtifactId(Constants.PLUGIN_RESOURCES);
+            plugin2.setVersion(MavenVersionSettings.getDefault().getVersion(MavenVersionSettings.VERSION_RESOURCES));
+            Plugin old = null;
+            Plugin old2 = null;
+            Build bld = handle.getPOMModel().getBuild();
+            if (bld != null) {
+                old = (Plugin) bld.getPluginsAsMap().get(plugin.getKey());
+                old2 = (Plugin) bld.getPluginsAsMap().get(plugin2.getKey());
+            } else {
+                handle.getPOMModel().setBuild(new Build());
+            }
+            if (old != null) {
+                plugin = old;
+            } else {
+                handle.getPOMModel().getBuild().addPlugin(plugin);
+            }
+            if (old2 != null) {
+                plugin2 = old2;
+            } else {
+                handle.getPOMModel().getBuild().addPlugin(plugin2);
+            }
+            Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
+            if (dom == null) {
+                dom = new Xpp3Dom(CONFIGURATION_EL);
+                plugin.setConfiguration(dom);
+            }
+            Xpp3Dom dom2 = dom.getChild(Constants.ENCODING_PARAM);
+            if (dom2 == null) {
+                dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
+                dom.addChild(dom2);
+            }
+            dom2.setValue(enc);
+
+            dom = (Xpp3Dom) plugin2.getConfiguration();
+            if (dom == null) {
+                dom = new Xpp3Dom(CONFIGURATION_EL);
+                plugin2.setConfiguration(dom);
+            }
+            dom2 = dom.getChild(Constants.ENCODING_PARAM);
+            if (dom2 == null) {
+                dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
+                dom.addChild(dom2);
+            }
+            dom2.setValue(enc);
         }
-        if (old != null) {
-            plugin = old;
-        } else {
-            handle.getPOMModel().getBuild().addPlugin(plugin);
-        }
-        if (old2 != null) {
-            plugin2 = old2;
-        } else {
-            handle.getPOMModel().getBuild().addPlugin(plugin2);
-        }
-        Xpp3Dom dom = (Xpp3Dom) plugin.getConfiguration();
-        if (dom == null) {
-            dom = new Xpp3Dom(CONFIGURATION_EL);
-            plugin.setConfiguration(dom);
-        }
-        Xpp3Dom dom2 = dom.getChild(Constants.ENCODING_PARAM);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(enc);
-        
-        dom = (Xpp3Dom) plugin2.getConfiguration();
-        if (dom == null) {
-            dom = new Xpp3Dom(CONFIGURATION_EL);
-            plugin2.setConfiguration(dom);
-        }
-        dom2 = dom.getChild(Constants.ENCODING_PARAM);
-        if (dom2 == null) {
-            dom2 = new Xpp3Dom(Constants.ENCODING_PARAM);
-            dom.addChild(dom2);
-        }
-        dom2.setValue(enc);
         handle.markAsModified(handle.getPOMModel());
     }
     
