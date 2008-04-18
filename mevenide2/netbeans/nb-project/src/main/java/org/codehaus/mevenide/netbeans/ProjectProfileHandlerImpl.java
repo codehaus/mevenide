@@ -14,12 +14,11 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.netbeans.api;
+package org.codehaus.mevenide.netbeans;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -28,13 +27,10 @@ import java.util.StringTokenizer;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.M2AuxilarvProfilesCache;
-import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -47,34 +43,45 @@ import org.w3c.dom.Element;
  *
  * @author Anuradha G
  */
-public class ProfileUtils {
+public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
 
-    public static final String PROFILES = "profiles";//NOI18N
-    public static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
-    public static final String SEPERATOR = " ";//NOI18N
-    public static final String NAMESPACE = null;//FIXME add propper namespase
+    private static final String PROFILES = "profiles";//NOI18N
+    private static final String ACTIVEPROFILES = "activeProfiles";//NOI18N
+    private static final String SEPERATOR = " ";//NOI18N
+    private static final String NAMESPACE = null;//FIXME add propper namespase
+    private List<String> privateProfiles = new ArrayList<String>();
+    private List<String> sharedProfiles = new ArrayList<String>();
+    private AuxiliaryConfiguration ac;
+    private NbMavenProject nmp;
 
-    /**
-     * 
-     * 
-     */
-    private static AuxiliaryConfiguration getAuxiliaryConfiguration(FileObject pom) {
-        Project owner = FileOwnerQuery.getOwner(pom);
-        if (owner != null) {
-            return owner.getLookup().lookup(M2AuxilaryConfigImpl.class);
-        }
-        return null;
-    }
-    private static M2AuxilarvProfilesCache getM2AuxilarvProfilesCache(FileObject pom) {
-        Project owner = FileOwnerQuery.getOwner(pom);
-        if (owner != null) {
-            return owner.getLookup().lookup(M2AuxilarvProfilesCache.class);
-        }
-        return null;
+    ProjectProfileHandlerImpl(NbMavenProject nmp, AuxiliaryConfiguration ac) {
+        this.nmp = nmp;
+        this.ac = ac;
+        privateProfiles.addAll(retrieveActiveProfiles(ac, false));
+        sharedProfiles.addAll(retrieveActiveProfiles(ac, true));
     }
 
-    public static List<String> retrieveActiveProfiles(MavenProject mavenProject) {
-        Set<String> prifileides = new HashSet<String>();
+    public List<String> getAllProfiles() {
+        Set<String> profileIds = new HashSet<String>();
+        //Add settings file Properties
+        profileIds.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().
+                getProfilesAsMap().keySet());
+        MavenProject root = getRootMavenProject(nmp.getOriginalMavenProject());
+
+
+        exteactProfiles(profileIds, root.getBasedir(), root.getModel());
+
+
+
+        return new ArrayList<String>(profileIds);
+    }
+
+    public List<String> getActiveProfiles(boolean shared) {
+       return new ArrayList<String>(shared ? sharedProfiles : privateProfiles);
+    }
+    public List<String> getMergedActiveProfiles(boolean shared) {
+                Set<String> prifileides = new HashSet<String>();
+        MavenProject mavenProject = nmp.getOriginalMavenProject();
         List<Profile> profiles = mavenProject.getActiveProfiles();
         for (Profile profile : profiles) {
             prifileides.add(profile.getId());
@@ -93,66 +100,11 @@ public class ProfileUtils {
           
             prifileides.add((String) it2.next());
         }
+        prifileides.addAll(getActiveProfiles(shared));
         return new ArrayList<String>(prifileides);
     }
 
-    public static List<String> retrieveMergedActiveProfiles(MavenProject mavenProject, boolean shared, String... includes) {
-        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(FileUtil.toFileObject(mavenProject.getFile()));
-        if (auxilarvProfilesCache == null) {
-            return Collections.<String>emptyList();
-        }
-        Set<String> prifileides = new HashSet<String>();
-
-        prifileides.addAll(retrieveActiveProfiles(mavenProject));
-
-        prifileides.addAll(auxilarvProfilesCache.getActiveProfiles(shared));
-
-        for (String profileIds : includes) {
-            prifileides.add(profileIds);
-        }
-        return new ArrayList<String>(prifileides);
-    }
-
-    public static List<String> retrieveActiveProfiles(FileObject pom, boolean shared) {
-         M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
-        if (auxilarvProfilesCache == null) {
-            return Collections.<String>emptyList();
-        }
-
-        return auxilarvProfilesCache.getActiveProfiles(shared);
-    }
-
-    public static void enableProfile(FileObject pom, String id, boolean shared) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
-        if (ac == null) {
-            return;
-        }
-
-        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
-        if (element == null) {
-
-            String root = "project-private"; // NOI18N"
-
-            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
-            element = doc.createElementNS(NAMESPACE, PROFILES);
-        }
-
-
-        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
-        element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
-        ac.putConfigurationFragment(element, shared);
-        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
-        if (auxilarvProfilesCache != null) {
-            auxilarvProfilesCache.refresh(ac);
-        }
-    }
-
-    public static void disableProfile(FileObject pom, String id, boolean shared) {
-        AuxiliaryConfiguration ac = getAuxiliaryConfiguration(pom);
-        if (ac == null) {
-            return;
-        }
-
+    public void disableProfile(String id, boolean shared) {
         Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
         if (element == null) {
 
@@ -178,31 +130,34 @@ public class ProfileUtils {
         }
 
         ac.putConfigurationFragment(element, shared);
-        M2AuxilarvProfilesCache auxilarvProfilesCache = getM2AuxilarvProfilesCache(pom);
-        if (auxilarvProfilesCache != null) {
-            auxilarvProfilesCache.refresh(ac);
+        if(shared){
+            sharedProfiles.remove(id);
+        }else{
+            privateProfiles.remove(id);
         }
     }
 
-    /**
-     * Get all possible profiles defined .
-     * 
-     * @param mavenProject 
-     * @return
-     */
-    public static List<String> retrieveAllProfiles(MavenProject mavenProject) {
-        Set<String> profileIds = new HashSet<String>();
-        //Add settings file Properties
-        profileIds.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().
-                getProfilesAsMap().keySet());
-        MavenProject root = getRootMavenProject(mavenProject);
+    public void enableProfile(String id, boolean shared) {
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
+        if (element == null) {
+
+            String root = "project-private"; // NOI18N"
+
+            Document doc = XMLUtil.createDocument(root, NAMESPACE, null, null);
+            element = doc.createElementNS(NAMESPACE, PROFILES);
+        }
 
 
-        exteactProfiles(profileIds, root.getBasedir(), root.getModel());
-
-
-
-        return new ArrayList<String>(profileIds);
+        String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
+        element.setAttributeNS(NAMESPACE, ACTIVEPROFILES, activeProfiles + SEPERATOR + id);
+        ac.putConfigurationFragment(element, shared);
+        if(shared){
+            if(!sharedProfiles.contains(id))
+             sharedProfiles.add(id);
+        }else{
+            if(!privateProfiles.contains(id))
+             privateProfiles.add(id);
+        }
     }
 
     private static MavenProject getRootMavenProject(MavenProject mavenProject) {
@@ -213,8 +168,6 @@ public class ProfileUtils {
 
         return mavenProject;
     }
-
-    
 
     private static void exteactProfiles(Set<String> profileIds, File file, Model model) {
 
@@ -238,7 +191,7 @@ public class ProfileUtils {
             File pom = FileUtil.normalizeFile(new File(dir, "pom.xml"));//NOI18N
 
             try {
-                if(pom.exists()){
+                if (pom.exists()) {
                     Model readModel = EmbedderFactory.getProjectEmbedder().readModel(pom);
                     exteactProfiles(profileIds, dir, readModel);
                 }
@@ -250,4 +203,27 @@ public class ProfileUtils {
         }
 
     }
+
+    private List<String> retrieveActiveProfiles(AuxiliaryConfiguration ac, boolean shared) {
+
+        Set<String> prifileides = new HashSet<String>();
+        Element element = ac.getConfigurationFragment(PROFILES, NAMESPACE, shared);
+        if (element != null) {
+
+            String activeProfiles = element.getAttributeNS(NAMESPACE, ACTIVEPROFILES);
+
+            if (activeProfiles != null && activeProfiles.length() > 0) {
+                StringTokenizer tokenizer = new StringTokenizer(activeProfiles, SEPERATOR);
+
+                while (tokenizer.hasMoreTokens()) {
+                    prifileides.add(tokenizer.nextToken());
+                }
+            }
+        }
+        return new ArrayList<String>(prifileides);
+    }
+
+
+
+ 
 }

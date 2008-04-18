@@ -26,10 +26,9 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.PropertySplitter;
@@ -40,6 +39,7 @@ import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
+import org.codehaus.mevenide.netbeans.NbMavenProject;
 
 /**
  *
@@ -95,11 +95,12 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     }
 
-    private void readProfiles(final MavenProject mavenProject) {
+    private void readProfiles(final NbMavenProject mavenProject) {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                final List ret = ProfileUtils.retrieveAllProfiles(mavenProject);
+                ProjectProfileHandler profileHandler=mavenProject.getLookup().lookup(ProjectProfileHandler.class);
+                final List ret = profileHandler.getAllProfiles();
                 
                 SwingUtilities.invokeLater(new Runnable() {
                     public void run() {
@@ -125,7 +126,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         return str;
     }
 
-    public void readMapping(NetbeansActionMapping mapp, MavenProject project, ActionToGoalMapping historyMappings) {
+    public void readMapping(NetbeansActionMapping mapp, NbMavenProject project, ActionToGoalMapping historyMappings) {
         this.historyMappings.clear();
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);
@@ -155,9 +156,9 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         }
         List<String> activatedProfiles = config.getActivatedProfiles();
         if (config.getProject() != null) {
+            ProjectProfileHandler profileHandler=config.getProject().getLookup().lookup(ProjectProfileHandler.class);
             List<String> retrieveMergedActiveProfiles =
-                    ProfileUtils.retrieveMergedActiveProfiles(config.getProject().getOriginalMavenProject(),
-                    false, activatedProfiles.toArray(new String[0]));
+                    profileHandler.getMergedActiveProfiles(false);
             txtProfiles.setText(createSpaceSeparatedList(retrieveMergedActiveProfiles));
         } else {
             txtProfiles.setText(createSpaceSeparatedList(activatedProfiles));
@@ -168,7 +169,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setRecursive(config.isRecursive());
         setShowDebug(config.isShowDebug());
         if(config.getProject()!=null){
-         readProfiles(config.getProject().getOriginalMavenProject());
+         readProfiles(config.getProject());
         }
     }
 

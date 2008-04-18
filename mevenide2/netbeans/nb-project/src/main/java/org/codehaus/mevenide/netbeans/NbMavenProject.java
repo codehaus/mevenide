@@ -48,7 +48,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProfileUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -118,6 +118,7 @@ public final class NbMavenProject implements Project {
     private ProjectState state;
     private ConfigurationProviderEnabler configEnabler;
     private M2AuxilaryConfigImpl auxiliary;
+    private ProjectProfileHandler profileHandler;
     public static WatcherAccessor ACCESSOR = null;
     
 
@@ -155,6 +156,7 @@ public final class NbMavenProject implements Project {
         problemReporter = new ProblemReporter(this);
         watcher = ACCESSOR.createWatcher(this);
         auxiliary = new M2AuxilaryConfigImpl(this);
+        profileHandler = new ProjectProfileHandlerImpl(this,auxiliary);
         configEnabler = new ConfigurationProviderEnabler(this, auxiliary);
     }
 
@@ -177,7 +179,7 @@ public final class NbMavenProject implements Project {
                 if (configEnabler.isConfigurationEnabled()) {
                     req.addActiveProfiles(configEnabler.getConfigProvider().getActiveConfiguration().getActivatedProfiles());
                 } else {
-                    List<String> activeProfiles = ProfileUtils.retrieveActiveProfiles(FileUtil.toFileObject(getPOMFile()), false);
+                    List<String> activeProfiles = profileHandler.getActiveProfiles( false);
                     req.addActiveProfiles(activeProfiles);
                 }
                 req.setPomFile(projectFile.getAbsolutePath());
@@ -452,7 +454,7 @@ public final class NbMavenProject implements Project {
      * gets a Collection of profile ids accessible to the project, is rather slow as it reloads the files all over again.
      */
     public Collection<String> getAvailableProfiles() {
-        return ProfileUtils.retrieveAllProfiles(getOriginalMavenProject());
+        return profileHandler.getAllProfiles();
     }
 
     public synchronized Lookup getLookup() {
@@ -472,7 +474,7 @@ public final class NbMavenProject implements Project {
                     new MavenBinaryForSourceQueryImpl(this),
                     new ActionProviderImpl(this),
                     auxiliary,
-                    new M2AuxilarvProfilesCache(auxiliary),
+                    profileHandler,
                     new CustomizerProviderImpl(this),
                     new LogicalViewProviderImpl(this),
                     new ProjectOpenedHookImpl(this),
