@@ -84,10 +84,12 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
                 }
             }
         });
+        //trigger the active configuration check..
+        getActiveConfiguration();
     }
     
-    public synchronized Collection<M2Configuration> getConfigurations() {
-        if (profiles == null) {
+    private synchronized Collection<M2Configuration> getConfigurations(boolean skipProfiles) {
+        if (profiles == null && !skipProfiles) {
             profiles = createProfilesList();
         }
         if (shared == null) {
@@ -102,8 +104,18 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         toRet.add(DEFAULT);
         toRet.addAll(shared);
         toRet.addAll(nonshared);
-        toRet.addAll(profiles);
+        if (!skipProfiles) {
+            toRet.addAll(profiles);
+        }
+        if (active != null && !toRet.contains(active)) {
+            toRet.add(active);
+        }
         return toRet;
+        
+    }
+    
+    public synchronized Collection<M2Configuration> getConfigurations() {
+        return getConfigurations(false);
     }
 
     public M2Configuration getDefaultConfig() {
@@ -151,19 +163,23 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
 
     public synchronized M2Configuration getActiveConfiguration() {
         if (initialActive != null) {
-            for (M2Configuration conf : getConfigurations()) {
+            for (M2Configuration conf : getConfigurations(true)) {
                 if (initialActive.equals(conf.getId())) {
                     active = conf;
                     initialActive = null;
                     break;
                 }
             }
+            if (initialActive != null) {
+                //asume it's profile based.
+                active = new M2Configuration(initialActive, project);
+                initialActive = null;
+            }
         }
         return active;
     }
     
     public synchronized void setConfigurations(List<M2Configuration> shared, List<M2Configuration> nonshared, boolean includeProfiles) {
-        AuxiliaryConfiguration aux = project.getLookup().lookup(AuxiliaryConfiguration.class);
         ConfigurationProviderEnabler.writeAuxiliaryData(aux, true, shared);
         ConfigurationProviderEnabler.writeAuxiliaryData(aux, false, nonshared);
         this.shared = shared;
@@ -179,12 +195,13 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         M2Configuration old = active;
         active = configuration;
         ConfigurationProviderEnabler.writeAuxiliaryData(
-                project.getLookup().lookup(AuxiliaryConfiguration.class), 
+                aux, 
                 ConfigurationProviderEnabler.ACTIVATED, active.getId());
         support.firePropertyChange(PROP_CONFIGURATION_ACTIVE, old, active);
     }
 
     private List<M2Configuration> createProfilesList() {
+        //project.getOriinalMavenProject cannot be executed from within the getOriginalMavenProject method..
         List<String> profs = ProfileUtils.retrieveAllProfiles(project.getOriginalMavenProject());
         List<M2Configuration> config = new ArrayList<M2Configuration>();
 //        config.add(DEFAULT);
@@ -201,7 +218,6 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     }
     
     private List<M2Configuration> readConfiguration(boolean shared) {
-        AuxiliaryConfiguration aux = project.getLookup().lookup(AuxiliaryConfiguration.class);
         Element el = aux.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, shared);
         if (el != null) {
             NodeList list = el.getElementsByTagNameNS(ConfigurationProviderEnabler.NAMESPACE, ConfigurationProviderEnabler.CONFIG);
@@ -215,7 +231,13 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
                     String profs = enEl.getAttribute(ConfigurationProviderEnabler.CONFIG_PROFILES_ATTR);
                     if (profs != null) {
                         String[] s = profs.split(" ");
-                        c.setActivatedProfiles(Arrays.asList(s));
+                        List<String> prf = new ArrayList<String>();
+                        for (String s2 : prf) {
+                            if (s2.trim().length() > 0) {
+                                prf.add(s2.trim());
+                            }
+                        }
+                        c.setActivatedProfiles(prf);
                     }
                     toRet.add(c);
                 }

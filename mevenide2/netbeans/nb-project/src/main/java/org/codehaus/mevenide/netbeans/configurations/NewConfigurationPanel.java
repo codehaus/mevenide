@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.configurations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,7 +58,13 @@ public class NewConfigurationPanel extends javax.swing.JPanel {
     public List<String> getProfiles() {
         String val = txtActivate.getText().trim();
         String[] splitted = val.split(" ,");
-        return Arrays.asList(splitted);
+        List<String> toRet = new ArrayList<String>();
+        for (String s : splitted) {
+            if (s.trim().length() > 0) {
+                toRet.add(s.trim());
+            }
+        }
+        return toRet;
     }
     
 

@@ -18,6 +18,7 @@
 package org.codehaus.mevenide.netbeans.api.customizer;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +34,7 @@ import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.openide.util.NbBundle;
 
 /**
  * ModelHandle instance is passed down to customizer panel providers in the context lookup.
@@ -351,7 +353,16 @@ public final class ModelHandle {
         }
 
         public String getDisplayName() {
-            return displayName;
+            if (isDefault()) {
+                return NbBundle.getMessage(ModelHandle.class, "DefaultConfig");
+            }
+            if (isProfileBased()) {
+                return NbBundle.getMessage(ModelHandle.class, "ProfileConfig", id);
+            }
+            if (getActivatedProfiles() != null && getActivatedProfiles().size() > 0) {
+                return NbBundle.getMessage(ModelHandle.class, "CustomConfig1", id, Arrays.toString(getActivatedProfiles().toArray()));
+            }
+            return NbBundle.getMessage(ModelHandle.class, "CustomConfig2", id);
         }
 
         public void setDisplayName(String displayName) {
