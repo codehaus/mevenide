@@ -41,6 +41,7 @@ public class NbGlobalActionGoalProvider extends AbstractActionGoalProvider {
     public static final String FILENAME = "Projects/org-codehaus-mevenide-netbeans/nbactions.xml"; //NOI18N
     
     private Date lastModified = new Date();
+    private boolean lastTimeExists = true;
     
     /** Creates a new instance of NbGlobalActionGoalProvider */
     public NbGlobalActionGoalProvider() {
@@ -48,6 +49,7 @@ public class NbGlobalActionGoalProvider extends AbstractActionGoalProvider {
     
     public InputStream getActionDefinitionStream() {
         FileObject fo = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject(FILENAME);
+        lastTimeExists = fo != null;
         if (fo != null) {
             try {
                 lastModified = fo.lastModified();
@@ -98,7 +100,8 @@ public class NbGlobalActionGoalProvider extends AbstractActionGoalProvider {
     @Override
     protected boolean reloadStream() {
         FileObject fo = Repository.getDefault().getDefaultFileSystem().getRoot().getFileObject(FILENAME);
-        return (fo == null || fo.lastModified().after(lastModified));
-        
+        boolean prevExists = lastTimeExists;
+        lastTimeExists = fo != null;
+        return ((fo == null && prevExists) || (fo != null && fo.lastModified().after(lastModified)));
     }
 }

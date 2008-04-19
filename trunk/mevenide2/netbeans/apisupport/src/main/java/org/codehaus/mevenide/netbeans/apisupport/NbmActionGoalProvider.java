@@ -162,8 +162,9 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
 
     private boolean hasNbm(Project project) {
         ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
-        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType());
-        boolean hasNbm = ProjectURLWatcher.TYPE_NBM.equals(watch.getPackagingType());
+        String pack = watch.getPackagingType();
+        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(pack);
+        boolean hasNbm = ProjectURLWatcher.TYPE_NBM.equals(pack);
         if (isPom) {
             SubprojectProvider prov = project.getLookup().lookup(SubprojectProvider.class);
             for (Project prj : prov.getSubprojects()) {

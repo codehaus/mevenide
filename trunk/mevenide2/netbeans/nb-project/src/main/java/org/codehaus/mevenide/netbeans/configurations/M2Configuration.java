@@ -53,6 +53,7 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     static final String FILENAME_PREFIX = "nbactions-"; //NOI18N
     static final String FILENAME_SUFFIX = ".xml"; //NOI18N
     private Date lastModified = new Date();
+    private boolean lastTimeExists = true;
     
     public M2Configuration(String id, NbMavenProject proj) {
         this.id = id;
@@ -114,6 +115,7 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
             return null;
         }
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME_PREFIX + id + FILENAME_SUFFIX);
+        lastTimeExists = fo != null;
         if (fo != null) {
             try {
                 lastModified = fo.lastModified();
@@ -163,7 +165,9 @@ public class M2Configuration extends AbstractActionGoalProvider implements Proje
     @Override
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME_PREFIX + id + FILENAME_SUFFIX);
-        return (fo == null || fo.lastModified().after(lastModified));
+        boolean prevExists = lastTimeExists;
+        lastTimeExists = fo != null;
+        return ((fo == null && prevExists) || (fo != null && fo.lastModified().after(lastModified)));
     }
 
 
