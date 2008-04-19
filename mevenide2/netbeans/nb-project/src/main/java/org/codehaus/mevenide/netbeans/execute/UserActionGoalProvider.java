@@ -43,6 +43,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
     
     private NbMavenProject project;
     private Date lastModified = new Date();
+    private boolean lastTimeExists = true;
     /** Creates a new instance of UserActionGoalProvider */
     public UserActionGoalProvider(NbMavenProject project) {
         this.project = project;
@@ -50,6 +51,7 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
     
     public InputStream getActionDefinitionStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
+        lastTimeExists = fo != null;
         if (fo != null) {
             try {
                 lastModified = fo.lastModified();
@@ -100,7 +102,8 @@ public class UserActionGoalProvider extends AbstractActionGoalProvider {
     @Override
     protected boolean reloadStream() {
         FileObject fo = project.getProjectDirectory().getFileObject(FILENAME);
-        return (fo == null || fo.lastModified().after(lastModified));
-        
+        boolean prevExists = lastTimeExists;
+        lastTimeExists = fo != null;
+        return ((fo == null && prevExists) || (fo != null && fo.lastModified().after(lastModified)));
     }
 }

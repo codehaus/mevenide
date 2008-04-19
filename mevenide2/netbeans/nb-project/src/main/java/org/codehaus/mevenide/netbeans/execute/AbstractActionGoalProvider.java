@@ -156,7 +156,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             } else {
                 Reader rdr = null;
                 try {
-                    rdr = new InputStreamReader(getActionDefinitionStream());
+                    rdr = new InputStreamReader(in);
                     originalMappings = reader.read(rdr);
                 } catch (IOException ex) {
                     ex.printStackTrace();
