@@ -27,7 +27,6 @@ import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ui.OpenProjects;
 import org.openide.modules.ModuleInstall;

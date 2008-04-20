@@ -25,7 +25,6 @@ import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 import org.openide.filesystems.FileUtil;
 
 /**
