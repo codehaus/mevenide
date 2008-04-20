@@ -17,9 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.api.customizer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +28,6 @@ import org.apache.maven.model.BuildBase;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
