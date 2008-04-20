@@ -142,7 +142,7 @@ public class JPDAStart implements Runnable {
                 getLog().info("JPDA Address: " + address); //NOI18N
                 getLog().info("Port:" + lock[0]); //NOI18N
                 
-                ClassPath sourcePath = Utils.createSourcePath(project, project.getOriginalMavenProject());
+                ClassPath sourcePath = Utils.createSourcePath(project);
                 ClassPath jdkSourcePath = Utils.createJDKSourcePath(project);
                 
                 if (getStopClassName() != null && getStopClassName().length() > 0) {

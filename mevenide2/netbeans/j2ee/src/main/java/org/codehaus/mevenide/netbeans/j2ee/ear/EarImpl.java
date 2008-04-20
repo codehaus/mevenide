@@ -31,7 +31,10 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.j2ee.ear.model.ApplicationMetadataModelImpl;
+import org.codehaus.mevenide.netbeans.spi.debug.AdditionalDebuggedProjects;
 import org.codehaus.plexus.util.StringInputStream;
+import org.netbeans.api.project.FileOwnerQuery;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.Car;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
@@ -46,6 +49,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.ModuleListener;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeApplicationImplementation;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleFactory;
 import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleImplementation;
+import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.metadata.model.spi.MetadataModelFactory;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
@@ -61,7 +65,11 @@ import org.xml.sax.SAXException;
  * implementation of ear related netbeans functionality
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplicationImplementation, ModuleChangeReporter {
+class EarImpl implements EarImplementation, 
+                         J2eeModuleImplementation, 
+                         J2eeApplicationImplementation, 
+                         ModuleChangeReporter, 
+                         AdditionalDebuggedProjects {
 
     private NbMavenProject project;
     private EarModuleProviderImpl provider;
@@ -327,7 +335,6 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
     }
 
     public J2eeModule[] getModules() {
-//        System.out.println("EarImpl.getModules called");
         Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
         List toRet = new ArrayList();
         while (it.hasNext()) {
@@ -335,12 +342,50 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
             if ("war".equals(elem.getType()) || "ejb".equals(elem.getType())) {//NOI18N
 //                System.out.println("adding " + elem.getId());
                 //TODO probaby figure out the context root etc..
-                toRet.add(J2eeModuleFactory.createJ2eeModule(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion(), provider)));
+                File fil = elem.getFile();
+                FileObject fo = FileUtil.toFileObject(fil);
+                boolean found = false;
+                if (fo != null) {
+                    Project owner = FileOwnerQuery.getOwner(fo);
+                    if (owner != null) {
+                        J2eeModuleProvider prov = owner.getLookup().lookup(J2eeModuleProvider.class);
+                        if (prov != null) {
+                            toRet.add(prov.getJ2eeModule());
+                            found = true;
+                        }
+                    }
+                }
+                if (!found) {
+                    toRet.add(J2eeModuleFactory.createJ2eeModule(new NonProjectJ2eeModule(elem, getJ2eePlatformVersion(), provider)));
+                }
             }
         }
         //TODO need to also consult the pom file for potencial additional modules.
         return (J2eeModule[])toRet.toArray(new J2eeModule[toRet.size()]);
     }
+    
+    public List<Project> getProjects() {
+        Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
+        List<Project> toRet = new ArrayList<Project>();
+        while (it.hasNext()) {
+            Artifact elem = (Artifact) it.next();
+            if ("war".equals(elem.getType()) || "ejb".equals(elem.getType())) {//NOI18N
+                File fil = elem.getFile();
+                FileObject fo = FileUtil.toFileObject(fil);
+                if (fo != null) {
+                    Project owner = FileOwnerQuery.getOwner(fo);
+                    if (owner != null) {
+                        J2eeModuleProvider prov = owner.getLookup().lookup(J2eeModuleProvider.class);
+                        if (prov != null) {
+                            toRet.add(owner);
+                        }
+                    }
+                }
+            }
+        }
+        return toRet;
+    }
+    
     
     File getDDFile(String path) {
 //        System.out.println("getDD file=" + path);
@@ -511,5 +556,6 @@ class EarImpl implements EarImplementation, J2eeModuleImplementation, J2eeApplic
         }
         return null;
     }
+
  
 }
