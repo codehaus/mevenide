@@ -23,7 +23,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -33,6 +32,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.classpath.BootClassPathImpl;
+import org.codehaus.mevenide.netbeans.spi.debug.AdditionalDebuggedProjects;
 import org.netbeans.api.debugger.DebuggerManager;
 import org.netbeans.api.debugger.jpda.MethodBreakpoint;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -117,17 +117,31 @@ public class Utils {
         return toRet;
     }
     
-    static ClassPath createSourcePath(Project project, MavenProject mproject) {
+    static ClassPath createSourcePath(Project project) {
         File[] roots = new File[0];
         ClassPath cp;
         try {
-            roots = convertStringsToNormalizedFiles(collectClasspaths(project));
+            Set<String> col = collectClasspaths(project);
+            AdditionalDebuggedProjects adds = project.getLookup().lookup(AdditionalDebuggedProjects.class);
+            if (adds != null) {
+                for (Project prj : adds.getProjects()) {
+                    col.addAll(collectClasspaths(prj));
+                }
+            }
+            roots = convertStringsToNormalizedFiles(col);
             cp = convertToSourcePath(roots);
         } catch (DependencyResolutionRequiredException ex) {
             ex.printStackTrace();
             cp = ClassPathSupport.createClassPath(new FileObject[0]);
         }
-        roots = convertStringsToNormalizedFiles(collectSourceRoots(project));
+        Set<String> col = collectSourceRoots(project);
+        AdditionalDebuggedProjects adds = project.getLookup().lookup(AdditionalDebuggedProjects.class);
+        if (adds != null) {
+            for (Project prj : adds.getProjects()) {
+                col.addAll(collectSourceRoots(prj));
+            }
+        }
+        roots = convertStringsToNormalizedFiles(col);
         ClassPath sp = convertToClassPath(roots);
         
         ClassPath sourcePath = ClassPathSupport.createProxyClassPath(

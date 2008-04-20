@@ -64,7 +64,7 @@ public class MavenDebuggerImpl implements MavenDebugger2 {
         try {
             
             Project nbproject = ProjectManager.getDefault().findProject(FileUtil.toFileObject(project.getBasedir()));
-            ClassPath sourcePath = Utils.createSourcePath(nbproject, project);
+            ClassPath sourcePath = Utils.createSourcePath(nbproject);
             ClassPath jdkSourcePath = Utils.createJDKSourcePath(nbproject);
             
             final Map properties = new HashMap();
