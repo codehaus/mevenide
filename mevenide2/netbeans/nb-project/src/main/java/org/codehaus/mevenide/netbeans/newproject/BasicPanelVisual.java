@@ -459,6 +459,13 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
                 arch.getVersion(), 
                 "jar", //NOI18N
                 "maven-archetype"); //NOI18N
+        Artifact pom = online.createArtifact(
+                arch.getGroupId(), 
+                arch.getArtifactId(), 
+                arch.getVersion(), 
+                "pom", //NOI18N
+                "pom"); //NOI18N
+        
         //hack to get the right extension for the right packaging without the plugin.
         art.setArtifactHandler(new ArtifactHandler() {
             public String getExtension() {
@@ -497,6 +504,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         ProgressTransferListener.setAggregateHandle(hndl);
         try {
             hndl.start();
+            online.resolve(pom, repos, online.getLocalRepository());
             online.resolve(art, repos, online.getLocalRepository());
         } finally {
             hndl.finish();
