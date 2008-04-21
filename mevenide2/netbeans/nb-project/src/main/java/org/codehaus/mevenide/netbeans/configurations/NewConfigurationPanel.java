@@ -32,6 +32,8 @@ public class NewConfigurationPanel extends javax.swing.JPanel {
 
     public void setConfigurationId(String configurationId) {
         txtId.setText(configurationId);
+        txtId.setEditable(false);
+        txtId.setEnabled(false);
     }
 
     public boolean isShared() {
