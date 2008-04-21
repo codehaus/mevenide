@@ -10,7 +10,7 @@
     <packaging>nbm</packaging>
     <version>3.1-SNAPSHOT</version>
     <name>NetBeans Maven2 Repository Browser</name>
-    <description>A browser component for browsing the maven2 repositories, with general search capabilities.</description>
+    <description>Allows to browse and search the content of the local/remote maven repository.</description>
 
     <dependencies>
         <dependency>
