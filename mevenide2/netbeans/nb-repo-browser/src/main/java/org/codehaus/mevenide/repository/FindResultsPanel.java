@@ -14,7 +14,6 @@
  *  limitations under the License.
  * =========================================================================
  */
-
 package org.codehaus.mevenide.repository;
 
 import java.awt.BorderLayout;
@@ -22,6 +21,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.SwingUtilities;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.QueryField;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
@@ -39,6 +39,7 @@ import org.openide.util.RequestProcessor;
  * @author  mkleint
  */
 public class FindResultsPanel extends javax.swing.JPanel implements ExplorerManager.Provider {
+
     private BeanTreeView btv;
     private ExplorerManager manager;
     private ActionListener close;
@@ -53,15 +54,32 @@ public class FindResultsPanel extends javax.swing.JPanel implements ExplorerMana
         manager.setRootContext(new AbstractNode(Children.LEAF));
         add(btv, BorderLayout.CENTER);
     }
-    
+
     FindResultsPanel(ActionListener actionListener, DialogDescriptor d) {
         this();
         close = actionListener;
         dd = d;
     }
 
-    void setResults(List<NBVersionInfo> infos) {
-        manager.setRootContext(createRootNode(infos));
+   
+
+    void find(final List<QueryField> fields) {
+        Node loadingNode = GroupListChildren.createLoadingNode();
+        Children.Array array=new Children.Array();
+        array.add(new Node[]{loadingNode});
+        manager.setRootContext(new AbstractNode(array));
+        RequestProcessor.getDefault().post(new Runnable() {
+
+            public void run() {
+                final List<NBVersionInfo> infos = RepositoryQueries.find(fields);
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                         manager.setRootContext(createRootNode(infos));
+                    }
+                });
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -116,36 +134,27 @@ private void btnCloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (ret == DialogDescriptor.OK_OPTION) {
-        RequestProcessor.getDefault().post(new Runnable() {
-            public void run() {
-                final List<NBVersionInfo> infos = RepositoryQueries.find(((FindInRepoPanel)dd.getMessage()).getQuery());
-                setResults(infos);
-            }
-        });
+        find(((FindInRepoPanel) dd.getMessage()).getQuery());
     }
 }//GEN-LAST:event_btnModifyActionPerformed
 
     public ExplorerManager getExplorerManager() {
         return manager;
     }
-    
+
     private Node createRootNode(List<NBVersionInfo> infos) {
         Children.Array array = new Children.Array();
         for (NBVersionInfo i : infos) {
             RepositoryInfo ri = RepositoryPreferences.getInstance().getRepositoryInfoById(i.getRepoId());
-            array.add(new Node[] {
-                new VersionNode(ri, i, i.isJavadocExists(), i.isSourcesExists(), false)
-            });
+            array.add(new Node[]{
+                        new VersionNode(ri, i, i.isJavadocExists(), i.isSourcesExists(), false)
+                    });
         }
         return new AbstractNode(array);
     }
-    
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClose;
     private javax.swing.JButton btnModify;
     private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
-
 }
