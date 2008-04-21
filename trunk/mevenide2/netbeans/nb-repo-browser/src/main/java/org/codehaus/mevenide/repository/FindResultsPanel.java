@@ -43,6 +43,7 @@ import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
+import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 
@@ -152,6 +153,25 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         return manager;
     }
 
+    public static Node createEmptyNode() {
+        AbstractNode nd = new AbstractNode(Children.LEAF) {
+
+            @Override
+            public Image getIcon(int arg0) {
+                return Utilities.loadImage("org/codehaus/mevenide/repository/empty.png");
+            }
+
+            @Override
+            public Image getOpenedIcon(int arg0) {
+                return getIcon(arg0);
+            }
+        };
+        nd.setName("Empty"); //NOI18N
+
+        nd.setDisplayName(NbBundle.getMessage(FindResultsPanel.class, "LBL_Node_Empty"));
+        return nd;
+    }
+
     private Node createRootNode(List<NBVersionInfo> infos) {
         Node node = null;
         Map<String, List<NBVersionInfo>> map = new HashMap<String, List<NBVersionInfo>>();
@@ -175,6 +195,11 @@ private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             for (String key : keyList) {
                 array.add(new Node[]{new ArtifactNode(key, map.get(key))});
             }
+        } else {
+            Node empty = createEmptyNode();
+            Children.Array array = new Children.Array();
+            array.add(new Node[]{empty});
+            node = new AbstractNode(array);
         }
         return node;
 
