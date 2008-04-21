@@ -17,7 +17,6 @@
 package org.codehaus.mevenide.repository;
 
 import java.awt.BorderLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
@@ -26,11 +25,10 @@ import javax.swing.ActionMap;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.text.DefaultEditorKit;
-import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.QueryField;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
-import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.repository.register.RepositoryRegisterUI;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -103,13 +101,13 @@ public final class M2RepositoryBrowserTopComponent extends TopComponent implemen
         jSplitPane1.setEnabled(false);
     }
     
-    private void showFind(List<NBVersionInfo> infos, DialogDescriptor dd) {
+    private void showFind(List<QueryField> fields, DialogDescriptor dd) {
         FindResultsPanel pnl = new FindResultsPanel(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 hideFind();
             }
         }, dd);
-        pnl.setResults(infos);
+        pnl.find(fields);
         pnlFind.add(pnl);
         pnlFind.setVisible(true);
         jSplitPane1.setEnabled(true);
@@ -236,16 +234,7 @@ private void btnFindActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST
     final DialogDescriptor dd = new DialogDescriptor(pnl, "Find In Repositories");
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (ret == DialogDescriptor.OK_OPTION) {
-        RequestProcessor.getDefault().post(new Runnable() {
-            public void run() {
-                final List<NBVersionInfo> infos = RepositoryQueries.find(pnl.getQuery());
-                SwingUtilities.invokeLater(new Runnable() {
-                        public void run() {
-                            showFind(infos, dd);
-                        }
-                    });
-            }
-        });
+        showFind(pnl.getQuery(), dd);
     }
     
 }//GEN-LAST:event_btnFindActionPerformed
