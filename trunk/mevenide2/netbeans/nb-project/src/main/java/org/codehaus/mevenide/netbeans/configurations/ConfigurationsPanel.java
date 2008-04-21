@@ -30,6 +30,7 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
+import org.openide.util.NbBundle;
 
 /**
  *
@@ -244,9 +245,8 @@ private void cbProfilesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FI
 }//GEN-LAST:event_cbProfilesActionPerformed
 
 private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-// TODO add your handling code here:
     NewConfigurationPanel pnl = new NewConfigurationPanel();
-    DialogDescriptor dd = new DialogDescriptor(pnl, "Add configuration");
+    DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ConfigurationsPanel.class, "TIT_Add_Config"));
     Object ret = DialogDisplayer.getDefault().notify(dd);
     if (ret == DialogDescriptor.OK_OPTION) {
         ModelHandle.Configuration conf = ModelHandle.createCustomConfiguration(pnl.getConfigurationId());
@@ -260,11 +260,25 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
 }//GEN-LAST:event_btnAddActionPerformed
 
 private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
-// TODO add your handling code here:
+    ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
+    if (conf != null) {
+        NewConfigurationPanel pnl = new NewConfigurationPanel();
+        pnl.setConfigurationId(conf.getId());
+        pnl.setProfiles(conf.getActivatedProfiles());
+        pnl.setShared(conf.isShared());
+        DialogDescriptor dd = new DialogDescriptor(pnl, NbBundle.getMessage(ConfigurationsPanel.class, "TIT_Edit_Config"));
+        Object ret = DialogDisplayer.getDefault().notify(dd);
+        if (ret == DialogDescriptor.OK_OPTION) {
+            conf.setShared(pnl.isShared());
+            conf.setActivatedProfiles(pnl.getProfiles());
+            handle.markAsModified(handle.getConfigurations());
+            createListModel();
+            lstConfigurations.setSelectedValue(conf, true);
+        }
+    }
 }//GEN-LAST:event_btnEditActionPerformed
 
 private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRemoveActionPerformed
-// TODO add your handling code here:
     ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
     if (conf != null) {
         handle.removeConfiguration(conf);
@@ -273,7 +287,6 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 }//GEN-LAST:event_btnRemoveActionPerformed
 
 private void btnActivateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnActivateActionPerformed
-// TODO add your handling code here:
     ModelHandle.Configuration conf = (ModelHandle.Configuration) lstConfigurations.getSelectedValue();
     if (conf != null) {
         handle.setActiveConfiguration(conf);
