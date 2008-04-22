@@ -396,8 +396,12 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                 return false;
             }
 
-            public List getActivatedProfiles() {
-                return Collections.EMPTY_LIST;
+            public List<String> getActivatedProfiles() {
+                return Collections.<String>emptyList();
+            }
+            
+            public void setActivatedProfiles(List<String> activeteProfiles) {
+                
             }
 
             public boolean isInteractive() {

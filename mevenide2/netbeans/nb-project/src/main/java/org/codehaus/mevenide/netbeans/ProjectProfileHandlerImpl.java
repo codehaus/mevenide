@@ -17,7 +17,6 @@
 package org.codehaus.mevenide.netbeans;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,14 +26,13 @@ import java.util.StringTokenizer;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.build.model.ModelLineage;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
-import org.openide.util.Exceptions;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -66,13 +64,8 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         //Add settings file Properties
         profileIds.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().
                 getProfilesAsMap().keySet());
-        MavenProject root = getRootMavenProject(nmp.getOriginalMavenProject());
 
-
-        extractProfiles(profileIds, root.getBasedir(), root.getModel());
-
-
-
+        extractProfiles(profileIds, nmp.getPOMFile());
         return new ArrayList<String>(profileIds);
     }
 
@@ -97,7 +90,6 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         //read from profiles.xml
         Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getActiveProfiles().iterator();
         while (it2.hasNext()) {
-          
             prifileides.add((String) it2.next());
         }
         prifileides.addAll(getActiveProfiles(shared));
@@ -160,18 +152,21 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
         }
     }
 
-    private static MavenProject getRootMavenProject(MavenProject mavenProject) {
-        if (mavenProject.getParent() != null) {
-
-            return getRootMavenProject(mavenProject.getParent());
+    private static void extractProfiles(Set<String> profileIds, File file) {
+        ModelLineage lineage = EmbedderFactory.createModelLineage(file, EmbedderFactory.createOnlineEmbedder(), true);
+        Iterator it = lineage.modelIterator();
+        while (it.hasNext()) {
+            Model mdl = (Model) it.next();
+            List mdlProfiles = mdl.getProfiles();
+            if (mdlProfiles != null) {
+                Iterator it2 = mdlProfiles.iterator();
+                while (it2.hasNext()) {
+                    Profile prf = (Profile)it2.next();
+                    profileIds.add(prf.getId());
+                }
+            }
         }
-
-        return mavenProject;
-    }
-
-    private static void extractProfiles(Set<String> profileIds, File file, Model model) {
-
-        File basedir = FileUtil.normalizeFile(file);
+        File basedir = FileUtil.normalizeFile(file.getParentFile());
         FileObject fileObject = FileUtil.toFileObject(basedir);
         //read from profiles.xml
         Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
@@ -179,29 +174,6 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
             org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
             profileIds.add(prof.getId());
         }
-        //read from modle
-        List<Profile> profiles = model.getProfiles();
-        for (Profile profile : profiles) {
-            profileIds.add(profile.getId());
-        }
-
-        List<String> modules = model.getModules();
-        for (String name : modules) {
-            File dir = FileUtil.normalizeFile(new File(file, name));
-            File pom = FileUtil.normalizeFile(new File(dir, "pom.xml"));//NOI18N
-
-            try {
-                if (pom.exists()) {
-                    Model readModel = EmbedderFactory.getProjectEmbedder().readModel(pom);
-                    extractProfiles(profileIds, dir, readModel);
-                }
-            } catch (XmlPullParserException ex) {
-                Exceptions.printStackTrace(ex);
-            } catch (IOException ex) {
-                Exceptions.printStackTrace(ex);
-            }
-        }
-
     }
 
     private List<String> retrieveActiveProfiles(AuxiliaryConfiguration ac, boolean shared) {

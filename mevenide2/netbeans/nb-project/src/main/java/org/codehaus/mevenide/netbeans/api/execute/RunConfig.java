@@ -58,7 +58,9 @@ public interface RunConfig {
     
     boolean isUpdateSnapshots();
 
-    List getActivatedProfiles();
+    List<String> getActivatedProfiles();
+    
+    void setActivatedProfiles(List<String> profiles);
     
     boolean isInteractive();
 

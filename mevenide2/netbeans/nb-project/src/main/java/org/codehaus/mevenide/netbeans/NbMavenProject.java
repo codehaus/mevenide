@@ -157,7 +157,7 @@ public final class NbMavenProject implements Project {
         watcher = ACCESSOR.createWatcher(this);
         auxiliary = new M2AuxilaryConfigImpl(this);
         profileHandler = new ProjectProfileHandlerImpl(this,auxiliary);
-        configEnabler = new ConfigurationProviderEnabler(this, auxiliary);
+        configEnabler = new ConfigurationProviderEnabler(this, auxiliary, profileHandler);
     }
 
     public File getPOMFile() {
