@@ -57,7 +57,7 @@ public final class ProjectURLWatcher {
     private NbMavenProject project;
     private PropertyChangeSupport support;
     private FCHSL listener = new FCHSL();
-    private List<File> files = new ArrayList<File>();
+    private final List<File> files = new ArrayList<File>();
     
     static {
         AccessorImpl impl = new AccessorImpl();
@@ -169,13 +169,14 @@ public final class ProjectURLWatcher {
      *  of user's custom lifecycles.
      */ 
     public String getPackagingType() {
-        String custom = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_PACKAGING);
+        MavenProject orig = project.getOriginalMavenProject();
+        String custom = orig.getProperties().getProperty(Constants.HINT_PACKAGING);
 // ignore the old solution. getRawMappings() is expensive in this context..
 //        if (custom == null) {
 //            // fallback to previous old solution. 
 //            custom = project.getLookup().lookup(UserActionGoalProvider.class).getRawMappings().getPackaging();
 //        }
-        return custom != null ? custom : project.getOriginalMavenProject().getPackaging();
+        return custom != null ? custom : orig.getPackaging();
     }
     
     
