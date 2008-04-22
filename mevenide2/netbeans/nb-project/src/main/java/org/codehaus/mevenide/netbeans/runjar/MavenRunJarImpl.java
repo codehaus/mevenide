@@ -114,7 +114,7 @@ public class MavenRunJarImpl implements MavenRunJar {
         private File jarLocation;
         private MavenProject project;
         private Log log;
-        Object semaphor = new Object();
+        final Object semaphor = new Object();
         
         public Wrapper(File jarArtifact, String executable, String parameters, String jvmParameters, String debugJvmParameters,
                 File workDirectory, File jarLocation, String finalName, MavenProject project, Log log) {
