@@ -61,11 +61,12 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
 
     public List<String> getAllProfiles() {
         Set<String> profileIds = new HashSet<String>();
+        //pom+profiles.xml profiles come first
+        extractProfiles(profileIds, nmp.getPOMFile());
         //Add settings file Properties
         profileIds.addAll(MavenSettingsSingleton.getInstance().createUserSettingsModel().
                 getProfilesAsMap().keySet());
 
-        extractProfiles(profileIds, nmp.getPOMFile());
         return new ArrayList<String>(profileIds);
     }
 
@@ -153,6 +154,18 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
     }
 
     private static void extractProfiles(Set<String> profileIds, File file) {
+        extractProfilesFromModelLineage(file, profileIds);
+        File basedir = FileUtil.normalizeFile(file.getParentFile());
+        FileObject fileObject = FileUtil.toFileObject(basedir);
+        //read from profiles.xml
+        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
+        while (it2.hasNext()) {
+            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
+            profileIds.add(prof.getId());
+        }
+    }
+    
+    private static void extractProfilesFromModelLineage(File file, Set<String> profileIds) {
         ModelLineage lineage = EmbedderFactory.createModelLineage(file, EmbedderFactory.createOnlineEmbedder(), true);
         Iterator it = lineage.modelIterator();
         while (it.hasNext()) {
@@ -161,18 +174,21 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
             if (mdlProfiles != null) {
                 Iterator it2 = mdlProfiles.iterator();
                 while (it2.hasNext()) {
-                    Profile prf = (Profile)it2.next();
+                    Profile prf = (Profile) it2.next();
                     profileIds.add(prf.getId());
                 }
             }
         }
+        List<String> modules = lineage.getOriginatingModel().getModules();
         File basedir = FileUtil.normalizeFile(file.getParentFile());
-        FileObject fileObject = FileUtil.toFileObject(basedir);
-        //read from profiles.xml
-        Iterator it2 = MavenSettingsSingleton.createProfilesModel(fileObject).getProfiles().iterator();
-        while (it2.hasNext()) {
-            org.apache.maven.profiles.Profile prof = (org.apache.maven.profiles.Profile) it2.next();
-            profileIds.add(prof.getId());
+        for (String module : modules) {
+            File childPom = FileUtil.normalizeFile(new File(basedir, module));
+            if (childPom.exists() && !childPom.isFile()) {
+                childPom = new File(childPom, "pom.xml"); //NOI18N
+            } 
+            if (childPom.isFile()) {
+                extractProfilesFromModelLineage(childPom, profileIds);
+            }
         }
     }
 

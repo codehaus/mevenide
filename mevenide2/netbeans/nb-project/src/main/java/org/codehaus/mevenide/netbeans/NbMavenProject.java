@@ -450,12 +450,6 @@ public final class NbMavenProject implements Project {
         return new File[0];
     }
 
-    /**
-     * gets a Collection of profile ids accessible to the project, is rather slow as it reloads the files all over again.
-     */
-    public Collection<String> getAvailableProfiles() {
-        return profileHandler.getAllProfiles();
-    }
 
     public synchronized Lookup getLookup() {
         if (lookup == null) {
