@@ -28,6 +28,7 @@ import javax.swing.Action;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.SwingUtilities;
 import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
@@ -384,7 +385,17 @@ public class ActionProviderImpl implements ActionProvider {
                         menu.add(item);
                     }
                     menu.add(new JMenuItem(createCustomMavenAction(NbBundle.getMessage(ActionProviderImpl.class, "LBL_Custom_run_goals"), new NetbeansActionMapping())));
-                    menu.remove(loading);
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            boolean selected = menu.isSelected();
+                            menu.remove(loading);
+                            menu.getPopupMenu().pack();
+                            menu.repaint();
+                            menu.updateUI();
+                            menu.setSelected(selected);
+                        }
+                    });
                 }
             }, 100);
             return menu;
@@ -443,7 +454,19 @@ public class ActionProviderImpl implements ActionProvider {
                             }
                         });
                     }
-                    menu.remove(loading);
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            boolean selected = menu.isSelected();
+                            menu.remove(loading);
+                            menu.getPopupMenu().pack();
+                            menu.repaint();
+                            menu.updateUI();
+                            menu.setSelected(selected);
+                        }
+                    });
+                    
+                    
                 }
             }, 100);
             return menu;
