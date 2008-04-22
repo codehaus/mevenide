@@ -56,7 +56,8 @@ public final class ActionToGoalUtils {
 
     public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
         RunConfig rc = null;
-        if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
+        boolean configsEnabled = project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled();
+        if (configsEnabled) {
             M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
             rc = configs.getActiveConfiguration().createConfigForDefaultAction(action, project, lookup);
         }
@@ -99,6 +100,13 @@ public final class ActionToGoalUtils {
                     }
                 }
             }
+        }
+        if (rc != null && configsEnabled) {
+            M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
+            List<String> acts = new ArrayList<String>();
+            acts.addAll(rc.getActivatedProfiles());
+            acts.addAll(configs.getActiveConfiguration().getActivatedProfiles());
+            rc.setActivatedProfiles(acts);
         }
         return rc;
     }

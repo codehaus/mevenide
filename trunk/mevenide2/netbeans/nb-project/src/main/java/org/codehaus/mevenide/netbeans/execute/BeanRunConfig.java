@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -38,7 +39,7 @@ public class BeanRunConfig implements RunConfig {
     private boolean showDebug = MavenExecutionSettings.getDefault().isShowDebug();
     private boolean showError = MavenExecutionSettings.getDefault().isShowErrors();
     private Boolean offline;
-    private List activate = new ArrayList();
+    private List<String> activate = new ArrayList<String>();
     private boolean updateSnapshots = false;
     private boolean recursive = true;
     private String taskName;
@@ -123,12 +124,12 @@ public class BeanRunConfig implements RunConfig {
         this.offline = offline;
     }
 
-    public List getActivatedProfiles() {
-        return activate;
+    public List<String> getActivatedProfiles() {
+        return Collections.unmodifiableList(activate);
     }
 
-    public void setActivatedProfiles(List activeteProfiles) {
-        activate = new ArrayList();
+    public void setActivatedProfiles(List<String> activeteProfiles) {
+        activate = new ArrayList<String>();
         activate.addAll(activeteProfiles);
     }
 

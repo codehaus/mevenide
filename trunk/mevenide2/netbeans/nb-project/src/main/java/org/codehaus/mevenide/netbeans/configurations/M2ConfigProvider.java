@@ -37,7 +37,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 /**
- *
+ * WARNING: this class shall in no way use project.getLookup() as it's called
+ * in the critical loop (getOriginalMavenproject
  * @author mkleint
  */
 public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configuration> {
@@ -51,11 +52,12 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private M2Configuration active;
     private String initialActive;
     private AuxiliaryConfiguration aux;
+    private ProjectProfileHandler profileHandler;
     
-    
-    public M2ConfigProvider(NbMavenProject proj, AuxiliaryConfiguration aux) {
+    public M2ConfigProvider(NbMavenProject proj, AuxiliaryConfiguration aux, ProjectProfileHandler prof) {
         project = proj;
         this.aux = aux;
+        profileHandler = prof;
         DEFAULT = M2Configuration.createDefault(project);
         //read the active one..
         Element el = aux.getConfigurationFragment(ConfigurationProviderEnabler.ROOT, ConfigurationProviderEnabler.NAMESPACE, false);
@@ -172,6 +174,7 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
             if (initialActive != null) {
                 //asume it's profile based.
                 active = new M2Configuration(initialActive, project);
+                active.setActivatedProfiles(Collections.singletonList(initialActive));
                 initialActive = null;
             }
         }
@@ -200,7 +203,6 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     }
 
     private List<M2Configuration> createProfilesList() {
-         ProjectProfileHandler profileHandler = project.getLookup().lookup(ProjectProfileHandler.class);
         List<String> profs = profileHandler.getAllProfiles();
         List<M2Configuration> config = new ArrayList<M2Configuration>();
 //        config.add(DEFAULT);

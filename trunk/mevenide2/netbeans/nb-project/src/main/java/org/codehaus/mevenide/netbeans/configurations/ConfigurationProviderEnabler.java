@@ -20,6 +20,7 @@ package org.codehaus.mevenide.netbeans.configurations;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.util.lookup.InstanceContent;
@@ -48,10 +49,10 @@ public class ConfigurationProviderEnabler {
     private M2ConfigProvider provider;
     private M2AuxilaryConfigImpl aux;
 
-    public ConfigurationProviderEnabler(NbMavenProject project, M2AuxilaryConfigImpl auxiliary) {
+    public ConfigurationProviderEnabler(NbMavenProject project, M2AuxilaryConfigImpl auxiliary, ProjectProfileHandler hand) {
         this.project = project;
         aux = auxiliary;
-        provider = new M2ConfigProvider(project, aux);
+        provider = new M2ConfigProvider(project, aux, hand);
     }
     
     public M2ConfigProvider getConfigProvider() {

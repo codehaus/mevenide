@@ -81,6 +81,11 @@ public class ProxyRunConfig implements RunConfig {
     public List getActivatedProfiles() {
         return delegate.getActivatedProfiles();
     }
+    
+    public void setActivatedProfiles(List<String> activeteProfiles) {
+        delegate.setActivatedProfiles(activeteProfiles);
+    }
+    
 
     public boolean isRecursive() {
         return delegate.isRecursive();
