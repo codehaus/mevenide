@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.jar.JarFile;
@@ -14,9 +15,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import org.apache.lucene.index.Term;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.TermQuery;
 import org.codehaus.mevenide.indexer.NexusRepositoryIndexserImpl;
+import org.codehaus.mevenide.indexer.api.NBVersionInfo;
+import org.codehaus.mevenide.indexer.api.QueryField;
+import org.codehaus.mevenide.indexer.api.RepositoryInfo;
+import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.plexus.util.IOUtil;
+import org.sonatype.nexus.index.ArtifactInfo;
 
 /**
  * Extract Plugin information from repository + repository index.
@@ -53,34 +61,39 @@ public class ExtractPluginInfo
             }
             results.mkdirs();
             
-//TODO ned to convert to nexus as well.
-//            HashMap<File, String> release = new HashMap<File, String>();
-//            LuceneQuery q = new LuceneQuery(new TermQuery(new Term(StandardIndexRecordFields.TYPE, "maven-plugin")));
-//            List<StandardArtifactIndexRecord> lst = defaultIndex.search(q);
-//            for (StandardArtifactIndexRecord rec : lst)  {
-//                File path = new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
-//                                              rec.getArtifactId() + "/" +
-//                                              rec.getVersion() + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".jar");
-//                System.out.println("" + path.getAbsolutePath());
-//                if (path.exists()) {
-//                    JarFile jar = new JarFile(path);
-//                    ZipEntry entry = jar.getEntry("META-INF/maven/plugin.xml");
-//                    if (entry != null) {
-//                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
-//                        writePluginXml(jar.getInputStream(entry), newFile);
-//                        if (isRelease(release, rec.getVersion(), new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
-//                                              rec.getArtifactId() + "/maven-metadata.xml"))) {
-//                            newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-RELEASE.xml");
-//                            writePluginXml(jar.getInputStream(entry), newFile);
-//                        }
-//                    } else {
-//                        System.out.println("  entry not found");
-//                    }
-//                } else {
-//                    System.out.println("  not found");
-//                }
-//            }
-//                    
+            HashMap<File, String> release = new HashMap<File, String>();
+            BooleanQuery bq = new BooleanQuery();
+            bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
+            QueryField qf = new QueryField();
+            qf.setField(ArtifactInfo.PACKAGING);
+            qf.setValue("maven-plugin");
+            qf.setOccur(QueryField.OCCUR_MUST);
+            RepositoryInfo info = new RepositoryInfo("central", RepositoryPreferences.TYPE_NEXUS, "central", basedir.getAbsolutePath() + "/.index/central", null, null);
+            
+            List<NBVersionInfo> result = index.find(Collections.singletonList(qf), Collections.singletonList(info));
+            for (NBVersionInfo rec : result)  {
+                File path = new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
+                                              rec.getArtifactId() + "/" +
+                                              rec.getVersion() + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".jar");
+                System.out.println("" + path.getAbsolutePath());
+                if (path.exists()) {
+                    JarFile jar = new JarFile(path);
+                    ZipEntry entry = jar.getEntry("META-INF/maven/plugin.xml");
+                    if (entry != null) {
+                        File newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-" + rec.getVersion() + ".xml");
+                        writePluginXml(jar.getInputStream(entry), newFile);
+                        if (isRelease(release, rec.getVersion(), new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
+                                              rec.getArtifactId() + "/maven-metadata.xml"))) {
+                            newFile = new File(results, rec.getGroupId().replace('.', '/') + "/" + rec.getArtifactId() + "-RELEASE.xml");
+                            writePluginXml(jar.getInputStream(entry), newFile);
+                        }
+                    } else {
+                        System.out.println("  entry not found");
+                    }
+                } else {
+                    System.out.println("  not found");
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }        
