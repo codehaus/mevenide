@@ -29,7 +29,6 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;

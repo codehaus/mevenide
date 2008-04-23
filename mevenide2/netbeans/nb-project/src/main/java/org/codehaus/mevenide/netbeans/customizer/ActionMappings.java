@@ -921,7 +921,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
     }
     
     private void setupConfigurations() {
-        if (handle.isConfigurationsEnabled()) {
+        if (handle != null && handle.isConfigurationsEnabled()) {
             lblConfiguration.setVisible(true);
             comConfiguration.setVisible(true);
             DefaultComboBoxModel comModel = new DefaultComboBoxModel();
