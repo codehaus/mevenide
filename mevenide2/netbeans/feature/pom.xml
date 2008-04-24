@@ -43,6 +43,16 @@
             <artifactId>deployment-bridge</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>nb-repo-browser</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>archetypeng</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

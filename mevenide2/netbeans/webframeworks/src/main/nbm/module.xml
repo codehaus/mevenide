@@ -1,5 +1,5 @@
 <nbm>
-   <moduleType>normal</moduleType>
+   <moduleType>eager</moduleType>
    <codeNameBase>org.codehaus.mevenide.webframeworks/1</codeNameBase>
    <cluster>mevenide</cluster>
    <manifest>src/main/nbm/manifest.mf</manifest>
