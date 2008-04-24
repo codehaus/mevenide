@@ -28,18 +28,38 @@ import org.codehaus.mevenide.netbeans.NbMavenProject;
  */
 public interface RunConfig {
     
+    /**
+     * directory where the maven build execution happens.
+     * @return
+     */
     File getExecutionDirectory();
 
+    /**
+     * project that is being used for execution, can be null.
+     */ 
     NbMavenProject getProject();
-    
+    /**
+     * goals to be executed.
+     */ 
     List<String> getGoals();
 
     String getExecutionName();
     
     String getTaskDisplayName();
     
+    /**
+     * properties to be used in the execution. Do not modify the returned Properties instance.
+     * 
+     * @return
+     */
     Properties getProperties();
-    
+
+    /**
+     * use the properties in the parameter for execution. Will not necessarily use the
+     * parameter instance
+     * 
+     * @param properties property keys+value to be used in execution.
+     */
     void setProperties(Properties properties);
     
     String setProperty(String key, String value);
