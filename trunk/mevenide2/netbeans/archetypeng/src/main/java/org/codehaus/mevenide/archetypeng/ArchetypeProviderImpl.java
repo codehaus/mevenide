@@ -84,11 +84,11 @@ public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
             props.setProperty("archetype.repository", arch.getRepository()); //NOI18N
             props.setProperty("archetypeRepository", arch.getRepository()); //NOI18N
         }
-        config.setProperties(props);
         
         //ExecutionRequest.setInteractive seems to have no influence on archetype plugin.
         config.setInteractive(false);
         props.setProperty("archetype.interactive", "false");
+        config.setProperties(props);
         
         config.setTaskDisplayName(NbBundle.getMessage(ArchetypeProviderImpl.class, "RUN_Maven"));
         // setup executor now..
