@@ -297,9 +297,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                             String absolutePath;
                             if (artifact.getFile() != null) {
                                 absolutePath = artifact.getFile().getAbsolutePath();
-                            } else {
+                            } else if (artifact.getVersion() != null) { //#129025 avoid a NPE down the road
                                 //well sort of hack, assume the default repo layout in the repository..
                                 absolutePath = repo.getRepositoryPath() + File.separator + repository.pathOf(artifact);
+                            } else {
+                                continue;
                             }
                             String extension = artifact.getArtifactHandler().getExtension();
 
