@@ -31,6 +31,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -187,6 +189,7 @@ public final class NbMavenProject implements Project {
                 project = res.getProject();
                 if (res.hasExceptions()) {
                     for (Object e : res.getExceptions()) {
+                        Logger.getLogger(NbMavenProject.class.getName()).log(Level.INFO, "Error on loading project " + projectFile.getAbsolutePath(), (Throwable)e); //NOI18N
                         if (e instanceof ArtifactResolutionException) {
                             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
                                     NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
