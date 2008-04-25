@@ -363,6 +363,10 @@ public final class NbMavenProject implements Project {
             srcs = new ArrayList(srcs);
             srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/aspect")).getAbsolutePath());
         }
+        if (!test && getProjectDirectory().getFileObject("src/main/groovy") != null) {
+            srcs = new ArrayList(srcs);
+            srcs.add(FileUtil.toFile(getProjectDirectory().getFileObject("src/main/groovy")).getAbsolutePath());
+        }
         URI[] uris = new URI[srcs.size()];
         Iterator it = srcs.iterator();
         int count = 0;
