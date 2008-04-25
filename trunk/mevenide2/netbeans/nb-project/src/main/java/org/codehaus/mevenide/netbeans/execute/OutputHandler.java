@@ -184,6 +184,14 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
             }
             return;
         }
+        //TEMPORARY - only relevant when 2.1 gets out
+        if (string.startsWith("The <pluginRepositories/> section of the POM has been deprecated")) { //NOI18N
+            if (isDebugEnabled()) {
+                processMultiLine(string, stdOut, "DEBUG");//NOI18N
+            }
+            return;
+        }
+        
         processMultiLine(string, stdOut, "WARN");//NOI18N
     }
     
