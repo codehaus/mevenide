@@ -48,6 +48,7 @@ import org.apache.maven.model.Resource;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
+import org.apache.maven.reactor.MissingModuleException;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
@@ -208,6 +209,12 @@ public final class NbMavenProject implements Project {
                             problemReporter.addReport(new ProblemReport(ProblemReport.SEVERITY_HIGH,
                                     "Cannot load project properly",
                                     ((Exception) e).getMessage(), null));
+                        } else if (e instanceof MissingModuleException) {
+                            MissingModuleException exc = (MissingModuleException)e;
+                            ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
+                                    NbBundle.getMessage(NbMavenProject.class, "TXT_MissingSubmodule", exc.getModuleName()),
+                                    ((Exception) e).getMessage(), null);
+                            problemReporter.addReport(report);
                         }
                     }
                 }
