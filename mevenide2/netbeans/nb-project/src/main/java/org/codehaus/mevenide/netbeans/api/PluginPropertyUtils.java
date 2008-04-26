@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.api;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.DependencyManagement;
@@ -29,9 +30,13 @@ import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
+import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.mevenide.netbeans.embedder.NBPluginParameterExpressionEvaluator;
 import org.codehaus.mevenide.netbeans.options.MavenVersionSettings;
+import org.codehaus.plexus.component.configurator.expression.ExpressionEvaluationException;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.netbeans.api.project.Project;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -71,7 +76,7 @@ public class PluginPropertyUtils {
                     for (Object obj2 : plug.getExecutions()) {
                         PluginExecution exe = (PluginExecution)obj2;
                         if (exe.getGoals().contains(goal)) {
-                            toRet = checkConfiguration(exe.getConfiguration(), property);
+                            toRet = checkConfiguration(prj, exe.getConfiguration(), property);
                             if (toRet != null) {
                                 break;
                             }
@@ -79,7 +84,7 @@ public class PluginPropertyUtils {
                     }
                 }
                 if (toRet == null) {
-                    toRet = checkConfiguration(plug.getConfiguration(), property);
+                    toRet = checkConfiguration(prj, plug.getConfiguration(), property);
                 }
             }
         }
@@ -94,7 +99,7 @@ public class PluginPropertyUtils {
                     Plugin plug = (Plugin)obj;
                     if (artifactId.equals(plug.getArtifactId()) &&
                         groupId.equals(plug.getGroupId())) {
-                        toRet = checkConfiguration(plug.getConfiguration(), property);
+                        toRet = checkConfiguration(prj, plug.getConfiguration(), property);
                         break;
                     }
                 }
@@ -103,11 +108,18 @@ public class PluginPropertyUtils {
         return toRet;
     }
     
-    private static String checkConfiguration(Object conf, String property) {
+    private static String checkConfiguration(MavenProject prj, Object conf, String property) {
         if (conf != null && conf instanceof Xpp3Dom) {
             Xpp3Dom dom = (Xpp3Dom)conf;
             Xpp3Dom source = dom.getChild(property);
             if (source != null) {
+                NBPluginParameterExpressionEvaluator eval = new NBPluginParameterExpressionEvaluator(prj, EmbedderFactory.getProjectEmbedder().getSettings(), new Properties());
+                try {
+                    Object evaluated = eval.evaluate(source.getValue().trim());
+                    return evaluated != null ? ("" + evaluated) : source.getValue().trim();
+                } catch (ExpressionEvaluationException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
                 return source.getValue().trim();
             }
         }
