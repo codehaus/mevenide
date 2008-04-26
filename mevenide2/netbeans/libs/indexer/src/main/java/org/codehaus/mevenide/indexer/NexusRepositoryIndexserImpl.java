@@ -781,7 +781,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         } else if (QueryField.FIELD_DESCRIPTION.equals(field)) {
             return ArtifactInfo.DESCRIPTION;
         }
-        return null;
+        return field;
     }
 
     public void addIndexChangeListener(ChangeListener cl) {
@@ -795,7 +795,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
             changeListeners.remove(cl);
         }
     }
-    private List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
+    private final List<ChangeListener> changeListeners = new ArrayList<ChangeListener>();
 
     private void fireChangeIndex() {
         synchronized (changeListeners) {
