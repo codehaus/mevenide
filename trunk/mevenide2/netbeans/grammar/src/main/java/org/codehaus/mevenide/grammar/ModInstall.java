@@ -34,6 +34,7 @@ import org.openide.util.Exceptions;
  */
 public class ModInstall extends ModuleInstall {
     
+    private static final String UPGRADE_PATH = "org" + File.separator + "codehaus" + File.separator + "mojo" + File.separator + "nbm-maven-plugin-2.6.2.xml"; //NOI18N
     /** Creates a new instance of ModInstall */
     public ModInstall() {
     }
@@ -42,7 +43,8 @@ public class ModInstall extends ModuleInstall {
     public void restored() {
         super.restored();
         File expandedPath = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml", null, false); //NOI18N
-        if (expandedPath == null || !expandedPath.exists()) {
+        File upgrade = expandedPath == null ? null : new File(expandedPath, UPGRADE_PATH);
+        if (expandedPath == null || !expandedPath.exists() || (expandedPath != null && expandedPath.exists() && !upgrade.exists())) {
             File zipFile = InstalledFileLocator.getDefault().locate("maven2/maven-plugins-xml.zip", null, false); //NOI18N
             assert zipFile != null : "Wrong installation, maven2/maven-plugins-xml.zip missing"; //NOI18N
             //TODO place somewhere else to make sure it's writable by user?
