@@ -274,17 +274,23 @@ private void btnBrowseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
 private void jraLocalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jraLocalActionPerformed
     txtRepoUrl.setEditable(false);
     txtIndexUrl.setEditable(false);
-    txtRepoPath.setEditable(true);//GEN-LAST:event_jraLocalActionPerformed
+    txtRepoPath.setEditable(true);
     btnBrowse.setEnabled(true);
     validateInfo();
-}
+}//GEN-LAST:event_jraLocalActionPerformed
 
 private void jraRemoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jraRemoteActionPerformed
+    selectRemoteRepo(true);
+}//GEN-LAST:event_jraRemoteActionPerformed
+
+private void selectRemoteRepo(boolean checkValidity) {
     txtRepoPath.setEditable(false);
     btnBrowse.setEnabled(false);
     txtRepoUrl.setEditable(true);
-    txtIndexUrl.setEditable(true);//GEN-LAST:event_jraRemoteActionPerformed
-    validateInfo();
+    txtIndexUrl.setEditable(true);                                         
+    if (checkValidity) {
+        validateInfo();
+    }
 }
 
 private void txtRepoIdKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtRepoIdKeyReleased
@@ -306,6 +312,7 @@ private void txtRepoUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:eve
 private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtIndexUrlKeyReleased
     validateInfo();
 }//GEN-LAST:event_txtIndexUrlKeyReleased
+
     public void modify(RepositoryInfo info) {
         modify = true;
         txtRepoId.setEditable(false);
@@ -335,17 +342,25 @@ private void txtIndexUrlKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:ev
      return info;
     }
 
-    private void validateInfo(){
+    private void validateInfo() {
         //check repo id
         if (txtRepoId.getText().trim().length() == 0) {
             btnOK.setEnabled(false);
             lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error1"));
             return;
         }
-        if (!modify && RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim()) != null) {
-            btnOK.setEnabled(false);
-            lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error2"));
-            return;
+        if (!modify) {
+            RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(txtRepoId.getText().trim());
+            if (info != null && (info.isLocal() || info.isRemoteDownloadable())) {
+                btnOK.setEnabled(false);
+                lblValidate.setText(NbBundle.getMessage(RepositoryRegisterUI.class, "LBL_Repo_id_Error2"));
+                return;
+            } else if (info != null) {
+                txtRepoUrl.setText(info.getRepositoryUrl());
+                txtRepoName.setText(info.getName());
+                jraRemote.setSelected(true);
+                selectRemoteRepo(false);
+            }
         }
 
         //check repo name
