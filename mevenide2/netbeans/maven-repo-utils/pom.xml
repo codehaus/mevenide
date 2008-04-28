@@ -70,7 +70,6 @@
                                 <classpath></classpath>
                                 <argument>org.codehaus.mevenide.repoutils.ExtractPluginInfo</argument>
                                 <argument>${repoindex}</argument>
-                                <argument>${repodir}</argument>
                                 <argument>${resultdir}</argument>
                             </arguments>
                         </configuration>
