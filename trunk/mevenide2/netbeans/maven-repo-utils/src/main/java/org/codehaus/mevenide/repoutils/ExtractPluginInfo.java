@@ -42,35 +42,30 @@ public class ExtractPluginInfo
     {
         try {
             if (args.length < 2) {
-                throw new IllegalArgumentException("Must have 2 parameters [repo index directory] [repo root directory] [repo id]");
+                throw new IllegalArgumentException("Must have 2 parameters [repo index directory] [reSULT DIR]");
             }
-            File basedir = new File(args[0]);
-            if (basedir.exists()) {
-                throw new IllegalArgumentException(args[0] + " folder already exist");
-            }
-            basedir.mkdirs();
-            File repodir = new File(args[1]);
+            File repodir = new File(args[0]);
             if (!repodir.exists()) {
-                throw new IllegalArgumentException(args[1] + " folder doesn't exist");
+                throw new IllegalArgumentException(args[0] + " folder doesn't exist");
             }
             NexusRepositoryIndexserImpl index = new NexusRepositoryIndexserImpl();
         
-            File results = new File(args[2]);
+            File results = new File(args[1]);
             if (results.exists()) {
                 org.codehaus.plexus.util.FileUtils.deleteDirectory(results);
             }
             results.mkdirs();
-            
+            System.out.println("result dir = " + results);
+            System.out.println("repo dir=" + repodir);
             HashMap<File, String> release = new HashMap<File, String>();
-            BooleanQuery bq = new BooleanQuery();
-            bq.add(new BooleanClause(new TermQuery(new Term(ArtifactInfo.PACKAGING, "maven-plugin")), BooleanClause.Occur.MUST));
             QueryField qf = new QueryField();
             qf.setField(ArtifactInfo.PACKAGING);
             qf.setValue("maven-plugin");
             qf.setOccur(QueryField.OCCUR_MUST);
-            RepositoryInfo info = new RepositoryInfo("central", RepositoryPreferences.TYPE_NEXUS, "central", basedir.getAbsolutePath() + "/.index/central", null, null);
+            RepositoryInfo info = new RepositoryInfo("central", RepositoryPreferences.TYPE_NEXUS, "central", repodir.getAbsolutePath(), null, null);
             
             List<NBVersionInfo> result = index.find(Collections.singletonList(qf), Collections.singletonList(info));
+            System.out.println("results=" + result.size());
             for (NBVersionInfo rec : result)  {
                 File path = new File(repodir, rec.getGroupId().replace('.', '/') + "/" + 
                                               rec.getArtifactId() + "/" +
