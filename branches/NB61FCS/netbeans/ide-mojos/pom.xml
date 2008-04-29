@@ -161,7 +161,7 @@
     <properties>
         <!--a fallback to make it work everywhere -->
         <java142.home>${java.home}/..</java142.home>
-        <mevenide.nb.release>3.1-SNAPSHOT</mevenide.nb.release>
+        <mevenide.nb.release>3.1.1</mevenide.nb.release>
         
     </properties>
   
