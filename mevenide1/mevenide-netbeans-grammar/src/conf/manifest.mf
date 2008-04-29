@@ -1,6 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module: org.mevenide.netbeans.grammar/1
-OpenIDE-Module-Localizing-Bundle: org/mevenide/netbeans/grammar/Bundle.properties
-OpenIDE-Module-Layer: org/mevenide/netbeans/grammar/resources/MavenLayer.xml
-OpenIDE-Module-Install: org/mevenide/netbeans/grammar/MavenGrammarModule.class
-OpenIDE-Module-Public-Packages: org.mevenide.**

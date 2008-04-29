@@ -1,5 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/mevenide/netbeans/devel/Bundle.properties
-OpenIDE-Module-Layer: org/mevenide/netbeans/devel/MavenLayer.xml
-OpenIDE-Module-Public-Packages: org.mevenide.netbeans.devel.**
-
