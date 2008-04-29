@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.3" maxVersion="1.3" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="2"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xmlRpcUrlLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="webUrlLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="userLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="passwordLabel" alignment="0" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="37" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="userTextField" alignment="0" pref="275" max="32767" attributes="0"/>
+                  <Component id="webUrlTextField" alignment="0" pref="275" max="32767" attributes="0"/>
+                  <Component id="xmlRpcUrlTextField" alignment="0" pref="275" max="32767" attributes="0"/>
+                  <Component id="passwordField" alignment="0" pref="275" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" attributes="0">
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="xmlRpcUrlLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="xmlRpcUrlTextField" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="webUrlLabel" min="-2" max="-2" attributes="0"/>
+                  <Component id="webUrlTextField" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="userLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="userTextField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="passwordLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="passwordField" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JLabel" name="xmlRpcUrlLabel">
+      <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="xmlRpcUrlTextField"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="XmlRpc-Url :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="xmlRpcUrlTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="http://localhost:9090/xmlrpc"/>
+        <Property name="toolTipText" type="java.lang.String" value="The continuum xml rpc URL. Usually http://localhost:8080/continuum/xmlrpc"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="userLabel">
+      <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="userTextField"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="User :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="userTextField">
+      <Properties>
+        <Property name="toolTipText" type="java.lang.String" value="Leave empty for guest access"/>
+        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[30, 19]"/>
+        </Property>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[40, 19]"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="passwordLabel">
+      <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="passwordField"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Password :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JTextField" name="webUrlTextField">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="http://localhost:9090"/>
+        <Property name="toolTipText" type="java.lang.String" value="The continuum admin URL. Usually http://localhost:8080/continuum "/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JLabel" name="webUrlLabel">
+      <Properties>
+        <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="webUrlTextField"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Web-Url :"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JPasswordField" name="passwordField">
+    </Component>
+  </SubComponents>
+</Form>

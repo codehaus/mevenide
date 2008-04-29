@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MIME-resolver PUBLIC "-//NetBeans//DTD MIME Resolver 1.0//EN" "http://www.netbeans.org/dtds/mime-resolver-1_0.dtd">
+<MIME-resolver>
+    <file>
+        <ext name="pom"/>
+        <resolver mime="text/x-maven-pom+xml"/>
+    </file>
+    <file>
+        <ext name="xml"/>
+        <resolver mime="text/x-maven-pom+xml">
+            <xml-rule>
+            	<element name="project" ns="http://maven.apache.org/POM/4.0.0">
+                </element>
+            </xml-rule>
+        </resolver>
+    </file>
+    <file>
+        <ext name="xml"/>
+    <resolver mime="text/x-maven-profile+xml">
+            <xml-rule>
+            	<element name="profilesXml" ns="http://maven.apache.org/POM/4.0.0">
+                </element>
+            </xml-rule>
+        </resolver>
+    </file>
+    <!--file>
+        <ext name="xml"/>
+        <resolver mime="text/x-maven-settings+xml">
+            <xml-rule>
+            	<element name="settings" ns="http://maven.apache.org/POM/4.0.0">
+                </element>
+            </xml-rule>
+        </resolver>
+    </file-->
+    
+</MIME-resolver>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+    <folder name="Projects">
+        <folder name="org-codehaus-mevenide-netbeans">
+            <folder name="Lookup">
+                <file name="org-codehaus-mevenide-netbeans-j2ee-J2eeLookupProvider.instance"/>
+            </folder>  
+            <folder name="Customizer">
+                <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance">
+                    <attr name="position" intvalue="301"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-j2ee-ejb-EjbRunPanelProvider.instance">
+                    <attr name="position" intvalue="302"/>
+                </file>
+                <file name="org-codehaus-mevenide-netbeans-j2ee-ear-EarRunPanelProvider.instance">
+                    <attr name="position" intvalue="303"/>
+                </file>
+            </folder>
+            <folder name="Nodes">
+                <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebAppNodeFactory.instance">
+                    <attr name="position" intvalue="50"/>
+                </file>
+            </folder>    
+            
+        </folder>
+    </folder>
+</filesystem>

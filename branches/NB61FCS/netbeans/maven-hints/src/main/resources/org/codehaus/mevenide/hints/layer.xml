@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="org-netbeans-modules-java-hints">
+        <folder name="rules">
+            <folder name="errors">
+                <file name="org-codehaus-mevenide-hints-errors-SearchClassDependencyInRepo.instance"/>
+            </folder>
+            <folder name="hints">
+                <folder name="general">
+                    <!--file name="org-codehaus-mevenide-hints-TestMavenHint.instance"/-->
+                </folder>
+                <folder name="maven">
+                    <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.hints.Bundle"/>
+                    
+                    <file name="org-codehaus-mevenide-hints-errors-SearchClassDependencyHint.instance"/>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>

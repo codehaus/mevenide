@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Document   : nbactions.xml
+    Created on : April 10, 2006, 6:08 PM
+    Author     : mkleint
+    Description:
+        Purpose of the document follows.
+--><actions>
+    <action>
+        <actionName>build</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>install</goal>
+            
+        </goals>
+        <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>rebuild</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>clean</goal>
+            <goal>install</goal>
+            
+        </goals>
+        <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
+    </action>
+    <action>
+        <actionName>run</actionName>
+        <packagings>
+            <packaging>*</packaging>
+        </packagings>
+        <goals>
+            <goal>nbm:directory</goal>
+            <goal>nbm:cluster</goal>
+            <goal>nbm:run-ide</goal>
+        </goals>
+        <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
+        <properties>
+            <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
+        </properties>
+    </action>
+    <action>
+        <actionName>debug</actionName>
+        <packagings>
+            <packaging>pom</packaging>
+            <packaging>nbm</packaging>
+        </packagings>
+        <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+        </activatedProfiles>
+        <goals>
+            <goal>nbm:directory</goal>
+            <goal>nbm:cluster</goal>
+            <goal>nbm:run-ide</goal>
+        </goals>
+        <properties>
+            <jpda.listen>true</jpda.listen>
+            <netbeans.run.params>-J-Xdebug -J-Xnoagent -J-Xrunjdwp:transport=dt_socket,suspend=n,server=n,address=${jpda.address}</netbeans.run.params>
+            <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
+        </properties>
+    </action>
+    <action>
+            <actionName>CUSTOM-Create Cluster</actionName>
+            <displayName>Create Cluster</displayName>
+            <goals>
+                <goal>install</goal>
+                <goal>nbm:directory</goal>
+                <goal>nbm:cluster</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+            </activatedProfiles>
+        </action>
+    <action>
+            <actionName>CUSTOM-Update site</actionName>
+            <displayName>Create Update site</displayName>
+            <goals>
+                <goal>install</goal>
+                <goal>nbm:nbm</goal>
+                <goal>nbm:autoupdate</goal>
+            </goals>
+            <activatedProfiles>
+                <activatedProfile>experimental</activatedProfile>
+            </activatedProfiles>
+        </action>
+</actions>

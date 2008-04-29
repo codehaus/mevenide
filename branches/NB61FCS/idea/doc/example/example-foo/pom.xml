@@ -1,0 +1,70 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>intellij.plugin</groupId>
+        <artifactId>example</artifactId>
+        <version>0.0.3-SNAPSHOT</version>
+    </parent>
+    <groupId>intellij.plugin.example</groupId>
+    <artifactId>example-foo</artifactId>
+    <name>example-foo</name>
+    <packaging>jar</packaging>
+
+    <dependencies>
+
+        <!-- dependency on another project that could be in our IDEA workspace -->
+        <dependency>
+            <groupId>example</groupId>
+            <artifactId>other-example</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>castor</groupId>
+            <artifactId>castor</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <!-- will show up as a duplicate in the classpath because parent version is different. -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+
+
+        <!-- handle system dependency -->
+        <dependency>
+            <groupId>sun.jdk</groupId>
+            <artifactId>tools</artifactId>
+            <version>1.5.0</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>castor-maven-plugin</artifactId>
+                <version>1.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <schema>${basedir}/src/main/resources/intellij/example/foo/School.xsd</schema>
+                            <packaging>intellij.plugin.example.foo</packaging>
+                            <properties>${basedir}/src/main/resources/intellij/example/foo/castorbuilder.properties</properties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

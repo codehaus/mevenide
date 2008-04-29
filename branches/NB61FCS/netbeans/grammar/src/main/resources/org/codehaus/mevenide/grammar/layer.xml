@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.0//EN" "http://www.netbeans.org/dtds/filesystem-1_0.dtd">
+<filesystem>
+    
+    <folder name="Navigator">
+        <folder name="Panels">
+            <folder name="text">
+                <folder name="x-maven-pom+xml">
+                    <file name="org-netbeans-modules-xml-text-navigator-XMLNavigatorPanel.instance"/>
+                </folder>
+                <folder name="x-maven-profile+xml">
+                    <file name="org-netbeans-modules-xml-text-navigator-XMLNavigatorPanel.instance"/>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Plugins">
+        <folder name="XML">
+            <folder name="GrammarQueryManagers">
+                <!-- register Maven project grammar -->
+                <file name="org-codehaus-mevenide-grammar-MavenQueryProvider.instance">
+                    <attr name="position" intvalue="729"/>
+                </file>
+            </folder>
+            <folder name="UserCatalogs">
+                <file name="org-codehaus-mevenide-grammar-catalog-MavenCatalog.instance">
+                    <attr name="instanceOf" stringvalue="org.netbeans.modules.xml.catalog.spi.CatalogReader"/>
+                </file>
+            </folder>
+        </folder>
+    </folder>
+    
+    
+    <folder name="Editors">
+        <folder name="text">
+            <folder name="xml">
+                <folder name="HyperlinkProviders">
+                    <file name="MavenHyperlinkProvider.instance">
+                        <attr name="instanceClass" stringvalue="org.codehaus.mevenide.hyperlinks.HyperlinkProviderImpl"/>
+                        <attr name="instanceOf" stringvalue="org.netbeans.lib.editor.hyperlink.spi.HyperlinkProvider"/>
+                    </file>
+                </folder>
+            </folder>
+            <folder name="x-maven-pom+xml">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+                <folder name="CodeTemplates">
+                    <folder name="Defaults">
+                        <file name="org-codehaus-mevenide-grammar-CodeTemplates.xml" url="POM-abbreviations.xml"/>
+                    </folder>
+                </folder>
+            </folder>
+            <folder name="x-maven-profile+xml">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+                <folder name="CodeTemplates">
+                    <folder name="Defaults">
+                        <file name="org-codehaus-mevenide-grammar-CodeTemplates.xml" url="profile-abbreviations.xml"/>
+                    </folder>
+                </folder>
+            </folder>
+        </folder>
+    </folder>
+    <folder name="Services">
+        <folder name="MIMEResolver">
+            <file name="POMResolver.xml" url="POMResolver.xml">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.codehaus.mevenide.grammar.Bundle"/>
+                <attr name="position" intvalue="309"/>
+            </file>
+        </folder>
+    </folder>
+</filesystem>

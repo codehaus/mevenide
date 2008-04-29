@@ -1,0 +1,64 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>intellij.plugin</groupId>
+    <artifactId>example</artifactId>
+    <name>example</name>
+    <version>0.0.3-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>An example Maven 2 project with multiple modules.</description>
+    <inceptionYear>2006</inceptionYear>
+
+    <organization>
+        <name>JetBrains</name>
+        <url>http://www.jetbrains.com/idea/</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <id>jschmoe</id>
+            <name>Joe Schmoe</name>
+            <email>jschmoe@gmail.com</email>
+            <organization>JetBrains</organization>
+            <timezone>EST</timezone>
+        </developer>
+    </developers>
+
+    <modules>
+        <module>example-foo</module>
+        <module>example-bar</module>
+    </modules>
+
+    <dependencies>
+
+        <!-- should be able to get log4j dependency from central - and sources if wanted -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>[1.2.9,1.2.13]</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- test scoped dependency -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="Mevenide2">
+    <bannerLeft>
+        <name>Codehaus</name>
+        <src>http://mevenide.codehaus.org/images/codehaus_209x40.gif</src>
+        <href>http://www.codehaus.org/</href>
+    </bannerLeft>
+    <bannerRight>
+        <name>Mevenide</name>
+        <src>http://mevenide.codehaus.org/images/mevenide-simple-125x37.png</src>
+        <href>http://mevenide.codehaus.org/</href>
+    </bannerRight>
+    
+    <body>
+        <links>
+            <item name="Codehaus" href="http://www.codehaus.org/" />
+            <item name="Maven 2.x" href="http://maven.apache.org/" />
+            <item name="Netbeans" href="http://www.netbeans.org" />
+            <item name="Maven1 support" href="http://mevenide.codehaus.org"/>
+        </links>
+        <menu name="Mevenide2-Netbeans">  
+            <item name="Introduction" href="index.html"/>
+            <item name="Features" href="mevenide2-netbeans/features.html"/>
+            <item name="Testimonials" href="mevenide2-netbeans/testimonials.html"/>
+        </menu>
+        <menu name="Users">
+            <item name="Installation" href="mevenide2-netbeans/installation.html"/>
+            <item name="Tutorials" href="mevenide2-netbeans/tutorials/index.html"/>
+            <item name="Customizations" href="mevenide2-netbeans/customizations.html"/>
+            <item name="IDE Maven Plugins" href="mevenide2-netbeans/ide-plugins.html"/>  
+            <item name="FAQ" href="faq.html"/>
+        </menu>
+            
+        <menu name="Developers">
+            <item name="Netbeans building" href="mevenide2-netbeans/building.html"/>
+        </menu>
+        
+        <!--menu name="Mevenide2Eclipse">  
+        </menu-->
+        <!--menu name="Mevenide2IntelliJ">  
+        </menu-->
+        ${reports}
+        
+        <menu name="OHLOH"/>
+
+    </body>
+</project>

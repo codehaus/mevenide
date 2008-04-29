@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/bridges/runjar/Bundle.properties
+OpenIDE-Module-Public-Packages: org.codehaus.mevenide.bridges.runjar.*
+AutoUpdate-Show-In-Client: false
+

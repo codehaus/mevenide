@@ -1,0 +1,90 @@
+<!DOCTYPE idea-plugin PUBLIC "Plugin/DTD" "http://plugins.intellij.net/plugin.dtd">
+<idea-plugin url="http://mevenide.codehaus.org/mevenide-idea/">
+    <name>Mevenide2 IDEA Build Plugin</name>
+    <description>This plugin allows running and building Maven2 projects out of IDEA</description>
+    <version>${plugin.version}</version>
+    <vendor url="http://mevenide.codehaus.org/">Mevenide Team</vendor>
+    <change-notes>
+        <![CDATA[
+]]>
+    </change-notes>
+    <idea-version since-build="5700"/>
+    <project-components>
+        <component>
+            <!-- Component's implementation class -->
+            <implementation-class>org.codehaus.mevenide.idea.component.MavenBuildProjectComponent</implementation-class>
+            <option name="workspace" value="true"/>
+        </component>
+    </project-components>
+    <depends>Mevenide2 IDEA Core Plugin</depends>
+    <actions>
+        <group id="org.codehaus.mevenide.idea.action.OutputToolbar" description="Output toolbar">
+            <action id="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                    class="org.codehaus.mevenide.idea.action.RerunMavenAction"
+                    text="Reruns Maven"
+                    description="Reruns the previous Maven build"
+                    icon="/actions/refreshUsages.png"/>
+            <action id="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                    class="org.codehaus.mevenide.idea.action.PauseOutputAction"
+                    text="Pause Output"
+                    description="Pauses the output in the build output window"
+                    icon="/actions/pause.png"/>
+            <action id="org.codehaus.mevenide.idea.action.StopProcessAction"
+                    class="org.codehaus.mevenide.idea.action.StopProcessAction"
+                    text="Stop Maven Process"
+                    description="Stops the currently running Maven Process"
+                    icon="/actions/suspend.png"/>
+            <action id="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                    class="org.codehaus.mevenide.idea.action.CloseOutputPanelAction"
+                    text="Close Output Panel"
+                    description="Closes the output panel"
+                    icon="/actions/cancel.png"/>
+        </group>
+        <group id="org.codehaus.mevenide.idea.action.PomTreeToolbar" description="Pom Tree toolbar">
+            <action id="org.codehaus.mevenide.idea.action.GroupByModulesAction"
+                    class="org.codehaus.mevenide.idea.action.GroupByModulesAction" text="Group by modules"
+                    description="Group by modules"
+                    icon="/nodes/ModuleClosed.png"/>
+            <action id="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction"
+                    class="org.codehaus.mevenide.idea.action.GroupByDirectoriesAction" text="Group by directories"
+                    description="Group by directories"
+                    icon="/nodes/folder.png"/>
+            <action id="org.codehaus.mevenide.idea.action.FilterPhasesAction"
+                    class="org.codehaus.mevenide.idea.action.FilterPhasesAction" text="Filter standard goals"
+                    description="Filter standard goals"
+                    icon="/images/filter.png"/>
+            <separator/>
+            <action id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"
+                    class="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction" text="Run selected goals"
+                    description="Run selected goals"
+                    icon="/actions/execute.png"/>
+            <action id="org.codehaus.mevenide.idea.action.AttachPluginAction"
+                    class="org.codehaus.mevenide.idea.action.AttachPluginAction" text="Attach plugin"
+                    description="Attach plugin"
+                    icon="/images/list-add.png"/>
+            <action id="org.codehaus.mevenide.idea.action.DetachPluginAction"
+                    class="org.codehaus.mevenide.idea.action.DetachPluginAction" text="Detach plugin"
+                    description="Detach plugin"
+                    icon="/images/list-remove.png"/>
+            <separator/>
+            <action id="org.codehaus.mevenide.idea.action.ShowSettingsAction"
+                    class="org.codehaus.mevenide.idea.action.ShowSettingsAction" text="Edit Mevenide settings"
+                    description="Edit Mevenide settings"
+                    icon="/general/applicationSettings.png"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.PomMenu" popup="true">
+            <reference id="EditSource"/>
+            <reference id="org.codehaus.mevenide.idea.action.AttachPluginAction"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.GoalMenu" popup="true">
+            <reference id="org.codehaus.mevenide.idea.action.RunSelectedGoalsAction"/>
+        </group>
+
+        <group id="org.codehaus.mevenide.idea.action.PluginMenu" popup="true">
+            <reference id="org.codehaus.mevenide.idea.action.DetachPluginAction"/>
+        </group>
+
+    </actions>
+</idea-plugin>
