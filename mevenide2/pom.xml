@@ -231,6 +231,15 @@
                     <version>2.0.2</version>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>2.3</version>
+                    <configuration>
+                        <targetJdk>1.5</targetJdk>
+                        <verbose>true</verbose>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.codehaus.modello</groupId>
                     <artifactId>modello-maven-plugin</artifactId>
                     <version>1.0-alpha-17</version>
