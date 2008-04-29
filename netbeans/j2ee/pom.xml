@@ -3,12 +3,12 @@
   <parent>
     <groupId>org.codehaus.mevenide</groupId>
     <artifactId>netbeans</artifactId>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
     <artifactId>j2ee</artifactId>
     <packaging>nbm</packaging>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.1.1</version>
     <name>NetBeans Maven2 J2EE support</name>
     <description>Implementation of J2EE related APIs for the Maven2 project type.</description>
 
