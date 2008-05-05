@@ -3,12 +3,12 @@
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>maven-hints</artifactId>
     <packaging>nbm</packaging>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
     <name>Netbeans Maven Hints</name>
     <description>Providing Hints set for common mistakes and best practices</description>
     <dependencies>
