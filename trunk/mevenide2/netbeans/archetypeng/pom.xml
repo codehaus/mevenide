@@ -3,12 +3,12 @@
     <parent>
         <groupId>org.codehaus.mevenide</groupId>
         <artifactId>netbeans</artifactId>
-        <version>3.1-SNAPSHOT</version>
+        <version>3.2-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>archetypeng</artifactId>
     <packaging>nbm</packaging>
-    <version>3.1-SNAPSHOT</version>
+    <version>3.2-SNAPSHOT</version>
     <name>NetBeans Maven2 Archetype 2.x</name>
     <description>Custom project creation processor that delegates to the new Archetype Maven plugin 2.x.
                  The plugin is able to process both old and new archetypes.</description>
