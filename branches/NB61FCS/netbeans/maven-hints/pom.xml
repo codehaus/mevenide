@@ -71,7 +71,7 @@
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-spi-editor-hints</artifactId>
-            <version>RELEASE61-BETA</version>
+            <version>RELEASE61</version>
         </dependency>
         <dependency>
             <groupId>org.netbeans.api</groupId>
