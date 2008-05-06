@@ -53,6 +53,11 @@
             <artifactId>archetypeng</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>lifecycle-build-plan</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
