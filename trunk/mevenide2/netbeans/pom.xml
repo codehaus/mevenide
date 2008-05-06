@@ -119,7 +119,7 @@
      <module>junit</module>
      <module>nb-repo-browser</module>
      <module>archetypeng</module>
-     <module>webframeworks</module>
+     <!--module>webframeworks</module-->
      <!--module>graph</module-->
       <module>lifecycle-build-plan</module>
       <module>maven-hints</module>
