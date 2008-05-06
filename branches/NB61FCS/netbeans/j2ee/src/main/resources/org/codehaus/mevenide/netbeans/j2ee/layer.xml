@@ -8,6 +8,9 @@
                 <file name="org-codehaus-mevenide-netbeans-j2ee-J2eeLookupProvider.instance"/>
             </folder>  
             <folder name="Customizer">
+                <file name="org-codehaus-mevenide-webframeworks-WebFrameworksPanelProvider.instance">
+                    <attr name="position" intvalue="257"/>
+                </file>
                 <file name="org-codehaus-mevenide-netbeans-j2ee-web-WebRunPanelProvider.instance">
                     <attr name="position" intvalue="301"/>
                 </file>
