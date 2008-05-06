@@ -63,6 +63,15 @@
             <artifactId>nb-mvn-embedder</artifactId>
             <version>${mevenide.nb.release}</version>
         </dependency>
+
+        <!-- temporary-->
+        <dependency>
+            <groupId>org.codehaus.mevenide</groupId>
+            <artifactId>feature</artifactId>
+            <version>${mevenide.nb.release}</version>
+        </dependency>
+
+        
         <dependency>
             <groupId>org.netbeans.modules</groupId>
             <artifactId>org-netbeans-modules-java-hints</artifactId>
