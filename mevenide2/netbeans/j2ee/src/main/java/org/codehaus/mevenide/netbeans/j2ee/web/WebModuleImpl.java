@@ -25,13 +25,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.j2ee.dd.api.web.DDProvider;
 import org.netbeans.modules.j2ee.dd.api.web.WebApp;
@@ -57,7 +58,7 @@ import org.openide.util.Exceptions;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImplementation {
-    private NbMavenProject project;
+    private Project project;
     private WebModuleProviderImpl provider;
     private MetadataModel<WebAppMetadata> webAppMetadataModel;
     private MetadataModel<WebAppMetadata> webAppAnnMetadataModel;
@@ -65,9 +66,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     private String url = ""; //NOI18N
 
     private boolean inplace = false;
+    private ProjectURLWatcher mavenproject;
     
-    public WebModuleImpl(NbMavenProject proj, WebModuleProviderImpl prov) {
+    public WebModuleImpl(Project proj, WebModuleProviderImpl prov) {
         project = proj;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
         provider = prov;
     }
     
@@ -88,7 +91,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     
     public String getJ2eePlatformVersion() {
         //try to apply the hint if it exists.
-        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        String version = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
         if (version != null) {
             return version;
         }
@@ -130,7 +133,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         if (webxmlDefined != null) {
             //TODO custom location.. relative or absolute? what the *&#! is the default resolved to?
         }
-        URI dir = project.getWebAppDirectory();
+        URI dir = mavenproject.getWebAppDirectory();
         File fil = new File(new File(dir), path);
         fil = FileUtil.normalizeFile(fil);
         return fil;
@@ -156,7 +159,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
                 // TODO #95280: inform the user that the context root cannot be retrieved
             }        
         }
-        String toRet =  "/" + project.getOriginalMavenProject().getBuild().getFinalName(); //NOI18N
+        String toRet =  "/" + mavenproject.getMavenProject().getBuild().getFinalName(); //NOI18N
 //        System.out.println("get context path=" + toRet);
         return toRet;
     }
@@ -205,7 +208,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     
     public FileObject getArchive() throws IOException {
         //TODO get the correct values for the plugin properties..
-        MavenProject proj = project.getOriginalMavenProject();
+        MavenProject proj = mavenproject.getMavenProject();
         //MEVENIDE-591 - find the lcoation according to plugin config
         String loc = proj.getBuild().getDirectory();
         String finalName = PluginPropertyUtils.getPluginProperty(project,
@@ -239,7 +242,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         if (inplace) {
             fo = getDocumentBase();
         } else {
-            MavenProject proj = project.getOriginalMavenProject();
+            MavenProject proj = mavenproject.getMavenProject();
             String loc = PluginPropertyUtils.getPluginProperty(project,
                 Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_WAR, //NOI18N
                 "webappDirectory", "war"); //NOI18N        
@@ -347,7 +350,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup"); //NOI18N
+        File toRet = new File(FileUtil.toFile(project.getProjectDirectory()), "src" + File.separator + "main" + File.separator + "setup"); //NOI18N
         return toRet;
     }
 
@@ -407,7 +410,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         if (webAppMetadataModel == null) {
             FileObject ddFO = getDeploymentDescriptor();
             File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
-            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            ProjectSourcesClassPathProvider cpProvider = project.getLookup().lookup(ProjectSourcesClassPathProvider.class);
             MetadataUnit metadataUnit = MetadataUnit.create(
                 cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
                 cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),
@@ -430,7 +433,7 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
         if (webAppAnnMetadataModel == null) {
             FileObject ddFO = getDeploymentDescriptor();
             File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
-            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            ProjectSourcesClassPathProvider cpProvider = project.getLookup().lookup(ProjectSourcesClassPathProvider.class);
             
             MetadataUnit metadataUnit = MetadataUnit.create(
                 cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),

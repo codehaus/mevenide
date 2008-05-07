@@ -16,7 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.persistence;
 
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModel;
 import org.netbeans.modules.j2ee.persistence.api.metadata.orm.EntityMappingsMetadata;
@@ -35,7 +35,7 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
 {
     private PersistenceLocationProvider  locationProvider  = null;
     private final EntityMappingsMetadataModelHelper modelHelper;
-    private ClassPathProviderImpl cpProvider;
+    private ProjectSourcesClassPathProvider cpProvider;
     private ClassPath projectSourcesClassPath;
     
     
@@ -45,7 +45,7 @@ public class PersistenceScopeImpl implements PersistenceScopeImplementation
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeImpl(PersistenceLocationProvider locProvider,
-            ClassPathProviderImpl imp)
+            ProjectSourcesClassPathProvider imp)
     {
         this.locationProvider  = locProvider;
         cpProvider = imp;

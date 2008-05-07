@@ -45,7 +45,6 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.hints.ui.SearchDependencyUI;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.java.lexer.JavaTokenId;
@@ -105,7 +104,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         if (project == null) {
             return Collections.emptyList();
         }
-        NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
+        ProjectURLWatcher mavProj = project.getLookup().lookup(ProjectURLWatcher.class);
         if (mavProj == null) {
             return Collections.emptyList();
         }
@@ -236,7 +235,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         if(cancel.get()) return Collections.<Fix>emptyList();
         boolean isTestSource = false;
 
-        MavenProject mp = mavProj.getOriginalMavenProject();
+        MavenProject mp = mavProj.getMavenProject();
         String testSourceDirectory = mp.getBuild().getTestSourceDirectory();
         File testdir = new File(testSourceDirectory);
 
@@ -249,7 +248,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         List<Fix> fixes = new ArrayList<Fix>();
         if (SearchClassDependencyHint.isSearchDialog()) {
 
-            fixes.add(new MavenSearchFix(mavProj, simpleName, isTestSource));
+            fixes.add(new MavenSearchFix(project, simpleName, isTestSource));
         } else {
             //mkleint: this option is has rather serious performance impact.
             // we need to work on performance before we enable it..
@@ -259,20 +258,20 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
 
             for (NBVersionInfo nbvi : findVersionsByClass) {
-                fixes.add(new MavenFixImport(mavProj, nbvi, isTestSource));
+                fixes.add(new MavenFixImport(project, nbvi, isTestSource));
             }
         }
 
         return fixes;
     }
 
-    private Collection<NBVersionInfo> filter(NbMavenProject mavProj, List<NBVersionInfo> nbvis, boolean test) {
+    private Collection<NBVersionInfo> filter(ProjectURLWatcher mavProj, List<NBVersionInfo> nbvis, boolean test) {
 
 
         Map<String, NBVersionInfo> items = new HashMap<String, NBVersionInfo>();
         //check dependency already added
         List<Dependency> dependencies = new ArrayList<Dependency>();
-        MavenProject prj = mavProj.getOriginalMavenProject();
+        MavenProject prj = mavProj.getMavenProject();
         if (test) {
             dependencies.addAll(prj.getTestDependencies());
         } else {
@@ -364,11 +363,11 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
     static final class MavenFixImport implements EnhancedFix {
 
-        private NbMavenProject mavProj;
+        private Project mavProj;
         private NBVersionInfo nbvi;
         private boolean test;
 
-        public MavenFixImport(NbMavenProject mavProj, NBVersionInfo nbvi, boolean test) {
+        public MavenFixImport(Project mavProj, NBVersionInfo nbvi, boolean test) {
             this.mavProj = mavProj;
             this.nbvi = nbvi;
             this.test = test;
@@ -400,11 +399,11 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
 
     static final class MavenSearchFix implements EnhancedFix {
 
-        private NbMavenProject mavProj;
+        private Project mavProj;
         private String clazz;
         private boolean test;
 
-        public MavenSearchFix(NbMavenProject mavProj, String clazz, boolean test) {
+        public MavenSearchFix(Project mavProj, String clazz, boolean test) {
             this.mavProj = mavProj;
             this.clazz = clazz;
             this.test = test;

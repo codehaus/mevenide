@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import java.awt.Image;
 import java.beans.PropertyChangeListener;
@@ -94,15 +95,10 @@ import org.openide.util.NbBundle;
  */
 public final class NbMavenProject implements Project {
 
-    /**
-     * the only property change fired by the class, means that the pom file
-     * has changed.
-     */
+    //TODO remove
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
 
-    /**
-     * 
-     */
+    //TODO remove
     public static final String PROP_RESOURCE = "RESOURCES"; //NOI18N
 
     private FileObject fileObject;

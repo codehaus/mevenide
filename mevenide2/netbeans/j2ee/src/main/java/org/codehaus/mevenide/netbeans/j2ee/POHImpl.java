@@ -25,7 +25,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
@@ -35,6 +34,7 @@ import org.codehaus.mevenide.netbeans.problems.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
 import org.codehaus.mevenide.netbeans.spi.archetype.WizardExtenderUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.ServerManager;
 import org.netbeans.spi.project.ui.ProjectOpenedHook;
@@ -46,11 +46,11 @@ import org.openide.util.NbBundle;
  * @author mkleint
  */
 public class POHImpl extends ProjectOpenedHook {
-    private NbMavenProject project;
+    private Project project;
     private J2eeLookupProvider.Provider provider;
     private PropertyChangeListener refreshListener;
 
-    public POHImpl(NbMavenProject prj, J2eeLookupProvider.Provider prov) {
+    public POHImpl(Project prj, J2eeLookupProvider.Provider prov) {
         project = prj;
         provider = prov;
         
@@ -62,11 +62,12 @@ public class POHImpl extends ProjectOpenedHook {
     
     protected void projectOpened() {
         provider.hackModuleServerChange();
-        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        String val = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+        String server = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {
             //try checking for old values..
-            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
         }
         String instanceFound = null;
         if (server != null) {
@@ -118,7 +119,7 @@ public class POHImpl extends ProjectOpenedHook {
             ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
             refreshListener = new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    if (ProjectURLWatcher.PROP_PROJECT.equals(evt.getPropertyName())) {
                         projectOpened();
                     }
                 }
@@ -137,8 +138,8 @@ public class POHImpl extends ProjectOpenedHook {
     }
     
     private static class AddServerAction extends AbstractAction {
-        private NbMavenProject prj;
-        private AddServerAction(NbMavenProject project) {
+        private Project prj;
+        private AddServerAction(Project project) {
             prj = project;
             putValue(Action.NAME, NbBundle.getMessage(POHImpl.class, "TXT_Add_Server"));
         }
@@ -149,9 +150,8 @@ public class POHImpl extends ProjectOpenedHook {
             if (newOne != null) {
                 serverType = Deployment.getDefault().getServerID(newOne);
             }
-            NbMavenProject nbprj = prj.getLookup().lookup(NbMavenProject.class);
             try {
-                ModelHandle handle = WizardExtenderUtils.createModelHandle(nbprj);
+                ModelHandle handle = WizardExtenderUtils.createModelHandle(prj);
                 //get rid of old settings.
                 Profile prof = handle.getNetbeansPublicProfile(false);
                 if (prof != null) {
@@ -170,7 +170,7 @@ public class POHImpl extends ProjectOpenedHook {
                     }
                 }
                 handle.markAsModified(handle.getPOMModel());
-                WizardExtenderUtils.writeModelHandle(handle, nbprj);
+                WizardExtenderUtils.writeModelHandle(handle, prj);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (XmlPullParserException ex) {

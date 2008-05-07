@@ -24,6 +24,7 @@ import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
 import org.codehaus.mevenide.netbeans.j2ee.web.WebModuleProviderImpl;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.filesystems.FileStateInvalidException;
 import org.openide.util.Lookup;
@@ -42,7 +43,7 @@ public class J2eeLookupProvider implements LookupProvider {
     }
     
     public Lookup createAdditionalLookup(Lookup baseLookup) {
-        NbMavenProject project = baseLookup.lookup(NbMavenProject.class);
+        Project project = baseLookup.lookup(Project.class);
         assert project != null;
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
@@ -55,12 +56,12 @@ public class J2eeLookupProvider implements LookupProvider {
     }
     
     public static class Provider extends AbstractLookup implements  PropertyChangeListener {
-        private NbMavenProject project;
+        private Project project;
         private InstanceContent content;
         private String lastType = ProjectURLWatcher.TYPE_JAR;
         private Object lastInstance = null;
         private CopyOnSave copyOnSave;
-        public Provider(NbMavenProject proj, InstanceContent cont) {
+        public Provider(Project proj, InstanceContent cont) {
             super(cont);
             project = proj;
             content = cont;
@@ -69,7 +70,7 @@ public class J2eeLookupProvider implements LookupProvider {
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            if (NbMavenProject.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
+            if (ProjectURLWatcher.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
                 checkJ2ee();
             }
         }

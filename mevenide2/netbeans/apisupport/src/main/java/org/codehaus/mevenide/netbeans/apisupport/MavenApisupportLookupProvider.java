@@ -18,8 +18,8 @@ package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.util.Lookup;
 import org.openide.util.lookup.AbstractLookup;
@@ -32,12 +32,12 @@ import org.openide.util.lookup.InstanceContent;
 
 public class MavenApisupportLookupProvider implements LookupProvider {
     
-    /** Creates a new instance of J2eeLookupProvider */
+    /** Creates a new instance of MavenApisupportLookupProvider */
     public MavenApisupportLookupProvider() {
     }
     
     public Lookup createAdditionalLookup(Lookup baseLookup) {
-        NbMavenProject project = baseLookup.lookup(NbMavenProject.class);
+        Project project = baseLookup.lookup(Project.class);
         assert project != null;
 //        // if there's more items later, just do a proxy..
         InstanceContent ic = new InstanceContent();
@@ -46,12 +46,12 @@ public class MavenApisupportLookupProvider implements LookupProvider {
     }
     
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
-        private NbMavenProject project;
+        private Project project;
         private InstanceContent content;
         private String lastType = ProjectURLWatcher.TYPE_JAR;
         private MavenNbModuleImpl lastInstance = null;
         private AccessQueryImpl lastAccess = null;
-        public Provider(NbMavenProject proj, InstanceContent cont) {
+        public Provider(Project proj, InstanceContent cont) {
             super(cont);
             project = proj;
             content = cont;
@@ -60,7 +60,7 @@ public class MavenApisupportLookupProvider implements LookupProvider {
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            if (NbMavenProject.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
+            if (ProjectURLWatcher.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
                 checkNbm();
             }
         }

@@ -36,8 +36,8 @@ import org.codehaus.mevenide.hints.ui.nodes.ArtifactNode;
 import org.codehaus.mevenide.hints.ui.nodes.VersionNode;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.api.project.Project;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
 import org.openide.nodes.AbstractNode;
@@ -60,9 +60,9 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
     private NBVersionInfo nbvi;
     private RequestProcessor.Task task;
     private boolean retrigger = false;
-    private NbMavenProject project;
+    private Project project;
     /** Creates new form SearchDependencyUI */
-    public SearchDependencyUI(String clazz, NbMavenProject mavProj) {
+    public SearchDependencyUI(String clazz, Project mavProj) {
         initComponents();
         project = mavProj;
         beanTreeView = (BeanTreeView) treeView;
@@ -363,7 +363,8 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 privilegedGroupIds.add("javax.xml");//NOI18N
             }
             //TODO add some more heuristics
-            List<Dependency> deps = project.getOriginalMavenProject().getDependencies();
+            ProjectURLWatcher mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+            List<Dependency> deps = mavenproject.getMavenProject().getDependencies();
             for (Dependency d : deps) {
                 privilegedGroupIds.add(d.getGroupId());
             }

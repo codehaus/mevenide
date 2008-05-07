@@ -29,8 +29,10 @@ import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -58,19 +60,21 @@ import org.openide.filesystems.URLMapper;
  */
 class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, ModuleChangeReporter {
     
-    private NbMavenProject project;
+    private Project project;
     private List versionListeners;
     
     private EjbModuleProviderImpl provider;
 
     private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
+    private ProjectURLWatcher mavenproject;
     
     
     /** Creates a new instance of EjbJarImpl */
-    EjbJarImpl(NbMavenProject proj, EjbModuleProviderImpl prov) {
+    EjbJarImpl(Project proj, EjbModuleProviderImpl prov) {
         project = proj;
         versionListeners = new ArrayList();
         provider = prov;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
     }
     
     boolean isValid() {
@@ -85,7 +89,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     
     public String getJ2eePlatformVersion() {
         //try to apply the hint if it exists.
-        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        String version = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
         if (version != null) {
             return version;
         }
@@ -114,7 +118,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     }
     
     File getDDFile(String path) {
-        URI[] dir = project.getResources(false);
+        URI[] dir = mavenproject.getResources(false);
         File fil = new File(new File(dir[0]), path);
         fil = FileUtil.normalizeFile(fil);
 //        System.out.println("EjbM:getDDFile=" + fil.getAbsolutePath());
@@ -172,7 +176,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      * Returns the location of the module within the application archive.
      */
     public String getUrl() {
-        return "/" + project.getOriginalMavenProject().getBuild().getFinalName(); //NOI18N
+        return "/" + mavenproject.getMavenProject().getBuild().getFinalName(); //NOI18N
     }
     
     /**
@@ -195,7 +199,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         String jarfile = PluginPropertyUtils.getPluginProperty(project,
                     Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_EJB, 
                     "jarName", "ejb"); //NOI18N
-        MavenProject proj = project.getOriginalMavenProject();
+        MavenProject proj = mavenproject.getMavenProject();
         if (jarfile == null) {
             jarfile = proj.getBuild().getFinalName();
         }
@@ -237,7 +241,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
      * @return FileObject for the content directory
      */
     public FileObject getContentDirectory() throws IOException {
-        String loc = project.getOriginalMavenProject().getBuild().getOutputDirectory();
+        String loc = mavenproject.getMavenProject().getBuild().getOutputDirectory();
         File fil = FileUtil.normalizeFile(new File(loc));
 //        System.out.println("ejb jar..get content=" + fil);
         FileObject fo = FileUtil.toFileObject(fil.getParentFile());
@@ -264,7 +268,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
             try {
                 FileObject content = getContentDirectory();
                 if (content == null) {
-                    URI[] uris = project.getResources(false);
+                    URI[] uris = mavenproject.getResources(false);
                     if (uris.length > 0) {
                         content = URLMapper.findFileObject(uris[0].toURL());
                     }
@@ -369,7 +373,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup"); //NOI18N
+        File toRet = new File(FileUtil.toFile(project.getProjectDirectory()), "src" + File.separator + "main" + File.separator + "setup");//NOI18N
         return toRet;
     }
 

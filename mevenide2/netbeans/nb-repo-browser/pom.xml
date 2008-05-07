@@ -100,6 +100,11 @@
             <artifactId>org-netbeans-modules-projectuiapi</artifactId>
             <version>${netbeans.release}</version>
         </dependency>
+        <dependency>
+            <groupId>org.netbeans.api</groupId>
+            <artifactId>org-openide-awt</artifactId>
+            <version>${netbeans.release}</version>
+        </dependency>
     </dependencies>
     
     <build>

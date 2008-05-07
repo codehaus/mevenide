@@ -24,9 +24,9 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.support.GenericSources;
@@ -44,21 +44,23 @@ public class J2eeMavenSourcesImpl implements Sources {
     public static final String TYPE_DOC_ROOT="doc_root"; //NOI18N
     public static final String TYPE_WEB_INF="web_inf"; //NOI18N
     
-    private NbMavenProject project;
+    private Project project;
     private final List<ChangeListener> listeners;
     
     private SourceGroup webDocSrcGroup;
     
     private final Object lock = new Object();
+    private ProjectURLWatcher mavenproject;
     
     
     /** Creates a new instance of MavenSourcesImpl */
-    public J2eeMavenSourcesImpl(NbMavenProject proj) {
+    public J2eeMavenSourcesImpl(Project proj) {
         project = proj;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
         listeners = new ArrayList<ChangeListener>();
         ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                if (ProjectURLWatcher.PROP_PROJECT.equals(event.getPropertyName())) {
                     checkChanges(true);
                 }
             }
@@ -68,10 +70,10 @@ public class J2eeMavenSourcesImpl implements Sources {
     private void checkChanges(boolean synchronous) {
         boolean changed = false;
         synchronized (lock) {
-            MavenProject mp = project.getOriginalMavenProject();
+            MavenProject mp = mavenproject.getMavenProject();
             FileObject fo = null;
             if (mp != null) {
-                 fo = FileUtilities.convertURItoFileObject(project.getWebAppDirectory());
+                 fo = FileUtilities.convertURItoFileObject(mavenproject.getWebAppDirectory());
             }
             changed = checkWebDocGroupCache(fo);
         }
@@ -120,7 +122,7 @@ public class J2eeMavenSourcesImpl implements Sources {
     
     
     private SourceGroup[] createWebDocRoot() {
-        FileObject folder = FileUtilities.convertURItoFileObject(project.getWebAppDirectory());
+        FileObject folder = FileUtilities.convertURItoFileObject(mavenproject.getWebAppDirectory());
         SourceGroup grp = null;
         synchronized (lock) {
             checkWebDocGroupCache(folder);

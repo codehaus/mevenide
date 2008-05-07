@@ -24,8 +24,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.plexus.util.IOUtil;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.queries.AccessibilityQueryImplementation;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -36,14 +37,17 @@ import org.openide.util.Exceptions;
  * @author mkleint
  */
 public class AccessQueryImpl implements AccessibilityQueryImplementation {
-    private NbMavenProject project;
+    private ProjectURLWatcher mavenProject;
+    private Project project;
     private WeakReference<List<Pattern>> ref;
     
     private static final String MANIFEST_PATH = "src/main/nbm/manifest.mf"; //NOI18N
     private static final String ATTR_PUBLIC_PACKAGE = "OpenIDE-Module-Public-Packages"; //NOI18N
     
-    public AccessQueryImpl(NbMavenProject prj) {
+    public AccessQueryImpl(Project prj) {
         project = prj;
+        mavenProject = prj.getLookup().lookup(ProjectURLWatcher.class);
+        
     }
     
     /**
@@ -52,7 +56,7 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
      * @return
      */
     public Boolean isPubliclyAccessible(FileObject pkg) {
-        FileObject srcdir = org.codehaus.mevenide.netbeans.FileUtilities.convertStringToFileObject(project.getOriginalMavenProject().getBuild().getSourceDirectory());
+        FileObject srcdir = org.codehaus.mevenide.netbeans.api.FileUtilities.convertStringToFileObject(mavenProject.getMavenProject().getBuild().getSourceDirectory());
         if (srcdir != null) {
             String path = FileUtil.getRelativePath(srcdir, pkg);
             if (path != null) {

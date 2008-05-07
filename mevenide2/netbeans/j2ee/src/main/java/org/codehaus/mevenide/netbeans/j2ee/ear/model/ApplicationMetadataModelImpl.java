@@ -24,7 +24,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
@@ -33,7 +33,6 @@ import org.netbeans.modules.j2ee.dd.api.application.DDProvider;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModelAction;
 import org.netbeans.modules.j2ee.metadata.model.api.MetadataModelException;
 import org.netbeans.modules.j2ee.metadata.model.spi.MetadataModelImplementation;
-import org.netbeans.modules.j2ee.spi.ejbjar.EarImplementation;
 import org.netbeans.modules.j2ee.spi.ejbjar.EarProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.util.Mutex;
@@ -56,7 +55,7 @@ public class ApplicationMetadataModelImpl implements MetadataModelImplementation
      * Constructor with all properties.
      * @param earProject EAR project instance for which corresponding model is created.
      */
-    public ApplicationMetadataModelImpl(final NbMavenProject earProject) {
+    public ApplicationMetadataModelImpl(final Project earProject) {
         
         Application ddRoot = null;
         FileObject ddFO = getDeploymentDescriptor(earProject);
@@ -106,7 +105,7 @@ public class ApplicationMetadataModelImpl implements MetadataModelImplementation
         return new SimpleFuture(runReadAction(action));
     }
     
-    private FileObject getDeploymentDescriptor(final NbMavenProject earProject) {
+    private FileObject getDeploymentDescriptor(final Project earProject) {
         EarProvider impl = earProject.getLookup().lookup(EarProvider.class);
         Ear ear = impl.findEar(earProject.getProjectDirectory());
         FileObject ddFO = ear.getDeploymentDescriptor();

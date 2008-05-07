@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;

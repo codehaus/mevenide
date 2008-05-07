@@ -16,7 +16,7 @@
  */
 
 
-package org.codehaus.mevenide.netbeans;
+package org.codehaus.mevenide.netbeans.api;
 
 import java.io.File;
 import java.net.URI;

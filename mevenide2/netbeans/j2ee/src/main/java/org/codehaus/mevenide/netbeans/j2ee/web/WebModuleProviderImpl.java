@@ -20,9 +20,11 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -45,7 +47,7 @@ import org.openide.filesystems.FileObject;
 public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModuleProvider {
     
     
-    private NbMavenProject project;
+    private Project project;
     private WebModuleImpl implementation;
     private WebModule module;
     private J2eeModule j2eemodule;
@@ -55,10 +57,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private String serverInstanceID;
 
     static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
+    private ProjectURLWatcher mavenproject;
     
-    
-    public WebModuleProviderImpl(NbMavenProject proj) {
+    public WebModuleProviderImpl(Project proj) {
         project = proj;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
         implementation = new WebModuleImpl(project, this);
         moduleChange = new ModuleChangeReporterImpl();
     }
@@ -70,11 +73,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
-        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        String val = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+        String server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {
             //try checking for old values..
-            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
         }
         String instanceFound = null;
         if (server != null) {

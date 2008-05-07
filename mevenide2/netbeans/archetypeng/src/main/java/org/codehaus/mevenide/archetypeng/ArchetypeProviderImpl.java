@@ -46,7 +46,7 @@ import org.openide.util.Exceptions;
 import org.openide.util.NbBundle;
 
 /**
- *
+ * TODO, include this in the main module (nb-project)
  * @author mkleint
  */
 public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {

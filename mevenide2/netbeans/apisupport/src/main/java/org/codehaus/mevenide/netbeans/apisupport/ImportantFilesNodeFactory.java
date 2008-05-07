@@ -26,7 +26,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import javax.swing.event.ChangeListener;
-import org.codehaus.mevenide.netbeans.nodes.NodeUtils;
+import org.codehaus.mevenide.netbeans.api.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.apisupport.project.spi.NbModuleProvider;
 import org.netbeans.modules.apisupport.project.spi.NodeFactoryUtils;

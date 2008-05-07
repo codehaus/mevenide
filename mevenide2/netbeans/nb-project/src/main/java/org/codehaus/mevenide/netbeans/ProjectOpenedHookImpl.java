@@ -16,6 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans;
 
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;

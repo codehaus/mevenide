@@ -20,33 +20,23 @@
 package org.codehaus.mevenide.netbeans.j2ee.ear.model;
 
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.modules.j2ee.dd.api.application.Application;
 import org.netbeans.modules.j2ee.dd.api.application.Module;
-import org.netbeans.modules.j2ee.dd.api.application.Web;
 import org.netbeans.modules.j2ee.dd.api.common.CommonDDBean;
 import org.netbeans.modules.j2ee.dd.api.common.Icon;
 import org.netbeans.modules.j2ee.dd.api.common.NameAlreadyUsedException;
 import org.netbeans.modules.j2ee.dd.api.common.RootInterface;
 import org.netbeans.modules.j2ee.dd.api.common.SecurityRole;
 import org.netbeans.modules.j2ee.dd.api.common.VersionNotSupportedException;
-import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
-import org.netbeans.modules.j2ee.deployment.devmodules.spi.J2eeModuleProvider;
-import org.netbeans.modules.web.api.webmodule.WebModule;
 import org.openide.filesystems.FileObject;
-import org.openide.util.Exceptions;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -61,7 +51,7 @@ import org.xml.sax.SAXParseException;
  */
 public class ApplicationImpl implements Application {
     
-    private final NbMavenProject earProject;
+    private final Project earProject;
     private List<Module> modules;
     private volatile boolean runReadActionRunning = false;
     
@@ -70,7 +60,7 @@ public class ApplicationImpl implements Application {
      * Create application for given EAR project.
      * @param earProject EAR project instance for which corresponding application is created.
      */
-    public ApplicationImpl(NbMavenProject earProject) {
+    public ApplicationImpl(Project earProject) {
         this.earProject = earProject;
     }
 

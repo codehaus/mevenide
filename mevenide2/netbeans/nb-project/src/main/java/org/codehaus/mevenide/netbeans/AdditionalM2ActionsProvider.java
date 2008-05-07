@@ -28,6 +28,8 @@ import org.openide.util.Lookup;
  * (Using META-INF/services/AdditionalM2ActionsProvider file in the module's jar.)
  * It's purpose is to get additional implementations of APIs that are related to 5.0 only, 
  * or some other custom aspect of the project from dependant modules..
+ * 
+ * //TODO move to api/spi package, get rid of NbMavenProject reference.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public interface AdditionalM2ActionsProvider {
