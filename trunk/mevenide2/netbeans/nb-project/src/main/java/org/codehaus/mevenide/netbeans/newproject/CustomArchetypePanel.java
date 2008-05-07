@@ -21,8 +21,6 @@ import java.util.List;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
-import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
-import org.openide.util.Lookup;
 
 /**
  *
@@ -38,9 +36,6 @@ public class CustomArchetypePanel extends javax.swing.JPanel {
         //Value complte decorator
          new TextValueCompleter(
                 getRepoIds(), txtRepo);
-        if (Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class) == null) {
-            cbArchetypeNg.setVisible(false);
-        }
     }
     
     /*Return repo urls's*/

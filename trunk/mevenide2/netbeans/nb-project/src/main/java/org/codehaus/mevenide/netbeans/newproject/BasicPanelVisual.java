@@ -39,7 +39,6 @@ import org.apache.maven.embedder.MavenEmbedder;
 import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
-import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
@@ -49,7 +48,6 @@ import org.openide.WizardValidationException;
 import org.openide.awt.Mnemonics;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.RequestProcessor;
 
@@ -64,6 +62,8 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
     private String lastProjectName = ""; //NOI18N
 
     private boolean changedPackage = false;
+    
+    private ArchetypeProviderImpl ngprovider;
     
     /** Creates new form PanelProjectLocationVisual */
     public BasicPanelVisual(BasicWizardPanel panel) {
@@ -401,6 +401,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
         
         this.projectNameTextField.setText(projectName);
         this.projectNameTextField.selectAll();
+        ngprovider = (ArchetypeProviderImpl)settings.getProperty(MavenWizardIterator.PROPERTY_CUSTOM_CREATOR);
         final Archetype arch = (Archetype)settings.getProperty(ChooseArchetypePanel.PROP_ARCHETYPE);
         if (arch.archetypeNg) {
             lblAdditionalProps.setText(NbBundle.getMessage(BasicPanelVisual.class, "TXT_Checking1"));
@@ -427,9 +428,7 @@ public class BasicPanelVisual extends JPanel implements DocumentListener {
             Artifact art = downloadNGArchetype(arch);
             File fil = art.getFile();
             if (fil.exists()) {
-                ArchetypeNGProjectCreator cr = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-                assert cr != null;
-                Map<String, String> props = cr.getAdditionalProperties(art);
+                Map<String, String> props = ngprovider.getAdditionalProperties(art);
                 for (String key : props.keySet()) {
                     String defVal = props.get(key);
                     dtm.addRow(new Object[] {key, defVal == null ? "" : defVal });

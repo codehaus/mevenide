@@ -118,11 +118,11 @@
      <module>apisupport</module>
      <module>junit</module>
      <module>nb-repo-browser</module>
-     <module>archetypeng</module>
+     <module>lifecycle-build-plan</module>
      <!--module>webframeworks</module-->
      <!--module>graph</module-->
-      <module>lifecycle-build-plan</module>
       <module>maven-hints</module>
+      
   </modules>
     <repositories>
         <repository>

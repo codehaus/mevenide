@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.archetypeng;
+package org.codehaus.mevenide.netbeans.newproject;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +38,6 @@ import org.codehaus.mevenide.netbeans.api.archetype.Archetype;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
-import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.openide.WizardDescriptor;
 import org.openide.execution.ExecutorTask;
@@ -49,7 +48,7 @@ import org.openide.util.NbBundle;
  * TODO, include this in the main module (nb-project)
  * @author mkleint
  */
-public class ArchetypeProviderImpl implements ArchetypeNGProjectCreator {
+public class ArchetypeProviderImpl {
     private static final String USER_DIR_PROP = "user.dir"; //NOI18N
 
     public void runArchetype(File directory, WizardDescriptor wiz) throws IOException {

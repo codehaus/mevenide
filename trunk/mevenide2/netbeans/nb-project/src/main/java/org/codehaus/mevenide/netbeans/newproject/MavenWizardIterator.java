@@ -39,7 +39,6 @@ import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
-import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.netbeans.api.progress.ProgressHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -49,7 +48,6 @@ import org.openide.execution.ExecutorTask;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
-import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 
 /**
@@ -66,6 +64,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     private transient WizardDescriptor.Panel[] panels;
     private transient WizardDescriptor wiz;
     private final List<ChangeListener> listeners;
+    private ArchetypeProviderImpl ngprovider;
     
     public MavenWizardIterator() {
         listeners = new ArrayList<ChangeListener>();
@@ -110,9 +109,8 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
             dirF.getParentFile().mkdirs();
             
             handle.progress(NbBundle.getMessage(MavenWizardIterator.class, "PRG_Processing_Archetype"), 2);
-            ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-            if (customCreator != null && archetype.archetypeNg) {
-                customCreator.runArchetype(dirF.getParentFile(), wiz);
+            if (archetype.archetypeNg) {
+                ngprovider.runArchetype(dirF.getParentFile(), wiz);
             } else {
                 final String art = (String)wiz.getProperty("artifactId"); //NOI18N
                 final String ver = (String)wiz.getProperty("version"); //NOI18N
@@ -149,10 +147,8 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     
     public void initialize(WizardDescriptor wiz) {
         this.wiz = wiz;
-        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-        if (customCreator != null) {
-            wiz.putProperty(PROPERTY_CUSTOM_CREATOR, Boolean.TRUE);
-        }
+        ngprovider = new ArchetypeProviderImpl();
+        wiz.putProperty(PROPERTY_CUSTOM_CREATOR, ngprovider);
         index = 0;
         panels = createPanels();
         updateSteps();

@@ -40,7 +40,6 @@ import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
-import org.codehaus.mevenide.netbeans.spi.archetype.ArchetypeNGProjectCreator;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -78,9 +77,7 @@ public class ChooseArchetypePanel extends javax.swing.JPanel implements Explorer
     public ChooseArchetypePanel(ChooseWizardPanel wizPanel) {
         initComponents();
         
-        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-        String custText = customCreator == null ? "" : NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep_NG");
-        Mnemonics.setLocalizedText(jLabel2, NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep", custText)); // NOI18N
+        Mnemonics.setLocalizedText(jLabel2, NbBundle.getMessage(ChooseArchetypePanel.class, "TIT_CreateProjectStep")); // NOI18N
         
         this.wizardPanel = wizPanel;
         tv = new BeanTreeView();
@@ -284,15 +281,10 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
     }
     
     public void run() {
-        ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
-        
         Lookup.Result<ArchetypeProvider> res = Lookup.getDefault().lookup(new Lookup.Template<ArchetypeProvider>(ArchetypeProvider.class));
         List<Archetype> archetypes = new ArrayList<Archetype>();
         for (ArchetypeProvider provider : res.allInstances()) {
             for (Archetype ar : provider.getArchetypes()) {
-                if (customCreator == null && ar.archetypeNg) {
-                    continue;
-                }
                 if (!archetypes.contains(ar)) {
                     archetypes.add(ar);
                 }
@@ -465,12 +457,8 @@ private void btnRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
         }
 
         public void run() {
-            ArchetypeNGProjectCreator customCreator = Lookup.getDefault().lookup(ArchetypeNGProjectCreator.class);
             RemoteRepoProvider provider = new RemoteRepoProvider();
             for (Archetype ar : provider.getArchetypes()) {
-                if (customCreator == null && ar.archetypeNg) {
-                    continue;
-                }
                 String key = ar.getGroupId() + "|" + ar.getArtifactId();
                 TreeMap<DefaultArtifactVersion, Archetype> archs = res.get(key);
                 if (archs == null) {
