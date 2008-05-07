@@ -41,7 +41,7 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
     private Pattern start;
     private boolean started;
     private Pattern dependency;
-        private NbMavenProject project;
+    private NbMavenProject project;
     
     /** Creates a new instance of JavadocOutputProcessor */
     DependencyAnalyzeOutputProcessor(NbMavenProject project) {

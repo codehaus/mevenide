@@ -17,8 +17,8 @@
 package org.codehaus.mevenide.netbeans.api.output;
 
 import java.util.Set;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -26,6 +26,6 @@ import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
  */
 public interface ContextOutputProcessorFactory extends OutputProcessorFactory {
 
-    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project, RunConfig config);
+    public Set<OutputProcessor> createProcessorsSet(Project project, RunConfig config);
 
 }

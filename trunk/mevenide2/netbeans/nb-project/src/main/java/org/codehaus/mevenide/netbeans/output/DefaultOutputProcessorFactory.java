@@ -22,6 +22,7 @@ import java.util.Set;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -33,7 +34,7 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
     public DefaultOutputProcessorFactory() {
     }
 
-    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project) {
+    public Set<OutputProcessor> createProcessorsSet(Project project) {
         Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
         toReturn.add(new GlobalOutputProcessor());
         if (project != null) {
@@ -41,8 +42,9 @@ public class DefaultOutputProcessorFactory implements OutputProcessorFactory {
             toReturn.add(new TestOutputListenerProvider());
             toReturn.add(new JavadocOutputProcessor());
             toReturn.add(new SiteOutputProcessor(project));
-            toReturn.add(new ExecPluginOutputListenerProvider(project));
-            toReturn.add(new DependencyAnalyzeOutputProcessor(project));
+            NbMavenProject nbprj = project.getLookup().lookup(NbMavenProject.class);
+            toReturn.add(new ExecPluginOutputListenerProvider(nbprj));
+            toReturn.add(new DependencyAnalyzeOutputProcessor(nbprj));
         }
         return toReturn;
     }

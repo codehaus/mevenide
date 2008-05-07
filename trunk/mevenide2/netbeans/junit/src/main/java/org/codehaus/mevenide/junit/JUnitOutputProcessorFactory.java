@@ -20,10 +20,10 @@ package org.codehaus.mevenide.junit;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.output.ContextOutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -35,11 +35,11 @@ public class JUnitOutputProcessorFactory implements ContextOutputProcessorFactor
     public JUnitOutputProcessorFactory() {
     }
 
-    public Set createProcessorsSet(NbMavenProject project) {
+    public Set createProcessorsSet(Project project) {
         return Collections.<OutputProcessor>emptySet();
     }
 
-    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project, RunConfig config) {
+    public Set<OutputProcessor> createProcessorsSet(Project project, RunConfig config) {
         if (config.getGoals().contains("test") || config.getGoals().contains("surefire:test")) { //NOI18N
             Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
             if (project != null) {
