@@ -41,7 +41,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
-import org.codehaus.mevenide.netbeans.api.GoalsProvider;
+import org.codehaus.mevenide.netbeans.spi.grammar.GoalsProvider;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
