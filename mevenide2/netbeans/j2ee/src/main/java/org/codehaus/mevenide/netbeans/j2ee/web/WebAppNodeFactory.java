@@ -24,7 +24,6 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.nodes.AbstractMavenNodeList;
 import org.netbeans.api.project.Project;
@@ -48,21 +47,23 @@ public class WebAppNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        Project prj = project.getLookup().lookup(Project.class);
         return new NList(prj);
     }
     
     
     private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener{
-        private NbMavenProject project;
+        private Project project;
+        private ProjectURLWatcher mavenproject;
         private String currentWebAppKey;
         
-        private NList(NbMavenProject prj) {
+        private NList(Project prj) {
             project = prj;
+            mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
         }
         
         public List<String> keys() {
-            URI webapp = project.getWebAppDirectory();
+            URI webapp = mavenproject.getWebAppDirectory();
             if (webapp != null) {
                 currentWebAppKey = KEY_WEBAPP + webapp.toString();
                 return Collections.singletonList(currentWebAppKey);
@@ -77,7 +78,7 @@ public class WebAppNodeFactory implements NodeFactory {
         private Node createWebAppNode() {
             Node n =  null;
             try {
-                FileObject fo = URLMapper.findFileObject(project.getWebAppDirectory().toURL());
+                FileObject fo = URLMapper.findFileObject(mavenproject.getWebAppDirectory().toURL());
                 if (fo != null) {
                     DataFolder fold = DataFolder.findFolder(fo);
                     File fil = FileUtil.toFile(fo);
@@ -93,7 +94,7 @@ public class WebAppNodeFactory implements NodeFactory {
         
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (ProjectURLWatcher.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
         }
