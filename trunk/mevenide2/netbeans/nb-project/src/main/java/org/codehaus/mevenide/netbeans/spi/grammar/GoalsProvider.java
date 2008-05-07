@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.api;
+package org.codehaus.mevenide.netbeans.spi.grammar;
 
 import java.util.Set;
 
@@ -26,6 +26,11 @@ import java.util.Set;
  */
 public interface GoalsProvider {
     
+    /**
+     * list of goals that are known.
+     * 
+     * @return
+     */
     Set<String> getAvailableGoals();
     
 }

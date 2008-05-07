@@ -26,7 +26,7 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
-import org.codehaus.mevenide.netbeans.api.GoalsProvider;
+import org.codehaus.mevenide.netbeans.spi.grammar.GoalsProvider;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
