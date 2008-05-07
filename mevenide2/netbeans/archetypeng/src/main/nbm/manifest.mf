@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-OpenIDE-Module-Localizing-Bundle: org/codehaus/mevenide/archetypeng/Bundle.properties
-OpenIDE-Module-Public-Packages: -
-AutoUpdate-Show-In-Client: false
