@@ -5,6 +5,21 @@ It allows to open any Maven project natively within the IDE without any imports.
 
 * News:
 
+    2008/05/07 - Version 3.1 release is out. It is available from the default stable update center of NetBeans 6.0 and 6.1
+or as a {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.1.1.zip}zip file with NBMs}}
+It has a bunch of new features described in {{{http://wiki.netbeans.org/MavenBestPractices}this article}} at netbeans.orrg. The article also describes how to install the modules
+and provides additional hints on usage. The major changes include:
+
+        * new 2.1-SNAPSHOT maven embedder included.
+
+        * local and remote repository indexing (using {{{http://nexus.sonatype.org}Nexus}})
+
+        * Web frameworks support
+
+        * Improved profiling support (aka configurations)
+
+        * Check the {{{http://wiki.netbeans.org/MavenBestPractices}article}} for these and more features in detail.
+
     2008/04/12 - Version 3.0.12 release, that's the last version in the 3.0.x series. It is available from the default update center
 or as a {{{http://mevenide.codehaus.org/release/mevenide2-netbeans-3.0.12.zip}zip file with NBMs}}
 
