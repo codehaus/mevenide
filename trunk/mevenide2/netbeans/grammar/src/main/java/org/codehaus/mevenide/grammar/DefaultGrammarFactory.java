@@ -2,7 +2,7 @@ package org.codehaus.mevenide.grammar;
 
 import java.io.File;
 import java.net.URI;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.api.project.FileOwnerQuery;

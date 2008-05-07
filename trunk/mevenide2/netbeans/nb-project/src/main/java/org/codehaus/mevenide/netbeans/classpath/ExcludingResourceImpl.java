@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.maven.model.Resource;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;

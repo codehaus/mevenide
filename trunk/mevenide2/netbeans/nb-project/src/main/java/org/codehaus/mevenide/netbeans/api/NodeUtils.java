@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.nodes;
+package org.codehaus.mevenide.netbeans.api;
 
 import java.awt.Image;
 import javax.swing.Icon;

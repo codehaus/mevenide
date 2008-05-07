@@ -20,11 +20,11 @@ package org.codehaus.mevenide.netbeans.persistence;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.spi.archetype.WizardExtenderUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.ant.AntArtifact;
 import org.netbeans.api.project.libraries.Library;
@@ -39,9 +39,9 @@ import org.openide.util.Exceptions;
  */
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
     private static final String SL_15 = "1.5"; //NOI18N
-    private NbMavenProject project;
+    private Project project;
     /** Creates a new instance of CPExtender */
-    public CPExtender(NbMavenProject project) {
+    public CPExtender(Project project) {
         this.project = project;
     }
     

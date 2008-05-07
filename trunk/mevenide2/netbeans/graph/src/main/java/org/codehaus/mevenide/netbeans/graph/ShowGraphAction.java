@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans.graph;
 import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.openide.util.ContextAwareAction;
 import org.openide.util.Lookup;
 import org.openide.windows.TopComponent;
@@ -35,7 +35,7 @@ public class ShowGraphAction extends AbstractAction implements ContextAwareActio
         putValue(Action.NAME, "Show Library Dependency Graph");
     }
     
-    public ShowGraphAction(NbMavenProject prj) {
+    public ShowGraphAction(Project prj) {
         this();
         if (prj != null) {
             putValue("prj", prj);
@@ -43,7 +43,7 @@ public class ShowGraphAction extends AbstractAction implements ContextAwareActio
     }
     
     public void actionPerformed(ActionEvent e) {
-        NbMavenProject project = (NbMavenProject) getValue("prj");
+        Project project = (Project) getValue("prj");
         if (project != null) {
             TopComponent tc = new DependencyGraphTopComponent(project);
             WindowManager.getDefault().findMode("editor").dockInto(tc); //NOI18N
@@ -53,7 +53,7 @@ public class ShowGraphAction extends AbstractAction implements ContextAwareActio
     }
     
     public Action createContextAwareInstance(Lookup lookup) {
-        NbMavenProject prj = lookup.lookup(NbMavenProject.class);
+        Project prj = lookup.lookup(Project.class);
         return new ShowGraphAction(prj);
     }
 }

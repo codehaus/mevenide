@@ -30,6 +30,7 @@ import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.project.Project;
 
 /**
  * Some random utility methods to allow post creation modifications of the project model.
@@ -40,7 +41,8 @@ public final class WizardExtenderUtils {
     
     private WizardExtenderUtils() {}
     
-    public static ModelHandle createModelHandle(NbMavenProject project) throws IOException, XmlPullParserException {
+    public static ModelHandle createModelHandle(Project prj) throws IOException, XmlPullParserException {
+        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
@@ -49,7 +51,8 @@ public final class WizardExtenderUtils {
                 Collections.<String, ActionToGoalMapping>singletonMap(M2Configuration.DEFAULT,mapping), null, null);
     }
     
-    public static void writeModelHandle(ModelHandle handle, NbMavenProject project) throws IOException {
+    public static void writeModelHandle(ModelHandle handle, Project prj) throws IOException {
+        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
         CustomizerProviderImpl.writeAll(handle, project);
     }
 }

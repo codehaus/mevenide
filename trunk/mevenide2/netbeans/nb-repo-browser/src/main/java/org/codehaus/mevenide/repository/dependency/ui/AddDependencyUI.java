@@ -1,7 +1,18 @@
 /*
- * AddDependencyUI.java
- *
- * Created on December 26, 2007, 11:25 AM
+ *  Copyright 2007 Anuradha.
+ * 
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ * 
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *  under the License.
  */
 package org.codehaus.mevenide.repository.dependency.ui;
 
@@ -11,7 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.repository.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -40,11 +51,11 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
         lblDescription.setText(NbBundle.getMessage(AddDependencyUI.class, "LBL_Description", libDef));//NOI18N
         addButton = new JButton(NbBundle.getMessage(AddDependencyUI.class, "BTN_Add"));//NOI18N
         addButton.setEnabled(false);
-        final List<NbMavenProject> openProjects =getOpenProjects();
-        Children children = new Children.Keys<NbMavenProject>() {
+        final List<Project> openProjects = getOpenProjects();
+        Children children = new Children.Keys<Project>() {
 
             @Override
-            protected Node[] createNodes(NbMavenProject nmp) {
+            protected Node[] createNodes(Project nmp) {
                 return new Node[]{new OpenProjectNode(nmp)};
             }
 
@@ -140,8 +151,8 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
         return explorerManager;
     }
 
-    public List<NbMavenProject> getSelectedMavenProjects() {
-        List<NbMavenProject> mavenProjects = new ArrayList<NbMavenProject>();
+    public List<Project> getSelectedMavenProjects() {
+        List<Project> mavenProjects = new ArrayList<Project>();
         Node[] selectedNodes = explorerManager.getSelectedNodes();
         for (Node node : selectedNodes) {
             if (node instanceof OpenProjectNode) {
@@ -152,16 +163,16 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
 
         return mavenProjects;
     }
-    public  List<NbMavenProject> getOpenProjects() {
-        List<NbMavenProject> mavenProjects = new ArrayList<NbMavenProject>();
+    public  List<Project> getOpenProjects() {
+        List<Project> mavenProjects = new ArrayList<Project>();
         //get all open projects
         Project[] prjs = OpenProjects.getDefault().getOpenProjects();
 
         for (Project project : prjs) {
             //varify is maven project 
-            NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
+            ProjectURLWatcher mavProj = project.getLookup().lookup(ProjectURLWatcher.class);
             if(mavProj!=null)
-                mavenProjects.add(mavProj);
+                mavenProjects.add(project);
         }
 
         return mavenProjects;
@@ -169,10 +180,10 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
     }
     public static class OpenProjectNode extends AbstractNode {
 
-        private NbMavenProject project;
+        private Project project;
         private ProjectInformation pi;
 
-        public OpenProjectNode(NbMavenProject project) {
+        public OpenProjectNode(Project project) {
             super(Children.LEAF);
             this.project = project;
             pi = ProjectUtils.getInformation(project);

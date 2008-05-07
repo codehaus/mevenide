@@ -23,13 +23,13 @@ import java.awt.event.ActionListener;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
+import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.visual.widget.BirdViewController;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
@@ -42,7 +42,7 @@ import org.openide.windows.TopComponent;
 public class DependencyGraphTopComponent extends TopComponent {
 //    public static final String ATTRIBUTE_DEPENDENCIES_LAYOUT = "MavenProjectDependenciesLayout"; //NOI18N
     
-    private NbMavenProject project;
+    private Project project;
     private DependencyGraphScene scene;
     final JScrollPane pane = new JScrollPane();
     private BirdViewController birdView;
@@ -56,11 +56,12 @@ public class DependencyGraphTopComponent extends TopComponent {
     });
     
     /** Creates new form ModulesGraphTopComponent */
-    public DependencyGraphTopComponent(NbMavenProject proj) {
+    public DependencyGraphTopComponent(Project proj) {
         initComponents();
         project = proj;
-        setName("DependencyGraph" + proj.getName());
-        setDisplayName("Dependencies - " + proj.getDisplayName());
+        ProjectInformation info = project.getLookup().lookup(ProjectInformation.class);
+        setName("DependencyGraph" + info.getName());
+        setDisplayName("Dependencies - " + info.getDisplayName());
         timer.setDelay(1000);
         timer.setRepeats(false);
         txtFind.getDocument().addDocumentListener(new DocumentListener() {

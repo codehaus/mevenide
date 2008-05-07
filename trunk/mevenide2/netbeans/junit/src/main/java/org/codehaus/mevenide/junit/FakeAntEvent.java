@@ -22,7 +22,7 @@ import org.apache.tools.ant.module.run.LoggerTrampoline;
 import org.apache.tools.ant.module.spi.AntEvent;
 import org.apache.tools.ant.module.spi.AntSession;
 import org.apache.tools.ant.module.spi.TaskStructure;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -33,12 +33,12 @@ public class FakeAntEvent implements LoggerTrampoline.AntEventImpl {
     private String taskName;
     private AntSession session;
     private TaskStructure taskStructure;
-    private NbMavenProject project;
+    private Project project;
     private String message;
     private int logLevel = AntEvent.LOG_INFO;
 
 
-    FakeAntEvent(AntSession session, NbMavenProject prj) {
+    FakeAntEvent(AntSession session, Project prj) {
         this.session = session;
         project = prj;
     }

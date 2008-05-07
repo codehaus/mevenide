@@ -19,11 +19,10 @@ package org.codehaus.mevenide.netbeans.apisupport;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
@@ -43,11 +42,11 @@ public class IDEOutputListenerProvider implements OutputProcessor {
         "mojo-execute#nbm:run-ide", //NOI18N
         "mojo-execute#nbm:run-platform" //NOI18N
     };
-    private NbMavenProject project;
+    private Project project;
     private ClassPath classpath;
     
     /** Creates a new instance of TestOutputListenerProvider */
-    public IDEOutputListenerProvider(NbMavenProject proj) {
+    public IDEOutputListenerProvider(Project proj) {
         project = proj;
         classpath = createCP(project, new HashSet<Project>());
     }
@@ -55,7 +54,7 @@ public class IDEOutputListenerProvider implements OutputProcessor {
     private ClassPath createCP(Project prj, HashSet<Project> parents) {
         parents.add(prj);
         List<ClassPath> list = new ArrayList<ClassPath>();
-        ClassPathProviderImpl cpp = prj.getLookup().lookup(ClassPathProviderImpl.class);
+        ProjectSourcesClassPathProvider cpp = prj.getLookup().lookup(ProjectSourcesClassPathProvider.class);
         ClassPath[] cp = cpp.getProjectClassPaths(ClassPath.EXECUTE);
         for (ClassPath c : cp) {
             list.add(c);

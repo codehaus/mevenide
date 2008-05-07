@@ -16,7 +16,7 @@
  */
 package org.codehaus.mevenide.netbeans.persistence;
 
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
 import org.openide.util.Lookup;
@@ -40,7 +40,7 @@ public class PersistenceLookupProvider implements LookupProvider {
      */
     public Lookup createAdditionalLookup(Lookup context) {
 //        // if there's more items later, just do a proxy..
-        NbMavenProject prj = context.lookup(NbMavenProject.class);
+        Project prj = context.lookup(Project.class);
         assert prj != null;
         return Lookups.fixed(new Object[] {
             new MavenPersistenceProvider(prj),

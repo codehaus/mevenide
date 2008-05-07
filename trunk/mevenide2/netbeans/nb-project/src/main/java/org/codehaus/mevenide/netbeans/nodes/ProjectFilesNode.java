@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 
+import org.codehaus.mevenide.netbeans.api.NodeUtils;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeEvent;

@@ -20,9 +20,9 @@ import java.awt.event.ActionEvent;
 import java.util.List;
 import javax.swing.AbstractAction;
 import org.apache.maven.artifact.Artifact;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.repository.dependency.ui.AddDependencyUI;
+import org.netbeans.api.project.Project;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
 import org.openide.util.NbBundle;
@@ -62,8 +62,8 @@ public class AddAsDependencyAction extends AbstractAction {
         });
         Object ret = DialogDisplayer.getDefault().notify(dd);
         if (adui.getAddButton() == ret) {
-            List<NbMavenProject> nmps = adui.getSelectedMavenProjects();
-            for (NbMavenProject project : nmps) {
+            List<Project> nmps = adui.getSelectedMavenProjects();
+            for (Project project : nmps) {
                 ModelUtils.addDependency(project.getProjectDirectory().getFileObject("pom.xml") /*NOI18N*/,
                         record.getGroupId(), record.getArtifactId(),
                         record.getVersion(), record.getType(), null, null,false);

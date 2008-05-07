@@ -29,8 +29,9 @@ import org.apache.maven.artifact.resolver.ResolutionNode;
 import org.apache.maven.execution.DefaultMavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenExecutionResult;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.netbeans.api.project.Project;
+import org.openide.filesystems.FileUtil;
 import org.openide.util.Exceptions;
 
 /**
@@ -46,11 +47,11 @@ public class GraphDocumentFactory {
     /**
      * creates a graph document for transitive dependencies
      */
-    static DependencyGraphScene createDependencyDocument(NbMavenProject project) {
+    static DependencyGraphScene createDependencyDocument(Project project) {
         DependencyGraphScene scene = new DependencyGraphScene();
         try {
                 MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-                req.setPomFile(project.getPOMFile().getAbsolutePath());
+                req.setPomFile(FileUtil.toFile(project.getProjectDirectory().getFileObject("pom.xml")).getAbsolutePath());
                 MavenExecutionResult res = EmbedderFactory.getOnlineEmbedder().readProjectWithDependencies(req);
                 if (res.hasExceptions()) {
                     for (Object e : res.getExceptions()) {

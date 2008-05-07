@@ -21,8 +21,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.URI;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScopes;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
@@ -50,7 +50,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     /**
      * Creates a new instance of MavenPersistenceProvider
      */
-    public MavenPersistenceProvider(NbMavenProject proj)
+    public MavenPersistenceProvider(Project proj)
     {
         locProvider    = new PersistenceLocationProviderImpl(proj);
         scopeProvider  = new PersistenceScopeProviderImpl(locProvider, proj);
@@ -99,7 +99,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     //TODO rewrite..
     private class ResourceListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent event) {
-            if (NbMavenProject.PROP_RESOURCE.equals(event.getPropertyName())) {
+            if (ProjectURLWatcher.PROP_RESOURCE.equals(event.getPropertyName())) {
                 URI newval = (URI)event.getNewValue();
                 if (  newval.getPath().endsWith(PersistenceLocationProviderImpl.DEF_PERSISTENCE)
                    || newval.getPath().endsWith(PersistenceLocationProviderImpl.ALT_PERSISTENCE)) {

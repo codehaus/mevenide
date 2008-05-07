@@ -31,7 +31,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
 import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
@@ -53,6 +53,18 @@ import org.openide.util.RequestProcessor;
  */
 //TODO rename to something else doesn't describe correctly what it does..
 public final class ProjectURLWatcher {
+
+    /**
+     * TODO comment
+     * the only property change fired by the class, means that the pom file
+     * has changed.
+     */
+    public static final String PROP_PROJECT = "MavenProject"; //NOI18N
+    /**
+     * TODO comment
+     * 
+     */
+    public static final String PROP_RESOURCE = "RESOURCES"; //NOI18N
     
     private NbMavenProject project;
     private PropertyChangeSupport support;
@@ -84,6 +96,11 @@ public final class ProjectURLWatcher {
         }
         
     }
+
+    public URI getEarAppDirectory() {
+        return project.getEarAppDirectory();
+    }
+
     
     private class FCHSL implements FileChangeSupportListener {
 
@@ -156,6 +173,24 @@ public final class ProjectURLWatcher {
     public MavenProject getMavenProject() {
         return project.getOriginalMavenProject();
     }
+
+    /**
+     * 
+     * @param test are test resources requested, if false, resources for base sources are returned
+     * @return
+     */
+    public URI[] getResources(boolean test) {
+        return project.getResources(test);
+    }
+
+    /**
+     * 
+     * @return
+     */
+    public URI getWebAppDirectory() {
+        return project.getWebAppDirectory();
+    }
+    
     
     public static final String TYPE_JAR = "jar"; //NOI18N
     public static final String TYPE_WAR = "war"; //NOI18N
@@ -224,7 +259,7 @@ public final class ProjectURLWatcher {
     
     //TODO better do in ReqProcessor to break the listener chaining??
     private void fireChange(URI uri) {
-        support.firePropertyChange(NbMavenProject.PROP_RESOURCE, null, uri);
+        support.firePropertyChange(PROP_RESOURCE, null, uri);
     }
     
     /**
@@ -242,7 +277,7 @@ public final class ProjectURLWatcher {
         if (fo != null) {
             fo.refresh();
         }
-        support.firePropertyChange(NbMavenProject.PROP_PROJECT, null, null);
+        support.firePropertyChange(PROP_PROJECT, null, null);
     }
     
     /**

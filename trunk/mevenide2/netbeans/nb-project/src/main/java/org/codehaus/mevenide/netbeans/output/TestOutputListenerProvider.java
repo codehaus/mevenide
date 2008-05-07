@@ -23,7 +23,7 @@ import java.io.InputStreamReader;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;

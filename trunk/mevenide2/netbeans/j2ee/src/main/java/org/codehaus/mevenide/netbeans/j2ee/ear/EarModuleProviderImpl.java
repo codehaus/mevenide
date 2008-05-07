@@ -17,8 +17,8 @@
 package org.codehaus.mevenide.netbeans.j2ee.ear;
 
 import java.io.File;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -48,14 +48,16 @@ import org.openide.filesystems.FileUtil;
 public class EarModuleProviderImpl extends J2eeApplicationProvider implements EarProvider  {
     
     private EarImpl earimpl;
-    private NbMavenProject project;
+    private Project project;
     private String serverInstanceID;
     private J2eeModule j2eemodule;
+    private ProjectURLWatcher mavenproject;
 
     
     /** Creates a new instance of MavenEarProvider */
-    public EarModuleProviderImpl(NbMavenProject proj) {
+    public EarModuleProviderImpl(Project proj) {
         project = proj;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
         earimpl = new EarImpl(project, this);
     }
     
@@ -71,11 +73,11 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
         
-        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        String val = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+        String server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {
             //try checking for old values..
-            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
         }
         String instanceFound = null;
         if (server != null) {

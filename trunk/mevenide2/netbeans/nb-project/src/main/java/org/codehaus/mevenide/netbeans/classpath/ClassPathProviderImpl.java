@@ -24,8 +24,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.codehaus.mevenide.netbeans.FileUtilities;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.codehaus.mevenide.netbeans.api.execute.ActiveJ2SEPlatformProvider;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.platform.JavaPlatform;
@@ -39,7 +40,7 @@ import org.openide.filesystems.FileUtil;
  *
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public final class ClassPathProviderImpl implements ClassPathProvider, ActiveJ2SEPlatformProvider {
+public final class ClassPathProviderImpl implements ClassPathProvider, ActiveJ2SEPlatformProvider, ProjectSourcesClassPathProvider {
     
     private static final int TYPE_SRC = 0;
     private static final int TYPE_TESTSRC = 1;

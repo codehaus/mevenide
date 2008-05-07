@@ -26,10 +26,10 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.ear.model.ApplicationMetadataModelImpl;
 import org.codehaus.mevenide.netbeans.spi.debug.AdditionalDebuggedProjects;
 import org.codehaus.plexus.util.StringInputStream;
@@ -71,13 +71,16 @@ class EarImpl implements EarImplementation,
                          ModuleChangeReporter, 
                          AdditionalDebuggedProjects {
 
-    private NbMavenProject project;
+    private Project project;
     private EarModuleProviderImpl provider;
     private MetadataModel<ApplicationMetadata> metadataModel;
+    private ProjectURLWatcher mavenproject;
     
     /** Creates a new instance of EarImpl */
-    EarImpl(NbMavenProject proj, EarModuleProviderImpl prov) {
+    EarImpl(Project proj, EarModuleProviderImpl prov) {
         project = proj;
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        
         provider = prov;
     }
 
@@ -87,7 +90,7 @@ class EarImpl implements EarImplementation,
      */
     public String getJ2eePlatformVersion() {
         //try to apply the hint if it exists.
-        String version = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
+        String version = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_J2EE_VERSION);
         if (version != null) {
             return version;
         }
@@ -158,7 +161,7 @@ class EarImpl implements EarImplementation,
             String generatedLoc = PluginPropertyUtils.getPluginProperty(project, Constants.GROUP_APACHE_PLUGINS, 
                                               Constants.PLUGIN_EAR, "generatedDescriptorLocation", "generate-application-xml");//NOI18N
             if (generatedLoc == null) {
-                generatedLoc = project.getOriginalMavenProject().getBuild().getDirectory();
+                generatedLoc = mavenproject.getMavenProject().getBuild().getDirectory();
             }
             FileObject fo = FileUtilities.convertURItoFileObject(FileUtilities.getDirURI(project.getProjectDirectory(), generatedLoc));
             if (fo != null) {
@@ -247,7 +250,7 @@ class EarImpl implements EarImplementation,
      */
     public FileObject getArchive() throws IOException {
         //TODO get the correct values for the plugin properties..
-        MavenProject proj = project.getOriginalMavenProject();
+        MavenProject proj = mavenproject.getMavenProject();
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
         File fil = FileUtil.normalizeFile(new File(loc, finalName + ".ear"));//NOI18N
@@ -282,7 +285,7 @@ class EarImpl implements EarImplementation,
      * @return FileObject for the content directory
      */
     public FileObject getContentDirectory() throws IOException {
-        MavenProject proj = project.getOriginalMavenProject();
+        MavenProject proj = mavenproject.getMavenProject();
         String finalName = proj.getBuild().getFinalName();
         String loc = proj.getBuild().getDirectory();
         File fil = FileUtil.normalizeFile(new File(loc, finalName));
@@ -335,7 +338,7 @@ class EarImpl implements EarImplementation,
     }
 
     public J2eeModule[] getModules() {
-        Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
+        Iterator it = mavenproject.getMavenProject().getArtifacts().iterator();
         List toRet = new ArrayList();
         while (it.hasNext()) {
             Artifact elem = (Artifact) it.next();
@@ -365,7 +368,7 @@ class EarImpl implements EarImplementation,
     }
     
     public List<Project> getProjects() {
-        Iterator it = project.getOriginalMavenProject().getArtifacts().iterator();
+        Iterator it = mavenproject.getMavenProject().getArtifacts().iterator();
         List<Project> toRet = new ArrayList<Project>();
         while (it.hasNext()) {
             Artifact elem = (Artifact) it.next();
@@ -390,7 +393,7 @@ class EarImpl implements EarImplementation,
     File getDDFile(String path) {
 //        System.out.println("getDD file=" + path);
         //TODO what is the actual path.. sometimes don't have any sources for deployment descriptors..
-        URI dir = project.getEarAppDirectory();
+        URI dir = mavenproject.getEarAppDirectory();
         File fil = new File(new File(dir), path);
         if (!fil.getParentFile().exists()) {
             fil.getParentFile().mkdirs();
@@ -494,7 +497,7 @@ class EarImpl implements EarImplementation,
 
     public File getResourceDirectory() {
         //TODO .. in ant projects equals to "setup" directory.. what's it's use?
-        File toRet = new File(project.getPOMFile().getParentFile(), "src" + File.separator + "main" + File.separator + "setup");//NOI18N
+        File toRet = new File(FileUtil.toFile(project.getProjectDirectory()), "src" + File.separator + "main" + File.separator + "setup");//NOI18N
         return toRet;
     }
 

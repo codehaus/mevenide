@@ -16,8 +16,8 @@
  */
 package org.codehaus.mevenide.netbeans.persistence;
 
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceLocationProvider;
 import org.netbeans.modules.j2ee.persistence.spi.PersistenceScopeFactory;
@@ -43,9 +43,9 @@ public class PersistenceScopeProviderImpl implements PersistenceScopeProvider
      * @param cpProvider the PersistenceClasspathProvider instance to use for lookups
      */
     public PersistenceScopeProviderImpl(PersistenceLocationProvider locProvider,
-            NbMavenProject project)
+            Project project)
     {
-        ClassPathProviderImpl classpath = project.getLookup().lookup(ClassPathProviderImpl.class);
+        ProjectSourcesClassPathProvider classpath = project.getLookup().lookup(ProjectSourcesClassPathProvider.class);
         persistenceScopeImpl = new PersistenceScopeImpl(locProvider, classpath);
         persistenceScope = PersistenceScopeFactory.createPersistenceScope(persistenceScopeImpl);
     }

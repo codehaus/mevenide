@@ -16,8 +16,8 @@
  */
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -44,15 +44,17 @@ import org.openide.filesystems.FileObject;
 public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarProvider, EjbJarsInProject  {
     
     private EjbJarImpl ejbimpl;
-    private NbMavenProject project;
+    private Project project;
     private String serverInstanceID;
     private J2eeModule j2eemodule;    
     private EjbJar apiEjbJar;
+    private ProjectURLWatcher mavenproject;
     
     /** Creates a new instance of EjbModuleProviderImpl */
-    public EjbModuleProviderImpl(NbMavenProject proj) {
+    public EjbModuleProviderImpl(Project proj) {
         project = proj;
         ejbimpl = new EjbJarImpl(project, this);
+        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
     }
     
     /**
@@ -69,11 +71,11 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     private void loadPersistedServerId(boolean ensureReady) {
         String oldId = getServerInstanceID();
         String oldSer = getServerID();
-        String val = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
-        String server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
+        String val = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
+        String server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {
             //try checking for old values..
-            server = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
+            server = mavenproject.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_OLD);
         }
         String instanceFound = null;
         if (server != null) {
@@ -114,7 +116,7 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     public EjbJar findEjbJar(FileObject file) {
         Project proj = FileOwnerQuery.getOwner (file);
         if (proj != null) {
-            proj = proj.getLookup().lookup(NbMavenProject.class);
+            proj = proj.getLookup().lookup(Project.class);
         }
         if (proj != null && project == proj) {
             if (ejbimpl.isValid()) {
