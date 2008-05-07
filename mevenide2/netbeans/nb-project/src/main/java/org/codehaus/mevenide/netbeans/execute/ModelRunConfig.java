@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.execute;
 
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -30,11 +31,12 @@ public final class ModelRunConfig extends BeanRunConfig {
     private NetbeansActionMapping model;
     
     /** Creates a new instance of ModelRunConfig */
-    public ModelRunConfig(NbMavenProject proj, NetbeansActionMapping mod) {
+    public ModelRunConfig(Project proj, NetbeansActionMapping mod) {
         model = mod;
-        setProject(proj);
-        setExecutionName(proj.getName());
-        setTaskDisplayName(proj.getName());
+        NbMavenProject nbprj = proj.getLookup().lookup(NbMavenProject.class);
+        setProject(nbprj);
+        setExecutionName(nbprj.getName());
+        setTaskDisplayName(nbprj.getName());
         setProperties(model.getProperties());
         setGoals(model.getGoals());
         setExecutionDirectory(FileUtil.toFile(proj.getProjectDirectory()));

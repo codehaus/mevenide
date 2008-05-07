@@ -19,9 +19,9 @@ package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
@@ -53,7 +53,7 @@ public class J2eeActionsProvider extends AbstractActionGoalProvider {
     }
 
     @Override
-    public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+    public boolean isActionEnable(String action, Project project, Lookup lookup) {
         if (ActionProvider.COMMAND_RUN_SINGLE.equals(action) || 
             ActionProvider.COMMAND_DEBUG_SINGLE.equals(action)) {
             //only enable for doc root fileobjects..
@@ -72,7 +72,8 @@ public class J2eeActionsProvider extends AbstractActionGoalProvider {
         } else if (ActionProvider.COMMAND_RUN.equals(action) || 
                    ActionProvider.COMMAND_DEBUG.equals(action)) {
             //performance, don't read the xml file to figure enablement..
-            return supported.contains(project.getProjectWatcher().getPackagingType());
+            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            return supported.contains(mp.getPackagingType());
         } else {
             return false;
         }

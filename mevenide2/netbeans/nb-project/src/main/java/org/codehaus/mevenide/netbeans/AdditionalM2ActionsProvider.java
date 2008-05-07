@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.netbeans.api.project.Project;
 import org.openide.util.Lookup;
 
 /**
@@ -40,16 +41,16 @@ public interface AdditionalM2ActionsProvider {
      * @param actionName one of the ActionProvider constants
      * @returns RunConfig or null, if action not supported
      */
-    RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup);
+    RunConfig createConfigForDefaultAction(String actionName, Project project, Lookup lookup);
 
     /**
      * get a action to maven mapping configuration for the given action. No context specific value replacements
      * happen.
      */
-    NetbeansActionMapping getMappingForAction(String actionName, NbMavenProject project);
+    NetbeansActionMapping getMappingForAction(String actionName, Project project);
 
     /**
      * return  action supported or not
      */
-    boolean isActionEnable(String action, NbMavenProject project, Lookup lookup);
+    boolean isActionEnable(String action, Project project, Lookup lookup);
 }

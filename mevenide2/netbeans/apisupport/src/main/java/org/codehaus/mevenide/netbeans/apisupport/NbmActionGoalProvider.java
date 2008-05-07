@@ -48,7 +48,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
 
         @Override
-        public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+        public boolean isActionEnable(String action, Project project, Lookup lookup) {
             return isActionEnable(action, project, lookup);
         }
     };
@@ -62,7 +62,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         }
 
         @Override
-        public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+        public boolean isActionEnable(String action, Project project, Lookup lookup) {
             return isActionEnable(action, project, lookup);
         }
     };
@@ -87,7 +87,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         clearingTask.setPriority(Thread.MIN_PRIORITY);
     }
 
-    public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+    public boolean isActionEnable(String action, Project project, Lookup lookup) {
         if (!ActionProvider.COMMAND_RUN.equals(action) &&
                 !ActionProvider.COMMAND_DEBUG.equals(action) &&
                 !"nbmreload".equals(action)) {
@@ -112,7 +112,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     }
 
     public RunConfig createConfigForDefaultAction(String actionName,
-            NbMavenProject project,
+            Project project,
             Lookup lookup) {
         if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
                 !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
@@ -129,7 +129,7 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
     }
 
     public NetbeansActionMapping getMappingForAction(String actionName,
-            NbMavenProject project) {
+            Project project) {
         if (!ActionProvider.COMMAND_RUN.equals(actionName) &&
                 !ActionProvider.COMMAND_DEBUG.equals(actionName) &&
                 !"nbmreload".equals(actionName)) {
@@ -144,18 +144,24 @@ public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
         return null;
     }
 
-    private RunConfig createConfig(String actionName, NbMavenProject project, Lookup lookup, AbstractActionGoalProvider delegate) {
+    private RunConfig createConfig(String actionName, Project project, Lookup lookup, AbstractActionGoalProvider delegate) {
         RunConfig conf = delegate.createConfigForDefaultAction(actionName, project, lookup);
-        if (conf != null && project.getOriginalMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
-            conf.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
+        if (conf != null) {
+            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            if (mp.getMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
+                conf.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
+            }
         }
         return conf;
     }
 
-    private NetbeansActionMapping createMapping(String actionName, NbMavenProject project, AbstractActionGoalProvider delegate) {
+    private NetbeansActionMapping createMapping(String actionName, Project project, AbstractActionGoalProvider delegate) {
         NetbeansActionMapping mapp = delegate.getMappingForAction(actionName, project);
-        if (mapp != null && project.getOriginalMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
-            mapp.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
+        if (mapp != null) {
+            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            if (mp.getMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
+                mapp.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
+            }
         }
         return mapp;
     }
