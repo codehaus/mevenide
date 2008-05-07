@@ -18,7 +18,7 @@
 package org.codehaus.mevenide.netbeans.api.output;
 
 import java.util.Set;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 
 /**
  * Factory of the OutputProcessors for given project, each build
@@ -33,5 +33,5 @@ public interface OutputProcessorFactory {
      * returns a Set of <code>OutputProcessor</code> instances or empty set, never null.
      *
      */
-    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project);
+    public Set<OutputProcessor> createProcessorsSet(Project project);
 }

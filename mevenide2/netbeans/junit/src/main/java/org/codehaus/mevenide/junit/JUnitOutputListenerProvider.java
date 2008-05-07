@@ -30,11 +30,13 @@ import org.apache.tools.ant.module.spi.AntLogger;
 import org.apache.tools.ant.module.spi.AntSession;
 import org.apache.tools.ant.module.spi.TaskStructure;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.output.NotifyFinishOutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.netbeans.api.project.Project;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -45,7 +47,8 @@ import org.openide.util.Lookup;
  * @author mkleint
  */
 public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor {
-    private NbMavenProject prj;
+    private Project prj;
+    private ProjectURLWatcher mavenproject;
     private AntSession session;
     private AntLogger unitLogger;
     private Pattern runningPattern;
@@ -57,8 +60,9 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
     
     private Logger LOG = Logger.getLogger(JUnitOutputListenerProvider.class.getName());
     
-    public JUnitOutputListenerProvider(NbMavenProject project) {
+    public JUnitOutputListenerProvider(Project project) {
         prj = project;
+        mavenproject = prj.getLookup().lookup(ProjectURLWatcher.class);
         runningPattern = Pattern.compile("(?:\\[surefire\\] )?Running (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern = Pattern.compile("Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern2 = Pattern.compile("Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N
@@ -159,7 +163,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
             
             String executing ="Executing '/home/mkleint/javatools/jdk1.5.0_09/jre/bin/java' with arguments:\n" +  //NOI18N
 "'-classpath'\n" +  //NOI18N
-"'" + prj.getOriginalMavenProject().getBuild().getTestOutputDirectory() + "'\n" + //NOI18N
+"'" + mavenproject.getMavenProject().getBuild().getTestOutputDirectory() + "'\n" + //NOI18N
 "'org.apache.tools.ant.taskdefs.optional.junit.JUnitTestRunner'\n" +  //NOI18N
 "'" + testSuite.getAttributeValue("name") + "'\n" +                      //NOI18N
 //'filtertrace=true'

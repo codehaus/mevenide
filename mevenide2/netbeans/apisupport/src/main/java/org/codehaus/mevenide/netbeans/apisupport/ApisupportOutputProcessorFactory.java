@@ -19,9 +19,9 @@ package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -33,7 +33,7 @@ public class ApisupportOutputProcessorFactory implements OutputProcessorFactory 
     public ApisupportOutputProcessorFactory() {
     }
 
-    public Set<OutputProcessor> createProcessorsSet(NbMavenProject project) {
+    public Set<OutputProcessor> createProcessorsSet(Project project) {
         Set<OutputProcessor> toReturn = new HashSet<OutputProcessor>();
         if (project != null) {
             toReturn.add(new IDEOutputListenerProvider(project));
