@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.profiles.Profile;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
+import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.Ear;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
@@ -38,7 +38,7 @@ import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
  */
 public class EarRunCustomizerPanel extends javax.swing.JPanel {
 
-    private NbMavenProject project;
+    private Project project;
     private ModelHandle handle;
     private Ear module;
     private ArrayList listeners;
@@ -46,7 +46,7 @@ public class EarRunCustomizerPanel extends javax.swing.JPanel {
     /**
      * Creates new form EjbRunCustomizerPanel
      */
-    public EarRunCustomizerPanel(ModelHandle handle, NbMavenProject project) {
+    public EarRunCustomizerPanel(ModelHandle handle, Project project) {
         initComponents();
         this.handle = handle;
         this.project = project;

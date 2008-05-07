@@ -18,7 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.io.File;
 import java.util.Collections;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
@@ -40,11 +40,11 @@ class WebAppFilterNode extends FilterNode {
     private boolean isTopLevelNode = false;
     private FileObject file;
     
-    WebAppFilterNode(NbMavenProject proj, Node orig, File root) {
+    WebAppFilterNode(Project proj, Node orig, File root) {
         this(proj, orig, root, true);
     }
     
-    private WebAppFilterNode(NbMavenProject proj, Node orig, File root, boolean isTopLevel) {
+    private WebAppFilterNode(Project proj, Node orig, File root, boolean isTopLevel) {
         super(orig, new WebAppFilterChildren(proj, orig, root));
         isTopLevelNode = isTopLevel;
         if (isTopLevel) {
@@ -130,8 +130,8 @@ class WebAppFilterNode extends FilterNode {
     
     static class WebAppFilterChildren extends FilterNode.Children {
         private File root;
-        private NbMavenProject project;
-        WebAppFilterChildren(NbMavenProject proj, Node original, File rootpath) {
+        private Project project;
+        WebAppFilterChildren(Project proj, Node original, File rootpath) {
             super(original);
             root = rootpath;
             project = proj;

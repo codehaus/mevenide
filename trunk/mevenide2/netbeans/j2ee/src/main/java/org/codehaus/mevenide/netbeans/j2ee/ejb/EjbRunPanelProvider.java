@@ -18,9 +18,7 @@
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.api.project.Project;
@@ -54,7 +52,7 @@ public class EjbRunPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        NbMavenProject project = context.lookup(NbMavenProject.class);
+        Project project = context.lookup(Project.class);
         final EjbRunCustomizerPanel panel =  new EjbRunCustomizerPanel(handle, project);
         category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

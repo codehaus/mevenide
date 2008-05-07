@@ -18,7 +18,6 @@
 package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.util.ArrayList;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
