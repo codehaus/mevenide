@@ -31,13 +31,14 @@ import java.util.List;
 import java.util.Map;
 import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.netbeans.spi.project.ActionProvider;
@@ -79,10 +80,11 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         return files.toArray(new FileObject[files.size()]);
     }
 
-    public boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+    public boolean isActionEnable(String action, Project project, Lookup lookup) {
         ActionToGoalMapping rawMappings = getRawMappings();
         Iterator it = rawMappings.getActions().iterator();
-        String prjPack = project.getProjectWatcher().getPackagingType();
+        ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+        String prjPack = mp.getPackagingType();
         while (it.hasNext()) {
             NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
             if (action.equals(elem.getActionName()) &&
@@ -95,7 +97,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
         return false;
     }
 
-    public final RunConfig createConfigForDefaultAction(String actionName, NbMavenProject project, Lookup lookup) {
+    public final RunConfig createConfigForDefaultAction(String actionName, Project project, Lookup lookup) {
         FileObject[] fos = extractFileObjectsfromLookup(lookup);
         String relPath = null;
         String group = null;
@@ -200,7 +202,7 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
      * No replacements happen.
      * The instance returned is always a new copy, can be modified or reused.
      */
-    public NetbeansActionMapping getMappingForAction(String actionName, NbMavenProject project) {
+    public NetbeansActionMapping getMappingForAction(String actionName, Project project) {
         NetbeansActionMapping action = null;
         try {
             // just a converter for the To-Object reader..
@@ -208,7 +210,8 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
             // basically doing a copy here..
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
-            String prjPack = project.getProjectWatcher().getPackagingType();
+            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            String prjPack = mp.getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
@@ -232,14 +235,15 @@ public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsP
      */
     protected abstract InputStream getActionDefinitionStream();
 
-    private RunConfig mapGoalsToAction(NbMavenProject project, String actionName, HashMap replaceMap) {
+    private RunConfig mapGoalsToAction(Project project, String actionName, HashMap replaceMap) {
         try {
             // TODO need some caching really badly here..
             Reader read = performDynamicSubstitutions(replaceMap, getRawMappingsAsString());
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
             NetbeansActionMapping action = null;
-            String prjPack = project.getProjectWatcher().getPackagingType();
+            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            String prjPack = mp.getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
                 if (actionName.equals(elem.getActionName()) &&
