@@ -179,15 +179,17 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
                 }
             }
         }
-        List<String> modules = lineage.getOriginatingModel().getModules();
-        File basedir = FileUtil.normalizeFile(file.getParentFile());
-        for (String module : modules) {
-            File childPom = FileUtil.normalizeFile(new File(basedir, module));
-            if (childPom.exists() && !childPom.isFile()) {
-                childPom = new File(childPom, "pom.xml"); //NOI18N
-            } 
-            if (childPom.isFile()) {
-                extractProfilesFromModelLineage(childPom, profileIds);
+        if (lineage != null && lineage.getOriginatingModel() != null) {
+            List<String> modules = lineage.getOriginatingModel().getModules();
+            File basedir = FileUtil.normalizeFile(file.getParentFile());
+            for (String module : modules) {
+                File childPom = FileUtil.normalizeFile(new File(basedir, module));
+                if (childPom.exists() && !childPom.isFile()) {
+                    childPom = new File(childPom, "pom.xml"); //NOI18N
+                }
+                if (childPom.isFile()) {
+                    extractProfilesFromModelLineage(childPom, profileIds);
+                }
             }
         }
     }
