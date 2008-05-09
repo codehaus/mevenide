@@ -606,6 +606,32 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         }
         return infos;
     }
+    
+    public List<NBVersionInfo> findBySHA1(final String sha1, List<RepositoryInfo> repos) {
+        final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
+        final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
+        try {
+            MUTEX.writeAccess(new Mutex.ExceptionAction() {
+
+                public Object run() throws Exception {
+                    checkIndexAvailability(allrepos);
+                    loadIndexingContext(allrepos);
+                    try {
+                        BooleanQuery bq = new BooleanQuery();
+                        bq.add(new BooleanClause((indexer.constructQuery(ArtifactInfo.SHA1, sha1)), BooleanClause.Occur.SHOULD));
+                        Collection<ArtifactInfo> search = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR, bq);
+                        infos.addAll(convertToNBVersionInfo(search));
+                    } finally {
+                        unloadIndexingContext(allrepos);
+                    }
+                    return null;
+                }
+            });
+        } catch (MutexException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return infos;
+    }
 
     public List<NBVersionInfo> findArchetypes(List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
