@@ -46,14 +46,14 @@ import org.openide.util.NbBundle;
  */
 class ProjectOpenedHookImpl extends ProjectOpenedHook {
    
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private List<URI> uriReferences = new ArrayList<URI>();
 
     // ui logging
     static final String UI_LOGGER_NAME = "org.netbeans.ui.maven.project"; //NOI18N
     static final Logger UI_LOGGER = Logger.getLogger(UI_LOGGER_NAME);
     
-    ProjectOpenedHookImpl(NbMavenProject proj) {
+    ProjectOpenedHookImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
     

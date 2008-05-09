@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import javax.swing.Action;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileStateInvalidException;
@@ -40,7 +40,7 @@ import org.openide.util.lookup.Lookups;
 class OthersRootNode extends AnnotatedAbstractNode {
     private FileObject file;
     
-    OthersRootNode(NbMavenProject mavproject, boolean testResource, FileObject fo) {
+    OthersRootNode(NbMavenProjectImpl mavproject, boolean testResource, FileObject fo) {
         super(new OthersRootChildren(mavproject, testResource), Lookups.fixed(fo, DataFolder.findFolder(fo)));
         setName(testResource ? "OtherTestRoots" : "OtherRoots"); //NOI18N
         setDisplayName(testResource ? org.openide.util.NbBundle.getMessage(OthersRootNode.class, "LBL_Other_Test_Sources") : org.openide.util.NbBundle.getMessage(OthersRootNode.class, "LBL_Other_Sources"));

@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -41,11 +41,11 @@ public class UserActionGoalProvider extends AbstractMavenActionsProvider {
     
     public static final String FILENAME = "nbactions.xml"; //NOI18N
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private Date lastModified = new Date();
     private boolean lastTimeExists = true;
     /** Creates a new instance of UserActionGoalProvider */
-    public UserActionGoalProvider(NbMavenProject project) {
+    public UserActionGoalProvider(NbMavenProjectImpl project) {
         this.project = project;
     }
     

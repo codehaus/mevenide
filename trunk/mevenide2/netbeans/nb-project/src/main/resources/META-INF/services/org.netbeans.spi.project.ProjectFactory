@@ -1,2 +1,3 @@
-org.codehaus.mevenide.netbeans.NbMavenProjectFactory
+org.codehaus.mevenide.netbeans.NbMavenProjectImpl
+Factory
 #position=666

@@ -32,7 +32,7 @@ import javax.swing.Icon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.ProjectInformation;
@@ -64,7 +64,7 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_TESTSOURCE = "2TestSourceRoot"; //NOI18N
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private final List<ChangeListener> listeners;
     
     private Map<String, SourceGroup> javaGroup;
@@ -74,13 +74,13 @@ public class MavenSourcesImpl implements Sources {
     
     
     /** Creates a new instance of MavenSourcesImpl */
-    public MavenSourcesImpl(NbMavenProject proj) {
+    public MavenSourcesImpl(NbMavenProjectImpl proj) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
         javaGroup = new TreeMap<String, SourceGroup>();
-        ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
+        NbMavenProject.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(event.getPropertyName())) {
                     checkChanges(true);
                 }
             }
@@ -279,9 +279,9 @@ public class MavenSourcesImpl implements Sources {
         private final String displayName;
         private final Icon icon = null;
         private final Icon openedIcon = null;
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         
-        OtherGroup(NbMavenProject p, FileObject rootFold, String nm, String displayNm/*,
+        OtherGroup(NbMavenProjectImpl p, FileObject rootFold, String nm, String displayNm/*,
                 Icon icn, Icon opened*/) {
             project = p;
             rootFolder = rootFold;
@@ -358,9 +358,9 @@ public class MavenSourcesImpl implements Sources {
         private final String displayName;
         private final Icon icon = null;
         private final Icon openedIcon = null;
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         
-        GeneratedGroup(NbMavenProject p, FileObject rootFold, String nm, String displayNm/*,
+        GeneratedGroup(NbMavenProjectImpl p, FileObject rootFold, String nm, String displayNm/*,
                 Icon icn, Icon opened*/) {
             project = p;
             rootFolder = rootFold;

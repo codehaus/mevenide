@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 import java.util.jar.Manifest;
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.plexus.util.IOUtil;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.java.queries.AccessibilityQueryImplementation;
@@ -37,7 +37,7 @@ import org.openide.util.Exceptions;
  * @author mkleint
  */
 public class AccessQueryImpl implements AccessibilityQueryImplementation {
-    private ProjectURLWatcher mavenProject;
+    private NbMavenProject mavenProject;
     private Project project;
     private WeakReference<List<Pattern>> ref;
     
@@ -46,7 +46,7 @@ public class AccessQueryImpl implements AccessibilityQueryImplementation {
     
     public AccessQueryImpl(Project prj) {
         project = prj;
-        mavenProject = prj.getLookup().lookup(ProjectURLWatcher.class);
+        mavenProject = prj.getLookup().lookup(NbMavenProject.class);
         
     }
     

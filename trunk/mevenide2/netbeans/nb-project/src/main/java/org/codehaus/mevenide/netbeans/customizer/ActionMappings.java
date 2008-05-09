@@ -44,7 +44,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.spi.grammar.GoalsProvider;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.TextValueCompleter;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
@@ -67,7 +67,7 @@ import org.openide.util.NbBundle;
  */
 public class ActionMappings extends javax.swing.JPanel {
     private static final String CUSTOM_ACTION_PREFIX = "CUSTOM-"; //NOI18N
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private ModelHandle handle;
     private HashMap<String, String> titles = new HashMap<String, String>();
     
@@ -130,7 +130,7 @@ public class ActionMappings extends javax.swing.JPanel {
     }
     
     /** Creates new form ActionMappings */
-    public ActionMappings(ModelHandle hand, NbMavenProject proj) {
+    public ActionMappings(ModelHandle hand, NbMavenProjectImpl proj) {
         this();
         project = proj;
         handle = hand;

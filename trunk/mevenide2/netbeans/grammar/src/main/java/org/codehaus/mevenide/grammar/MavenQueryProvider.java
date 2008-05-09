@@ -27,7 +27,7 @@ import java.util.Enumeration;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;

@@ -35,7 +35,7 @@ import javax.swing.JComponent;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
@@ -136,7 +136,7 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
                 }
                 Project prj = ProjectManager.getDefault().findProject(fDir);
                 if (prj != null) {
-                    prj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                    prj.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
                 }
             }
             return resultSet;
@@ -255,10 +255,10 @@ public class MavenWizardIterator implements WizardDescriptor.ProgressInstantiati
     private void addJavaRootFolders(FileObject fo) {
         try {
             Project prj = ProjectManager.getDefault().findProject(fo);
-            ProjectURLWatcher watch = prj.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watch = prj.getLookup().lookup(NbMavenProject.class);
             if (watch != null) {
                 // do not create java/test for pom type projects.. most probably not relevant.
-                if (! ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType())) {
+                if (! NbMavenProject.TYPE_POM.equals(watch.getPackagingType())) {
                     URI mainJava = FileUtilities.convertStringToUri(watch.getMavenProject().getBuild().getSourceDirectory());
                     URI testJava = FileUtilities.convertStringToUri(watch.getMavenProject().getBuild().getTestSourceDirectory());
                     File file = new File(mainJava);

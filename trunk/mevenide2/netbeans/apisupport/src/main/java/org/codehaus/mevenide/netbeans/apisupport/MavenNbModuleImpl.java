@@ -34,7 +34,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.codehaus.plexus.util.IOUtil;
@@ -100,7 +100,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     }
     
     public String getSpecVersion() {
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         String specVersion = AdaptNbVersion.adaptVersion(watch.getMavenProject().getVersion(), AdaptNbVersion.TYPE_SPECIFICATION);
         return specVersion;
     }
@@ -121,7 +121,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        MavenProject prj = project.getLookup().lookup(ProjectURLWatcher.class).getMavenProject();
+        MavenProject prj = project.getLookup().lookup(NbMavenProject.class).getMavenProject();
         //same fallback is in nbm-maven-plugin
         return prj.getGroupId() + "." + prj.getArtifactId(); //NOI18N
     }
@@ -173,7 +173,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                                  SpecificationVersion version,
                                  boolean useInCompiler) throws IOException {
         String artifactId = codeNameBase.replaceAll("\\.", "-"); //NOI18N
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
             Iterator it = set.iterator();
@@ -252,8 +252,8 @@ public class MavenNbModuleImpl implements NbModuleProvider {
                 }
                 try {
                     WriterUtils.writePomModel(fo, model);
-                    ProjectURLWatcher.fireMavenProjectReload(project);
-                    project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                    NbMavenProject.fireMavenProjectReload(project);
+                    project.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
                 } catch (IOException ex) {
                     ex.printStackTrace();
                 }
@@ -282,7 +282,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
      */ 
     public SpecificationVersion getDependencyVersion(String codenamebase) throws IOException {
         String artifactId = codenamebase.replaceAll("\\.", "-"); //NOI18N
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         Set set = watch.getMavenProject().getDependencyArtifacts();
         if (set != null) {
             Iterator it = set.iterator();
@@ -330,7 +330,7 @@ public class MavenNbModuleImpl implements NbModuleProvider {
     }
 
     public File getActivePlatformLocation() {
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         String installProp = watch.getMavenProject().getProperties().getProperty(PROP_NETBEANS_INSTALL);
         if (installProp != null) {
             File fil = new File(installProp);

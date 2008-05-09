@@ -17,7 +17,7 @@
 package org.codehaus.mevenide.netbeans;
 
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import java.awt.Image;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -93,7 +93,7 @@ import org.openide.util.NbBundle;
  * class as parameter, there's always just one instance per projects.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public final class NbMavenProject implements Project {
+public final class NbMavenProjectImpl implements Project {
 
     //TODO remove
     public static final String PROP_PROJECT = "MavenProject"; //NOI18N
@@ -113,7 +113,7 @@ public final class NbMavenProject implements Project {
     private ProblemReporterImpl problemReporter;
     private Info projectInfo;
     private MavenProject oldProject;
-    private ProjectURLWatcher watcher;
+    private NbMavenProject watcher;
     private ProjectState state;
     private ConfigurationProviderEnabler configEnabler;
     private M2AuxilaryConfigImpl auxiliary;
@@ -124,7 +124,7 @@ public final class NbMavenProject implements Project {
     static {
         // invokes static initializer of ModelHandle.class
         // that will assign value to the ACCESSOR field above
-        Class c = ProjectURLWatcher.class;
+        Class c = NbMavenProject.class;
         try {
             Class.forName(c.getName(), true, c.getClassLoader());
         } catch (Exception ex) {
@@ -134,16 +134,16 @@ public final class NbMavenProject implements Project {
 
     public static abstract class WatcherAccessor {
 
-        public abstract ProjectURLWatcher createWatcher(NbMavenProject proj);
+        public abstract NbMavenProject createWatcher(NbMavenProjectImpl proj);
 
-        public abstract void doFireReload(ProjectURLWatcher watcher);
+        public abstract void doFireReload(NbMavenProject watcher);
     }
 
     /**
      * Creates a new instance of MavenProject, should never be called by user code.
      * but only by MavenProjectFactory!!!
      */
-    NbMavenProject(FileObject folder, FileObject projectFO, File projectFile, ProjectState projectState) throws Exception {
+    NbMavenProjectImpl(FileObject folder, FileObject projectFO, File projectFile, ProjectState projectState) throws Exception {
         this.projectFile = projectFile;
         fileObject = projectFO;
         folderFileObject = folder;
@@ -163,7 +163,7 @@ public final class NbMavenProject implements Project {
         return projectFile;
     }
 
-    public ProjectURLWatcher getProjectWatcher() {
+    public NbMavenProject getProjectWatcher() {
         return watcher;
     }
 
@@ -186,15 +186,15 @@ public final class NbMavenProject implements Project {
                 project = res.getProject();
                 if (res.hasExceptions()) {
                     for (Object e : res.getExceptions()) {
-                        Logger.getLogger(NbMavenProject.class.getName()).log(Level.INFO, "Error on loading project " + projectFile.getAbsolutePath(), (Throwable)e); //NOI18N
+                        Logger.getLogger(NbMavenProjectImpl.class.getName()).log(Level.INFO, "Error on loading project " + projectFile.getAbsolutePath(), (Throwable)e); //NOI18N
                         if (e instanceof ArtifactResolutionException) {
                             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                                    NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Resolution_problem"),
+                                    NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_Artifact_Resolution_problem"),
                                     ((Exception) e).getMessage(), null);
                             problemReporter.addReport(report);
                         } else if (e instanceof ArtifactNotFoundException) {
                             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                                    NbBundle.getMessage(NbMavenProject.class, "TXT_Artifact_Not_Found"),
+                                    NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_Artifact_Not_Found"),
                                     ((Exception) e).getMessage(), null);
                             problemReporter.addReport(report);
                         } else if (e instanceof InvalidProjectModelException) {
@@ -208,7 +208,7 @@ public final class NbMavenProject implements Project {
                         } else if (e instanceof MissingModuleException) {
                             MissingModuleException exc = (MissingModuleException)e;
                             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                                    NbBundle.getMessage(NbMavenProject.class, "TXT_MissingSubmodule", exc.getModuleName()),
+                                    NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_MissingSubmodule", exc.getModuleName()),
                                     ((Exception) e).getMessage(), null);
                             problemReporter.addReport(report);
                         }
@@ -264,7 +264,7 @@ public final class NbMavenProject implements Project {
     public String getDisplayName() {
         String displayName = projectInfo.getDisplayName();
         if (displayName == null) {
-            displayName = NbBundle.getMessage(NbMavenProject.class, "LBL_NoProjectName");
+            displayName = NbBundle.getMessage(NbMavenProjectImpl.class, "LBL_NoProjectName");
         }
         return displayName;
     }
@@ -275,7 +275,7 @@ public final class NbMavenProject implements Project {
             desc = getOriginalMavenProject().getDescription();
         }
         if (desc == null) {
-            desc = NbBundle.getMessage(NbMavenProject.class, "LBL_DefaultDescription");
+            desc = NbBundle.getMessage(NbMavenProjectImpl.class, "LBL_DefaultDescription");
         }
         return desc;
     }
@@ -526,33 +526,33 @@ public final class NbMavenProject implements Project {
         }
 
         public String getName() {
-            String toReturn = NbMavenProject.this.getName();
+            String toReturn = NbMavenProjectImpl.this.getName();
             return toReturn;
         }
 
         public String getDisplayName() {
-            String toReturn = NbMavenProject.this.getOriginalMavenProject().getName();
+            String toReturn = NbMavenProjectImpl.this.getOriginalMavenProject().getName();
             if (toReturn == null) {
-                String grId = NbMavenProject.this.getOriginalMavenProject().getGroupId();
-                String artId = NbMavenProject.this.getOriginalMavenProject().getArtifactId();
+                String grId = NbMavenProjectImpl.this.getOriginalMavenProject().getGroupId();
+                String artId = NbMavenProjectImpl.this.getOriginalMavenProject().getArtifactId();
                 if (grId != null && artId != null) {
                     toReturn = grId + ":" + artId; //NOI18N
 
                 } else {
-                    toReturn = org.openide.util.NbBundle.getMessage(NbMavenProject.class, "TXT_Maven_project_at", NbMavenProject.this.getProjectDirectory().getPath());
+                    toReturn = org.openide.util.NbBundle.getMessage(NbMavenProjectImpl.class, "TXT_Maven_project_at", NbMavenProjectImpl.this.getProjectDirectory().getPath());
                 }
             }
-            toReturn = toReturn + " (" + NbMavenProject.this.getOriginalMavenProject().getPackaging() + ")"; //NOI18N
+            toReturn = toReturn + " (" + NbMavenProjectImpl.this.getOriginalMavenProject().getPackaging() + ")"; //NOI18N
 
             return toReturn;
         }
 
         public Icon getIcon() {
-            return new ImageIcon(NbMavenProject.this.getIcon());
+            return new ImageIcon(NbMavenProjectImpl.this.getIcon());
         }
 
         public Project getProject() {
-            return NbMavenProject.this;
+            return NbMavenProjectImpl.this;
         }
 
         public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -618,7 +618,7 @@ public final class NbMavenProject implements Project {
             if (!isFolder) {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
-                    ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
+                    NbMavenProject.fireMavenProjectReload(NbMavenProjectImpl.this);
                 }
             }
         }
@@ -629,7 +629,7 @@ public final class NbMavenProject implements Project {
                 String nameExt = fileEvent.getFile().getNameExt();
                 if (Arrays.binarySearch(filesToWatch, nameExt) != -1) {
                     fileEvent.getFile().addFileChangeListener(getFileUpdater());
-                    ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
+                    NbMavenProject.fireMavenProjectReload(NbMavenProjectImpl.this);
                 }
             }
         }
@@ -637,13 +637,13 @@ public final class NbMavenProject implements Project {
         public void fileDeleted(FileEvent fileEvent) {
             if (!isFolder) {
                 fileEvent.getFile().removeFileChangeListener(getFileUpdater());
-                ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
+                NbMavenProject.fireMavenProjectReload(NbMavenProjectImpl.this);
             }
         }
 
         public void fileFolderCreated(FileEvent fileEvent) {
             //TODO possibly remove this fire.. watch for actual path..
-            ProjectURLWatcher.fireMavenProjectReload(NbMavenProject.this);
+            NbMavenProject.fireMavenProjectReload(NbMavenProjectImpl.this);
         }
 
         public void fileRenamed(FileRenameEvent fileRenameEvent) {
@@ -741,42 +741,42 @@ public final class NbMavenProject implements Project {
 
         };
         private List<String> prohibited;
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
 
-        RecommendedTemplatesImpl(NbMavenProject proj) {
+        RecommendedTemplatesImpl(NbMavenProjectImpl proj) {
             project = proj;
             prohibited = new ArrayList<String>();
-            prohibited.add(ProjectURLWatcher.TYPE_EAR);
-            prohibited.add(ProjectURLWatcher.TYPE_EJB);
-            prohibited.add(ProjectURLWatcher.TYPE_WAR);
-            prohibited.add(ProjectURLWatcher.TYPE_NBM);
+            prohibited.add(NbMavenProject.TYPE_EAR);
+            prohibited.add(NbMavenProject.TYPE_EJB);
+            prohibited.add(NbMavenProject.TYPE_WAR);
+            prohibited.add(NbMavenProject.TYPE_NBM);
         }
 
         public String[] getRecommendedTypes() {
             String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR;
+                packaging = NbMavenProject.TYPE_JAR;
             }
             packaging = packaging.trim();
-            if (ProjectURLWatcher.TYPE_POM.equals(packaging)) {
+            if (NbMavenProject.TYPE_POM.equals(packaging)) {
                 return POM_APPLICATION_TYPES;
             }
-            if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) {
+            if (NbMavenProject.TYPE_JAR.equals(packaging)) {
                 return JAR_APPLICATION_TYPES;
             }
             //TODO when apisupport module becomes 'non-experimental', delete this block..
             //NBM also fall under this I guess..
-            if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+            if (NbMavenProject.TYPE_NBM.equals(packaging)) {
                 return JAR_APPLICATION_TYPES;
             }
 
-            if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
+            if (NbMavenProject.TYPE_WAR.equals(packaging)) {
                 return GENERIC_WEB_TYPES;
             }
-            if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+            if (NbMavenProject.TYPE_EJB.equals(packaging)) {
                 return GENERIC_EJB_TYPES;
             }
-            if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
+            if (NbMavenProject.TYPE_EAR.equals(packaging)) {
                 return GENERIC_EAR_TYPES;
             }
 
@@ -793,10 +793,10 @@ public final class NbMavenProject implements Project {
         public String[] getPrivilegedTemplates() {
             String packaging = project.getProjectWatcher().getPackagingType();
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR;
+                packaging = NbMavenProject.TYPE_JAR;
             }
             packaging = packaging.trim();
-            if (ProjectURLWatcher.TYPE_POM.equals(packaging)) {
+            if (NbMavenProject.TYPE_POM.equals(packaging)) {
                 return POM_PRIVILEGED_NAMES;
             }
             if (prohibited.contains(packaging)) {
@@ -812,18 +812,18 @@ public final class NbMavenProject implements Project {
 
         public RefreshAction(Lookup lkp) {
             context = lkp;
-            Collection col = context.lookupAll(NbMavenProject.class);
+            Collection col = context.lookupAll(NbMavenProjectImpl.class);
             if (col.size() > 1) {
-                putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Projects", col.size()));
+                putValue(Action.NAME, NbBundle.getMessage(NbMavenProjectImpl.class, "ACT_Reload_Projects", col.size()));
             } else {
-                putValue(Action.NAME, NbBundle.getMessage(NbMavenProject.class, "ACT_Reload_Project"));
+                putValue(Action.NAME, NbBundle.getMessage(NbMavenProjectImpl.class, "ACT_Reload_Project"));
             }
         }
 
         public void actionPerformed(java.awt.event.ActionEvent event) {
             EmbedderFactory.resetProjectEmbedder();
-            for (NbMavenProject prj : context.lookupAll(NbMavenProject.class)) {
-                ProjectURLWatcher.fireMavenProjectReload(prj);
+            for (NbMavenProjectImpl prj : context.lookupAll(NbMavenProjectImpl.class)) {
+                NbMavenProject.fireMavenProjectReload(prj);
             }
         }
 

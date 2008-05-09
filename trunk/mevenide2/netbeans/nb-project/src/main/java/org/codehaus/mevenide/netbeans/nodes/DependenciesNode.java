@@ -32,9 +32,9 @@ import javax.swing.Icon;
 import javax.swing.UIManager;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.embedder.MavenEmbedder;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
@@ -60,9 +60,9 @@ public class DependenciesNode extends AbstractNode {
     static final int TYPE_TEST = 1;
     static final int TYPE_RUNTIME = 2;
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
-    DependenciesNode(NbMavenProject mavproject, int type) {
+    DependenciesNode(NbMavenProjectImpl mavproject, int type) {
         super(new DependenciesChildren(mavproject, type), Lookups.fixed(mavproject));
         setName("Dependencies" + type); //NOI18N
         switch (type) {
@@ -104,9 +104,9 @@ public class DependenciesNode extends AbstractNode {
     }
     
     private static class DependenciesChildren extends Children.Keys<Artifact> implements PropertyChangeListener {
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private int type;
-        public DependenciesChildren(NbMavenProject proj, int type) {
+        public DependenciesChildren(NbMavenProjectImpl proj, int type) {
             super();
             project = proj;
             this.type = type;
@@ -121,7 +121,7 @@ public class DependenciesNode extends AbstractNode {
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 regenerateKeys();
                 refresh();
             }
@@ -130,14 +130,14 @@ public class DependenciesNode extends AbstractNode {
         @Override
         protected void addNotify() {
             super.addNotify();
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
             regenerateKeys();
         }
         
         @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            NbMavenProject.removePropertyChangeListener(project, this);
             super.removeNotify();
         }
         
@@ -238,7 +238,7 @@ public class DependenciesNode extends AbstractNode {
             setEnabled(false);
             RequestProcessor.getDefault().post(new Runnable() {
                 public void run() {
-                    project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                    project.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
                 }
             });
         }

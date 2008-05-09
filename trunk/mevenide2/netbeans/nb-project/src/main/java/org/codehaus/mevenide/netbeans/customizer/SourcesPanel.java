@@ -31,7 +31,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
@@ -54,7 +54,7 @@ public class SourcesPanel extends JPanel {
     private String sourceLevel;
     private ModelHandle handle;
 
-    public SourcesPanel( ModelHandle handle, NbMavenProject project ) {
+    public SourcesPanel( ModelHandle handle, NbMavenProjectImpl project ) {
         initComponents();
         this.handle = handle;
         FileObject projectFolder = project.getProjectDirectory();

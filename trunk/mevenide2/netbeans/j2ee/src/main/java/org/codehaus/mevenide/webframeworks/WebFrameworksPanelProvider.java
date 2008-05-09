@@ -19,7 +19,7 @@ package org.codehaus.mevenide.webframeworks;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
@@ -39,8 +39,8 @@ public class WebFrameworksPanelProvider implements ProjectCustomizer.CompositeCa
     
     public Category createCategory(Lookup context) {
         Project project = context.lookup(Project.class);
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
-        if (ProjectURLWatcher.TYPE_WAR.equalsIgnoreCase(watcher.getPackagingType())) {
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
+        if (NbMavenProject.TYPE_WAR.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
                     "FRAMEWORKS", //NOI18N
                     NbBundle.getMessage(WebFrameworksPanelProvider.class, "PNL_Frameworks"),

@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans.api.execute;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 
 /**
  * Context provider for maven executor
@@ -37,7 +37,7 @@ public interface RunConfig {
     /**
      * project that is being used for execution, can be null.
      */ 
-    NbMavenProject getProject();
+    NbMavenProjectImpl getProject();
     /**
      * goals to be executed.
      */ 

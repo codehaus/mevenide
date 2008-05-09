@@ -18,7 +18,7 @@
 package org.codehaus.mevenide.netbeans.classpath;
 
 import java.beans.PropertyChangeEvent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 import org.openide.ErrorManager;
@@ -33,7 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.util.Iterator;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 import org.netbeans.spi.java.classpath.PathResourceImplementation;
 
@@ -41,14 +41,14 @@ import org.netbeans.spi.java.classpath.PathResourceImplementation;
 abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private List resources;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
-    protected AbstractProjectClassPathImpl(NbMavenProject proj) {
+    protected AbstractProjectClassPathImpl(NbMavenProjectImpl proj) {
         project = proj;
         //TODO make weak or remove the listeners as well??
-        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
+        NbMavenProject.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     List newValues = getPath();
                     synchronized (AbstractProjectClassPathImpl.this) {
                         List oldvalue = resources;
@@ -100,7 +100,7 @@ abstract class AbstractProjectClassPathImpl implements ClassPathImplementation {
         return false;
     }
     
-    protected final NbMavenProject getMavenProject() {
+    protected final NbMavenProjectImpl getMavenProject() {
         return project;
     }
     

@@ -21,7 +21,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.spi.java.queries.MultipleRootsUnitTestForSourceQueryImplementation;
 import org.openide.ErrorManager;
 import org.openide.filesystems.FileObject;
@@ -34,9 +34,9 @@ import org.openide.filesystems.FileUtil;
 public class MavenTestForSourceImpl implements MultipleRootsUnitTestForSourceQueryImplementation {
     
                                                           
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     /** Creates a new instance of MavenTestForSourceImpl */
-    public MavenTestForSourceImpl(NbMavenProject proj) {
+    public MavenTestForSourceImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
 

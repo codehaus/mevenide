@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -33,7 +33,7 @@ import org.openide.filesystems.FileUtil;
  */
 class PackagedClassPathImpl extends AbstractProjectClassPathImpl {
 
-    public PackagedClassPathImpl(NbMavenProject project) {
+    public PackagedClassPathImpl(NbMavenProjectImpl project) {
         super(project);
     }
 

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Vector;
 import javax.swing.Icon;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.jdom.Document;
 import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
@@ -76,7 +76,7 @@ public abstract class AbstractSchemaBasedGrammar implements GrammarQuery {
     protected final MavenProject getMavenProject() {
         Project proj = FileOwnerQuery.getOwner(environment.getFileObject());
         if (proj != null) {
-            ProjectURLWatcher watch = proj.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watch = proj.getLookup().lookup(NbMavenProject.class);
             assert watch != null;
             return watch.getMavenProject();
         }

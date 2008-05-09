@@ -42,7 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.StringTokenizer;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.J2eeModule;
 import org.netbeans.modules.web.api.webmodule.WebModule;
@@ -67,13 +67,13 @@ public class CopyOnSave extends FileChangeAdapter implements PropertyChangeListe
     private Project project;
     private WebModuleProviderImpl provider;
     boolean active = false;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
 
     /** Creates a new instance of CopyOnSaveSupport */
     public CopyOnSave(Project prj, WebModuleProviderImpl prov) {
         project = prj;
         provider = prov;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
     }
 
     private WebModule getWebModule() {
@@ -91,13 +91,13 @@ public class CopyOnSave extends FileChangeAdapter implements PropertyChangeListe
 
     public void initialize() throws FileStateInvalidException {
         smallinitialize();
-        ProjectURLWatcher.addPropertyChangeListener(project, this);
+        NbMavenProject.addPropertyChangeListener(project, this);
         active = true;
     }
 
     public void cleanup() throws FileStateInvalidException {
         smallcleanup();
-        ProjectURLWatcher.removePropertyChangeListener(project, this);
+        NbMavenProject.removePropertyChangeListener(project, this);
         active = false;
     }
 
@@ -115,7 +115,7 @@ public class CopyOnSave extends FileChangeAdapter implements PropertyChangeListe
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if (ProjectURLWatcher.PROP_PROJECT.equals(evt.getPropertyName())) {
+        if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
             try {
                 //TODO reduce cleanup to cases where the actual directory locations change..
                 if (active) {

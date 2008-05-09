@@ -51,7 +51,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -100,7 +100,7 @@ public class RunJarPanel extends javax.swing.JPanel {
     private static final String DEFAULT_DEBUG_PARAMS = "-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address}"; //NOI18N
     
     private ModelHandle handle;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private NetbeansActionMapping run;
     private NetbeansActionMapping debug;
     private String oldMainClass;
@@ -111,7 +111,7 @@ public class RunJarPanel extends javax.swing.JPanel {
     private DocumentListener docListener;
     private ActionListener comboListener;
     
-    public RunJarPanel(ModelHandle handle, NbMavenProject project) {
+    public RunJarPanel(ModelHandle handle, NbMavenProjectImpl project) {
         initComponents();
         this.handle = handle;
         this.project = project;

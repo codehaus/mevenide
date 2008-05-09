@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -65,7 +65,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     private EjbModuleProviderImpl provider;
 
     private MetadataModel<EjbJarMetadata> ejbJarMetadataModel;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     
     
     /** Creates a new instance of EjbJarImpl */
@@ -73,7 +73,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         project = proj;
         versionListeners = new ArrayList();
         provider = prov;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
     }
     
     boolean isValid() {

@@ -32,7 +32,7 @@ import org.codehaus.mevenide.netbeans.FileChangeSupport;
 import org.codehaus.mevenide.netbeans.FileChangeSupportEvent;
 import org.codehaus.mevenide.netbeans.FileChangeSupportListener;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
@@ -52,7 +52,7 @@ import org.openide.util.RequestProcessor;
  * @author mkleint
  */
 //TODO rename to something else doesn't describe correctly what it does..
-public final class ProjectURLWatcher {
+public final class NbMavenProject {
 
     /**
      * TODO comment
@@ -66,7 +66,7 @@ public final class ProjectURLWatcher {
      */
     public static final String PROP_RESOURCE = "RESOURCES"; //NOI18N
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private PropertyChangeSupport support;
     private FCHSL listener = new FCHSL();
     private final List<File> files = new ArrayList<File>();
@@ -78,20 +78,20 @@ public final class ProjectURLWatcher {
     private RequestProcessor.Task task;
     
     
-    static class AccessorImpl extends NbMavenProject.WatcherAccessor {
+    static class AccessorImpl extends NbMavenProjectImpl.WatcherAccessor {
         
         
          public void assign() {
-             if (NbMavenProject.ACCESSOR == null) {
-                 NbMavenProject.ACCESSOR = this;
+             if (NbMavenProjectImpl.ACCESSOR == null) {
+                 NbMavenProjectImpl.ACCESSOR = this;
              }
          }
     
-        public ProjectURLWatcher createWatcher(NbMavenProject proj) {
-            return new ProjectURLWatcher(proj);
+        public NbMavenProject createWatcher(NbMavenProjectImpl proj) {
+            return new NbMavenProject(proj);
         }
         
-        public void doFireReload(ProjectURLWatcher watcher) {
+        public void doFireReload(NbMavenProject watcher) {
             watcher.doFireReload();
         }
         
@@ -119,15 +119,15 @@ public final class ProjectURLWatcher {
     }
     
     
-    /** Creates a new instance of ProjectURLWatcher */
-    private ProjectURLWatcher(NbMavenProject proj) {
+    /** Creates a new instance of NbMavenProject */
+    private NbMavenProject(NbMavenProjectImpl proj) {
         project = proj;
         //TODO oh well, the sources is the actual project instance not the watcher.. a problem?
         support = new PropertyChangeSupport(proj);
         task = RequestProcessor.getDefault().create(new Runnable() {
             public void run() {
                     MavenEmbedder online = EmbedderFactory.getOnlineEmbedder();
-                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(NbBundle.getMessage(ProjectURLWatcher.class, "Progress_Download"), 
+                    AggregateProgressHandle hndl = AggregateProgressFactory.createHandle(NbBundle.getMessage(NbMavenProject.class, "Progress_Download"), 
                             new ProgressContributor[] {
                                 AggregateProgressFactory.createProgressContributor("zaloha") },  //NOI18N
                             null, null);
@@ -142,16 +142,16 @@ public final class ProjectURLWatcher {
                         if (res.hasExceptions()) {
                             ok = false;
                             Exception ex = (Exception)res.getExceptions().get(0);
-                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Failed", ex.getLocalizedMessage()));
+                            StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(NbMavenProject.class, "MSG_Failed", ex.getLocalizedMessage()));
                         }
                     } finally {
                         hndl.finish();
                         ProgressTransferListener.clearAggregateHandle();
                     }
                     if (ok) {
-                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(ProjectURLWatcher.class, "MSG_Done"));
+                        StatusDisplayer.getDefault().setStatusText(NbBundle.getMessage(NbMavenProject.class, "MSG_Done"));
                     }
-                    ProjectURLWatcher.fireMavenProjectReload(project);
+                    NbMavenProject.fireMavenProjectReload(project);
             }
         });
     }
@@ -289,7 +289,7 @@ public final class ProjectURLWatcher {
     //TODO figure if needed to be public.. currently just nb-project uses it..
     public static void fireMavenProjectReload(Project prj) {
         if (prj != null) {
-            ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = prj.getLookup().lookup(NbMavenProject.class);
             if (watcher != null) {
                 watcher.fireProjectReload();
             }
@@ -297,9 +297,9 @@ public final class ProjectURLWatcher {
     }
     
     public static void addPropertyChangeListener(Project prj, PropertyChangeListener listener) {
-        if (prj != null && prj instanceof NbMavenProject) {
-            // cannot call getLookup() -> stackoverflow when called from NbMavenProject.createBasicLookup()..
-            ProjectURLWatcher watcher = ((NbMavenProject)prj).getProjectWatcher();
+        if (prj != null && prj instanceof NbMavenProjectImpl) {
+            // cannot call getLookup() -> stackoverflow when called from NbMavenProjectImpl.createBasicLookup()..
+            NbMavenProject watcher = ((NbMavenProjectImpl)prj).getProjectWatcher();
             watcher.addPropertyChangeListener(listener);
         } else {
             assert false : "Attempted to add PropertyChangeListener to project " + prj; //NOI18N
@@ -307,9 +307,9 @@ public final class ProjectURLWatcher {
     }
     
     public static void removePropertyChangeListener(Project prj, PropertyChangeListener listener) {
-        if (prj != null && prj instanceof NbMavenProject) {
-            // cannot call getLookup() -> stackoverflow when called from NbMavenProject.createBasicLookup()..
-            ProjectURLWatcher watcher = ((NbMavenProject)prj).getProjectWatcher();
+        if (prj != null && prj instanceof NbMavenProjectImpl) {
+            // cannot call getLookup() -> stackoverflow when called from NbMavenProjectImpl.createBasicLookup()..
+            NbMavenProject watcher = ((NbMavenProjectImpl)prj).getProjectWatcher();
             watcher.removePropertyChangeListener(listener);
         } else {
             assert false : "Attempted to remove PropertyChangeListener from project " + prj; //NOI18N

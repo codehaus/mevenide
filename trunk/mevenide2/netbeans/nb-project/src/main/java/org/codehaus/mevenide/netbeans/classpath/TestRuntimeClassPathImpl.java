@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.openide.filesystems.FileUtil;
 
 
@@ -37,7 +37,7 @@ class TestRuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     /**
      * Creates a new instance of TestRuntimeClassPathImpl
      */
-    public TestRuntimeClassPathImpl(NbMavenProject proj) {
+    public TestRuntimeClassPathImpl(NbMavenProjectImpl proj) {
         super(proj);
     }
     

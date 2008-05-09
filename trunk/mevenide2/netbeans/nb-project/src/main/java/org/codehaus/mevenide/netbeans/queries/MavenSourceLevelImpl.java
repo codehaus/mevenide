@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans.queries;
 import java.io.File;
 import java.net.URI;
 import java.util.logging.Logger;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.netbeans.spi.java.queries.SourceLevelQueryImplementation;
@@ -33,10 +33,10 @@ import org.openide.filesystems.FileUtil;
  * @author Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenSourceLevelImpl implements SourceLevelQueryImplementation {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private static Logger LOG = Logger.getLogger(MavenSourceLevelImpl.class.getName());
     /** Creates a new instance of MavenSourceLevelImpl */
-    public MavenSourceLevelImpl(NbMavenProject proj) {
+    public MavenSourceLevelImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
     

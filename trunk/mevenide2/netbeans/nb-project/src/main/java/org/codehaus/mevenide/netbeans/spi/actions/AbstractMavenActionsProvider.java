@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
@@ -84,7 +84,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
     public boolean isActionEnable(String action, Project project, Lookup lookup) {
         ActionToGoalMapping rawMappings = getRawMappings();
         Iterator it = rawMappings.getActions().iterator();
-        ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject mp = project.getLookup().lookup(NbMavenProject.class);
         String prjPack = mp.getPackagingType();
         while (it.hasNext()) {
             NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
@@ -211,7 +211,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
             // basically doing a copy here..
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
-            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mp = project.getLookup().lookup(NbMavenProject.class);
             String prjPack = mp.getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();
@@ -243,7 +243,7 @@ public abstract class AbstractMavenActionsProvider implements MavenActionsProvid
             ActionToGoalMapping mapping = reader.read(read);
             Iterator it = mapping.getActions().iterator();
             NetbeansActionMapping action = null;
-            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mp = project.getLookup().lookup(NbMavenProject.class);
             String prjPack = mp.getPackagingType();
             while (it.hasNext()) {
                 NetbeansActionMapping elem = (NetbeansActionMapping) it.next();

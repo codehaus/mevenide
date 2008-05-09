@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.Collection;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.netbeans.api.queries.SharabilityQuery;
@@ -34,9 +34,9 @@ import org.openide.filesystems.FileUtil;
  */
 public class MavenSharabilityQueryImpl implements SharabilityQueryImplementation {
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     /** Creates a new instance of MavenSharabilityQueryImpl */
-    public MavenSharabilityQueryImpl(NbMavenProject proj) {
+    public MavenSharabilityQueryImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
     

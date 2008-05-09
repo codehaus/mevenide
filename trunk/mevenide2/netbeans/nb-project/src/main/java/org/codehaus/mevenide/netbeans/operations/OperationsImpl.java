@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.List;
 import org.apache.maven.model.Model;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
@@ -46,10 +46,10 @@ import org.openide.util.NbBundle;
  * @author mkleint@codehaus.org
  */
 public class OperationsImpl implements DeleteOperationImplementation, MoveOperationImplementation, CopyOperationImplementation {
-    protected NbMavenProject project;
+    protected NbMavenProjectImpl project;
     private ProjectState state;
     /** Creates a new instance of AbstractOperation */
-    public OperationsImpl(NbMavenProject proj, ProjectState state) {
+    public OperationsImpl(NbMavenProjectImpl proj, ProjectState state) {
         project = proj;
         this.state = state;
     }
@@ -119,7 +119,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
                 Model mdl = WriterUtils.loadModel(pomFO);
                 mdl.setName(newName);
                 WriterUtils.writePomModel(pomFO, mdl);
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
             }
             checkParentProject(project.getProjectDirectory(), false, newName, originalLoc.getName());
         }
@@ -142,7 +142,7 @@ public class OperationsImpl implements DeleteOperationImplementation, MoveOperat
         FileObject fo = projectDir.getParent();
         Project possibleParent = ProjectManager.getDefault().findProject(fo);
         if (possibleParent != null) {
-            NbMavenProject par = possibleParent.getLookup().lookup(NbMavenProject.class);
+            NbMavenProjectImpl par = possibleParent.getLookup().lookup(NbMavenProjectImpl.class);
             if (par != null) {
                 FileObject pomFO = par.getProjectDirectory().getFileObject("pom.xml"); //NOI18N
                 Model mdl = WriterUtils.loadModel(pomFO);

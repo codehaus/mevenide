@@ -21,7 +21,7 @@ import java.io.StringReader;
 import java.util.Collections;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -42,7 +42,7 @@ public final class WizardExtenderUtils {
     private WizardExtenderUtils() {}
     
     public static ModelHandle createModelHandle(Project prj) throws IOException, XmlPullParserException {
-        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = prj.getLookup().lookup(NbMavenProjectImpl.class);
         Model model = project.getEmbedder().readModel(project.getPOMFile());
         ProfilesRoot prof = MavenSettingsSingleton.createProfilesModel(project.getProjectDirectory());
         UserActionGoalProvider usr = project.getLookup().lookup(org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider.class);
@@ -52,7 +52,7 @@ public final class WizardExtenderUtils {
     }
     
     public static void writeModelHandle(ModelHandle handle, Project prj) throws IOException {
-        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = prj.getLookup().lookup(NbMavenProjectImpl.class);
         CustomizerProviderImpl.writeAll(handle, project);
     }
 }

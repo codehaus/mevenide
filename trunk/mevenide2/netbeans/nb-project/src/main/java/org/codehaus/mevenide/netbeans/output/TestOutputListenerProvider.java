@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
@@ -167,7 +167,7 @@ public class TestOutputListenerProvider implements OutputProcessor {
             FileObject report = outDir.getFileObject(testname + ".txt"); //NOI18N
             Project prj = FileOwnerQuery.getOwner(outDir);
             if (prj != null) {
-                NbMavenProject nbprj = prj.getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProject.class);
+                NbMavenProjectImpl nbprj = prj.getLookup().lookup(org.codehaus.mevenide.netbeans.NbMavenProjectImpl.class);
                 File testDir = new File(nbprj.getOriginalMavenProject().getBuild().getTestSourceDirectory());
 
                 if (report != null) {

@@ -46,7 +46,7 @@ import org.codehaus.mevenide.hints.ui.SearchDependencyUI;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.java.lexer.JavaTokenId;
 import org.netbeans.api.java.source.CompilationInfo;
 import org.netbeans.api.lexer.Token;
@@ -104,7 +104,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         if (project == null) {
             return Collections.emptyList();
         }
-        ProjectURLWatcher mavProj = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
         if (mavProj == null) {
             return Collections.emptyList();
         }
@@ -265,7 +265,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
         return fixes;
     }
 
-    private Collection<NBVersionInfo> filter(ProjectURLWatcher mavProj, List<NBVersionInfo> nbvis, boolean test) {
+    private Collection<NBVersionInfo> filter(NbMavenProject mavProj, List<NBVersionInfo> nbvis, boolean test) {
 
 
         Map<String, NBVersionInfo> items = new HashMap<String, NBVersionInfo>();
@@ -390,7 +390,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
             RequestProcessor.getDefault().post(new Runnable() {
 
                 public void run() {
-                    mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                    mavProj.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
                 }
             });
             return null;
@@ -444,7 +444,7 @@ public class SearchClassDependencyInRepo implements ErrorRule<Void> {
                 RequestProcessor.getDefault().post(new Runnable() {
 
                     public void run() {
-                        mavProj.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                        mavProj.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
                     }
                 });
             }

@@ -30,7 +30,7 @@ import javax.swing.event.ListSelectionListener;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.nodes.DependencyNode;
 import org.openide.awt.Mnemonics;
@@ -47,10 +47,10 @@ public class ScopedDependenciesPanel extends javax.swing.JPanel  {
     static final int COMPILE = 0;
     static final int TEST = 2;
     static final int RUN = 1;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private ModelHandle handle;
     /** Creates new form ScopedDependenciesPanel */
-    public ScopedDependenciesPanel(int type, NbMavenProject prj, ModelHandle hndl) {
+    public ScopedDependenciesPanel(int type, NbMavenProjectImpl prj, ModelHandle hndl) {
         initComponents();
         this.type = type;
         project = prj;

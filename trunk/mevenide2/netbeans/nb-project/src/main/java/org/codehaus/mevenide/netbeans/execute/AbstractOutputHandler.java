@@ -23,7 +23,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.apache.maven.embedder.MavenEmbedderLogger;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.output.ContextOutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.NotifyFinishOutputProcessor;
@@ -61,7 +61,7 @@ abstract class AbstractOutputHandler {
         return eventName + "#" + target; //NOI18N
     }
     
-    protected final void initProcessorList(NbMavenProject proj, RunConfig config) {
+    protected final void initProcessorList(NbMavenProjectImpl proj, RunConfig config) {
         // get the registered processors.
         Lookup.Result<OutputProcessorFactory> result  = Lookup.getDefault().lookup(new Lookup.Template<OutputProcessorFactory>(OutputProcessorFactory.class));
         Iterator<? extends OutputProcessorFactory> it = result.allInstances().iterator();

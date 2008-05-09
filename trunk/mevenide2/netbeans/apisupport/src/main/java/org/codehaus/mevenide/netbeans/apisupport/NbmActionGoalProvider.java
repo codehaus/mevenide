@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.InputStream;
 import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -146,7 +146,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     private RunConfig createConfig(String actionName, Project project, Lookup lookup, AbstractMavenActionsProvider delegate) {
         RunConfig conf = delegate.createConfigForDefaultAction(actionName, project, lookup);
         if (conf != null) {
-            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mp = project.getLookup().lookup(NbMavenProject.class);
             if (mp.getMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
                 conf.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
             }
@@ -157,7 +157,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     private NetbeansActionMapping createMapping(String actionName, Project project, AbstractMavenActionsProvider delegate) {
         NetbeansActionMapping mapp = delegate.getMappingForAction(actionName, project);
         if (mapp != null) {
-            ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mp = project.getLookup().lookup(NbMavenProject.class);
             if (mp.getMavenProject().getProperties().getProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL) == null) {
                 mapp.getProperties().setProperty(MavenNbModuleImpl.PROP_NETBEANS_INSTALL, guessNetbeansInstallation());
             }
@@ -166,15 +166,15 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     }
 
     private boolean hasNbm(Project project) {
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         String pack = watch.getPackagingType();
-        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(pack);
-        boolean hasNbm = ProjectURLWatcher.TYPE_NBM.equals(pack);
+        boolean isPom = NbMavenProject.TYPE_POM.equals(pack);
+        boolean hasNbm = NbMavenProject.TYPE_NBM.equals(pack);
         if (isPom) {
             SubprojectProvider prov = project.getLookup().lookup(SubprojectProvider.class);
             for (Project prj : prov.getSubprojects()) {
-                ProjectURLWatcher w2 = prj.getLookup().lookup(ProjectURLWatcher.class);
-                if (ProjectURLWatcher.TYPE_NBM.equals(w2.getPackagingType())) {
+                NbMavenProject w2 = prj.getLookup().lookup(NbMavenProject.class);
+                if (NbMavenProject.TYPE_NBM.equals(w2.getPackagingType())) {
                     hasNbm = true;
                     break;
                 }
@@ -191,8 +191,8 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
     }
 
     private boolean isPlatformApp(Project p) {
-        ProjectURLWatcher watch = p.getLookup().lookup(ProjectURLWatcher.class);
-        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watch.getPackagingType());
+        NbMavenProject watch = p.getLookup().lookup(NbMavenProject.class);
+        boolean isPom = NbMavenProject.TYPE_POM.equals(watch.getPackagingType());
         if (isPom) {
             String brand = PluginPropertyUtils.getPluginProperty(p, "org.codehaus.mojo", //NOI18N
                     "nbm-maven-plugin", "brandingToken", null); //NOI18N

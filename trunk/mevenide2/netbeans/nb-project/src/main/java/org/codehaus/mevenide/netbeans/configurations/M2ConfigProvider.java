@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -44,7 +44,7 @@ import org.w3c.dom.NodeList;
 public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configuration> {
 
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private List<M2Configuration> profiles = null;
     private List<M2Configuration> shared = null;
     private List<M2Configuration> nonshared = null;
@@ -54,7 +54,7 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
     private AuxiliaryConfiguration aux;
     private ProjectProfileHandler profileHandler;
     
-    public M2ConfigProvider(NbMavenProject proj, AuxiliaryConfiguration aux, ProjectProfileHandler prof) {
+    public M2ConfigProvider(NbMavenProjectImpl proj, AuxiliaryConfiguration aux, ProjectProfileHandler prof) {
         project = proj;
         this.aux = aux;
         profileHandler = prof;
@@ -72,7 +72,7 @@ public class M2ConfigProvider implements ProjectConfigurationProvider<M2Configur
         active = DEFAULT;
         project.getProjectWatcher().addPropertyChangeListener(new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     synchronized (M2ConfigProvider.this) {
                         profiles = null;
                     }

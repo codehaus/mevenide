@@ -26,7 +26,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.spi.project.ProjectConfiguration;
 import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
@@ -43,19 +43,19 @@ public class M2Configuration extends AbstractMavenActionsProvider implements Pro
 
     public static String DEFAULT = "%%DEFAULT%%"; //NOI18N
     
-    static M2Configuration createDefault(NbMavenProject prj) {
+    static M2Configuration createDefault(NbMavenProjectImpl prj) {
         return new M2Configuration(DEFAULT, prj);
     }
     
     private String id;
     private List<String> profiles;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     static final String FILENAME_PREFIX = "nbactions-"; //NOI18N
     static final String FILENAME_SUFFIX = ".xml"; //NOI18N
     private Date lastModified = new Date();
     private boolean lastTimeExists = true;
     
-    public M2Configuration(String id, NbMavenProject proj) {
+    public M2Configuration(String id, NbMavenProjectImpl proj) {
         this.id = id;
         this.project = proj;
         profiles = Collections.<String>emptyList();

@@ -17,12 +17,12 @@
 
 package org.codehaus.mevenide.netbeans.nodes;
 import org.codehaus.mevenide.netbeans.spi.nodes.AbstractMavenNodeList;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
@@ -43,15 +43,15 @@ public class SiteDocsNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl prj = project.getLookup().lookup(NbMavenProjectImpl.class);
         return new NList(prj);
     }
     
     
     private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener {
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         
-        private NList(NbMavenProject prj) {
+        private NList(NbMavenProjectImpl prj) {
             project = prj;
         }
         
@@ -68,10 +68,10 @@ public class SiteDocsNodeFactory implements NodeFactory {
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
-            if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName()) &&
+            if (NbMavenProjectImpl.PROP_RESOURCE.equals(evt.getPropertyName()) &&
                     SITE.equals(evt.getNewValue())) {
                 fireChange();
             }
@@ -79,15 +79,15 @@ public class SiteDocsNodeFactory implements NodeFactory {
         
         @Override
         public void addNotify() {
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject.addPropertyChangeListener(project, this);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             watcher.addWatchedPath(SITE);
         }
         
         @Override
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject.removePropertyChangeListener(project, this);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             watcher.removeWatchedPath(SITE);
         }
         

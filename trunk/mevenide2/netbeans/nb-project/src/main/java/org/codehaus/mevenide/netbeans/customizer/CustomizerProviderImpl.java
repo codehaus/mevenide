@@ -36,7 +36,7 @@ import java.util.Map;
 import org.apache.maven.model.Model;
 import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
@@ -73,11 +73,11 @@ import org.openide.util.lookup.Lookups;
  */
 public class CustomizerProviderImpl implements CustomizerProvider {
     
-    private final NbMavenProject project;
+    private final NbMavenProjectImpl project;
     private ModelHandle handle;
     
     
-    public CustomizerProviderImpl(NbMavenProject project) {
+    public CustomizerProviderImpl(NbMavenProjectImpl project) {
         this.project = project;
     }
     
@@ -251,7 +251,7 @@ public class CustomizerProviderImpl implements CustomizerProvider {
         public void showSubCategory(String name);
     }
 
-   public static void writeAll(ModelHandle handle, NbMavenProject project) throws IOException {
+   public static void writeAll(ModelHandle handle, NbMavenProjectImpl project) throws IOException {
         if (handle.isModified(handle.getPOMModel())) {
             WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), handle.getPOMModel());
         }

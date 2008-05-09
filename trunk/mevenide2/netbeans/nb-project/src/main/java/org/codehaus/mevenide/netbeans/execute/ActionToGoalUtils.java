@@ -28,7 +28,7 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import org.apache.maven.model.Build;
 import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
@@ -55,7 +55,7 @@ public final class ActionToGoalUtils {
     private ActionToGoalUtils() {
     }
 
-    public static RunConfig createRunConfig(String action, NbMavenProject project, Lookup lookup) {
+    public static RunConfig createRunConfig(String action, NbMavenProjectImpl project, Lookup lookup) {
         RunConfig rc = null;
         boolean configsEnabled = project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled();
         if (configsEnabled) {
@@ -112,7 +112,7 @@ public final class ActionToGoalUtils {
         return rc;
     }
 
-    public static boolean isActionEnable(String action, NbMavenProject project, Lookup lookup) {
+    public static boolean isActionEnable(String action, NbMavenProjectImpl project, Lookup lookup) {
        
         if (project.getLookup().lookup(ConfigurationProviderEnabler.class).isConfigurationEnabled()) {
             M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
@@ -162,7 +162,7 @@ public final class ActionToGoalUtils {
         return na;
     }
 
-    public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProject project) {
+    public static NetbeansActionMapping[] getActiveCustomMappings(NbMavenProjectImpl project) {
         M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
         UserActionGoalProvider user = project.getLookup().lookup(UserActionGoalProvider.class);
         List<NetbeansActionMapping> toRet = new ArrayList<NetbeansActionMapping>();

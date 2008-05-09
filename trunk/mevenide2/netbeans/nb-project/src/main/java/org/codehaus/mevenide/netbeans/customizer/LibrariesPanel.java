@@ -17,7 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 
 /**
@@ -31,7 +31,7 @@ public class LibrariesPanel extends javax.swing.JPanel {
     private ScopedDependenciesPanel test;
     
     /** Creates new form LibrariesPanel */
-    public LibrariesPanel(ModelHandle hand, NbMavenProject orig) {
+    public LibrariesPanel(ModelHandle hand, NbMavenProjectImpl orig) {
         initComponents();
         test = new ScopedDependenciesPanel(ScopedDependenciesPanel.TEST, orig, hand);
         run = new ScopedDependenciesPanel(ScopedDependenciesPanel.RUN, orig, hand);

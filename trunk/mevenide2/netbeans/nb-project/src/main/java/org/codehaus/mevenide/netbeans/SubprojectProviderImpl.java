@@ -28,7 +28,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.artifact.Artifact;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
@@ -47,16 +47,16 @@ import org.openide.util.WeakListeners;
  */
 public class SubprojectProviderImpl implements SubprojectProvider {
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private List<ChangeListener> listeners;
     private ChangeListener listener2;
     /** Creates a new instance of SubprojectProviderImpl */
-    public SubprojectProviderImpl(NbMavenProject proj) {
+    public SubprojectProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
         listeners = new ArrayList<ChangeListener>();
-        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
+        NbMavenProject.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     fireChange();
                 }
             }
@@ -82,13 +82,13 @@ public class SubprojectProviderImpl implements SubprojectProvider {
     }
     
     private void addOpenedCandidates(Set<Project> resultset) {
-        Set<NbMavenProject> opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
+        Set<NbMavenProjectImpl> opened = MavenFileOwnerQueryImpl.getInstance().getOpenedProjects();
         List<Artifact> compileArtifacts = project.getOriginalMavenProject().getCompileArtifacts();
         List<String> artPaths = new ArrayList<String>();
         for (Artifact ar : compileArtifacts) {
             artPaths.add(project.getArtifactRelativeRepositoryPath(ar));
         }
-        for (NbMavenProject prj : opened) {
+        for (NbMavenProjectImpl prj : opened) {
             String prjpath = prj.getArtifactRelativeRepositoryPath();
             if (artPaths.contains(prjpath)) {
                 resultset.add(prj);
@@ -105,11 +105,11 @@ public class SubprojectProviderImpl implements SubprojectProvider {
             String path = (String)it.next();
             File sub = new File(basedir, path);
             Project proj = processOneSubproject(sub);
-            NbMavenProject mv = proj != null ? proj.getLookup().lookup(NbMavenProject.class) : null;
+            NbMavenProjectImpl mv = proj != null ? proj.getLookup().lookup(NbMavenProjectImpl.class) : null;
             if (mv != null) {
                 // ignore the pom type projects when resolving subprojects..
                 // maybe make an user settable option??
-                if (! ProjectURLWatcher.TYPE_POM.equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
+                if (! NbMavenProject.TYPE_POM.equalsIgnoreCase(mv.getProjectWatcher().getPackagingType())) {
                     resultset.add(proj);
                 }
                 addProjectModules(FileUtil.toFile(mv.getProjectDirectory()), 

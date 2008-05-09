@@ -18,7 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee.ear;
 
 import java.io.File;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -51,13 +51,13 @@ public class EarModuleProviderImpl extends J2eeApplicationProvider implements Ea
     private Project project;
     private String serverInstanceID;
     private J2eeModule j2eemodule;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
 
     
     /** Creates a new instance of MavenEarProvider */
     public EarModuleProviderImpl(Project proj) {
         project = proj;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
         earimpl = new EarImpl(project, this);
     }
     

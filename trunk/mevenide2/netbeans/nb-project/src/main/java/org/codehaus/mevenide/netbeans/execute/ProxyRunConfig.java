@@ -21,7 +21,7 @@ import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.File;
 import java.util.List;
 import java.util.Properties;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ProxyRunConfig implements RunConfig {
         return delegate.getExecutionDirectory();
     }
 
-    public NbMavenProject getProject() {
+    public NbMavenProjectImpl getProject() {
         return delegate.getProject();
     }
 

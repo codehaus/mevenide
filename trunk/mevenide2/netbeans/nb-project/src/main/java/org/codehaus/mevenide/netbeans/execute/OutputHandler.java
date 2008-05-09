@@ -28,7 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.monitor.event.EventMonitor;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
@@ -83,7 +83,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
         stdOut = std;
     }
     
-    public OutputHandler(InputOutput io, NbMavenProject proj, AggregateProgressHandle hand, RunConfig config)    {
+    public OutputHandler(InputOutput io, NbMavenProjectImpl proj, AggregateProgressHandle hand, RunConfig config)    {
         this();
         inputOutput = io;
         handle = hand;

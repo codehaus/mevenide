@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.codehaus.mevenide.netbeans.api.execute.ActiveJ2SEPlatformProvider;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -47,10 +47,10 @@ public final class ClassPathProviderImpl implements ClassPathProvider, ActiveJ2S
     private static final int TYPE_WEB = 5;
     private static final int TYPE_UNKNOWN = -1;
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private ClassPath[] cache = new ClassPath[8];
     
-    public ClassPathProviderImpl(NbMavenProject proj) {
+    public ClassPathProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
     

@@ -17,7 +17,7 @@
 package org.codehaus.mevenide.netbeans.j2ee.ejb;
 
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -48,13 +48,13 @@ public class EjbModuleProviderImpl extends J2eeModuleProvider implements EjbJarP
     private String serverInstanceID;
     private J2eeModule j2eemodule;    
     private EjbJar apiEjbJar;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     
     /** Creates a new instance of EjbModuleProviderImpl */
     public EjbModuleProviderImpl(Project proj) {
         project = proj;
         ejbimpl = new EjbJarImpl(project, this);
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
     }
     
     /**

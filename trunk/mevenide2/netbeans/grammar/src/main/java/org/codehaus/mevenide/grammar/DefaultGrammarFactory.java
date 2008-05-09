@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URI;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.FileOwnerQuery;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
@@ -31,7 +31,7 @@ public class DefaultGrammarFactory extends GrammarFactory {
             return new MavenProfilesGrammar(env);
         }
         File file = FileUtil.toFile(fo);
-        if (owner.getLookup().lookup(ProjectURLWatcher.class) != null) {
+        if (owner.getLookup().lookup(NbMavenProject.class) != null) {
             if ("src/main/resources/META-INF/archetype.xml".equals(FileUtil.getRelativePath(owner.getProjectDirectory(), env.getFileObject()))) {
                 return new MavenArchetypeGrammar(env);
             }

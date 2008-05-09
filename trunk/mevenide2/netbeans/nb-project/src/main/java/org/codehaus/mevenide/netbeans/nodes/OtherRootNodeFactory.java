@@ -22,8 +22,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;
@@ -51,21 +51,21 @@ public class OtherRootNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl prj = project.getLookup().lookup(NbMavenProjectImpl.class);
         return new NList(prj);
     }
     
     private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener, FileChangeListener {
-        private NbMavenProject project;
-        NList(NbMavenProject prj) {
+        private NbMavenProjectImpl project;
+        NList(NbMavenProjectImpl prj) {
             project = prj;
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
-            if (NbMavenProject.PROP_RESOURCE.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_RESOURCE.equals(evt.getPropertyName())) {
                 if (MAIN.equals(evt.getNewValue()) || TEST.equals(evt.getNewValue())) { //NOI18N
                     fireChange();
                     checkFileObject((String)evt.getNewValue());
@@ -108,7 +108,7 @@ public class OtherRootNodeFactory implements NodeFactory {
         
         @Override
         public void addNotify() {
-            ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
             watch.addPropertyChangeListener(project, this);
             watch.addWatchedPath(MAIN); //NOI18N
             watch.addWatchedPath(TEST); //NOI18N    
@@ -118,7 +118,7 @@ public class OtherRootNodeFactory implements NodeFactory {
         
         @Override
         public void removeNotify() {
-            ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
             watch.removePropertyChangeListener(project, this);
             watch.removeWatchedPath(MAIN); //NOI18N
             watch.removeWatchedPath(TEST); //NOI18N            

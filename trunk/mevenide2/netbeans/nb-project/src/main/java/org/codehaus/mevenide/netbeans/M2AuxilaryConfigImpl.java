@@ -44,10 +44,10 @@ public class M2AuxilaryConfigImpl implements AuxiliaryConfiguration {
 
     private static final String AUX_CONFIG = "AuxilaryConfiguration"; //NOI18N
     private static final String CONFIG_FILE_NAME = "nb-configuration.xml"; //NOI18N
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
 
     /** Creates a new instance of M2AuxilaryConfigImpl */
-    public M2AuxilaryConfigImpl(NbMavenProject proj) {
+    public M2AuxilaryConfigImpl(NbMavenProjectImpl proj) {
         this.project = proj;
     }
 

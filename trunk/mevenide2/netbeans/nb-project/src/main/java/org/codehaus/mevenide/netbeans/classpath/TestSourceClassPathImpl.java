@@ -21,7 +21,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 
 /**
@@ -33,7 +33,7 @@ class TestSourceClassPathImpl extends AbstractProjectClassPathImpl {
     /**
      * Creates a new instance of TestSourceClassPathImpl
      */
-    public TestSourceClassPathImpl(NbMavenProject proj) {
+    public TestSourceClassPathImpl(NbMavenProjectImpl proj) {
         super(proj);
     }
     

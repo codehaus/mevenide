@@ -21,7 +21,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.IOException;
 import java.net.URI;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScope;
 import org.netbeans.modules.j2ee.persistence.api.PersistenceScopes;
@@ -60,7 +60,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
         propChangeSupport.addPropertyChangeListener(scopesProvider);
                 
         //TODO add FileChangeListener on persistence.xml
-        ProjectURLWatcher watcher = proj.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = proj.getLookup().lookup(NbMavenProject.class);
         watcher.addWatchedPath(PersistenceLocationProviderImpl.DEF_PERSISTENCE);
         watcher.addWatchedPath(PersistenceLocationProviderImpl.ALT_PERSISTENCE);
         watcher.addPropertyChangeListener(WeakListeners.propertyChange(res, watcher));
@@ -99,7 +99,7 @@ public class MavenPersistenceProvider implements PersistenceLocationProvider,
     //TODO rewrite..
     private class ResourceListener implements PropertyChangeListener {
         public void propertyChange(PropertyChangeEvent event) {
-            if (ProjectURLWatcher.PROP_RESOURCE.equals(event.getPropertyName())) {
+            if (NbMavenProject.PROP_RESOURCE.equals(event.getPropertyName())) {
                 URI newval = (URI)event.getNewValue();
                 if (  newval.getPath().endsWith(PersistenceLocationProviderImpl.DEF_PERSISTENCE)
                    || newval.getPath().endsWith(PersistenceLocationProviderImpl.ALT_PERSISTENCE)) {

@@ -29,7 +29,7 @@ import org.apache.tools.ant.module.spi.AntEvent;
 import org.apache.tools.ant.module.spi.AntLogger;
 import org.apache.tools.ant.module.spi.AntSession;
 import org.apache.tools.ant.module.spi.TaskStructure;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.output.NotifyFinishOutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
 import org.jdom.Document;
@@ -47,7 +47,7 @@ import org.openide.util.Lookup;
  */
 public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor {
     private Project prj;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     private AntSession session;
     private AntLogger unitLogger;
     private Pattern runningPattern;
@@ -61,7 +61,7 @@ public class JUnitOutputListenerProvider implements NotifyFinishOutputProcessor 
     
     public JUnitOutputListenerProvider(Project project) {
         prj = project;
-        mavenproject = prj.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = prj.getLookup().lookup(NbMavenProject.class);
         runningPattern = Pattern.compile("(?:\\[surefire\\] )?Running (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern = Pattern.compile("Surefire report directory\\: (.*)", Pattern.DOTALL); //NOI18N
         outDirPattern2 = Pattern.compile("Setting reports dir\\: (.*)", Pattern.DOTALL); //NOI18N

@@ -32,8 +32,8 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import org.apache.maven.model.Model;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -58,7 +58,7 @@ import org.openide.util.Utilities;
 public class ModulesNode extends AbstractNode {
 
     /** Creates a new instance of ModulesNode */
-    public ModulesNode(NbMavenProject proj) {
+    public ModulesNode(NbMavenProjectImpl proj) {
         super(new ModulesChildren(proj));
         setName("Modules"); //NOI18N
         setDisplayName(org.openide.util.NbBundle.getMessage(ModulesNode.class, "LBL_Modules"));
@@ -85,16 +85,16 @@ public class ModulesNode extends AbstractNode {
     }
 
 
-    static class ModulesChildren extends Children.Keys<NbMavenProject> {
+    static class ModulesChildren extends Children.Keys<NbMavenProjectImpl> {
 
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private PropertyChangeListener listener;
 
-        ModulesChildren(NbMavenProject proj) {
+        ModulesChildren(NbMavenProjectImpl proj) {
             project = proj;
             listener = new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                         loadModules();
                     }
                 }
@@ -104,23 +104,23 @@ public class ModulesNode extends AbstractNode {
         @Override
         public void addNotify() {
             loadModules();
-            ProjectURLWatcher.addPropertyChangeListener(project, listener);
+            NbMavenProject.addPropertyChangeListener(project, listener);
         }
 
         @Override
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, listener);
+            NbMavenProject.removePropertyChangeListener(project, listener);
             setKeys(Collections.EMPTY_LIST);
         }
 
-        protected Node[] createNodes(NbMavenProject proj) {
+        protected Node[] createNodes(NbMavenProjectImpl proj) {
             boolean isPom = "pom".equals(proj.getOriginalMavenProject().getPackaging());
             LogicalViewProvider prov = proj.getLookup().lookup(LogicalViewProvider.class);
             return new Node[]{new ProjectFilterNode(project, proj, prov.createLogicalView(), isPom)};
         }
 
         private void loadModules() {
-            Collection<NbMavenProject> modules = new ArrayList<NbMavenProject>();
+            Collection<NbMavenProjectImpl> modules = new ArrayList<NbMavenProjectImpl>();
             File base = project.getOriginalMavenProject().getBasedir();
             for (Iterator it = project.getOriginalMavenProject().getModules().iterator(); it.hasNext();) {
                 String elem = (String) it.next();
@@ -129,8 +129,8 @@ public class ModulesNode extends AbstractNode {
                 if (fo != null) {
                     try {
                         Project prj = ProjectManager.getDefault().findProject(fo);
-                        if (prj != null && prj.getLookup().lookup(NbMavenProject.class) != null) {
-                            modules.add((NbMavenProject) prj);
+                        if (prj != null && prj.getLookup().lookup(NbMavenProjectImpl.class) != null) {
+                            modules.add((NbMavenProjectImpl) prj);
                         }
                     } catch (IllegalArgumentException ex) {
                         ex.printStackTrace();
@@ -147,10 +147,10 @@ public class ModulesNode extends AbstractNode {
 
     private static class ProjectFilterNode extends FilterNode {
 
-        private NbMavenProject project;
-        private NbMavenProject parent;
+        private NbMavenProjectImpl project;
+        private NbMavenProjectImpl parent;
 
-        ProjectFilterNode(NbMavenProject parent, NbMavenProject proj, Node original, boolean isPom) {
+        ProjectFilterNode(NbMavenProjectImpl parent, NbMavenProjectImpl proj, Node original, boolean isPom) {
             super(original, isPom ? new ModulesChildren(proj) : Children.LEAF);
 //            disableDelegation(DELEGATE_GET_ACTIONS);
             project = proj;
@@ -174,10 +174,10 @@ public class ModulesNode extends AbstractNode {
 
     private static class RemoveModuleAction extends AbstractAction {
 
-        private NbMavenProject project;
-        private NbMavenProject parent;
+        private NbMavenProjectImpl project;
+        private NbMavenProjectImpl parent;
 
-        public RemoveModuleAction(NbMavenProject parent, NbMavenProject proj) {
+        public RemoveModuleAction(NbMavenProjectImpl parent, NbMavenProjectImpl proj) {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Remove_Module"));
             project = proj;
             this.parent = parent;
@@ -201,7 +201,7 @@ public class ModulesNode extends AbstractNode {
                         }
                     }
                     WriterUtils.writePomModel(FileUtil.toFileObject(parent.getPOMFile()), model);
-                    ProjectURLWatcher.fireMavenProjectReload(parent);
+                    NbMavenProject.fireMavenProjectReload(parent);
                 } catch (FileNotFoundException ex) {
                     ex.printStackTrace();
                 } catch (XmlPullParserException ex) {
@@ -215,9 +215,9 @@ public class ModulesNode extends AbstractNode {
 
     private static class OpenProjectAction extends AbstractAction {
 
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
 
-        public OpenProjectAction(NbMavenProject proj) {
+        public OpenProjectAction(NbMavenProjectImpl proj) {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ModulesNode.class, "BTN_Open_Project"));
             project = proj;
         }

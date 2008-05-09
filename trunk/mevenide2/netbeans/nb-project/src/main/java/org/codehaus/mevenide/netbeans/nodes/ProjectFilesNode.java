@@ -31,8 +31,8 @@ import java.util.HashSet;
 import java.util.Set;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.openide.cookies.EditCookie;
 import org.openide.filesystems.FileChangeAdapter;
@@ -56,9 +56,9 @@ import org.openide.util.lookup.Lookups;
  */
 public class ProjectFilesNode extends AnnotatedAbstractNode {
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     /** Creates a new instance of ProjectFilesNode */
-    public ProjectFilesNode(NbMavenProject project) {
+    public ProjectFilesNode(NbMavenProjectImpl project) {
         super(new ProjectFilesChildren(project), Lookups.fixed(project.getProjectDirectory()));
         setName("projectfiles"); //NOI18N
         setDisplayName(org.openide.util.NbBundle.getMessage(ProjectFilesNode.class, "LBL_Project_Files"));
@@ -110,10 +110,10 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
     }
     
     private static class ProjectFilesChildren extends Children.Keys<File> implements PropertyChangeListener {
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private FileChangeAdapter fileChangeListener;
         
-        public ProjectFilesChildren(NbMavenProject proj) {
+        public ProjectFilesChildren(NbMavenProjectImpl proj) {
             super();
             project = proj;
             fileChangeListener = new FileChangeAdapter() {
@@ -144,7 +144,7 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 regenerateKeys(true);
             }
         }
@@ -161,7 +161,7 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         @Override
         protected void addNotify() {
             super.addNotify();
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
             project.getProjectDirectory().addFileChangeListener(fileChangeListener);
             regenerateKeys(false);
         }
@@ -169,7 +169,7 @@ public class ProjectFilesNode extends AnnotatedAbstractNode {
         @Override
         protected void removeNotify() {
             setKeys(Collections.EMPTY_SET);
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            NbMavenProject.removePropertyChangeListener(project, this);
             project.getProjectDirectory().removeFileChangeListener(fileChangeListener);
             super.removeNotify();
         }

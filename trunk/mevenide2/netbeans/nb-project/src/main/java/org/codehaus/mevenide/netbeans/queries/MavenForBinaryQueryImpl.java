@@ -33,8 +33,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.model.Build;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.java.queries.JavadocForBinaryQuery;
 import org.netbeans.api.java.queries.SourceForBinaryQuery;
 import org.netbeans.spi.java.queries.JavadocForBinaryQueryImplementation;
@@ -51,15 +51,15 @@ import org.openide.filesystems.FileUtil;
 public class MavenForBinaryQueryImpl implements SourceForBinaryQueryImplementation,
         JavadocForBinaryQueryImplementation {
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private final HashMap<String, BinResult> map;
     /** Creates a new instance of MavenSourceForBinaryQueryImpl */
-    public MavenForBinaryQueryImpl(NbMavenProject proj) {
+    public MavenForBinaryQueryImpl(NbMavenProjectImpl proj) {
         project = proj;
         map = new HashMap<String, BinResult>();
-        ProjectURLWatcher.addPropertyChangeListener(proj, new PropertyChangeListener() {
+        NbMavenProject.addPropertyChangeListener(proj, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(event.getPropertyName())) {
                     synchronized (map) {
                         for (BinResult res : map.values()) {
                             if (!Arrays.equals(res.getCached(), res.getRoots())) {

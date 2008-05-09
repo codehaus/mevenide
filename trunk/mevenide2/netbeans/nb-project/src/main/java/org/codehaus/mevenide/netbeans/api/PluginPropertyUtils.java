@@ -28,7 +28,7 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NBPluginParameterExpressionEvaluator;
@@ -55,7 +55,7 @@ public class PluginPropertyUtils {
      * current project and returns it's value if so, otherwise null
      */
     public static String getPluginProperty(Project prj, String groupId, String artifactId, String property, String goal) {
-        NbMavenProject project = prj.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = prj.getLookup().lookup(NbMavenProjectImpl.class);
         assert project != null : "Requires a maven project instance"; //NOI18N
         return getPluginProperty(project.getOriginalMavenProject(), groupId, artifactId, property, goal);
     }

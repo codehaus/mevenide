@@ -18,7 +18,7 @@ package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.util.Lookup;
@@ -48,7 +48,7 @@ public class MavenApisupportLookupProvider implements LookupProvider {
     private static class Provider extends AbstractLookup implements  PropertyChangeListener {
         private Project project;
         private InstanceContent content;
-        private String lastType = ProjectURLWatcher.TYPE_JAR;
+        private String lastType = NbMavenProject.TYPE_JAR;
         private MavenNbModuleImpl lastInstance = null;
         private AccessQueryImpl lastAccess = null;
         public Provider(Project proj, InstanceContent cont) {
@@ -56,22 +56,22 @@ public class MavenApisupportLookupProvider implements LookupProvider {
             project = proj;
             content = cont;
             checkNbm();
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            if (ProjectURLWatcher.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
+            if (NbMavenProject.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
                 checkNbm();
             }
         }
         
         private void checkNbm() {
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             String packaging = watcher.getPackagingType();
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR;
+                packaging = NbMavenProject.TYPE_JAR;
             }
-            if (ProjectURLWatcher.TYPE_NBM.equals(packaging) && !lastType.equals(packaging)) {
+            if (NbMavenProject.TYPE_NBM.equals(packaging) && !lastType.equals(packaging)) {
                 if (lastInstance == null) {
                     lastInstance = new MavenNbModuleImpl(project);
                 }
@@ -81,7 +81,7 @@ public class MavenApisupportLookupProvider implements LookupProvider {
                 }
                 content.add(lastAccess);
             } else if (lastInstance != null && !(
-                    ProjectURLWatcher.TYPE_NBM.equals(packaging)))
+                    NbMavenProject.TYPE_NBM.equals(packaging)))
             {
                 content.remove(lastInstance);
                 content.remove(lastAccess);

@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.openide.filesystems.FileUtil;
 
 /**
@@ -34,7 +34,7 @@ import org.openide.filesystems.FileUtil;
 class RuntimeClassPathImpl extends AbstractProjectClassPathImpl {
     
     /** Creates a new instance of SrcClassPathImpl */
-    public RuntimeClassPathImpl(NbMavenProject proj) {
+    public RuntimeClassPathImpl(NbMavenProjectImpl proj) {
         super(proj);
         
     }

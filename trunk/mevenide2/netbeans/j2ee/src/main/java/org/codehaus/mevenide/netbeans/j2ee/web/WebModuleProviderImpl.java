@@ -19,7 +19,7 @@ package org.codehaus.mevenide.netbeans.j2ee.web;
 
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -56,11 +56,11 @@ public class WebModuleProviderImpl extends J2eeModuleProvider implements WebModu
     private String serverInstanceID;
 
     static final String ATTRIBUTE_CONTEXT_PATH = "WebappContextPath"; //NOI18N
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     
     public WebModuleProviderImpl(Project proj) {
         project = proj;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
         implementation = new WebModuleImpl(project, this);
         moduleChange = new ModuleChangeReporterImpl();
     }
