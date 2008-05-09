@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.problems;
 
+import org.codehaus.mevenide.netbeans.api.problem.ProblemReport;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
@@ -39,12 +40,12 @@ import org.openide.util.NbBundle;
  * @author  mkleint
  */
 public class ProblemsPanel extends javax.swing.JPanel {
-    private ProblemReporter reporter;
+    private ProblemReporterImpl reporter;
     private ChangeListener change;
     private JButton button;
     private JButton close;
     /** Creates new form ProblemsPanel */
-    public ProblemsPanel(ProblemReporter report) {
+    public ProblemsPanel(ProblemReporterImpl report) {
         initComponents();
         this.reporter = report;
         taDescription.setLineWrap(true);

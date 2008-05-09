@@ -37,6 +37,7 @@ import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Writer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
@@ -145,7 +146,7 @@ public final class ActionToGoalUtils {
         return false;
     }
 
-    public static NetbeansActionMapping getActiveMapping(String action, NbMavenProject project, M2Configuration configuration) {
+    public static NetbeansActionMapping getActiveMapping(String action, Project project, M2Configuration configuration) {
         NetbeansActionMapping na = null;
         if (configuration != null) {
             // this parameter is somewhat suspicuous, not idea when it could be ever used from the customizer..
@@ -190,7 +191,7 @@ public final class ActionToGoalUtils {
         return toRet.toArray(new NetbeansActionMapping[toRet.size()]);
     }
 
-    public static NetbeansActionMapping getDefaultMapping(String action, NbMavenProject project) {
+    public static NetbeansActionMapping getDefaultMapping(String action, Project project) {
         NetbeansActionMapping na = null;
         Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(MavenActionsProvider.class));
         Iterator it = res.allInstances().iterator();
@@ -202,23 +203,6 @@ public final class ActionToGoalUtils {
             }
         }
         return na;
-    }
-
-    public static void setUserActionMapping(NetbeansActionMapping action, ActionToGoalMapping mapp) {
-        List lst = mapp.getActions() != null ? mapp.getActions() : new ArrayList();
-        Iterator it = lst.iterator();
-        while (it.hasNext()) {
-            NetbeansActionMapping act = (NetbeansActionMapping) it.next();
-            if (act.getActionName().equals(action.getActionName())) {
-                int index = lst.indexOf(act);
-                it.remove();
-                lst.add(index, action);
-                return;
-            }
-
-        }
-        //if not found, dd to the end.
-        lst.add(action);
     }
 
     /**

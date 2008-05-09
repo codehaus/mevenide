@@ -16,6 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans.nodes;
+import org.codehaus.mevenide.netbeans.spi.nodes.AbstractMavenNodeList;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;

@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.classpath.ClassPathProviderImpl;
+import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.netbeans.api.java.classpath.ClassPath;
+import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
@@ -105,7 +105,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
     public FileObject getMetaInf() {
         Sources srcs = ProjectUtils.getSources(project);
         if (srcs != null) {
-            SourceGroup[] grp = srcs.getSourceGroups(MavenSourcesImpl.TYPE_RESOURCES);
+            SourceGroup[] grp = srcs.getSourceGroups(JavaProjectConstants.SOURCES_TYPE_RESOURCES);
             for (int i = 0; i < grp.length; i++) {
                 FileObject fo = grp[i].getRootFolder().getFileObject("META-INF"); //NOI18N
                 if (fo != null) {
@@ -419,7 +419,7 @@ class EjbJarImpl implements EjbJarImplementation, J2eeModuleImplementation, Modu
         if (ejbJarMetadataModel == null) {
             FileObject ddFO = getDeploymentDescriptor();
             File ddFile = ddFO != null ? FileUtil.toFile(ddFO) : null;
-            ClassPathProviderImpl cpProvider = project.getLookup().lookup(ClassPathProviderImpl.class);
+            ProjectSourcesClassPathProvider cpProvider = project.getLookup().lookup(ProjectSourcesClassPathProvider.class);
             MetadataUnit metadataUnit = MetadataUnit.create(
                 cpProvider.getProjectSourcesClassPath(ClassPath.BOOT),
                 cpProvider.getProjectSourcesClassPath(ClassPath.COMPILE),

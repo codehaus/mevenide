@@ -14,8 +14,9 @@
  *  limitations under the License.
  * =========================================================================
  */
-package org.codehaus.mevenide.netbeans.execute;
+package org.codehaus.mevenide.netbeans.spi.actions;
 
+import org.codehaus.mevenide.netbeans.execute.*;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,11 +49,11 @@ import org.openide.loaders.DataObject;
 import org.openide.util.Lookup;
 
 /**
- * a default implementation of AdditionalM2ActionsProvider, a fallback when nothing is
+ * a default implementation of MavenActionsProvider, a fallback when nothing is
  * user configured or overriden by a more specialized provider.
  * @author mkleint
  */
-public abstract class AbstractActionGoalProvider implements MavenActionsProvider {
+public abstract class AbstractMavenActionsProvider implements MavenActionsProvider {
 
     private static final String WEB_PATH = "webpagePath";//NOI18N
     private static final String CLASSNAME = "className";//NOI18N
@@ -63,7 +64,7 @@ public abstract class AbstractActionGoalProvider implements MavenActionsProvider
     private NetbeansBuildActionXpp3Writer writer = new NetbeansBuildActionXpp3Writer();
 
     /** Creates a new instance of DefaultActionProvider */
-    public AbstractActionGoalProvider() {
+    public AbstractMavenActionsProvider() {
     }
 
     /**

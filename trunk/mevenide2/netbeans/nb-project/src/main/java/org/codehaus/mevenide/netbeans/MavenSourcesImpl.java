@@ -55,8 +55,6 @@ import org.openide.util.RequestProcessor;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class MavenSourcesImpl implements Sources {
-    //TODO remove when upgrading to later milestone..
-    public static final String TYPE_RESOURCES="resources";//NOI18N
     public static final String TYPE_OTHER = "Resources"; //NOI18N
     public static final String TYPE_TEST_OTHER = "TestResources"; //NOI18N
     public static final String TYPE_GEN_SOURCES = "GeneratedSources"; //NOI18N
@@ -67,7 +65,7 @@ public class MavenSourcesImpl implements Sources {
     public static final String NAME_GENERATED_SOURCE = "6GeneratedSourceRoot"; //NOI18N
     
     private NbMavenProject project;
-    private List<ChangeListener> listeners;
+    private final List<ChangeListener> listeners;
     
     private Map<String, SourceGroup> javaGroup;
     private SourceGroup genSrcGroup;
@@ -205,7 +203,7 @@ public class MavenSourcesImpl implements Sources {
             grp = toReturn.toArray(grp);
             return grp;
         }
-        if (TYPE_RESOURCES.equals(str)) {
+        if (JavaProjectConstants.SOURCES_TYPE_RESOURCES.equals(str)) {
             URI[] uris = project.getResources(false);
             if (uris.length > 0) {
                 File root = new File(uris[0]);

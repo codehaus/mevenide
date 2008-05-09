@@ -27,11 +27,9 @@ import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.customizer.support.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.netbeans.api.project.Project;
@@ -171,9 +169,8 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
             }
         });
         
-        //TODO remove the NbMavenProject dependency
-        run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project.getLookup().lookup(NbMavenProject.class),null);
-        debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project.getLookup().lookup(NbMavenProject.class),null);
+        run = ModelHandle.getActiveMapping(ActionProvider.COMMAND_RUN, project);
+        debug = ModelHandle.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
         isRunCompatible = checkMapping(run);
         isDebugCompatible = checkMapping(debug);
         oldUrl = isRunCompatible ? run.getProperties().getProperty(PROP_CLIENT_URL_PART) : //NOI18N
@@ -359,12 +356,12 @@ public class WebRunCustomizerPanel extends javax.swing.JPanel {
         if (!newUrl.equals(oldUrl)) {
             if (isRunCompatible) {
                 run.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
-                ActionToGoalUtils.setUserActionMapping(run, handle.getActionMappings());
+                ModelHandle.setUserActionMapping(run, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
             if (isDebugCompatible) {
                 debug.getProperties().setProperty( PROP_CLIENT_URL_PART,newUrl); //NOI18N
-                ActionToGoalUtils.setUserActionMapping(debug, handle.getActionMappings());
+                ModelHandle.setUserActionMapping(debug, handle.getActionMappings());
                 handle.markAsModified(handle.getActionMappings());
             }
         }

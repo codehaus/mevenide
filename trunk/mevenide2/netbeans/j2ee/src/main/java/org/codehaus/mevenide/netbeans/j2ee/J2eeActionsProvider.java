@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans.j2ee;
 import java.io.InputStream;
 import java.util.ArrayList;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -33,7 +33,7 @@ import org.openide.util.Lookup;
  * j2ee specific defaults for project running and debugging..
  * @author mkleint
  */
-public class J2eeActionsProvider extends AbstractActionGoalProvider {
+public class J2eeActionsProvider extends AbstractMavenActionsProvider {
 
     private ArrayList<String> supported;
     /** Creates a new instance of J2eeActionsProvider */

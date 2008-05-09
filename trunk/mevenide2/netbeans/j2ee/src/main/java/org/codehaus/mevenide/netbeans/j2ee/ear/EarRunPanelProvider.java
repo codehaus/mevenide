@@ -19,7 +19,6 @@ package org.codehaus.mevenide.netbeans.j2ee.ear;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.api.project.Project;

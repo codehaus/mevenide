@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.problems;
 
+import org.codehaus.mevenide.netbeans.api.problem.ProblemReport;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.problem.ProblemReporter;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.nodes.DependenciesNode;
@@ -55,13 +57,13 @@ import org.openide.util.NbBundle;
  *
  * @author mkleint
  */
-public final class ProblemReporter implements Comparator<ProblemReport> {
+public final class ProblemReporterImpl implements ProblemReporter, Comparator<ProblemReport> {
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
     private final Set<ProblemReport> reports;
     private NbMavenProject nbproject;
     
     /** Creates a new instance of ProblemReporter */
-    public ProblemReporter(NbMavenProject proj) {
+    public ProblemReporterImpl(NbMavenProject proj) {
         reports = new TreeSet<ProblemReport>(this);
         nbproject = proj;
     }
@@ -134,7 +136,7 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
         List messages = exc.getValidationResult().getMessages();
         if (messages != null && messages.size() > 0) {
             ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                    org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_Project_validation."), exc.getValidationResult().render("\n"), new OpenPomAction(nbproject)); //NOI18N
+                    org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ERR_Project_validation."), exc.getValidationResult().render("\n"), new OpenPomAction(nbproject)); //NOI18N
             addReport(report);
         }
     }
@@ -155,8 +157,8 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
             }
             if (!foundJ2ee) {
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                    NbBundle.getMessage(ProblemReporter.class, "ERR_MissingJ2eeModule"),
-                    NbBundle.getMessage(ProblemReporter.class, "MSG_MissingJ2eeModule"), 
+                    NbBundle.getMessage(ProblemReporterImpl.class, "ERR_MissingJ2eeModule"),
+                    NbBundle.getMessage(ProblemReporterImpl.class, "MSG_MissingJ2eeModule"), 
                     null);
                 addReport(report);
             }
@@ -172,8 +174,8 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
             }
             if (!foundApisupport) {
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                    NbBundle.getMessage(ProblemReporter.class, "ERR_MissingApisupportModule"),
-                    NbBundle.getMessage(ProblemReporter.class, "MSG_MissingApisupportModule"), 
+                    NbBundle.getMessage(ProblemReporterImpl.class, "ERR_MissingApisupportModule"),
+                    NbBundle.getMessage(ProblemReporterImpl.class, "MSG_MissingApisupportModule"), 
                     null);
                 addReport(report);
             }
@@ -195,8 +197,8 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
                     if (art.getFile() != null && art.isFakedSystemDependency()) {
                         //TODO create a correction action for this.
                         ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                                org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_SystemScope"),
-                                org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_SystemScope"), 
+                                org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ERR_SystemScope"),
+                                org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "MSG_SystemScope"), 
                                 new OpenPomAction(nbproject));
                         addReport(report);
                     } else if (art.getFile() == null || !art.getFile().exists()) {
@@ -212,11 +214,11 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
                         mess = mess + ar.getId() + "\n"; //NOI18N
                     }
                     AbstractAction act = new DependenciesNode.ResolveDepsAction(nbproject);
-                    act.putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ACT_DownloadDeps"));
+                    act.putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ACT_DownloadDeps"));
                     
                     ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_MEDIUM,
-                            org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_NonLocal"),
-                            org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_NonLocal", mess),
+                            org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ERR_NonLocal"),
+                            org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "MSG_NonLocal", mess),
                             act);
                     addReport(report);
                 }
@@ -247,8 +249,8 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
             if (nbart.getNonFakedFile() != null && !nbart.getNonFakedFile().exists()) {
                 //TODO create a correction action for this.
                 ProblemReport report = new ProblemReport(ProblemReport.SEVERITY_HIGH,
-                        org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ERR_NoParent"),
-                        org.openide.util.NbBundle.getMessage(ProblemReporter.class, "MSG_NoParent", nbart.getId()),
+                        org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ERR_NoParent"),
+                        org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "MSG_NoParent", nbart.getId()),
                         new OpenPomAction(nbproject));
                 addReport(report);
             }
@@ -262,7 +264,7 @@ public final class ProblemReporter implements Comparator<ProblemReport> {
         private String filepath;
         
         OpenPomAction(NbMavenProject proj) {
-            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporter.class, "ACT_OpenPom"));
+            putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ACT_OpenPom"));
             project = proj;
         }
         

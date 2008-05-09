@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.api.customizer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -30,7 +31,10 @@ import org.apache.maven.profiles.ProfilesRoot;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
+import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
+import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
+import org.netbeans.api.project.Project;
 import org.openide.util.NbBundle;
 
 /**
@@ -226,7 +230,34 @@ public final class ModelHandle {
         }
         return mapp;
     }
+    
+    /**
+     * inserts the action definition in the right place based on matching action name.
+     * replaces old defintion or appends at the end.
+     * 
+     * @param action
+     * @param mapp
+     */
+    public static void setUserActionMapping(NetbeansActionMapping action, ActionToGoalMapping mapp) {
+        List lst = mapp.getActions() != null ? mapp.getActions() : new ArrayList();
+        Iterator it = lst.iterator();
+        while (it.hasNext()) {
+            NetbeansActionMapping act = (NetbeansActionMapping) it.next();
+            if (act.getActionName().equals(action.getActionName())) {
+                int index = lst.indexOf(act);
+                it.remove();
+                lst.add(index, action);
+                return;
+            }
 
+        }
+        //if not found, add to the end.
+        lst.add(action);
+    }
+    
+    public static NetbeansActionMapping getActiveMapping(String action, Project project) {
+        return ActionToGoalUtils.getActiveMapping(action, project, null);
+    }
     
     public void setConfigurationsEnabled(boolean bool) {
         enabled = bool;

@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -36,7 +37,7 @@ import org.openide.filesystems.FileObject;
  * user defined definitions, to be found in the project directory in the nbactions.xml file.
  * @author mkleint
  */
-public class UserActionGoalProvider extends AbstractActionGoalProvider {
+public class UserActionGoalProvider extends AbstractMavenActionsProvider {
     
     public static final String FILENAME = "nbactions.xml"; //NOI18N
     
