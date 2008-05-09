@@ -23,7 +23,7 @@ import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.indexer.api.RepositoryUtil;
+import org.codehaus.mevenide.netbeans.spi.nodes.NodeUtils;
 import org.openide.nodes.AbstractNode;
 import org.openide.nodes.Children;
 import org.openide.nodes.Node;
