@@ -19,7 +19,6 @@ package org.codehaus.mevenide.indexer.api;
 
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -180,8 +179,6 @@ public final class RepositoryQueries {
         try {
             String calculateChecksum = RepositoryUtil.calculateMD5Checksum(file);
             return findByMD5(calculateChecksum, repos);
-        } catch (NoSuchAlgorithmException ex) {
-            Exceptions.printStackTrace(ex);
         } catch (IOException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -203,6 +200,34 @@ public final class RepositoryQueries {
         }
         return toRet;
     }
+    
+    public static List<NBVersionInfo> findBySHA1(File file, RepositoryInfo... repos) {
+        List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
+        try {
+            String calculateChecksum = RepositoryUtil.calculateSHA1Checksum(file);
+            return findBySHA1(calculateChecksum, repos);
+        } catch (IOException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        return toRet;
+        
+    }
+
+    public static List<NBVersionInfo> findBySHA1(String sha1, RepositoryInfo... repos) {
+        Collection<List<RepositoryInfo>> all = splitReposByType(repos);
+        List<NBVersionInfo> toRet = new ArrayList<NBVersionInfo>();
+        for (List<RepositoryInfo> rps : all) {
+            RepositoryIndexerImplementation impl = RepositoryIndexer.findImplementation(rps.get(0));
+            if (impl != null) {
+                ChecksumQueries chq = impl.getCapabilityLookup().lookup(ChecksumQueries.class);
+                if (chq != null) {
+                    toRet.addAll(chq.findBySHA1(sha1, rps));
+                }
+            }
+        }
+        return toRet;
+    }
+    
     
     public static List<NBVersionInfo> findVersionsByClass(final String className, RepositoryInfo... repos) {
         Collection<List<RepositoryInfo>> all = splitReposByType(repos);
