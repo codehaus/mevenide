@@ -14,7 +14,7 @@
  *  limitations under the License.
  *  under the License.
  */
-package org.codehaus.mevenide.netbeans.spi.archetype;
+package org.codehaus.mevenide.netbeans.spi.customizer;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -37,9 +37,9 @@ import org.netbeans.api.project.Project;
  * 
  * @author mkleint
  */
-public final class WizardExtenderUtils {
+public final class ModelHandleUtils {
     
-    private WizardExtenderUtils() {}
+    private ModelHandleUtils() {}
     
     public static ModelHandle createModelHandle(Project prj) throws IOException, XmlPullParserException {
         NbMavenProjectImpl project = prj.getLookup().lookup(NbMavenProjectImpl.class);

@@ -22,7 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
-import org.codehaus.mevenide.netbeans.spi.archetype.WizardExtenderUtils;
+import org.codehaus.mevenide.netbeans.spi.customizer.ModelHandleUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
@@ -99,11 +99,11 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
                 //not necessary any more. toplink will be handled by default library impl..            
                 //TODO would be nice if the toplink lib shipping with netbeans be the same binary
                 // then we could just copy the pieces to local repo.
-                ModelHandle handle = WizardExtenderUtils.createModelHandle(project);
+                ModelHandle handle = ModelHandleUtils.createModelHandle(project);
                 
                 // checking source doesn't work anymore, the wizard requires the level to be 1.5 up front.
                 PluginPropertyUtils.checkSourceLevel(handle, SL_15);
-                WizardExtenderUtils.writeModelHandle(handle, project);
+                ModelHandleUtils.writeModelHandle(handle, project);
                 
                 //shall not return true, needs processing by the fallback impl as well.
                 return false;
