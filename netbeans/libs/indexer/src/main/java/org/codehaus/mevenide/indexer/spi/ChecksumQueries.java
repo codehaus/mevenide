@@ -21,11 +21,12 @@ import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 
 /**
- * Query to find artifacts by MD5. Non mandatory for repository managers.
+ * Query to find artifacts by MD5, SHA1. Non mandatory for repository managers.
  * @author Milos Kleint
  */
 public interface ChecksumQueries {
 
     List<NBVersionInfo> findByMD5(String md5, List<RepositoryInfo> repos);
 
+    List<NBVersionInfo> findBySHA1(String sha1, List<RepositoryInfo> repos);
 }

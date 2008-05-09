@@ -31,6 +31,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.MavenProjectBuilder;
 import org.apache.maven.project.ProjectBuildingException;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
+import org.codehaus.plexus.util.IOUtil;
 
 /**
  *
@@ -72,19 +73,25 @@ public final class RepositoryUtil {
         return art;
     }
 
-    public static String calculateMD5Checksum(File file) throws NoSuchAlgorithmException, IOException {
+    public static String calculateMD5Checksum(File file) throws IOException {
         byte[] buffer = readFile(file);
-
         String md5sum = DigestUtils.md5Hex(buffer);
-
         return md5sum;
+    }
+    
+    static String calculateSHA1Checksum(File file) throws IOException {
+        byte[] buffer = readFile(file);
+        String sha1sum = DigestUtils.shaHex(buffer);
+        return sha1sum;
     }
 
     static byte[] readFile(File file) throws IOException {
 
-        InputStream is = new FileInputStream(file);
-
+        InputStream is = null; 
         byte[] bytes = new byte[(int) file.length()];
+        try {
+            is = new FileInputStream(file);
+
 
         int offset = 0;
         int numRead = 0;
@@ -94,8 +101,9 @@ public final class RepositoryUtil {
 
             offset += numRead;
         }
-
-        is.close();
+        } finally {
+            IOUtil.close(is);
+        }
 
         return bytes;
     }

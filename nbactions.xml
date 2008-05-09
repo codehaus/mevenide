@@ -15,9 +15,6 @@
             <goal>install</goal>
             
         </goals>
-        <activatedProfiles>
-                <activatedProfile>experimental</activatedProfile>
-        </activatedProfiles>
     </action>
     <action>
         <actionName>rebuild</actionName>
@@ -29,9 +26,6 @@
             <goal>install</goal>
             
         </goals>
-        <activatedProfiles>
-                <activatedProfile>experimental</activatedProfile>
-        </activatedProfiles>
     </action>
     <action>
         <actionName>run</actionName>
@@ -43,12 +37,6 @@
             <goal>nbm:cluster</goal>
             <goal>nbm:run-ide</goal>
         </goals>
-        <activatedProfiles>
-                <activatedProfile>experimental</activatedProfile>
-        </activatedProfiles>
-        <properties>
-            <netbeans.installation>/home/mkleint/src/trunk/nbbuild/netbeans</netbeans.installation>
-        </properties>
     </action>
     <action>
         <actionName>debug</actionName>
@@ -78,9 +66,6 @@
                 <goal>nbm:directory</goal>
                 <goal>nbm:cluster</goal>
             </goals>
-            <activatedProfiles>
-                <activatedProfile>experimental</activatedProfile>
-            </activatedProfiles>
         </action>
     <action>
             <actionName>CUSTOM-Update site</actionName>
@@ -90,8 +75,5 @@
                 <goal>nbm:nbm</goal>
                 <goal>nbm:autoupdate</goal>
             </goals>
-            <activatedProfiles>
-                <activatedProfile>experimental</activatedProfile>
-            </activatedProfiles>
         </action>
 </actions>
