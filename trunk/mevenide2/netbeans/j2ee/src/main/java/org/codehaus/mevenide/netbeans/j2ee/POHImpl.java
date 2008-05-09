@@ -32,7 +32,7 @@ import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.api.problem.ProblemReport;
 import org.codehaus.mevenide.netbeans.api.problem.ProblemReporter;
-import org.codehaus.mevenide.netbeans.spi.archetype.WizardExtenderUtils;
+import org.codehaus.mevenide.netbeans.spi.customizer.ModelHandleUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.deployment.devmodules.api.Deployment;
@@ -151,7 +151,7 @@ public class POHImpl extends ProjectOpenedHook {
                 serverType = Deployment.getDefault().getServerID(newOne);
             }
             try {
-                ModelHandle handle = WizardExtenderUtils.createModelHandle(prj);
+                ModelHandle handle = ModelHandleUtils.createModelHandle(prj);
                 //get rid of old settings.
                 Profile prof = handle.getNetbeansPublicProfile(false);
                 if (prof != null) {
@@ -170,7 +170,7 @@ public class POHImpl extends ProjectOpenedHook {
                     }
                 }
                 handle.markAsModified(handle.getPOMModel());
-                WizardExtenderUtils.writeModelHandle(handle, prj);
+                ModelHandleUtils.writeModelHandle(handle, prj);
             } catch (IOException ex) {
                 Exceptions.printStackTrace(ex);
             } catch (XmlPullParserException ex) {
