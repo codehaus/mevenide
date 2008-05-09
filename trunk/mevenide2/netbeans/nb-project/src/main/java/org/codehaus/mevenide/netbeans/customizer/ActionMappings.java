@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import org.codehaus.mevenide.netbeans.api.customizer.support.CheckBoxUpdater;
 import java.awt.Component;
 import java.awt.Cursor;
 import javax.swing.JList;

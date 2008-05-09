@@ -17,6 +17,8 @@
 
 package org.codehaus.mevenide.netbeans.customizer;
 
+import org.codehaus.mevenide.netbeans.api.customizer.support.TextComponentUpdater;
+import org.codehaus.mevenide.netbeans.api.customizer.support.ReflectionTextComponentUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.util.ArrayList;
 import java.util.List;

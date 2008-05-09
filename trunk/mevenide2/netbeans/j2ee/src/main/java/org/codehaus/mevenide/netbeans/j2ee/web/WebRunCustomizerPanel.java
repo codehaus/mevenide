@@ -29,7 +29,7 @@ import javax.swing.event.DocumentListener;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
+import org.codehaus.mevenide.netbeans.api.customizer.support.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;

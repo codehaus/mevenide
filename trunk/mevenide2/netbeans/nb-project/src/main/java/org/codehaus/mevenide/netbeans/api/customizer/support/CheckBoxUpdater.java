@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.customizer;
+package org.codehaus.mevenide.netbeans.api.customizer.support;
 
 import java.awt.Font;
 import java.awt.event.ActionEvent;

@@ -22,7 +22,7 @@ import java.util.Collection;
 import javax.swing.DefaultComboBoxModel;
 import org.apache.maven.profiles.Profile;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.customizer.ComboBoxUpdater;
+import org.codehaus.mevenide.netbeans.api.customizer.support.ComboBoxUpdater;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.j2ee.MavenDeploymentImpl;
 import org.codehaus.mevenide.netbeans.j2ee.POHImpl;
