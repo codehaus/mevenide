@@ -112,6 +112,9 @@ public final class Archetype {
     
     @Override
     public boolean equals(Object obj) {
+        if (!(obj instanceof Archetype)) {
+            return false;
+        }
         Archetype ar1 = (Archetype)obj;
         if (ar1 == null) {
             return false;
