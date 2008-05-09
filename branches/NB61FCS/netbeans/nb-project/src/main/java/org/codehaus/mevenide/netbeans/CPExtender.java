@@ -261,6 +261,15 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
             if (toRet[2].startsWith("/")) { //NOI18N
                 toRet[2] = toRet[2].substring(1);
             }
+            //sort of hack, these 2 are the most probable root paths.
+            if (toRet[2].startsWith("maven/")) {
+                toRet[1] = toRet[1] + "/maven";
+                toRet[2] = toRet[2].substring("maven/".length());
+            }
+            if (toRet[2].startsWith("maven2/")) {
+                toRet[1] = toRet[1] + "/maven2";
+                toRet[2] = toRet[2].substring("maven2/".length());
+            }
             toRet[2] = toRet[2].replace('/', '.'); //NOI18N
             return toRet;
         }
