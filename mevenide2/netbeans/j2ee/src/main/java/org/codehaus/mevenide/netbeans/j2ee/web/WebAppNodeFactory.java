@@ -25,7 +25,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
-import org.codehaus.mevenide.netbeans.nodes.AbstractMavenNodeList;
+import org.codehaus.mevenide.netbeans.spi.nodes.AbstractMavenNodeList;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeList;

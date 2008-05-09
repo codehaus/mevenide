@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.netbeans.spi.project.ProjectConfiguration;
-import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import org.codehaus.mevenide.netbeans.execute.UserActionGoalProvider;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -39,7 +39,7 @@ import org.openide.filesystems.FileObject;
  *
  * @author mkleint
  */
-public class M2Configuration extends AbstractActionGoalProvider implements ProjectConfiguration  {
+public class M2Configuration extends AbstractMavenActionsProvider implements ProjectConfiguration  {
 
     public static String DEFAULT = "%%DEFAULT%%"; //NOI18N
     

@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.nodes;
+package org.codehaus.mevenide.netbeans.spi.nodes;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;

@@ -37,8 +37,8 @@ import org.codehaus.mevenide.netbeans.ActionProviderImpl;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
-import org.codehaus.mevenide.netbeans.problems.ProblemReport;
-import org.codehaus.mevenide.netbeans.problems.ProblemReporter;
+import org.codehaus.mevenide.netbeans.api.problem.ProblemReport;
+import org.codehaus.mevenide.netbeans.problems.ProblemReporterImpl;
 import org.codehaus.mevenide.netbeans.problems.ProblemsPanel;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -73,7 +73,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
      
      private NbMavenProject project;
      private ProjectInformation info;
-     private ProblemReporter reporter;
+     private ProblemReporterImpl reporter;
 
      public MavenProjectNode(Lookup lookup, NbMavenProject proj) {
         super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
@@ -87,7 +87,7 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
                 }
             }
         });
-        reporter = proj.getLookup().lookup(ProblemReporter.class);
+        reporter = proj.getLookup().lookup(ProblemReporterImpl.class);
         reporter.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 SwingUtilities.invokeLater(new Runnable() {

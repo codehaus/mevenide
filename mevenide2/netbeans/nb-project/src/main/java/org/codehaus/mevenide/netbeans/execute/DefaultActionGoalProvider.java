@@ -17,6 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
+import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import java.io.InputStream;
 
 /**
@@ -24,7 +25,7 @@ import java.io.InputStream;
  * user configured or overriden by a more specialized provider.
  * @author mkleint
  */
-public class DefaultActionGoalProvider extends AbstractActionGoalProvider {
+public class DefaultActionGoalProvider extends AbstractMavenActionsProvider {
     /** Creates a new instance of DefaultActionProvider */
     public DefaultActionGoalProvider() {
     }

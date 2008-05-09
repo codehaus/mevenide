@@ -19,11 +19,10 @@ package org.codehaus.mevenide.netbeans.apisupport;
 import java.io.File;
 import java.io.InputStream;
 import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
-import org.codehaus.mevenide.netbeans.execute.AbstractActionGoalProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.AbstractMavenActionsProvider;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ActionProvider;
@@ -38,7 +37,7 @@ import org.openide.util.RequestProcessor;
  */
 public class NbmActionGoalProvider implements MavenActionsProvider {
     private static final RequestProcessor PROCESSOR=new  RequestProcessor("NbmActionGoalProvider Clearing Task");//NOI18N
-    private AbstractActionGoalProvider platformDelegate = new AbstractActionGoalProvider() {
+    private AbstractMavenActionsProvider platformDelegate = new AbstractMavenActionsProvider() {
 
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/platformActionMappings.xml"; //NOI18N
@@ -52,7 +51,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
             return isActionEnable(action, project, lookup);
         }
     };
-    private AbstractActionGoalProvider ideDelegate = new AbstractActionGoalProvider() {
+    private AbstractMavenActionsProvider ideDelegate = new AbstractMavenActionsProvider() {
 
         protected InputStream getActionDefinitionStream() {
             String path = "/org/codehaus/mevenide/netbeans/apisupport/ideActionMappings.xml"; //NOI18N
@@ -144,7 +143,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
         return null;
     }
 
-    private RunConfig createConfig(String actionName, Project project, Lookup lookup, AbstractActionGoalProvider delegate) {
+    private RunConfig createConfig(String actionName, Project project, Lookup lookup, AbstractMavenActionsProvider delegate) {
         RunConfig conf = delegate.createConfigForDefaultAction(actionName, project, lookup);
         if (conf != null) {
             ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);
@@ -155,7 +154,7 @@ public class NbmActionGoalProvider implements MavenActionsProvider {
         return conf;
     }
 
-    private NetbeansActionMapping createMapping(String actionName, Project project, AbstractActionGoalProvider delegate) {
+    private NetbeansActionMapping createMapping(String actionName, Project project, AbstractMavenActionsProvider delegate) {
         NetbeansActionMapping mapp = delegate.getMappingForAction(actionName, project);
         if (mapp != null) {
             ProjectURLWatcher mp = project.getLookup().lookup(ProjectURLWatcher.class);

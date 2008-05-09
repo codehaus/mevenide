@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.problems;
+package org.codehaus.mevenide.netbeans.api.problem;
 
 import javax.swing.Action;
 

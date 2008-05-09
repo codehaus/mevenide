@@ -231,10 +231,10 @@ public class RunJarPanel extends javax.swing.JPanel {
             }
         }
         if (run == null) {
-            run = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_RUN, project, null);
+            run = ModelHandle.getActiveMapping(ActionProvider.COMMAND_RUN, project);
         }
         if (debug == null) {
-            debug = ActionToGoalUtils.getActiveMapping(ActionProvider.COMMAND_DEBUG, project, null);
+            debug = ModelHandle.getActiveMapping(ActionProvider.COMMAND_DEBUG, project);
         }
         isCurrentRun = checkNewMapping(run);
         isCurrentDebug = checkNewMapping(debug);
@@ -496,13 +496,13 @@ public class RunJarPanel extends javax.swing.JPanel {
                 if (isCurrentRun) {
                     run.getProperties().setProperty(RUN_PARAMS, newAllParams);
                     run.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    ModelHandle.setUserActionMapping(run, a2gm);
                     handle.markAsModified(a2gm);
                 }
                 if (isCurrentDebug) {
                     debug.getProperties().setProperty(RUN_PARAMS, DEFAULT_DEBUG_PARAMS + " " + newAllParams);
                     debug.getProperties().setProperty(RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    ModelHandle.setUserActionMapping(debug, a2gm);
                     handle.markAsModified(a2gm);
                 }
             }
@@ -515,36 +515,36 @@ public class RunJarPanel extends javax.swing.JPanel {
             if (!newParams.equals(oldParams)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
-                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    ModelHandle.setUserActionMapping(run, a2gm);
                     handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_PARAMS, newParams);
-                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    ModelHandle.setUserActionMapping(debug, a2gm);
                     handle.markAsModified(a2gm);
                 }
             }
             if (!newVMParams.equals(oldVMParams)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
-                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    ModelHandle.setUserActionMapping(run, a2gm);
                     handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_JVM_PARAMS, newVMParams);
-                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    ModelHandle.setUserActionMapping(debug, a2gm);
                     handle.markAsModified(a2gm);
                 }
             }
             if (!newWorkDir.equals(oldWorkDir)) {
                 if (isDeprecatedRun) {
                     run.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(run, a2gm);
+                    ModelHandle.setUserActionMapping(run, a2gm);
                     handle.markAsModified(a2gm);
                 }
                 if (isDeprecatedDebug) {
                     debug.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                    ActionToGoalUtils.setUserActionMapping(debug, a2gm);
+                    ModelHandle.setUserActionMapping(debug, a2gm);
                     handle.markAsModified(a2gm);
                 }
                 //MEVENIDE-599
@@ -552,7 +552,7 @@ public class RunJarPanel extends javax.swing.JPanel {
                 for (NetbeansActionMapping actionMapping : activeCustomMappings) {
                     if (actionMapping.getProperties().getProperty(DEPRECATED_RUN_WORKDIR) != null) {
                         actionMapping.getProperties().setProperty(DEPRECATED_RUN_WORKDIR, newWorkDir);
-                        ActionToGoalUtils.setUserActionMapping(actionMapping, a2gm);
+                        ModelHandle.setUserActionMapping(actionMapping, a2gm);
                         handle.markAsModified(a2gm);
                     }
                 }
