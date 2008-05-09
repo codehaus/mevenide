@@ -16,6 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans;
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -132,70 +133,36 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
     }
     
     private boolean addArchiveFile(FileObject file, Model mdl, String scope) throws IOException {
-        try {
             
-            //toLowercase() seems to be required, not sure why..
-
-            String checksum = RepositoryUtil.calculateMD5Checksum(FileUtil.toFile(file)).toLowerCase();
-            String[] dep = checkLayer(checksum);
-            //TODO before searching the index, check the checksums of existing dependencies, should be faster..
-            if (dep == null) {
-                dep = checkRepositoryIndices(checksum);
-            }
-            //if not found anywhere, add to a custom file:// based repository structure within the project's directory.
-            if (dep == null || "unknown.binary".equals(dep[0])) {  //NOI18N
-                //also go this route when the artifact was found in local repo but is of unknown.binary groupId.
-                dep = new String[3];
-                dep[0] = "unknown.binary"; //NOI18N
-                dep[1] = file.getName();
-                dep[2] = "SNAPSHOT"; //NOI18N
-                addJarToPrivateRepo(file, mdl, dep);
-            }
-            if (dep != null) {
-                Dependency dependency = PluginPropertyUtils.checkModelDependency(mdl, dep[0], dep[1], true);
-                dependency.setVersion(dep[2]);
-                if (scope != null) {
-                    dependency.setScope(scope);
-                }
-                return true;
-            }
+        String[] dep = checkRepositoryIndices(FileUtil.toFile(file));
+        //if not found anywhere, add to a custom file:// based repository structure within the project's directory.
+        if (dep == null || "unknown.binary".equals(dep[0])) {  //NOI18N
+            //also go this route when the artifact was found in local repo but is of unknown.binary groupId.
+            dep = new String[3];
+            dep[0] = "unknown.binary"; //NOI18N
+            dep[1] = file.getName();
+            dep[2] = "SNAPSHOT"; //NOI18N
+            addJarToPrivateRepo(file, mdl, dep);
         }
- 
-        catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(CPExtender.class.getName()).log(java.util.logging.Level.SEVERE,
-                                                             ex.getMessage(), ex);
+        if (dep != null) {
+            Dependency dependency = PluginPropertyUtils.checkModelDependency(mdl, dep[0], dep[1], true);
+            dependency.setVersion(dep[2]);
+            if (scope != null) {
+                dependency.setScope(scope);
+            }
+            return true;
         }
-
         return false;
     }
     
-    private String[] checkRepositoryIndices(String checksum) {
-        List<NBVersionInfo> lst = RepositoryQueries.findByMD5(checksum);
+    private String[] checkRepositoryIndices(File file) {
+        List<NBVersionInfo> lst = RepositoryQueries.findBySHA1(file);
         for (NBVersionInfo elem : lst) {
             String[] dep = new String[3];
             dep[0] = elem.getGroupId();
             dep[1] = elem.getArtifactId();
             dep[2] = elem.getVersion();
             return dep;
-        }
-        return null;
-    }
-    
-    private String[] checkLayer(String checksum) {
-        FileObject root = Repository.getDefault().getDefaultFileSystem().findResource("Projects/org-codehaus-mevenide-netbeans/LibraryPOMs"); //NOI18N
-        assert root != null;
-        Enumeration<? extends FileObject> objs = root.getData(true);
-        while (objs.hasMoreElements()) {
-            FileObject fo = objs.nextElement();
-            String md5 = (String)fo.getAttribute(MD5_ATTR);
-            if (checksum.equals(md5)) {
-                Model model = WriterUtils.loadModel(fo);
-                String[] dep = new String[3];
-                dep[0] = model.getGroupId();
-                dep[1] = model.getArtifactId();
-                dep[2] = model.getVersion();
-                return dep;
-            }
         }
         return null;
     }
