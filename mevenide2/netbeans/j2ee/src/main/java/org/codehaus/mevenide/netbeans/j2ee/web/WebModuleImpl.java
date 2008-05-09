@@ -27,7 +27,7 @@ import java.util.List;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.classpath.ProjectSourcesClassPathProvider;
 import org.codehaus.mevenide.netbeans.j2ee.J2eeMavenSourcesImpl;
 import org.netbeans.api.java.classpath.ClassPath;
@@ -66,11 +66,11 @@ public class WebModuleImpl implements WebModuleImplementation, J2eeModuleImpleme
     private String url = ""; //NOI18N
 
     private boolean inplace = false;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     
     public WebModuleImpl(Project proj, WebModuleProviderImpl prov) {
         project = proj;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
         provider = prov;
     }
     

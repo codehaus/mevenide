@@ -19,7 +19,7 @@ package org.codehaus.mevenide.netbeans.output;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.ModelUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
@@ -41,10 +41,10 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
     private Pattern start;
     private boolean started;
     private Pattern dependency;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
     /** Creates a new instance of JavadocOutputProcessor */
-    DependencyAnalyzeOutputProcessor(NbMavenProject project) {
+    DependencyAnalyzeOutputProcessor(NbMavenProjectImpl project) {
         started = false;
         start = Pattern.compile(".*Used undeclared dependencies.*", Pattern.DOTALL); //NOI18N
         dependency = Pattern.compile("\\s*(.*):(.*):(.*):(.*):(.*)", Pattern.DOTALL); //NOI18N
@@ -94,9 +94,9 @@ public class DependencyAnalyzeOutputProcessor implements OutputProcessor {
         private String version;
         private String type;
         private String artifact;
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         
-        private Listener(NbMavenProject prj, String gr, String ar, String type, String ver, String sc) {
+        private Listener(NbMavenProjectImpl prj, String gr, String ar, String type, String ver, String sc) {
             group = gr;
             artifact = ar;
             this.type = type;

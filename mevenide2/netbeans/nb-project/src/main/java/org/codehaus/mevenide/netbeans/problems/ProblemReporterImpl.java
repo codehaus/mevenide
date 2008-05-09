@@ -38,8 +38,8 @@ import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.project.InvalidProjectModelException;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.validation.ModelValidationResult;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.problem.ProblemReporter;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
@@ -60,10 +60,10 @@ import org.openide.util.NbBundle;
 public final class ProblemReporterImpl implements ProblemReporter, Comparator<ProblemReport> {
     private List<ChangeListener> listeners = new ArrayList<ChangeListener>();
     private final Set<ProblemReport> reports;
-    private NbMavenProject nbproject;
+    private NbMavenProjectImpl nbproject;
     
     /** Creates a new instance of ProblemReporter */
-    public ProblemReporterImpl(NbMavenProject proj) {
+    public ProblemReporterImpl(NbMavenProjectImpl proj) {
         reports = new TreeSet<ProblemReport>(this);
         nbproject = proj;
     }
@@ -143,9 +143,9 @@ public final class ProblemReporterImpl implements ProblemReporter, Comparator<Pr
     
     public void doBaseProblemChecks(MavenProject project) {
         String packaging = nbproject.getProjectWatcher().getPackagingType();
-        if (ProjectURLWatcher.TYPE_WAR.equals(packaging) ||
-            ProjectURLWatcher.TYPE_EAR.equals(packaging) ||
-            ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+        if (NbMavenProject.TYPE_WAR.equals(packaging) ||
+            NbMavenProject.TYPE_EAR.equals(packaging) ||
+            NbMavenProject.TYPE_EJB.equals(packaging)) {
             Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
             boolean foundJ2ee = false;
             for (ModuleInfo info : infos) {
@@ -162,7 +162,7 @@ public final class ProblemReporterImpl implements ProblemReporter, Comparator<Pr
                     null);
                 addReport(report);
             }
-        } else if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+        } else if (NbMavenProject.TYPE_NBM.equals(packaging)) {
             Collection<? extends ModuleInfo> infos = Lookup.getDefault().lookupAll(ModuleInfo.class);
             boolean foundApisupport = false;
             for (ModuleInfo info : infos) {
@@ -260,15 +260,15 @@ public final class ProblemReporterImpl implements ProblemReporter, Comparator<Pr
     
     static class OpenPomAction extends AbstractAction {
         
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private String filepath;
         
-        OpenPomAction(NbMavenProject proj) {
+        OpenPomAction(NbMavenProjectImpl proj) {
             putValue(Action.NAME, org.openide.util.NbBundle.getMessage(ProblemReporterImpl.class, "ACT_OpenPom"));
             project = proj;
         }
         
-        OpenPomAction(NbMavenProject project, String filePath) {
+        OpenPomAction(NbMavenProjectImpl project, String filePath) {
             this(project);
             filepath = filePath;
         }

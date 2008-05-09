@@ -34,8 +34,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.api.problem.ProblemReport;
 import org.codehaus.mevenide.netbeans.problems.ProblemReporterImpl;
@@ -71,17 +71,17 @@ import org.openide.util.actions.SystemAction;
  */
 public class MavenProjectNode extends AnnotatedAbstractNode {
      
-     private NbMavenProject project;
+     private NbMavenProjectImpl project;
      private ProjectInformation info;
      private ProblemReporterImpl reporter;
 
-     public MavenProjectNode(Lookup lookup, NbMavenProject proj) {
+     public MavenProjectNode(Lookup lookup, NbMavenProjectImpl proj) {
         super(NodeFactorySupport.createCompositeChildren(proj, "Projects/org-codehaus-mevenide-netbeans/Nodes"), lookup); //NOI18N
         this.project = proj;
         info = project.getLookup().lookup(ProjectInformation.class);
-        ProjectURLWatcher.addPropertyChangeListener(project, new PropertyChangeListener() {
+        NbMavenProject.addPropertyChangeListener(project, new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent event) {
-                if (NbMavenProject.PROP_PROJECT.equals(event.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(event.getPropertyName())) {
                     fireDisplayNameChange(null, getDisplayName());
                     fireIconChange();
                 }
@@ -162,10 +162,10 @@ public class MavenProjectNode extends AnnotatedAbstractNode {
         
         // separator
         lst.add(null);
-        lst.add(NbMavenProject.createRefreshAction());
+        lst.add(NbMavenProjectImpl.createRefreshAction());
         lst.add(CommonProjectActions.setAsMainProjectAction());
         lst.add(CommonProjectActions.openSubprojectsAction());
-        if (ProjectURLWatcher.TYPE_POM.equalsIgnoreCase(project.getProjectWatcher().getPackagingType())) { //NOI18N
+        if (NbMavenProject.TYPE_POM.equalsIgnoreCase(project.getProjectWatcher().getPackagingType())) { //NOI18N
             lst.add(new CloseSuprojectsAction());
         }
         lst.add(CommonProjectActions.closeProjectAction());

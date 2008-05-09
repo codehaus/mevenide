@@ -26,7 +26,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.openide.DialogDescriptor;
 import org.openide.DialogDisplayer;
@@ -37,7 +37,7 @@ import org.openide.util.NbBundle;
  * @author  mkleint
  */
 public class ConfigurationsPanel extends javax.swing.JPanel {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private ModelHandle handle;
     List<ModelHandle.Configuration> lastNonProfileList = new ArrayList<ModelHandle.Configuration>();
     /** Creates new form ConfigurationsPanel */
@@ -45,7 +45,7 @@ public class ConfigurationsPanel extends javax.swing.JPanel {
         initComponents();
     }
 
-    ConfigurationsPanel(ModelHandle handle, NbMavenProject project) {
+    ConfigurationsPanel(ModelHandle handle, NbMavenProjectImpl project) {
         this();
         this.handle = handle;
         this.project = project;

@@ -29,8 +29,8 @@ import java.util.List;
 import java.util.Map;
 import org.apache.maven.model.Resource;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.FilteringPathResourceImplementation;
 import org.netbeans.spi.java.classpath.support.PathResourceBase;
@@ -46,7 +46,7 @@ import org.openide.util.WeakListeners;
 public class ExcludingResourceImpl extends PathResourceBase 
        implements FilteringPathResourceImplementation, PropertyChangeListener {
 
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private URL[] cachedRoots;
     private HashMap<URL, PathMatcher> matchers;
     private boolean test;
@@ -57,10 +57,10 @@ public class ExcludingResourceImpl extends PathResourceBase
         matchers = new HashMap<URL, PathMatcher>();
     }
     
-    public ExcludingResourceImpl(NbMavenProject project, boolean test) {
+    public ExcludingResourceImpl(NbMavenProjectImpl project, boolean test) {
         this(test);
         this.project = project;
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         watch.addPropertyChangeListener(WeakListeners.propertyChange(this, watch));
     }
     
@@ -137,7 +137,7 @@ public class ExcludingResourceImpl extends PathResourceBase
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
-        if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+        if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
             //TODO optimize somehow? it's just too much work to figure if something changed..
              firePropertyChange(PROP_ROOTS, null, null);
 //             super.firePropertyChange(this.PROP_INCLUDES, null, null);

@@ -18,8 +18,8 @@ package org.codehaus.mevenide.netbeans.runjar;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.netbeans.spi.project.LookupProvider;
 import org.openide.util.Lookup;
@@ -38,7 +38,7 @@ public class J2seLookupProvider implements LookupProvider {
     }
     
     public Lookup createAdditionalLookup(Lookup baseLookup) {
-        NbMavenProject project = baseLookup.lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = baseLookup.lookup(NbMavenProjectImpl.class);
         ConfigurationProviderEnabler config = baseLookup.lookup(ConfigurationProviderEnabler.class);
         assert project != null;
         assert config != null;
@@ -52,25 +52,25 @@ public class J2seLookupProvider implements LookupProvider {
     }
     
     public static class Provider extends AbstractLookup implements  PropertyChangeListener {
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private InstanceContent content;
         private RunJarPrereqChecker runJarChecker = new RunJarPrereqChecker();
-        public Provider(NbMavenProject proj, InstanceContent cont) {
+        public Provider(NbMavenProjectImpl proj, InstanceContent cont) {
             super(cont);
             project = proj;
             content = cont;
             checkJ2se();
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            if (NbMavenProject.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
                 checkJ2se();
             }
         }
         
         private void checkJ2se() {
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             String packaging = watcher.getPackagingType();
             doCheckJ2se(packaging);
         }
@@ -78,7 +78,7 @@ public class J2seLookupProvider implements LookupProvider {
         
         private void doCheckJ2se(String packaging) {
             content.remove(runJarChecker);
-            if (ProjectURLWatcher.TYPE_JAR.equals(packaging)) {
+            if (NbMavenProject.TYPE_JAR.equals(packaging)) {
                 content.add(runJarChecker);
             } 
         }

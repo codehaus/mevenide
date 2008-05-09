@@ -28,7 +28,7 @@ import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.api.java.queries.BinaryForSourceQuery;
 import org.netbeans.spi.java.queries.BinaryForSourceQueryImplementation;
 import org.openide.filesystems.FileUtil;
@@ -39,11 +39,11 @@ import org.openide.util.Exceptions;
  * @author mkleint
  */
 public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplementation {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private HashMap<URL, Res> results;
     
     /** Creates a new instance of MavenBinaryForSourceQueryImpl */
-    public MavenBinaryForSourceQueryImpl(NbMavenProject prj) {
+    public MavenBinaryForSourceQueryImpl(NbMavenProjectImpl prj) {
         project = prj;
         results = new HashMap<URL, Res>();
     }
@@ -112,9 +112,9 @@ public class MavenBinaryForSourceQueryImpl implements BinaryForSourceQueryImplem
     
     private static class Res implements BinaryForSourceQuery.Result {
         private final List<ChangeListener> listeners = new ArrayList<ChangeListener>();
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private boolean isTest;
-        Res(boolean test, NbMavenProject prj) {
+        Res(boolean test, NbMavenProjectImpl prj) {
             isTest = test;
             project = prj;
 

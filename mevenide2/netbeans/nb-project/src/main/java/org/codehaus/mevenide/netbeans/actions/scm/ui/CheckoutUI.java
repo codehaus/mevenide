@@ -27,7 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.model.Scm;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
 import org.netbeans.spi.project.ui.support.ProjectChooser;
@@ -332,7 +332,7 @@ private void txtFolderKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:even
                 return file;
             }
 
-            public NbMavenProject getProject() {
+            public NbMavenProjectImpl getProject() {
                 return null;
             }
 

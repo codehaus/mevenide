@@ -38,7 +38,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
 import org.netbeans.api.java.classpath.ClassPath;
 import org.netbeans.api.java.project.JavaProjectConstants;
@@ -62,12 +62,12 @@ import org.openide.util.Exceptions;
 @SuppressWarnings("deprecation")
 public class CPExtender extends ProjectClassPathModifierImplementation implements ProjectClassPathExtender {
 
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private static final String MD5_ATTR = "MD5"; //NOI18N
     private static final String POM_XML = "pom.xml"; //NOI18N
     
     /** Creates a new instance of CPExtender */
-    public CPExtender(NbMavenProject project) {
+    public CPExtender(NbMavenProjectImpl project) {
         this.project = project;
     }
     
@@ -78,8 +78,8 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         if (added) {
             try {
                 WriterUtils.writePomModel(pom, model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
-                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                NbMavenProject.fireMavenProjectReload(project);
+                project.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -99,8 +99,8 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         if (added) {
             try {
                 WriterUtils.writePomModel(fo, model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
-                project.getLookup().lookup(ProjectURLWatcher.class).triggerDependencyDownload();
+                NbMavenProject.fireMavenProjectReload(project);
+                project.getLookup().lookup(NbMavenProject.class).triggerDependencyDownload();
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -304,7 +304,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         if (added) {
             try {
                 WriterUtils.writePomModel(pom, model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -331,7 +331,7 @@ public class CPExtender extends ProjectClassPathModifierImplementation implement
         if (added) {
             try {
                 WriterUtils.writePomModel(pom, model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

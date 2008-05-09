@@ -29,7 +29,7 @@ import java.util.Set;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.api.debugger.DebuggerEngine;
 import org.netbeans.api.debugger.DebuggerManager;
 import org.netbeans.api.debugger.DebuggerManagerAdapter;
@@ -66,7 +66,7 @@ public class JPDAStart implements Runnable {
     
     private MavenEmbedderLogger log;
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
     public void setLog(MavenEmbedderLogger logger) {
         log = logger;
@@ -78,7 +78,7 @@ public class JPDAStart implements Runnable {
     /**
      * returns the port/address that the debugger listens to..
      */
-    public String execute(NbMavenProject project) throws MojoExecutionException, MojoFailureException {
+    public String execute(NbMavenProjectImpl project) throws MojoExecutionException, MojoFailureException {
         this.project = project;
         getLog().info("JPDA Listening Starting..."); //NOI18N
         lock = new Object [2];

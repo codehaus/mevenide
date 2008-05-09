@@ -43,7 +43,7 @@ import org.apache.maven.settings.ActivationProperty;
 import org.apache.maven.settings.Profile;
 import org.apache.maven.settings.Repository;
 import org.apache.maven.settings.RepositoryPolicy;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.exec.ProgressTransferListener;
 import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
@@ -260,7 +260,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
                         FileObject fo = FileUtil.toFileObject(FileUtil.normalizeFile(elem));
                         if (fo != null) {
                             //TODO have the firing based on open projects only..
-                            ProjectURLWatcher.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
+                            NbMavenProject.fireMavenProjectReload(FileOwnerQuery.getOwner(fo));
                         }
                     }
                 }

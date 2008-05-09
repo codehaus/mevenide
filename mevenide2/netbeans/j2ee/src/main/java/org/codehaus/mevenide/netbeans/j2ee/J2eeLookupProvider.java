@@ -18,7 +18,7 @@ package org.codehaus.mevenide.netbeans.j2ee;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.web.CopyOnSave;
@@ -57,7 +57,7 @@ public class J2eeLookupProvider implements LookupProvider {
     public static class Provider extends AbstractLookup implements  PropertyChangeListener {
         private Project project;
         private InstanceContent content;
-        private String lastType = ProjectURLWatcher.TYPE_JAR;
+        private String lastType = NbMavenProject.TYPE_JAR;
         private Object lastInstance = null;
         private CopyOnSave copyOnSave;
         public Provider(Project proj, InstanceContent cont) {
@@ -65,17 +65,17 @@ public class J2eeLookupProvider implements LookupProvider {
             project = proj;
             content = cont;
             checkJ2ee();
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
         }
         
         public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-            if (ProjectURLWatcher.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
+            if (NbMavenProject.PROP_PROJECT.equals(propertyChangeEvent.getPropertyName())) {
                 checkJ2ee();
             }
         }
         
         private void checkJ2ee() {
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             String packaging = watcher.getPackagingType();
             doCheckJ2ee(packaging);
         }
@@ -88,9 +88,9 @@ public class J2eeLookupProvider implements LookupProvider {
         
         private void doCheckJ2ee(String packaging) {
             if (packaging == null) {
-                packaging = ProjectURLWatcher.TYPE_JAR;
+                packaging = NbMavenProject.TYPE_JAR;
             }
-            if (copyOnSave != null && !ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
+            if (copyOnSave != null && !NbMavenProject.TYPE_WAR.equals(packaging)) {
                 try {
                     copyOnSave.cleanup();
                 } catch (FileStateInvalidException ex) {
@@ -98,7 +98,7 @@ public class J2eeLookupProvider implements LookupProvider {
                 }
                 copyOnSave = null;
             }
-            if (ProjectURLWatcher.TYPE_WAR.equals(packaging) && !lastType.equals(packaging)) {
+            if (NbMavenProject.TYPE_WAR.equals(packaging) && !lastType.equals(packaging)) {
                 removeLastInstance();
                 WebModuleProviderImpl prov = new WebModuleProviderImpl(project);
                 lastInstance = prov;
@@ -109,19 +109,19 @@ public class J2eeLookupProvider implements LookupProvider {
                 } catch (FileStateInvalidException ex) {
                     ex.printStackTrace();
                 }
-            } else if (ProjectURLWatcher.TYPE_EAR.equals(packaging) && !lastType.equals(packaging)) {
+            } else if (NbMavenProject.TYPE_EAR.equals(packaging) && !lastType.equals(packaging)) {
                 removeLastInstance();
                 lastInstance = new EarModuleProviderImpl(project);
                 content.add(lastInstance);
                 content.add(((EarModuleProviderImpl)lastInstance).getEarImplementation());
-            } else if (ProjectURLWatcher.TYPE_EJB.equals(packaging) && !lastType.equals(packaging)) {
+            } else if (NbMavenProject.TYPE_EJB.equals(packaging) && !lastType.equals(packaging)) {
                 removeLastInstance();
                 lastInstance = new EjbModuleProviderImpl(project);
                 content.add(lastInstance);
             } else if (lastInstance != null && !(
-                    ProjectURLWatcher.TYPE_WAR.equals(packaging) || 
-                    ProjectURLWatcher.TYPE_EJB.equals(packaging) || 
-                    ProjectURLWatcher.TYPE_EAR.equals(packaging)))
+                    NbMavenProject.TYPE_WAR.equals(packaging) || 
+                    NbMavenProject.TYPE_EJB.equals(packaging) || 
+                    NbMavenProject.TYPE_EAR.equals(packaging)))
             {
                 removeLastInstance();
                 lastInstance = null;

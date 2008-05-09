@@ -33,9 +33,9 @@ import org.openide.loaders.DataObject;
  * @author mkleint
  */
 public class TemplateAttrProvider implements CreateFromTemplateAttributesProvider {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
-    TemplateAttrProvider(NbMavenProject prj) {
+    TemplateAttrProvider(NbMavenProjectImpl prj) {
         project = prj;
     }
     

@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.spi.java.classpath.ClassPathImplementation;
 import org.netbeans.spi.java.classpath.support.ClassPathSupport;
 
@@ -45,7 +45,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
 
     private List<? extends PathResourceImplementation> resourcesCache;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private String lastHintValue = null;
     private boolean activePlatformValid = true;
     private JavaPlatformManager platformManager;
@@ -54,7 +54,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
 //    private String lastNonDefaultPlatform = null;
 
 
-    BootClassPathImpl(NbMavenProject project) {
+    BootClassPathImpl(NbMavenProjectImpl project) {
         this.project = project;
     }
 
@@ -89,7 +89,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
         if (platformManager == null) {
             platformManager = JavaPlatformManager.getDefault();
             platformManager.addPropertyChangeListener(WeakListeners.propertyChange(this, platformManager));
-            ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
             watch.addPropertyChangeListener(this);
         }                
         
@@ -133,7 +133,7 @@ public final class BootClassPathImpl implements ClassPathImplementation, Propert
 
     public void propertyChange(PropertyChangeEvent evt) {
         String newVal = project.getOriginalMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
-        if (evt.getSource() == project && evt.getPropertyName().equals(NbMavenProject.PROP_PROJECT)) {
+        if (evt.getSource() == project && evt.getPropertyName().equals(NbMavenProjectImpl.PROP_PROJECT)) {
             //Active platform was changed
             if ( (newVal == null && lastHintValue != null) || (newVal != null && !newVal.equals(lastHintValue))) {
                 resetCache ();

@@ -16,7 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans.nodes;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
 import org.netbeans.spi.project.ui.support.NodeFactorySupport;
@@ -34,7 +34,7 @@ public class ProjectFilesNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl prj = project.getLookup().lookup(NbMavenProjectImpl.class);
         return NodeFactorySupport.fixedNodeList(new Node[] {
             new ProjectFilesNode(prj)
         });

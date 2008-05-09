@@ -18,7 +18,7 @@
 package org.codehaus.mevenide.netbeans.customizer;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
@@ -44,7 +44,7 @@ public class SourcesPanelProvider implements ProjectCustomizer.CompositeCategory
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        NbMavenProject project = context.lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = context.lookup(NbMavenProjectImpl.class);
         return new SourcesPanel(handle, project);
     }
     

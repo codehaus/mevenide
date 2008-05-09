@@ -18,7 +18,7 @@
 package org.codehaus.mevenide.netbeans.configurations;
 
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.openide.util.Lookup;
@@ -40,7 +40,7 @@ public class ConfigurationsPanelProvider implements ProjectCustomizer.CompositeC
     
     public JComponent createComponent(ProjectCustomizer.Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        NbMavenProject project = context.lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = context.lookup(NbMavenProjectImpl.class);
         return new ConfigurationsPanel(handle, project);
     }
 

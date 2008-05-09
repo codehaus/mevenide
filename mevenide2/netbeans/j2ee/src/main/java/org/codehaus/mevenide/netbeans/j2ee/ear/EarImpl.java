@@ -29,7 +29,7 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.j2ee.ear.model.ApplicationMetadataModelImpl;
 import org.codehaus.mevenide.netbeans.spi.debug.AdditionalDebuggedProjects;
 import org.codehaus.plexus.util.StringInputStream;
@@ -74,12 +74,12 @@ class EarImpl implements EarImplementation,
     private Project project;
     private EarModuleProviderImpl provider;
     private MetadataModel<ApplicationMetadata> metadataModel;
-    private ProjectURLWatcher mavenproject;
+    private NbMavenProject mavenproject;
     
     /** Creates a new instance of EarImpl */
     EarImpl(Project proj, EarModuleProviderImpl prov) {
         project = proj;
-        mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+        mavenproject = project.getLookup().lookup(NbMavenProject.class);
         
         provider = prov;
     }

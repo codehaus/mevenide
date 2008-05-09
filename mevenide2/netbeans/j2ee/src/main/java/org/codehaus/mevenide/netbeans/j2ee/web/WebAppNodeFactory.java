@@ -24,7 +24,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.spi.nodes.AbstractMavenNodeList;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.support.NodeFactory;
@@ -54,12 +54,12 @@ public class WebAppNodeFactory implements NodeFactory {
     
     private static class NList extends AbstractMavenNodeList<String> implements PropertyChangeListener{
         private Project project;
-        private ProjectURLWatcher mavenproject;
+        private NbMavenProject mavenproject;
         private String currentWebAppKey;
         
         private NList(Project prj) {
             project = prj;
-            mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+            mavenproject = project.getLookup().lookup(NbMavenProject.class);
         }
         
         public List<String> keys() {
@@ -94,19 +94,19 @@ public class WebAppNodeFactory implements NodeFactory {
         
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (ProjectURLWatcher.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
         }
         
         @Override
         public void addNotify() {
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
         }
         
         @Override
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            NbMavenProject.removePropertyChangeListener(project, this);
         }
         
     }

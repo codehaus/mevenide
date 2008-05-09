@@ -42,9 +42,9 @@ import org.openide.util.lookup.Lookups;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 public class LogicalViewProviderImpl implements LogicalViewProvider {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     /** Creates a new instance of LogicalViewProviderImpl */
-    public LogicalViewProviderImpl(NbMavenProject proj) {
+    public LogicalViewProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
     
@@ -55,7 +55,7 @@ public class LogicalViewProviderImpl implements LogicalViewProvider {
         return new MavenProjectNode(createLookup(project), project);
     }
     
-    private static Lookup createLookup( NbMavenProject project ) {
+    private static Lookup createLookup( NbMavenProjectImpl project ) {
         DataFolder rootFolder = DataFolder.findFolder( project.getProjectDirectory() );
         // XXX Remove root folder after FindAction rewrite
         return Lookups.fixed( new Object[] { project, rootFolder } );
@@ -65,7 +65,7 @@ public class LogicalViewProviderImpl implements LogicalViewProvider {
      * TODO this is probably good for the Select in Project view action..
      */
     public Node findPath(Node node, Object target) {
-        NbMavenProject proj = node.getLookup().lookup(NbMavenProject.class );
+        NbMavenProjectImpl proj = node.getLookup().lookup(NbMavenProjectImpl.class );
         if ( proj == null ) {
             return null;
         }

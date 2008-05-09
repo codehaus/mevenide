@@ -48,9 +48,9 @@ import org.apache.maven.model.Exclusion;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.CommonArtifactActions;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
 import org.codehaus.mevenide.netbeans.embedder.NbArtifact;
 import org.codehaus.mevenide.netbeans.embedder.writer.WriterUtils;
@@ -99,7 +99,7 @@ import org.openide.util.WeakListeners;
 public class DependencyNode extends AbstractNode {
 
     private Artifact art;
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private boolean longLiving;
     private PropertyChangeListener listener;
     private ChangeListener listener2;
@@ -117,23 +117,23 @@ public class DependencyNode extends AbstractNode {
     }
 
     /**
-     *@param lookup - expects instance of NbMavenProject, Artifact
+     *@param lookup - expects instance of NbMavenProjectImpl, Artifact
      */
     public DependencyNode(Lookup lookup, boolean isLongLiving) {
         super(createChildren(lookup, isLongLiving), lookup);
 //        super(isLongLiving ? new DependencyChildren(lookup) : Children.LEAF, lookup);
-        project = lookup.lookup(NbMavenProject.class);
+        project = lookup.lookup(NbMavenProjectImpl.class);
         art = lookup.lookup(Artifact.class);
         longLiving = isLongLiving;
         if (longLiving) {
             listener = new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                         refreshNode();
                     }
                 }
             };
-            ProjectURLWatcher.addPropertyChangeListener(project, WeakListeners.propertyChange(listener, this));
+            NbMavenProject.addPropertyChangeListener(project, WeakListeners.propertyChange(listener, this));
             listener2 = new ChangeListener() {
                 public void stateChanged(ChangeEvent event) {
                     refreshNode();
@@ -547,7 +547,7 @@ public class DependencyNode extends AbstractNode {
                     }
                 }
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (IOException ex) {
@@ -623,7 +623,7 @@ public class DependencyNode extends AbstractNode {
                 exclude.setGroupId(art.getGroupId());
                 dep.addExclusion(exclude);
                 WriterUtils.writePomModel(FileUtil.toFileObject(project.getPOMFile()), model);
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
             } catch (FileNotFoundException ex) {
                 ex.printStackTrace();
             } catch (XmlPullParserException ex) {

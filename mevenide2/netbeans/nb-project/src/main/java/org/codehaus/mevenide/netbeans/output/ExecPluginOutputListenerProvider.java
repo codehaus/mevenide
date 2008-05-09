@@ -17,7 +17,7 @@
 package org.codehaus.mevenide.netbeans.output;
 
 import java.util.regex.Pattern;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputUtils;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
@@ -39,10 +39,10 @@ public class ExecPluginOutputListenerProvider implements OutputProcessor {
         "mojo-execute#exec:exec", //NOI18N
         "mojo-execute#exec:java" //NOI18N
     };
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     
     /** Creates a new instance of ExecPluginOutputListenerProvider */
-    public ExecPluginOutputListenerProvider(NbMavenProject proj) {
+    public ExecPluginOutputListenerProvider(NbMavenProjectImpl proj) {
         project = proj;
     }
     

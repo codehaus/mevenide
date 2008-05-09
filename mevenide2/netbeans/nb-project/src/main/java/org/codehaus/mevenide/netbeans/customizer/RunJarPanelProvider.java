@@ -20,8 +20,8 @@ import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JComponent;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer;
 import org.netbeans.spi.project.ui.support.ProjectCustomizer.Category;
 import org.openide.util.Lookup;
@@ -37,10 +37,10 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
     }
     
     public Category createCategory(Lookup context) {
-        NbMavenProject project = context.lookup(NbMavenProject.class);
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProjectImpl project = context.lookup(NbMavenProjectImpl.class);
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
         
-        if (ProjectURLWatcher.TYPE_JAR.equalsIgnoreCase(watcher.getPackagingType())) {
+        if (NbMavenProject.TYPE_JAR.equalsIgnoreCase(watcher.getPackagingType())) {
             return ProjectCustomizer.Category.create(
                     ModelHandle.PANEL_RUN,
                     org.openide.util.NbBundle.getMessage(RunJarPanelProvider.class, "TIT_Run"),
@@ -52,7 +52,7 @@ public class RunJarPanelProvider implements ProjectCustomizer.CompositeCategoryP
     
     public JComponent createComponent(Category category, Lookup context) {
         ModelHandle handle = context.lookup(ModelHandle.class);
-        NbMavenProject project = context.lookup(NbMavenProject.class);
+        NbMavenProjectImpl project = context.lookup(NbMavenProjectImpl.class);
         final RunJarPanel panel = new RunJarPanel(handle, project);
         category.setOkButtonListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {

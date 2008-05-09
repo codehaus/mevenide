@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.netbeans.spi.project.FileOwnerQueryImplementation;
@@ -49,7 +49,7 @@ import org.openide.util.Mutex.Action;
  */
 public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
-    private Set<NbMavenProject> set;
+    private Set<NbMavenProjectImpl> set;
     private final Object lock = new Object();
     private final Object cacheLock = new Object();
     private final List<ChangeListener> listeners;
@@ -58,12 +58,12 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     
     /** Creates a new instance of MavenFileBuiltQueryImpl */
     public MavenFileOwnerQueryImpl() {
-        set = new HashSet<NbMavenProject>();
+        set = new HashSet<NbMavenProjectImpl>();
         listeners = new ArrayList<ChangeListener>();
         cachedProjects = null;
         projectListener = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     synchronized (cacheLock) {
                         cachedProjects = null;
                     }
@@ -85,11 +85,11 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         return null;
     }
     
-    public void addMavenProject(NbMavenProject project) {
+    public void addMavenProject(NbMavenProjectImpl project) {
         synchronized (lock) {
             if (!set.contains(project)) {
                 set.add(project);
-                ProjectURLWatcher.addPropertyChangeListener(project, projectListener);
+                NbMavenProject.addPropertyChangeListener(project, projectListener);
             }
         }
         synchronized (cacheLock) {
@@ -98,11 +98,11 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         
         fireChange();
     }
-    public void removeMavenProject(NbMavenProject project) {
+    public void removeMavenProject(NbMavenProjectImpl project) {
         synchronized (lock) {
             if (set.contains(project)) {
                 set.remove(project);
-                ProjectURLWatcher.removePropertyChangeListener(project, projectListener);
+                NbMavenProject.removePropertyChangeListener(project, projectListener);
             }
         }
         synchronized (cacheLock) {
@@ -146,7 +146,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
     public Set<FileObject> getOpenedProjectRoots() {
         Set<FileObject> toRet = new HashSet<FileObject>();
         synchronized (lock) {
-            for (NbMavenProject prj : set) {
+            for (NbMavenProjectImpl prj : set) {
                 //TODO have generic and other source roots included to cater for projects with external source roots
                 toRet.add(prj.getProjectDirectory());
             }
@@ -180,7 +180,7 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
         Iterator it = currentProjects.iterator();
         String filepath = file.getAbsolutePath().replace('\\', '/');
         while (it.hasNext()) {
-            NbMavenProject project = (NbMavenProject)it.next();
+            NbMavenProjectImpl project = (NbMavenProjectImpl)it.next();
             String path = project.getArtifactRelativeRepositoryPath();
             if (filepath.endsWith(path)) {
                 return project;
@@ -201,14 +201,14 @@ public class MavenFileOwnerQueryImpl implements FileOwnerQueryImplementation {
                         return new HashSet(cachedProjects);
                     }
                     synchronized (lock) {
-                        currentProjects = new HashSet<NbMavenProject>(set);
+                        currentProjects = new HashSet<NbMavenProjectImpl>(set);
                         iterating = new ArrayList(set);
                     }
                     int index = 0;
                     // iterate all opened projects and figure their subprojects.. consider these as well. do so recursively.
                     //TODO performance.. this could be expensive, maybe cache somehow
                     while (index < iterating.size()) {
-                        NbMavenProject prj = (NbMavenProject) iterating.get(index);
+                        NbMavenProjectImpl prj = (NbMavenProjectImpl) iterating.get(index);
                         SubprojectProvider sub = prj.getLookup().lookup(SubprojectProvider.class);
                         if (sub != null) {
                             Set subs = sub.getSubprojects();

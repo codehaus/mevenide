@@ -30,8 +30,8 @@ import javax.swing.JButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.ActiveJ2SEPlatformProvider;
 import org.codehaus.mevenide.netbeans.api.execute.PrerequisitesChecker;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
@@ -66,8 +66,8 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
     public boolean checkRunConfig(String actionName, RunConfig config) {
         if ((ActionProvider.COMMAND_RUN.equals(actionName) ||
                 ActionProvider.COMMAND_DEBUG.equals(actionName)) &&  
-                ProjectURLWatcher.TYPE_JAR.equals(
-                      config.getProject().getLookup().lookup(ProjectURLWatcher.class).getPackagingType())) 
+                NbMavenProject.TYPE_JAR.equals(
+                      config.getProject().getLookup().lookup(NbMavenProject.class).getPackagingType())) 
         {
             Set<Map.Entry<Object, Object>> entries = config.getProperties().entrySet();
             String mc = null;
@@ -103,7 +103,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
         return true;
     }
 
-    private String eventuallyShowDialog(NbMavenProject project, String actionName) {
+    private String eventuallyShowDialog(NbMavenProjectImpl project, String actionName) {
         if (mainClass != null) {
             return mainClass;
         }
@@ -166,7 +166,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
         return null;
     }
 
-    private void writeMapping(String actionName, NbMavenProject project, String clazz) {
+    private void writeMapping(String actionName, NbMavenProjectImpl project, String clazz) {
         try {
             UserActionGoalProvider usr = project.getLookup().lookup(UserActionGoalProvider.class);
             ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));

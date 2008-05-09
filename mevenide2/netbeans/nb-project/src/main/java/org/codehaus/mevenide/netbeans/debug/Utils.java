@@ -30,7 +30,7 @@ import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.classpath.BootClassPathImpl;
 import org.codehaus.mevenide.netbeans.spi.debug.AdditionalDebuggedProjects;
 import org.netbeans.api.debugger.DebuggerManager;
@@ -84,12 +84,12 @@ public class Utils {
     
     static Set<String> collectClasspaths(Project prj) throws DependencyResolutionRequiredException {
         Set<String> toRet = new HashSet<String>();
-        ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = prj.getLookup().lookup(NbMavenProject.class);
         MavenProject mproject = watcher.getMavenProject();
         //TODO this ought to be really configurable based on what class gets debugged.
         toRet.addAll(mproject.getTestClasspathElements());
         //for poms also include all module projects recursively..
-        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watcher.getPackagingType());
+        boolean isPom = NbMavenProject.TYPE_POM.equals(watcher.getPackagingType());
         if (isPom) {
             SubprojectProvider subs = prj.getLookup().lookup(SubprojectProvider.class);
             Set<? extends Project> subProjects = subs.getSubprojects();
@@ -101,12 +101,12 @@ public class Utils {
     }
     static Set<String> collectSourceRoots(Project prj) {
         Set<String> toRet = new HashSet<String>();
-        ProjectURLWatcher watcher = prj.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = prj.getLookup().lookup(NbMavenProject.class);
         MavenProject mproject = watcher.getMavenProject();
         //TODO this ought to be really configurable based on what class gets debugged.
         toRet.addAll(mproject.getTestCompileSourceRoots());
         //for poms also include all module projects recursively..
-        boolean isPom = ProjectURLWatcher.TYPE_POM.equals(watcher.getPackagingType());
+        boolean isPom = NbMavenProject.TYPE_POM.equals(watcher.getPackagingType());
         if (isPom) {
             SubprojectProvider subs = prj.getLookup().lookup(SubprojectProvider.class);
             Set<? extends Project> subProjects = subs.getSubprojects();
@@ -151,7 +151,7 @@ public class Utils {
     }
     
     static ClassPath createJDKSourcePath(Project nbproject) {
-        ProjectURLWatcher w = nbproject.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject w = nbproject.getLookup().lookup(NbMavenProject.class);
         String val = w.getMavenProject().getProperties().getProperty(Constants.HINT_JDK_PLATFORM);
         JavaPlatform jp = BootClassPathImpl.getActivePlatform(val);
         if (jp == null) {

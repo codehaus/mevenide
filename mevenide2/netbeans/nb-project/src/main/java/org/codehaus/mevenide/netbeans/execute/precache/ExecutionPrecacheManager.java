@@ -26,8 +26,8 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
 import org.codehaus.mevenide.netbeans.queries.MavenFileOwnerQueryImpl;
 import org.netbeans.api.project.FileOwnerQuery;
@@ -85,7 +85,7 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
         MavenFileOwnerQueryImpl.getInstance().removeChangeListener(this);
         OpenProjects.getDefault().removePropertyChangeListener(this);
         if (mainMavenProject != null) {
-            ProjectURLWatcher maven = mainMavenProject.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject maven = mainMavenProject.getLookup().lookup(NbMavenProject.class);
             maven.removePropertyChangeListener(this);
         }
     }
@@ -94,7 +94,7 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
         if (OpenProjects.PROPERTY_MAIN_PROJECT.equals(evt.getPropertyName())) {
             checkMainProject();
         }
-        if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+        if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
             // maybe ignore when the project reload is caused by finished build.
             // how to figure?
             doPrepareProject((Project)evt.getSource(), true);
@@ -110,7 +110,7 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
         boolean changed = false;
         Project prj = OpenProjects.getDefault().getMainProject();
         if (prj != null) {
-            ProjectURLWatcher maven = prj.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject maven = prj.getLookup().lookup(NbMavenProject.class);
             if (maven != null && prj != mainMavenProject) {
                 changed = true;
             }
@@ -120,12 +120,12 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
         if (changed) {
             if (mainMavenProject != null) {
                 //TODO clean up old project caches..
-                ProjectURLWatcher maven = mainMavenProject.getLookup().lookup(ProjectURLWatcher.class);
+                NbMavenProject maven = mainMavenProject.getLookup().lookup(NbMavenProject.class);
                 maven.removePropertyChangeListener(this);
             }
             mainMavenProject = prj;
             if (mainMavenProject != null) {
-                ProjectURLWatcher maven = mainMavenProject.getLookup().lookup(ProjectURLWatcher.class);
+                NbMavenProject maven = mainMavenProject.getLookup().lookup(NbMavenProject.class);
                 maven.addPropertyChangeListener(this);
                 //TODO start checking for new project..
             }
@@ -191,7 +191,7 @@ public class ExecutionPrecacheManager implements PropertyChangeListener, ChangeL
             if (checkRoots(fo)) {
                 Project prj = FileOwnerQuery.getOwner(fo);
                 if (prj != null) {
-                    ProjectURLWatcher watch = prj.getLookup().lookup(ProjectURLWatcher.class);
+                    NbMavenProject watch = prj.getLookup().lookup(NbMavenProject.class);
                     if (watch != null) {
                         String name = fo.getNameExt();
                         boolean reset = "pom.xml".equals(name) || "profiles.xml".equals(name) || "nbactions.xml".equals(name);

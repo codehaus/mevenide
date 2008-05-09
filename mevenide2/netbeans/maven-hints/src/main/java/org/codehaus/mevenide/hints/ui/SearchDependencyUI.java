@@ -36,7 +36,7 @@ import org.codehaus.mevenide.hints.ui.nodes.ArtifactNode;
 import org.codehaus.mevenide.hints.ui.nodes.VersionNode;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryQueries;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.openide.explorer.ExplorerManager;
 import org.openide.explorer.view.BeanTreeView;
@@ -337,13 +337,13 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
         private Set<String> privilegedGroupIds = new HashSet<String>();
         
         private HeuristicsComparator() {
-            String packaging = project.getLookup().lookup(ProjectURLWatcher.class).getPackagingType();
-            if (ProjectURLWatcher.TYPE_NBM.equalsIgnoreCase(packaging)) {
+            String packaging = project.getLookup().lookup(NbMavenProject.class).getPackagingType();
+            if (NbMavenProject.TYPE_NBM.equalsIgnoreCase(packaging)) {
                 privilegedGroupIds.add("org.netbeans.api"); //NOI18N
             }
-            if (ProjectURLWatcher.TYPE_WAR.equalsIgnoreCase(packaging) || 
-                ProjectURLWatcher.TYPE_EAR.equalsIgnoreCase(packaging) || 
-                ProjectURLWatcher.TYPE_EJB.equalsIgnoreCase(packaging)) {
+            if (NbMavenProject.TYPE_WAR.equalsIgnoreCase(packaging) || 
+                NbMavenProject.TYPE_EAR.equalsIgnoreCase(packaging) || 
+                NbMavenProject.TYPE_EJB.equalsIgnoreCase(packaging)) {
                 privilegedGroupIds.add("javax.activation");//NOI18N
                 privilegedGroupIds.add("javax.ejb");//NOI18N
                 privilegedGroupIds.add("javax.faces");//NOI18N
@@ -363,7 +363,7 @@ public class SearchDependencyUI extends javax.swing.JPanel implements ExplorerMa
                 privilegedGroupIds.add("javax.xml");//NOI18N
             }
             //TODO add some more heuristics
-            ProjectURLWatcher mavenproject = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mavenproject = project.getLookup().lookup(NbMavenProject.class);
             List<Dependency> deps = mavenproject.getMavenProject().getDependencies();
             for (Dependency d : deps) {
                 privilegedGroupIds.add(d.getGroupId());

@@ -39,7 +39,7 @@ import org.codehaus.plexus.util.StringUtils;
 import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 
 /**
  *
@@ -95,7 +95,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     }
 
-    private void readProfiles(final NbMavenProject mavenProject) {
+    private void readProfiles(final NbMavenProjectImpl mavenProject) {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
@@ -126,7 +126,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         return str;
     }
 
-    public void readMapping(NetbeansActionMapping mapp, NbMavenProject project, ActionToGoalMapping historyMappings) {
+    public void readMapping(NetbeansActionMapping mapp, NbMavenProjectImpl project, ActionToGoalMapping historyMappings) {
         this.historyMappings.clear();
         this.historyMappings.addAll(historyMappings.getActions());
         this.historyMappings.add(mapp);

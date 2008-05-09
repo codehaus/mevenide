@@ -33,7 +33,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.codehaus.mevenide.netbeans.execute.ActionToGoalUtils;
 import org.codehaus.mevenide.netbeans.execute.ModelRunConfig;
@@ -72,7 +72,7 @@ import org.openide.util.actions.Presenter;
  */
 public class ActionProviderImpl implements ActionProvider {
 
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private static String[] supported = new String[]{
         COMMAND_BUILD,
         COMMAND_CLEAN,
@@ -97,7 +97,7 @@ public class ActionProviderImpl implements ActionProvider {
     };
 
     /** Creates a new instance of ActionProviderImpl */
-    public ActionProviderImpl(NbMavenProject proj) {
+    public ActionProviderImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
 
@@ -172,7 +172,7 @@ public class ActionProviderImpl implements ActionProvider {
         task.addTaskListener(new TaskListener() {
 
             public void taskFinished(Task task2) {
-                ProjectURLWatcher.fireMavenProjectReload(project);
+                NbMavenProject.fireMavenProjectReload(project);
                 RepositoryInfo info = RepositoryPreferences.getInstance().getRepositoryInfoById(RepositoryPreferences.LOCAL_REPO_ID);
                 if (info != null) {
                     RepositoryIndexer.updateIndexWithArtifacts(info, project.getOriginalMavenProject().getDependencyArtifacts());
@@ -445,7 +445,7 @@ public class ActionProviderImpl implements ActionProvider {
                                     profileHandler.disableProfile( profile, false);
 
                                 }
-                                ProjectURLWatcher.fireMavenProjectReload(project);
+                                NbMavenProject.fireMavenProjectReload(project);
                             }
 
                             @Override

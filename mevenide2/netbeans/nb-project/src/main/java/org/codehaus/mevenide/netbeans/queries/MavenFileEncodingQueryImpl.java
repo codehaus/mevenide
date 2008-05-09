@@ -22,7 +22,7 @@ import java.net.URI;
 import java.nio.charset.Charset;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.Constants;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.netbeans.spi.queries.FileEncodingQueryImplementation;
@@ -37,10 +37,10 @@ import org.openide.util.Exceptions;
  */
 public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation {
 
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private static final String ENCODING_PARAM = "encoding"; //NOI18N
     
-    public MavenFileEncodingQueryImpl(NbMavenProject proj) {
+    public MavenFileEncodingQueryImpl(NbMavenProjectImpl proj) {
         project = proj;
     }
 

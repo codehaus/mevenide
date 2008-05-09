@@ -29,7 +29,7 @@ import org.apache.maven.lifecycle.model.Phase;
 import org.apache.maven.lifecycle.plan.BuildPlan;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.mevenide.buildplan.nodes.MojoNode;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectManager;
 import org.openide.filesystems.FileObject;
@@ -90,7 +90,7 @@ public class BuildPlanUtil {
                 try {
                     Project prj = ProjectManager.getDefault().findProject(fo);
                     if (prj != null) {
-                        ProjectURLWatcher mp = prj.getLookup().lookup(ProjectURLWatcher.class);
+                        NbMavenProject mp = prj.getLookup().lookup(NbMavenProject.class);
                         if (mp != null) {
                             modules.add(mp.getMavenProject());
                         }

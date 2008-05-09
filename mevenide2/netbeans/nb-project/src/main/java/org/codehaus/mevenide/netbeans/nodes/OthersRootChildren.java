@@ -24,9 +24,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.VisibilityQueryDataFilter;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
 import org.openide.filesystems.FileObject;
@@ -41,15 +41,15 @@ import org.openide.nodes.Children;
  */
 class OthersRootChildren extends Children.Keys {
     
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private PropertyChangeListener changeListener;
     private boolean test;
-    public OthersRootChildren(NbMavenProject prj, boolean testResource) {
+    public OthersRootChildren(NbMavenProjectImpl prj, boolean testResource) {
         this.project = prj;
         test = testResource;
         changeListener  = new PropertyChangeListener() {
             public void propertyChange(PropertyChangeEvent evt) {
-                if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+                if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                     regenerateKeys();
                     refresh();
                 }
@@ -60,14 +60,14 @@ class OthersRootChildren extends Children.Keys {
     @Override
     protected void addNotify() {
         super.addNotify();
-        ProjectURLWatcher.addPropertyChangeListener(project, changeListener);
+        NbMavenProject.addPropertyChangeListener(project, changeListener);
         regenerateKeys();
     }
     
     @Override
     protected void removeNotify() {
         setKeys(Collections.EMPTY_SET);
-        ProjectURLWatcher.removePropertyChangeListener(project, changeListener);
+        NbMavenProject.removePropertyChangeListener(project, changeListener);
         super.removeNotify();
         
     }

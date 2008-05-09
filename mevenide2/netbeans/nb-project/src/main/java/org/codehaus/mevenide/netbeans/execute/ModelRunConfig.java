@@ -17,7 +17,7 @@
 
 package org.codehaus.mevenide.netbeans.execute;
 
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.project.Project;
 import org.openide.filesystems.FileUtil;
@@ -33,7 +33,7 @@ public final class ModelRunConfig extends BeanRunConfig {
     /** Creates a new instance of ModelRunConfig */
     public ModelRunConfig(Project proj, NetbeansActionMapping mod) {
         model = mod;
-        NbMavenProject nbprj = proj.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl nbprj = proj.getLookup().lookup(NbMavenProjectImpl.class);
         setProject(nbprj);
         setExecutionName(nbprj.getName());
         setTaskDisplayName(nbprj.getName());

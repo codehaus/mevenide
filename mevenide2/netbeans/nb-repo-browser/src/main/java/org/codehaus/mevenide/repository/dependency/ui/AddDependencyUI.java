@@ -22,7 +22,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.repository.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
@@ -170,7 +170,7 @@ public class AddDependencyUI extends javax.swing.JPanel implements ExplorerManag
 
         for (Project project : prjs) {
             //varify is maven project 
-            ProjectURLWatcher mavProj = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
             if(mavProj!=null)
                 mavenProjects.add(project);
         }

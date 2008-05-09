@@ -26,7 +26,7 @@ import javax.swing.Action;
 import org.apache.maven.model.Profile;
 import org.codehaus.mevenide.netbeans.j2ee.web.*;
 import org.codehaus.mevenide.netbeans.api.Constants;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.customizer.ModelHandle;
 import org.codehaus.mevenide.netbeans.j2ee.ear.EarModuleProviderImpl;
 import org.codehaus.mevenide.netbeans.j2ee.ejb.EjbModuleProviderImpl;
@@ -62,7 +62,7 @@ public class POHImpl extends ProjectOpenedHook {
     
     protected void projectOpened() {
         provider.hackModuleServerChange();
-        ProjectURLWatcher watch = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watch = project.getLookup().lookup(NbMavenProject.class);
         String val = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER_ID);
         String server = watch.getMavenProject().getProperties().getProperty(Constants.HINT_DEPLOY_J2EE_SERVER);
         if (server == null) {
@@ -116,10 +116,10 @@ public class POHImpl extends ProjectOpenedHook {
         }
         if (refreshListener == null) {
             //#121148 when the user edits the file we need to reset the server instance
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             refreshListener = new PropertyChangeListener() {
                 public void propertyChange(PropertyChangeEvent evt) {
-                    if (ProjectURLWatcher.PROP_PROJECT.equals(evt.getPropertyName())) {
+                    if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
                         projectOpened();
                     }
                 }
@@ -131,7 +131,7 @@ public class POHImpl extends ProjectOpenedHook {
     protected void projectClosed() {
         //is null check necessary?
         if (refreshListener != null) {
-            ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+            NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
             watcher.removePropertyChangeListener(refreshListener);
             refreshListener = null;
         }

@@ -16,7 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans.apisupport;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.spi.project.ui.PrivilegedTemplates;
 import org.netbeans.spi.project.ui.RecommendedTemplates;
@@ -59,26 +59,26 @@ public class ApisupportRecoPrivTemplates implements RecommendedTemplates, Privil
         
     
     public String[] getRecommendedTypes() {
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
         String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = ProjectURLWatcher.TYPE_JAR;
+            packaging = NbMavenProject.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+        if (NbMavenProject.TYPE_NBM.equals(packaging)) {
             return NBM_TYPES;
         }
         return new String[0];
     }
     
     public String[] getPrivilegedTemplates() {
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
         String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = ProjectURLWatcher.TYPE_JAR;
+            packaging = NbMavenProject.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if (ProjectURLWatcher.TYPE_NBM.equals(packaging)) {
+        if (NbMavenProject.TYPE_NBM.equals(packaging)) {
             return NBM_PRIVILEGED_NAMES;
         }
         

@@ -19,7 +19,7 @@ package org.codehaus.mevenide.netbeans.configurations;
 
 import java.util.List;
 import org.codehaus.mevenide.netbeans.M2AuxilaryConfigImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.plexus.util.StringUtils;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
@@ -34,7 +34,7 @@ import org.w3c.dom.NodeList;
  * @author mkleint
  */
 public class ConfigurationProviderEnabler {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     static String NAMESPACE = "http://www.netbeans.org/ns/maven-config-data/1"; //NOI18N
     static String ROOT = "config-data"; //NOI18N
     static String ENABLED = "enabled"; //NOI18N
@@ -49,7 +49,7 @@ public class ConfigurationProviderEnabler {
     private M2ConfigProvider provider;
     private M2AuxilaryConfigImpl aux;
 
-    public ConfigurationProviderEnabler(NbMavenProject project, M2AuxilaryConfigImpl auxiliary, ProjectProfileHandler hand) {
+    public ConfigurationProviderEnabler(NbMavenProjectImpl project, M2AuxilaryConfigImpl auxiliary, ProjectProfileHandler hand) {
         this.project = project;
         aux = auxiliary;
         provider = new M2ConfigProvider(project, aux, hand);

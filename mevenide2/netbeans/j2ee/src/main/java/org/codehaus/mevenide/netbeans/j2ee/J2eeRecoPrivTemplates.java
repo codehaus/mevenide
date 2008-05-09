@@ -16,7 +16,7 @@
  */
 
 package org.codehaus.mevenide.netbeans.j2ee;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbJar;
 import org.netbeans.modules.j2ee.api.ejbjar.EjbProjectConstants;
@@ -101,13 +101,13 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
     };
     
     public String[] getRecommendedTypes() {
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
         String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = ProjectURLWatcher.TYPE_JAR;
+            packaging = NbMavenProject.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+        if (NbMavenProject.TYPE_EJB.equals(packaging)) {
             EjbJar jar = EjbJar.getEjbJar(project.getProjectDirectory());
             if (jar != null) {
                 if (EjbProjectConstants.JAVA_EE_5_LEVEL.equals(jar.getJ2eePlatformVersion())) {
@@ -116,23 +116,23 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
             }
             return EJB_TYPES_4;
         }
-        if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
+        if (NbMavenProject.TYPE_EAR.equals(packaging)) {
             return EAR_TYPES;
         }
-        if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
+        if (NbMavenProject.TYPE_WAR.equals(packaging)) {
             return WEB_TYPES;
         }
         return new String[0];
     }
     
     public String[] getPrivilegedTemplates() {
-        ProjectURLWatcher watcher = project.getLookup().lookup(ProjectURLWatcher.class);
+        NbMavenProject watcher = project.getLookup().lookup(NbMavenProject.class);
         String packaging = watcher.getPackagingType();
         if (packaging == null) {
-            packaging = ProjectURLWatcher.TYPE_JAR;
+            packaging = NbMavenProject.TYPE_JAR;
         }
         packaging = packaging.trim();
-        if (ProjectURLWatcher.TYPE_EJB.equals(packaging)) {
+        if (NbMavenProject.TYPE_EJB.equals(packaging)) {
             EjbJar jar = EjbJar.getEjbJar(project.getProjectDirectory());
             if (jar != null) {
                 if (EjbProjectConstants.JAVA_EE_5_LEVEL.equals(jar.getJ2eePlatformVersion())) {
@@ -141,10 +141,10 @@ public class J2eeRecoPrivTemplates implements RecommendedTemplates, PrivilegedTe
             }
             return EJB_PRIVILEGED_NAMES_4;
         }
-        if (ProjectURLWatcher.TYPE_EAR.equals(packaging)) {
+        if (NbMavenProject.TYPE_EAR.equals(packaging)) {
             return EAR_PRIVILEGED_NAMES;
         }
-        if (ProjectURLWatcher.TYPE_WAR.equals(packaging)) {
+        if (NbMavenProject.TYPE_WAR.equals(packaging)) {
             return WEB_PRIVILEGED_NAMES;
         }
         

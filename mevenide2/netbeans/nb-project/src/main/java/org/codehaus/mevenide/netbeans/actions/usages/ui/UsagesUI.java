@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.indexer.api.NBArtifactInfo;
 import org.codehaus.mevenide.indexer.api.NBGroupInfo;
 import org.codehaus.mevenide.indexer.api.NBVersionInfo;
@@ -56,11 +56,11 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
             @Override
             protected Node[] createNodes(Integer type) {
-                final List<NbMavenProject> openProjects = getOpenProjects(artifact, type);
-                Children children = new Children.Keys<NbMavenProject>() {
+                final List<NbMavenProjectImpl> openProjects = getOpenProjects(artifact, type);
+                Children children = new Children.Keys<NbMavenProjectImpl>() {
 
                     @Override
-                    protected Node[] createNodes(NbMavenProject nmp) {
+                    protected Node[] createNodes(NbMavenProjectImpl nmp) {
                         return new Node[]{new OpenProjectNode(nmp)};
                     }
 
@@ -235,15 +235,15 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
         return explorerManager;
     }
 
-    public List<NbMavenProject> getOpenProjects(Artifact artifact, int type) {
-        List<NbMavenProject> mavenProjects = new ArrayList<NbMavenProject>();
+    public List<NbMavenProjectImpl> getOpenProjects(Artifact artifact, int type) {
+        List<NbMavenProjectImpl> mavenProjects = new ArrayList<NbMavenProjectImpl>();
         //get all open projects
 
         Project[] prjs = OpenProjects.getDefault().getOpenProjects();
 
         for (Project project : prjs) {
             //varify is this a maven project 
-            NbMavenProject mavProj = project.getLookup().lookup(NbMavenProject.class);
+            NbMavenProjectImpl mavProj = project.getLookup().lookup(NbMavenProjectImpl.class);
             if (mavProj != null) {
 
                 MavenProject mp = mavProj.getOriginalMavenProject();
@@ -386,10 +386,10 @@ public class UsagesUI extends javax.swing.JPanel implements ExplorerManager.Prov
 
     private static class OpenProjectNode extends AbstractNode {
 
-        private NbMavenProject project;
+        private NbMavenProjectImpl project;
         private ProjectInformation pi;
 
-        public OpenProjectNode(NbMavenProject project) {
+        public OpenProjectNode(NbMavenProjectImpl project) {
             super(Children.LEAF);
             this.project = project;
             pi = ProjectUtils.getInformation(project);

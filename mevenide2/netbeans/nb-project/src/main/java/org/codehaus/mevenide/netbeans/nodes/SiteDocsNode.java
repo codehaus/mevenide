@@ -19,7 +19,7 @@ package org.codehaus.mevenide.netbeans.nodes;
 import java.util.Collections;
 import javax.swing.Action;
 import org.codehaus.mevenide.netbeans.ActionProviderImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.netbeans.api.queries.VisibilityQuery;
 import org.netbeans.spi.project.ui.support.CommonProjectActions;
@@ -39,14 +39,14 @@ import org.openide.util.Utilities;
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
 class SiteDocsNode extends FilterNode {
-    private NbMavenProject project;
+    private NbMavenProjectImpl project;
     private boolean isTopLevelNode = false;
     
-    SiteDocsNode(NbMavenProject proj, Node orig) {
+    SiteDocsNode(NbMavenProjectImpl proj, Node orig) {
         this(proj, orig, true);
     }
     
-    private SiteDocsNode(NbMavenProject proj, Node orig, boolean isTopLevel) {
+    private SiteDocsNode(NbMavenProjectImpl proj, Node orig, boolean isTopLevel) {
         super(orig, new SiteFilterChildren(proj, orig));
         isTopLevelNode = isTopLevel;
         project = proj;
@@ -139,8 +139,8 @@ class SiteDocsNode extends FilterNode {
     }
     
     static class SiteFilterChildren extends FilterNode.Children {
-        private NbMavenProject project;
-        SiteFilterChildren(NbMavenProject proj, Node original) {
+        private NbMavenProjectImpl project;
+        SiteFilterChildren(NbMavenProjectImpl proj, Node original) {
             super(original);
             project = proj;
         }

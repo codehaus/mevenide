@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.netbeans.api.java.project.JavaProjectConstants;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
@@ -44,13 +44,13 @@ public class SourcesNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl prj = project.getLookup().lookup(NbMavenProjectImpl.class);
         return  new NList(prj);
     }
     
     private static class NList extends AbstractMavenNodeList<SourceGroup> implements ChangeListener {
-        private NbMavenProject project;
-        private NList(NbMavenProject prj) {
+        private NbMavenProjectImpl project;
+        private NList(NbMavenProjectImpl prj) {
             project = prj;
         }
         
@@ -69,7 +69,7 @@ public class SourcesNodeFactory implements NodeFactory {
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
         }

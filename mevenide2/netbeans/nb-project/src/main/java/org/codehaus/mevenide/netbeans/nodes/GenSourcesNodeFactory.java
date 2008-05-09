@@ -22,8 +22,8 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
-import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -43,13 +43,13 @@ public class GenSourcesNodeFactory implements NodeFactory {
     }
     
     public NodeList createNodes(Project project) {
-        NbMavenProject prj = project.getLookup().lookup(NbMavenProject.class);
+        NbMavenProjectImpl prj = project.getLookup().lookup(NbMavenProjectImpl.class);
         return  new NList(prj);
     }
     
     private static class NList extends AbstractMavenNodeList<SourceGroup> implements PropertyChangeListener {
-        private NbMavenProject project;
-        private NList(NbMavenProject prj) {
+        private NbMavenProjectImpl project;
+        private NList(NbMavenProjectImpl prj) {
             project = prj;
         }
         
@@ -71,19 +71,19 @@ public class GenSourcesNodeFactory implements NodeFactory {
         }
         
         public void propertyChange(PropertyChangeEvent evt) {
-            if (NbMavenProject.PROP_PROJECT.equals(evt.getPropertyName())) {
+            if (NbMavenProjectImpl.PROP_PROJECT.equals(evt.getPropertyName())) {
                 fireChange();
             }
         }
         
         @Override
         public void addNotify() {
-            ProjectURLWatcher.addPropertyChangeListener(project, this);
+            NbMavenProject.addPropertyChangeListener(project, this);
         }
         
         @Override
         public void removeNotify() {
-            ProjectURLWatcher.removePropertyChangeListener(project, this);
+            NbMavenProject.removePropertyChangeListener(project, this);
         }
     }
 }

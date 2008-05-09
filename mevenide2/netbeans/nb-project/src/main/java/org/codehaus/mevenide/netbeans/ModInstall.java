@@ -115,7 +115,7 @@ public class ModInstall extends ModuleInstall {
         public void propertyChange(PropertyChangeEvent evt) {
             Project[] prjs = OpenProjects.getDefault().getOpenProjects();
             for (int i = 0; i < prjs.length; i++) {
-                NbMavenProject mavProj = prjs[i].getLookup().lookup(NbMavenProject.class);
+                NbMavenProjectImpl mavProj = prjs[i].getLookup().lookup(NbMavenProjectImpl.class);
                 if (mavProj != null) {
                     List repos = mavProj.getOriginalMavenProject().getRemoteArtifactRepositories();
                     if (repos != null) {

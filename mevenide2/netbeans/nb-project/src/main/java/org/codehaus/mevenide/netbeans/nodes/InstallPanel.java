@@ -27,7 +27,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileFilter;
 import org.apache.maven.artifact.Artifact;
-import org.codehaus.mevenide.netbeans.NbMavenProject;
+import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.execute.BeanRunConfig;
 import org.codehaus.mevenide.netbeans.options.MavenCommandSettings;
@@ -174,7 +174,7 @@ public class InstallPanel extends javax.swing.JPanel {
         return null;
     }
     
-    public static void runInstallGoal(NbMavenProject project, File fil, Artifact art) {
+    public static void runInstallGoal(NbMavenProjectImpl project, File fil, Artifact art) {
         BeanRunConfig brc = new BeanRunConfig();
         brc.setExecutionDirectory(project.getPOMFile().getParentFile());
         brc.setProject(project);
