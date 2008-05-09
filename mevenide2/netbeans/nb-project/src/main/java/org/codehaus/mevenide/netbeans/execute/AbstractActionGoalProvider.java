@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.MavenSourcesImpl;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
 import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
@@ -52,7 +52,7 @@ import org.openide.util.Lookup;
  * user configured or overriden by a more specialized provider.
  * @author mkleint
  */
-public abstract class AbstractActionGoalProvider implements AdditionalM2ActionsProvider {
+public abstract class AbstractActionGoalProvider implements MavenActionsProvider {
 
     private static final String WEB_PATH = "webpagePath";//NOI18N
     private static final String CLASSNAME = "className";//NOI18N

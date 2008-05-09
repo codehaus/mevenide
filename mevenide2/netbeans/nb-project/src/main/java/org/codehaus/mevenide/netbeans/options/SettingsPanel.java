@@ -41,7 +41,7 @@ import org.codehaus.mevenide.indexer.api.RepositoryIndexer;
 import org.codehaus.mevenide.indexer.api.RepositoryInfo;
 import org.codehaus.mevenide.indexer.api.RepositoryPreferences;
 import org.codehaus.mevenide.indexer.api.RepositoryUtil;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
 import org.codehaus.mevenide.netbeans.customizer.ActionMappings;
 import org.codehaus.mevenide.netbeans.customizer.CustomizerProviderImpl;
@@ -635,7 +635,7 @@ public class SettingsPanel extends javax.swing.JPanel {
 
     private void btnGoalsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGoalsActionPerformed
         NbGlobalActionGoalProvider provider = null;
-        for (AdditionalM2ActionsProvider prov : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+        for (MavenActionsProvider prov : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
             if (prov instanceof NbGlobalActionGoalProvider) {
                 provider = (NbGlobalActionGoalProvider)prov;
             }

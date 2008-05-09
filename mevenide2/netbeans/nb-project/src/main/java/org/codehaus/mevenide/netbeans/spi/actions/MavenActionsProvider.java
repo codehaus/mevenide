@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans;
+package org.codehaus.mevenide.netbeans.spi.actions;
 
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
@@ -26,14 +26,12 @@ import org.openide.util.Lookup;
  * Interface that allows to put additional items to project's popup plus to provide specific
  * implementations of ActionProvider actions.
  * Implementations should be registered in default lookup.
- * (Using META-INF/services/AdditionalM2ActionsProvider file in the module's jar.)
- * It's purpose is to get additional implementations of APIs that are related to 5.0 only, 
+ * (Using META-INF/services/MavenActionsProvider file in the module's jar.)
  * or some other custom aspect of the project from dependant modules..
  * 
- * //TODO move to api/spi package, get rid of NbMavenProject reference.
  * @author  Milos Kleint (mkleint@codehaus.org)
  */
-public interface AdditionalM2ActionsProvider {
+public interface MavenActionsProvider {
 
     
     /**
