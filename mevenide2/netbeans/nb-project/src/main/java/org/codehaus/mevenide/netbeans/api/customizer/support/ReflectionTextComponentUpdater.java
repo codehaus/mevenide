@@ -15,7 +15,7 @@
  * =========================================================================
  */
 
-package org.codehaus.mevenide.netbeans.customizer;
+package org.codehaus.mevenide.netbeans.api.customizer.support;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
