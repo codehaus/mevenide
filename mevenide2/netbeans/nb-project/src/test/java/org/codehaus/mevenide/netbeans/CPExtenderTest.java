@@ -62,6 +62,15 @@ public class CPExtenderTest extends TestCase {
         assertEquals("org.codehaus.mevenide", result[2]);
         assertEquals("netbeans-deploy-plugin", result[3]);
         assertEquals("1.2.3", result[4]);
+        
+        pom = new URL("http://repository.jboss.org/maven2/junit/junit/3.8.2/junit-3.8.2.pom");
+        result = CPExtender.checkLibrary(pom, repos);
+        assertNotNull(result);
+        assertEquals("default", result[0]);
+        assertEquals("http://repository.jboss.org/maven2", result[1]);
+        assertEquals("junit", result[2]);
+        assertEquals("junit", result[3]);
+        assertEquals("3.8.2", result[4]);
     }
     
 }
