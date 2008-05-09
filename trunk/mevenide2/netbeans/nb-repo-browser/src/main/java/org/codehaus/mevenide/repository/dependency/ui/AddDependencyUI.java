@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JButton;
 import org.codehaus.mevenide.netbeans.api.NbMavenProject;
-import org.codehaus.mevenide.repository.NodeUtils;
+import org.codehaus.mevenide.netbeans.spi.nodes.NodeUtils;
 import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectInformation;
 import org.netbeans.api.project.ProjectUtils;
