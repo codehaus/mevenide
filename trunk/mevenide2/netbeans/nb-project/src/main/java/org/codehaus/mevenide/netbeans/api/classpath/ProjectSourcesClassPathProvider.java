@@ -20,7 +20,7 @@ package org.codehaus.mevenide.netbeans.api.classpath;
 import org.netbeans.api.java.classpath.ClassPath;
 
 /**
- *
+ * Additional useful classpath related methods. Resides in project lookup.
  * @author mkleint
  */
 public interface ProjectSourcesClassPathProvider {
