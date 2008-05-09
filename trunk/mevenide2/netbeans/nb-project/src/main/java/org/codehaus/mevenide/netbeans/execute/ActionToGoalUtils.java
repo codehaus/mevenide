@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import org.apache.maven.model.Build;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
@@ -91,7 +91,7 @@ public final class ActionToGoalUtils {
                         }
                     }
                 }
-                for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+                for (MavenActionsProvider add : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
                     if (add.isActionEnable(action, project, lookup)) {
                         rc = add.createConfigForDefaultAction(action, project, lookup);
                         if (rc != null) {
@@ -137,7 +137,7 @@ public final class ActionToGoalUtils {
             }
         }
         
-        for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+        for (MavenActionsProvider add : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
             if (add.isActionEnable(action, project, lookup)) {
                 return true;
             }
@@ -177,7 +177,7 @@ public final class ActionToGoalUtils {
             toRet.add(map);
             names.add(map.getActionName());
         }
-        for (AdditionalM2ActionsProvider prov : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
+        for (MavenActionsProvider prov : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
             if (prov instanceof NbGlobalActionGoalProvider) {
                 // check the global actions defined, include only if not the same name as project-specific one.
                 for (NetbeansActionMapping map : ((NbGlobalActionGoalProvider) prov).getCustomMappings()) {
@@ -192,10 +192,10 @@ public final class ActionToGoalUtils {
 
     public static NetbeansActionMapping getDefaultMapping(String action, NbMavenProject project) {
         NetbeansActionMapping na = null;
-        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(AdditionalM2ActionsProvider.class));
+        Lookup.Result res = Lookup.getDefault().lookup(new Lookup.Template(MavenActionsProvider.class));
         Iterator it = res.allInstances().iterator();
         while (it.hasNext()) {
-            AdditionalM2ActionsProvider add = (AdditionalM2ActionsProvider) it.next();
+            MavenActionsProvider add = (MavenActionsProvider) it.next();
             na = add.getMappingForAction(action, project);
             if (na != null) {
                 break;

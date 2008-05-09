@@ -18,7 +18,7 @@ package org.codehaus.mevenide.netbeans.apisupport;
 
 import java.io.File;
 import java.io.InputStream;
-import org.codehaus.mevenide.netbeans.AdditionalM2ActionsProvider;
+import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
 import org.codehaus.mevenide.netbeans.api.ProjectURLWatcher;
@@ -36,7 +36,7 @@ import org.openide.util.RequestProcessor;
  *
  * @author mkleint
  */
-public class NbmActionGoalProvider implements AdditionalM2ActionsProvider {
+public class NbmActionGoalProvider implements MavenActionsProvider {
     private static final RequestProcessor PROCESSOR=new  RequestProcessor("NbmActionGoalProvider Clearing Task");//NOI18N
     private AbstractActionGoalProvider platformDelegate = new AbstractActionGoalProvider() {
 
