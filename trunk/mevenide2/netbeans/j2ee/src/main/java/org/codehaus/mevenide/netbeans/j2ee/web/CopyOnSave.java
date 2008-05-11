@@ -248,7 +248,7 @@ public class CopyOnSave extends FileChangeAdapter implements PropertyChangeListe
                         return;
                     }
                     FileObject destFile = ensureDestinationFileExists(webBuildBase, path, fo.isFolder());
-                    if (!fo.isFolder()) {
+                    if (destFile != null && !fo.isFolder()) {
                         InputStream is = null;
                         OutputStream os = null;
                         FileLock fl = null;
