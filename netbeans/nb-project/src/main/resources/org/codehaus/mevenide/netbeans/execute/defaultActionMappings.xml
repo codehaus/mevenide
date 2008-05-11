@@ -66,7 +66,7 @@
         </packagings>
         <goals>
             <goal>process-classes</goal>
-            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1:exec</goal>
         </goals>
         <properties>
             <exec.args>-classpath %classpath ${packageClassName}</exec.args>
@@ -80,7 +80,7 @@
         </packagings>
         <goals>
             <goal>process-classes</goal>
-            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1:exec</goal>
         </goals>
         <properties>
             <exec.args>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName}</exec.args>
@@ -95,7 +95,7 @@
         </packagings>
         <goals>
             <goal>process-classes</goal>
-            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1:exec</goal>
         </goals>
         <properties>
             <exec.args>-classpath %classpath ${packageClassName}</exec.args>
@@ -109,7 +109,7 @@
         </packagings>
         <goals>
             <goal>process-classes</goal>
-            <goal>org.codehaus.mojo:exec-maven-plugin:1.1-beta-1:exec</goal>
+            <goal>org.codehaus.mojo:exec-maven-plugin:1.1:exec</goal>
         </goals>
         <properties>
             <exec.args>-Xdebug -Djava.compiler=none -Xnoagent -Xrunjdwp:transport=dt_socket,server=n,address=${jpda.address} -classpath %classpath ${packageClassName}</exec.args>
