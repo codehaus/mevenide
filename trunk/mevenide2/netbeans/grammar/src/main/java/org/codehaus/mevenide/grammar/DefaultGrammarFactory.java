@@ -16,6 +16,9 @@ public class DefaultGrammarFactory extends GrammarFactory {
 
     public GrammarQuery isSupported(GrammarEnvironment env) {
         FileObject fo = env.getFileObject();
+        if (fo == null) { //#134797 in abbreviation ui the fileobject can be non existant..
+            return null;
+        }
         if (fo.getNameExt().equals("settings.xml") && fo.getParent() != null && ".m2".equalsIgnoreCase(fo.getParent().getNameExt())) {
             return new MavenSettingsGrammar(env);
         }
