@@ -44,11 +44,11 @@ public class POMInheritanceNavigator implements NavigatorPanel {
     
 
     public String getDisplayName() {
-        return "Pom inheritance";
+        return org.openide.util.NbBundle.getMessage(POMInheritanceNavigator.class, "POM_NAME");
     }
 
     public String getDisplayHint() {
-        return "pom inheritance display hint";
+        return org.openide.util.NbBundle.getMessage(POMInheritanceNavigator.class, "POM_HINT");
     }
 
     public JComponent getComponent() {
