@@ -27,6 +27,7 @@ import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.netbeans.api.progress.ProgressHandle;
+import org.netbeans.api.project.Project;
 import org.openide.util.RequestProcessor;
 import org.openide.util.RequestProcessor.Task;
 import org.openide.windows.InputOutput;
@@ -52,7 +53,7 @@ class CommandLineOutputHandler extends AbstractOutputHandler {
     CommandLineOutputHandler() {
     }
 
-    public CommandLineOutputHandler(InputOutput io, NbMavenProjectImpl proj, ProgressHandle hand, RunConfig config) {
+    public CommandLineOutputHandler(InputOutput io, Project proj, ProgressHandle hand, RunConfig config) {
         this();
         inputOutput = io;
         stdOut = inputOutput.getOut();

@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.maven.model.Profile;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.netbeans.spi.project.ActionProvider;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
@@ -53,7 +54,8 @@ public class JarPackagingRunChecker implements PrerequisitesChecker {
             while (it.hasNext()) {
                 String goal = (String) it.next();
                 if (goal.indexOf("org.codehaus.mevenide:netbeans-run-plugin") > -1) { //NOI18N
-                    List profiles = config.getProject().getOriginalMavenProject().getModel().getProfiles();
+                    NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
+                    List profiles = prj.getMavenProject().getModel().getProfiles();
                     Iterator it2 = profiles.iterator();
                     boolean warn = true;
                     while (it2.hasNext()) {

@@ -19,6 +19,7 @@ package org.codehaus.mevenide.netbeans.api.execute;
 
 import java.io.File;
 import org.codehaus.mevenide.netbeans.api.Constants;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.execute.MavenCommandLineExecutor;
 import org.codehaus.mevenide.netbeans.execute.MavenExecutor;
 import org.codehaus.mevenide.netbeans.execute.MavenJavaExecutor;
@@ -49,7 +50,8 @@ public final class RunUtils {
         MavenExecutor exec;
         boolean useCommandLine = false;
         if (config.getProject()!= null) {
-            String val = config.getProject().getOriginalMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
+            NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
+            String val = prj.getMavenProject().getProperties().getProperty(Constants.HINT_USE_EXTERNAL);
             if ("true".equalsIgnoreCase(val)) { //NOI18N
                 useCommandLine = true;
             }

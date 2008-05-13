@@ -186,15 +186,16 @@ public class ActionProviderImpl implements ActionProvider {
         BeanRunConfig bc = (BeanRunConfig) config;
         String title;
         DataObject dobj = lkp.lookup(DataObject.class);
+        NbMavenProject prj = bc.getProject().getLookup().lookup(NbMavenProject.class);
         //#118926 prevent NPE, how come the dobj is null?
         String dobjName = dobj != null ? dobj.getName() : ""; //NOI18N
 
         if (ActionProvider.COMMAND_RUN.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", prj.getMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_DEBUG.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug", bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Debug", prj.getMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_TEST.equals(action)) {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test", bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test", prj.getMavenProject().getArtifactId());
         } else if (ActionProvider.COMMAND_RUN_SINGLE.equals(action)) {
             title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Run", dobjName);
         } else if (ActionProvider.COMMAND_DEBUG_SINGLE.equals(action) || ActionProvider.COMMAND_DEBUG_TEST_SINGLE.equals(action)) {
@@ -202,7 +203,7 @@ public class ActionProviderImpl implements ActionProvider {
         } else if (ActionProvider.COMMAND_TEST_SINGLE.equals(action)) {
             title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Test", dobjName);
         } else {
-            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build", bc.getProject().getOriginalMavenProject().getArtifactId());
+            title = NbBundle.getMessage(ActionProviderImpl.class, "TXT_Build", prj.getMavenProject().getArtifactId());
         }
         bc.setTaskDisplayName(title);
     }

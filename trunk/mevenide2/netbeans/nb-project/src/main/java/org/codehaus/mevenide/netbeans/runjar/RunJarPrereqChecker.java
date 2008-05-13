@@ -43,6 +43,7 @@ import org.codehaus.mevenide.netbeans.execute.model.ActionToGoalMapping;
 import org.codehaus.mevenide.netbeans.execute.model.NetbeansActionMapping;
 import org.codehaus.mevenide.netbeans.execute.model.io.xpp3.NetbeansBuildActionXpp3Reader;
 import org.netbeans.api.java.project.JavaProjectConstants;
+import org.netbeans.api.project.Project;
 import org.netbeans.api.project.ProjectUtils;
 import org.netbeans.api.project.SourceGroup;
 import org.netbeans.api.project.Sources;
@@ -103,7 +104,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
         return true;
     }
 
-    private String eventuallyShowDialog(NbMavenProjectImpl project, String actionName) {
+    private String eventuallyShowDialog(Project project, String actionName) {
         if (mainClass != null) {
             return mainClass;
         }
@@ -166,7 +167,7 @@ public class RunJarPrereqChecker implements PrerequisitesChecker {
         return null;
     }
 
-    private void writeMapping(String actionName, NbMavenProjectImpl project, String clazz) {
+    private void writeMapping(String actionName, Project project, String clazz) {
         try {
             UserActionGoalProvider usr = project.getLookup().lookup(UserActionGoalProvider.class);
             ActionToGoalMapping mapping = new NetbeansBuildActionXpp3Reader().read(new StringReader(usr.getRawMappingsAsString()));

@@ -34,6 +34,7 @@ import org.codehaus.mevenide.netbeans.embedder.exec.MyLifecycleExecutor;
 import org.netbeans.api.progress.aggregate.AggregateProgressFactory;
 import org.netbeans.api.progress.aggregate.AggregateProgressHandle;
 import org.netbeans.api.progress.aggregate.ProgressContributor;
+import org.netbeans.api.project.Project;
 import org.openide.execution.ExecutorTask;
 import org.openide.util.io.NullOutputStream;
 import org.openide.windows.InputOutput;
@@ -83,7 +84,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
         stdOut = std;
     }
     
-    public OutputHandler(InputOutput io, NbMavenProjectImpl proj, AggregateProgressHandle hand, RunConfig config)    {
+    public OutputHandler(InputOutput io, Project proj, AggregateProgressHandle hand, RunConfig config)    {
         this();
         inputOutput = io;
         handle = hand;

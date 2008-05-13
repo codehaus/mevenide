@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Properties;
 import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
 import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -32,7 +33,7 @@ import org.codehaus.mevenide.netbeans.options.MavenExecutionSettings;
 public class BeanRunConfig implements RunConfig {
     
     private File executionDirectory;
-    private NbMavenProjectImpl project;
+    private Project project;
     private List<String> goals;
     private String executionName;
     private Properties properties = new Properties();
@@ -57,11 +58,11 @@ public class BeanRunConfig implements RunConfig {
         this.executionDirectory = executionDirectory;
     }
 
-    public NbMavenProjectImpl getProject() {
+    public Project getProject() {
         return project;
     }
 
-    public void setProject(NbMavenProjectImpl project) {
+    public void setProject(Project project) {
         this.project = project;
     }
 

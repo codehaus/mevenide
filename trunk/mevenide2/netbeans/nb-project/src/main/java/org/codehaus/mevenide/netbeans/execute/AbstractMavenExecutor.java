@@ -32,6 +32,7 @@ import javax.swing.ImageIcon;
 import org.apache.maven.embedder.MavenEmbedder;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.codehaus.mevenide.netbeans.api.NbMavenProject;
 import org.codehaus.mevenide.netbeans.api.execute.RunConfig;
 import org.codehaus.mevenide.netbeans.api.execute.RunUtils;
 import org.codehaus.mevenide.netbeans.debug.JPDAStart;
@@ -104,7 +105,8 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
         if ("true".equals(config.getProperties().getProperty("jpda.listen"))) {//NOI18N
 
             JPDAStart start = new JPDAStart();
-            start.setName(config.getProject().getOriginalMavenProject().getArtifactId());
+            NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
+            start.setName(prj.getMavenProject().getArtifactId());
             start.setStopClassName(config.getProperties().getProperty("jpda.stopclass"));//NOI18N
 
             start.setLog(handler.getLogger());
@@ -324,9 +326,10 @@ abstract class AbstractMavenExecutor extends OutputTabMaintainer implements Mave
 
         public void actionPerformed(ActionEvent e) {
             //
-            if (embedder != null && config != null) {
+            if (embedder != null && config != null && config.getProject() != null) {
+                NbMavenProject prj = config.getProject().getLookup().lookup(NbMavenProject.class);
                 mbps.openBuildPlanView(embedder,
-                        config.getProject().getOriginalMavenProject(),
+                        prj.getMavenProject(),
                         config.getGoals().toArray(new String[0]));
             }
         }

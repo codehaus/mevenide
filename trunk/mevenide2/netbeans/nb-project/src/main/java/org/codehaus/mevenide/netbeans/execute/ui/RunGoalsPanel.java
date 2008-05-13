@@ -40,6 +40,7 @@ import org.openide.util.Lookup;
 import org.openide.util.RequestProcessor;
 import org.openide.util.Utilities;
 import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.netbeans.api.project.Project;
 
 /**
  *
@@ -95,11 +96,11 @@ public class RunGoalsPanel extends javax.swing.JPanel {
 
     }
 
-    private void readProfiles(final NbMavenProjectImpl mavenProject) {
+    private void readProfiles(final Project mavenProject) {
         profilecompleter.setLoading(true);
         RequestProcessor.getDefault().post(new Runnable() {
             public void run() {
-                ProjectProfileHandler profileHandler=mavenProject.getLookup().lookup(ProjectProfileHandler.class);
+                ProjectProfileHandler profileHandler = mavenProject.getLookup().lookup(ProjectProfileHandler.class);
                 final List ret = profileHandler.getAllProfiles();
                 
                 SwingUtilities.invokeLater(new Runnable() {
@@ -169,7 +170,7 @@ public class RunGoalsPanel extends javax.swing.JPanel {
         setRecursive(config.isRecursive());
         setShowDebug(config.isShowDebug());
         if(config.getProject()!=null){
-         readProfiles(config.getProject());
+            readProfiles(config.getProject());
         }
     }
 

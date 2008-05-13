@@ -30,6 +30,7 @@ import org.codehaus.mevenide.netbeans.api.output.NotifyFinishOutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessor;
 import org.codehaus.mevenide.netbeans.api.output.OutputProcessorFactory;
 import org.codehaus.mevenide.netbeans.api.output.OutputVisitor;
+import org.netbeans.api.project.Project;
 import org.openide.util.Lookup;
 import org.openide.windows.OutputWriter;
 
@@ -61,7 +62,7 @@ abstract class AbstractOutputHandler {
         return eventName + "#" + target; //NOI18N
     }
     
-    protected final void initProcessorList(NbMavenProjectImpl proj, RunConfig config) {
+    protected final void initProcessorList(Project proj, RunConfig config) {
         // get the registered processors.
         Lookup.Result<OutputProcessorFactory> result  = Lookup.getDefault().lookup(new Lookup.Template<OutputProcessorFactory>(OutputProcessorFactory.class));
         Iterator<? extends OutputProcessorFactory> it = result.allInstances().iterator();
