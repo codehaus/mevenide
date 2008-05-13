@@ -29,6 +29,7 @@ import java.util.StringTokenizer;
 import org.apache.maven.model.Build;
 import org.codehaus.mevenide.netbeans.spi.actions.MavenActionsProvider;
 import org.codehaus.mevenide.netbeans.NbMavenProjectImpl;
+import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.configurations.ConfigurationProviderEnabler;
 import org.codehaus.mevenide.netbeans.configurations.M2ConfigProvider;
 import org.codehaus.mevenide.netbeans.configurations.M2Configuration;
@@ -88,25 +89,35 @@ public final class ActionToGoalUtils {
                             brc.setExecutionName(project.getName());
                             brc.setProperties(new Properties());
                             brc.setActivatedProfiles(Collections.EMPTY_LIST);
-                            return brc;
+                            rc= brc;
                         }
                     }
                 }
-                for (MavenActionsProvider add : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
-                    if (add.isActionEnable(action, project, lookup)) {
-                        rc = add.createConfigForDefaultAction(action, project, lookup);
-                        if (rc != null) {
-                            break;
-                        }
-                    }
-                }
+                
+
             }
         }
-        if (rc != null && configsEnabled) {
-            M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
-            List<String> acts = new ArrayList<String>();
+        if(rc==null){
+            for (MavenActionsProvider add : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
+                        if (add.isActionEnable(action, project, lookup)) {
+                            rc = add.createConfigForDefaultAction(action, project, lookup);
+                            if (rc != null) {
+                                break;
+                            }
+                        }
+            }
+        }
+        if (rc != null ) {
+            List<String> acts = new ArrayList<String>(); 
             acts.addAll(rc.getActivatedProfiles());
-            acts.addAll(configs.getActiveConfiguration().getActivatedProfiles());
+            if(configsEnabled){
+              M2ConfigProvider configs = project.getLookup().lookup(M2ConfigProvider.class);
+              acts.addAll(configs.getActiveConfiguration().getActivatedProfiles());
+            
+            }else{
+              ProjectProfileHandler profileHandler=project.getLookup().lookup(ProjectProfileHandler.class);
+              acts.addAll(profileHandler.getActiveProfiles(false));
+            }
             rc.setActivatedProfiles(acts);
         }
         return rc;
