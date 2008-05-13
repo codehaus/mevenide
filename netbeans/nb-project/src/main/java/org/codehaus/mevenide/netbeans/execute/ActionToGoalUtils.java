@@ -96,7 +96,7 @@ public final class ActionToGoalUtils {
             }
         }
         if(rc==null){
-            for (MavenActionsProvider add : Lookup.getDefault().lookupAll(MavenActionsProvider.class)) {
+            for (AdditionalM2ActionsProvider add : Lookup.getDefault().lookupAll(AdditionalM2ActionsProvider.class)) {
                         if (add.isActionEnable(action, project, lookup)) {
                             rc = add.createConfigForDefaultAction(action, project, lookup);
                             if (rc != null) {
