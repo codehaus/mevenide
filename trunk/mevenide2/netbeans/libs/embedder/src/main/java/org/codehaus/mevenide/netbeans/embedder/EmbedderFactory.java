@@ -398,7 +398,7 @@ public final class EmbedderFactory {
      * @param allowStubs
      * @return
      */
-    public static ModelLineage createModelLineage(File pom, MavenEmbedder embedder, boolean allowStubs) {
+    public static ModelLineage createModelLineage(File pom, MavenEmbedder embedder, boolean allowStubs) throws ProjectBuildingException {
         try {
             ModelLineageBuilder bldr = (ModelLineageBuilder) embedder.getPlexusContainer().lookup(ModelLineageBuilder.class);
             ProfileActivationContext context = new DefaultProfileActivationContext(new Properties(), true); //TODO shall we pass some execution props in here?
@@ -409,8 +409,6 @@ public final class EmbedderFactory {
             conf.setLocalRepository(embedder.getLocalRepository());
             conf.setUserProperties(new Properties());
             return bldr.buildModelLineage(pom, conf, new ArrayList(), allowStubs, true);
-        } catch (ProjectBuildingException ex) {
-            Exceptions.printStackTrace(ex);
         } catch (ComponentLookupException ex) {
             Exceptions.printStackTrace(ex);
         }

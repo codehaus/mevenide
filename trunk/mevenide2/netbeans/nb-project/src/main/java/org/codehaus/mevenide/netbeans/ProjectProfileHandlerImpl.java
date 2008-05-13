@@ -23,9 +23,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Profile;
 import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
 import org.apache.maven.project.build.model.ModelLineage;
 import org.codehaus.mevenide.netbeans.api.ProjectProfileHandler;
 import org.codehaus.mevenide.netbeans.embedder.EmbedderFactory;
@@ -33,6 +36,7 @@ import org.codehaus.mevenide.netbeans.embedder.MavenSettingsSingleton;
 import org.netbeans.spi.project.AuxiliaryConfiguration;
 import org.openide.filesystems.FileObject;
 import org.openide.filesystems.FileUtil;
+import org.openide.util.Exceptions;
 import org.openide.xml.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -166,31 +170,35 @@ public class ProjectProfileHandlerImpl implements ProjectProfileHandler {
     }
     
     private static void extractProfilesFromModelLineage(File file, Set<String> profileIds) {
-        ModelLineage lineage = EmbedderFactory.createModelLineage(file, EmbedderFactory.createOnlineEmbedder(), true);
-        Iterator it = lineage.modelIterator();
-        while (it.hasNext()) {
-            Model mdl = (Model) it.next();
-            List mdlProfiles = mdl.getProfiles();
-            if (mdlProfiles != null) {
-                Iterator it2 = mdlProfiles.iterator();
-                while (it2.hasNext()) {
-                    Profile prf = (Profile) it2.next();
-                    profileIds.add(prf.getId());
+        try {
+            ModelLineage lineage = EmbedderFactory.createModelLineage(file, EmbedderFactory.createOnlineEmbedder(), true);
+            Iterator it = lineage.modelIterator();
+            while (it.hasNext()) {
+                Model mdl = (Model) it.next();
+                List mdlProfiles = mdl.getProfiles();
+                if (mdlProfiles != null) {
+                    Iterator it2 = mdlProfiles.iterator();
+                    while (it2.hasNext()) {
+                        Profile prf = (Profile) it2.next();
+                        profileIds.add(prf.getId());
+                    }
                 }
             }
-        }
-        if (lineage != null && lineage.getOriginatingModel() != null) {
-            List<String> modules = lineage.getOriginatingModel().getModules();
-            File basedir = FileUtil.normalizeFile(file.getParentFile());
-            for (String module : modules) {
-                File childPom = FileUtil.normalizeFile(new File(basedir, module));
-                if (childPom.exists() && !childPom.isFile()) {
-                    childPom = new File(childPom, "pom.xml"); //NOI18N
-                }
-                if (childPom.isFile()) {
-                    extractProfilesFromModelLineage(childPom, profileIds);
+            if (lineage != null && lineage.getOriginatingModel() != null) {
+                List<String> modules = lineage.getOriginatingModel().getModules();
+                File basedir = FileUtil.normalizeFile(file.getParentFile());
+                for (String module : modules) {
+                    File childPom = FileUtil.normalizeFile(new File(basedir, module));
+                    if (childPom.exists() && !childPom.isFile()) {
+                        childPom = new File(childPom, "pom.xml"); //NOI18N
+                    }
+                    if (childPom.isFile()) {
+                        extractProfilesFromModelLineage(childPom, profileIds);
+                    }
                 }
             }
+        } catch (ProjectBuildingException ex) {
+            Logger.getLogger(ProjectProfileHandlerImpl.class.getName()).log(Level.FINE, "Error reading model lineage", ex);
         }
     }
 
