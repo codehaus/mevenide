@@ -182,6 +182,8 @@ public final class NbMavenProjectImpl implements Project {
                     req.addActiveProfiles(activeProfiles);
                 }
                 req.setPomFile(projectFile.getAbsolutePath());
+                req.setNoSnapshotUpdates(true);
+                req.setUpdateSnapshots(false);
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
                 if (res.hasExceptions()) {
