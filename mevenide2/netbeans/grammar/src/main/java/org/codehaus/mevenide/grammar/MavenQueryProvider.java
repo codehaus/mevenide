@@ -18,23 +18,14 @@
 package org.codehaus.mevenide.grammar;
 
 import java.beans.FeatureDescriptor;
-import java.io.File;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-import org.codehaus.mevenide.netbeans.api.FileUtilities;
-import org.codehaus.mevenide.netbeans.api.PluginPropertyUtils;
-import org.codehaus.mevenide.netbeans.api.NbMavenProject;
-import org.netbeans.api.project.FileOwnerQuery;
-import org.netbeans.api.project.Project;
 import org.netbeans.modules.xml.api.model.GrammarEnvironment;
 import org.netbeans.modules.xml.api.model.GrammarQuery;
 import org.netbeans.modules.xml.api.model.GrammarQueryManager;
-import org.openide.filesystems.FileObject;
-import org.openide.filesystems.FileUtil;
 import org.openide.util.Lookup;
 import org.openide.util.Lookup.Item;
 import org.openide.util.Lookup.Result;
@@ -45,8 +36,6 @@ public final class MavenQueryProvider extends GrammarQueryManager {
     private List<GrammarFactory> grammars;
     public MavenQueryProvider() {
         grammars = new ArrayList<GrammarFactory>();
-        
-        
         Result<GrammarFactory> result = Lookup.getDefault().lookupResult(GrammarFactory.class);
         Collection<? extends Item<GrammarFactory>> items = result.allItems();
         for (Item<GrammarFactory> item : items) {
