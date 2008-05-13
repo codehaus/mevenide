@@ -50,8 +50,10 @@ public class NewConfigurationPanel extends javax.swing.JPanel {
     
     public void setProfiles(List<String> profiles) {
         String val = "";
-        for (String prf : profiles) {
-            val = val + prf;
+        if (profiles != null) {
+            for (String prf : profiles) {
+                val = val + prf;
+            }
         }
         txtActivate.setText(val);
     }
