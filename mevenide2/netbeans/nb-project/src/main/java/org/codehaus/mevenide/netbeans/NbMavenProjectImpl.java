@@ -419,6 +419,19 @@ public final class NbMavenProjectImpl implements Project {
 
         return FileUtilities.getDirURI(getProjectDirectory(), prop);
     }
+    
+    public URI getSiteDirectory() {
+        //TODO hack, should be supported somehow to read this..
+        String prop = PluginPropertyUtils.getPluginProperty(this, Constants.GROUP_APACHE_PLUGINS,
+                Constants.PLUGIN_SITE, //NOI18N
+                "siteDirectory", //NOI18N
+                "site"); //NOI18N
+
+        prop = prop == null ? "src/site" : prop; //NOI18N
+
+        return FileUtilities.getDirURI(getProjectDirectory(), prop);
+    }
+    
 
     public URI getEarAppDirectory() {
         //TODO hack, should be supported somehow to read this..

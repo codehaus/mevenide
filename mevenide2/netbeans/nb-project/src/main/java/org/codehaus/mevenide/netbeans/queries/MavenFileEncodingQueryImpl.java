@@ -45,31 +45,32 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
     }
 
     public Charset getEncoding(FileObject file) {
-        String defEnc = project.getOriginalMavenProject().getProperties().getProperty(Constants.ENCODING_PROP);
         MavenProject mp = project.getOriginalMavenProject();
-        if (mp != null) {
-            //TODO instead of SD
-            FileObject src = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
-            if (src != null &&  (src.equals(file) || FileUtil.isParentOf(src, file))) {
-                String compileEnc = PluginPropertyUtils.getPluginProperty(project, 
-                      Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER,ENCODING_PARAM, "compile"); //NOI18N;
-                if (compileEnc != null && compileEnc.indexOf("${") == -1) { //NOI18N - guard against unresolved values.
-                    return Charset.forName(compileEnc);
-                }
-                if (defEnc != null) {
-                    return Charset.forName(defEnc);
-                }
+        if (mp == null) {
+            return Charset.defaultCharset();
+        }
+        String defEnc = mp.getProperties().getProperty(Constants.ENCODING_PROP);
+        //TODO instead of SD
+        FileObject src = FileUtilities.convertStringToFileObject(mp.getBuild().getSourceDirectory());
+        if (src != null &&  (src.equals(file) || FileUtil.isParentOf(src, file))) {
+            String compileEnc = PluginPropertyUtils.getPluginProperty(project, 
+                  Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER,ENCODING_PARAM, "compile"); //NOI18N;
+            if (compileEnc != null && compileEnc.indexOf("${") == -1) { //NOI18N - guard against unresolved values.
+                return Charset.forName(compileEnc);
             }
-            FileObject testsrc = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
-            if (testsrc != null && (testsrc.equals(file) || FileUtil.isParentOf(testsrc, file))) {
-                String testcompileEnc = PluginPropertyUtils.getPluginProperty(project, 
-                        Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING_PARAM, "testCompile"); //NOI18N
-                if (testcompileEnc != null && testcompileEnc.indexOf("${") == -1) {//NOI18N - guard against unresolved values.
-                    return Charset.forName(testcompileEnc);
-                }
-                if (defEnc != null) {
-                    return Charset.forName(defEnc);
-                }
+            if (defEnc != null) {
+                return Charset.forName(defEnc);
+            }
+        }
+        FileObject testsrc = FileUtilities.convertStringToFileObject(mp.getBuild().getTestSourceDirectory());
+        if (testsrc != null && (testsrc.equals(file) || FileUtil.isParentOf(testsrc, file))) {
+            String testcompileEnc = PluginPropertyUtils.getPluginProperty(project, 
+                    Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_COMPILER, ENCODING_PARAM, "testCompile"); //NOI18N
+            if (testcompileEnc != null && testcompileEnc.indexOf("${") == -1) {//NOI18N - guard against unresolved values.
+                return Charset.forName(testcompileEnc);
+            }
+            if (defEnc != null) {
+                return Charset.forName(defEnc);
             }
         }
 
@@ -105,6 +106,22 @@ public class MavenFileEncodingQueryImpl extends  FileEncodingQueryImplementation
         } catch (MalformedURLException malformedURLException) {
             Exceptions.printStackTrace(malformedURLException);
         }
+        
+        try {
+            if (isWithin(new URI[] { project.getSiteDirectory() }, file)) {
+                String siteEnc = PluginPropertyUtils.getPluginProperty(project, 
+                        Constants.GROUP_APACHE_PLUGINS, Constants.PLUGIN_SITE, "inputEncoding", "site"); //NOI18N
+                if (siteEnc != null&& siteEnc.indexOf("${") == -1) {//NOI18N - guard against unresolved values.
+                    return Charset.forName(siteEnc);
+                }
+                if (defEnc != null) {
+                    return Charset.forName(defEnc);
+                }
+            }
+        } catch (MalformedURLException malformedURLException) {
+            Exceptions.printStackTrace(malformedURLException);
+        }
+        
         if (defEnc != null) {
             return Charset.forName(defEnc);
         }
