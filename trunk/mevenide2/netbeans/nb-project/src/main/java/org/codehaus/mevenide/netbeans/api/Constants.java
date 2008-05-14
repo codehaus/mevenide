@@ -66,6 +66,7 @@ public interface Constants {
     
     public static final String PLUGIN_COMPILER = "maven-compiler-plugin";//NOI18N
     public static final String PLUGIN_WAR = "maven-war-plugin";//NOI18N
+    public static final String PLUGIN_SITE = "maven-site-plugin";//NOI18N
     public static final String PLUGIN_RESOURCES = "maven-resources-plugin";//NOI18N
     public static final String PLUGIN_EJB = "maven-ejb-plugin";//NOI18N
     public static final String PLUGIN_EAR = "maven-ear-plugin";//NOI18N
