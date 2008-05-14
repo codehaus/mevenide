@@ -511,7 +511,9 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                 cbRecursively.setSelected(mapp != null ? mapp.isRecursive() : true);
             }
             cbSkipTests.setSelected(checkPropertiesList(mapp != null ? mapp.getProperties() : new Properties()));
-            
+            if (mapp == null) {
+                cbSkipTests.setEnabled(false);
+            }
             txtGoals.getDocument().addDocumentListener(goalsListener);
             txtProfiles.getDocument().addDocumentListener(profilesListener);
             txtProperties.getDocument().addDocumentListener(propertiesListener);
@@ -807,6 +809,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                         mapping = new NetbeansActionMapping();
                         mapping.setActionName(map.getActionName());
                         map.setMapping(mapping);
+                        cbSkipTests.setEnabled(true);
                     }
                     getActionMappings().addAction(mapping);
                     if (handle != null) {
@@ -886,6 +889,7 @@ private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:
                     if (mapping == null) {
                         mapping = new NetbeansActionMapping();
                         mapping.setActionName(map.getActionName());
+                        map.setMapping(mapping);
                     }
                     getActionMappings().addAction(mapping);
                     map.setUserDefined(true);
