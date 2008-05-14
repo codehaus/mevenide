@@ -72,10 +72,6 @@ public class MavenCommandLineExecutor extends AbstractMavenExecutor {
                     LOGGER.log(Level.FINE, ex.getMessage(), ex);
                 }
             }
-            //TODO we might need to copy and update settings file..
-            File userLoc = new File(System.getProperty("user.home"), ".m2"); //NOI18N
-            File userSettingsPath = new File(userLoc, "settings.xml");//NOI18N
-            
             
             File workingDir = config.getExecutionDirectory();
             List<String> cmdLine = createMavenExecutionCommand(config);
