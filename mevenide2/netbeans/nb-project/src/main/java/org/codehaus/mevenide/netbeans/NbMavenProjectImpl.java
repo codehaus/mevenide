@@ -184,6 +184,10 @@ public final class NbMavenProjectImpl implements Project {
                 req.setPomFile(projectFile.getAbsolutePath());
                 req.setNoSnapshotUpdates(true);
                 req.setUpdateSnapshots(false);
+                // recursive == false is important to avoid checking all submodules for extensions
+                // that will not be used in current pom anyway..
+                // #135070
+                req.setRecursive(false);
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
                 if (res.hasExceptions()) {
