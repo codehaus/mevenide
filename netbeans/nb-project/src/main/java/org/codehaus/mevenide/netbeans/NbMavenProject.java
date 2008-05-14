@@ -186,6 +186,12 @@ public final class NbMavenProject implements Project {
                     req.addActiveProfiles(activeProfiles);
                 }
                 req.setPomFile(projectFile.getAbsolutePath());
+                req.setNoSnapshotUpdates(true);
+                req.setUpdateSnapshots(false);
+                // recursive == false is important to avoid checking all submodules for extensions
+                // that will not be used in current pom anyway..
+                // #135070
+                req.setRecursive(false);
                 MavenExecutionResult res = getEmbedder().readProjectWithDependencies(req);
                 project = res.getProject();
                 if (res.hasExceptions()) {
@@ -418,6 +424,18 @@ public final class NbMavenProject implements Project {
                 "war"); //NOI18N
 
         prop = prop == null ? "src/main/webapp" : prop; //NOI18N
+
+        return FileUtilities.getDirURI(getProjectDirectory(), prop);
+    }
+    
+    public URI getSiteDirectory() {
+        //TODO hack, should be supported somehow to read this..
+        String prop = PluginPropertyUtils.getPluginProperty(this, Constants.GROUP_APACHE_PLUGINS,
+                Constants.PLUGIN_SITE, //NOI18N
+                "siteDirectory", //NOI18N
+                "site"); //NOI18N
+
+        prop = prop == null ? "src/site" : prop; //NOI18N
 
         return FileUtilities.getDirURI(getProjectDirectory(), prop);
     }
