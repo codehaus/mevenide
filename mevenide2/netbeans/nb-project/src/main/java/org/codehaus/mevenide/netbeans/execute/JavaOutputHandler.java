@@ -44,7 +44,7 @@ import org.openide.windows.OutputWriter;
  * handling of output coming from maven builds.
  * @author Milos Kleint (mkleint@codehaus.org)
  */
-class OutputHandler extends AbstractOutputHandler implements EventMonitor, MavenEmbedderLogger {
+class JavaOutputHandler extends AbstractOutputHandler implements EventMonitor, MavenEmbedderLogger {
     private static final String SEC_MOJO_EXEC = "mojo-execute";//NOI18N
     private static final String SEC_PRJ_EXEC = "project-execute";//NOI18N
     private static final String SEC_REAC_EXEC = "reactor-execute";//NOI18N
@@ -72,7 +72,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
     private int total = 10;
     private int count = 0;
     
-    OutputHandler() {
+    JavaOutputHandler() {
     }
     
     /**
@@ -84,7 +84,7 @@ class OutputHandler extends AbstractOutputHandler implements EventMonitor, Maven
         stdOut = std;
     }
     
-    public OutputHandler(InputOutput io, Project proj, AggregateProgressHandle hand, RunConfig config)    {
+    public JavaOutputHandler(InputOutput io, Project proj, AggregateProgressHandle hand, RunConfig config)    {
         this();
         inputOutput = io;
         handle = hand;

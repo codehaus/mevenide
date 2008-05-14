@@ -48,7 +48,7 @@ public class OutputHandlerTest extends TestCase {
         TestProcessor proc = new TestProcessor();
         set.add(proc);
         procs.put("mojo-execute#test:test", set);
-        OutputHandler handler = new OutputHandler();
+        JavaOutputHandler handler = new JavaOutputHandler();
         handler.setup(procs, new NullOutputWriter(), new NullOutputWriter());
         assertFalse(proc.processing);
         handler.startEvent("mojo-execute", "test:xxx", 0);
