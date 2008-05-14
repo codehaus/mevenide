@@ -59,7 +59,7 @@ public class IOBridge {
      * @param err new temporary error stream for this thread group
      * @see "#36396"
      */
-    static synchronized void pushSystemInOutErr(OutputHandler ioput) {
+    static synchronized void pushSystemInOutErr(JavaOutputHandler ioput) {
         if (delegating++ == 0) {
             origIn = System.in;
             origOut = System.out;

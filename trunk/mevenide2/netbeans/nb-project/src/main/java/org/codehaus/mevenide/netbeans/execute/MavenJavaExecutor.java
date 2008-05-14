@@ -70,7 +70,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
     private static final String PROFILE_PUBLIC = "netbeans-public";
     
     private AggregateProgressHandle handle;
-    private OutputHandler out;
+    private JavaOutputHandler out;
     
     private Logger LOGGER = Logger.getLogger(MavenJavaExecutor.class.getName());
     
@@ -100,7 +100,7 @@ public class MavenJavaExecutor extends AbstractMavenExecutor {
         try {
             MavenEmbedder embedder;
             ProgressTransferListener.setAggregateHandle(handle);
-            out = new OutputHandler(ioput, config.getProject(), handle, config);
+            out = new JavaOutputHandler(ioput, config.getProject(), handle, config);
             IOBridge.pushSystemInOutErr(out);
             boolean debug = config.isShowDebug();
             req.setShowErrors(debug || config.isShowError());
