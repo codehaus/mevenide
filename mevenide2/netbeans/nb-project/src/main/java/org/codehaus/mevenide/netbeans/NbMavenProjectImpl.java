@@ -184,6 +184,8 @@ public final class NbMavenProjectImpl implements Project {
                 req.setPomFile(projectFile.getAbsolutePath());
                 req.setNoSnapshotUpdates(true);
                 req.setUpdateSnapshots(false);
+                //MEVENIDE-634 i'm wondering if this fixes the issue
+                req.setInteractiveMode(false);
                 // recursive == false is important to avoid checking all submodules for extensions
                 // that will not be used in current pom anyway..
                 // #135070
