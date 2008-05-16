@@ -40,7 +40,6 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -837,6 +836,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         if (isPath) {
             return artifactInfos;
         }
+        //if I got it right, we need an exact match of class name, which the query doesn't provide? why?
         String pattStr = ".*/" + classname + "$.*";
         Pattern patt = Pattern.compile(pattStr, patter);
         Iterator<ArtifactInfo> it = artifactInfos.iterator();
