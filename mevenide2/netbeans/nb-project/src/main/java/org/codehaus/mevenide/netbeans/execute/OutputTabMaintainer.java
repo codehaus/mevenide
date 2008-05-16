@@ -104,6 +104,7 @@ public abstract class OutputTabMaintainer {
         //                }
         if (io == null) {
             io = IOProvider.getDefault().getIO(name, createNewTabActions());
+            io.setInputVisible(true);
         }
         return io;
     }    
