@@ -190,9 +190,9 @@ public abstract class AbstractOutputHandler {
             return;
         }
         //MEVENIDE-637
-        String[] strs = splitMultiLine(input);
-        for (int i = 0; i < strs.length; i++) {
-            processLine(strs[i], writer, levelText);
+         ;
+        for (String s : splitMultiLine(input)) {
+            processLine(s, writer, levelText);
         }
     }
     
@@ -218,7 +218,7 @@ public abstract class AbstractOutputHandler {
     }
     
     //MEVENIDE-637   
-    public static String[] splitMultiLine(String input) {
+    public static List<String> splitMultiLine(String input) {
         List<String> list = new ArrayList<String>();
         String[] strs = input.split("\\r|\\n"); //NOI18N
         for (int i = 0; i < strs.length; i++) {
@@ -226,7 +226,6 @@ public abstract class AbstractOutputHandler {
               list.add(strs[i]);
             }
         }
-
-        return list.toArray(new String[0]);
+        return list;
     }   
 }
