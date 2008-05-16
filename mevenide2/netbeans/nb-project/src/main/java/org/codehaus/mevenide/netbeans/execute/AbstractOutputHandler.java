@@ -188,7 +188,8 @@ abstract class AbstractOutputHandler {
         if (input == null) {
             return;
         }
-        String[] strs = input.split(System.getProperty("line.separator")); //NOI18N
+        //MEVENIDE-637
+        String[] strs = input.split("\\r |\\n"); //NOI18N
         for (int i = 0; i < strs.length; i++) {
             processLine(strs[i], writer, levelText);
         }
