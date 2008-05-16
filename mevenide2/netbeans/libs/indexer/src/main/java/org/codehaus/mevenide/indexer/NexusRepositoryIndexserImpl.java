@@ -40,6 +40,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.PrefixQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
@@ -534,13 +535,11 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
                 public Object run() throws Exception {
                     checkIndexAvailability(allrepos);
                     loadIndexingContext(allrepos);
+                    String clsname = className.replace(".", "/");
                     try {
-                       
-                        
-                       
                         Collection<ArtifactInfo> searchResult = indexer.searchFlat(ArtifactInfo.VERSION_COMPARATOR,
-                                indexer.constructQuery(ArtifactInfo.NAMES, (className)));
-                        infos.addAll(convertToNBVersionInfo(postProcessClasses(searchResult, className)));
+                                indexer.constructQuery(ArtifactInfo.NAMES, clsname.toLowerCase()));
+                        infos.addAll(convertToNBVersionInfo(postProcessClasses(searchResult, clsname)));
                     } finally {
                         unloadIndexingContext(allrepos);
                     }
@@ -552,7 +551,7 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
         }
         return infos;
     }
-
+    
     public List<NBVersionInfo> findDependencyUsage(final String groupId, final String artifactId, final String version, List<RepositoryInfo> repos) {
         final List<NBVersionInfo> infos = new ArrayList<NBVersionInfo>();
         final RepositoryInfo[] allrepos = repos.toArray(new RepositoryInfo[repos.size()]);
@@ -834,7 +833,12 @@ public class NexusRepositoryIndexserImpl implements RepositoryIndexerImplementat
 
     private Collection<ArtifactInfo> postProcessClasses(Collection<ArtifactInfo> artifactInfos, String classname) {
         int patter = Pattern.DOTALL + Pattern.MULTILINE;
-        Pattern patt = Pattern.compile(".*/" + classname + "$.*", patter);
+        boolean isPath = classname.contains("/");
+        if (isPath) {
+            return artifactInfos;
+        }
+        String pattStr = ".*/" + classname + "$.*";
+        Pattern patt = Pattern.compile(pattStr, patter);
         Iterator<ArtifactInfo> it = artifactInfos.iterator();
         while (it.hasNext()) {
             ArtifactInfo ai = it.next();
