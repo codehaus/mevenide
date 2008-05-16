@@ -18,9 +18,11 @@
 package org.codehaus.mevenide.netbeans.execute;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import org.apache.maven.embedder.MavenEmbedderLogger;
 import org.codehaus.mevenide.netbeans.NbMavenProject;
@@ -37,7 +39,7 @@ import org.openide.windows.OutputWriter;
  *
  * @author mkleint
  */
-abstract class AbstractOutputHandler {
+public abstract class AbstractOutputHandler {
     private static final String PRJ_EXECUTE = "project-execute"; //NOI18N
     
     protected HashMap<String, Set> processors;
@@ -187,7 +189,8 @@ abstract class AbstractOutputHandler {
         if (input == null) {
             return;
         }
-        String[] strs = input.split(System.getProperty("line.separator")); //NOI18N
+        //MEVENIDE-637
+        String[] strs = splitMultiLine(input);
         for (int i = 0; i < strs.length; i++) {
             processLine(strs[i], writer, levelText);
         }
@@ -214,5 +217,16 @@ abstract class AbstractOutputHandler {
         }
     }
     
-    
+    //MEVENIDE-637   
+    public static String[] splitMultiLine(String input) {
+        List<String> list = new ArrayList<String>();
+        String[] strs = input.split("\\r|\\n"); //NOI18N
+        for (int i = 0; i < strs.length; i++) {
+            if(strs[i].length()>0){
+              list.add(strs[i]);
+            }
+        }
+
+        return list.toArray(new String[0]);
+    }       
 }
