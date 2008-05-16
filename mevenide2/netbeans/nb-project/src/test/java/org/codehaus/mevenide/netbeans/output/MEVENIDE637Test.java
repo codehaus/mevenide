@@ -43,19 +43,27 @@ public class MEVENIDE637Test extends TestCase {
          String[] strs = aString.split("\\r |\\n"); //NOI18N
          
          assertEquals(strs.length, 3);
-         
+         assertEquals("Some text ", strs[0]);
+         assertEquals(" a and some more .. ", strs[1]);
+         assertEquals(" and more..", strs[2]);
          
          aString="Some text \r a and some more .. \r and more..";//Mac
          
          strs = aString.split("\\r |\\n"); //NOI18N
          
          assertEquals(strs.length, 3);
+         assertEquals("Some text ", strs[0]);
+         assertEquals(" a and some more .. ", strs[1]);
+         assertEquals(" and more..", strs[2]);
          
          aString="Some text \r\n a and some more .. \r\n and more..";//Windows
          
          strs = aString.split("\\r |\\n"); //NOI18N
          
          assertEquals(strs.length, 3);
+         assertEquals("Some text ", strs[0]);
+         assertEquals(" a and some more .. ", strs[1]);
+         assertEquals(" and more..", strs[2]);
          
          //MEVENIDE-637
          aString="\r\n\nMojo: \n\n  org.apache.maven.plugins:maven-compiler-plugin:2.0.2:compile" +
@@ -66,5 +74,8 @@ public class MEVENIDE637Test extends TestCase {
          strs = aString.split("\\r |\\n"); //NOI18N
          System.out.println("AAA:"+strs.length);
          assertEquals(strs.length, 17);
+         
+         assertEquals("Mojo: ", strs[0]);
+         
     }
 }
